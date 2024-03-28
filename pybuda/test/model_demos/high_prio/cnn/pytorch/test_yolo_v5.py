@@ -274,7 +274,11 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size
 def test_yolov5_480x480(test_device, size):
     if test_device.arch == BackendDevice.Grayskull:
         os.environ["PYBUDA_FORK_JOIN_SKIP_EXPANDING_BUFFERS"] = "1"
+<<<<<<< HEAD
     if size in ["m", "l"] and test_device.arch == BackendDevice.Wormhole_B0:
+=======
+    if size in ["x", "l", "m"] and test_device.arch == BackendDevice.Wormhole_B0:
+>>>>>>> 8b0ffe2 ([nightly] Fix #2441, #2449, #2476)
         os.environ["PYBUDA_LEGACY_KERNEL_BROADCAST"] = "1"
     if size in ["s"] and test_device.arch == BackendDevice.Wormhole_B0:
         os.environ["PYBUDA_TEMP_DISABLE_MODEL_KB_PROLOGUE_BW"] = "1"
