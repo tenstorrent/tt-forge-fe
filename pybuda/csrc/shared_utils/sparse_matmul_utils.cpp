@@ -12,7 +12,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "balancer/types.hpp"
 #include "python_bindings_common.hpp"
 #include "utils/assert.hpp"
 

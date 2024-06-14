@@ -9,13 +9,11 @@
 #include <optional>
 
 #include "autograd/autograd.hpp"
-#include "balancer/balancer.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
 #include "json.hpp"
-#include "passes/fuse_ops.hpp"
 #include "pybind11_json.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
@@ -43,7 +41,6 @@ eval_graph(
     const std::unordered_map<int, py::object> &intermediate_golden_tensors,
     const std::vector<py::object> &losses,
     const std::vector<py::object> &targets,
-    std::shared_ptr<balancer::BalancerSolution> balancer_solution,
     float relative_atol,
     float pcc,
     std::string const &dump_tensors_path,
@@ -72,14 +69,19 @@ void GraphModule(py::module &m_graph)
         .def("enable_training", &Graph::enable_training)
         .def("set_microbatch", &Graph::set_microbatch)
         .def("get_microbatch", &Graph::get_microbatch)
-        .def("nodes", [](const Graph &self) { 
-            std::vector<graphlib::Node*> nodes = self.nodes();
-            std::vector<std::string> names;
-            std::transform(nodes.begin(), nodes.end(), std::back_inserter(names), [](graphlib::Node* node) {
-                return node->name();
-            });
-            return names;
-        })
+        .def(
+            "nodes",
+            [](const Graph &self)
+            {
+                std::vector<graphlib::Node *> nodes = self.nodes();
+                std::vector<std::string> names;
+                std::transform(
+                    nodes.begin(),
+                    nodes.end(),
+                    std::back_inserter(names),
+                    [](graphlib::Node *node) { return node->name(); });
+                return names;
+            })
         .def("get_ordered_input_names", &Graph::get_ordered_input_names)
         .def("get_ordered_intermediate_names", &Graph::get_ordered_intermediate_names)
         .def("get_ordered_output_names", &Graph::get_ordered_output_names)
@@ -99,8 +101,17 @@ void GraphModule(py::module &m_graph)
             py::arg("recurse") = false)
         .def("get_subgraph_id_for_node", &Graph::get_subgraph_id_for_node)
         .def("get_parameter_nodes", &Graph::get_parameter_nodes, py::return_value_policy::reference)
-        .def("register_module_inputs", &Graph::register_module_inputs, py::arg("module_inputs"), py::arg("append") = false)
-        .def("register_module_outputs", &Graph::register_module_outputs, py::arg("module_outputs"), py::arg("requires_grad"), py::arg("append") = false)
+        .def(
+            "register_module_inputs",
+            &Graph::register_module_inputs,
+            py::arg("module_inputs"),
+            py::arg("append") = false)
+        .def(
+            "register_module_outputs",
+            &Graph::register_module_outputs,
+            py::arg("module_outputs"),
+            py::arg("requires_grad"),
+            py::arg("append") = false)
         .def("register_module_targets", &Graph::register_module_targets)
         .def("get_ordered_input_shapes", &Graph::get_ordered_input_shapes)
         .def("get_ordered_output_shapes", &Graph::get_ordered_output_shapes)
@@ -154,48 +165,9 @@ void GraphModule(py::module &m_graph)
                     transforms.push_back(transform);
                 }
                 return transforms;
-            })
-        // Return information about fused ops and their schedule. Currently used purely for test verification,
-        // i.e. to ensure that fusing occured exactly in the way that was expected
-        .def(
-            "get_fused_ops",
-            [](Graph *graph)
-            {
-                std::vector<std::tuple<
-                    std::uint32_t,                         // inputs
-                    std::vector<std::vector<std::string>>  // schedules
-                    >>
-                    ret;
-
-                for (Node *node : graph->nodes())
-                {
-                    if (node->node_type() != graphlib::kBudaOp)
-                        continue;
-                    graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
-                    if (!op->is_fused_op())
-                        continue;
-
-                    auto f = op->get_fused_op();
-                    auto s = f->get_schedules();
-                    std::vector<std::vector<std::string>> schedules;
-                    for (auto sch : s)
-                    {
-                        std::vector<std::string> schedule;
-                        for (FusedSubOp subop : sch.ops) schedule.push_back(subop.op_type.op);
-                        schedules.push_back(schedule);
-                    }
-
-                    std::tuple<
-                        std::uint32_t,                         // inputs
-                        std::vector<std::vector<std::string>>  // schedules
-                        >
-                        op_data = {f->get_input_count(), schedules};
-                    ret.push_back(op_data);
-                }
-                return ret;
             });
-    py::class_<Shape> shape(m_graph, "Shape");
 
+    py::class_<Shape> shape(m_graph, "Shape");
     shape.def_property_readonly("v", [](Shape const &shape) { return shape[-5]; })
         .def_property_readonly("w", [](Shape const &shape) { return shape[-4]; })
         .def_property_readonly("z", [](Shape const &shape) { return shape[-3]; })
@@ -207,15 +179,15 @@ void GraphModule(py::module &m_graph)
         .def("get_tile_height", &Shape::get_tile_height)
         .def("get_tile_width", &Shape::get_tile_width)
         .def_static("create", &Shape::create, py::arg("values"))
-        .def_static(
-            "create_buda", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_buda))
+        .def_static("create_buda", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_buda))
         .def_static(
             "create_with_type_from_other", Shape::create_with_type_from_other, py::arg("other"), py::arg("values"))
         .def("len", [](Shape const &shape) { return shape.as_vector().size(); })
         .def("__len__", [](Shape const &shape) { return shape.as_vector().size(); })
-        .def("__iter__", [](Shape &shape) {
-            return py::make_iterator(shape.begin(), shape.end()); 
-        }, py::keep_alive<0, 1>())
+        .def(
+            "__iter__",
+            [](Shape &shape) { return py::make_iterator(shape.begin(), shape.end()); },
+            py::keep_alive<0, 1>())
         .def("as_list", [](Shape const &shape) { return shape.as_vector(); })
         .def("__getitem__", [](Shape const &shape, int idx) { return shape[idx]; })
         .def("__setitem__", [](Shape &shape, int idx, std::uint32_t val) { shape[idx] = val; })
@@ -244,7 +216,13 @@ void GraphModule(py::module &m_graph)
             }))
         .def("__get_pickle_data", &Shape::get_pickle_data)
         .def_static("__create_from_pickled", &Shape::create_from_pickled)
-        .def("to_json", [](Shape const &shape) { json j = shape; return j; })
+        .def(
+            "to_json",
+            [](Shape const &shape)
+            {
+                json j = shape;
+                return j;
+            })
         .def_static("from_json", [](json j) { return j.get<Shape>(); });
 
     py::enum_<Shape::Type>(shape, "Type")
@@ -539,11 +517,10 @@ void GraphModule(py::module &m_graph)
             const std::unordered_map<int, py::object> &intermediate_golden_tensors,
             const std::vector<py::object> &losses,
             const std::vector<py::object> &targets,
-            std::shared_ptr<balancer::BalancerSolution> balancer_solution,
             std::string const& dump_tensors_path,
             bool allow_modified_shapes) {
                 
-        auto [ret, fwd_to_gradient_mapping, bwd_gradients, updated_parameter_mapping, intermediate_tensors] =  eval_graph(graph, inputs, parameters, tt_device, intermediate_golden_tensors, losses, targets, balancer_solution, relative_atol, pcc, dump_tensors_path, allow_modified_shapes, true);
+        auto [ret, fwd_to_gradient_mapping, bwd_gradients, updated_parameter_mapping, intermediate_tensors] =  eval_graph(graph, inputs, parameters, tt_device, intermediate_golden_tensors, losses, targets, relative_atol, pcc, dump_tensors_path, allow_modified_shapes, true);
         return intermediate_tensors;
     },
         py::arg("graph"),
@@ -555,7 +532,6 @@ void GraphModule(py::module &m_graph)
         py::arg("intermediate_golden_tensors") = std::unordered_map<int, py::object>(),
         py::arg("losses") = std::vector<py::object>(),
         py::arg("targets") = std::vector<py::object>(),
-        py::arg("balancer_solution") = nullptr,
         py::arg("dump_tensors_path") = "",
         py::arg("allow_modified_shapes") = false
     );
@@ -571,10 +547,9 @@ void GraphModule(py::module &m_graph)
             const std::unordered_map<int, py::object> &intermediate_golden_tensors,
             const std::vector<py::object> &losses,
             const std::vector<py::object> &targets,
-            std::shared_ptr<balancer::BalancerSolution> balancer_solution,
             std::string const& dump_tensors_path,
             bool allow_modified_shapes) {
-        auto ret =  eval_graph(graph, inputs, parameters, tt_device, intermediate_golden_tensors, losses, targets, balancer_solution, relative_atol, pcc, dump_tensors_path, allow_modified_shapes, false);
+        auto ret =  eval_graph(graph, inputs, parameters, tt_device, intermediate_golden_tensors, losses, targets, relative_atol, pcc, dump_tensors_path, allow_modified_shapes, false);
         return std::make_tuple(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret), std::get<3>(ret));
 
     },
@@ -587,7 +562,6 @@ void GraphModule(py::module &m_graph)
         py::arg("intermediate_golden_tensors") = std::unordered_map<int, py::object>(),
         py::arg("losses") = std::vector<py::object>(),
         py::arg("targets") = std::vector<py::object>(),
-        py::arg("balancer_solution") = nullptr,
         py::arg("dump_tensors_path") = "",
         py::arg("allow_modified_shapes") = false
     );
@@ -691,9 +665,9 @@ py::object eval_relu(py::object tensor, graphlib::OpType type)
         float relu_threshold = (type.buda_attrs.find("relu_threshold") != type.buda_attrs.end())
                                    ? std::get<float>(type.buda_attrs["relu_threshold"])
                                    : 0.0;
-        string relu_mode = (type.buda_attrs.find("relu_mode") != type.buda_attrs.end())
-                                   ? std::get<string>(type.buda_attrs["relu_mode"])
-                                   : "min";
+        std::string relu_mode = (type.buda_attrs.find("relu_mode") != type.buda_attrs.end())
+                                    ? std::get<std::string>(type.buda_attrs["relu_mode"])
+                                    : "min";
 
         graphlib::OpType relu("relu", {relu_threshold, relu_mode});
         tensor = eval_op(relu, inputs, graphlib::IRLevel::IR_PYBUDA);
@@ -701,116 +675,14 @@ py::object eval_relu(py::object tensor, graphlib::OpType type)
     return tensor;
 }
 
-py::object eval_fused_op(std::shared_ptr<FusedOp> fused_op, std::vector<py::object> inputs)
+py::object eval_t_streaming_tms(py::object tensor, graphlib::Graph *graph, graphlib::Node *node, std::string const &dir)
 {
-    std::unordered_map<std::uint32_t, py::object> buffers;
-    std::optional<py::object> dest = std::nullopt;
-    for (auto schedule : fused_op->get_schedules())
-    {
-        for (auto sub_op : schedule.ops)
-        {
-            std::vector<py::object> sub_op_inputs;
-
-            for (FusedSubOpInput i : sub_op.inputs)
-            {
-                if (i.type == FusedSubOpInput::InputType::INPUT)  {
-                    TT_ASSERT(i.index < inputs.size(), "Refering to input that doesn't exist for fused op");
-                    sub_op_inputs.push_back(inputs.at(i.index));
-                }
-                else if (i.type == FusedSubOpInput::InputType::DEST) {
-                    TT_ASSERT(dest.has_value());
-                    sub_op_inputs.push_back(dest.value());
-                    dest = std::nullopt; // done with reuse
-                }
-                else {
-                    auto it = buffers.find(i.index);
-                    TT_ASSERT(it != buffers.end(), "Referring to intermediate buffer that doesn't exist");
-                    sub_op_inputs.push_back(it->second);
-                }
-
-                // In case the input for this sub_op is from the input buffer,
-                // we don't need to apply any tms (they were applied before this method).
-                if (i.type == FusedSubOpInput::InputType::INPUT)
-                    continue;
-
-                auto input = sub_op_inputs.back();
-
-                // Apply needed tms...
-                if (i.has_tile_broadcast())
-                {
-                    int tile_broadcast_dim = i.tile_broadcast.first ? 2 : 3;
-                    graphlib::OpType op = graphlib::OpType("tile_broadcast", {tile_broadcast_dim});
-                    input = eval_op(op, {input}, graphlib::IRLevel::IR_BUDA);
-                }
-
-                if (i.has_broadcast())
-                {
-                    int broadcast_dim = i.broadcast.first;
-                    int broadcast_factor = i.broadcast.second;
-
-                    graphlib::OpType op = graphlib::OpType("broadcast", {broadcast_dim, broadcast_factor});
-                    input = eval_op(op, {input}, graphlib::IRLevel::IR_BUDA);
-                }
-
-                sub_op_inputs.pop_back();
-                sub_op_inputs.emplace_back(input);
-            }
-            
-            py::object result = eval_op(sub_op.op_type, sub_op_inputs, graphlib::IRLevel::IR_BUDA);
-
-            if (sub_op.output_type == FusedSubOp::OutputType::OUTPUT)
-                return result;
-            else if (sub_op.output_type == FusedSubOp::OutputType::DEST)
-                dest = result;
-            else {
-                // intermed buffer
-                if (buffers.count((std::uint32_t)sub_op.output_buffer) == 0)
-                    buffers.insert(std::make_pair((std::uint32_t)sub_op.output_buffer, result));
-                else
-                    buffers[(std::uint32_t)sub_op.output_buffer] = result;
-            }
-        }
-    }
-    TT_THROW("Evaluated the full fused op, but haven't reached the output.");
-    return py::none();
-}
-
-py::object eval_t_streaming_tms(
-    py::object tensor,
-    graphlib::Graph *graph,
-    graphlib::Node *node,
-    std::shared_ptr<balancer::BalancerSolution> balancer_solution,
-    std::string const &dir)
-{
-    if (not balancer_solution)
-    {
-        return tensor;
-    }
-
-    auto match = balancer_solution->op_models.find(node->name());
-    if (match != balancer_solution->op_models.end())
-    {
-        std::vector<graphlib::OpType> t_streaming_tms = calculate_t_streaming_tms(graph, node, match->second);
-        if (not t_streaming_tms.empty())
-        {
-            log_trace(LogEval, "{} t streaming: {}", dir, node->name());
-        }
-        for (auto tm : t_streaming_tms)
-        {
-            tensor = eval_op(tm, {tensor}, graph->get_ir_level());
-        }
-    }
-
     return tensor;
 }
 
-py::object eval_t_streaming_tms(
-    py::object tensor,
-    graphlib::Graph *graph,
-    graphlib::Node *node,
-    std::shared_ptr<balancer::BalancerSolution> balancer_solution)
+py::object eval_t_streaming_tms(py::object tensor, graphlib::Graph *graph, graphlib::Node *node)
 {
-    return eval_t_streaming_tms(tensor, graph, node, balancer_solution, "Redo");
+    return eval_t_streaming_tms(tensor, graph, node, "Redo");
 }
 
 py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool eval_for_output = false)
@@ -1411,7 +1283,6 @@ eval_graph(
     const std::unordered_map<int, py::object> &intermediate_golden_tensors,
     const std::vector<py::object> &losses,
     const std::vector<py::object> &targets,
-    std::shared_ptr<balancer::BalancerSolution> balancer_solution,
     float relative_atol,
     float pcc,
     std::string const &dump_tensors_path,
@@ -1564,10 +1435,8 @@ eval_graph(
 
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
 
-            bool is_fused_op = (node->node_type() == graphlib::kBudaOp) && node->as<graphlib::BudaOpNode>()->is_fused_op();
-            py::object obj = 
-                is_fused_op ? eval_fused_op(node->as<graphlib::BudaOpNode>()->get_fused_op(), inputs) :
-                              eval_op(op_node->op_type(), inputs, graph->get_ir_level(), false); // Don't Eval relu for intermediate checking
+            py::object obj = eval_op(
+                op_node->op_type(), inputs, graph->get_ir_level(), false);  // Don't Eval relu for intermediate checking
 
             auto gradient_edges = graph->operand_edges(node, 
                 [](const auto& edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
@@ -1652,7 +1521,7 @@ eval_graph(
                         if (operands.size() == 1)
                         {
                             graphlib::Node *optimizer = operands[0];
-                            ret = eval_t_streaming_tms(ret, graph, optimizer, balancer_solution);
+                            ret = eval_t_streaming_tms(ret, graph, optimizer);
                         }
                         ret = eval_input_bw(producer, ret, is_buda);
                         ret = eval_runtime_tensor_transform(graph, {producer}, {ret}, true).at(0);

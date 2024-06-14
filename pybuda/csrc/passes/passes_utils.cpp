@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "passes_utils.hpp"
 
-#include "balancer/balancer_utils.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "utils/logger.hpp"
@@ -11,6 +10,8 @@
 namespace tt {
 
 using NodeType = graphlib::NodeType;
+
+bool divisible_either_direction(int a, int b) { return (a % b == 0) or (b % a == 0); }
 
 void optimize_tms(std::vector<graphlib::OpType> &tms) {
     if (tms.size() < 2) {
@@ -83,7 +84,7 @@ void optimize_tms(std::vector<graphlib::OpType> &tms) {
         {[](OpType const &a, OpType const &b)
          {
              return ((a.op == "hstack" and b.op == "hslice") or (a.op == "vstack" and b.op == "vslice")) and
-                    balancer::divisible_either_direction(std::get<int>(a.attr[0]), std::get<int>(b.attr[0]));
+                    divisible_either_direction(std::get<int>(a.attr[0]), std::get<int>(b.attr[0]));
          },
          [](OpType &a, OpType &b)
          {
@@ -312,43 +313,6 @@ bool check_unsupported_hw_ops(Graph *graph, bool should_throw)
 
         if (node->node_type() != NodeType::kBudaOp)
             continue;
-
-        graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
-        py::function pybuda_parallelization = eval_module.attr("get_f_pybuda_parallelization")(op->op_type_ptr());
-        py::object parallelization = pybuda_parallelization(balancer::get_op_shape(graph, node), 1);
-
-        if (parallelization.is_none())
-        {
-            unsupported_hw_ops = true;
-
-            std::string attrs;
-            for (const auto &[key, val] : op->buda_attrs())
-            {
-                attrs = attrs + key + ": ";
-                if (std::holds_alternative<bool>(val))
-                {
-                    attrs += std::to_string(std::get<bool>(val)) + ", ";
-                }
-                else if (std::holds_alternative<int>(val))
-                {
-                    attrs += std::to_string(std::get<int>(val)) + ", ";
-                }
-                else if (std::holds_alternative<float>(val))
-                {
-                    attrs += std::to_string(std::get<float>(val)) + ", ";
-                }
-                else if (std::holds_alternative<std::string>(val))
-                {
-                    attrs += std::get<std::string>(val) + ", ";
-                }
-            }
-            if (attrs.length() > 1)
-            {
-                attrs.erase(attrs.length() - 2);
-            }
-            log_warning("Unsupported HW op: {} {}({})", op->name(), op->op_type().op, attrs);
-            message += fmt::format("{} {}({})\n", op->name(), op->op_type().op, attrs);
-        }
     }
 
     if (unsupported_hw_ops and should_throw)

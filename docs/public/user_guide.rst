@@ -424,14 +424,14 @@ Here's an example of loading a generic TTI model from C++ for environments that 
   #include <iostream>
   #include <memory>
   #include <vector>
-  #include <experimental/filesystem>
+  #include <filesystem>
 
   #include "tt_backend.hpp"
   #include "tt_backend_api.hpp"
   #include "tt_backend_api_types.hpp"
   #include "io_utils.h"
 
-  namespace fs = std::experimental::filesystem; 
+  namespace fs = std::filesystem; 
 
   int main(int argc, char **argv) {
 

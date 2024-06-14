@@ -24,7 +24,7 @@ $(PYBUDA_CSRC_GRAPH_LIB): $(PYBUDA_CSRC_GRAPH_LIB_OBJS)
 	@mkdir -p $(LIBDIR)
 	ar rcs $@ $^
 
-$(OBJDIR)/pybuda/csrc/graph_lib/%.o: pybuda/csrc/graph_lib/%.cpp
+$(OBJDIR)/pybuda/csrc/graph_lib/%.o: pybuda/csrc/graph_lib/%.cpp $(PYTHON_ENV)
 	@mkdir -p $(@D)
 	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(STATIC_LIB_FLAGS) $(PYBUDA_CSRC_GRAPH_LIB_INCLUDES) -c -o $@ $<
 

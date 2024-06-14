@@ -4,16 +4,14 @@
 #include "passes/pre_placer_buda_passes.hpp"
 
 #include "autograd/binding.hpp"
-#include "passes/fuse_ops.hpp"
 #include "passes/lowering_context.hpp"
 #include "passes/passes_utils.hpp"
-#include "placer/lower_to_placer.hpp"
 #include "utils/logger.hpp"
 
 namespace tt {
 
 void lower_to_buffering_queues(Graph* graph) {
-    vector<Node*> nodes = graphlib::topological_sort(*graph);
+    std::vector<Node *> nodes = graphlib::topological_sort(*graph);
     for (Node* node : nodes) {
         if (node->node_type() == NodeType::kBudaOp and node->as<graphlib::BudaOpNode>()->op_name() == "dram_queue") {
             int entries = std::get<int>(node->as<graphlib::BudaOpNode>()->op_attrs().at(0));
@@ -65,15 +63,15 @@ static bool compatible_relu_attrs(BudaOpAttrs const &dst_attrs, BudaOpAttrs cons
         return true;
 
     std::string dst_relu_mode =
-        (dst_attrs.find("relu_mode") != dst_attrs.end()) ? std::get<string>(dst_attrs.at("relu_mode")) : "min";
+        (dst_attrs.find("relu_mode") != dst_attrs.end()) ? std::get<std::string>(dst_attrs.at("relu_mode")) : "min";
     std::string src_relu_mode =
-        (src_attrs.find("relu_mode") != src_attrs.end()) ? std::get<string>(src_attrs.at("relu_mode")) : "min";
+        (src_attrs.find("relu_mode") != src_attrs.end()) ? std::get<std::string>(src_attrs.at("relu_mode")) : "min";
     return dst_relu_mode == src_relu_mode;
 }
 
 static bool can_hoist_relu(graphlib::Graph *graph, Node *nop)
 {
-    vector<Node *> operand_nodes = graph->data_operands(nop);
+    std::vector<Node *> operand_nodes = graph->data_operands(nop);
     TT_ASSERT(operand_nodes.size() == 1);
     graphlib::BudaOpNode *producer = dynamic_cast<graphlib::BudaOpNode *>(operand_nodes[0]);
 
@@ -83,9 +81,6 @@ static bool can_hoist_relu(graphlib::Graph *graph, Node *nop)
 
     // Cannot hoist gradient nops
     if (nop->as<graphlib::BudaOpNode>()->is_gradient_op() or producer->is_gradient_op())
-        return false;
-
-    if (producer->is_fused_op())
         return false;
 
     bool producer_forks = graph->data_users(producer).size() > 1;
@@ -108,7 +103,7 @@ static bool can_hoist_relu(graphlib::Graph *graph, Node *nop)
 
 static void hoist_relu(graphlib::Graph *graph, Node *nop)
 {
-    vector<Node *> operand_nodes = graph->data_operands(nop);
+    std::vector<Node *> operand_nodes = graph->data_operands(nop);
     TT_ASSERT(operand_nodes.size() == 1);
     Node *producer = operand_nodes[0];
 
@@ -118,7 +113,7 @@ static void hoist_relu(graphlib::Graph *graph, Node *nop)
     if (producer_attrs.find("relu_threshold") != producer_attrs.end())
     {
         std::string relu_mode = (producer_attrs.find("relu_mode") != producer_attrs.end())
-                                    ? std::get<string>(producer_attrs.at("relu_mode"))
+                                    ? std::get<std::string>(producer_attrs.at("relu_mode"))
                                     : "min";
         TT_ASSERT(relu_mode == "min" or relu_mode == "max");
         float producer_threshold = std::get<float>(producer_attrs.at("relu_threshold"));
@@ -166,7 +161,7 @@ void remove_nops(graphlib::Graph *graph)
     };
 
     // copy into separate vector because of iterator invalidation from removing nodes during iteration
-    vector<Node*> nop_nodes = graphlib::topological_sort(*graph, is_nop_node);
+    std::vector<Node *> nop_nodes = graphlib::topological_sort(*graph, is_nop_node);
 
     for (Node *node : nop_nodes)
     {
@@ -197,7 +192,7 @@ void remove_nops(graphlib::Graph *graph)
             continue;
         }
 
-        vector<Edge> operand_edges = graph->operand_data_edges(node);
+        std::vector<Edge> operand_edges = graph->operand_data_edges(node);
         TT_ASSERT(operand_edges.size() == 1);
         const Edge& producer_to_nop_edge = operand_edges[0];
         Node* producer = graph->node_by_id(producer_to_nop_edge.producer_node_id);
@@ -424,7 +419,7 @@ void fix_untilized_outputs(graphlib::Graph *graph, const DeviceConfig &device_co
         bool is_reduce_z =
             (node->op_name() == "reduce") and (std::get<std::string>(node->buda_attrs().at("dim")) == "z");
         bool needs_nop =
-            node->is_matmul() || is_reduce_z || (graph->data_users(node).size() > 1) || (is_multichip_wormhole) || node->is_fused_op();
+            node->is_matmul() || is_reduce_z || (graph->data_users(node).size() > 1) || (is_multichip_wormhole);
 
         if (!needs_nop)
             continue;
@@ -553,230 +548,8 @@ void fix_host_inputs(graphlib::Graph *graph)
     }
 }
 
-placer::PlacerConfigUpdate schedule_pre_placer_graph(
-    graphlib::Graph *graph,
-    DeviceConfig const &device_config,
-    scheduler::SchedulerConfig const &scheduler_config,
-    std::vector<std::uint32_t> const &chip_ids,
-    std::vector<std::vector<std::string>> const &op_names_to_chip_break,
-    std::vector<std::vector<std::string>> const &op_names_to_epoch_break,
-    passes::FractureChipIdAssignments const &fracture_chip_id_assignments,
-    std::string const &nops_remote_devices_postfix,
-    bool use_interactive_placer)
-{
-    scheduler::Schedule scheduled_ops = run_scheduler(scheduler_config, graph);
-    placer::ChipPlacerConfig chip_placer_config = {
-        .chip_ids = chip_ids,
-        .arch_name = device_config.arch_name,
-        .op_to_epoch_type = placer::lowering::get_op_to_epoch_type_mapping(graph, scheduled_ops),
-        .ops_tagged_for_chip_id_break =
-            placer::lowering::tag_ops_for_chip_break(device_config, op_names_to_chip_break, scheduled_ops, graph, use_interactive_placer),
-        .ops_tagged_for_epoch_break = placer::lowering::tag_ops_for_epoch_break(
-            device_config,
-            op_names_to_epoch_break,
-            op_names_to_chip_break,
-            scheduled_ops,
-            graph,
-            use_interactive_placer),
-        .fracture_chip_id_assignments = fracture_chip_id_assignments,
-        .fwd_to_bwd_nodes = placer::lowering::get_fwd_to_bwd_nodes(graph),
-        .fwd_to_opt_nodes = placer::lowering::get_fwd_to_opt_nodes(graph, scheduled_ops),
-        .output_ops = placer::lowering::get_output_nodes(graph),
-        .chips_with_mmio = device_config.chips_with_mmio,
-    };
-    placer::OpToChipIdAssignment op_to_chip_id_assignment =
-        get_op_to_chip_id_assignment(chip_placer_config, scheduled_ops);
-
-    // update chip-id assignment, epoch breaking to accommodate fractured ops
-    std::vector<std::vector<std::string>> updated_op_names_to_epoch_break = op_names_to_epoch_break;
-    if (not fracture_chip_id_assignments.empty())
-    {
-        std::tie(op_to_chip_id_assignment, updated_op_names_to_epoch_break) = update_config_for_fractured_ops(
-            chip_placer_config, op_names_to_epoch_break, scheduled_ops, op_to_chip_id_assignment);
-    }
-    // updated_op_names_to_epoch_break = update_epoch_breaks_for_partial_datacopy(graph, updated_op_names_to_epoch_break);
-
-    if (device_config.is_grayskull() and chip_ids.size() > 1)
-    {
-        // we assume any forking chip_ids are ordered in the same way that they will be pipelineed.
-        insert_nops_forking_to_remote_devices(graph, chip_ids, op_to_chip_id_assignment, nops_remote_devices_postfix);
-    }
-    // Recalculate shapes
-    recalculate_shapes(graph);
-
-    calculate_ublock_order(graph);
-
-    // Run TM optimizations, we want minimal TMs so balancer can accurately calculate output buffer requirements
-    optimize_tms(graph);
-
-    validate_buffering_queues(graph);
-
-    return placer::PlacerConfigUpdate(
-        op_to_chip_id_assignment, op_names_to_chip_break, updated_op_names_to_epoch_break);
-}
-
-static void insert_nop_fork(
-    graphlib::Graph *graph,
-    Node *node,
-    const std::vector<std::uint32_t> &chip_ids,
-    const std::unordered_map<uint32_t, uint32_t> &chip_id_to_pipeline_index,
-    const std::map<string, std::uint32_t> &user_remote_device_ids,
-    placer::OpToChipIdAssignment &op_to_chip_id_assignment,
-    std::string const &postfix)
-
-{
-    // case 3:
-    // process with remote-device ids in sorted order
-    std::vector<Node*> users = graph->data_users(node);
-    for (Node* user : users) {
-        if (user_remote_device_ids.find(user->name()) == user_remote_device_ids.end()) {
-            log_fatal("{} is not tagged with a chip_id assignment", user->name());
-        }
-    }
-
-    std::sort(users.begin(), users.end(), [&user_remote_device_ids, &chip_id_to_pipeline_index](const Node* a, const Node* b) {
-        auto chip_a = user_remote_device_ids.at(a->name());
-        auto chip_b = user_remote_device_ids.at(b->name());
-        return chip_id_to_pipeline_index.at(chip_a) < chip_id_to_pipeline_index.at(chip_b);
-    });
-
-    // from receiver nodes,  min receive chip id and max-receive chip id
-    TT_ASSERT(users.size() >= 2);
-    std::uint32_t first_user_chip_id = user_remote_device_ids.at(users.front()->name());
-    std::uint32_t last_user_chip_id = user_remote_device_ids.at(users.back()->name());
-
-    int start_pipeline_index = chip_id_to_pipeline_index.at(first_user_chip_id);
-    int end_pipeline_index = chip_id_to_pipeline_index.at(last_user_chip_id);
-    std::unordered_map<std::uint32_t, Node*> pipeline_index_to_source;
-
-    if (node->get_epoch_type() == graphlib::NodeEpochType::Backward and not graphlib::is_recompute(graph, node)) {
-        pipeline_index_to_source[end_pipeline_index] = node;
-
-        for (int pipeline_index = end_pipeline_index - 1; pipeline_index >= start_pipeline_index; --pipeline_index)
-        {
-            graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
-                node->name() + "_chip_to_chip_nop_" + std::to_string(pipeline_index) + postfix, "nop"),
-                graph->get_subgraph_id_for_node(node->id()));
-            Node* previous_source = pipeline_index_to_source.at(pipeline_index+1);
-            graph->add_edge(previous_source, nop);
-            graph->copy_node_attributes(previous_source, nop);
-
-            // If the producer was in backward (or optimizer) epoch, and there are fwd->bwd edges going to it,
-            // the need to go to the new op, too
-            for (Edge &e : graph->operand_edges(previous_source)) {
-                // Adjust control & autograd edges
-                if ( (e.edge_type == EdgeType::kAutogradFwdToBwd) || 
-                     (e.edge_type == EdgeType::kAutogradFwdToOptimizer) || 
-                     (e.edge_type == EdgeType::kAutogradFwdToRecompute)) 
-                {
-                    graph->add_edge(
-                            graph->node_by_id(e.producer_node_id),
-                            nop,
-                            e.producer_output_port_id,
-                            0,
-                            e.edge_type);
-                }
-            }
-
-            op_to_chip_id_assignment[nop->name()] = chip_ids.at(pipeline_index + 1);
-            pipeline_index_to_source[pipeline_index] = nop;
-        }
-
-        Node* source_node = node;
-        for (size_t user_index = 0; user_index < users.size(); ++user_index)
-        {
-            Node* user = users.at(user_index);
-            std::uint32_t remote_chip_id = op_to_chip_id_assignment.at(user->name());
-            int remote_chip_pipeline_index = chip_id_to_pipeline_index.at(remote_chip_id);
-            if (remote_chip_pipeline_index == end_pipeline_index) {continue;}
-
-            Node* new_source = pipeline_index_to_source.at(remote_chip_pipeline_index);
-
-            for (auto old_edge : graph->get_edges(source_node, user)) {
-                if (old_edge.edge_type == graphlib::EdgeType::kData) {
-                    graphlib::Edge new_edge=
-                        Edge(
-                            new_source->id(),
-                            old_edge.producer_output_port_id,
-                            user->id(),
-                            old_edge.consumer_input_port_id,
-                            graphlib::EdgeType::kData);
-
-
-                    graph->add_edge(new_edge);
-                    graph->copy_edge_attributes(old_edge, new_edge);
-                    graph->remove_edge(old_edge);
-                }
-            }
-        }
-
-    } else {
-        pipeline_index_to_source[start_pipeline_index] = node;
-
-        for (int pipeline_index = start_pipeline_index + 1; pipeline_index <= end_pipeline_index; ++pipeline_index)
-        {
-            graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
-                node->name() + "_chip_to_chip_nop_" + std::to_string(pipeline_index) + postfix, "nop"),
-                graph->get_subgraph_id_for_node(node->id()));
-            Node* previous_source = pipeline_index_to_source.at(pipeline_index-1);
-            graph->add_edge(previous_source, nop);
-            graph->copy_node_attributes(previous_source, nop);
-
-            // If the producer was in backward (or optimizer) epoch, and there are fwd->bwd edges going to it,
-            // the need to go to the new op, too
-            for (Edge &e : graph->operand_edges(previous_source)) {
-                // Adjust control & autograd edges
-                if ( (e.edge_type == EdgeType::kAutogradFwdToBwd) || 
-                     (e.edge_type == EdgeType::kAutogradFwdToOptimizer) || 
-                     (e.edge_type == EdgeType::kAutogradFwdToRecompute)) 
-                {
-                    graph->add_edge(
-                            graph->node_by_id(e.producer_node_id),
-                            nop,
-                            e.producer_output_port_id,
-                            0,
-                            e.edge_type);
-                }
-            }
-
-            op_to_chip_id_assignment[nop->name()] = chip_ids.at(pipeline_index - 1);
-            pipeline_index_to_source[pipeline_index] = nop;
-        }
-        Node* source_node = node;
-        for (size_t user_index = 1; user_index < users.size(); ++user_index)
-        {
-
-            Node* user = users.at(user_index);
-            std::uint32_t remote_chip_id = op_to_chip_id_assignment.at(user->name());
-            int remote_chip_pipeline_index = chip_id_to_pipeline_index.at(remote_chip_id);
-            if (remote_chip_pipeline_index == start_pipeline_index) {continue;}
-
-            Node* new_source = pipeline_index_to_source.at(remote_chip_pipeline_index);
-
-            for (auto old_edge : graph->get_edges(source_node, user)) {
-                if (old_edge.edge_type == graphlib::EdgeType::kData) {
-                    graphlib::Edge new_edge=
-                        Edge(
-                            new_source->id(),
-                            old_edge.producer_output_port_id,
-                            user->id(),
-                            old_edge.consumer_input_port_id,
-                            graphlib::EdgeType::kData);
-
-
-                    graph->add_edge(new_edge);
-                    graph->copy_edge_attributes(old_edge, new_edge);
-                    graph->remove_edge(old_edge);
-                }
-            }
-        }
-
-    }
-}
-
 std::vector<std::vector<std::string>> update_epoch_breaks_for_partial_datacopy(
-    graphlib::Graph *graph,
-    std::vector<std::vector<std::string>> const &op_names_to_epoch_break)
+    graphlib::Graph *graph, std::vector<std::vector<std::string>> const &op_names_to_epoch_break)
 {
     std::vector<std::vector<std::string>> updated_op_names_to_epoch_break = op_names_to_epoch_break;
     for (auto node : graph->nodes())
@@ -793,161 +566,9 @@ std::vector<std::vector<std::string>> update_epoch_breaks_for_partial_datacopy(
     }
     return updated_op_names_to_epoch_break;
 }
-std::pair<placer::OpToChipIdAssignment, std::vector<std::vector<std::string>>> update_config_for_fractured_ops(
-    const placer::ChipPlacerConfig& config,
-    std::vector<std::vector<std::string>> const &op_names_to_epoch_break,
-    const std::vector<std::string>& scheduled_ops,
-    const placer::OpToChipIdAssignment& op_to_chip_id_assignment)
+
+void calculate_ublock_order(graphlib::Graph *graph)
 {
-    placer::OpToChipIdAssignment updated_op_to_chip_id_assignment = op_to_chip_id_assignment;
-    std::vector<std::vector<std::string>> updated_op_names_to_epoch_break = op_names_to_epoch_break;
-
-    if (config.arch_name == "grayskull")
-    {
-        log_fatal("Multichip fracturing is not supported for grayskull architecture");
-    }
-    else
-    {
-        // For Wormhole, we need to add the fractured ops to the epoch break list
-        // so that placer knows to assign each fractured op to its designated chip and
-        // guarantee it will be the only op
-        for (uint32_t i = 0; i < scheduled_ops.size(); ++i)
-        {
-            if (auto it = config.fracture_chip_id_assignments.find(scheduled_ops[i]); it != config.fracture_chip_id_assignments.end())
-            {
-                log_debug(LogGraphCompiler, "Assigning fractured op: {} to chip_id: {}:", scheduled_ops[i], it->second);
-                updated_op_to_chip_id_assignment[scheduled_ops[i]] = it->second;
-            }
-        }
-    }
-    return {updated_op_to_chip_id_assignment, updated_op_names_to_epoch_break};
-}
-
-void insert_nops_forking_to_remote_devices(
-    graphlib::Graph *graph,
-    const std::vector<std::uint32_t> &chip_ids,
-    placer::OpToChipIdAssignment &op_to_chip_id_assignment,
-    std::string const &postfix)
-{
-    std::unordered_map<uint32_t, uint32_t> chip_id_to_pipeline_index;
-    for (size_t pipeline_index = 0; pipeline_index < chip_ids.size(); ++pipeline_index) {
-        chip_id_to_pipeline_index[chip_ids[pipeline_index]] = pipeline_index;
-    }
-
-
-    for (graphlib::Node *node : graphlib::topological_sort(*graph))
-    {
-        // There are three cases we need to check for:
-        // 1) source input node is a constant -> we will default to replication
-        // 2) producer feeding a single consumer with a chip-hop-jistance > 1
-        // 3) op forking to multiple remote devices
-        if (graph->data_users(node).size() == 0)  { continue; }
-
-        std::map<string, std::uint32_t> user_remote_device_ids;
-        std::uint32_t min_chip_id_found = UINT_MAX;
-        std::uint32_t max_chip_id_found = 0;
-        for (Node *user : graph->data_users(node)) {
-            if (op_to_chip_id_assignment.find(user->name()) != op_to_chip_id_assignment.end()) {
-                std::uint32_t user_chip_id = op_to_chip_id_assignment.at(user->name());
-                user_remote_device_ids.emplace(user->name(), user_chip_id);
-                min_chip_id_found = std::min(min_chip_id_found, user_chip_id);
-                max_chip_id_found = std::max(max_chip_id_found, user_chip_id);
-            }
-        }
-
-        // NB: this is to correspond to the fwd/bwd data-flow across the chips for grayskull pipelining
-        std::uint32_t source_chip_id = op_to_chip_id_assignment.find(node->name()) != op_to_chip_id_assignment.end()
-                                ? op_to_chip_id_assignment.at(node->name())
-                                : node->get_epoch_type() == graphlib::NodeEpochType::Backward ? max_chip_id_found : min_chip_id_found;
-        std::uint32_t source_pipeline_index = chip_id_to_pipeline_index.at(source_chip_id);
-
-        int num_remote_consumers_with_more_one_hop = 0;
-        int num_remote_consumers = 0;
-        bool is_fork = (graph->data_users(node).size() > 1);
-
-        for (Node *user : graph->data_users(node)) {
-            if (auto it = op_to_chip_id_assignment.find(user->name()); it != op_to_chip_id_assignment.end()) {
-                std::uint32_t dest_pipeline_index = chip_id_to_pipeline_index.at(it->second);
-                if (dest_pipeline_index - source_pipeline_index > 1) {
-                    num_remote_consumers_with_more_one_hop += 1;
-                }
-                if (source_pipeline_index != dest_pipeline_index) {
-                    num_remote_consumers += 1;
-                }
-            }
-        }
-
-        if (node->node_type() == graphlib::NodeType::kInput and node->as<graphlib::InputNode>()->is_constant())
-        {
-            // case 1:
-            std::vector<Edge> user_data_edges = graph->user_data_edges(node);
-
-            for (size_t user_edge_index = 0; user_edge_index < user_data_edges.size(); ++user_edge_index) {
-                const Edge& user_edge = user_data_edges[user_edge_index];
-
-                Node* user = graph->node_by_id(user_edge.consumer_node_id);
-                if (auto it = op_to_chip_id_assignment.find(user->name()); it != op_to_chip_id_assignment.end() and it->second != source_chip_id) {
-
-                    auto cloned_constant_up = node->clone();
-                    cloned_constant_up->set_name(node->name() + "_" + std::to_string(user_edge_index) + postfix);
-                    Node* cloned_constant = graph->add_node(
-                        std::move(cloned_constant_up), graph->get_subgraph_id_for_node(node->id()));
-
-                    graphlib::Edge cloned_constant_to_remote_consumer =
-                        Edge(
-                            cloned_constant->id(),
-                            0,
-                            user->id(),
-                            user_edge.consumer_input_port_id,
-                            graphlib::EdgeType::kData);
-
-                    graph->add_edge(cloned_constant_to_remote_consumer);
-                    graph->copy_edge_attributes(user_edge, cloned_constant_to_remote_consumer);
-                    graph->remove_edge(user_edge);
-                }
-            }
-        }
-        else if (num_remote_consumers_with_more_one_hop > 0 and not is_fork) {
-            // case 2:
-            Node* source_node = node;
-            Node* user = graph->data_users(node).at(0);
-            std::uint32_t remote_chip_id = op_to_chip_id_assignment.at(user->name());
-            std::uint32_t start_pipeline_index = chip_id_to_pipeline_index.at(source_chip_id) + 1;
-            std::uint32_t end_pipeline_index = chip_id_to_pipeline_index.at(remote_chip_id);
-
-            for (std::uint32_t pipeline_index = start_pipeline_index; pipeline_index < end_pipeline_index; ++pipeline_index)
-            {
-                graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
-                    node->name() + "_chip_to_chip_nop_" + std::to_string(pipeline_index) + postfix, "nop"),
-                    graph->get_subgraph_id_for_node(node->id()));
-                graph->copy_node_attributes(source_node, nop);
-                op_to_chip_id_assignment[nop->name()] = chip_ids.at(pipeline_index);
-
-                for (auto user_edge : graph->get_edges(source_node, user)) {
-                    if (user_edge.edge_type == graphlib::EdgeType::kData) {
-                        graphlib::insert_node_on_edge(graph, user_edge, nop);
-                    }
-                }
-                source_node = nop;
-                source_chip_id = chip_ids.at(pipeline_index);
-            }
-
-        }
-        else if (is_fork and num_remote_consumers > 0)
-        {
-            insert_nop_fork(
-                graph,
-                node,
-                chip_ids,
-                chip_id_to_pipeline_index,
-                user_remote_device_ids,
-                op_to_chip_id_assignment,
-                postfix);
-        }
-    }
-}
-
-void calculate_ublock_order(graphlib::Graph *graph) {
     auto eval_module = py::module_::import("pybuda.op.eval.buda");
     py::function pybuda_input_ublock_order = eval_module.attr("get_f_pybuda_input_ublock_order");
 
@@ -1588,12 +1209,6 @@ static Node* create_recompute_op(graphlib::Graph* graph, Node* fwd_node, std::un
     recompute_node->set_intermediate_df(fwd_node->as<graphlib::BudaOpNode>()->intermediate_df());
     recompute_node->set_accumulate_df(fwd_node->as<graphlib::BudaOpNode>()->accumulate_df());
     recompute_node->set_epoch_type(graphlib::NodeEpochType::Backward);
-
-    if (fwd_node->as<graphlib::BudaOpNode>()->is_fused_op())
-    {
-        std::shared_ptr<FusedOp> fused_op_clone = fwd_node->as<graphlib::BudaOpNode>()->get_fused_op()->clone(recompute_node);
-        recompute_node->set_fused_op(fused_op_clone);
-    }
 
     std::unordered_map<graphlib::NodeId, graphlib::NodeId> producer_remap;
 

@@ -13,6 +13,7 @@
 
 namespace tt::passes
 {
+using namespace graphlib;
 
 static std::vector<Node*> get_non_constants(const std::vector<Node*>& nodes)
 {
@@ -755,16 +756,6 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
                     because gradient results are not pushed into the output buffer/stream.",
                     op->intermediate_df(),
                     op->output_df());
-            }
-            if (op->is_fused_op())
-            {
-                all_data_formats.push_back(op->intermediate_df());
-
-                TT_LOG_ASSERT(are_data_formats_same_exponent_widths(all_data_formats),
-                    "For fused ops, we expect all data formats to be of the same type. (a or b type)\
-                    Data formats for {}: {}",
-                    op->name(),
-                    all_data_formats);
             }
             if (op->is_sparse_matmul())
             {

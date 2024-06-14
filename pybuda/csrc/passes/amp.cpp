@@ -3,23 +3,21 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/amp.hpp"
 
-#include <functional>
+#include <filesystem>
 #include <fstream>
-#include <sstream>
-#include <experimental/filesystem>
+#include <functional>
 #include <regex>
+#include <sstream>
 
-
-
+#include "backend_api/device_config.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "utils/logger.hpp"
-#include "reportify/paths.hpp"
-#include "reportify/to_json.hpp"
 #include "lower_to_buda/common.hpp"
 #include "passes/dataformat.hpp"
-
+#include "reportify/paths.hpp"
+#include "reportify/to_json.hpp"
 #include "third_party/json/json.hpp"
+#include "utils/logger.hpp"
 
 using Graph = tt::graphlib::Graph;
 using Node = tt::graphlib::Node;
@@ -334,7 +332,7 @@ void dump_mixed_precision_json_to_file(graphlib::Graph *graph, std::optional<std
     if (not filepath.has_value())
     {
         std::string output_dir = reportify::get_default_reportify_path(graph->name());
-        std::experimental::filesystem::create_directories(output_dir);
+        std::filesystem::create_directories(output_dir);
         filename = output_dir + "/amp_settings.json";
     }
     else
@@ -482,19 +480,11 @@ void apply_mixed_b_optimization(const Graph *graph)
             {2, {DataFormat::Bfp8_b, false}}
         }
     };
-    AMPNodePropertiesInternal fused_config = {
-        .op_type = "fused_op",
-        .output_df = DataFormat::Float16_b,
-        .intermediate_df = DataFormat::Float16_b,
-        .accumulate_df = DataFormat::Float16_b,
-        .input_df = DataFormat::Float16_b
-    };
 
     std::vector<AMPNodeProperties> default_opt_configuration = {
         softmax_config.create(),
         layernorm_config.create(),
         matmul_config.create(),
-        fused_config.create(),
     };
     
     apply_configuration(graph, default_opt_configuration);

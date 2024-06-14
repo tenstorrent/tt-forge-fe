@@ -17,11 +17,8 @@
 #include "lower_to_buda/common.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 
-namespace tt::balancer {
-class BudaOpNodeLegalizerFailureInfo;
-} 
-
-namespace tt {
+namespace tt
+{
 class FusedOp;
 
 namespace graphlib {
@@ -516,16 +513,8 @@ public:
 
     virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
 
-    void set_fused_op(std::shared_ptr<FusedOp> fused_op) { fused_op_ = fused_op; }
-    bool is_fused_op() const { return fused_op_ != nullptr; }
-    std::shared_ptr<FusedOp> get_fused_op() const { TT_ASSERT(fused_op_ != nullptr); return fused_op_; }
-
     void set_buffering_op(bool buffering_op) { buffering_op_ = buffering_op; }
     bool is_buffering_op() const { return buffering_op_; }
-
-    #ifdef DEBUG
-    std::shared_ptr<balancer::BudaOpNodeLegalizerFailureInfo> leg_debug_info = nullptr;
-    #endif
 };
 
 class BudaNaryTMNode : public Node

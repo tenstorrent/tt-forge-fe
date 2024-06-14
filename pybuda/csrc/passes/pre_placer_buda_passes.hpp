@@ -11,8 +11,6 @@
 #include "graph_lib/node_types.hpp"
 #include "lower_to_buda/common.hpp"
 #include "passes/fracture.hpp"
-#include "placer/chip_id_assignment.hpp"
-#include "scheduler/scheduler.hpp"
 
 namespace tt {
 
@@ -51,33 +49,8 @@ void insert_nop_on_matmul_input(graphlib::Graph *graph);
 
 void insert_tilize_op_on_input(graphlib::Graph *graph);
 
-placer::PlacerConfigUpdate schedule_pre_placer_graph(
-    graphlib::Graph *graph,
-    DeviceConfig const &device_config,
-    scheduler::SchedulerConfig const &scheduler_config,
-    std::vector<std::uint32_t> const &chip_ids,
-    std::vector<std::vector<std::string>> const &op_names_to_chip_break,
-    std::vector<std::vector<std::string>> const &op_names_to_epoch_break,
-    passes::FractureChipIdAssignments const &fracture_chip_id_assignments,
-    std::string const &nops_remote_devices_postfix = "",
-    bool use_interactive_placer = true);
-
-std::pair<placer::OpToChipIdAssignment, std::vector<std::vector<std::string>>>
-update_config_for_fractured_ops(
-    const placer::ChipPlacerConfig& config,
-    std::vector<std::vector<std::string>> const &op_names_to_epoch_break,
-    const std::vector<std::string>& scheduled_ops,
-    const placer::OpToChipIdAssignment& op_to_chip_id_assignment);
-
 std::vector<std::vector<std::string>> update_epoch_breaks_for_partial_datacopy(
-    graphlib::Graph *graph,
-    std::vector<std::vector<std::string>> const &op_names_to_epoch_break);
-
-void insert_nops_forking_to_remote_devices(
-    graphlib::Graph *graph,
-    const std::vector<std::uint32_t> &chip_ids,
-    placer::OpToChipIdAssignment &op_to_chip_id_assignment,
-    std::string const &postfix = "");
+    graphlib::Graph *graph, std::vector<std::vector<std::string>> const &op_names_to_epoch_break);
 
 void calculate_ublock_order(graphlib::Graph *graph);
 

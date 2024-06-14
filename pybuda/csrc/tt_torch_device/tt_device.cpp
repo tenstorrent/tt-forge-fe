@@ -9,9 +9,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "pybuda/csrc/balancer/output_host_tm_types.hpp"
-#include "third_party/budabackend/netlist/tt_backend.hpp"
-#include "third_party/budabackend/netlist/tt_backend_api.hpp"
 #include "utils/assert.hpp"
 #include "utils/env.hpp"
 #include "utils/logger.hpp"
@@ -39,8 +36,6 @@ struct CommandQueue
 
 std::shared_ptr<Workload> compile(TTDevice& device, CompileRequest const& compile_request)
 {
-    TT_ASSERT(device.arch == compile_request.backend_config.arch);
-
     std::shared_ptr<Workload> workload = std::make_shared<Workload>(
         compile_request.output_dir,
         compile_request.inputs,
@@ -66,12 +61,6 @@ std::shared_ptr<Workload> compile(TTDevice& device, CompileRequest const& compil
     {
         log_info(LogTTDevice, "Device not initialized");
     }
-    device.backend = tt_backend::create(compile_request.netlist_path, compile_request.backend_config);
-
-    if (device.backend->initialize(&result) != DEVICE_STATUS_CODE::Success)
-        log_fatal(LogTTDevice, "Backend compile failed: {}", tt::get_string(result));
-
-    device.initialized = true;
 
     return workload;
 }
@@ -243,16 +232,13 @@ void push_tensor(
         log_fatal(LogTTDevice, "Failed to push tensor: {} {}", desc.name, status);
 }
 
-static torch::Tensor pop_tensor(tt_backend& backend, PyBudaTensorDesc const& desc, tt::balancer::OutputHostTM const& output_host_tm)
+static torch::Tensor pop_tensor(tt_backend& backend, PyBudaTensorDesc const& desc)
 {
     log_debug(LogTTDevice, "Popping tensor[{}]", desc.name);
 
     tt_PytorchTensorDesc tensor_desc;
     tt_dram_io_desc queue_desc = backend.get_queue_descriptor(desc.name);
     backend::translate_addresses(queue_desc);
-    queue_desc.hstack_factor = output_host_tm.hstack_factor;
-    queue_desc.vstack_factor = output_host_tm.vstack_factor;
-    queue_desc.stack_row_major = output_host_tm.row_major;
 
     constexpr bool pop_one = false;
     int timeout_in_seconds = 600;
@@ -284,7 +270,6 @@ std::vector<torch::Tensor> dispatch(
     std::shared_ptr<Workload> workload,
     std::vector<Program> const& programs,
     std::vector<torch::Tensor> & inputs,
-    tt::balancer::OutputHostTMMap const& output_host_tms,
     int subgraph_idx,
     bool const& is_compile)
 {
@@ -370,11 +355,8 @@ std::vector<torch::Tensor> dispatch(
     for (size_t i = 0; i < subgraph_outputs.size(); ++i)
     {
         PyBudaTensorDesc const& desc = subgraph_outputs.at(i);
-        tt::balancer::OutputHostTM output_host_tm = tt::balancer::OutputHostTM(); 
-        if (output_host_tms.count(desc.name))
-            output_host_tm = output_host_tms.at(desc.name);
 
-        torch::Tensor output = pop_tensor(*device.backend, desc, output_host_tm);
+        torch::Tensor output = pop_tensor(*device.backend, desc);
         std::string runtime_transform = device.output_runtime_transforms.at(subgraph_idx).at(i);
         tt_dram_io_desc queue_desc = (*device.backend).get_queue_descriptor(desc.name);
         auto impl = output.unsafeGetTensorImpl();

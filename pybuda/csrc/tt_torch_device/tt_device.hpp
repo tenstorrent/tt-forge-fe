@@ -12,14 +12,9 @@
 
 #include <atomic>
 #include <memory>
-#include <vector>
 #include <optional>
+#include <vector>
 
-#include "third_party/budabackend/netlist/tt_backend_api_types.hpp"
-#include "third_party/budabackend/netlist/tt_backend.hpp"
-#include "third_party/budabackend/netlist/tt_backend_api.hpp"
-
-#include "balancer/output_host_tm_types.hpp"
 #include "utils/assert.hpp"
 #include "utils/env.hpp"
 #include "utils/logger.hpp"
@@ -70,8 +65,7 @@ struct CompileRequest
 {
     std::string netlist_path;
     std::string output_dir;
-    tt::tt_backend_config backend_config;
-    std::map<int, std::vector<PyBudaTensorDesc>> inputs; // one vector per program
+    std::map<int, std::vector<PyBudaTensorDesc>> inputs;  // one vector per program
     std::map<int, std::vector<std::string>> input_runtime_transforms;
     std::map<int, std::vector<std::vector<int>>> input_tile_bcast_dims;
     std::vector<PyBudaTensorDesc> constants;
@@ -82,7 +76,6 @@ struct CompileRequest
     CompileRequest(
         std::string const& netlist_path,
         std::string output_dir,
-        tt::tt_backend_config const& backend_config,
         std::map<int, std::vector<PyBudaTensorDesc>> const& inputs,
         std::map<int, std::vector<std::string>> const& input_runtime_transforms,
         std::map<int, std::vector<std::vector<int>>> const& input_tile_bcast_dims,
@@ -92,7 +85,6 @@ struct CompileRequest
         std::map<int, std::vector<std::string>> const& output_runtime_transforms) :
         netlist_path(netlist_path),
         output_dir(output_dir),
-        backend_config(backend_config),
         inputs(inputs),
         input_runtime_transforms(input_runtime_transforms),
         input_tile_bcast_dims(input_tile_bcast_dims),
@@ -189,7 +181,6 @@ std::vector<torch::Tensor> dispatch(
     std::shared_ptr<Workload> workload,
     std::vector<Program> const& programs,
     std::vector<torch::Tensor> & inputs,
-    tt::balancer::OutputHostTMMap const& output_host_tms,
     int subgraph_idx,
     bool const & is_compile);
 std::string get_device_cluster_yaml(TTDevice const&);

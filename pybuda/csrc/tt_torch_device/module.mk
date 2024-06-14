@@ -17,6 +17,6 @@ $(PYBUDA_CSRC_TT_TORCH_DEVICE_LIB): $(PYBUDA_CSRC_TT_TORCH_DEVICE_OBJS) $(PYBUDA
 	@mkdir -p $(LIBDIR)
 	ar rcs $@ $^
 
-$(OBJDIR)/pybuda/csrc/tt_torch_device/%.o: pybuda/csrc/tt_torch_device/%.cpp python_env
+$(OBJDIR)/pybuda/csrc/tt_torch_device/%.o: pybuda/csrc/tt_torch_device/%.cpp $(PYTHON_ENV)
 	@mkdir -p $(@D)
 	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) $(PYBUDA_CSRC_TT_TORCH_DEVICE_INCLUDES) -c -o $@ $<

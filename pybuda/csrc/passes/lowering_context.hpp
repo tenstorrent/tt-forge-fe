@@ -3,9 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include "balancer/balancer.hpp"
-#include "placer/placer.hpp"
-#include "placer/dram.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
@@ -17,6 +14,7 @@ namespace tt {
 using Graph = graphlib::Graph;
 using Node = graphlib::Node;
 using NodeContext = graphlib::NodeContext;
+using Edge = graphlib::Edge;
 using NodeToNodeMap = std::unordered_map<Node *, Node *>;
 
 class LoweringContext {
@@ -100,5 +98,4 @@ void copy_operand_edges_to_new_graph(
 );
 
 void lower_edge_tms(Graph *old_graph, Edge &old_edge, std::shared_ptr<graphlib::EdgeAttributes> new_attr);
-
 }

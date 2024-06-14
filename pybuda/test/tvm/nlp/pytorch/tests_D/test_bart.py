@@ -6,7 +6,6 @@
 #
 import os
 from base64 import encode
-from distutils.config import PyPIRCCommand
 import pytest
 
 import torch

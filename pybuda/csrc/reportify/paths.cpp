@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "reportify/paths.hpp"
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -100,7 +100,7 @@ bool initalize_reportify_directory(const std::string& reportify_dir,
     std::string dir = reportify_dir + "/" + get_variant(test_name);
     std::string summary_filename = dir + "/" + "summary.yaml";
 
-    std::experimental::filesystem::create_directories(dir);
+    std::filesystem::create_directories(dir);
 
     std::ofstream ofs(summary_filename);
 
