@@ -3,12 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include "balancer/balancer.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "placer/dram.hpp"
-#include "placer/placer.hpp"
 
 namespace tt
 {

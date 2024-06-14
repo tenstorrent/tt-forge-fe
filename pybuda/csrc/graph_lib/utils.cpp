@@ -1623,13 +1623,8 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
                                    ? dynamic_cast<graphlib::BudaNaryTMNode *>(node)->op_type()
                                    : dynamic_cast<graphlib::OpNode *>(node)->op_type();
 
-    bool is_fused_op = (node->node_type() == graphlib::kBudaOp) && node->as<graphlib::BudaOpNode>()->is_fused_op();
-
     std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        is_fused_op
-            ? get_fused_op_shape(node->as<graphlib::BudaOpNode>(), operand_shapes)
-            : get_op_shape(
-                  op_type, operand_shapes, graph->get_ir_level() == IRLevel::IR_BUDA, node->shape().get_tile_dim());
+        get_op_shape(op_type, operand_shapes, graph->get_ir_level() == IRLevel::IR_BUDA, node->shape().get_tile_dim());
 
     log_trace(LogGraphCompiler, "  {}", std::get<0>(shape_data));
     node->set_shape(std::get<0>(shape_data));

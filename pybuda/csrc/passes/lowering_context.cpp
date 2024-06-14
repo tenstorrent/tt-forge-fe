@@ -2,16 +2,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/lowering_context.hpp"
+
 #include "buda_passes.hpp"
-#include "utils/assert.hpp"
-#include "utils/logger.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "placer/dram.hpp"
-#include "placer/utils.hpp"
-#include "reportify/reportify.hpp"
 #include "passes/decomposing_context.hpp"
-
+#include "reportify/reportify.hpp"
+#include "utils/assert.hpp"
+#include "utils/logger.hpp"
 
 namespace tt {
 

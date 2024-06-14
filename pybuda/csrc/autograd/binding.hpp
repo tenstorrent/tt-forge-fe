@@ -23,7 +23,6 @@ using TileDim = tt::TileDim;
 
 std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
     OpType type, std::vector<Shape> &operands, bool is_buda, TileDim tile_dim = TileDim::Dim32x32);
-std::tuple<Shape, std::vector<DimBroadcast>> get_fused_op_shape(tt::graphlib::BudaOpNode *op, std::vector<Shape> &operands);
 inline Shape get_tm_shape(OpType type, Shape operand, bool is_buda)
 {
     Shape shape;

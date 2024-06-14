@@ -1,6 +1,14 @@
 .SUFFIXES:
 
+OS ?= $(shell uname)
+
+ifeq ($(OS),Linux)
 MAKEFLAGS := --jobs=$(shell nproc) --output-sync=target
+else ifeq ($(OS),Darwin)
+MAKEFLAGS := --jobs=$(shell sysctl -n hw.physicalcpu) --output-sync=target
+else
+$(error "Unknown OS: $(OS)")
+endif
 
 # Setup CONFIG, DEVICE_RUNNER, and out/build dirs first
 CONFIG ?= assert
@@ -47,7 +55,10 @@ INCDIR = $(OUT)/include
 TESTDIR = $(OUT)/test
 DOCSDIR = $(OUT)/docs
 SUBMODULESDIR = $(OUT)/submodules
-TORCHVISIONDIR = build_deps/vision
+
+# Python version
+PYTHON_VERSION ?= python3.12
+PYTHON_INCLUDES = $(shell $(PYTHON_VERSION)-config --includes)
 
 # Top level flags, compiler, defines etc.
 
@@ -55,9 +66,9 @@ TORCHVISIONDIR = build_deps/vision
 WARNINGS ?= -Wdelete-non-virtual-dtor -Wreturn-type -Wswitch -Wuninitialized -Wno-unused-parameter
 CC ?= gcc
 CXX ?= g++
-CFLAGS_NO_WARN ?= -MMD -I. $(CONFIG_CFLAGS) -mavx2 -DBUILD_DIR=\"$(OUT)\" -I$(INCDIR) -DFMT_HEADER_ONLY -Ithird_party/fmt -Ithird_party/pybind11/include
+CFLAGS_NO_WARN ?= -MMD -I. $(CONFIG_CFLAGS) -DBUILD_DIR=\"$(OUT)\" -I$(INCDIR) -DFMT_HEADER_ONLY -Ithird_party/fmt -Ithird_party/pybind11/include $(PYTHON_INCLUDES)
 CFLAGS ?= $(CFLAGS_NO_WARN) $(WARNINGS)
-CXXFLAGS ?= --std=c++17 -maes -mavx $(CONFIG_CXXFLAGS)
+CXXFLAGS ?= --std=c++17 $(CONFIG_CXXFLAGS)
 LDFLAGS ?= $(CONFIG_LDFLAGS) -Wl,-rpath,$(PREFIX)/lib -L$(LIBDIR) -Ldevice/lib
 SHARED_LIB_FLAGS = -shared -fPIC
 STATIC_LIB_FLAGS = -fPIC
@@ -92,9 +103,9 @@ $(SUBMODULESDIR)/%.checkout:
 	@mkdir -p $(dir $@)
 ifeq ($(SKIP_SUBMODULE_UPDATE), 0)
 	git submodule update --init --recursive $(@:$(SUBMODULESDIR)/%.checkout=%)
-	git -C $(@:$(SUBMODULESDIR)/%.checkout=%) submodule foreach --recursive git lfs install || true
-	git -C $(@:$(SUBMODULESDIR)/%.checkout=%) submodule foreach --recursive git lfs pull
-	git -C $(@:$(SUBMODULESDIR)/%.checkout=%) submodule foreach --recursive git lfs checkout HEAD
+	#git -C $(@:$(SUBMODULESDIR)/%.checkout=%) submodule foreach --recursive git lfs install || true
+	#git -C $(@:$(SUBMODULESDIR)/%.checkout=%) submodule foreach --recursive git lfs pull
+	#git -C $(@:$(SUBMODULESDIR)/%.checkout=%) submodule foreach --recursive git lfs checkout HEAD
 endif
 	touch $@
 
@@ -106,35 +117,20 @@ ifeq ($(EMULATION_DEVICE_EN), 1)
 	cp -f $(TENSIX_EMULATION_ZEBU)/scripts/designFeatures ./
 endif
 
-build: pybuda third_party/tvm torchvision ;
+build: pybuda third_party/tvm ;
 
 third_party/tvm: $(SUBMODULESDIR)/third_party/tvm.build ;
 
-torchvision: build_deps/torchvision.build ;
-
-build_deps/torchvision.build: python_env
-	@if [ ! -d $(TORCHVISIONDIR) ]; then \
-		git clone --depth 1 --branch v0.16.0 https://github.com/pytorch/vision.git $(TORCHVISIONDIR); \
-	fi
-	echo "Building torchvision..."
-	bash -c "source $(PYTHON_ENV)/bin/activate && cd $(TORCHVISIONDIR) && PYTORCH_VERSION=2.1.0 _GLIBCXX_USE_CXX11_ABI=1 python setup.py bdist_wheel -d build_out"
-	bash -c "source $(PYTHON_ENV)/bin/activate && pip install $(TORCHVISIONDIR)/build_out/torchvision*.whl"
-
+$(SUBMODULESDIR)/third_party/tvm.build: $(PYTHON_ENV) $(SUBMODULESDIR)/third_party/tvm.checkout
+	bash -c "source $(PYTHON_ENV_ROOT)/bin/activate && ./third_party/tvm/install.sh"
 	touch $@
 
-$(SUBMODULESDIR)/third_party/tvm.build: python_env $(SUBMODULESDIR)/third_party/tvm.checkout
-	bash -c "source $(PYTHON_ENV)/bin/activate && ./third_party/tvm/install.sh"
-	touch $@
-
-build_tests: pybuda/csrc/balancer/tests pybuda/csrc/graph_lib/tests pybuda/csrc/passes/tests pybuda/csrc/pattern_matcher/tests pybuda/csrc/placer/tests ;
+build_tests: pybuda/csrc/graph_lib/tests pybuda/csrc/passes/tests ;
 
 run_tests: build_tests
 	@echo "Running tests..."
-	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/balancer/tests/balancer_unit_tests
 	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/graph_lib/tests/graphlib_unit_tests
 	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/passes/tests/passes_unit_tests
-	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/pattern_matcher/tests/pattern_matcher_unit_tests
-	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/placer/tests/placer_unit_tests
 
 clean: third_party/budabackend/clean
 	rm -rf $(OUT)
@@ -170,7 +166,7 @@ build_tvm: third_party/tvm ;
 .PHONY: stubs
 stubs:
 	pip install mypy
-	stubgen -m pybuda._C -m pybuda._C.autograd -m pybuda._C.balancer -m pybuda._C.graph -m pybuda._C.backend_api -m pybuda._C.pattern_matcher -m pybuda._C.scheduler -m pybuda._C.torch_device -o pybuda
+	stubgen -m pybuda._C -m pybuda._C.autograd -m pybuda._C.graph -m pybuda._C.torch_device -o pybuda
 
 # Cleaning PyBuda and BBE artifacts
 .PHONY: clean_tt

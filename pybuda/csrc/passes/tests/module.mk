@@ -1,6 +1,5 @@
 PYBUDA_CSRC_PASSES_TESTS = $(TESTDIR)/pybuda/csrc/passes/tests/passes_unit_tests
 PYBUDA_CSRC_PASSES_TESTS_SRCS = \
-	pybuda/csrc/balancer/tests/test_balancer_utils.cpp \
 	$(wildcard pybuda/csrc/passes/tests/*.cpp)
 
 

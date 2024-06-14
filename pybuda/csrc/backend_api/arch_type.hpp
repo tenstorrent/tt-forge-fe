@@ -4,12 +4,21 @@
 #pragma once
 
 #include <string>
-#include "device/tt_arch_types.h"
 
 namespace tt {
-    std::string to_string_arch(ARCH ar);
-    std::string to_string_arch_lower(ARCH arch);
-    ARCH to_arch_type(const std::string& arch_string);
+enum class ARCH
+{
+    JAWBRIDGE = 0,
+    GRAYSKULL = 1,
+    WORMHOLE = 2,
+    WORMHOLE_B0 = 3,
+    BLACKHOLE = 4,
+    Invalid = 0xFF,
+};
+
+std::string to_string_arch(ARCH ar);
+std::string to_string_arch_lower(ARCH arch);
+ARCH to_arch_type(const std::string& arch_string);
 }
 
 

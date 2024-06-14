@@ -19,9 +19,7 @@
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/erase_unnecessary_4d_tm_sequence.hpp"
 #include "passes/explicate_unsqueeze.hpp"
-#include "passes/fork_join.hpp"
 #include "passes/fuse_conv2d_bias.hpp"
-#include "passes/fuse_ops.hpp"
 #include "passes/fuse_pad_conv2d.hpp"
 #include "passes/fuse_per_channel_ops.hpp"
 #include "passes/fuse_redundant_tm_sequence.hpp"
@@ -43,16 +41,8 @@
 #include "passes/pre_placer_buda_passes.hpp"
 #include "passes/print_graph.hpp"
 #include "passes/replace_incommutable_patterns.hpp"
-#include "passes/reproduce_subgraph.hpp"
 #include "passes/set_tile_dim.hpp"
 #include "passes/squeeze_to_reshape.hpp"
-#include "passes/t_stream.hpp"
-#include "perf_model/perf_model.hpp"
-#include "placer/dram.hpp"
-#include "placer/dram_allocator.hpp"
-#include "placer/host_memory_allocator.hpp"
-#include "placer/lower_to_placer.hpp"
-#include "placer/utils.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "utils/assert.hpp"
@@ -239,13 +229,10 @@ void run_pre_lowering_passes(graphlib::Graph *graph)
 }
 
 // ********** Run lowering passes **********
-std::pair<std::unique_ptr<graphlib::Graph>, placer::PlacerConfigUpdate> run_pre_placer_buda_passes(
+std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
     graphlib::Graph *graph,
-    scheduler::SchedulerConfig scheduler_config,
     const DeviceConfig &device_config,
     std::vector<std::uint32_t> chip_ids,
-    const placer::PredicatesToBreaks &predicates_to_chip_break,
-    const placer::PredicatesToBreaks &predicates_to_epoch_break,
     const std::vector<std::string> &op_names_dont_fuse,
     const std::vector<std::string> &op_names_manual_fuse,
     const passes::FractureChipIdAssignments &fracture_chip_id_assignments,
@@ -259,7 +246,6 @@ std::pair<std::unique_ptr<graphlib::Graph>, placer::PlacerConfigUpdate> run_pre_
     const bool enable_recompute,
     const bool output_queues_on_host,
     const bool input_queues_on_host,
-    const InsertionInstructionMap &ins_instructions,
     const std::vector<std::tuple<std::string, std::string, int>> &insert_queues,
     std::vector<AMPNodeProperties> amp_properties,
     const std::vector<std::string> &op_intermediates_to_save,
@@ -287,23 +273,6 @@ std::pair<std::unique_ptr<graphlib::Graph>, placer::PlacerConfigUpdate> run_pre_
     if (input_queues_on_host and env_as<bool>("PYBUDA_ENABLE_HOST_INPUT_NOP_BUFFERING"))
     {
         fix_host_inputs(lowered_graph.get());
-    }
-
-    auto op_names_to_chip_break = placer::match_op_names_to_breaks(lowered_graph.get(), predicates_to_chip_break);
-    auto op_names_to_epoch_break = placer::match_op_names_to_breaks(lowered_graph.get(), predicates_to_epoch_break);
-
-    // Fuse ops
-    if (enable_auto_fusing)
-    {
-        recalculate_shapes(lowered_graph.get());
-        fuse_ops(
-            lowered_graph.get(),
-            device_config,
-            op_names_to_chip_break,
-            op_names_to_epoch_break,
-            op_names_dont_fuse,
-            op_names_manual_fuse,
-            amp_properties);
     }
 
     // Sanitize past cache IOs
@@ -358,12 +327,6 @@ std::pair<std::unique_ptr<graphlib::Graph>, placer::PlacerConfigUpdate> run_pre_
 
     insert_partial_datacopy_tms(lowered_graph.get());
 
-    // inserted fork-join NOPs
-    for (auto instruction : ins_instructions)
-    {
-        instruction.second->insert(lowered_graph.get());
-    }
-
     insert_user_defined_queues(lowered_graph.get(), insert_queues);
 
     //
@@ -379,223 +342,6 @@ std::pair<std::unique_ptr<graphlib::Graph>, placer::PlacerConfigUpdate> run_pre_
         amp_level,
         amp_properties);
 
-    // At this point, there should be no more graph mutations.
-    placer::PlacerConfigUpdate placer_config_update = schedule_pre_placer_graph(
-        lowered_graph.get(),
-        device_config,
-        scheduler_config,
-        chip_ids,
-        op_names_to_chip_break,
-        op_names_to_epoch_break,
-        fracture_chip_id_assignments,
-        "" /* nops_remote_devices_postfix */,
-        use_interactive_placer);
-
-    return std::make_pair(std::move(lowered_graph), placer_config_update);
-}
-
-static std::vector<placer::DramAllocator> initialize_dram_allocators(const DeviceConfig& device_config, const PostPlacerConfig& config, const std::string &graph_name, std::vector<std::vector<placer::Blocks>> &pre_allocated_blocks)
-{
-    placer::DRAMPlacementAlgorithm placement_algorithm =
-        env_as<bool>("PYBUDA_DRAM_CLOSEST") ? placer::CLOSEST : 
-        env_as<bool>("PYBUDA_DRAM_PICK_CAPACITY") ? placer::GREATEST_CAPACITY : 
-        env_as<bool>("PYBUDA_DRAM_FLIP_FLOP") ? placer::ROUND_ROBIN_FLIP_FLOP :
-        config.placement_algorithm;
-    std::vector<placer::DramAllocator> chip_dram_allocators;
-    auto max_chip_id = *std::max_element(device_config.chip_ids.begin(),device_config.chip_ids.end());
-
-    if (pre_allocated_blocks.size() <= max_chip_id)
-    {
-        pre_allocated_blocks.resize(max_chip_id + 1);
-    }
-
-    for (uint32_t chip_id = 0; chip_id <= max_chip_id; chip_id++) 
-    {
-        chip_dram_allocators.emplace_back(config.dram_placer_config, graph_name, chip_id, pre_allocated_blocks[chip_id], placement_algorithm);
-    }
-
-    return chip_dram_allocators;
-}
-
-static bool tensix_datacopy_eth_link_serialization_enabled() { return env_as<bool>("PYBUDA_ENABLE_ETH_SERIALIZATION"); }
-static bool eth_datacopy_link_serialization_enabled() { return env_as<bool>("PYBUDA_ENABLE_ETH_DATACOPY_SERIALIZATION"); }
-
-// ********** Run post-placer passes, like queue and buffer insertion **********
-PostPlacerResults run_post_placer_buda_passes(
-    graphlib::Graph *graph,
-    const std::string &graph_name,
-    const DeviceConfig &device_config,
-    placer::PlacerSolution &placer_solution,
-    PostPlacerConfig &config,
-    std::shared_ptr<balancer::BalancerSolution> balancer_solution,
-    const InsertionInstructionMap &previous_ins_instructions,
-    std::vector<std::vector<placer::Blocks>> &pre_allocated_blocks,
-    std::uint32_t last_host_address)
-{
-    set_prologue_queues(graph, balancer_solution->op_models);
-
-    replace_recompute_with_checkpoint(graph, placer_solution);
-
-    validate_subgraph_placement(graph, placer_solution);
-
-    remove_buffering_queues_from_cross_epoch_edges(graph, placer_solution);
-
-    // Insert queues between ops on different epochs.
-    insert_epoch_to_epoch_queues(
-        graph,
-        placer_solution,
-        {graphlib::NodeEpochType::Forward, graphlib::NodeEpochType::Backward, graphlib::Optimizer},
-        balancer_solution->graph_solver_cut_edges);
-
-    if (config.enable_t_streaming)
-    {
-        insert_t_stream_tms(graph, balancer_solution->op_models);
-        optimize_tms(graph);
-        recalculate_shapes(graph);
-    }
-
-    // Set queue entry sizes based on the configuration for different types of queues
-    set_queue_sizes(graph, config, placer_solution);
-
-    // Place and allocate DRAM queues
-    std::vector<placer::DramAllocator> chip_dram_allocators = initialize_dram_allocators(device_config, config, graph_name, pre_allocated_blocks);
-    placer::HostMemoryAllocator host_memory_allocator(config.host_memory_placer_config, last_host_address);
-
-    placer::place_host_queues(
-        config.host_memory_placer_config, host_memory_allocator, graph, placer_solution, *balancer_solution);
-    placer::place_dram_queues(
-        graph,
-        placer_solution,
-        *balancer_solution,
-        config.host_memory_placer_config,
-        config.dram_placer_config,
-        chip_dram_allocators);
-
-    if (eth_datacopy_link_serialization_enabled()) {
-        TT_ASSERT(!tensix_datacopy_eth_link_serialization_enabled(), "Environment variables `PYBUDA_ENABLE_ETH_SERIALIZATION` and `PYBUDA_ENABLE_ETH_DATACOPY_SERIALIZATION` cannot be enabled at the same time.");
-        // eth data copy ethernet stream serialization can be run prioer to dram queue allocation
-        // Reduce ethernet stream usage runs after we insert queues because we may need to apply T streaming to e2e queues if they are on a remote chip
-        // from their producer
-        reduce_ethernet_stream_usage(config, graph, *(balancer_solution.get()), placer_solution, device_config);
-        recalculate_shapes(graph);
-        
-        // allocate the new or flattened/serialized queues
-        placer::place_host_queues(
-            config.host_memory_placer_config, host_memory_allocator, graph, placer_solution, *balancer_solution);
-        placer::place_dram_queues(
-            graph,
-            placer_solution,
-            *balancer_solution,
-            config.host_memory_placer_config,
-            config.dram_placer_config,
-            chip_dram_allocators);
-    }
-    
-    if (tensix_datacopy_eth_link_serialization_enabled()) 
-    {
-        // Reduce ethernet stream usage runs after we insert queues because we may need to apply T streaming to e2e queues if they are on a remote chip
-        // from their producer
-        reduce_ethernet_stream_usage(config, graph, *(balancer_solution.get()), placer_solution, device_config);
-        recalculate_shapes(graph);
-        
-        // allocate the new or flattened/serialized queues
-        placer::place_host_queues(
-            config.host_memory_placer_config, host_memory_allocator, graph, placer_solution, *balancer_solution);
-        placer::place_dram_queues(
-            graph,
-            placer_solution,
-            *balancer_solution,
-            config.host_memory_placer_config,
-            config.dram_placer_config,
-            chip_dram_allocators);
-    }
-
-    // Lower additional buda attrs post placer
-    post_placer_lower_buda_attrs(graph, device_config, balancer_solution->op_models);
-    passes::validate_post_placer_data_formats(graph, device_config);
-
-    PostPlacerResults results;
-
-    results.current_host_address = host_memory_allocator.get_current_allocation_address();
-    std::vector<std::vector<placer::Blocks>> allocated_blocks;
-    for (auto &chip_dram_allocator : chip_dram_allocators) 
-    {
-        allocated_blocks.push_back(chip_dram_allocator.get_blocks());
-    }
-    results.allocated_blocks = allocated_blocks;
-
-    if (!balancer_solution->placer_solution.fork_join_buffered)
-    {
-        // Add fork/join buffering, post-placement.
-        //
-        FJBufferingResult fj_buffering;
-        fj_buffering = insert_fork_join_buffering(
-            graph,
-            &balancer_solution->op_models,
-            nullptr /* inline op models */,
-            config.device_config.get_l1_usable_size(),
-            previous_ins_instructions
-            );
-
-        results.ins_instructions = fj_buffering.instructions;
-
-        if (!std::get<0>(is_subset_of_instructions(results.ins_instructions, previous_ins_instructions)))
-        {
-            return results;  // return here, since we'll have to redo anyway
-        }
-    }
-
-    if (env_as<bool>("PYBUDA_UPSIZE_DRAM_INPUT"))
-    {
-        upsize_dram_input(graph, balancer_solution->op_models, config.device_config.get_l1_usable_size());
-    }
-
-    validate_multichip_queue_placements(config, graph, placer_solution);
-
-    // Estimate model performance
-    results.perf_model_results = perf_model::run_performance_model(
-        graph,
-        graph_name,
-        device_config,
-        balancer_solution,
-        config.host_memory_placer_config.input_queues_on_host,
-        config.host_memory_placer_config.output_queues_on_host);
-
-    return results;
-}
-
-// ********** Last chance to run any non-iterative passes before netlist is generated **********
-void run_pre_netlist_generation_buda_passes(
-    graphlib::Graph *graph,
-    const std::string &graph_name,
-    const DeviceConfig &device_config,
-    std::unordered_map<std::string, py::object> intermediates,
-    placer::PlacerSolution &placer_solution,
-    PostPlacerConfig &config,
-    std::shared_ptr<balancer::BalancerSolution> balancer_solution,
-    std::vector<std::vector<placer::Blocks>> &pre_allocated_blocks,
-    std::uint32_t last_host_address
-    )
-{
-    if (env_as<bool>("PYBUDA_REPRODUCE_SUBGRAPH"))
-    {
-        std::string input_name = env_as<string> ("PYBUDA_REPRODUCE_SUBGRAPH_INPUT");
-        std::string output_name = env_as<string> ("PYBUDA_REPRODUCE_SUBGRAPH_OUTPUT");
-        passes::reproduce_subgraph(graph, input_name, output_name, intermediates, balancer_solution, &placer_solution);
-        // cutting graph will change the shape of some queuues and add new ones, so we re-place
-        std::vector<placer::DramAllocator> chip_dram_allocators = initialize_dram_allocators(device_config, config, graph_name, pre_allocated_blocks);
-        placer::HostMemoryAllocator host_memory_allocator(config.host_memory_placer_config, last_host_address);
-
-        placer::place_host_queues(
-            config.host_memory_placer_config, host_memory_allocator, graph, placer_solution, *balancer_solution);
-        placer::place_dram_queues(
-            graph,
-            placer_solution,
-            *balancer_solution,
-            config.host_memory_placer_config,
-            config.dram_placer_config,
-            chip_dram_allocators);
-    }
-    return;
+    return std::move(lowered_graph);
 }
 }  // namespace tt

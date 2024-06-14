@@ -5,7 +5,6 @@
 # Some basic bring-up tests of tracing functionality
 #
 import configparser
-from distutils.command.config import config
 import pybuda
 import pytest
 

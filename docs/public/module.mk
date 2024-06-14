@@ -8,7 +8,7 @@ docs/public: $(DOCS_PUBLIC_DIR)
 
 .PHONY: foo
 
-$(DOCS_PUBLIC_DIR): $(DOCS_PUBLIC_BUILD_SCRIPT) $(DOCS_PUBLIC_SRCS) python_env foo
+$(DOCS_PUBLIC_DIR): $(DOCS_PUBLIC_BUILD_SCRIPT) $(DOCS_PUBLIC_SRCS) $(PYTHON_ENV) foo
 	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIBDIR) \
 	PYTHON_ENV=$(PYTHON_ENV) \
 	BUILDER=$(DOCS_PUBLIC_SPHINX_BUILDER) \
@@ -19,7 +19,7 @@ $(DOCS_PUBLIC_DIR): $(DOCS_PUBLIC_BUILD_SCRIPT) $(DOCS_PUBLIC_SRCS) python_env f
 docs/public/publish: docs/public
 	rsync --delete -avz  $(DOCS_PUBLIC_DIR)/html/ yyz-webservice-02:/var/www/html/docs/pybuda-docs
 
-docs/pdf: python_env foo
+docs/pdf: $(PYTHON_ENV) foo
 	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIBDIR) \
 	PYTHON_ENV=$(PYTHON_ENV) \
 	BUILDER=latexpdf \

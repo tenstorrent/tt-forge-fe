@@ -3,22 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "decomposing_context.hpp"
+
 #include "buda_passes.hpp"
-#include "utils/assert.hpp"
-#include "utils/logger.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "placer/dram.hpp"
-#include "placer/utils.hpp"
 #include "reportify/reportify.hpp"
-
+#include "utils/assert.hpp"
+#include "utils/logger.hpp"
 
 namespace tt {
-
-using NodeType = graphlib::NodeType;
-using Edge = graphlib::Edge;
-using EdgeType = graphlib::EdgeType;
-
 
 // TODO: move tags to a vector of enums
 NodeContext DecomposingContext::op(
@@ -69,9 +62,10 @@ NodeContext DecomposingContext::op(
         graphlib::Node *current_node = this->graph->node_by_id(operands[i].id);
 
         if (new_node->get_epoch_type() != current_node->get_epoch_type()) {
-
-            TT_ASSERT((current_node->get_epoch_type() == NodeEpochType::Forward and new_node->get_epoch_type() == NodeEpochType::Backward) or
-                      (new_node->get_epoch_type() == NodeEpochType::Optimizer));
+            TT_ASSERT(
+                (current_node->get_epoch_type() == graphlib::NodeEpochType::Forward and
+                 new_node->get_epoch_type() == graphlib::NodeEpochType::Backward) or
+                (new_node->get_epoch_type() == graphlib::NodeEpochType::Optimizer));
 
             graphlib::Edge edge(current_node->id(), 0, new_node->id(), 0, graphlib::EdgeType::kAutogradFwdToBwd);
             graph->add_edge(edge);
@@ -82,7 +76,7 @@ NodeContext DecomposingContext::op(
         graph->add_edge(edge);
 
         if (copy_tms) {
-            for(Edge op_edge : graph->operand_data_edges(this->node_)) {
+            for(graphlib::Edge op_edge : graph->operand_data_edges(this->node_)) {
                 if (op_edge.producer_node_id == operands[i].id) {
                     graph->get_edge_attributes(edge)->set_tms(graph->get_edge_attributes(op_edge)->get_tms());
                 }
@@ -111,35 +105,36 @@ void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out
 
 
     // Map operand control edges
-    for (Edge in_edge : graph->operand_edges(node_)) {
-        if (in_edge.edge_type == EdgeType::kData)
+    for (graphlib::Edge in_edge : graph->operand_edges(node_)) {
+        if (in_edge.edge_type == graphlib::EdgeType::kData)
             continue;
 
-        if (in_edge.edge_type == EdgeType::kAutogradFwdToGradient)
+        if (in_edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient)
             continue;
 
         TT_ASSERT(
-            in_edge.edge_type != EdgeType::kControl or in_edge.edge_type != EdgeType::kDataLoopback or
-            in_edge.edge_type != EdgeType::kControlLoop);
+            in_edge.edge_type != graphlib::EdgeType::kControl or
+            in_edge.edge_type != graphlib::EdgeType::kDataLoopback or
+            in_edge.edge_type != graphlib::EdgeType::kControlLoop);
 
         for (graphlib::PyOpNode *inserted_node : inserted_nodes) {
-            Edge new_in_edge(
+          graphlib::Edge new_in_edge(
                 in_edge.producer_node_id, in_edge.producer_output_port_id, inserted_node->id(), 0, in_edge.edge_type);
             this->graph->add_edge(new_in_edge);
         }
     }
 
-    for (Edge in_edge : graph->operand_edges(node_)) {
-        if (in_edge.edge_type != EdgeType::kAutogradFwdToGradient)
+    for (graphlib::Edge in_edge : graph->operand_edges(node_)) {
+        if (in_edge.edge_type != graphlib::EdgeType::kAutogradFwdToGradient)
             continue;
 
-        Edge new_in_edge(in_edge.producer_node_id, in_edge.producer_output_port_id, operand.id, 0, in_edge.edge_type);
+        graphlib::Edge new_in_edge(in_edge.producer_node_id, in_edge.producer_output_port_id, operand.id, 0, in_edge.edge_type);
         this->graph->add_edge(new_in_edge);
         break;
     }
 
-    for (Edge out_edge : graph->user_edges(node_)) {
-        Edge new_out_edge(
+    for (graphlib::Edge out_edge : graph->user_edges(node_)) {
+      graphlib::Edge new_out_edge(
             operand.id,
             producer_out_port,
             out_edge.consumer_node_id,
@@ -189,7 +184,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_pybuda_grap
             py::function pybuda_decompose = eval_module.attr(dispatcher_name)(type);
 
             std::vector<NodeContext> inputs;
-            for(Edge op_edge : graph->operand_data_edges(node)) {
+            for(graphlib::Edge op_edge : graph->operand_data_edges(node)) {
                 inputs.push_back(NodeContext(graph->node_by_id(op_edge.producer_node_id), op_edge.producer_output_port_id));
                 inputs.back().shape = py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id));
                 inputs.back().unbroadcast_shape = py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id), true);

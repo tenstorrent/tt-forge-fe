@@ -5,7 +5,6 @@
 # Some basic bring-up tests of tracing functionality
 #
 from base64 import encode
-from distutils.config import PyPIRCCommand
 import pytest
 
 import tensorflow as tf

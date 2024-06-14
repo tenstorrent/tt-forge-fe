@@ -18,7 +18,7 @@
 #include "graph_lib/edge.hpp"
 
 // Jumping through some hoops to allow modifiable edge attributes
-struct EdgeUniqueIdHash : public std::unary_function<tt::graphlib::EdgeUniqueId, std::size_t>
+struct EdgeUniqueIdHash
 {
     std::size_t operator()(const tt::graphlib::EdgeUniqueId &edge) const
     {
@@ -35,11 +35,6 @@ struct EdgeUniqueIdHash : public std::unary_function<tt::graphlib::EdgeUniqueId,
 #include <iostream>
 namespace tt
 {
-
-namespace balancer::legalizer
-{
-class GraphSolver;
-}
 
 namespace graphlib
 {
@@ -329,7 +324,6 @@ class Graph
     std::unordered_set<NodeId> virtual_nodes_;
 
     friend class GraphTraversalContext;
-    friend class tt::balancer::legalizer::GraphSolver;
 };
 
 template <typename NodeClassType>
