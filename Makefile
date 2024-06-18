@@ -59,13 +59,14 @@ SUBMODULESDIR = $(OUT)/submodules
 # Python version
 PYTHON_VERSION ?= python3.12
 PYTHON_INCLUDES = $(shell $(PYTHON_VERSION)-config --includes)
+PYTHON_LDFLAGS = $(shell $(PYTHON_VERSION)-config --ldflags)
 
 # Top level flags, compiler, defines etc.
 
 #WARNINGS ?= -Wall -Wextra
 WARNINGS ?= -Wdelete-non-virtual-dtor -Wreturn-type -Wswitch -Wuninitialized -Wno-unused-parameter
-CC ?= gcc
-CXX ?= g++
+CC ?= clang
+CXX ?= clang++
 CFLAGS_NO_WARN ?= -MMD -I. $(CONFIG_CFLAGS) -DBUILD_DIR=\"$(OUT)\" -I$(INCDIR) -DFMT_HEADER_ONLY -Ithird_party/fmt -Ithird_party/pybind11/include $(PYTHON_INCLUDES)
 CFLAGS ?= $(CFLAGS_NO_WARN) $(WARNINGS)
 CXXFLAGS ?= --std=c++17 $(CONFIG_CXXFLAGS)

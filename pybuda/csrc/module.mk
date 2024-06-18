@@ -19,7 +19,7 @@ include pybuda/csrc/reportify/module.mk
 include pybuda/csrc/backend_api/module.mk
 include pybuda/csrc/tt_torch_device/module.mk
 
-PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python 
+PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION)
 
 PYBUDA_CSRC_SRCS = \
 		pybuda/csrc/pybuda_bindings.cpp \
@@ -34,7 +34,7 @@ PYBUDA_THIRD_PARTY_DEPS = $(SUBMODULESDIR)/third_party/pybind11.checkout
 
 -include $(PYBUDA_CSRC_DEPS)
 
-$(PYBUDA_CSRC_LIB): $(PYBUDA_CSRC_OBJS) $(PYBUDA_CSRC_GRAPH_LIB) $(PYBUDA_CSRC_AUTOGRAD) $(PYBUDA_CSRC_PATTERN_MATCHER_LIB) $(PYBUDA_CSRC_BALANCER_LIB) $(PYBUDA_CSRC_PLACER_LIB) $(PYBUDA_CSRC_SCHEDULER_LIB) $(PYBUDA_CSRC_REPORTIFY) $(PYBUDA_CSRC_BACKENDAPI_LIB) $(PYBUDA_CSRC_SHARED_UTILS_LIB) $(PYBUDA_CSRC_PERF_MODEL_LIB) $(PYBUDA_THIRD_PARTY_DEPS) $(PYBUDA_THIRD_PARTY_DEPS) $(PYBUDA_CSRC_TT_TORCH_DEVICE_LIB)
+$(PYBUDA_CSRC_LIB): $(PYBUDA_CSRC_OBJS) $(PYBUDA_CSRC_GRAPH_LIB) $(PYBUDA_CSRC_AUTOGRAD) $(PYBUDA_CSRC_PATTERN_MATCHER_LIB) $(PYBUDA_CSRC_BALANCER_LIB) $(PYBUDA_CSRC_PLACER_LIB) $(PYBUDA_CSRC_SCHEDULER_LIB) $(PYBUDA_CSRC_REPORTIFY) $(PYBUDA_CSRC_BACKENDAPI_LIB) $(PYBUDA_CSRC_SHARED_UTILS_LIB) $(PYBUDA_CSRC_PERF_MODEL_LIB) $(PYBUDA_CSRC_TT_TORCH_DEVICE_LIB)
 	@mkdir -p $(LIBDIR)
 	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) -L$(TORCH_LIB_DIR) -o $@ $^ $(LDFLAGS) $(PYBUDA_CSRC_LDFLAGS)
 
@@ -44,7 +44,7 @@ $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/pybuda/_C.so: $(PYBUDA_CS
 	touch -r $^ $@
 	ln -sf ../../$(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/pybuda/_C.so pybuda/pybuda/_C.so
 
-$(OBJDIR)/pybuda/csrc/%.o: pybuda/csrc/%.cpp $(PYTHON_ENV)
+$(OBJDIR)/pybuda/csrc/%.o: pybuda/csrc/%.cpp $(PYTHON_ENV) $(PYBUDA_THIRD_PARTY_DEPS)
 	@mkdir -p $(@D)
 	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) $(PYBUDA_CSRC_INCLUDES) -c -o $@ $<
 

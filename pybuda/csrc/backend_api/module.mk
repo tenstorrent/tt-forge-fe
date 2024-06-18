@@ -15,7 +15,7 @@ PYBUDA_CSRC_BACKENDAPI_DEPS = $(addprefix $(OBJDIR)/, $(PYBUDA_CSRC_BACKENDAPI_S
 # Each module has a top level target as the entrypoint which must match the subdir name
 pybuda/csrc/backend_api: $(PYBUDA_CSRC_BACKENDAPI_LIB) $(PYBUDA_CSRC_SHARED_UTILS_LIB) ;
 
-$(PYBUDA_CSRC_BACKENDAPI_LIB): $(PYBUDA_CSRC_BACKENDAPI_OBJS) $(PYBUDA_CSRC_SHARED_UTILS_LIB)
+$(PYBUDA_CSRC_BACKENDAPI_LIB): $(PYBUDA_CSRC_BACKENDAPI_OBJS)
 	@mkdir -p $(LIBDIR)
 	ar rcs $@ $^
 

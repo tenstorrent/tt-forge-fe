@@ -116,18 +116,13 @@ void pad_to_buda_shape(torch::Tensor & tensor)
 
 
 std::unordered_set<std::string> pushed;
-void push_tensor(
-    PyBudaTensorDesc const& desc,
-    torch::Tensor & tensor,
-    std::string const& info,
-    std::optional<int> ptr)
+void push_tensor(torch::Tensor& tensor, std::string const& info, std::optional<int> ptr)
 {
-
     log_debug(
         LogTTDevice,
         "Pushing tensor({})[{}][{}] to device[{}]",
         tensor.data_ptr(),
-        desc.name,
+        "unknown",
         tensor.scalar_type(),
         tensor.device());
 

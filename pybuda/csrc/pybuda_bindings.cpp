@@ -10,7 +10,6 @@
 namespace py = pybind11;
 
 #include "autograd/python_bindings.hpp"
-#include "backend_api/backend_api.hpp"
 #include "backend_api/device_config.hpp"
 #include "buda_passes.hpp"
 #include "graph_lib/graph.hpp"
@@ -98,9 +97,6 @@ PYBIND11_MODULE(_C, m) {
 
     py::module_ m_autograd = m.def_submodule("autograd", "Submodule defining autograd_engine.");
     AutogradModule(m_autograd);
-
-    py::module_ m_backend = m.def_submodule("backend_api", "API to Buda Backend");
-    tt::backend_api::BackendModule(m_backend);
 
     py::module_ m_passes = m.def_submodule("passes", "API to Buda Passes");
     PassesModule(m_passes);
