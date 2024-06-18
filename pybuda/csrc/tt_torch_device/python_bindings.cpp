@@ -64,8 +64,6 @@ void TorchDeviceModule(py::module &m_torch_device)
         .def_readonly("outputs", &tt::Workload::outputs);
 
     py::class_<tt::TTDevice>(m_torch_device, "TTDevice")
-        .def_readonly("backend", &tt::TTDevice::backend)
-        .def_readonly("type", &tt::TTDevice::type)
         .def_readonly("arch", &tt::TTDevice::arch)
         .def_readonly("mmio", &tt::TTDevice::mmio)
         .def_readonly("index", &tt::TTDevice::index)
@@ -83,8 +81,6 @@ void TorchDeviceModule(py::module &m_torch_device)
     m_torch_device.def(
         "push_tensor", 
         &tt::push_tensor,
-        py::arg("backend"),
-        py::arg("desc"),
         py::arg("tensor"),
         py::arg("info") = "",
         py::arg("ptr") = std::optional<int>{});

@@ -66,12 +66,6 @@ class TorchDeviceImpl : public c10::impl::DeviceGuardImplInterface
     {
         static TorchDeviceImpl tt_device_impl(query_available_tt_devices());
 
-        if (env_as<bool>("PYBUDA_DEVMODE")) {
-            // If we are in dev mode, we want to mark all devices as golden
-            for (auto & dev : tt_device_impl.tt_devices) {
-                dev.type = tt::DEVICE::Golden;
-            }
-        }
         return tt_device_impl;
     }
     std::int64_t get_index() { return current_device.index(); }
@@ -209,54 +203,6 @@ std::string get_runtime_transform(torch::Tensor const& tensor, bool input)
     }
 }
 
-torch::Tensor from_pytorch_tensor_desc(
-    tt_PytorchTensorDesc const& desc, std::vector<std::int64_t> const& shape, FreePytorchTensorDescFn* free_fn)
-{
-    std::int64_t elemsize = static_cast<std::int64_t>(desc.itemsize);
-    std::vector<std::int64_t> strides = {
-        static_cast<std::int64_t>(desc.strides[0]) / elemsize,
-        static_cast<std::int64_t>(desc.strides[1]) / elemsize,
-        static_cast<std::int64_t>(desc.strides[2]) / elemsize,
-        static_cast<std::int64_t>(desc.strides[3]) / elemsize,
-    };
-    std::vector<std::int64_t> aligned_shape;
-    size_t dim = 0;
-    for (auto s : shape)
-    {
-        if (shape.size() <= 2 or dim < shape.size() - 2)
-            aligned_shape.push_back(s);
-        else
-            aligned_shape.push_back(align_up_tile(s));
-        dim++;
-    }
-    TT_ASSERT(shape.size() <= strides.size());
-
-    while (strides.size() > shape.size()) strides.erase(strides.begin());
-
-    torch::ScalarType type = df_to_torch_scalar_type(desc.format);
-    std::int64_t size_bytes = strides.front() * elemsize;
-
-    tt_PytorchTensorDesc* ctx = new tt_PytorchTensorDesc(desc);
-    c10::Storage storage(
-        c10::Storage::use_byte_size_t(),
-        size_bytes,
-        at::DataPtr(const_cast<void*>(desc.ptr), static_cast<void*>(ctx), free_fn, at::Device(TT, TorchDeviceImpl::get().get_index())));
-
-    c10::DispatchKeySet dispatch_keyset = c10::DispatchKeySet{DispatchKeyTT};
-    c10::intrusive_ptr<c10::TensorImpl> impl = c10::make_intrusive<c10::TensorImpl>(
-        std::move(storage), dispatch_keyset, caffe2::TypeMeta::fromScalarType(type));
-
-    impl->set_sizes_and_strides(torch::IntArrayRef(aligned_shape), torch::IntArrayRef(strides));
-
-    c10::intrusive_ptr<c10::BackendMeta> backend_meta{std::unique_ptr<c10::BackendMeta>(new TTMetaData())};
-    TTMetaData *tt_meta = dynamic_cast<TTMetaData*>(backend_meta.get());
-    tt_meta->runtime_transformed = false;
-    tt_meta->created_on_device = true;
-    tt_meta->unique_output_id = TorchDeviceImpl::get().get_next_unique_id();
-    impl->set_backend_meta(backend_meta);
-
-    return torch::Tensor::wrap_tensor_impl(impl);;
-}
 
 torch::Device torch_device_at_index(std::int64_t index) { return torch::Device(TT, index); }
 

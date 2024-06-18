@@ -12,6 +12,7 @@
 #include "utils/assert.hpp"
 #include "utils/env.hpp"
 #include "utils/logger.hpp"
+#include "pybuda/csrc/lower_to_buda/common.hpp"
 
 namespace tt
 {
@@ -48,19 +49,6 @@ std::shared_ptr<Workload> compile(TTDevice& device, CompileRequest const& compil
     device.input_runtime_transforms = compile_request.input_runtime_transforms;
     device.input_tile_bcast_dims = compile_request.input_tile_bcast_dims;
     device.output_runtime_transforms = compile_request.output_runtime_transforms;
-    
-    tt::tt_compile_result result;
-    if (device.initialized)
-    {
-        log_info(LogTTDevice, "Device already initialized");
-        device.backend->finish();
-        if (device.context->initialized.load(std::memory_order_relaxed))
-            backend::finish_child_process();
-    }
-    else
-    {
-        log_info(LogTTDevice, "Device not initialized");
-    }
 
     return workload;
 }
@@ -86,57 +74,6 @@ static DataFormat torch_scalar_type_to_df(torch::ScalarType st)
     }
 
     log_fatal(LogTTDevice, "Unhandled dtype {}", st);
-}
-
-static void free_tt_PytorchTensorDesc(void* ctx)
-{
-    tt_PytorchTensorDesc* desc = static_cast<tt_PytorchTensorDesc*>(ctx);
-    backend::free_tensor(*desc);
-    delete desc;
-}
-
-static tt_PytorchTensorDesc to_pytorch_tensor_desc(torch::Tensor const& tensor)
-{
-    // TT_ASSERT(tensor.is_contiguous());
-    TT_ASSERT(tensor.dim() <= 4);
-    TT_ASSERT(tensor.strides().size() == tensor.sizes().size());
-
-    std::int64_t dim = (std::int64_t)tensor.sizes().size();
-    TT_ASSERT(dim > 0);
-
-    std::size_t scalar_size = tensor.element_size();
-    std::array<std::uint32_t, PY_TENSOR_DIMS> shape = {1, 1, kTileDim, kTileDim};
-    std::array<std::uint32_t, PY_TENSOR_DIMS> strides = {0, 0, 0, 0};
-
-    int i = PY_TENSOR_DIMS - dim;
-    for (auto s : tensor.sizes())
-    {
-        shape[i] = i >= 2 ? align_up_tile(s) : s;
-        ++i;
-    }
-
-    i = PY_TENSOR_DIMS - 1;
-    for (int j = dim - 1; j >= 0; --j, --i)
-    {
-        strides[i] = tensor.strides()[j] * scalar_size;
-    }
-
-    // Special case where dim == 1
-    if (i >= 2)
-    {
-        strides[i] = kTileDim * scalar_size;
-        --i;
-    }
-
-    int last = i + 1;
-    while (i >= 0)
-    {
-        strides[i] = strides[last];
-        --i;
-    }
-
-    return tt_PytorchTensorDesc(
-        tensor.data_ptr(), tensor.element_size(), torch_scalar_type_to_df(tensor.scalar_type()), shape, strides, 4);
 }
 
 void pad_to_buda_shape(torch::Tensor & tensor)
@@ -180,24 +117,11 @@ void pad_to_buda_shape(torch::Tensor & tensor)
 
 std::unordered_set<std::string> pushed;
 void push_tensor(
-    //tt_backend& backend,
-    tt_dram_io_desc queue_desc,
     PyBudaTensorDesc const& desc,
     torch::Tensor & tensor,
     std::string const& info,
     std::optional<int> ptr)
 {
-    /*if (pushed.find(desc.name) != pushed.end())
-    {
-        std::cout << "Already pushed " << desc.name << std::endl;
-        return;
-    }
-    
-    // Only record if the name doesn't start with arg
-    if (desc.name.find("arg") != 0)
-    {
-        pushed.insert(desc.name);
-    }*/
 
     log_debug(
         LogTTDevice,
@@ -207,60 +131,16 @@ void push_tensor(
         tensor.scalar_type(),
         tensor.device());
 
-    (void)info;
-    // if (tensor.device().type() != TT)
-    //     log_fatal(
-    //         LogTTDevice,
-    //         "Tensor is not resident on submitted device (forgot to call tensor.to(\"tt\")?) {}: device[{}] {}",
-    //         desc.name,
-    //         tensor.device(),
-    //         info);
-
-    //tt_dram_io_desc queue_desc = backend.get_queue_descriptor(desc.name);
-    backend::translate_addresses(queue_desc);
-    pad_to_buda_shape(tensor);
-    tt_PytorchTensorDesc tensor_desc = to_pytorch_tensor_desc(tensor);
-    constexpr int kDefaultTimeoutSec = 10;
-    constexpr bool push_one = false;
-    int push_ptr = desc.ptr;
-    if (ptr.has_value())
-    {
-        push_ptr = ptr.value();
-    }
-    auto status = backend::push_input(queue_desc, tensor_desc, push_one, kDefaultTimeoutSec, push_ptr);
-    if (status != DEVICE_STATUS_CODE::Success)
-        log_fatal(LogTTDevice, "Failed to push tensor: {} {}", desc.name, status);
+    // TTNN from torch
+    // TTNN to device
 }
 
-static torch::Tensor pop_tensor(tt_backend& backend, PyBudaTensorDesc const& desc)
+static torch::Tensor pop_tensor(PyBudaTensorDesc const& desc)
 {
     log_debug(LogTTDevice, "Popping tensor[{}]", desc.name);
 
-    tt_PytorchTensorDesc tensor_desc;
-    tt_dram_io_desc queue_desc = backend.get_queue_descriptor(desc.name);
-    backend::translate_addresses(queue_desc);
-
-    constexpr bool pop_one = false;
-    int timeout_in_seconds = 600;
-    int read_ptr;
-    if (queue_desc.io_type == IO_TYPE::RandomAccess) {
-        read_ptr = 0;
-    } else {
-        read_ptr = desc.ptr;
-    }
-
-    auto status = backend::get_output(queue_desc, tensor_desc, pop_one, timeout_in_seconds, read_ptr);
-    if (status != DEVICE_STATUS_CODE::Success)
-        log_fatal(LogTTDevice, "Failed to get_output: {} {}", desc.name, status);
-
-    // TODO: cannot call on RAM
-    if (queue_desc.io_type != IO_TYPE::RandomAccess) {
-        status = backend::pop_output(queue_desc, pop_one, timeout_in_seconds);
-        if (status != DEVICE_STATUS_CODE::Success)
-            log_fatal(LogTTDevice, "Failed to pop_output: {} {}", desc.name, status);
-    }
-
-    torch::Tensor ret = from_pytorch_tensor_desc(tensor_desc, desc.shape, free_tt_PytorchTensorDesc);
+    //TTNN to torch
+    torch::Tensor ret;
     
     return ret;
 }
@@ -273,54 +153,29 @@ std::vector<torch::Tensor> dispatch(
     int subgraph_idx,
     bool const& is_compile)
 {
-    bool expected = false;
-    if (device.context->initialized.compare_exchange_strong(
-            expected, true, std::memory_order_relaxed, std::memory_order_relaxed))
-    {
-        backend::initialize_child_process(workload->output_dir);
-    }
 
     int input_idx = 0;
-    // if input hasn't been transformed (first time running) we need to transform it now
-    TTMetaData *input_meta;
-    std::vector<const void*> copied_inputs = get_copied_inputs();
-
-
-    // Get tensors that are on device 
-    std::unordered_set<int> tensors_on_device;
-    for (auto [sub_id, tensor_uids] : device.subgraph_to_tensor_uid_on_device)
-    {
-        for (auto uid : tensor_uids)
-        {
-            tensors_on_device.insert(uid);
-        }
-    }
-
-
-    // TT_ASSERT(copied_inputs.size() == inputs.size());
     for (auto const& desc : workload->inputs.at(subgraph_idx))
     {
         torch::Tensor & input = inputs.at(input_idx);
         auto impl = input.unsafeGetTensorImpl();
-        input_meta = dynamic_cast<TTMetaData*>(impl->get_backend_meta());
-        bool tensor_populated_on_device = tensors_on_device.count(input_meta->unique_output_id) != 0;
-
+        TTMetaData *input_meta = dynamic_cast<TTMetaData*>(impl->get_backend_meta());
 
         TT_ASSERT (input_meta != nullptr);
         if (!input_meta->runtime_transformed and !input_meta->created_on_device)
         {
             std::string runtime_transform = device.input_runtime_transforms.at(subgraph_idx).at(input_idx);
             std::vector<int> tile_bcast_dims = device.input_tile_bcast_dims.at(subgraph_idx).at(input_idx);
-            auto [transformed_input, q_updated] = eval_runtime_transform(input.to(torch::kCPU), runtime_transform, tile_bcast_dims, device.backend->get_queue_descriptor(desc.name));
+            auto transformed_input = eval_runtime_transform(input.to(torch::kCPU), runtime_transform, tile_bcast_dims);
             input_meta->runtime_transformed = true;
-            push_tensor(q_updated, desc, transformed_input, fmt::format("input[{}]", input_idx));
+            push_tensor(transformed_input, fmt::format("input[{}]", input_idx));
         }
         else
         {
             if ((!input_meta->created_on_device))
             {
-                push_tensor(device.backend->get_queue_descriptor(desc.name), desc, input, fmt::format("input[{}]", input_idx));
-            } else if (!tensor_populated_on_device) {
+                push_tensor(input, fmt::format("input[{}]", input_idx));
+            } else { //if (!tensor_populated_on_device) {
                 // Compile mode needs to push tensor to device
                 if (!is_compile)
                 {
@@ -329,20 +184,19 @@ std::vector<torch::Tensor> dispatch(
                 else {
                     // Assign ptr = 0 since we are reading from RAM
                     log_info(LogTTDevice, "Graph Linking: compile stage --- Push {} to device", desc.name);
-                    push_tensor(device.backend->get_queue_descriptor(desc.name), desc, input, fmt::format("input[{}]", input_idx), 0/* ptr */);
+                    push_tensor(input, fmt::format("input[{}]", input_idx), 0/* ptr */);
                 }                
             }
         }
-        // TT_ASSERT(copied_inputs.at(input_idx) == input.const_data_ptr(), "Incorrect input pointer, input tensors need to be copied to device in the same order as they'll be consumed");
         ++input_idx;
     }
 
-    for (Program const& program : programs)
-    {
-        auto status = device.backend->run_program(program.name, program.parameters);
-        if (status != DEVICE_STATUS_CODE::Success)
-            log_fatal(LogTTDevice, "Failed to run_program: {} {}", program.name, status);
-    }
+    // for (Program const& program : programs)
+    // {
+    //     auto status = device.backend->run_program(program.name, program.parameters);
+    //     if (status != DEVICE_STATUS_CODE::Success)
+    //         log_fatal(LogTTDevice, "Failed to run_program: {} {}", program.name, status);
+    // }
 
     std::vector<torch::Tensor> outputs;
     const auto &subgraph_outputs = workload->outputs.at(subgraph_idx);
@@ -356,17 +210,16 @@ std::vector<torch::Tensor> dispatch(
     {
         PyBudaTensorDesc const& desc = subgraph_outputs.at(i);
 
-        torch::Tensor output = pop_tensor(*device.backend, desc);
+        torch::Tensor output = pop_tensor(desc);
         std::string runtime_transform = device.output_runtime_transforms.at(subgraph_idx).at(i);
-        tt_dram_io_desc queue_desc = (*device.backend).get_queue_descriptor(desc.name);
         auto impl = output.unsafeGetTensorImpl();
         auto output_tensor_uid = dynamic_cast<TTMetaData*>(impl->get_backend_meta())->unique_output_id;
 
-        if (queue_desc.io_type == IO_TYPE::RandomAccess) {
-            register_output_runtime_transform(output, runtime_transform);
-            device.subgraph_to_tensor_uid_on_device[subgraph_idx].push_back(output_tensor_uid);
-            outputs.emplace_back(output);
-        } else {
+        // if (queue_desc.io_type == IO_TYPE::RandomAccess) {
+        //     register_output_runtime_transform(output, runtime_transform);
+        //     device.subgraph_to_tensor_uid_on_device[subgraph_idx].push_back(output_tensor_uid);
+        //     outputs.emplace_back(output);
+        // } else {
             PyGILState_STATE gstate=PyGILState_Ensure();
             auto tt_device_ = output.device();
             // Move tensor to CPU because torch::narrow is only supported on CPU for now
@@ -387,7 +240,7 @@ std::vector<torch::Tensor> dispatch(
                 tt_device_, cpu_output.scalar_type(), false, false/* copy */);
             PyGILState_Release(gstate);
             outputs.emplace_back(tt_output_);
-        }
+        // }
     }
     return outputs;
 }
@@ -396,45 +249,45 @@ std::vector<TTDevice> query_available_tt_devices()
 {
     static std::shared_ptr<TTContext> context = std::make_shared<TTContext>();
     std::vector<TTDevice> d;
-    auto available_devices = backend::get_device_descs_for_available_devices();
-    if (available_devices.empty())
-    {
-        constexpr bool mmio = true;
+    // auto available_devices = backend::get_device_descs_for_available_devices();
+    // if (available_devices.empty())
+    // {
+    //     constexpr bool mmio = true;
         
-        ARCH arch = ARCH::Invalid;
-        if (env_as<bool>("GOLDEN_WORMHOLE_B0"))
-        {
-            arch = ARCH::WORMHOLE_B0;
-        }
-        else if (env_as<bool>("PYBUDA_GOLDEN_BLACKHOLE"))
-        {
-            arch = ARCH::BLACKHOLE;
-        }
-        else {
-            arch = ARCH::GRAYSKULL;
-        }
+    //     ARCH arch = ARCH::Invalid;
+    //     if (env_as<bool>("GOLDEN_WORMHOLE_B0"))
+    //     {
+    //         arch = ARCH::WORMHOLE_B0;
+    //     }
+    //     else if (env_as<bool>("PYBUDA_GOLDEN_BLACKHOLE"))
+    //     {
+    //         arch = ARCH::BLACKHOLE;
+    //     }
+    //     else {
+    //         arch = ARCH::GRAYSKULL;
+    //     }
 
-        auto desc = backend::get_custom_device_desc(arch, mmio);
-        d.emplace_back(DEVICE::Golden, arch, desc.soc_desc_yaml, desc.mmio, 0, context);
-    }
-    else
-    {
-        int index = 0;
-        for (auto desc : available_devices)
-        {
-            d.emplace_back(DEVICE::Silicon, desc.arch, desc.soc_desc_yaml, desc.mmio, index++, context);
-        }
-    }
+    //     auto desc = backend::get_custom_device_desc(arch, mmio);
+    //     d.emplace_back(arch, desc.soc_desc_yaml, desc.mmio, 0, context);
+    // }
+    // else
+    // {
+    //     int index = 0;
+    //     for (auto desc : available_devices)
+    //     {
+    //         d.emplace_back(desc.arch, desc.soc_desc_yaml, desc.mmio, index++, context);
+    //     }
+    // }
 
-    if (d.empty())
-        log_fatal(LogTTDevice, "No available devices detected (To run with golden device, set PYBUDA_DEVMODE=1)");
+    // if (d.empty())
+    //     log_fatal(LogTTDevice, "No available devices detected (To run with golden device, set PYBUDA_DEVMODE=1)");
 
-    log_debug(LogTTDevice, "Available devices:");
-    for (int i = 0; i < (int)d.size(); ++i) log_debug(LogTTDevice, "  [{}] {} {}", i, d[i].type, d[i].arch);
+    // log_debug(LogTTDevice, "Available devices:");
+    // for (int i = 0; i < (int)d.size(); ++i) log_debug(LogTTDevice, "  [{}] {} {}", i, d[i].type, d[i].arch);
     return d;
 }
 
-std::string get_device_cluster_yaml(TTDevice const&) { return backend::get_device_cluster_yaml(); }
+std::string get_device_cluster_yaml(TTDevice const&) { return "";} //TODO }
 
 std::string to_string(TTDevice const& d)
 {
@@ -443,28 +296,22 @@ std::string to_string(TTDevice const& d)
 
 torch::Device torch_device(TTDevice const& d) { return torch_device_at_index(d.index); }
 
-TTContext::~TTContext()
-{
-    if (initialized.load(std::memory_order_relaxed))
-        backend::finish_child_process();
-}
+TTContext::~TTContext() {;}
 
-std::tuple<torch::Tensor, tt_dram_io_desc> eval_runtime_transform(
+torch::Tensor eval_runtime_transform(
     const torch::Tensor& tensor,
     std::string transform,
-    std::vector<int> &tile_bcast_dims,
-    tt_dram_io_desc q)
+    std::vector<int> &tile_bcast_dims)
 {
     py::object py_tensor = py::reinterpret_steal<py::object>(THPVariable_Wrap(tensor));
 
     PyGILState_STATE gstate=PyGILState_Ensure();
     auto module = py::module_::import("pybuda.tensor");
     py::function eval_transform = module.attr("eval_runtime_transform");
-    py::tuple py_result = eval_transform(transform, py_tensor, q, tile_bcast_dims);
+    py::tuple py_result = eval_transform(transform, py_tensor, tile_bcast_dims);
     PyGILState_Release(gstate);
     torch::Tensor torch_tensor = THPVariable_Unpack(static_cast<PyObject *>(py_result[0].ptr()));
-    tt_dram_io_desc q_updated = py_result[1].cast<tt_dram_io_desc>();
-    return std::make_pair(torch_tensor, q_updated);
+    return torch_tensor;
 }
 
 torch::Tensor narrow_to_pytorch(const torch::Tensor& tensor, std::string transform)

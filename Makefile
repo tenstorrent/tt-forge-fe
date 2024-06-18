@@ -69,7 +69,7 @@ CXX ?= g++
 CFLAGS_NO_WARN ?= -MMD -I. $(CONFIG_CFLAGS) -DBUILD_DIR=\"$(OUT)\" -I$(INCDIR) -DFMT_HEADER_ONLY -Ithird_party/fmt -Ithird_party/pybind11/include $(PYTHON_INCLUDES)
 CFLAGS ?= $(CFLAGS_NO_WARN) $(WARNINGS)
 CXXFLAGS ?= --std=c++17 $(CONFIG_CXXFLAGS)
-LDFLAGS ?= $(CONFIG_LDFLAGS) -Wl,-rpath,$(PREFIX)/lib -L$(LIBDIR) -Ldevice/lib
+LDFLAGS ?= $(CONFIG_LDFLAGS) -Wl,-rpath,$(PREFIX)/lib -L$(LIBDIR) -v
 SHARED_LIB_FLAGS = -shared -fPIC
 STATIC_LIB_FLAGS = -fPIC
 ifeq ($(findstring clang,$(CC)),clang)
@@ -129,10 +129,10 @@ build_tests: pybuda/csrc/graph_lib/tests pybuda/csrc/passes/tests ;
 
 run_tests: build_tests
 	@echo "Running tests..."
-	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/graph_lib/tests/graphlib_unit_tests
-	@BUDA_HOME="third_party/budabackend" $(TESTDIR)/pybuda/csrc/passes/tests/passes_unit_tests
+	$(TESTDIR)/pybuda/csrc/graph_lib/tests/graphlib_unit_tests
+	$(TESTDIR)/pybuda/csrc/passes/tests/passes_unit_tests
 
-clean: third_party/budabackend/clean
+clean: 
 	rm -rf $(OUT)
 	rm -rf third_party/tvm/build
 	rm -rf build_deps/
