@@ -18,6 +18,7 @@
 #include "utils/assert.hpp"
 #include "utils/env.hpp"
 #include "utils/logger.hpp"
+#include "pybuda/csrc/backend_api/arch_type.hpp"
 
 namespace tt
 {
@@ -133,7 +134,6 @@ using ResourceID = std::uint64_t;
 // 1to1 mapping of physical devices plugged into this machine and TTDevice
 struct TTDevice
 {
-    DEVICE type;
     ARCH arch;
     std::string soc_desc_yaml;
     bool mmio;
@@ -142,20 +142,17 @@ struct TTDevice
     std::map<int, std::vector<std::string>> input_runtime_transforms;
     std::map<int, std::vector<std::vector<int>>> input_tile_bcast_dims;
     std::map<int, std::vector<std::string>> output_runtime_transforms;
-    std::shared_ptr<tt_backend> backend;
     bool initialized = false;
     std::unordered_map<int, std::vector<int>> subgraph_to_tensor_uid_on_device;
 
     TTDevice(
-        DEVICE type, ARCH arch, std::string soc_desc_yaml, bool mmio, int index, std::shared_ptr<TTContext> context) :
-        type(type), arch(arch), soc_desc_yaml(soc_desc_yaml), mmio(mmio), index(index), context(context)
+        ARCH arch, std::string soc_desc_yaml, bool mmio, int index, std::shared_ptr<TTContext> context) :
+        arch(arch), soc_desc_yaml(soc_desc_yaml), mmio(mmio), index(index), context(context)
     {
     }
 };
 
 using FreePytorchTensorDescFn = void(void*);
-torch::Tensor from_pytorch_tensor_desc(
-    tt_PytorchTensorDesc const& desc, std::vector<std::int64_t> const& shape, FreePytorchTensorDescFn* free_fn);
 void register_output_runtime_transform(torch::Tensor const& tensor, std::string transform);
 void register__ordered_input_runtime_transforms(std::vector<std::string> input_transforms);
 std::string get_runtime_transform(torch::Tensor const& tensor);
@@ -169,9 +166,6 @@ std::vector<const void*> get_copied_inputs();
 std::shared_ptr<Workload> compile(
     TTDevice& device, CompileRequest const& compile_request);
 void push_tensor(
-    //tt_backend& backend,
-    tt_dram_io_desc queue_desc,
-    PyBudaTensorDesc const& desc,
     torch::Tensor & tensor,
     std::string const& info = "",
     std::optional<int> ptr = std::nullopt);
@@ -187,7 +181,7 @@ std::string get_device_cluster_yaml(TTDevice const&);
 std::string to_string(TTDevice const& d);
 torch::Device torch_device(TTDevice const& d);
 
-std::tuple<torch::Tensor, tt_dram_io_desc> eval_runtime_transform(const torch::Tensor& tensor, std::string transform, std::vector<int> &tile_bcast_dims, tt_dram_io_desc q);
+torch::Tensor eval_runtime_transform(const torch::Tensor& tensor, std::string transform, std::vector<int> &tile_bcast_dims);
 bool is_created_on_device(const torch::Tensor& tensor);
 int unique_id(const torch::Tensor& tensor);
 torch::Tensor narrow_to_pytorch(const torch::Tensor& tensor, torch::IntArrayRef original_shape);
