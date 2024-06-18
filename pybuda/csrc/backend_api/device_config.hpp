@@ -229,7 +229,6 @@ struct DeviceConfig
     void load_system_level_params();
     std::unordered_map<std::uint32_t, std::uint32_t> get_harvested_cfg() const;
 
-    std::size_t get_dst_size() const { return get<std::size_t>("t6-dst_size", false); }
     std::size_t get_clock_freq() const
     {
         return 1000000000;  // tenstorrent/budabackend#1912
@@ -258,18 +257,7 @@ struct DeviceConfig
         static size_t overlay_blob_extra_size = env_as<size_t>("TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE", 0);
         return overlay_blob_extra_size;
     }
-    std::size_t get_l1_backend_reserved_size() const
-    {
-        // BBE will account for extra blob size (TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE) in the reserved size
-        //
-        auto reserved_size = get<std::size_t>("t6-l1_backend_reserved_size", false);
-        static auto extra_l1_margin = env_as<int>("PYBUDA_EXTRA_L1_MARGIN");
-        if (reserved_size < (std::uint32_t)extra_l1_margin)
-            return 0;
-
-        return reserved_size - extra_l1_margin;
-    }
-    std::size_t get_l1_usable_size() const { return get_l1_size() - get_l1_backend_reserved_size(); }
+    std::size_t get_l1_usable_size() const { return get_l1_size(); }
     std::size_t get_l1_dram_io_backend_reserved_size() const
     {
         // Get this number from DB query:
@@ -453,13 +441,6 @@ inline std::ostream& operator<<(std::ostream& os, DeviceConfig const& device_con
     os << indent << ".runtime_params_yaml = " << device_config.runtime_params_yaml << "," << std::endl;
     os << indent << ".grid_size = {" << device_config.grid_size.r << ", " << device_config.grid_size.c << "}"
        << "," << std::endl;
-    os << indent << ".get_dst_size = " << device_config.get_dst_size() << "," << std::endl;
-    os << indent << ".get_l1_size = " << device_config.get_l1_size() << "," << std::endl;
-    os << indent << ".get_l1_backend_reserved_size = " << device_config.get_l1_backend_reserved_size() << ","
-       << std::endl;
-    os << indent << ".get_l1_usable_size = " << device_config.get_l1_usable_size() << "," << std::endl;
-    os << indent << ".get_dram_num_channels = " << device_config.get_dram_num_channels() << "," << std::endl;
-    os << indent << ".get_dram_channel_capacity = " << device_config.get_dram_channel_capacity() << "," << std::endl;
     os << indent << ".supports_fp32_accumulation = " << device_config.supports_fp32_accumulation() << "," << std::endl;
     os << indent << ".supports_stochastic_rounding = " << device_config.supports_stochastic_rounding() << ","
        << std::endl;
