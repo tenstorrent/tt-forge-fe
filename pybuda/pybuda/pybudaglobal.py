@@ -13,7 +13,6 @@ import queue
 
 from loguru import logger
 
-from pybuda._C.backend_api import BackendType
 
 devices = []     # Ordered list of devices running in a pipeline
 modules = []
@@ -158,7 +157,7 @@ def lazy_trace_data(data):
     """
     logger.opt(lazy=True).trace("{x}", x=lambda: data)
 
-def is_silicon(devtype: BackendType):
+def is_silicon():
     """
     Returns true if the device is a "silicon-like" - i.e. a silicon device or versim
     """

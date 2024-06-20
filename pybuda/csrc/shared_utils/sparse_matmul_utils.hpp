@@ -16,7 +16,7 @@ namespace tt::sparse
 
 constexpr uint32_t TILE_DIM = 32;
 
-// third_party/budabackend/ops/mm_bare_structs.hpp
+
 union strip_info_struct
 {
     struct

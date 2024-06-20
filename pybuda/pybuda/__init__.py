@@ -9,21 +9,13 @@ def set_home_paths():
     import pathlib
     from loguru import logger
     pybuda_path = pathlib.Path(__file__).parent.parent.resolve()
-    if os.path.exists(str(pybuda_path) + "/budabackend"):
+
         # deployment path
-        base_path = str(pybuda_path)
-        out_path = "."
-    else:
-        # DEV path
-        pybuda_path = pybuda_path.parent.resolve()
-        assert os.path.exists(str(pybuda_path) + "/third_party/budabackend"), "Can't find budabackend"
-        base_path = str(pybuda_path) + "/third_party"
-        out_path = str(base_path) + "/third_party/budabackend/tt_build"
+    base_path = str(pybuda_path)
+    out_path = "."
 
     if "PYBUDA_HOME" not in os.environ:
         os.environ["PYBUDA_HOME"] = str(pybuda_path)
-    if "BUDA_HOME" not in os.environ:
-        os.environ["BUDA_HOME"] = str(base_path) + "/budabackend/"
     if "TVM_HOME" not in os.environ:
         os.environ["TVM_HOME"] = str(base_path) + "/tvm"
     if "BUDA_OUT" not in os.environ:
@@ -39,8 +31,7 @@ set_home_paths()
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
-from .module import Module, PyTorchModule, PyBudaModule, TFModule, TFGraphDefModule, OnnxModule, MXNetModule, JaxModule, TFLiteModule
-from .tti import TTDeviceImage
+from .module import Module, PyTorchModule, PyBudaModule, TFGraphDefModule, OnnxModule, JaxModule, TFLiteModule
 from .device import Device 
 from .cpudevice import CPUDevice
 from .gpudevice import GPUDevice
@@ -56,7 +47,6 @@ from .pybudaglobal import pybuda_reset, set_device_pipeline, is_silicon, get_ten
 from .parameter import Parameter
 from .tensor import Tensor, SomeTensor, TensorShape
 from .optimizers import SGD, Adam, AdamW, LAMB, LARS
-from ._C.backend_api import BackendType, BackendDevice
 from ._C import DataFormat, MathFidelity
 from ._C import k_dim
 from .run.api import detect_available_devices

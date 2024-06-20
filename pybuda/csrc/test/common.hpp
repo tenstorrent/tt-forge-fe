@@ -292,7 +292,6 @@ DeviceConfig create_device_config(
     std::string cluster_config_yaml,
     std::string runtime_params_yaml)
 {
-    std::string home = env_as<std::string>("BUDA_HOME", "third_party/budabackend");
     std::vector<std::uint32_t> chip_ids = {0};
     if(device_chip_ids.has_value()) {
         chip_ids = device_chip_ids.value();

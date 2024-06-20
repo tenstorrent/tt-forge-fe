@@ -26,8 +26,6 @@ from ..config import _get_global_compiler_config
 from ..utils import detach_tensors
 
 from pybuda.tvm_to_python import generate_pybuda_module, cleanup_temporary_files
-from pybuda.tvm_utils import flatten_inputs
-from pybuda._C.backend_api import BackendDevice, BackendType, initialize_child_process, finish_child_process, DeviceMode, clear_backend_param_cache, detect_available_silicon_devices
 
 def _detect_available_devices():
     if "PYBUDA_EMULATE_SILICON_DEVICE" in os.environ:
@@ -320,7 +318,7 @@ def _initialize_pipeline(
         d2d_bwd_queues: List[queue.Queue] = [],
         sequential: bool = False, 
         verify_cfg: Optional[VerifyConfig] = None,
-        device_mode: DeviceMode = DeviceMode.CompileAndRun) -> queue.Queue:
+        device_mode = None) -> queue.Queue:
     """
     Initialize the pipeline to run inference and training through manual `run_forward`, `run_backward`, 
     `run_optimizer`, etc. calls. This should be not used with "all-in-one" APIs like `run_inference` 
@@ -1259,7 +1257,6 @@ def _shutdown(clear_context: bool = True):
 
     ctx = get_current_context()
     if ctx is None:
-        clear_backend_param_cache()
         return # nothing to shutdown
         
     logger.debug("PyBuda shutdown")

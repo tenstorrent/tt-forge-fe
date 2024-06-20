@@ -7,17 +7,8 @@ import os
 from ..interface import BudaEltwiseUnaryOp
 
 import torch
-import pybuda
-from pybuda._C.backend_api import get_op_model_execution_cycles
-from pybuda._C.balancer import FactorizedInt
-from pybuda._C import UnsupportedHWOpsError
-from ..common import op_model_to_desc
 from pybuda.utils import align_up_tile, round_up_div
 from .tm import eval as tm_eval
-from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
-from pybuda.tensor import pad_pytorch_tensor_to_buda
-from pybuda._C.backend_api import get_op_model_execution_cycles
-from pybuda._C.backend_api import get_op_model_param
 from pybuda.pybudaglobal import TILE_DIM
 from pybuda._C.graph import UBlockOrder, Shape
 

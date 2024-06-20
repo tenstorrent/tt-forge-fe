@@ -17,9 +17,6 @@ from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_buda, narrow_bud
 from .config import VerifyConfig, should_waive_gradient
 from ..config import PerfTraceLevel
 import pybuda._C.graph as pygraph
-from pybuda._C.backend_api import BackendType, DeviceMode
-from pybuda.tensor import pytorch_tensor_to_tensor_desc
-from ..backend import BackendAPI
 from pybuda.tools.run_net2pipe import net2pipe
 
 def _generate_random_losses(outputs, is_buda):
@@ -219,64 +216,4 @@ def verify_golden(
         outputs: Tuple[torch.Tensor],
         verify_cfg: VerifyConfig):
 
-    logger.info("Running golden backend verify")
-
-    backend_api = None
-    try:
-        from pybuda.compiled_graph_state import CompiledGraphState
-        compiled_graph_state = CompiledGraphState.from_compiled_graph(device, compile_results)
-        backend_api = BackendAPI(
-            BackendType.Golden,
-            device.arch,
-            device,
-            netlist_filename,
-            compiled_graph_state,
-            False,
-            None,
-            None,
-            PerfTraceLevel.NONE,
-            DeviceMode.CompileAndRun)
-
-        backend_api.push_constants_and_parameters()
-        backend_api.push_optimizer_parameters()
-
-        iqs = backend_api.get_ordered_input_queues()
-        assert len(inputs) == len(iqs)
-
-        padded_inputs = []
-        for i, t in enumerate(inputs):
-            padded_tensor = pad_pytorch_tensor_to_buda(t.value(), compiled_graph_state.ordered_input_tile_broadcast_dims[i])
-            padded_inputs.append(pytorch_tensor_to_tensor_desc(padded_tensor))
-        BackendAPI.push_to_queues(iqs, padded_inputs, single_input=True)
-
-        # Run fwd program
-        backend_api.schedule_run_forward(loop_count=1)
-
-        # Get outputs, and check them
-        from pybuda.op.eval import compare_tensor_to_golden  # avoid circular import
-        oq = backend_api.get_ordered_output_queues()
-        assert len(oq) == len(outputs)
-        calculated_outputs = BackendAPI.read_queues(oq, [g.value().shape for g in outputs], None, [False] * len(oq), single_output=True, has_microbatch_dim=False)
-
-        ok = True
-        for i, (golden, calculated) in enumerate(zip(outputs, calculated_outputs)):
-            output_tensor = calculated.value()
-            golden = golden.value().type(output_tensor.dtype)
-            output_tensor = narrow_buda_tensor_to_pytorch(output_tensor, golden.shape)
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, output_tensor, verify_cfg=verify_cfg)
-
-        BackendAPI.pop_queues(oq, single_output=True)
-
-    finally:
-        # Make sure to clean up
-        if backend_api is not None:
-            backend_api.shutdown()
-
-    assert ok, "Verify Golden: Data mismatch detected"
-
-
-def verify_net2pipe(netlist, device_yaml, cluster_cfg_yaml):
-    level = int(os.environ.get("PYBUDA_VERIFY_NET2PIPE", "0"))
-    returncode, error_message = net2pipe(netlist, device_yaml=device_yaml, cluster_cfg_yaml=cluster_cfg_yaml, stats=(level > 3), run_pipegen=(level > 1), run_blobgen=(level > 2))
-    ok = returncode == 0
-    return ok, error_message
+    assert False #Run ttnn golden

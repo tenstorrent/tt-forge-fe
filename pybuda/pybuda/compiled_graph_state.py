@@ -16,7 +16,6 @@ from pybuda.compile import CompileResults
 
 from pybuda._C import DataFormat
 from pybuda._C.graph import Graph, get_constant_input_value, get_optimizer_param_info, RuntimeTensorTransform, RuntimeTensorTransformType, Shape
-from pybuda._C.balancer import OutputHostTM
 
 import dataclasses
 from dataclasses_json import dataclass_json, config
@@ -74,8 +73,6 @@ class CompiledGraphState:
     ordered_intermediate_shapes: List[List[int]]
     ordered_output_data_formats: List[DataFormat] = field(metadata=list_as_json(DataFormat))
 
-    netlist_filename: str
-    output_host_tms: Dict[str, OutputHostTM] = field(metadata=dict_as_json(OutputHostTM))
     consteval_trace: Dict[str, Dict[str, Any]]
     post_const_eval_constants: Dict[str, torch.Tensor] = field(
         metadata=config( # For serialization of CompiledGraphState cls
@@ -104,7 +101,7 @@ class CompiledGraphState:
 
     @staticmethod
     def from_compiled_graph(device: "TTDevice", compile_results: CompileResults) -> "CompiledGraphState":
-        graph = compile_results.lowered_graph
+        graph = compile_results.final_graph
         ordered_input_names = graph.get_ordered_input_names()
         ordered_output_names = graph.get_ordered_output_names()
         ordered_input_gradient_names = graph.get_ordered_input_gradient_names()
@@ -168,9 +165,7 @@ class CompiledGraphState:
 
         consteval_trace = compile_results.pass_specific_output_kwargs["consteval_trace"]
         has_cache_buffers = False
-        for _, placement in compile_results.pass_specific_output_kwargs["placer_solution"].name_to_queue_placement.items():
-            if placement.write_only:
-                has_cache_buffers = True
+
         device_inputs = get_device_constant_and_parameters(
             device, constant_to_tensor=constant_to_tensor
         )
@@ -212,8 +207,6 @@ class CompiledGraphState:
             ordered_target_shapes=ordered_target_shapes,
             ordered_intermediate_shapes=ordered_intermediate_shapes,
             ordered_output_data_formats=ordered_output_data_formats,
-            netlist_filename=compile_results.netlist_filename,
-            output_host_tms=compile_results.pass_specific_output_kwargs["output_host_tms"],
             consteval_trace=consteval_trace,
             optimizer_param_info=optimizer_param_info,
             ordered_input_subgraph_indices=ordered_input_subgraph_indices,

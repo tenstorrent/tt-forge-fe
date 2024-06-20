@@ -105,7 +105,7 @@ std::vector<TTDevice> get_available_tt_devices() { return TorchDeviceImpl::get()
 
 struct Mallocator final : public c10::Allocator
 {
-    virtual c10::DataPtr allocate(size_t n) const
+    virtual c10::DataPtr allocate(size_t n) 
     {
         void* ptr = std::calloc(n, 1);
         return c10::DataPtr(ptr, nullptr, std::free, c10::Device(TT, 0));
@@ -116,6 +116,8 @@ struct Mallocator final : public c10::Allocator
         static std::unique_ptr<Mallocator> mallocator = std::make_unique<Mallocator>();
         return mallocator.get();
     }
+    
+    void copy_data(void* dest, const void* src, std::size_t count) const final {}
 };
 
 

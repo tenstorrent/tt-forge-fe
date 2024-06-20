@@ -21,7 +21,6 @@ from .module import Module
 from .pybudaglobal import register_device, lazy_trace_data, set_state_changed, create_queue
 from .tensor import Tensor, buda_dataformat_to_pytorch_dtype, remove_microbatch, to_pt_tensors
 from .device_connector import DeviceConnector
-from pybuda._C.backend_api import initialize_child_process, finish_child_process
 from pybuda._C.graph import RuntimeTensorTransform
 from .utils import detach_tensors
 from pybuda._C import DataFormat
@@ -685,8 +684,6 @@ class Device:
 
         atexit.register(atexit_handler, devices=(self,))
         self._init_concurrent_run()
-        initialize_child_process(output_dir)
-
         try:
             while True:
                 cmd = self.get_next_command(self.command_queue)
@@ -771,7 +768,6 @@ class Device:
         if self._sequential:
             return # notthing to clean up here if we're not multi-processing
 
-        finish_child_process()
 
     def _read_from_mp_queue(self, q: queue.Queue):
         """

@@ -29,7 +29,6 @@ import pybuda
 from pybuda.tensor import change_rank
 from pybuda.pybudaglobal import TILE_DIM
 from pybuda.utils import align_up_tile, round_up_div, align_up
-from pybuda._C.balancer import FactorizedInt
 from .transpose import TransposeTM
 from ..buda.splice import Splice
 from .nop import Nop

@@ -14,7 +14,7 @@ from multiprocessing.synchronize import Barrier as BarrierClass
 from loguru import logger
 
 from .device import Device
-from .module import Module, PyTorchModule, TFModule
+from .module import Module, PyTorchModule
 from .tensor import SomeTensor, buda_dataformat_to_pytorch_dtype, Tensor, to_pt_tensors, to_tf_variables, to_buda_tensors
 from .verify import VerifyConfig
 from .compile import CompilerConfig
@@ -679,7 +679,7 @@ class CPUDevice(Device):
             verify_cfg
         )
 
-    def _get_sequential(self) -> Union[PyTorchModule, TFModule]:
+    def _get_sequential(self) -> Union[PyTorchModule]:
         """
         Combine modules into one sequential module, if needed. Otherwise return one module.
         """
@@ -693,11 +693,6 @@ class CPUDevice(Device):
 
             if self.framework == "pytorch":
                 self.sequential_module = PyTorchModule(self.name + "_sequential", mySequential(od))
-            elif self.framework == "tensorflow":
-                model = tf.keras.Sequential()
-                for module in od.values():
-                    model.add(module)
-                self.sequential_module = TFModule(self.name + "_sequential", model)
             else:
                 raise RuntimeError(f"Unsupported framework: {self.framework}")
 
@@ -748,19 +743,9 @@ class CPUDevice(Device):
             state_dict[p] = parameters[p]
         module.module.load_state_dict(state_dict)
 
-    def update_device_parameters_tf(self, parameters: Dict[str, tf.Tensor]):
-        self.sync() # wait until queued up commands have completed
-        module: TFModule = self._get_sequential()
-        # module.module.trainable_variables = parameters
-        for param in module.module.trainable_variables:
-            name = param.name
-            param.assign(tf.convert_to_tensor(parameters[name].detach().numpy()))
-
     def update_device_parameters(self, parameters: Dict[str, torch.Tensor]):
         if self.framework == "pytorch":
             update_device_parameters_fn = self.update_device_parameters_pt
-        elif self.framework == "tensorflow":
-            update_device_parameters_fn = self.update_device_parameters_tf
 
         update_device_parameters_fn(parameters)
 
@@ -825,71 +810,6 @@ class CPUDevice(Device):
 
         module.module = module.module.to(self.device)
 
-        return outputs
-
-    def cpueval_forward_tf(self, inputs: List[torch.Tensor], parameters: Dict[str, torch.Tensor], save_for_backward: bool, targets: List[torch.Tensor] = []) -> List[torch.Tensor]:
-        """
-        Evaluate forward pass for verification
-
-        Parameters
-        ----------
-        inputs: List[torch.Tensor]
-            One input into the model (for each ordered input node)
-
-        parameters: Dict[str, torch.Tensor]
-            Map of model parameters
-
-        save_for_backward: bool
-            If set, input and output tensors will be saved so we can run the backward pass later.
-
-        targets: List[torch.Tensor], optional
-            If we're running training, and there's a loss module on this device, provide target
-
-        Returns
-        -------
-        List[Tensor]
-            Forward graph output
-        """
-        if len(self.modules) == 0:
-            raise RuntimeError("Trying to run device with no modules")
-
-        module: TFModule = self._get_sequential()
-
-        # Override parameters values
-        if len(parameters) > 0:
-            # assert False, f"TODO"
-            self.update_device_parameters_tf(parameters)
-
-        inputs = to_tf_variables(inputs)
-        if save_for_backward:
-            self._saved_fw_inputs = inputs
-
-        outputs = inputs
-        if self._training:
-            with tf.GradientTape(persistent=True) as tape:
-                [tape.watch(output) for output in outputs if output.trainable]
-                outputs = module.call(*outputs)
-
-            self.cpueval_tf_gradient_tape = tape
-        else:
-            outputs = module.call(*outputs)
-    
-        if self.loss_module:
-            if len(outputs) == 1:
-                outputs = outputs[0]
-            if len(targets) == 1:
-                targets = targets[0]
-            lout = self.loss_module.forward(outputs, targets)
-            lout = self._scale_loss * lout
-            outputs = lout
-
-        if not isinstance(outputs, tuple):
-            outputs = (outputs, )
-        
-        if save_for_backward:
-            self._saved_fw_outputs = outputs
-        
-        outputs = to_pt_tensors(outputs)
         return outputs
 
     def cpueval_forward(self, inputs: List[torch.Tensor], parameters: Dict[str, torch.Tensor], save_for_backward: bool, targets: List[torch.Tensor] = []) -> List[torch.Tensor]:
@@ -993,12 +913,8 @@ class CPUDevice(Device):
                 if self.framework is not None and self.framework != "pytorch":
                     raise RuntimeError("Cannot mix frameworks on a single CPUDevice")
                 self.framework = "pytorch"
-            elif isinstance(m, TFModule):
-                if self.framework is not None and self.framework != "tensorflow":
-                    raise RuntimeError("Cannot mix frameworks on a single CPUDevice")
-                self.framework = "tensorflow"
             else:
-                raise RuntimeError("Only PyTorch and TensorFlow modules can be placed on CPUDevices at this time.")
+                raise RuntimeError("Only PyTorch modules can be placed on CPUDevices at this time.")
 
         Device.place_module(self, module)
 

@@ -20,7 +20,6 @@ original_flags = sys.getdlopenflags()
 if (os.environ.get("PYBUDA_ENABLE_EMULATION_DEVICE") == "1"):
     sys.setdlopenflags(os.RTLD_LAZY | os.RTLD_GLOBAL)
 # Import code that requires os.RTLD_GLOBAL goes here
-from pybuda._C.backend_api import BackendType, BackendDevice, DeviceMode
 # Reset the flags to their original value
 if (os.environ.get("PYBUDA_ENABLE_EMULATION_DEVICE") == "1"):
     sys.setdlopenflags(original_flags)
@@ -168,102 +167,102 @@ def pytest_cmdline_preparse(config, args):
     pytest.skip = no_skip
     _pytest.skipping.skip = no_skip  # can't run skipped tests with decorator @pytest.mark.skip without this
 
-DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE = {
-    "gs_e150": BackendDevice.Grayskull,
-    "gs_e300": BackendDevice.Grayskull,
-    "wh_n150": BackendDevice.Wormhole_B0,
-    "wh_n300": BackendDevice.Wormhole_B0,
-    "galaxy": BackendDevice.Wormhole_B0,
-}
+# DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE = {
+#     "gs_e150": BackendDevice.Grayskull,
+#     "gs_e300": BackendDevice.Grayskull,
+#     "wh_n150": BackendDevice.Wormhole_B0,
+#     "wh_n300": BackendDevice.Wormhole_B0,
+#     "galaxy": BackendDevice.Wormhole_B0,
+# }
 
-@dataclass
-class TestDevice:
-    devtype: BackendType
-    arch: BackendDevice
-    devmode: DeviceMode
-    tti_path: str = None
+# @dataclass
+# class TestDevice:
+#     devtype: BackendType
+#     arch: BackendDevice
+#     devmode: DeviceMode
+#     tti_path: str = None
 
-    @classmethod
-    def from_str(cls, name: str, devmode: DeviceMode, tti_path: str = None, device_config=None) -> "TestDevice":
-        if name == "Golden":
-            if device_config and DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE.get(device_config, None):
-                return TestDevice(devtype=BackendType.Golden, arch=DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE[device_config], devmode=devmode, tti_path=tti_path)
-            elif "GOLDEN_WORMHOLE_B0" in os.environ:
-                return TestDevice(devtype=BackendType.Golden, arch=BackendDevice.Wormhole_B0, devmode=devmode, tti_path=tti_path)
-            elif "PYBUDA_GOLDEN_BLACKHOLE" in os.environ:
-                return TestDevice(devtype=BackendType.Golden, arch=BackendDevice.Blackhole, devmode=devmode, tti_path=tti_path)
-            return TestDevice(devtype=BackendType.Golden, arch=BackendDevice.Grayskull, devmode=devmode, tti_path=tti_path)
-        if name == "Model":
-            return TestDevice(devtype=BackendType.Model, arch=BackendDevice.Grayskull, devmode=devmode, tti_path=tti_path)
-        if name == "Versim":
-            # Set default versim device arch to Grayskull
-            versim_backend_device = BackendDevice.Grayskull
-            # If PYBUDA_VERSIM_DEVICE_ARCH is set, use that arch for Versim device
-            versim_arch_name = os.environ.get("PYBUDA_VERSIM_DEVICE_ARCH", None)
-            if versim_arch_name != None:
-                versim_backend_device = BackendDevice.from_string(versim_arch_name)
-            return TestDevice(devtype=BackendType.Versim, arch=versim_backend_device, devmode=devmode, tti_path=tti_path)
-        if name == "Emulation":
-            # Set default emulation device arch to Grayskull
-            emulation_backend_device = BackendDevice.Grayskull
-            # If PYBUDA_EMULATION_DEVICE_ARCH is set, use that arch for Emulation device
-            emulation_arch_name = os.environ.get("PYBUDA_EMULATION_DEVICE_ARCH", None)
-            if emulation_arch_name != None:
-                emulation_backend_device = BackendDevice.from_string(emulation_arch_name)
-            return TestDevice(devtype=BackendType.Emulation, arch=emulation_backend_device, devmode=devmode, tti_path=tti_path)
-        if name == "Grayskull":
-            return TestDevice(devtype=BackendType.Silicon, arch=BackendDevice.Grayskull, devmode=devmode, tti_path=tti_path)
-        if name == "Wormhole_B0":
-            return TestDevice(devtype=BackendType.Silicon, arch=BackendDevice.Wormhole_B0, devmode=devmode, tti_path=tti_path)
-        if name == "Blackhole":
-            return TestDevice(devtype=BackendType.Silicon, arch=BackendDevice.Blackhole, devmode=devmode, tti_path=tti_path)
-        raise RuntimeError("Unknown test device: " + name)
+#     @classmethod
+#     def from_str(cls, name: str, devmode: DeviceMode, tti_path: str = None, device_config=None) -> "TestDevice":
+#         if name == "Golden":
+#             if device_config and DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE.get(device_config, None):
+#                 return TestDevice(devtype=BackendType.Golden, arch=DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE[device_config], devmode=devmode, tti_path=tti_path)
+#             elif "GOLDEN_WORMHOLE_B0" in os.environ:
+#                 return TestDevice(devtype=BackendType.Golden, arch=BackendDevice.Wormhole_B0, devmode=devmode, tti_path=tti_path)
+#             elif "PYBUDA_GOLDEN_BLACKHOLE" in os.environ:
+#                 return TestDevice(devtype=BackendType.Golden, arch=BackendDevice.Blackhole, devmode=devmode, tti_path=tti_path)
+#             return TestDevice(devtype=BackendType.Golden, arch=BackendDevice.Grayskull, devmode=devmode, tti_path=tti_path)
+#         if name == "Model":
+#             return TestDevice(devtype=BackendType.Model, arch=BackendDevice.Grayskull, devmode=devmode, tti_path=tti_path)
+#         if name == "Versim":
+#             # Set default versim device arch to Grayskull
+#             versim_backend_device = BackendDevice.Grayskull
+#             # If PYBUDA_VERSIM_DEVICE_ARCH is set, use that arch for Versim device
+#             versim_arch_name = os.environ.get("PYBUDA_VERSIM_DEVICE_ARCH", None)
+#             if versim_arch_name != None:
+#                 versim_backend_device = BackendDevice.from_string(versim_arch_name)
+#             return TestDevice(devtype=BackendType.Versim, arch=versim_backend_device, devmode=devmode, tti_path=tti_path)
+#         if name == "Emulation":
+#             # Set default emulation device arch to Grayskull
+#             emulation_backend_device = BackendDevice.Grayskull
+#             # If PYBUDA_EMULATION_DEVICE_ARCH is set, use that arch for Emulation device
+#             emulation_arch_name = os.environ.get("PYBUDA_EMULATION_DEVICE_ARCH", None)
+#             if emulation_arch_name != None:
+#                 emulation_backend_device = BackendDevice.from_string(emulation_arch_name)
+#             return TestDevice(devtype=BackendType.Emulation, arch=emulation_backend_device, devmode=devmode, tti_path=tti_path)
+#         if name == "Grayskull":
+#             return TestDevice(devtype=BackendType.Silicon, arch=BackendDevice.Grayskull, devmode=devmode, tti_path=tti_path)
+#         if name == "Wormhole_B0":
+#             return TestDevice(devtype=BackendType.Silicon, arch=BackendDevice.Wormhole_B0, devmode=devmode, tti_path=tti_path)
+#         if name == "Blackhole":
+#             return TestDevice(devtype=BackendType.Silicon, arch=BackendDevice.Blackhole, devmode=devmode, tti_path=tti_path)
+#         raise RuntimeError("Unknown test device: " + name)
 
-    def is_available(self, device_list: List[BackendDevice], silicon_only: bool, no_silicon: bool, devtype: Optional[BackendType], devmode: DeviceMode) -> bool:
-        """ 
-        Return true if this kind of device is available on the current host. Expect a list of devices from 
-        `detect_available_devices`.
-        """
-        if devtype is not None and self.devtype != devtype:
-            return False
+#     def is_available(self, device_list: List[BackendDevice], silicon_only: bool, no_silicon: bool, devtype: Optional[BackendType], devmode: DeviceMode) -> bool:
+#         """ 
+#         Return true if this kind of device is available on the current host. Expect a list of devices from 
+#         `detect_available_devices`.
+#         """
+#         if devtype is not None and self.devtype != devtype:
+#             return False
 
-        if self.devtype == BackendType.Golden:
-            return not silicon_only
+#         if self.devtype == BackendType.Golden:
+#             return not silicon_only
 
-        if self.devtype == BackendType.Model:
-            return bool(int(os.environ.get("PYBUDA_ENABLE_MODEL_DEVICE", "0")))
+#         if self.devtype == BackendType.Model:
+#             return bool(int(os.environ.get("PYBUDA_ENABLE_MODEL_DEVICE", "0")))
         
-        if self.devtype == BackendType.Versim:
-            return bool(int(os.environ.get("PYBUDA_ENABLE_VERSIM_DEVICE", "0")))
+#         if self.devtype == BackendType.Versim:
+#             return bool(int(os.environ.get("PYBUDA_ENABLE_VERSIM_DEVICE", "0")))
 
-        if self.devtype == BackendType.Emulation:
-            return bool(int(os.environ.get("PYBUDA_ENABLE_EMULATION_DEVICE", "0")))
+#         if self.devtype == BackendType.Emulation:
+#             return bool(int(os.environ.get("PYBUDA_ENABLE_EMULATION_DEVICE", "0")))
 
-        if self.devtype == BackendType.Silicon:
-            compiled_arch_name = os.environ.get("BACKEND_ARCH_NAME", None) or os.environ.get("ARCH_NAME", None)
-            if compiled_arch_name == "wormhole_b0":
-                compiled_arch = BackendDevice.Wormhole_B0
-            elif compiled_arch_name == "blackhole":
-                compiled_arch = BackendDevice.Blackhole
-            else:
-                compiled_arch = BackendDevice.Grayskull
+#         if self.devtype == BackendType.Silicon:
+#             compiled_arch_name = os.environ.get("BACKEND_ARCH_NAME", None) or os.environ.get("ARCH_NAME", None)
+#             if compiled_arch_name == "wormhole_b0":
+#                 compiled_arch = BackendDevice.Wormhole_B0
+#             elif compiled_arch_name == "blackhole":
+#                 compiled_arch = BackendDevice.Blackhole
+#             else:
+#                 compiled_arch = BackendDevice.Grayskull
 
-            is_offline_silicon_compile = devmode == DeviceMode.CompileOnly and self.arch == compiled_arch
-            return (self.arch in device_list and not no_silicon) or is_offline_silicon_compile
+#             is_offline_silicon_compile = devmode == DeviceMode.CompileOnly and self.arch == compiled_arch
+#             return (self.arch in device_list and not no_silicon) or is_offline_silicon_compile
 
-        return False
+#         return False
 
-    def is_silicon(self):
-        return self.devtype == BackendType.Silicon
+#     def is_silicon(self):
+#         return self.devtype == BackendType.Silicon
 
-    def is_grayskull(self):
-        return self.arch == BackendDevice.Grayskull
+#     def is_grayskull(self):
+#         return self.arch == BackendDevice.Grayskull
     
-    def is_wormhole_b0(self):
-        return self.arch == BackendDevice.Wormhole_B0
+#     def is_wormhole_b0(self):
+#         return self.arch == BackendDevice.Wormhole_B0
     
-    def is_blackhole(self):
-        return self.arch == BackendDevice.Blackhole
+#     def is_blackhole(self):
+#         return self.arch == BackendDevice.Blackhole
 
 device_cfg_global = None
 def pytest_generate_tests(metafunc):

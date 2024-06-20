@@ -244,6 +244,9 @@ std::vector<TTDevice> query_available_tt_devices()
 {
     static std::shared_ptr<TTContext> context = std::make_shared<TTContext>();
     std::vector<TTDevice> d;
+
+    // TODO: Unhardcode
+    d.emplace_back(ARCH::WORMHOLE_B0, "", true, 0, context);
     // auto available_devices = backend::get_device_descs_for_available_devices();
     // if (available_devices.empty())
     // {
