@@ -7,7 +7,6 @@ from pybuda.tvm_utils import map_tf_dtype_to_pt
 
 import torch
 import tensorflow as tf
-import mxnet
 import numpy as np
 import math
 from loguru import logger
@@ -18,9 +17,7 @@ import json
 
 from .pybudaglobal import TILE_DIM, align_up_tile, round_up_div
 from pybuda._C import DataFormat
-from pybuda._C.backend_api import PytorchTensorDesc, TilizedTensorDesc, StrideDescriptor
 from pybuda._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
-from pybuda._C.backend_api import DramIODesc
 from pybuda.utils import detach_tensors
 from functools import reduce
 from operator import mul
@@ -204,11 +201,11 @@ class Tensor(TensorBase):
         """
         raise RuntimeError("Children should override")
 
-    def to_tensor_desc(self) -> "PytorchTensorDesc":
-        """
-        Return a tensor descriptor, with shapes, strides, and a pointer to data buffer
-        """
-        raise RuntimeError("Children should override")
+    # def to_tensor_desc(self) -> "PytorchTensorDesc":
+    #     """
+    #     Return a tensor descriptor, with shapes, strides, and a pointer to data buffer
+    #     """
+    #     raise RuntimeError("Children should override")
 
     def is_constant(self) -> bool:
         """
@@ -269,12 +266,12 @@ class Tensor(TensorBase):
         """
         return TensorFromTrace(src_op, shape, data_format)
 
-    @classmethod
-    def create_from_tensor_descriptor(cls, descriptor: "PytorchTensorDesc") -> "TensorFromDescriptor":
-        """
-        New path to creating front-end Tensor
-        """
-        return TensorFromDescriptor(descriptor)
+    # @classmethod
+    # def create_from_tensor_descriptor(cls, descriptor: "PytorchTensorDesc") -> "TensorFromDescriptor":
+    #     """
+    #     New path to creating front-end Tensor
+    #     """
+    #     return TensorFromDescriptor(descriptor)
 
 class TensorFromPytorch(Tensor):
     """
@@ -328,11 +325,11 @@ class TensorFromPytorch(Tensor):
             value, tile_broadcast_dims, squeeze, microbatch, tile_r, tile_c)
         return Tensor.create_from_torch(new_tensor)
 
-    def to_tensor_desc(self) -> "PytorchTensorDesc":
-        """
-        Creates a fully-populated descriptor if a pytorch tensor is set as value. Otherwise, an empty wrapper.
-        """
-        return pytorch_tensor_to_tensor_desc(self._value)
+    # def to_tensor_desc(self) -> "PytorchTensorDesc":
+    #     """
+    #     Creates a fully-populated descriptor if a pytorch tensor is set as value. Otherwise, an empty wrapper.
+    #     """
+    #     return pytorch_tensor_to_tensor_desc(self._value)
 
     @property
     def pt_data_format(self) -> torch.dtype:
@@ -422,24 +419,24 @@ class TensorFromTrace(Tensor):
         new_t._data_format = data_format
         return new_t
 
-    def to_tensor_desc(self, batch: int = 0, override_data_format: DataFormat = DataFormat.Invalid) -> "PytorchTensorDesc":
-        """
-        Creates a descriptor, but doesn't assign a valid data pointer.
-        Optionally modify the shape to add a batch value.
+    # def to_tensor_desc(self, batch: int = 0, override_data_format: DataFormat = DataFormat.Invalid) -> "PytorchTensorDesc":
+    #     """
+    #     Creates a descriptor, but doesn't assign a valid data pointer.
+    #     Optionally modify the shape to add a batch value.
 
-        Parameters
-        ----------
-        t: Tensor
-            Pybuda tensor to be turned into a descriptor
+    #     Parameters
+    #     ----------
+    #     t: Tensor
+    #         Pybuda tensor to be turned into a descriptor
 
-        batch: int, optional
-            If batch != 0, set batch dimension to given value
-        """
+    #     batch: int, optional
+    #         If batch != 0, set batch dimension to given value
+    #     """
 
-        if self._value:
-            return pytorch_tensor_to_tensor_desc(self._value)
+    #     if self._value:
+    #         return pytorch_tensor_to_tensor_desc(self._value)
 
-        assert False
+    #     assert False
 
     def detach(self) -> Tensor:
         if self.has_value():
@@ -461,103 +458,103 @@ class TensorFromTrace(Tensor):
     def to_framework(self, framework: str) -> "Tensor":
         return super().to_framework(framework)
 
-class TensorFromDescriptor(Tensor):
-    """
-    Tensor wrapper created from tensor descriptor
-    """
-    def __init__(self, descriptor: "PytorchTensorDesc"):
-        super().__init__()
-        self.descriptor = descriptor
-        self.requires_grad = False
+# class TensorFromDescriptor(Tensor):
+#     """
+#     Tensor wrapper created from tensor descriptor
+#     """
+#     def __init__(self, descriptor: "PytorchTensorDesc"):
+#         super().__init__()
+#         self.descriptor = descriptor
+#         self.requires_grad = False
 
-    # Cloning a tensor from descriptor creates a pytorch tensor
-    def clone(self) -> "TensorFromTorch": 
-        return Tensor.create_from_torch(self.value(clone=True))
+#     # Cloning a tensor from descriptor creates a pytorch tensor
+#     def clone(self) -> "TensorFromTorch": 
+#         return Tensor.create_from_torch(self.value(clone=True))
     
-    def has_value(self) -> bool:
-        return True
+#     def has_value(self) -> bool:
+#         return True
 
-    def value(self, clone = False) -> torch.Tensor:
-        tensor = tensor_desc_to_pytorch_tensor(self.descriptor)
-        if clone:
-            return tensor.clone()
+#     def value(self, clone = False) -> torch.Tensor:
+#         tensor = tensor_desc_to_pytorch_tensor(self.descriptor)
+#         if clone:
+#             return tensor.clone()
 
-        return tensor
+#         return tensor
 
-    def to_buda_shape(self) -> "Tensor":
-        raise RuntimeError("Tensor descriptor should not be converted to buda shape")
+#     def to_buda_shape(self) -> "Tensor":
+#         raise RuntimeError("Tensor descriptor should not be converted to buda shape")
 
-    def to_tensor_desc(self) -> "PytorchTensorDesc":
-        return self.descriptor
+#     def to_tensor_desc(self) -> "PytorchTensorDesc":
+#         return self.descriptor
 
-    # TODO: Can reinterpret shape be moved outside of this method?
-    def narrow_to_original_shape(self, original_shape: Tuple[int, ...], reinterpret_shape: Optional[Tuple[int, ...]] = None, has_microbatch_dim: bool = False, unpadded_shape: Optional[Tuple[int, ...]] = None) -> "Tensor":
-        """
-        Narrow the tensor to a smaller one, if original shape is smaller
-        """
-        assert type(original_shape) == tuple, "original_shape must be a tuple"
+#     # TODO: Can reinterpret shape be moved outside of this method?
+#     def narrow_to_original_shape(self, original_shape: Tuple[int, ...], reinterpret_shape: Optional[Tuple[int, ...]] = None, has_microbatch_dim: bool = False, unpadded_shape: Optional[Tuple[int, ...]] = None) -> "Tensor":
+#         """
+#         Narrow the tensor to a smaller one, if original shape is smaller
+#         """
+#         assert type(original_shape) == tuple, "original_shape must be a tuple"
 
-        tensor = self.value()
+#         tensor = self.value()
 
-        if self.shape.get_pytorch_shape() == original_shape and (reinterpret_shape is None or len(reinterpret_shape) == 0):
-            return Tensor.create_from_torch(tensor)
+#         if self.shape.get_pytorch_shape() == original_shape and (reinterpret_shape is None or len(reinterpret_shape) == 0):
+#             return Tensor.create_from_torch(tensor)
 
-        shape_transform = original_shape if (reinterpret_shape is None or len(reinterpret_shape) == 0) else reinterpret_shape
+#         shape_transform = original_shape if (reinterpret_shape is None or len(reinterpret_shape) == 0) else reinterpret_shape
 
-        new_shape = list(self.shape.get_pytorch_shape())
-        # Only R/C get narrowed
-        new_shape[-1] = shape_transform[-1]
-        if len(shape_transform) > 1:
-            new_shape[-2] = shape_transform[-2]
-            new_shape = (*shape_transform[:-2], new_shape[-2], new_shape[-1])
-            new_tensor = narrow_buda_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
-        else:
-            new_shape = (new_shape[-1],)
-            new_tensor = narrow_buda_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
+#         new_shape = list(self.shape.get_pytorch_shape())
+#         # Only R/C get narrowed
+#         new_shape[-1] = shape_transform[-1]
+#         if len(shape_transform) > 1:
+#             new_shape[-2] = shape_transform[-2]
+#             new_shape = (*shape_transform[:-2], new_shape[-2], new_shape[-1])
+#             new_tensor = narrow_buda_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
+#         else:
+#             new_shape = (new_shape[-1],)
+#             new_tensor = narrow_buda_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
 
-        new_tensor = new_tensor.reshape(original_shape)
+#         new_tensor = new_tensor.reshape(original_shape)
         
-        # Reshape the rest
-        return Tensor.create_from_torch(new_tensor)
+#         # Reshape the rest
+#         return Tensor.create_from_torch(new_tensor)
 
-    @property
-    def pt_data_format(self) -> torch.dtype:
-        return buda_dataformat_to_pytorch_dtype(self.descriptor.format)
+#     @property
+#     def pt_data_format(self) -> torch.dtype:
+#         return buda_dataformat_to_pytorch_dtype(self.descriptor.format)
 
-    @property
-    def data_format(self) -> DataFormat:
-        return self.descriptor.format
+#     @property
+#     def data_format(self) -> DataFormat:
+#         return self.descriptor.format
 
-    def to_format(self, data_format: DataFormat) -> "Tensor":
-        """
-        Convert this tensor to data_format
-        """
-        new_pt_tensor = self.value().type(buda_dataformat_to_pytorch_dtype(data_format))
-        new_pt_tensor.requires_grad = self.requires_grad
-        return Tensor.create_from_torch(new_pt_tensor, dev_data_format=data_format)
+#     def to_format(self, data_format: DataFormat) -> "Tensor":
+#         """
+#         Convert this tensor to data_format
+#         """
+#         new_pt_tensor = self.value().type(buda_dataformat_to_pytorch_dtype(data_format))
+#         new_pt_tensor.requires_grad = self.requires_grad
+#         return Tensor.create_from_torch(new_pt_tensor, dev_data_format=data_format)
 
-    @property
-    def shape(self):
-        return TensorShape(*self.descriptor.shape)
+#     @property
+#     def shape(self):
+#         return TensorShape(*self.descriptor.shape)
 
-    def to_framework(self, framework: str) -> "Tensor":
-        return super().to_framework(framework)
+#     def to_framework(self, framework: str) -> "Tensor":
+#         return super().to_framework(framework)
 
 
-def verify_tile_dims(data, msg = "Dim check"):
-    """ 
-    Verify that data tensor, or all tensors in data list have rows and columns divisible with tile dimensions
-    """
-    if isinstance(data, (list, tuple)):
-        for d in data:
-            verify_tile_dims(d, msg)
-        return
+# def verify_tile_dims(data, msg = "Dim check"):
+#     """ 
+#     Verify that data tensor, or all tensors in data list have rows and columns divisible with tile dimensions
+#     """
+#     if isinstance(data, (list, tuple)):
+#         for d in data:
+#             verify_tile_dims(d, msg)
+#         return
 
-    if data.shape[-1] % TILE_DIM != 0:
-        raise RuntimeError(f"{msg}: Shape {data.shape}: Column of {data.shape[-1]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
+#     if data.shape[-1] % TILE_DIM != 0:
+#         raise RuntimeError(f"{msg}: Shape {data.shape}: Column of {data.shape[-1]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
 
-    if data.shape[-2] % TILE_DIM != 0:
-        raise RuntimeError(f"{msg}: Shape {data.shape}: Row of {data.shape[-2]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
+#     if data.shape[-2] % TILE_DIM != 0:
+#         raise RuntimeError(f"{msg}: Shape {data.shape}: Row of {data.shape[-2]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
 
 def pytorch_dtype_to_buda_dataformat(dtype: torch.dtype, fp32_fallback: Optional[DataFormat] = None) -> DataFormat:
 
@@ -649,138 +646,138 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
 
     return False
 
-def pytorch_tensor_to_tensor_desc(t: torch.Tensor, df: DataFormat = None, element_size=None) -> "PytorchTensorDesc":
-    if isinstance(t, PytorchTensorDesc) or isinstance(t, TilizedTensorDesc):
-        return t
+# def pytorch_tensor_to_tensor_desc(t: torch.Tensor, df: DataFormat = None, element_size=None) -> "PytorchTensorDesc":
+#     if isinstance(t, PytorchTensorDesc) or isinstance(t, TilizedTensorDesc):
+#         return t
 
-    if not t.is_contiguous():
-        t = t.contiguous()
+#     if not t.is_contiguous():
+#         t = t.contiguous()
 
-    if df is None:
-        if t.dtype == torch.float32:
-            format = DataFormat.Float32
-        elif t.dtype == torch.bfloat16:
-            format = DataFormat.Float16_b
-        elif t.dtype == torch.float16:
-            format = DataFormat.Float16
-        elif t.dtype == torch.int32:
-            format = DataFormat.Int32
-        elif t.dtype == torch.int8:
-            format = DataFormat.Int8
-        elif t.dtype == torch.int64:
-            logger.warning("Converting int64 to int32 for tilization")
-            t = t.to(torch.int32)   # TODO: Fix this hack
-            format = DataFormat.RawUInt32
-        else:
-            raise RuntimeError("Unsupported torch tensor type for tilization: " + str(t.dtype))
-    else:
-        # If we already know dataformat, don't infer
-        format = df
+#     if df is None:
+#         if t.dtype == torch.float32:
+#             format = DataFormat.Float32
+#         elif t.dtype == torch.bfloat16:
+#             format = DataFormat.Float16_b
+#         elif t.dtype == torch.float16:
+#             format = DataFormat.Float16
+#         elif t.dtype == torch.int32:
+#             format = DataFormat.Int32
+#         elif t.dtype == torch.int8:
+#             format = DataFormat.Int8
+#         elif t.dtype == torch.int64:
+#             logger.warning("Converting int64 to int32 for tilization")
+#             t = t.to(torch.int32)   # TODO: Fix this hack
+#             format = DataFormat.RawUInt32
+#         else:
+#             raise RuntimeError("Unsupported torch tensor type for tilization: " + str(t.dtype))
+#     else:
+#         # If we already know dataformat, don't infer
+#         format = df
         
-        # Before we push the tensors to the queue, we need to make sure that the 
-        # tensors are in the right format and aligned between PyBuda and PyTorch. 
-        # If this isn't the case, expected shapes on the queues will be invalid 
-        # and the runtime will crash. 
-        #
-        # Therefore, when we know the data format, we should check if the tensor
-        # is appropriate/supported PyTorch format. If that isn't the case, we should
-        # convert it to the appropriate PyTorch aligned format.
-        pytorch_dtype = buda_dataformat_to_pytorch_dtype(format)
-        if t.dtype != pytorch_dtype:
-            logger.warning(f"Converting tensor from {t.dtype} to {pytorch_dtype}")
-            t = t.type(pytorch_dtype)
+#         # Before we push the tensors to the queue, we need to make sure that the 
+#         # tensors are in the right format and aligned between PyBuda and PyTorch. 
+#         # If this isn't the case, expected shapes on the queues will be invalid 
+#         # and the runtime will crash. 
+#         #
+#         # Therefore, when we know the data format, we should check if the tensor
+#         # is appropriate/supported PyTorch format. If that isn't the case, we should
+#         # convert it to the appropriate PyTorch aligned format.
+#         pytorch_dtype = buda_dataformat_to_pytorch_dtype(format)
+#         if t.dtype != pytorch_dtype:
+#             logger.warning(f"Converting tensor from {t.dtype} to {pytorch_dtype}")
+#             t = t.type(pytorch_dtype)
 
-    tilize_ndim = 4
-    shape = list(t.shape)
-    dim = len(shape)
-    if (dim == 2):
-        dim = 3
-    while len(shape) > tilize_ndim:
-        if shape[0] != 1:
-            raise RuntimeError("Dropping a dimension that's not 1 to reduce shape to 4D: " + str(t.shape))
-        shape = shape[1:]
+#     tilize_ndim = 4
+#     shape = list(t.shape)
+#     dim = len(shape)
+#     if (dim == 2):
+#         dim = 3
+#     while len(shape) > tilize_ndim:
+#         if shape[0] != 1:
+#             raise RuntimeError("Dropping a dimension that's not 1 to reduce shape to 4D: " + str(t.shape))
+#         shape = shape[1:]
 
-    while len(shape) < tilize_ndim:
-        shape = [1] + shape
+#     while len(shape) < tilize_ndim:
+#         shape = [1] + shape
 
-    strides = list(t.stride())
-    while len(strides) > tilize_ndim:
-        strides = strides[1:]
+#     strides = list(t.stride())
+#     while len(strides) > tilize_ndim:
+#         strides = strides[1:]
 
-    while len(strides) < tilize_ndim:
-        strides = [strides[0]] + strides
+#     while len(strides) < tilize_ndim:
+#         strides = [strides[0]] + strides
 
-    if element_size is None:
-        element_size = t.element_size()
+#     if element_size is None:
+#         element_size = t.element_size()
 
-    strides = [s * element_size for s in strides]
-    desc = PytorchTensorDesc(
-        t,
-        element_size,
-        format,
-        dim,
-        shape,
-        strides,
-    )
+#     strides = [s * element_size for s in strides]
+#     desc = PytorchTensorDesc(
+#         t,
+#         element_size,
+#         format,
+#         dim,
+#         shape,
+#         strides,
+#     )
 
-    return desc
+#     return desc
 
 
-def tensor_desc_to_pytorch_tensor(desc: "PytorchTensorDesc") -> torch.Tensor:
-    if desc.format == DataFormat.Float32:
-        dtype = torch.float32
-    elif desc.format == DataFormat.Float16_b:
-        dtype = torch.bfloat16
-    elif desc.format == DataFormat.Float16:
-        dtype = torch.float16
-    elif desc.format == DataFormat.RawUInt32:
-        dtype = torch.int
-    else:
-        raise RuntimeError(f"Unsupported tensor type({desc.format}) for untilization")
+# def tensor_desc_to_pytorch_tensor(desc: "PytorchTensorDesc") -> torch.Tensor:
+#     if desc.format == DataFormat.Float32:
+#         dtype = torch.float32
+#     elif desc.format == DataFormat.Float16_b:
+#         dtype = torch.bfloat16
+#     elif desc.format == DataFormat.Float16:
+#         dtype = torch.float16
+#     elif desc.format == DataFormat.RawUInt32:
+#         dtype = torch.int
+#     else:
+#         raise RuntimeError(f"Unsupported tensor type({desc.format}) for untilization")
 
-    t = torch.frombuffer(desc, dtype=dtype)
-    t = torch.reshape(t, desc.shape)
+#     t = torch.frombuffer(desc, dtype=dtype)
+#     t = torch.reshape(t, desc.shape)
     
-    return t
+#     return t
 
-def buffer_to_pytorch_tensor(buf_ptr:int, shape: Tuple, format: DataFormat) -> "PytorchTensorDesc":
-    """ 
-    Convert buffer point to pytorch tensor, given shape and data format.
-    The assumption is that the buffer is in row-major format.
-    """
+# def buffer_to_pytorch_tensor(buf_ptr:int, shape: Tuple, format: DataFormat) -> "PytorchTensorDesc":
+#     """ 
+#     Convert buffer point to pytorch tensor, given shape and data format.
+#     The assumption is that the buffer is in row-major format.
+#     """
 
-    tilize_ndim = 4
-    dim = len(shape)
-    while len(shape) < tilize_ndim:
-        shape = [1] + shape
-    while len(shape) > tilize_ndim:
-        if shape[0] != 1:
-            raise RuntimeError("Trimming a dimension that's not 1")
-        shape = shape[1:]
+#     tilize_ndim = 4
+#     dim = len(shape)
+#     while len(shape) < tilize_ndim:
+#         shape = [1] + shape
+#     while len(shape) > tilize_ndim:
+#         if shape[0] != 1:
+#             raise RuntimeError("Trimming a dimension that's not 1")
+#         shape = shape[1:]
 
-    if format == DataFormat.Float32:
-        element_size = 4
-    elif format == DataFormat.Float16_b:
-        element_size = 2
-    elif format == DataFormat.Float16:
-        element_size = 2
-    else:
-        raise RuntimeError("Unsupported format")
+#     if format == DataFormat.Float32:
+#         element_size = 4
+#     elif format == DataFormat.Float16_b:
+#         element_size = 2
+#     elif format == DataFormat.Float16:
+#         element_size = 2
+#     else:
+#         raise RuntimeError("Unsupported format")
 
-    strides = [element_size]
-    for i in range(tilize_ndim-1):
-        strides = [shape[-1-i] * strides[0]] + strides
+#     strides = [element_size]
+#     for i in range(tilize_ndim-1):
+#         strides = [shape[-1-i] * strides[0]] + strides
 
-    desc = PytorchTensorDesc(
-        buf_ptr,
-        element_size,
-        format,
-        dim,
-        shape,
-        strides,
-    )
+#     desc = PytorchTensorDesc(
+#         buf_ptr,
+#         element_size,
+#         format,
+#         dim,
+#         shape,
+#         strides,
+#     )
 
-    return tensor_desc_to_pytorch_tensor(desc)
+#     return tensor_desc_to_pytorch_tensor(desc)
 
 
 def pad_sparse_pytorch_tensor_to_buda(sparse: torch.Tensor) -> torch.Tensor:
@@ -1076,8 +1073,6 @@ def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
 
         elif isinstance(t, np.ndarray):
             pytorch_tensors.append(torch.Tensor(t))
-        elif isinstance(t, mxnet.ndarray.ndarray.NDArray):
-            pytorch_tensors.append(torch.Tensor(t.asnumpy()))
         elif isinstance(t, jaxlib.xla_extension.DeviceArray):
             pytorch_tensors.append(torch.Tensor(np.array(t)))
         else:
@@ -1120,8 +1115,6 @@ def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], 
 
         elif isinstance(t, np.ndarray):
             jax_tensors.append(jnp.asarray(t))
-        elif isinstance(t, mxnet.ndarray.ndarray.NDArray):
-            jax_tensors.append(jnp.asarray(t.asnumpy()))
         elif isinstance(t, jaxlib.xla_extension.DeviceArray):
             jax_tensors.append(t)
         else:
@@ -1376,49 +1369,50 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
 
     return post_const_eval_constants
 
-def _embedding_index(tensor: torch.Tensor, original_shape: Tuple[int, ...], queue: DramIODesc):
-    assert queue.data_format in [DataFormat.RawUInt8, DataFormat.RawUInt16, DataFormat.RawUInt32]
-    assert len(tensor.shape) <= 2, "Must be a 1d tensor"
-    assert len(original_shape) <= 1 or original_shape[-2] == 1, "Must be a 1d tensor"
-    assert len(original_shape) <= 2 or original_shape[-3] == 1, "Must be a 1d tensor"
+# def _embedding_index(tensor: torch.Tensor, original_shape: Tuple[int, ...], queue: DramIODesc):
+#     assert queue.data_format in [DataFormat.RawUInt8, DataFormat.RawUInt16, DataFormat.RawUInt32]
+#     assert len(tensor.shape) <= 2, "Must be a 1d tensor"
+#     assert len(original_shape) <= 1 or original_shape[-2] == 1, "Must be a 1d tensor"
+#     assert len(original_shape) <= 2 or original_shape[-3] == 1, "Must be a 1d tensor"
 
-    q_rt = queue.bufq_grid_dim_r * queue.mblock_m * queue.ublock_rt
-    w = tensor.shape[0] if len(tensor.shape) > 1 else 1
-    pad = align_up(tensor.shape[-1], TILE_DIM) - tensor.shape[-1]
-    tensor = torch.nn.functional.pad(tensor, (0, pad))
-    tensor = tensor.reshape(w, 1, 1, tensor.shape[-1])
-    tensor[:, :, :, original_shape[-1]:] = ~torch.tensor(0, dtype=tensor.dtype)
-    tensor = tensor.view(w, q_rt, -1, TILE_DIM)
-    pad = align_up(tensor.shape[-2], TILE_DIM) - tensor.shape[-2]
-    tensor = torch.nn.functional.pad(tensor, (0, 0, 0, pad))
-    tensor = tensor.view(w, q_rt, -1, TILE_DIM, TILE_DIM)
-    tensor = tensor.transpose(2, 3).view(w, 1, q_rt * TILE_DIM, -1)
+#     q_rt = queue.bufq_grid_dim_r * queue.mblock_m * queue.ublock_rt
+#     w = tensor.shape[0] if len(tensor.shape) > 1 else 1
+#     pad = align_up(tensor.shape[-1], TILE_DIM) - tensor.shape[-1]
+#     tensor = torch.nn.functional.pad(tensor, (0, pad))
+#     tensor = tensor.reshape(w, 1, 1, tensor.shape[-1])
+#     tensor[:, :, :, original_shape[-1]:] = ~torch.tensor(0, dtype=tensor.dtype)
+#     tensor = tensor.view(w, q_rt, -1, TILE_DIM)
+#     pad = align_up(tensor.shape[-2], TILE_DIM) - tensor.shape[-2]
+#     tensor = torch.nn.functional.pad(tensor, (0, 0, 0, pad))
+#     tensor = tensor.view(w, q_rt, -1, TILE_DIM, TILE_DIM)
+#     tensor = tensor.transpose(2, 3).view(w, 1, q_rt * TILE_DIM, -1)
 
-    assert len(tensor.shape) == 4, "_embedding_index: rank changed"
-    assert tensor.shape[0] == w, "_embedding_index: w changed"
-    assert tensor.shape[1] == queue.t, "_embedding_index: t changed"
-    assert tensor.shape[2] == (queue.bufq_grid_dim_r * queue.mblock_m * queue.ublock_rt * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
-    assert tensor.shape[3] == (queue.bufq_grid_dim_c * queue.mblock_n * queue.ublock_ct * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
-    return tensor
+#     assert len(tensor.shape) == 4, "_embedding_index: rank changed"
+#     assert tensor.shape[0] == w, "_embedding_index: w changed"
+#     assert tensor.shape[1] == queue.t, "_embedding_index: t changed"
+#     assert tensor.shape[2] == (queue.bufq_grid_dim_r * queue.mblock_m * queue.ublock_rt * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
+#     assert tensor.shape[3] == (queue.bufq_grid_dim_c * queue.mblock_n * queue.ublock_ct * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
+#     return tensor
 
-def _reinterpret_shape(tensor: torch.Tensor, shape: List[int], queue: DramIODesc, tile_bcast_dims: List[int]):
-    tensor = tensor.contiguous().view(shape)
-    tile_r = queue.tile_height
-    tile_c = queue.tile_width
-    microbatch = queue.input_count
-    tensor = pad_pytorch_tensor_to_buda(tensor, tile_bcast_dims, squeeze=True, microbatch=microbatch, tile_r=tile_r, tile_c=tile_c)
-    return tensor, queue
+# def _reinterpret_shape(tensor: torch.Tensor, shape: List[int], queue: DramIODesc, tile_bcast_dims: List[int]):
+#     tensor = tensor.contiguous().view(shape)
+#     tile_r = queue.tile_height
+#     tile_c = queue.tile_width
+#     microbatch = queue.input_count
+#     tensor = pad_pytorch_tensor_to_buda(tensor, tile_bcast_dims, squeeze=True, microbatch=microbatch, tile_r=tile_r, tile_c=tile_c)
+#     return tensor, queue
 
-def _prestride_shape(tensor: torch.Tensor, stride_height: int, stride_width: int, queue: DramIODesc):
-    assert stride_height == stride_width, "Backend supports only square strides for prestriding transform"
-    stride = stride_height
-    stride_desc = StrideDescriptor()
-    stride_desc.stride = stride
-    stride_desc.xy_offsets = [(x, y) for y in range(stride) for x in range(stride)]
-    queue.s_descriptor = stride_desc 
-    return tensor, queue
+# def _prestride_shape(tensor: torch.Tensor, stride_height: int, stride_width: int, queue: DramIODesc):
+#     assert stride_height == stride_width, "Backend supports only square strides for prestriding transform"
+#     stride = stride_height
+#     stride_desc = StrideDescriptor()
+#     stride_desc.stride = stride
+#     stride_desc.xy_offsets = [(x, y) for y in range(stride) for x in range(stride)]
+#     queue.s_descriptor = stride_desc 
+#     return tensor, queue
 
 def do_runtime_transform(transform, tensor, q, tile_bcast_dims):
+    assert False
     if transform.type == RuntimeTensorTransformType.EmbeddingIndex:
         return _embedding_index(tensor, transform.original_shape, q), q
     elif transform.type == RuntimeTensorTransformType.ReinterpretShape:

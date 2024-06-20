@@ -21,10 +21,6 @@ Python Runtime API
 .. automodule:: pybuda
    :members: run_inference, run_training, shutdown, initialize_pipeline, run_forward, run_backward, run_optimizer, get_parameter_checkpoint, get_parameter_gradients, update_device_parameters
 
-C++ Runtime API
-******************
-
-The BUDA Backend used by Python Runtime can be optionally used stand-alone to run pre-compiled TTI models. The API reference for stand-alone BUDA Backend Runtime can be found `here <http://yyz-webservice-02.local.tenstorrent.com/docs/budabackend-docs/>`_.
 
 Configuration and Placement
 ***************************

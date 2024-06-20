@@ -13,7 +13,6 @@ from loguru import logger
 from .ttdevice import TTDevice
 from .tensor import Tensor, pad_pytorch_tensor_to_buda
 from pybuda._C import (
-    BudaNetlist,
     link_past_cache_ios,
     move_index_to_mm_weights,
     run_post_initial_graph_passes,
@@ -22,32 +21,18 @@ from pybuda._C import (
     run_consteval_graph_pass,
     run_post_autograd_graph_passes,
     run_pre_placer_buda_passes,
-    run_post_placer_buda_passes,
-    run_pre_netlist_generation_buda_passes,
-    run_placer_buda_passes,
-    run_pre_lowering_passes,
-    lower_to_buda_netlist,
-    merge_netlists,
+    run_lower_to_mlir_passes,
     dump_graph,
     dump_epoch_type_graphs,
     dump_epoch_id_graphs,
-    is_subset_of_instructions,
-    PostPlacerConfig,
     UnsupportedHWOpsError,
-    NopInsertionInstruction,
-    PostPlacerResults
 )
 import pybuda
 from .parameter import Parameter
-from pybuda._C.backend_api import BackendOverlayCompileResult, BackendCompileFailure, BackendType, BackendDevice, DeviceConfig
 import pybuda._C.autograd as pyautograd
-import pybuda._C.balancer as pybalancer
-import pybuda._C.pattern_matcher as pypattern_matcher
-import pybuda._C.scheduler as pyscheduler
-from pybuda._C.placer import match_op_names_to_placer_overrides, PlacerConfigUpdate, PlacerSolution
 from pybuda._C.graph import Graph
 import pybuda.query as query
-from .verify import VerifyConfig, do_verify, verify_golden, verify_net2pipe, _generate_random_losses, _run_pytorch_backward, get_intermediate_tensors
+from .verify import VerifyConfig, do_verify, verify_golden, _generate_random_losses, _run_pytorch_backward, get_intermediate_tensors
 import pybuda._C.graph as pygraph
 from .config import (
     CompilerConfig,
@@ -59,7 +44,6 @@ from pybuda import PyBudaModule
 from .tensor import Tensor, to_pt_tensors, to_buda_tensors
 from . import ci, utils
 from pybuda.tools.net2reportify import net2placement
-from .backend import BackendCompileException
 
 LAST_SUCCESSFUL_STAGE = None
 def init_log_last_successful_compile_stage():
@@ -123,9 +107,7 @@ class CompileResults:
     golden_outputs: List[torch.Tensor]
     golden_intermediates: Dict[str, torch.Tensor]
     initial_graph: Graph
-    lowered_graph: Graph
-    netlist_filename: str
-    perf_model_results: Dict[str, float]
+    final_graph: Graph
 
     pass_specific_output_kwargs: Dict[str, Any] = {}
 
@@ -136,16 +118,14 @@ class CompileContext:
     inputs: Tuple[Union[Tensor, List[Any], Dict[str, Any]],...]
     compiler_cfg: CompilerConfig
     verify_cfg: VerifyConfig
-    device_cfg: DeviceConfig
     microbatch_size: int
     microbatch_count: int
     graph: Optional[Graph] = None
-    scheduler_config: Optional[pyscheduler.SchedulerConfig] = None
     losses: Optional[List[Tensor]] = None
     output_kwargs: Dict[str, Any] = field(default_factory=dict)
     targets: List[Tensor] = field(default_factory=list)
     initial_graph: Optional[Graph] = None
-    lowered_graph: Optional[Graph] = None
+    final_graph: Optional[Graph] = None
     stage: CompileDepth = CompileDepth.INIT_COMPILE
     initial_graph_copy: Optional[Graph] = None
     outputs: Tuple[Tensor, ...] = field(default_factory=tuple)
@@ -155,13 +135,7 @@ class CompileContext:
     netlist_filename: Optional[str] = None
     perf_model_results: Optional[Dict[str, float]] = None
     use_interactive_placer: bool = False
-    post_placer_results: Optional[PostPlacerResults] = None
     fracture_chip_id_assignments: Dict[str, int] = field(default_factory=dict)
-    policy_type: Optional[pybalancer.PolicyType] = None
-    placer_config_update: Optional[PlacerConfigUpdate] = None
-    post_placer_config: Optional[PostPlacerConfig] = None
-    placer_solution: Optional[PlacerSolution] = None
-    balancer_solution: Optional[pybalancer.BalancerSolution] = None
     buda_targets: List[Tensor] = field(default_factory=list)
     buda_losses: List[Tensor] = field(default_factory=list)
     placer_retry_count: int = 0
@@ -229,11 +203,7 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
         CompileDepth.AUTOGRAD: run_autograd_pass,
         CompileDepth.POST_AUTOGRAD_PASS: run_post_autograd_pass,
         CompileDepth.PRE_LOWERING_PASS: run_pre_lowering_pass,
-        CompileDepth.BUDA_GRAPH_PRE_PLACER: run_pre_placer_pass,
-        CompileDepth.BALANCER_PASS: run_balancer_and_placer,
-        CompileDepth.PRE_NETLIST_PASS: run_pre_netlist_pass,
-        CompileDepth.GENERATE_NETLIST: generate_netlist,
-        CompileDepth.BACKEND_GOLDEN_VERIFY: run_backend_golden_verify,
+        CompileDepth.FINISH_COMPILE: finish_compile,
     }
 
     while context.stage != CompileDepth.FULL:
@@ -251,29 +221,21 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
         should_early_stop_compilation = check_for_compilation_early_stop(compiler_cfg.compile_depth, current_stage)
 
         can_verify = current_stage != CompileDepth.INIT_COMPILE and current_stage != CompileDepth.PRE_LOWERING_PASS and current_stage != CompileDepth.POST_PATTERN_MATCHER
-        should_verify = (current_stage == CompileDepth.PRE_NETLIST_PASS and verify_cfg.verify_post_placer) or (current_stage == CompileDepth.POST_AUTOGRAD_PASS and verify_cfg.verify_post_autograd_passes)
+        should_verify = current_stage == CompileDepth.POST_AUTOGRAD_PASS and verify_cfg.verify_post_autograd_passes
 
-        if ci.capture_tensors() and current_stage == CompileDepth.PRE_NETLIST_PASS:
-            # We need to dump tensors during PRE_NETLIST_PASS (POST_PLACER)
-            verify_cfg.dump_tensors_path = ci.get_netlist_dir()
-            should_verify = True
 
         if (verify_cfg.verify_all or (verify_cfg.verify_last and should_early_stop_compilation) or should_verify) and can_verify:
             in_training = context.compiler_cfg.enable_training and current_stage.value >= CompileDepth.AUTOGRAD.value
-            is_buda = current_stage.value >= CompileDepth.BUDA_GRAPH_PRE_PLACER.value
 
-            if not is_buda:
-                do_verify(current_stage.name.lower(), in_training, context.graph, context.inputs, context.parameter_dict, context.input_grads, context.outputs, dev, context.intermediate_tensors, verify_cfg, is_buda, losses=context.losses, targets=context.targets)
-            else:
-                do_verify(current_stage.name.lower(), in_training, context.lowered_graph, context.inputs, context.parameter_dict, context.input_grads, context.outputs, dev, context.intermediate_tensors, verify_cfg, is_buda, losses=context.buda_losses, targets=context.buda_targets, balancer_solution=context.balancer_solution)
+            do_verify(current_stage.name.lower(), in_training, context.graph, context.inputs, context.parameter_dict, context.input_grads, context.outputs, dev, context.intermediate_tensors, verify_cfg, False, losses=context.losses, targets=context.targets)
 
         if should_early_stop_compilation:
             logger.info("Early stopping compilation at stage {}", current_stage.name.lower())
-            return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.lowered_graph, context.netlist_filename, context.perf_model_results, pass_specific_output_kwargs=context.output_kwargs)
+            return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.final_graph, pass_specific_output_kwargs=context.output_kwargs)
 
         context.stage = next_stage
 
-    return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.lowered_graph, context.netlist_filename, context.perf_model_results, pass_specific_output_kwargs=context.output_kwargs)
+    return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.final_graph, pass_specific_output_kwargs=context.output_kwargs)
 
 def pybuda_compile(
         dev: TTDevice,
@@ -333,7 +295,6 @@ def pybuda_compile(
         inputs=inputs,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        device_cfg=dev.get_device_config(compiler_cfg=compiler_cfg),
         microbatch_size=microbatch_size,
         microbatch_count=microbatch_count,
         targets=targets,
@@ -389,52 +350,13 @@ def placer_op_overrides_eval(value):
     else:
         return value
 
-def validate_override_names(graph, compiler_cfg):
-    """
-    Checks whether name in per_op overrides uses depracated naming scheme and warns user.
-
-    Parameters
-    ----------
-    graph: Graph
-        PyBuda Graph
-
-    compiler_cfg: CompilerCfg
-        Compiler configuration options
-
-    Returns
-    -------
-    None
-    """
-    from pybuda.op.common import depracated_name_dict
-
-    keys = list(compiler_cfg.balancer_op_overrides.keys())
-    keys.extend([key[0] for key in compiler_cfg.op_names_to_epoch_break if type(key) is list and type(key[0]) is str])
-    keys.extend([key[0] for key in compiler_cfg.op_names_to_chip_break if type(key) is list and type(key[0]) is str])
-    for key in keys:
-        for depracated_name in depracated_name_dict.keys():
-            if key.startswith(depracated_name):
-                new_name = key.replace(depracated_name, depracated_name_dict[depracated_name])
-                if key in compiler_cfg.balancer_op_overrides:
-                    compiler_cfg.balancer_op_overrides[new_name] = compiler_cfg.balancer_op_overrides.pop(key)
-                elif [key] in compiler_cfg.op_names_to_epoch_break:
-                    compiler_cfg.op_names_to_epoch_break.remove([key])
-                    compiler_cfg.op_names_to_epoch_break.append([new_name])
-                elif [key] in compiler_cfg.op_names_to_chip_break:
-                    compiler_cfg.op_names_to_chip_break.remove([key])
-                    compiler_cfg.op_names_to_chip_break.append([new_name])
-
-                logger.warning("Using depracated node name: {}, being replaced by: {}. Please update your test files. ", key, new_name)
-
-
 
 def generate_compile_results(
     verify_cfg = None,
     initial_graph = None,
     outputs = None,
     intermediate_tensors = None,
-    lowered_graph = None,
-    netlist_filename = None,
-    perf_model_results = None,
+    final_graph = None,
     *,
     pass_specific_output_kwargs = None,
 ):
@@ -456,7 +378,7 @@ def generate_compile_results(
     intermediate_tensors: Dict[str, Tensor]
         Intermediated tensors
 
-    lowered_graph: Graph
+    final_graph: Graph
         Buda graph
 
     netlist_filename: str
@@ -475,9 +397,7 @@ def generate_compile_results(
             initial_graph.get_node_name(node_id): tensor
             for node_id, tensor in intermediate_tensors.items() if initial_graph.has_node_with_id(node_id)
         }
-    ret.lowered_graph = lowered_graph
-    ret.netlist_filename = netlist_filename
-    ret.perf_model_results = perf_model_results
+    ret.final_graph = final_graph
 
     if outputs:
         ret.golden_outputs = [out.value() if out.has_value() else None for out in outputs]
@@ -491,7 +411,6 @@ def init_compile(context: CompileContext) -> CompileDepth:
     
     dev = context.dev
     compiler_cfg = context.compiler_cfg
-    device_cfg = context.device_cfg
     graph_name = context.graph_name
     targets = context.targets
 
@@ -507,19 +426,6 @@ def init_compile(context: CompileContext) -> CompileDepth:
 
     context.backend_output_directory = compiler_cfg.backend_output_dir
     ci.initialize_output_build_directory(context.backend_output_directory)
-
-    device_cfg = dev.get_device_config(compiler_cfg=compiler_cfg)
-    logger.info("Device grid size: r = {}, c = {}", device_cfg.grid_size.r, device_cfg.grid_size.c)
-
-    # Set global cluster descriptor file path if not provided by user (it was obtained from backend when getting device config)
-    if compiler_cfg.backend_cluster_descriptor_path == "":
-        compiler_cfg.backend_cluster_descriptor_path = device_cfg.cluster_config_yaml
-
-    if compiler_cfg.backend_device_descriptor_path == "":
-        compiler_cfg.backend_device_descriptor_path = device_cfg.device_yaml
-
-    assert len(device_cfg.chip_ids) > 0, "Trying to compile onto zero chips."
-    logger.info("Using chips: {}", device_cfg.chip_ids)
 
     # compiler_cfg is fully formed
     if "PYBUDA_LOAD_CONFIG" in os.environ:
@@ -582,7 +488,6 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")
-    validate_override_names(context.graph, context.compiler_cfg)
     if context.compiler_cfg.enable_link_past_cache_ios:
         # move index ops to weights if applicable
         move_index_to_mm_weights(context.graph)
@@ -704,12 +609,11 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     compiler_cfg = context.compiler_cfg
-    device_cfg = context.device_cfg
     dev = context.dev
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
-    run_optimization_graph_passes(graph, device_cfg)
+    run_optimization_graph_passes(graph)
     dump_graph(graph, graph_name, "optimized_graph")
 
     inserted_node_id_mapping = run_post_optimize_decompose_graph_passes(graph, compiler_cfg)
@@ -809,305 +713,17 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph = context.graph
 
-    run_pre_lowering_passes(graph)
+    run_lower_to_mlir_passes(graph)
     dump_graph(graph, graph_name, "pre_lowering")
 
     for parameter in dev.get_parameters():
         parameter._set_fp32_fallback(dev.fp32_fallback)
 
-    context.scheduler_config = pyscheduler.SchedulerConfig(
-        scheduler_policy=pyscheduler.policy_from_string(os.environ.get("PYBUDA_SCHEDULER_POLICY", compiler_cfg.scheduler_policy)),
-        scheduler_constraints=compiler_cfg.scheduler_constraints,
-    )
+    context.final_graph = graph
+    return CompileDepth.FINISH_COMPILE
 
-    context.policy_type = pybalancer.policy_from_string(os.environ.get("PYBUDA_BALANCER_POLICY_TYPE", compiler_cfg.balancer_policy))
-    context.use_interactive_placer = (
-        compiler_cfg.use_interactive_placer and
-        not (bool(int(os.environ.get("PYBUDA_DISABLE_INTERACTIVE_PLACER", "0")))) and
-        pybalancer.can_use_interactive_placer(context.policy_type)
-    )
 
-    return CompileDepth.BUDA_GRAPH_PRE_PLACER
-
-def run_pre_placer_pass(context: CompileContext) -> CompileDepth:
-    """
-    Runs pre placer passes.
-
-    Parameters
-    ----------
-    context: CompileContext
-        Compile context
-
-    Returns
-    -------
-    CompileDepth - next compile stage
-    """
-    compiler_cfg = context.compiler_cfg
-    device_cfg = context.device_cfg
-    dev = context.dev
-    graph_name = context.graph_name
-    graph = context.graph
-    scheduler_config = context.scheduler_config
-    intermediate_tensors = context.intermediate_tensors
-    outputs = context.outputs
-    losses = context.losses
-    targets = context.targets
-
-    instructions = {} if context.post_placer_results is None else context.post_placer_results.ins_instructions
-    temp_dict = {}; temp_dict.update(compiler_cfg.buffering_nops_to_insert); temp_dict.update(instructions)
-    context.lowered_graph, context.placer_config_update = run_pre_placer_buda_passes(
-            graph,
-            scheduler_config,
-            device_cfg,
-            device_cfg.chip_ids,
-            list(map(placer_breaks_eval, compiler_cfg.op_names_to_chip_break)),
-            list(map(placer_breaks_eval, compiler_cfg.op_names_to_epoch_break)),
-            compiler_cfg.op_names_dont_fuse,
-            compiler_cfg.op_names_manual_fuse,
-            context.fracture_chip_id_assignments,
-            compiler_cfg.default_df_override,
-            compiler_cfg.default_accumulate_df,
-            compiler_cfg.enable_broadcast_splitting or bool(int(os.environ.get("PYBUDA_ENABLE_BROADCAST_SPLITTING", "0"))),
-            dev.fp32_fallback,
-            compiler_cfg.default_math_fidelity,
-            compiler_cfg.enable_auto_fusing,
-            compiler_cfg.amp_level or int(os.environ.get("PYBUDA_AMP_LEVEL", "0")),
-            compiler_cfg.enable_recompute,
-            (bool(int(os.environ.get("PYBUDA_ENABLE_OUTPUT_QUEUES_ON_HOST", "1"))) and compiler_cfg.output_queues_on_host),
-            (bool(int(os.environ.get("PYBUDA_ENABLE_INPUT_QUEUES_ON_HOST", "1"))) and compiler_cfg.input_queues_on_host),
-            temp_dict,
-            compiler_cfg.insert_queues,
-            compiler_cfg.amp_properties,
-            compiler_cfg.op_intermediates_to_save,
-            context.use_interactive_placer,
-            compiler_cfg.enable_device_tilize)
-    dump_graph(context.lowered_graph, graph_name, "pre_placer")
-
-    assert(context.lowered_graph is not None)
-
-    # Convert to buda tensors - i.e. 4d / tile-snapped dims
-    def to_buda_shapes(tensors):
-        if tensors is None or not tensors:
-            return tensors
-
-        if isinstance(tensors[0], torch.Tensor):
-            return [pad_pytorch_tensor_to_buda(t, context.lowered_graph.get_tile_broadcast_dims_for_bw_input(i)) for i, t in enumerate(tensors)]
-
-        return [t.to_buda_shape(tile_broadcast_dims=context.lowered_graph.get_tile_broadcast_dims_for_target(i)) for i, t in enumerate(tensors)]
-
-    context.buda_losses = to_buda_shapes(losses)
-    context.buda_targets = to_buda_shapes(targets)
-
-    if compiler_cfg.enable_training:
-        calculate_grads(outputs, dev, intermediate_tensors, True, losses)
-
-    return CompileDepth.BALANCER_PASS
-
-def run_balancer_and_placer(context: CompileContext) -> CompileDepth:
-    """
-    Runs balancer and placer passes.
-    
-    Parameters
-    ----------
-    context: CompileContext
-
-    Returns
-    -------
-    CompileDepth - next compile stage
-    """
-
-    instructions = {} if context.post_placer_results is None else context.post_placer_results.ins_instructions
-    op_name_to_placer_overrides = match_op_names_to_placer_overrides(context.lowered_graph, list(map(placer_op_overrides_eval, context.compiler_cfg.placer_op_overrides)))
-    balancer_config = pybalancer.BalancerConfig(
-        device_config=context.device_cfg,
-        scheduler_config=context.scheduler_config,
-        policy_type=context.policy_type,
-        random_policy_seed=int(os.environ.get("PYBUDA_BALANCER_RANDOM_POLICY_SEED", 0)),
-        chip_ids=context.device_cfg.chip_ids,
-        chip_placement_policy=pybalancer.chip_placement_policy_from_string(context.compiler_cfg.chip_placement_policy),
-        enable_t_streaming = (bool(int(os.environ.get("PYBUDA_ENABLE_T_STREAMING", "0"))) or context.compiler_cfg.enable_t_streaming),
-        manual_t_streaming = context.compiler_cfg.manual_t_streaming,
-        skip_l1_usage_validation=bool(int(os.environ.get("PYBUDA_SKIP_L1_USAGE_VALIDATION", "0"))),
-        input_queues_on_host=context.compiler_cfg.input_queues_on_host,
-        output_queues_on_host=context.compiler_cfg.output_queues_on_host,
-        default_dram_parameters=(not context.verify_cfg.enabled and (context.microbatch_size == 1)) if context.compiler_cfg.default_dram_parameters is None else context.compiler_cfg.default_dram_parameters,
-        op_names_to_epoch_break=context.placer_config_update.op_names_to_epoch_break,
-        op_names_to_chip_break=context.placer_config_update.op_names_to_chip_break,
-        op_overrides=context.compiler_cfg.balancer_op_overrides,
-        op_names_to_chip_id_assignment=context.placer_config_update.op_to_chip_id_assignment,
-        op_name_to_placer_overrides=op_name_to_placer_overrides,
-        enable_auto_transposing_placement = context.compiler_cfg.enable_auto_transposing_placement,
-        graph_solver_self_cut_type = pybalancer.graph_solver_self_cut_type_from_string(os.environ.get("PYBUDA_GRAPHSOLVER_SELF_CUT_TYPE", context.compiler_cfg.graph_solver_self_cut_type)),
-        use_interactive_placer = context.use_interactive_placer,
-        enable_enumerate_u_kt = context.compiler_cfg.enable_enumerate_u_kt,
-        enable_single_buffer_fallback = context.compiler_cfg.enable_single_buffer_fallback,
-    )
-    balancer_config.target_cycles_offset = context.target_cycles_offset
-
-    try:
-        context.balancer_solution, had_balancer_attempts = run_placer_buda_passes(context.lowered_graph, balancer_config, context.fracture_chip_id_assignments, context.compiler_cfg.paddings)
-    except UnsupportedHWOpsError as e:
-        logger.warning("Found unsupported HW ops, stopping compilation early:\n{}", e)
-        assert not bool(int(os.environ.get("PYBUDA_ASSERT_UNSUPPORTED_HW_OP", "0")))
-        return CompileDepth.FULL # should be FATAL_ERROR or smth like that
-
-    context.placer_solution = context.balancer_solution.placer_solution
-    context.output_kwargs["placer_solution"] = context.placer_solution
-    context.output_kwargs["output_host_tms"] = context.balancer_solution.output_host_tms
-
-    if had_balancer_attempts:
-        dump_graph(context.lowered_graph, context.graph_name, "post_balancer_error")
-        if context.compiler_cfg.enable_training:
-            calculate_grads(context.outputs, context.dev, context.intermediate_tensors, True, context.losses)
-
-    # Golden back-end requires input and output queues to be large enough to store all inputs/outputs
-    io_queue_multiplier = context.microbatch_count if context.dev.devtype == BackendType.Golden else 2  # double-buffer on silicon
-    input_queue_multiplier = io_queue_multiplier
-    output_queue_multiplier = io_queue_multiplier
-
-    # For training, queues used across fwd & bwd must be large enough to store all microbatches
-    if context.compiler_cfg.enable_training and context.microbatch_count > 1:
-        input_queue_multiplier = max(input_queue_multiplier, context.microbatch_count)
-        # output_queue_multiplier = max(output_queue_multiplier, microbatch_count)
-
-    cross_chip_buffering = context.dev.arch == BackendDevice.Grayskull or bool(
-        int(os.environ.get("PYBUDA_WORMHOLE_PIPELINED_PLACER", "0"))
-    )
-
-    context.post_placer_config = PostPlacerConfig(
-            device_config=context.device_cfg,
-            input_queue_multiplier=input_queue_multiplier,
-            output_queue_multiplier=output_queue_multiplier,
-            microbatch_size=context.microbatch_size,
-            microbatch_count=context.microbatch_count,
-            enable_t_streaming=balancer_config.enable_t_streaming,
-            input_queues_on_host=balancer_config.input_queues_on_host,
-            output_queues_on_host=balancer_config.output_queues_on_host,
-            manual_dram_queue_placement=context.compiler_cfg.manual_dram_queue_placement,
-            enable_cross_chip_buffering=cross_chip_buffering,
-            placement_algorithm=context.compiler_cfg.dram_placement_algorithm)
-
-    allocated_blocks = context.dev.allocated_blocks
-    current_host_address = context.dev.current_host_address
-    context.post_placer_results = run_post_placer_buda_passes(context.lowered_graph, context.graph_name, context.device_cfg, context.placer_solution, context.post_placer_config, context.balancer_solution, instructions, allocated_blocks, current_host_address)
-    dump_graph(context.lowered_graph, context.graph_name, "post_placer", context.placer_solution, context.balancer_solution)
-
-    # placer_done = len(post_placer_results.ins_instructions) == len(instructions) # no new instructions
-    placer_done, _, _ = is_subset_of_instructions(context.post_placer_results.ins_instructions, instructions)
-
-    if not placer_done:
-        context.placer_retry_count += 1
-        logger.debug(f"Previous  instructions: {len(instructions)}, new instructions: {len(context.post_placer_results.ins_instructions)}")
-        logger.info(f"Placer failed, retrying loop count {context.placer_retry_count}")
-        assert context.placer_retry_count < 20, " 20 loops of placer failed - aborting compile"
-        return CompileDepth.BUDA_GRAPH_PRE_PLACER
-
-    return CompileDepth.PRE_NETLIST_PASS
-
-def run_pre_netlist_pass(context: CompileContext) -> CompileDepth:
-    """
-    Runs pre netlist passes.
-
-    Parameters
-    ----------
-    context: CompileContext
-        Compile context
-
-    Returns
-    -------
-    CompileDepth - next compile stage
-    """
-    compiler_cfg = context.compiler_cfg
-    device_cfg = context.device_cfg
-    verify_cfg = context.verify_cfg
-    dev = context.dev
-    graph_name = context.graph_name
-    lowered_graph = context.lowered_graph
-    balancer_solution = context.balancer_solution
-    placer_solution = context.placer_solution
-    post_placer_config = context.post_placer_config
-    post_placer_results = context.post_placer_results
-    inputs = context.inputs
-    parameter_dict = context.parameter_dict
-
-    if bool(int(os.environ.get("PYBUDA_REPRODUCE_SUBGRAPH", "0"))):
-        intermediates = get_intermediate_tensors(lowered_graph, inputs, parameter_dict, dev, True)
-        assert len(context.outputs) == 1, "Only single output supported for cut_graph"
-        golden_output = intermediates[os.environ.get("PYBUDA_REPRODUCE_SUBGRAPH_OUTPUT")]
-        verify_cfg.override_module_outptus = [golden_output]
-    else:
-        intermediates = {}
-
-    run_pre_netlist_generation_buda_passes(lowered_graph, graph_name, device_cfg, intermediates, placer_solution, post_placer_config, balancer_solution, post_placer_results.allocated_blocks, post_placer_results.current_host_address)
-    dump_graph(lowered_graph, graph_name, "pre_netlist")
-
-    context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(lowered_graph)
-
-    if compiler_cfg.enable_training:
-        calculate_grads(context.outputs, dev, context.intermediate_tensors, True, context.losses)
-
-    return CompileDepth.GENERATE_NETLIST
-
-def generate_netlist(context: CompileContext) -> CompileDepth:
-    """
-    Generates netlist.
-
-    Parameters
-    ----------
-    context: CompileContext
-        Compile context
-
-    Returns
-    -------
-    CompileDepth - next compile stage
-    """
-    compiler_cfg = context.compiler_cfg
-    device_cfg = context.device_cfg
-    verify_cfg = context.verify_cfg
-    dev = context.dev
-    graph_name = context.graph_name
-    lowered_graph = context.lowered_graph
-    balancer_solution = context.balancer_solution
-    placer_solution = context.placer_solution
-    post_placer_results = context.post_placer_results
-    backend_output_directory = context.backend_output_directory
-
-    logger.info("Generating Netlist")
-    net : BudaNetlist = lower_to_buda_netlist(lowered_graph, graph_name, placer_solution, balancer_solution, device_cfg.chip_ids, device_cfg, compiler_cfg.enable_forked_dram_inputs)
-    dev.compiled_netlists.append(net)
-
-    dump_epoch_type_graphs(lowered_graph, graph_name, "post_placer", placer_solution, balancer_solution)
-    dump_epoch_id_graphs(lowered_graph, graph_name, "post_placer", placer_solution, balancer_solution)
-
-    context.netlist_filename = ci.write_netlist_and_buda_envs_config(net, graph_name, backend_output_directory)
-
-    netlist_override = os.environ.get("PYBUDA_NETLIST_OVERRIDE", None)
-    if netlist_override is not None:
-        logger.info("PYBUDA_NETLIST_OVERRIDE={}", netlist_override)
-        context.netlist_filename = netlist_override
-
-    postfix = os.environ.get("PYBUDA_REPORTIFY_POSTFIX", "")
-    if len(postfix) > 0:
-        postfix = "." + postfix
-    net2placement(graph_name + postfix, context.netlist_filename, device_yaml=device_cfg.device_yaml)
-    if "PYBUDA_GENERATE_OVERRIDE_CONFIG" in os.environ:
-        generate_override_config(lowered_graph, balancer_solution, placer_solution, post_placer_results.nop_instructions, graph_name)
-
-    if verify_cfg.run_net2pipe or bool(int(os.environ.get("PYBUDA_VERIFY_NET2PIPE", "0"))):
-        logger.info("Verifying net2pipe.")
-        ok, error = verify_net2pipe(context.netlist_filename, device_cfg.device_yaml, device_cfg.cluster_config_yaml)
-        if not ok:
-            logger.error("net2pipe failed: {}", error)
-            is_error_handled = handle_backend_error(context, None)
-            assert is_error_handled, "Net2Pipe verification failed"
-
-            return context.stage
-
-        logger.info("net2pipe completed successfully!")
-
-    return CompileDepth.BACKEND_GOLDEN_VERIFY
-
-def run_backend_golden_verify(context: CompileContext) -> CompileDepth:
+def finish_compile(context: CompileContext) -> CompileDepth:
     """
     Runs backend golden verify.
 
@@ -1124,109 +740,12 @@ def run_backend_golden_verify(context: CompileContext) -> CompileDepth:
     compiler_cfg = context.compiler_cfg
     dev = context.dev
 
+    context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(context.final_graph)
     compile_results = generate_compile_results(
         verify_cfg,
         context.initial_graph_copy, context.outputs,
         context.intermediate_tensors,
-        context.lowered_graph,
-        context.netlist_filename,
-        context.post_placer_results.perf_model_results,
         pass_specific_output_kwargs = context.output_kwargs
     )
 
-    # Verify on backend golden
-    if verify_cfg.run_golden:
-        verify_golden(context.netlist_filename, compiler_cfg.enable_training, compile_results, dev, context.inputs, context.outputs, verify_cfg)
-
     return CompileDepth.FULL
-
-def handle_overlay_blob_size_error(overlay_compile_result: BackendOverlayCompileResult, values_set: Dict[str, str]) -> bool:
-    """
-    Handles overlay blob size exceeding l1 memory limitation issue.
-
-    Parameters
-    ----------
-    overlay_compile_result : BackendOverlayCompileResult
-        The result of overlay compilation that failed.
-    values_set : Dict
-        A dictionary to store environment variable updates.
-
-    Returns
-    -------
-    bool
-        True if the error is handled, otherwise False.
-    """
-
-    current_extra_blob_size = int(os.environ.get("TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE", "0"))
-
-    # Extra blob sizes needed in epochs where overlay size error occurred.
-    extra_blob_sizes = (
-        compile_result.extra_size_bytes 
-        for compile_result in overlay_compile_result.failed_compile_results_per_epoch 
-        if compile_result.failure_type == BackendCompileFailure.OverlaySize
-    )
-
-    # Get maximum extra blob size required.
-    extra_blob_size = max(extra_blob_sizes, default=0)
-    if extra_blob_size == 0:
-        return False
-
-    # Add extra overlay blob size.
-    os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = str(current_extra_blob_size + extra_blob_size)
-    values_set["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"]
-    
-    return True
-
-def handle_backend_error(context: CompileContext, ex: Optional[BackendCompileException]) -> bool:
-    """
-    If pybuda recompile is enabled, tries to handle error raised by the backend.
-
-    Parameters
-    ----------
-    context: CompileContext
-        Compile context
-
-    e: Exception
-        Exception
-
-    Returns
-    -------
-    bool - True if the error was handled and we should recompile, false otherwise
-    """
-
-    assert context is not None
-    recompile_enabled = bool(int(os.environ.get("PYBUDA_AUTO_RECOMPILE", "1")))
-    recompile_retry_limit = int(os.environ.get("PYBUDA_AUTO_RECOMPILE_RETRY_LIMIT", "10"))
-    if not recompile_enabled or context.recompile_count >= recompile_retry_limit:
-        return False
-    
-    values_set = {} # Env variables set in recompile
-    handled_error = False
-
-    if ex is not None:
-        handled_error |= handle_overlay_blob_size_error(ex.compile_result.overlay_compile_result, values_set)
-
-    target_cycles_recompile_enabled = bool(int(os.environ.get("PYBUDA_AUTO_RECOMPILE_TARGET_CYCLES", "0")))
-    if not handled_error and target_cycles_recompile_enabled:
-        # Currently only NLP and Ribbon policies are supported for recompilation.
-        # Because the only handling we do is to change the target cycles and recompile - which other policies don't use.
-        if context.policy_type not in [pybalancer.PolicyType.NLP, pybalancer.PolicyType.Ribbon]:
-            return False
-
-        # Offset target cycles for the recompile.
-        context.target_cycles_offset += int(os.environ.get("PYBUDA_TARGET_CYCLES_OFFSET", "50000"))
-        values_set["PYBUDA_TARGET_CYCLES_OFFSET"] = str(context.target_cycles_offset)
-
-        handled_error = True
-
-    if handled_error:
-        # Set the compile context to execute from pre placer stage.
-        context.stage = CompileDepth.BUDA_GRAPH_PRE_PLACER
-        context.in_recompile = True
-        context.recompile_count += 1
-
-        logger.warning("Compile failed, retrying compilation with different parameters. Retry count: {}", context.recompile_count)
-        for (key, value) in values_set.items():
-            logger.warning("Setting {} to {}", key, value)
-    
-    return handled_error

@@ -12,10 +12,8 @@ import torch
 import torch.multiprocessing as mp
 from loguru import logger
 
-from .backend import BackendAPI
-from .tensor import Tensor, pytorch_tensor_to_tensor_desc, is_equivalent_data_format, pad_pytorch_tensor_to_buda
+from .tensor import Tensor, is_equivalent_data_format, pad_pytorch_tensor_to_buda
 from .utils import detach_tensors, align_up
-from pybuda._C.backend_api import DramIODesc, PytorchTensorDesc
 from pybuda._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType, Shape
 from pybuda._C import DataFormat
 from .pybudaglobal import TILE_DIM, create_queue
@@ -118,11 +116,6 @@ class DeviceConnector:
     def transfer(self, blocking: bool):
         pass # NOP by default, implemented by some versions
 
-    def set_dram_io_pop_queues(self, _: List[DramIODesc]):
-        pass
-
-    def set_dram_io_push_queues(self, _: List[DramIODesc], __: List[List[int]], ___: Optional[List[RuntimeTensorTransform]], ____: Optional[List[Tensor]] = None):
-        pass
 
     def empty(self) -> bool:
         if self.queue is None:
@@ -172,57 +165,6 @@ class DirectPusherDeviceConnector(DeviceConnector):
             self.pusher_thread_queue = queue.Queue(maxsize=3) # don't allow pushes to go too far ahead, or we'll run out of memory
             self.pusher_thread = threading.Thread(target=self.pusher_thread_main, args=(self.pusher_thread_queue,))
             self.pusher_thread.start()
-
-    def _convert_tensor_for_tilize(self, tensor: Tensor, q: DramIODesc) -> Tensor:
-        """
-        Convert formats to closest supported format, depending on the destination queue
-        """
-        if is_equivalent_data_format(tensor.pt_data_format, q.data_format):
-            return tensor
-
-        pt_format = tensor.value().dtype
-        if not tensor.value().is_floating_point():
-            return tensor.to_format(q.data_format)
-
-        if q.data_format in [DataFormat.Float16, DataFormat.Bfp8, DataFormat.Bfp4, DataFormat.Bfp2]:
-            # tensor has to be float16
-            if pt_format != torch.float16:
-                return tensor.to_format(DataFormat.Float16)
-            return tensor
-
-        if q.data_format in [DataFormat.Float16_b, DataFormat.Bfp8_b, DataFormat.Bfp4_b, DataFormat.Bfp2_b]:
-            # tensor can be bfloat or fp32
-            if not pt_format in [torch.float32, torch.bfloat16]:
-                return tensor.to_format(DataFormat.Float16_b)
-            return tensor
-
-        # Don't know what format it is... leave as-is and let back-end convert
-        return tensor
-
-    def _embedding_index(self, tensor: torch.Tensor, original_shape: Tuple[int, ...], q: DramIODesc) -> Tensor:
-        assert q.data_format in [DataFormat.RawUInt8, DataFormat.RawUInt16, DataFormat.RawUInt32]
-        assert len(tensor.shape) <= 2, "Must be a 1d tensor"
-        assert len(original_shape) <= 1 or original_shape[-2] == 1, "Must be a 1d tensor"
-        assert len(original_shape) <= 2 or original_shape[-3] == 1, "Must be a 1d tensor"
-
-        q_rt = q.bufq_grid_dim_r * q.mblock_m * q.ublock_rt
-        w = tensor.shape[0] if len(tensor.shape) > 1 else 1
-        pad = align_up(tensor.shape[-1], TILE_DIM) - tensor.shape[-1]
-        tensor = torch.nn.functional.pad(tensor, (0, pad))
-        tensor = tensor.reshape(w, 1, 1, tensor.shape[-1])
-        tensor[:, :, :, original_shape[-1]:] = ~torch.tensor(0, dtype=tensor.dtype)
-        tensor = tensor.view(w, q_rt, -1, TILE_DIM)
-        pad = align_up(tensor.shape[-2], TILE_DIM) - tensor.shape[-2]
-        tensor = torch.nn.functional.pad(tensor, (0, 0, 0, pad))
-        tensor = tensor.view(w, q_rt, -1, TILE_DIM, TILE_DIM)
-        tensor = tensor.transpose(2, 3).view(w, 1, q_rt * TILE_DIM, -1)
-
-        assert len(tensor.shape) == 4, "_embedding_index: rank changed"
-        assert tensor.shape[0] == w, "_embedding_index: w changed"
-        assert tensor.shape[1] == q.t, "_embedding_index: t changed"
-        assert tensor.shape[2] == (q.bufq_grid_dim_r * q.mblock_m * q.ublock_rt * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
-        assert tensor.shape[3] == (q.bufq_grid_dim_c * q.mblock_n * q.ublock_ct * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
-        return tensor
 
     def _internal_push(self, tensors: List[Tensor]):
 
@@ -282,12 +224,12 @@ class DirectPusherDeviceConnector(DeviceConnector):
                 elif self.runtime_tensor_transforms[i].type == RuntimeTensorTransformType.NoTransform:
                     tensors[i] = t.to_buda_shape(self.tile_broadcast_dims[i], reinterpret_shape=None, clone=False, squeeze=True, microbatch=self.microbatch)
 
-        def to_tensor_desc(t: Union[Tensor, torch.Tensor], type: Union[DataFormat, None]) -> PytorchTensorDesc:
-            if isinstance(t, Tensor):
-                return t.to_tensor_desc()
-            return pytorch_tensor_to_tensor_desc(t, df=type)
+        # def to_tensor_desc(t: Union[Tensor, torch.Tensor], type: Union[DataFormat, None]) -> PytorchTensorDesc:
+        #     if isinstance(t, Tensor):
+        #         return t.to_tensor_desc()
+        #     return pytorch_tensor_to_tensor_desc(t, df=type)
 
-        BackendAPI.push_to_queues(self.direct_push_queues, [to_tensor_desc(t, type) for t, type in zip(tensors, tensor_dtypes)], single_input=False)
+        # BackendAPI.push_to_queues(self.direct_push_queues, [to_tensor_desc(t, type) for t, type in zip(tensors, tensor_dtypes)], single_input=False)
         self.save_tensors = tensors
 
     def push(self, tensors: List[Tensor]):
@@ -296,19 +238,6 @@ class DirectPusherDeviceConnector(DeviceConnector):
             self.pusher_thread_queue.put(tensors)
         else:
             self._internal_push(tensors)
-
-    def set_dram_io_push_queues(
-            self, direct_push_queues: List[DramIODesc],
-            tile_broadcast_dims: List[List[int]],
-            runtime_tensor_transforms: Optional[List[RuntimeTensorTransform]],
-            constant_tensors: Optional[List[Tensor]] = None,
-            tile_dims: Optional[List[List[int]]] = None):
-
-        self.direct_push_queues = direct_push_queues
-        self.tile_broadcast_dims = tile_broadcast_dims
-        self.runtime_tensor_transforms = runtime_tensor_transforms if runtime_tensor_transforms is not None else [RuntimeTensorTransform() for _ in range(len(direct_push_queues))]
-        self.constant_tensors = constant_tensors if constant_tensors is not None else [None for _ in range(len(direct_push_queues))]
-        self.tile_dims = tile_dims
 
 class DirectPopperDeviceConnector(DeviceConnector):
     """
@@ -320,26 +249,20 @@ class DirectPopperDeviceConnector(DeviceConnector):
         self.original_shapes = None
         self.runtime_tensor_transforms = None
 
-    def read(self) -> List[Tensor]:
-        assert self.direct_pop_queues is not None, "Direct pop queues have not been set"
-        if len(self.direct_pop_queues) == 0:
-            return []
-        assert self.original_shapes is not None
-        ret = BackendAPI.read_queues(self.direct_pop_queues, self.original_shapes, self.runtime_tensor_transforms, requires_grad=self.requires_grad, single_output=False, shutdown_event=self.shutdown_event, clone=False)
-        self.push_to_side_queue(ret)
-        return ret
+    # def read(self) -> List[Tensor]:
+    #     assert self.direct_pop_queues is not None, "Direct pop queues have not been set"
+    #     if len(self.direct_pop_queues) == 0:
+    #         return []
+    #     assert self.original_shapes is not None
+    #     ret = BackendAPI.read_queues(self.direct_pop_queues, self.original_shapes, self.runtime_tensor_transforms, requires_grad=self.requires_grad, single_output=False, shutdown_event=self.shutdown_event, clone=False)
+    #     self.push_to_side_queue(ret)
+    #     return ret
 
     def pop(self):
         assert self.direct_pop_queues is not None, "Direct pop queues have not been set"
         if len(self.direct_pop_queues) == 0:
             return
-        BackendAPI.pop_queues(self.direct_pop_queues, single_output=False)
-
-    def set_dram_io_pop_queues(self, direct_pop_queues: List[DramIODesc], original_shapes: List[Tuple[int, ...]], requires_grad: List[bool], runtime_tensor_transforms: Optional[List[RuntimeTensorTransform]]):
-        self.direct_pop_queues = direct_pop_queues
-        self.original_shapes = original_shapes
-        self.requires_grad = requires_grad
-        self.runtime_tensor_transforms = runtime_tensor_transforms
+        # BackendAPI.pop_queues(self.direct_pop_queues, single_output=False)
 
 class DirectPusherPopperDeviceConnector(DirectPusherDeviceConnector):
     """
@@ -351,26 +274,21 @@ class DirectPusherPopperDeviceConnector(DirectPusherDeviceConnector):
         self.original_shapes = None
         self.runtime_tensor_transforms = None
 
-    def read(self) -> List[Tensor]:
-        assert self.direct_pop_queues is not None, "Direct pop queues have not been set"
-        if len(self.direct_pop_queues) == 0:
-            return []
-        assert self.original_shapes is not None
-        ret = BackendAPI.read_queues(self.direct_pop_queues, self.original_shapes, self.runtime_tensor_transforms, requires_grad=self.requires_grad, single_output=False, shutdown_event=self.shutdown_event, clone=True)
-        self.push_to_side_queue(ret)
-        return ret
+    # def read(self) -> List[Tensor]:
+    #     assert self.direct_pop_queues is not None, "Direct pop queues have not been set"
+    #     if len(self.direct_pop_queues) == 0:
+    #         return []
+    #     assert self.original_shapes is not None
+    #     ret = BackendAPI.read_queues(self.direct_pop_queues, self.original_shapes, self.runtime_tensor_transforms, requires_grad=self.requires_grad, single_output=False, shutdown_event=self.shutdown_event, clone=True)
+    #     self.push_to_side_queue(ret)
+    #     return ret
         
     def pop(self):
         assert self.direct_pop_queues is not None, "Direct pop queues have not been set"
         if len(self.direct_pop_queues) == 0:
             return
-        BackendAPI.pop_queues(self.direct_pop_queues, single_output=False)
+        # BackendAPI.pop_queues(self.direct_pop_queues, single_output=False)
 
-    def set_dram_io_pop_queues(self, direct_pop_queues: List[DramIODesc], original_shapes: List[Tuple[int, ...]], requires_grad: List[bool], runtime_tensor_transforms: Optional[List[RuntimeTensorTransform]]):
-        self.direct_pop_queues = direct_pop_queues
-        self.original_shapes = original_shapes
-        self.requires_grad = requires_grad
-        self.runtime_tensor_transforms = runtime_tensor_transforms
 
     def transfer(self, blocking: bool):
         """

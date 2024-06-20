@@ -31,8 +31,6 @@ from pybuda.tvm_utils import flatten_inputs
 from .pybudaglobal import TILE_DIM, create_queue
 from .verify import VerifyConfig
 from .config import CompilerConfig, _get_global_compiler_config
-from .backend import BackendAPI, BackendCompileException
-from pybuda._C.backend_api import BackendDevice, BackendType, DeviceMode, StrideDescriptor, DramIODesc, DeviceConfig, get_device_descs_for_available_devices, get_custom_device_desc, get_device_cluster_yaml
 from .device_connector import (
     DeviceConnector, 
     TransferType, 
@@ -51,9 +49,9 @@ class TTDevice(Device):
             name: str, 
             num_chips: int = None,
             chip_ids: Union[List[int], List[Tuple[int]]] = None,
-            arch: Optional[BackendDevice] = None,
-            devtype: Optional[BackendType] = None, 
-            device_mode: Optional[DeviceMode] = None,
+            arch = None,
+            devtype = None, 
+            device_mode = None,
             optimizer: Optional[Optimizer] = None,
             scheduler: Optional[LearningRateScheduler] = None,
             fp32_fallback: DataFormat = DataFormat.Float16_b,
@@ -111,19 +109,19 @@ class TTDevice(Device):
         #self._perf_dump_mode: buda.PerfDumpMode = buda.PerfDumpMode.Disable
         #self._perf_desc: Optional[buda.PerfDesc] = None
 
-        self.backend_api : Optional[BackendAPI] = None
+        self.backend_api : None
 
-        self.devtype = (BackendType.Golden if PYBUDA_DEVMODE() else BackendType.Silicon) if devtype is None else devtype
-        if self.devtype != BackendType.Silicon:
-            if "GOLDEN_WORMHOLE_B0" in os.environ:
-                if arch is None:
-                    arch = BackendDevice.Wormhole_B0
-            elif "PYBUDA_GOLDEN_BLACKHOLE" in os.environ:
-                if arch is None:
-                    arch = BackendDevice.Blackhole
-            else:
-                if arch is None:
-                    arch = BackendDevice.Grayskull
+        # self.devtype = (BackendType.Golden if PYBUDA_DEVMODE() else BackendType.Silicon) if devtype is None else devtype
+        # if self.devtype != BackendType.Silicon:
+        #     if "GOLDEN_WORMHOLE_B0" in os.environ:
+        #         if arch is None:
+        #             arch = BackendDevice.Wormhole_B0
+        #     elif "PYBUDA_GOLDEN_BLACKHOLE" in os.environ:
+        #         if arch is None:
+        #             arch = BackendDevice.Blackhole
+        #     else:
+        #         if arch is None:
+        #             arch = BackendDevice.Grayskull
 
         # chip_ids        num_chips       chip_ids used
         # ---------------------------------------------
@@ -148,7 +146,6 @@ class TTDevice(Device):
         self.arch = arch
 
         # device_mode is modified when we execute device save/load
-        self.device_mode = DeviceMode.CompileAndRun if device_mode is None else device_mode
 
         self.graph = None
         self.intermediate_tensors = {}
@@ -167,11 +164,12 @@ class TTDevice(Device):
     def __repr__(self):
         return f"TTDevice '{self.name}'"
 
-    def get_device_config(self, compiler_cfg=None) -> DeviceConfig:
+    def get_device_config(self, compiler_cfg=None):
         """
         Figure out which silicon devices will be used, if in silicon mode
         """
 
+        return None
         # Call get_device_config here without device.yaml if:
         # (1) it's running on compute machine with targeting Golden backend (devtype = Golden)
         # (2) it's running on compute machine but targeting Silicon device (eg. generating TTI on compute machine)
@@ -325,10 +323,6 @@ class TTDevice(Device):
         """
         self._compiled = False
         self._compile_output = {}
-
-        if self.backend_api:
-            self.backend_api.shutdown()
-            self.backend_api = None
 
         Device.remove_modules(self)
 
@@ -824,39 +818,6 @@ class TTDevice(Device):
             device_mode_for_backend = DeviceMode.RunOnly if "PYBUDA_SKIP_BACKEND_COMPILE" in os.environ else self.device_mode
             backend_runtime_args = compiler_cfg.backend_runtime_args if "PYBUDA_FORCE_SEQUENTIAL" in os.environ else compiler_cfg.backend_runtime_args + " --concurrent-mode"
 
-            # Set some perf defaults for WH
-            if self.arch == BackendDevice.Wormhole_B0:
-                os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
-
-            try:
-                self.backend_api = BackendAPI(
-                    self.devtype,
-                    self.arch,
-                    self,
-                    self._compiled_graph_state.netlist_filename,
-                    self._compiled_graph_state,
-                    not self._sequential,
-                    None,
-                    None,
-                    compiler_cfg.performance_trace,
-                    device_mode_for_backend,
-                    verify_cfg.golden_ignore_df_precision,
-                    compiler_cfg.backend_opt_level,
-                    compiler_cfg.backend_output_dir,
-                    # for nebula+galaxy, backend_device_descriptor_path is for unharvested device_desc
-                    # creating backend with it will cause crashes when runtime tries to reset the harvested cores in nebulas
-                    # not passing device_desc allows runtime to create unharvested&harvested device_desc's for each chip
-                    compiler_cfg.backend_device_descriptor_path if "PYBUDA_NEBULA_GALAXY_PLACER" not in os.environ else "",
-                    compiler_cfg.backend_cluster_descriptor_path,
-                    backend_runtime_args)
-            except BackendCompileException as ex:
-                if compile_context is not None:
-                    if handle_backend_error(compile_context, ex):
-                        # Continue to recompile
-                        continue
-
-                raise RuntimeError("Backend compile failed!")
-
             if compile_context is not None and compile_context.recompile_count > 0:
                 logger.info("Compile successfully completed after {} retries!", compile_context.recompile_count)
 
@@ -1053,85 +1014,88 @@ class TTDevice(Device):
         """
         Return a dictionary of current parameter values for the models on this device
         """
-        self.sync() # wait until queued up commands have completed
-        assert self.backend_api is not None
-        ret = {}
-        queues = []
-        shapes = []
-        names = []
-        for module in self.modules:
-            for parameter in module.get_parameters():
-                if parameter.requires_grad:
-                    name = parameter.get_name()
-                    names.append(name)
-                    queues.append(self.backend_api.be_api.get_queue_descriptor(name))
-                    constevaled_shape = consteval_shape(self._compiled_graph_state, name, parameter.value())
-                    shapes.append(constevaled_shape)
+        assert False
+        # self.sync() # wait until queued up commands have completed
+        # assert self.backend_api is not None
+        # ret = {}
+        # queues = []
+        # shapes = []
+        # names = []
+        # for module in self.modules:
+        #     for parameter in module.get_parameters():
+        #         if parameter.requires_grad:
+        #             name = parameter.get_name()
+        #             names.append(name)
+        #             queues.append(self.backend_api.be_api.get_queue_descriptor(name))
+        #             constevaled_shape = consteval_shape(self._compiled_graph_state, name, parameter.value())
+        #             shapes.append(constevaled_shape)
 
-        values = BackendAPI.read_queues(queues, shapes, runtime_tensor_transforms=None, requires_grad= [False] * len(queues), single_output=True, rd_ptr=0, 
-                shutdown_event=self.shutdown_event, clone=True, has_microbatch_dim=False)
-        for name, value in zip(names, values):
-            if self._training:
-                ret[name] = Tensor.create_from_torch(consteval_input_bw(self._compiled_graph_state, name, value.value(), False))
-            else:
-                # We don't have a backward consteval graph recorded, return the raw paramater value
-                ret[name] = Tensor.create_from_torch(value.value())
+        # values = BackendAPI.read_queues(queues, shapes, runtime_tensor_transforms=None, requires_grad= [False] * len(queues), single_output=True, rd_ptr=0, 
+        #         shutdown_event=self.shutdown_event, clone=True, has_microbatch_dim=False)
+        # for name, value in zip(names, values):
+        #     if self._training:
+        #         ret[name] = Tensor.create_from_torch(consteval_input_bw(self._compiled_graph_state, name, value.value(), False))
+        #     else:
+        #         # We don't have a backward consteval graph recorded, return the raw paramater value
+        #         ret[name] = Tensor.create_from_torch(value.value())
 
-        return ret
+        # return ret
 
     def get_all_parameters(self) -> Dict[str, Tensor]:
-        """
-        Return a dictionary of current parameter values for the models on this device
-        """
-        self.sync() # wait until queued up commands have completed
-        assert self.backend_api is not None
-        ret = {}
-        queues = []
-        shapes = []
-        names = []
-        for name, param in self._compiled_graph_state.post_const_eval_parameters.items():
-            names.append(name)
-            queues.append(self.backend_api.be_api.get_queue_descriptor(name))
-            shapes.append(param.shape)
+        assert False
+        # """
+        # Return a dictionary of current parameter values for the models on this device
+        # """
+        # self.sync() # wait until queued up commands have completed
+        # assert self.backend_api is not None
+        # ret = {}
+        # queues = []
+        # shapes = []
+        # names = []
+        # for name, param in self._compiled_graph_state.post_const_eval_parameters.items():
+        #     names.append(name)
+        #     queues.append(self.backend_api.be_api.get_queue_descriptor(name))
+        #     shapes.append(param.shape)
 
-        values = BackendAPI.read_queues(queues, shapes, runtime_tensor_transforms=None, requires_grad= [False] * len(queues), single_output=True, rd_ptr=0, 
-                shutdown_event=self.shutdown_event, clone=True, has_microbatch_dim=False)
-        for name, value in zip(names, values):
-            if self._training:
-                ret[name] = Tensor.create_from_torch(consteval_input_bw(self._compiled_graph_state, name, value.value(), False))
-            else:
-                # We don't have a backward consteval graph recorded, return the raw paramater value
-                ret[name] = Tensor.create_from_torch(value.value())
+        # values = BackendAPI.read_queues(queues, shapes, runtime_tensor_transforms=None, requires_grad= [False] * len(queues), single_output=True, rd_ptr=0, 
+        #         shutdown_event=self.shutdown_event, clone=True, has_microbatch_dim=False)
+        # for name, value in zip(names, values):
+        #     if self._training:
+        #         ret[name] = Tensor.create_from_torch(consteval_input_bw(self._compiled_graph_state, name, value.value(), False))
+        #     else:
+        #         # We don't have a backward consteval graph recorded, return the raw paramater value
+        #         ret[name] = Tensor.create_from_torch(value.value())
 
-        return ret
+        # return ret
 
 
     def get_parameter_gradients(self) -> Dict[str, Tensor]:
-        """
-        Return a dictionary of currently accumulated gradient values for the models on this device
-        """
-        self.sync() # wait until queued up commands have completed
-        assert self.backend_api is not None
-        ret = {}
-        queues = []
-        shapes = []
-        names = []
-        for module in self.modules:
-            for parameter in module.get_parameters():
-                if parameter.requires_grad:
-                    name = parameter.get_name()
-                    queue_name = "grad_acc_" + name
-                    constevaled_shape = consteval_shape(self._compiled_graph_state, name, parameter.value())
-                    names.append(name)
-                    shapes.append(constevaled_shape)
-                    queues.append(self.backend_api.get_output_queue_descriptor(queue_name))
+        assert False
+        # """
+        # Return a dictionary of currently accumulated gradient values for the models on this device
+        # """
+        # self.sync() # wait until queued up commands have completed
+        # assert self.backend_api is not None
+        # ret = {}
+        # queues = []
+        # shapes = []
+        # names = []
+        # for module in self.modules:
+        #     for parameter in module.get_parameters():
+        #         if parameter.requires_grad:
+        #             name = parameter.get_name()
+        #             queue_name = "grad_acc_" + name
+        #             constevaled_shape = consteval_shape(self._compiled_graph_state, name, parameter.value())
+        #             names.append(name)
+        #             shapes.append(constevaled_shape)
+        #             queues.append(self.backend_api.get_output_queue_descriptor(queue_name))
 
-        values = BackendAPI.read_queues(queues, shapes, runtime_tensor_transforms=None, requires_grad = [False] * len(queues), single_output=True, rd_ptr=0,
-                shutdown_event=self.shutdown_event, clone=True, has_microbatch_dim=False)
-        for name, value in zip(names, values):
-            ret[name] = Tensor.create_from_torch(consteval_input_bw(self._compiled_graph_state, name, value.value(), False))
+        # values = BackendAPI.read_queues(queues, shapes, runtime_tensor_transforms=None, requires_grad = [False] * len(queues), single_output=True, rd_ptr=0,
+        #         shutdown_event=self.shutdown_event, clone=True, has_microbatch_dim=False)
+        # for name, value in zip(names, values):
+        #     ret[name] = Tensor.create_from_torch(consteval_input_bw(self._compiled_graph_state, name, value.value(), False))
 
-        return ret
+        # return ret
     
     def _model_pop_optimizer_state_checkpoint(self) -> Dict:
         """
@@ -1419,7 +1383,8 @@ class TTDevice(Device):
         self.intermediates_dc = OutputQueueDirectPoppperDeviceConnector(q, self.shutdown_event)
 
 
-    def get_dram_io_queues(self, queue_type: str) -> Tuple[List[DramIODesc], Optional[List[List[int]]], Optional[List], Optional[List[bool]], Optional[List[Tensor]]]:
+    def get_dram_io_queues(self, queue_type: str):
+        assert False
         """
         Returns the appropriate queue description, tile broadcast information, and original shapes, where applicable
         """
@@ -1556,7 +1521,7 @@ class TTDevice(Device):
         return TTDeviceImage.create_device_from_image(img)
 
 
-def get_backend_string(backend_type: BackendType) -> str:
+def get_backend_string(backend_type) -> str:
     BACKEND_TYPE_TO_DEVICE_GRID = {
             BackendType.Golden: "golden",
             BackendType.Model: "model",
@@ -1572,7 +1537,7 @@ def get_backend_string(backend_type: BackendType) -> str:
 
 
 def get_default_device_yaml(
-    arch: BackendDevice,
+    arch,
     device_yaml: str,
     backend_output_dir: str, 
     device_yaml_override: Optional[str],
@@ -1603,12 +1568,12 @@ def get_default_cluster_descriptor(backend_output_dir: str, backend_cluster_desc
 
     return backend_cluster_descriptor_path
 
-def get_device_config(arch: BackendDevice,
+def get_device_config(arch,
                       chip_ids: Union[List[int], List[Tuple[int]]] = None,
                       backend_cluster_descriptor_path = "",
                       backend_runtime_params_path = "",
                       store_backend_db_to_yaml = False,
-                      backend_type = BackendType.NoBackend,
+                      backend_type = None,
                       device_yaml = "",
                       backend_output_dir = "./tt_build",
                       backend_device_descriptor_path_override = None,

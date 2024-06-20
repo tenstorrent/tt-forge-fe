@@ -18,6 +18,7 @@
 #include "passes/erase_consecutive_reshape.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/erase_unnecessary_4d_tm_sequence.hpp"
+#include "passes/emit_mlir.hpp"
 #include "passes/explicate_unsqueeze.hpp"
 #include "passes/fuse_conv2d_bias.hpp"
 #include "passes/fuse_pad_conv2d.hpp"
@@ -94,7 +95,7 @@ run_post_initial_graph_passes(graphlib::Graph *graph, py::object compiler_cfg_ob
     return std::make_tuple(inserted_node_id_mapping, chip_id_assignments);
 }
 
-void run_optimization_graph_passes(graphlib::Graph *graph, const DeviceConfig &device_config)
+void run_optimization_graph_passes(graphlib::Graph *graph)
 {
     passes::print_graph(graph, "PRE OPTIMIZE");
     passes::lower_concat_to_runtime_transform(graph);
@@ -156,7 +157,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph, const DeviceConfig &d
 
     passes::hoist_transforms_to_inputs(graph);
     passes::erase_consecutive_reshape(graph, true);
-    passes::pad_output_buffer(graph, device_config);
     passes::lower_reinterpret_shape(graph);
     passes::bind_reshape_to_io(graph);
 
@@ -193,9 +193,9 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
 }
 
 // ********** Run pre-lowering passes **********
-void run_pre_lowering_passes(graphlib::Graph *graph)
+graphlib::Graph* run_lower_to_mlir_passes(graphlib::Graph *graph)
 {
-    passes::print_graph(graph, "PRE_LOWERING");
+    passes::print_graph(graph, "PRE_MLIR");
     // Recalculate shapes, and figure out implicit broadcasts that are missing
     recalculate_shapes(graph);
 
@@ -226,6 +226,10 @@ void run_pre_lowering_passes(graphlib::Graph *graph)
     // Fold tile broadcasts into reduce and inputs
     fold_tile_broadcast_ops_into_inputs(graph);
     fold_tile_broadcast_ops_into_reduce(graph);
+
+    passes::emit_mlir(graph);
+
+    return graph;
 }
 
 // ********** Run lowering passes **********

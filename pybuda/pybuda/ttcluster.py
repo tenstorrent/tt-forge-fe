@@ -14,7 +14,6 @@ from .ttdevice import TTDevice
 from .optimizers import Optimizer
 from .pybudaglobal import is_silicon
 from pybuda._C import NodeEpochType, DataFormat
-from pybuda._C.backend_api import BackendDevice, BackendType
 
 class TTCluster(TTDevice):
     """
@@ -24,8 +23,8 @@ class TTCluster(TTDevice):
     def __init__(self, 
             name: str, 
             cluster_size: int = 0,
-            arch: Optional[BackendDevice] = None,
-            devtype: Optional[BackendType] = None, 
+            arch = None,
+            devtype = None, 
             optimizer: Optional[Optimizer] = None,
             fp32_fallback: DataFormat = DataFormat.Float16_b,
             param_fp32_fallback: DataFormat = DataFormat.Float16_b,

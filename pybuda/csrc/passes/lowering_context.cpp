@@ -307,19 +307,6 @@ Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNode
         }
     }
 
-    //
-    // WA for backend/golden issue which doesn't handle ops that format convert.  This is especially exposed
-    // since we will demote F32 ops to F16b, so this workaround also demotes inputs of F32 to F16b which
-    // enables our current test suite to pass.
-    //
-    // tenstorrent/budabackend#274
-    //
-    /*if (new_node->node_type() == NodeType::kInput and new_node->output_df() == DataFormat::Float32) {
-        new_node->set_output_df(DataFormat::Float16_b);
-        log_warning(
-            LogGraphCompiler,
-            "Demoting f32 input to f16b tenstorrent/budabackend#274");
-    }*/
     return new_node;
 }
 

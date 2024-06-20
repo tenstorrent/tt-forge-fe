@@ -19,7 +19,7 @@ void lower_reshape(graphlib::Graph *, graphlib::OpNode *node);  // unused
 std::tuple<std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>>, passes::FractureChipIdAssignments>
 run_post_initial_graph_passes(
     graphlib::Graph *graph, py::object compiler_cfg_object, passes::FractureGroups const &fracture_groups);
-void run_optimization_graph_passes(graphlib::Graph *graph, const DeviceConfig &device_config);
+void run_optimization_graph_passes(graphlib::Graph *graph);
 std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_optimize_decompose_graph_passes(
     graphlib::Graph *graph, py::object compiler_cfg_object);
 std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_graph_passes(
@@ -50,6 +50,6 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
     bool enable_device_tilize = false);
 
 // Pre-lowering passes, last-minute changes before going to buda ops
-void run_pre_lowering_passes(graphlib::Graph *graph);
+graphlib::Graph* run_lower_to_mlir_passes(graphlib::Graph *graph);
 
 }

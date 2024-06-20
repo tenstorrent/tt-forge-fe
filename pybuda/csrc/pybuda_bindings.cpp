@@ -28,7 +28,6 @@ namespace py = pybind11;
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
-
 namespace tt {
 
 PYBIND11_MODULE(_C, m) {
@@ -42,6 +41,15 @@ PYBIND11_MODULE(_C, m) {
     m.attr("VERSION") = py::int_(1);
 
     m.attr("k_dim") = py::int_(passes::k_dim);
+
+    py::enum_<tt::ARCH>(m, "Arch")
+        .value("JAWBRIDGE", tt::ARCH::JAWBRIDGE)
+        .value("GRAYSKULL", tt::ARCH::GRAYSKULL)
+        .value("WORMHOLE", tt::ARCH::WORMHOLE)
+        .value("WORMHOLE_B0", tt::ARCH::WORMHOLE_B0)
+        .value("BLACKHOLE", tt::ARCH::BLACKHOLE)
+        .value("Invalid", tt::ARCH::Invalid)
+        .export_values();
 
     py::enum_<tt::DataFormat>(m, "DataFormat")
         .value("Float32", tt::DataFormat::Float32)
@@ -166,7 +174,7 @@ PYBIND11_MODULE(_C, m) {
         py::arg("op_intermediates_to_save") = std::vector<std::string>{},
         py::arg("use_interactive_placer") = true,
         py::arg("enable_device_tilize") = false);
-    m.def("run_pre_lowering_passes", &run_pre_lowering_passes);
+    m.def("run_lower_to_mlir_passes", &run_lower_to_mlir_passes);
 
     m.def(
         "dump_graph",

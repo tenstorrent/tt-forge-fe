@@ -8,10 +8,7 @@ import pkg_resources
 from typing import Tuple, Dict, List, Optional, Union, Set
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from pybuda._C import DataFormat, MathFidelity, NopInsertionInstruction, AMPNodeProperties, DramQueueConfigOverride
-import pybuda._C.balancer as pybalancer
-import pybuda._C.placer as pyplacer
-from pybuda._C.backend_api import DeviceMode, load_cached_sys_param
+from pybuda._C import DataFormat, MathFidelity, AMPNodeProperties
 import pybuda.query as query
 from dataclasses_json import dataclass_json, config
 
@@ -29,12 +26,8 @@ class CompileDepth(Enum):
     AUTOGRAD = 6
     POST_AUTOGRAD_PASS = 7
     PRE_LOWERING_PASS = 8
-    BUDA_GRAPH_PRE_PLACER = 9
-    BALANCER_PASS = 10
-    PRE_NETLIST_PASS = 11
-    GENERATE_NETLIST = 12
-    BACKEND_GOLDEN_VERIFY = 13
-    FULL = 14
+    FINISH_COMPILE = 9
+    FULL = 10
 
     @classmethod
     def has_value(cls, value):
@@ -77,45 +70,6 @@ class PerfTraceLevel(Enum):
 
         raise RuntimeError("Unsupported level")
 
-class PlacerOpOverridesAsJson:
-    @classmethod
-    def to_json(cls, value):
-        assert type(value) is tuple
-        if type(value[0]) is str:
-            lhs = value[0]
-        else:
-            lhs = value[0].to_json()
-        return [lhs, value[1].to_json()]
-
-    @classmethod
-    def from_json(cls, value):
-        assert type(value) is list
-        if type(value[0]) is str:
-            lhs = value[0]
-        else:
-            lhs = value[0].to_json()
-        return [lhs, pyplacer.OpOverride.from_json(value[1])]
-
-class PlacerBreaksAsJson:
-    @classmethod
-    def to_json(cls, value):
-        if type(value) is query.NodePredicateBuilder:
-            return value.to_json()
-        elif type(value) is list:
-            return [PlacerBreaksAsJson.to_json(v) for v in value]
-        else:
-            assert type(value) is str
-            return value
-
-    @classmethod
-    def from_json(cls, value):
-        if type(value) is dict:
-            return query.NodePredicateBuilder.from_json(value)
-        elif type(value) is list:
-            return [PlacerBreaksAsJson.from_json(v) for v in value]
-        else:
-            assert type(value) is str
-            return value
 
 
 class TTIDumpFormat(Enum):
@@ -188,7 +142,7 @@ class CompilerConfig:
 
     enable_conv_prestride: bool = True      # Enables a transform for conv that directly reads input, such that it goes from stride > 1 to stride = 1
                                             # This usually translates to lower DRAM BW and less math as the input better populates tiles
-                                            # More can be found here: tenstorrent/budabackend#957
+
     max_pool_add_sub_surround: bool = False         # Add add op before, and subtract op after max_pool during the decomposition. The reason for 
                                                     # adding it is to tangle with negative values for max_pool, as current decomposition uses sparse
                                                     # matmul which is padded with 0. Therefore, 0 will be maximum value when max_pool is run - which 
@@ -201,13 +155,9 @@ class CompilerConfig:
     enable_forked_dram_inputs = False # If true, enables forked_dram_inputs optimization
 
     chip_placement_policy: str = "MMIO_LAST"       # how to order the given chip ids for placement
-    op_names_to_epoch_break: List[Union[query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]] = field(default_factory=list, metadata=list_as_json(PlacerBreaksAsJson))   # Each op in the list will be placed on a new epoch
-    op_names_to_chip_break: List[Union[query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]] = field(default_factory=list, metadata=list_as_json(PlacerBreaksAsJson)) # Each op in the list will be placed on a new chip
     op_names_dont_fuse: List[str] = field(default_factory=lambda: list())           # A list of ops to disable being fused
     op_names_manual_fuse: List[str] = field(default_factory=lambda: list())          # A list of ops to allow being fused, non specified ops will no longer participate in fusion
-    balancer_op_overrides: Dict[str, pybalancer.OpOverride] = field(default_factory=lambda: dict(), metadata=dict_as_json(pybalancer.OpOverride))  # User override of op balancer attributes (i.e. grid sizes)
     default_dram_parameters: Optional[bool] = None # If set to true/false, place parameters in dram by default i.e. prologue=False/True, if it's None we refer to microbatch-size to set prologue config
-    placer_op_overrides: List[Tuple[Union[str, query.NodePredicateBuilder], pyplacer.OpOverride]] = field(default_factory=list, metadata=list_as_json(PlacerOpOverridesAsJson))
     default_df_override: Optional[DataFormat] = field(default=None, metadata=optional_as_json(DataFormat)) # Default override for all node data formats, None means automatically inferred
     default_accumulate_df: Optional[DataFormat] = field(default=None, metadata=optional_as_json(DataFormat)) # Accumulation format, for chips that support it
     enable_broadcast_splitting: bool = False  # if true, large broadcasts will be split into multiple edges with nops between them
@@ -226,7 +176,6 @@ class CompilerConfig:
     enable_stable_softmax: bool = True
     enable_single_buffer_fallback: bool = False
 
-    device_mode: DeviceMode = field(default=DeviceMode.CompileAndRun, metadata=as_json(DeviceMode))
     backend_opt_level: int = 4 # backend optimization level
     backend_output_dir: str = field(default_factory=lambda: resolve_output_build_directory()) # backend compile and perf trace output directory
     backend_device_descriptor_path: str = ""
@@ -236,15 +185,12 @@ class CompilerConfig:
     store_backend_db_to_yaml: bool = False # whether to dump the backend DB to a yaml file or not
     input_queues_on_host: bool = True # whether to place input queues on device
     output_queues_on_host: bool = True # whether to place output queues on device
-    manual_dram_queue_placement: Dict[str, DramQueueConfigOverride] =  field(default_factory=lambda: dict(), metadata=dict_as_json(DramQueueConfigOverride)) # manual dram queue placements to target specific chip/dram chan
-    buffering_nops_to_insert: Dict[Tuple[str,str,int,int],NopInsertionInstruction] = field(default_factory=lambda: dict(), metadata=dict_as_json(NopInsertionInstruction))
     insert_queues: List[Tuple[str, str, int]] = field(default_factory=lambda: list(), metadata=list_as_json(tuple)) # Insert queues between (producer_op_name, consumer_op_name, input_port_id)
     amp_properties: List[AMPNodeProperties] = field(default_factory=lambda: list(), metadata=list_as_json(AMPNodeProperties))
     scheduler_constraints: List[List[str]] = field(default_factory=lambda: list())
     paddings: Dict[str, bool] = field(default_factory=lambda: dict())
     op_intermediates_to_save: List[str] = field(default_factory=lambda: list()) # list of tagged ops that will spill its output to queue
     tti_dump_format: TTIDumpFormat = field(default=TTIDumpFormat.DEFAULT, metadata=as_json(TTIDumpFormat))
-    dram_placement_algorithm: pyplacer.DRAMPlacementAlgorithm = field(default=pyplacer.DRAMPlacementAlgorithm.ROUND_ROBIN, metadata=as_json(pyplacer.DRAMPlacementAlgorithm))
 
     # TODO: add reportify dir
 
@@ -398,14 +344,6 @@ class CompilerConfig:
             assert isinstance(op_names[0], str)
             self.op_names_manual_fuse.extend(op_names)
 
-    def balancer_op_override(self, op_name: str, attribute: str, value):
-        op_override = self.balancer_op_overrides.get(op_name, pybalancer.OpOverride())
-        if isinstance(value, dict):
-            current_value = getattr(op_override, attribute) or dict()
-            value = {**current_value, **value}
-        setattr(op_override, attribute, value)
-        self.balancer_op_overrides[op_name] = op_override
-
     def save_intermediates(self) -> bool:
         return len(self.op_intermediates_to_save) > 0
 
@@ -462,7 +400,6 @@ def set_configuration_options(
         op_intermediates_to_save: Optional[List[str]] = None,
         enable_enumerate_u_kt: Optional[bool] = None,
         enable_device_tilize: Optional[bool] = None,
-        dram_placement_algorithm: Optional[pyplacer.DRAMPlacementAlgorithm] = None,
         chip_placement_policy: Optional[str] = None,
         enable_forked_dram_inputs: Optional[bool] = None,
         device_config: Optional[str] = None):
@@ -627,17 +564,8 @@ def set_configuration_options(
         g_compiler_config.enable_device_tilize = enable_device_tilize
     if chip_placement_policy is not None:
         g_compiler_config.chip_placement_policy = chip_placement_policy
-    if dram_placement_algorithm is not None:
-        g_compiler_config.dram_placement_algorithm = dram_placement_algorithm
     if enable_forked_dram_inputs is not None:
         g_compiler_config.enable_forked_dram_inputs = enable_forked_dram_inputs 
-    if device_config is not None:
-        if device_config in supported_backend_configurations and pkg_resources.resource_exists("pybuda", supported_backend_configurations[device_config]):
-            g_compiler_config.backend_runtime_params_path = pkg_resources.resource_filename("pybuda", supported_backend_configurations[device_config])
-            cached_syslevel_runtime_param = load_cached_sys_param(g_compiler_config.backend_runtime_params_path)
-            g_compiler_config.harvesting_mask = int(cached_syslevel_runtime_param["system-device0-harvesting_mask"])
-        else:
-            raise RuntimeError(f"Unsupported backend device configuration: {device_config}. Valid options are: [{', '.join(supported_backend_configurations.keys())}]")
 
 def set_epoch_break(op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]):
     """
@@ -897,58 +825,6 @@ def insert_fracture_group(nodes: List[Union[str, Tuple[str, Union[int, List[int]
             dict_chip_ids[name] = chip_ids
         chip_ids = dict_chip_ids
     g_compiler_config.fracture_groups.append((nodes, chip_ids))
-
-
-def override_op_placement(
-        op_name: Union[str, query.NodePredicateBuilder],
-        *,
-        start: Tuple[int, int] = None,
-        transpose_op = False,
-        chip_id: Optional[int] = None,
-        spatial_epoch_break: bool = False,
-        temporal_epoch_break: bool = False,
-    ):
-    """
-    Override op_placement to provide to the placer.  Node that successive calls with the same node name or overlapping predicate match will throw an error.
-
-    Parameters
-    ----------
-    op_name: str
-        op name
-
-    start: Tuple[int, int]
-        Override the start grid-location for an op
-
-    transpose_op: bool
-        whether to manually transpose this op
-
-    chip_id: int
-        pin this op to a specific chip id. Only Wormhole_B0 is supported for now.
-
-    spatial_epoch_break: bool
-        Create a new spatial epoch and place `op_name` as the first op in the new epoch.
-
-    temporal_epoch_break: bool
-        Create a new spatial epoch and place `op_name` as the first op in the new epoch.
-        This new spatial epoch will be placed on a new temporal epoch.
-
-    """
-    assert isinstance(op_name, str) or isinstance(op_name, query.NodePredicateBuilder), f"parameter `op_name` should be a string or NodePredicateBuilder. User provided `op_name`: {op_name}"
-    assert isinstance(transpose_op, bool), f"parameter `tranpose_op` should be a bool. User provided `transpose_op`: {transpose_op}"
-    if start is not None:
-        assert isinstance(start, Iterable), f"parameter `start` should be an iterable. User provided `start`: {start}"
-        assert len(start) == 2, f"parameter `start` should have two elements. User provided `start` with {len(start)} elements"
-
-    global g_compiler_config
-    g_compiler_config.placer_op_overrides.append((op_name, pyplacer.OpOverride(start, transpose_op, chip_id, temporal_epoch_break)))
-
-    if temporal_epoch_break:
-        set_epoch_break(op_name)
-    if spatial_epoch_break:
-        if g_compiler_config.use_interactive_placer == False or "PYBUDA_DISABLE_INTERACTIVE_PLACER" in os.environ:
-            set_epoch_break(op_name)
-        else:
-            set_chip_break(op_name)
 
 
 def __insert_nop_impl(

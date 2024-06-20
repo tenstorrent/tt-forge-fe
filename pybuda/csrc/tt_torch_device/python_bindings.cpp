@@ -4,6 +4,7 @@
 #include "tt_torch_device/python_bindings.hpp"
 #include "tt_torch_device/tt_device.hpp"
 #include "pybuda/csrc/python_bindings_common.hpp"
+#include "pybuda/csrc/backend_api/arch_type.hpp"
 
 
 namespace tt {
@@ -63,8 +64,8 @@ void TorchDeviceModule(py::module &m_torch_device)
         .def_readonly("parameters", &tt::Workload::parameters)
         .def_readonly("outputs", &tt::Workload::outputs);
 
-    py::class_<tt::TTDevice>(m_torch_device, "TTDevice")
-        .def_readonly("arch", &tt::TTDevice::arch)
+    py::class_<tt::TTDevice>tt_device (m_torch_device, "TTDevice");
+    tt_device.def_readonly("arch", &tt::TTDevice::arch)
         .def_readonly("mmio", &tt::TTDevice::mmio)
         .def_readonly("index", &tt::TTDevice::index)
         .def_readonly("input_runtime_transforms", &tt::TTDevice::input_runtime_transforms)

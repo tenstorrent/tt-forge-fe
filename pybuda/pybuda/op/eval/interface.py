@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 from typing import List, Tuple, Dict, Union, Optional
-from pybuda._C.balancer import OpModel, OpShape
 from pybuda._C.graph import NodeContext, OpType
 from pybuda._C.passes import LoweringContext, DecomposingContext
 from pybuda._C.autograd import AutogradContext
@@ -218,13 +217,13 @@ class BudaOp(OpTypeWrapper):
     ) -> Tuple[Tuple[int], List[int]]:
         raise NotImplemented()
 
-    def parallelization(self, op_shape: OpShape, fracture_factor: int) -> Tuple[int]:
+    def parallelization(self, op_shape, fracture_factor) -> Tuple[int]:
         raise NotImplemented()
 
     def input_ublock_order(self, num_tensors: int):
         raise NotImplemented()
 
-    def execution_cycles(self, arch_name: str, op_model: OpModel) -> int:
+    def execution_cycles(self, arch_name, op_model) -> int:
         raise NotImplemented()
 
     def is_tm(self) -> bool:

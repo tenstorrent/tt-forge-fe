@@ -231,7 +231,7 @@ struct DeviceConfig
 
     std::size_t get_clock_freq() const
     {
-        return 1000000000;  // tenstorrent/budabackend#1912
+        return 1000000000;
     }
     std::uint32_t get_host_memory_num_channels() const
     {
@@ -261,12 +261,11 @@ struct DeviceConfig
     std::size_t get_l1_dram_io_backend_reserved_size() const
     {
         // Get this number from DB query:
-        // tenstorrent/budabackend#1979
         return 100 * 1024;
     }
     std::size_t get_noc_bandwidth_bytes_per_cycle() const
     {
-        return 32;  // tenstorrent/budabackend#1912
+        return 32;
     }
     std::uint32_t get_dram_num_channels() const { return get<std::uint32_t>("dram-num_channels", false); }
     std::uint32_t get_dram_num_subchannels() const

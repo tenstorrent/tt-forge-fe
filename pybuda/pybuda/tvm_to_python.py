@@ -9,11 +9,8 @@ from loguru import logger
 
 import torch
 import numpy as np
-import tensorflow as tf
-import onnx
-import mxnet as mx
 
-import pybuda._C.pattern_matcher as pypattern_matcher
+# import pybuda._C.pattern_matcher as pypattern_matcher
 from pybuda.module import OnnxModule, PyBudaModule, TFLiteModule
 from pybuda.config import _get_global_compiler_config
 from pybuda.verify.config import _get_global_verify_config
@@ -1993,110 +1990,110 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
         submodule = False
         param_names = {}
         const_names = {}
-        if compiler_cfg.tvm_module_to_num_patterns.get(framework_mod.get_name(), None):
-            match_subgraph_patterns = compiler_cfg.tvm_module_to_num_patterns[framework_mod.get_name()]
+        # if compiler_cfg.tvm_module_to_num_patterns.get(framework_mod.get_name(), None):
+        #     match_subgraph_patterns = compiler_cfg.tvm_module_to_num_patterns[framework_mod.get_name()]
             
-            ret = pypattern_matcher.lower_json_to_pattern_matcher(graph, match_subgraph_patterns)
-            subgraph_matches = ret.subgraph_matches
+        #     ret = pypattern_matcher.lower_json_to_pattern_matcher(graph, match_subgraph_patterns)
+        #     subgraph_matches = ret.subgraph_matches
             
-            if len(subgraph_matches) > 1:
-                submodule = True
+        #     if len(subgraph_matches) > 1:
+        #         submodule = True
 
-                matched_params = {}
-                matched_consts = {}
-                matched_ops = {}
-                submodule_input_ports = {}
-                submodule_outputs = {}
-                submodule_outputs_requiring_batch_dim_fix = []
-                submodule_output_shapes = {}
+        #         matched_params = {}
+        #         matched_consts = {}
+        #         matched_ops = {}
+        #         submodule_input_ports = {}
+        #         submodule_outputs = {}
+        #         submodule_outputs_requiring_batch_dim_fix = []
+        #         submodule_output_shapes = {}
 
-                # Collect submodule IOs
-                for orig_nid in subgraph_matches[0].keys():
-                    node = graph["nodes"][orig_nid]
-                    if "num_inputs" in node["attrs"]:
-                        for input_port in range(int(node["attrs"]["num_inputs"])):
-                            if node["inputs"][input_port][0] not in subgraph_matches[0]:
-                                submodule_input_ports[orig_nid] = input_port
+        #         # Collect submodule IOs
+        #         for orig_nid in subgraph_matches[0].keys():
+        #             node = graph["nodes"][orig_nid]
+        #             if "num_inputs" in node["attrs"]:
+        #                 for input_port in range(int(node["attrs"]["num_inputs"])):
+        #                     if node["inputs"][input_port][0] not in subgraph_matches[0]:
+        #                         submodule_input_ports[orig_nid] = input_port
 
-                    node = graph["nodes"][orig_nid]
-                    if "users" in node:
-                        for user in node["users"]:
-                            if user not in subgraph_matches[0] and node["op"] != "*":
-                                submodule_outputs[node["nid"]] = node["buda_name"]
-                                if node["buda_shape"][0] != 1:
-                                    submodule_outputs_requiring_batch_dim_fix.append(node["buda_name"])
+        #             node = graph["nodes"][orig_nid]
+        #             if "users" in node:
+        #                 for user in node["users"]:
+        #                     if user not in subgraph_matches[0] and node["op"] != "*":
+        #                         submodule_outputs[node["nid"]] = node["buda_name"]
+        #                         if node["buda_shape"][0] != 1:
+        #                             submodule_outputs_requiring_batch_dim_fix.append(node["buda_name"])
 
-                # add ops for each submodule call
-                idx = max(sorted(submodule_input_ports)) + 0.5
-                input_nids = list(sorted(submodule_input_ports.keys()))
+        #         # add ops for each submodule call
+        #         idx = max(sorted(submodule_input_ports)) + 0.5
+        #         input_nids = list(sorted(submodule_input_ports.keys()))
 
-                input_nodes = [graph["nodes"][input_nid] if submodule_input_ports[input_nid] == -1 else graph["nodes"][graph["nodes"][input_nid]["inputs"][submodule_input_ports[input_nid]][0]] for input_nid in input_nids]
-                submodule_inputs = {input_node["nid"]:input_node["buda_name"] for input_node in input_nodes}
-                activations = [input_node_name for _, input_node_name in sorted(graph_input_names.items())]
+        #         input_nodes = [graph["nodes"][input_nid] if submodule_input_ports[input_nid] == -1 else graph["nodes"][graph["nodes"][input_nid]["inputs"][submodule_input_ports[input_nid]][0]] for input_nid in input_nids]
+        #         submodule_inputs = {input_node["nid"]:input_node["buda_name"] for input_node in input_nodes}
+        #         activations = [input_node_name for _, input_node_name in sorted(graph_input_names.items())]
                 
-                ops[idx] = Operation(
-                    function_name="self.layers[0]",
-                    output_name="layer_0",
-                    input_names=activations,
-                )
-                ops[idx].is_submodule_call = True
+        #         ops[idx] = Operation(
+        #             function_name="self.layers[0]",
+        #             output_name="layer_0",
+        #             input_names=activations,
+        #         )
+        #         ops[idx].is_submodule_call = True
 
-                output_nids = list(submodule_outputs.keys())
-                assert len(output_nids) == 1, "TODO"
+        #         output_nids = list(submodule_outputs.keys())
+        #         assert len(output_nids) == 1, "TODO"
                 
-                for i in range(1, len(subgraph_matches)):
-                    #if the input node is in the submodule
-                    activations = []
-                    for input_nid in input_nids:
-                        if submodule_input_ports[input_nid] == -1:
-                            matched_nid = subgraph_matches[i][input_nid]
-                        else:
-                            matched_user = subgraph_matches[i][input_nid]
-                            matched_nid = graph["nodes"][matched_user]["inputs"][submodule_input_ports[input_nid]][0]
+        #         for i in range(1, len(subgraph_matches)):
+        #             #if the input node is in the submodule
+        #             activations = []
+        #             for input_nid in input_nids:
+        #                 if submodule_input_ports[input_nid] == -1:
+        #                     matched_nid = subgraph_matches[i][input_nid]
+        #                 else:
+        #                     matched_user = subgraph_matches[i][input_nid]
+        #                     matched_nid = graph["nodes"][matched_user]["inputs"][submodule_input_ports[input_nid]][0]
 
-                        idx = matched_nid + 0.5
-                        activations.append(graph["nodes"][matched_nid]["buda_name"])
+        #                 idx = matched_nid + 0.5
+        #                 activations.append(graph["nodes"][matched_nid]["buda_name"])
 
-                    # unlike ops, submodules should not have repeated inputs
-                    activations = list(dict.fromkeys(activations))
-                    ops[idx] = Operation(
-                        function_name=f"self.layers[{i}]",
-                        output_name=f"layer_{i}",
-                        input_names=activations,
-                    )
-                    ops[idx].is_submodule_call = True
+        #             # unlike ops, submodules should not have repeated inputs
+        #             activations = list(dict.fromkeys(activations))
+        #             ops[idx] = Operation(
+        #                 function_name=f"self.layers[{i}]",
+        #                 output_name=f"layer_{i}",
+        #                 input_names=activations,
+        #             )
+        #             ops[idx].is_submodule_call = True
 
-                # build submodule param / op dicts, remove from main
-                for orig_nid in subgraph_matches[0].keys():
-                    if orig_nid in params:
-                        matched_params[orig_nid] = params[orig_nid]
-                        param_name = params[orig_nid][0] 
-                        param_names[param_name] = (f"layer_{0}", param_name)
-                        del params[orig_nid]
-                        for index, subgraph in enumerate(subgraph_matches[1:]):
-                            param_names[params[subgraph[orig_nid]][0]] = (f"layer_{index + 1}", param_name)
-                            del params[subgraph[orig_nid]]
+        #         # build submodule param / op dicts, remove from main
+        #         for orig_nid in subgraph_matches[0].keys():
+        #             if orig_nid in params:
+        #                 matched_params[orig_nid] = params[orig_nid]
+        #                 param_name = params[orig_nid][0] 
+        #                 param_names[param_name] = (f"layer_{0}", param_name)
+        #                 del params[orig_nid]
+        #                 for index, subgraph in enumerate(subgraph_matches[1:]):
+        #                     param_names[params[subgraph[orig_nid]][0]] = (f"layer_{index + 1}", param_name)
+        #                     del params[subgraph[orig_nid]]
 
-                    if orig_nid in constants:
-                        matched_consts[orig_nid] = constants[orig_nid]
-                        const_name = constants[orig_nid][0] 
-                        const_names[const_name] = (f"layer_{0}", const_name)
-                        del constants[orig_nid]
-                        for index, subgraph in enumerate(subgraph_matches[1:]):
-                            const_names[constants[subgraph[orig_nid]][0]] = (f"layer_{index + 1}", const_name)
-                            del constants[subgraph[orig_nid]]
+        #             if orig_nid in constants:
+        #                 matched_consts[orig_nid] = constants[orig_nid]
+        #                 const_name = constants[orig_nid][0] 
+        #                 const_names[const_name] = (f"layer_{0}", const_name)
+        #                 del constants[orig_nid]
+        #                 for index, subgraph in enumerate(subgraph_matches[1:]):
+        #                     const_names[constants[subgraph[orig_nid]][0]] = (f"layer_{index + 1}", const_name)
+        #                     del constants[subgraph[orig_nid]]
 
-                    if orig_nid in ops:
-                        matched_ops[orig_nid] = ops[orig_nid]
-                        del ops[orig_nid]
-                        for subgraph in subgraph_matches[1:]:
-                            del ops[subgraph[orig_nid]]
+        #             if orig_nid in ops:
+        #                 matched_ops[orig_nid] = ops[orig_nid]
+        #                 del ops[orig_nid]
+        #                 for subgraph in subgraph_matches[1:]:
+        #                     del ops[subgraph[orig_nid]]
 
-                #replace references to outputs of each submodule with submodule
-                for idx, subgraph in enumerate(subgraph_matches):
-                    name_to_replace = graph["nodes"][subgraph[output_nids[0]]]["buda_name"]
+        #         #replace references to outputs of each submodule with submodule
+        #         for idx, subgraph in enumerate(subgraph_matches):
+        #             name_to_replace = graph["nodes"][subgraph[output_nids[0]]]["buda_name"]
 
-                    replace_node_name(name_to_replace, f"layer_{idx}")
+        #             replace_node_name(name_to_replace, f"layer_{idx}")
 
         # Some float types (e.g. tf.bfloat16) are not compatible with numpy
         # We must signal to the PyBudaWriter if the model contains these types so it can implement the workaround

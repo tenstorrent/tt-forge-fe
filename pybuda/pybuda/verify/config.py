@@ -8,8 +8,6 @@ import os
 
 import torch
 
-import pybuda.optimizers
-from pybuda._C.backend_api import BackendType, BackendDevice, DeviceMode
 from pybuda._C import DataFormat
 from dataclasses_json import dataclass_json
 from pybuda.utils import as_json
@@ -86,9 +84,6 @@ class VerifyConfig:
     # For auto-testing
     sequential: bool = True
     test_kind: TestKind = field(default=TestKind.INFERENCE, metadata=as_json(TestKind))
-    devtype: BackendType = field(default=BackendType.Golden, metadata=as_json(BackendType))
-    devmode: DeviceMode = field(default=DeviceMode.CompileAndRun, metadata=as_json(DeviceMode))
-    arch: BackendDevice = field(default=BackendDevice.Grayskull if "GOLDEN_WORMHOLE_B0" not in os.environ else BackendDevice.Wormhole_B0, metadata=as_json(BackendDevice))
     scale_loss: float = 50.0  # Loss-scaling to make gradients bigger and easier to verify
     optimizer: Optional[Dict[str, Any]] = field(default_factory=lambda : {"type": "sgd", "params": {"learning_rate": 50.0 } })
     scheduler: Optional[Dict] = None
@@ -163,9 +158,6 @@ class VerifyConfig:
 
         if "TT_BACKEND_GOLDEN_QUANTIZE" in os.environ:
             self.golden_ignore_df_precision = False
-
-        if self.arch == BackendDevice.Grayskull:
-            assert self.fp32_fallback != DataFormat.Float32, "Fallback for f32 cannot be f32 itself"
 
 
     @classmethod

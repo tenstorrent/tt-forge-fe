@@ -4,13 +4,18 @@ PYBUDA_CSRC_INCLUDES = \
 	-Ithird_party/json \
 	-I/usr/include/$(PYTHON_VERSION) \
 	-isystem $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/include \
- 	-isystem $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/include/torch/csrc/api/include
+ 	-isystem $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/include/torch/csrc/api/include \
+	-I/opt/ttmlir-toolchain/include \
+	-Ithird_party/tt-mlir/build/include \
+	-Ithird_party/tt-mlir/include
 
 PYBUDA_CSRC_WARNINGS ?= -Wall -Wextra -Wno-pragmas
 PYBUDA_CSRC_CFLAGS ?= $(CFLAGS_NO_WARN) $(PYBUDA_CSRC_WARNINGS) -DUTILS_LOGGER_PYTHON_OSTREAM_REDIRECT=1
 TORCH_LIB_DIR = $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/lib
 
 PYBUDA_CSRC_LIB = $(LIBDIR)/libpybuda_csrc.so
+MLIR_LIB_DIR = -L/opt/ttmlir-toolchain/lib/ -Lthird_party/tt-mlir/build/lib/
+MLIR_LIBS = -lMLIRTTDialect -lMLIRTTIRDialect
 
 include pybuda/csrc/graph_lib/module.mk
 include pybuda/csrc/shared_utils/module.mk
@@ -19,7 +24,7 @@ include pybuda/csrc/reportify/module.mk
 include pybuda/csrc/backend_api/module.mk
 include pybuda/csrc/tt_torch_device/module.mk
 
-PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION)
+PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(MLIR_LIBS)
 
 PYBUDA_CSRC_SRCS = \
 		pybuda/csrc/pybuda_bindings.cpp \
@@ -36,7 +41,7 @@ PYBUDA_THIRD_PARTY_DEPS = $(SUBMODULESDIR)/third_party/pybind11.checkout
 
 $(PYBUDA_CSRC_LIB): $(PYBUDA_CSRC_OBJS) $(PYBUDA_CSRC_GRAPH_LIB) $(PYBUDA_CSRC_AUTOGRAD) $(PYBUDA_CSRC_PATTERN_MATCHER_LIB) $(PYBUDA_CSRC_BALANCER_LIB) $(PYBUDA_CSRC_PLACER_LIB) $(PYBUDA_CSRC_SCHEDULER_LIB) $(PYBUDA_CSRC_REPORTIFY) $(PYBUDA_CSRC_BACKENDAPI_LIB) $(PYBUDA_CSRC_SHARED_UTILS_LIB) $(PYBUDA_CSRC_PERF_MODEL_LIB) $(PYBUDA_CSRC_TT_TORCH_DEVICE_LIB)
 	@mkdir -p $(LIBDIR)
-	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) -L$(TORCH_LIB_DIR) -o $@ $^ $(LDFLAGS) $(PYBUDA_CSRC_LDFLAGS)
+	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) -L$(TORCH_LIB_DIR) $(MLIR_LIB_DIR) -o $@ $^ $(LDFLAGS) $(PYBUDA_CSRC_LDFLAGS)
 
 $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/pybuda/_C.so: $(PYBUDA_CSRC_LIB)
 	@mkdir -p $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/pybuda

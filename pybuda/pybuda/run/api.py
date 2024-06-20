@@ -13,7 +13,6 @@ from ..tensor import Tensor
 from ..verify import VerifyConfig
 
 from pybuda._C import DataFormat
-from pybuda._C.backend_api import DeviceMode
 
 from ..pybudaglobal import get_devices
 from .impl import (
@@ -377,7 +376,7 @@ def initialize_pipeline(
         d2d_bwd_queues: List[queue.Queue] = [],
         _sequential: bool = False, 
         _verify_cfg: Optional[VerifyConfig] = None,
-        _device_mode: DeviceMode = DeviceMode.CompileAndRun) -> queue.Queue:
+        _device_mode = None) -> queue.Queue:
     """
     Initialize the pipeline to run inference and training through manual `run_forward`, `run_backward`, `run_optimizer`, etc. calls. This should be not used with 
     "all-in-one" APIs like `run_inference` and `run_training`, which will initialize the pipeline themselves.

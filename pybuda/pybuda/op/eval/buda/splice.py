@@ -5,11 +5,8 @@ from ..interface import BudaEltwiseNaryOp
 
 import torch
 import pybuda
-from pybuda._C.backend_api import get_op_model_execution_cycles
-from pybuda._C.balancer import FactorizedInt
 from pybuda._C import UnsupportedHWOpsError
 from ....pybudaglobal import TILE_DIM
-from ..common import op_model_to_desc
 from pybuda.utils import align_up_tile, round_up_div
 from .tm import eval as tm_eval
 

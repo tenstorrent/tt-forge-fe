@@ -5,7 +5,6 @@
 from ..common import to_torch_operands
 import torch
 import pybuda
-import pybuda._C.balancer as balancer
 from pybuda.pybudaglobal import TILE_DIM
 from pybuda.utils import align_up_tile, round_up_div, align_up
 from ..sparse_utils import bcast_sparse_picker_matrix

@@ -18,7 +18,6 @@ from pybuda.config import _get_global_compiler_config
 
 from pybuda.schedulers import LearningRateScheduler
 from pybuda.pybudaglobal import pybuda_reset
-from pybuda._C.backend_api import BackendDevice, BackendType, DeviceMode 
 from test.utils import download_model
 
 # https://github.com/pytorch/pytorch/wiki/Autograd-and-Fork
@@ -846,40 +845,40 @@ def test_parallel_chips():
     for i, p in enumerate(procs):
         p.join()
 
-def test_tti_inference_save_and_load():
-    available_devices = pybuda.detect_available_devices()
-    if available_devices and available_devices[0] == BackendDevice.Grayskull:
-        tt0 = pybuda.TTDevice(
-            "tt0",
-            arch=BackendDevice.Grayskull,
-            devtype=BackendType.Golden,
-        )
-    else:
-        tt0 = pybuda.TTDevice(
-            "tt0",
-            arch=BackendDevice.Wormhole_B0,
-            devtype=BackendType.Golden,
-        )
+# def test_tti_inference_save_and_load():
+#     available_devices = pybuda.detect_available_devices()
+#     if available_devices and available_devices[0] == BackendDevice.Grayskull:
+#         tt0 = pybuda.TTDevice(
+#             "tt0",
+#             arch=BackendDevice.Grayskull,
+#             devtype=BackendType.Golden,
+#         )
+#     else:
+#         tt0 = pybuda.TTDevice(
+#             "tt0",
+#             arch=BackendDevice.Wormhole_B0,
+#             devtype=BackendType.Golden,
+#         )
 
 
-    module = PyBudaTestModule("test_pybuda_module")
-    tt0.place_module(module)
+#     module = PyBudaTestModule("test_pybuda_module")
+#     tt0.place_module(module)
 
-    # Saving to Archive
-    input_shape = (1, 1, 32, 32)
-    input1, input2  = torch.rand(*input_shape), torch.rand(*input_shape)
-    device_img = tt0.compile_to_image(
-        img_path="device_images/test_tt0.tti", 
-        training=False,
-        sample_inputs=(input1, input2),
-    )
-    pybuda_reset()  # flush the global state that lingers around for test
+#     # Saving to Archive
+#     input_shape = (1, 1, 32, 32)
+#     input1, input2  = torch.rand(*input_shape), torch.rand(*input_shape)
+#     device_img = tt0.compile_to_image(
+#         img_path="device_images/test_tt0.tti", 
+#         training=False,
+#         sample_inputs=(input1, input2),
+#     )
+#     pybuda_reset()  # flush the global state that lingers around for test
 
-    # Loading from Archive
-    tt1 = pybuda.TTDevice.load_image(img_path="device_images/test_tt0.tti")
-    tt1.push_to_inputs((input1, input2))
-    output_q = pybuda.run_inference()
-    output = _safe_read(output_q)
+#     # Loading from Archive
+#     tt1 = pybuda.TTDevice.load_image(img_path="device_images/test_tt0.tti")
+#     tt1.push_to_inputs((input1, input2))
+#     output_q = pybuda.run_inference()
+#     output = _safe_read(output_q)
 
 
 @pytest.mark.parametrize("hoist_tms", [True, False])
