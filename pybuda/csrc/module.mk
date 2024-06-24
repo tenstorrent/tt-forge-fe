@@ -14,8 +14,12 @@ PYBUDA_CSRC_CFLAGS ?= $(CFLAGS_NO_WARN) $(PYBUDA_CSRC_WARNINGS) -DUTILS_LOGGER_P
 TORCH_LIB_DIR = $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/lib
 
 PYBUDA_CSRC_LIB = $(LIBDIR)/libpybuda_csrc.so
-MLIR_LIB_DIR = -L/opt/ttmlir-toolchain/lib/ -Lthird_party/tt-mlir/build/lib/
-MLIR_LIBS = -lMLIRTTDialect -lMLIRTTIRDialect
+TTMLIR_TOOLCHAIN_DIR = /opt/ttmlir-toolchain
+MLIR_LIB_DIR = -L$(TTMLIR_TOOLCHAIN_DIR)/lib/ -Lthird_party/tt-mlir/build/lib/
+LLVM_GLOB_LIBS = $(wildcard $(TTMLIR_TOOLCHAIN_DIR)/lib/libLLVM*.a)
+MLIR_GLOB_LIBS = $(wildcard $(TTMLIR_TOOLCHAIN_DIR)/lib/libMLIR*.a)
+LLVM_LIBS = $(subst $(TTMLIR_TOOLCHAIN_DIR)/lib/lib,-l,$(LLVM_GLOB_LIBS:.a=))
+MLIR_LIBS = $(subst $(TTMLIR_TOOLCHAIN_DIR)/lib/lib,-l,$(MLIR_GLOB_LIBS:.a=))
 
 include pybuda/csrc/graph_lib/module.mk
 include pybuda/csrc/shared_utils/module.mk
@@ -24,7 +28,7 @@ include pybuda/csrc/reportify/module.mk
 include pybuda/csrc/backend_api/module.mk
 include pybuda/csrc/tt_torch_device/module.mk
 
-PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(MLIR_LIBS)
+PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(LLVM_LIBS) $(MLIR_LIBS) -lm -lz -lcurses -lxml2
 
 PYBUDA_CSRC_SRCS = \
 		pybuda/csrc/pybuda_bindings.cpp \
