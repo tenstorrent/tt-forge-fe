@@ -34,8 +34,8 @@ protobuf==3.20.3
 pybind11==2.6.2
 pyinstrument>=4.1.1
 scipy>=1.8.0
-tensorflow==2.16.1
-tensorboard==2.16.0
+tensorflow==2.13
+tensorboard==2.13
 tf2onnx==1.15.1
 transformers==4.35.2
 # To avoid warning during the import

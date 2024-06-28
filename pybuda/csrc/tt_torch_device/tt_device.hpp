@@ -15,10 +15,11 @@
 #include <optional>
 #include <vector>
 
+#include "pybuda/csrc/backend_api/arch_type.hpp"
+#include "tt/runtime/types.h"
 #include "utils/assert.hpp"
 #include "utils/env.hpp"
 #include "utils/logger.hpp"
-#include "pybuda/csrc/backend_api/arch_type.hpp"
 
 namespace tt
 {
@@ -51,55 +52,11 @@ struct PyBudaTensorDesc
 };
 
 
-struct Program
-{
-    std::string name;
-    std::map<std::string, std::string> parameters;
-
-    Program(std::string const& name, std::map<std::string, std::string> const& parameters) :
-        name(name), parameters(parameters)
-    {
-    }
-};
-
-struct CompileRequest
-{
-    std::string netlist_path;
-    std::string output_dir;
-    std::map<int, std::vector<PyBudaTensorDesc>> inputs;  // one vector per program
-    std::map<int, std::vector<std::string>> input_runtime_transforms;
-    std::map<int, std::vector<std::vector<int>>> input_tile_bcast_dims;
-    std::vector<PyBudaTensorDesc> constants;
-    std::vector<PyBudaTensorDesc> parameters;
-    std::map<int, std::vector<PyBudaTensorDesc>> outputs; 
-    std::map<int, std::vector<std::string>> output_runtime_transforms;
-
-    CompileRequest(
-        std::string const& netlist_path,
-        std::string output_dir,
-        std::map<int, std::vector<PyBudaTensorDesc>> const& inputs,
-        std::map<int, std::vector<std::string>> const& input_runtime_transforms,
-        std::map<int, std::vector<std::vector<int>>> const& input_tile_bcast_dims,
-        std::vector<PyBudaTensorDesc> const& constants,
-        std::vector<PyBudaTensorDesc> const& parameters,
-        std::map<int, std::vector<PyBudaTensorDesc>> const& outputs,
-        std::map<int, std::vector<std::string>> const& output_runtime_transforms) :
-        netlist_path(netlist_path),
-        output_dir(output_dir),
-        inputs(inputs),
-        input_runtime_transforms(input_runtime_transforms),
-        input_tile_bcast_dims(input_tile_bcast_dims),
-        constants(constants),
-        parameters(parameters),
-        outputs(outputs),
-        output_runtime_transforms(output_runtime_transforms)
-    {
-    }
-};
+using Program = int;
 
 struct Workload
 {
-    std::string output_dir;
+    std::shared_ptr<void> flatbuffer;
     std::map<int, std::vector<PyBudaTensorDesc>> inputs;
     std::vector<PyBudaTensorDesc> constants;
     std::vector<PyBudaTensorDesc> parameters;
@@ -108,12 +65,12 @@ struct Workload
     std::unordered_map<int, bool> subgraph_link_tensor_populated;
 
     Workload(
-        std::string output_dir,
+        std::shared_ptr<void> flatbuffer,
         std::map<int, std::vector<PyBudaTensorDesc>> const& inputs, // a vector per program
         std::vector<PyBudaTensorDesc> const& constants,
         std::vector<PyBudaTensorDesc> const& parameters,
         std::map<int, std::vector<PyBudaTensorDesc>> const& outputs) :
-        output_dir(output_dir),
+        flatbuffer(flatbuffer),
         inputs(inputs),
         constants(constants),
         parameters(parameters),
@@ -134,8 +91,10 @@ using ResourceID = std::uint64_t;
 // 1to1 mapping of physical devices plugged into this machine and TTDevice
 struct TTDevice
 {
+    runtime::Device rt_device;
+    runtime::SystemDesc system_desc;
+    std::vector<int> chip_ids;
     ARCH arch;
-    std::string soc_desc_yaml;
     bool mmio;
     int index;
     std::shared_ptr<TTContext> context;
@@ -146,8 +105,20 @@ struct TTDevice
     std::unordered_map<int, std::vector<int>> subgraph_to_tensor_uid_on_device;
 
     TTDevice(
-        ARCH arch, std::string soc_desc_yaml, bool mmio, int index, std::shared_ptr<TTContext> context) :
-        arch(arch), soc_desc_yaml(soc_desc_yaml), mmio(mmio), index(index), context(context)
+        runtime::Device rt_device,
+        runtime::SystemDesc system_desc,
+        std::vector<int> chip_ids,
+        ARCH arch,
+        bool mmio,
+        int index,
+        std::shared_ptr<TTContext> context) :
+        rt_device(rt_device),
+        system_desc(system_desc),
+        chip_ids(chip_ids),
+        arch(arch),
+        mmio(mmio),
+        index(index),
+        context(context)
     {
     }
 };
@@ -161,22 +132,20 @@ const TTDevice& get_default_tt_device();
 std::vector<TTDevice> get_available_tt_devices();
 std::string device_type_name(c10::DeviceType type, bool lower_case = false);
 torch::Device torch_device_at_index(std::int64_t index);
-
-std::vector<const void*> get_copied_inputs();
-std::shared_ptr<Workload> compile(
-    TTDevice& device, CompileRequest const& compile_request);
-void push_tensor(
-    torch::Tensor & tensor,
-    std::string const& info = "",
-    std::optional<int> ptr = std::nullopt);
+torch::Tensor empty_strided(
+    torch::IntArrayRef size,
+    torch::IntArrayRef stride,
+    c10::optional<at::ScalarType> dtype,
+    c10::optional<at::Layout> layout = c10::nullopt,
+    c10::optional<at::Device> device = c10::nullopt,
+    c10::optional<bool> pin_memory = c10::nullopt);
 
 std::vector<torch::Tensor> dispatch(
-    TTDevice & device,
+    TTDevice& device,
     std::shared_ptr<Workload> workload,
-    std::vector<Program> const& programs,
-    std::vector<torch::Tensor> & inputs,
-    int subgraph_idx,
-    bool const & is_compile);
+    int program_idx,
+    std::vector<torch::Tensor>& inputs,
+    bool const& is_compile);
 std::string get_device_cluster_yaml(TTDevice const&);
 std::string to_string(TTDevice const& d);
 torch::Device torch_device(TTDevice const& d);

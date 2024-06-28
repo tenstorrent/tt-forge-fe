@@ -57,7 +57,7 @@ DOCSDIR = $(OUT)/docs
 SUBMODULESDIR = $(OUT)/submodules
 
 # Python version
-PYTHON_VERSION ?= python3.11
+PYTHON_VERSION ?= python3.8
 PYTHON_INCLUDES = $(shell $(PYTHON_VERSION)-config --includes)
 PYTHON_LDFLAGS = $(shell $(PYTHON_VERSION)-config --ldflags)
 
