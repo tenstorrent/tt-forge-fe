@@ -7,6 +7,7 @@ PYBUDA_CSRC_INCLUDES = \
  	-isystem $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/include/torch/csrc/api/include \
 	-I/opt/ttmlir-toolchain/include \
 	-Ithird_party/tt-mlir/build/include \
+	-Ithird_party/tt-mlir/runtime/include \
 	-Ithird_party/tt-mlir/include
 
 PYBUDA_CSRC_WARNINGS ?= -Wall -Wextra -Wno-pragmas -Wno-unused-parameter
@@ -15,12 +16,14 @@ TORCH_LIB_DIR = $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/lib
 
 PYBUDA_CSRC_LIB = $(LIBDIR)/libpybuda_csrc.so
 TTMLIR_TOOLCHAIN_DIR = /opt/ttmlir-toolchain
-MLIR_LIB_DIR = -L$(TTMLIR_TOOLCHAIN_DIR)/lib/ -Lthird_party/tt-mlir/build/lib/
-LLVM_GLOB_LIBS = $(wildcard $(TTMLIR_TOOLCHAIN_DIR)/lib/libLLVM*.a)
+LLVM_CONFIG = $(TTMLIR_TOOLCHAIN_DIR)/bin/llvm-config
+RUNTIME_LIB_DIR = third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib
+MLIR_LIB_DIR = -L$(TTMLIR_TOOLCHAIN_DIR)/lib/ -Lthird_party/tt-mlir/build/lib/ -Lthird_party/tt-mlir/build/runtime/lib/
 MLIR_GLOB_LIBS = $(wildcard $(TTMLIR_TOOLCHAIN_DIR)/lib/libMLIR*.a)
-LLVM_LIBS = $(subst $(TTMLIR_TOOLCHAIN_DIR)/lib/lib,-l,$(LLVM_GLOB_LIBS:.a=))
+LLVM_LIBS = $(shell $(LLVM_CONFIG) --libs)
 MLIR_LIBS = $(subst $(TTMLIR_TOOLCHAIN_DIR)/lib/lib,-l,$(MLIR_GLOB_LIBS:.a=))
 TT_MLIR_LIBS = -lMLIRTTDialect -lMLIRTTIRDialect
+RUNTIME_LIBS = -lTTRuntime -lTTRuntimeTTNN -L$(RUNTIME_LIB_DIR) -Wl,-rpath,\$$ORIGIN/../../$(RUNTIME_LIB_DIR) -l:_ttnn.so -ltt_metal -ldevice -ltt_eager
 
 include pybuda/csrc/graph_lib/module.mk
 include pybuda/csrc/shared_utils/module.mk
@@ -29,7 +32,7 @@ include pybuda/csrc/reportify/module.mk
 include pybuda/csrc/backend_api/module.mk
 include pybuda/csrc/tt_torch_device/module.mk
 
-PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(LLVM_LIBS) $(MLIR_LIBS) $(TT_MLIR_LIBS) -lm -lz -lcurses -lxml2
+PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(MLIR_LIB_DIR) $(MLIR_LIBS) $(TT_MLIR_LIBS) $(LLVM_LIBS) $(RUNTIME_LIBS) -lm -lz -lcurses -lxml2 -lflatbuffers
 
 PYBUDA_CSRC_SRCS = \
 		pybuda/csrc/pybuda_bindings.cpp \
@@ -46,7 +49,7 @@ PYBUDA_THIRD_PARTY_DEPS = $(SUBMODULESDIR)/third_party/pybind11.checkout
 
 $(PYBUDA_CSRC_LIB): $(PYBUDA_CSRC_OBJS) $(PYBUDA_CSRC_GRAPH_LIB) $(PYBUDA_CSRC_AUTOGRAD) $(PYBUDA_CSRC_PATTERN_MATCHER_LIB) $(PYBUDA_CSRC_BALANCER_LIB) $(PYBUDA_CSRC_PLACER_LIB) $(PYBUDA_CSRC_SCHEDULER_LIB) $(PYBUDA_CSRC_REPORTIFY) $(PYBUDA_CSRC_BACKENDAPI_LIB) $(PYBUDA_CSRC_SHARED_UTILS_LIB) $(PYBUDA_CSRC_PERF_MODEL_LIB) $(PYBUDA_CSRC_TT_TORCH_DEVICE_LIB)
 	@mkdir -p $(LIBDIR)
-	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) -L$(TORCH_LIB_DIR) $(MLIR_LIB_DIR) -o $@ $^ $(LDFLAGS) $(PYBUDA_CSRC_LDFLAGS)
+	$(CXX) $(PYBUDA_CSRC_CFLAGS) $(CXXFLAGS) $(SHARED_LIB_FLAGS) -L$(TORCH_LIB_DIR) -o $@ $^ $(LDFLAGS) $(PYBUDA_CSRC_LDFLAGS)
 
 $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/pybuda/_C.so: $(PYBUDA_CSRC_LIB)
 	@mkdir -p $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/pybuda

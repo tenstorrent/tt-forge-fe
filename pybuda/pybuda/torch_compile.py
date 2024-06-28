@@ -12,7 +12,7 @@ from contextlib import redirect_stdout
 
 from loguru import logger
 
-from pybuda._C.torch_device import get_default_device, push_tensor, unique_id, PyBudaTensorDesc, CompileRequest, Program 
+from pybuda._C.torch_device import get_default_device, unique_id, PyBudaTensorDesc, Program 
 from pybuda.compiled_graph_state import CompiledGraphState
 from pybuda.fx.capture import CaptureFX
 from pybuda.fx.schedule import TensorSource
@@ -347,11 +347,10 @@ class compiledModel(torch.nn.Module):
             else:
                 # Device - dispatch to device
                 program_index = MixedGraph.get_program_subgraph_id(self.index, item.graph_index)
-                program = Program(f"run_fwd_{program_index}", program_params)
-                logger.debug(f"Running run_fwd_{program_index} on device")
+                logger.debug(f"Running program[{program_index}] on device")
                 
                 graph_outputs = self.device.dispatch(
-                        self.workload, [program], list(graph_inputs), self.compiled_graph_state.output_host_tms, program_index, self.is_compile)
+                        self.workload, program_index, list(graph_inputs), self.compiled_graph_state.output_host_tms, self.is_compile)
             
                 for i, output in enumerate(graph_outputs):
                     if torch.isnan(output.to('cpu')).any(): # debug
@@ -405,19 +404,7 @@ class compiledModel(torch.nn.Module):
         return outputs
     
     def to(self, dev):
-        if self.workload is None:
-            return 
-
-        for desc in self.workload.parameters:
-            name = desc.name
-            value = self.compiled_graph_state.post_const_eval_parameters[name]
-            push_tensor(self.device.backend.get_queue_descriptor(desc.name), desc, value, "")
-
-        for desc in self.workload.constants:
-            name = desc.name
-            value = self.compiled_graph_state.post_const_eval_constants[name]
-            push_tensor(self.device.backend.get_queue_descriptor(desc.name), desc, value, "")
-        # self.module.to(dev)
+        pass
 
 
 from torch._decomp import core_aten_decompositions
