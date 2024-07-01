@@ -16,12 +16,9 @@ TORCH_LIB_DIR = $(PYTHON_ENV_ROOT)/lib/$(PYTHON_VERSION)/site-packages/torch/lib
 
 PYBUDA_CSRC_LIB = $(LIBDIR)/libpybuda_csrc.so
 TTMLIR_TOOLCHAIN_DIR = /opt/ttmlir-toolchain
-LLVM_CONFIG = $(TTMLIR_TOOLCHAIN_DIR)/bin/llvm-config
 RUNTIME_LIB_DIR = third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib
-MLIR_LIB_DIR = -L$(TTMLIR_TOOLCHAIN_DIR)/lib/ -Lthird_party/tt-mlir/build/lib/ -Lthird_party/tt-mlir/build/runtime/lib/
-MLIR_GLOB_LIBS = $(wildcard $(TTMLIR_TOOLCHAIN_DIR)/lib/libMLIR*.a)
-LLVM_LIBS = $(shell $(LLVM_CONFIG) --libs)
-MLIR_LIBS = $(subst $(TTMLIR_TOOLCHAIN_DIR)/lib/lib,-l,$(MLIR_GLOB_LIBS:.a=))
+MLIR_LIB_DIR = -L$(TTMLIR_TOOLCHAIN_DIR)/lib -Lthird_party/tt-mlir/build/lib -Lthird_party/tt-mlir/build/runtime/lib
+MLIR_LIBS = -Wl,-rpath,$(TTMLIR_TOOLCHAIN_DIR)/lib -lLLVM -lMLIR
 TT_MLIR_LIBS = -lMLIRTTDialect -lMLIRTTIRDialect
 RUNTIME_LIBS = -lTTRuntime -lTTRuntimeTTNN -L$(RUNTIME_LIB_DIR) -Wl,-rpath,\$$ORIGIN/../../$(RUNTIME_LIB_DIR) -l:_ttnn.so -ltt_metal -ldevice -ltt_eager
 
@@ -32,7 +29,7 @@ include pybuda/csrc/reportify/module.mk
 include pybuda/csrc/backend_api/module.mk
 include pybuda/csrc/tt_torch_device/module.mk
 
-PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(MLIR_LIB_DIR) $(MLIR_LIBS) $(TT_MLIR_LIBS) $(LLVM_LIBS) $(RUNTIME_LIBS) -lm -lz -lcurses -lxml2 -lflatbuffers
+PYBUDA_CSRC_LDFLAGS = -Wl,-rpath,\$$ORIGIN/../python_env/lib/$(PYTHON_VERSION)/site-packages/torch/lib -ltorch -ltorch_cpu -lc10 -ltorch_python $(PYTHON_LDFLAGS) -l$(PYTHON_VERSION) $(MLIR_LIB_DIR) $(MLIR_LIBS) $(TT_MLIR_LIBS) $(RUNTIME_LIBS) -lm -lz -lcurses -lxml2 -lflatbuffers
 
 PYBUDA_CSRC_SRCS = \
 		pybuda/csrc/pybuda_bindings.cpp \
