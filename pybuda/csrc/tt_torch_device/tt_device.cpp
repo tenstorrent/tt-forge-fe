@@ -326,6 +326,7 @@ bool is_created_on_device(const torch::Tensor& tensor)
     TT_ASSERT(meta != nullptr);
     return meta->created_on_device;
 }
+
 std::vector<size_t> original_shape(const torch::Tensor& tensor)
 {
     auto impl = tensor.unsafeGetTensorImpl();

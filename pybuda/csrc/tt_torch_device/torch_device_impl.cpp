@@ -16,6 +16,8 @@
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
+#include "tt/runtime/runtime.h"
+
 namespace tt
 {
 // There are dummy enums defined in pytorch, like PrivateUse1 that can be used
@@ -28,6 +30,14 @@ class TorchDeviceImpl : public c10::impl::DeviceGuardImplInterface
 {
    public:
     TorchDeviceImpl(std::vector<TTDevice> const& tt_devices) : tt_devices(tt_devices) {}
+
+    // TODO: check if this is ok... not sure if we should open devices in this class...
+    ~TorchDeviceImpl() override {
+        for (auto& tt_device : tt_devices)
+        {
+            runtime::closeDevice(tt_device.rt_device);
+        }
+    }
 
     // Torch overrides
     virtual c10::DeviceType type() const override { return TT; }

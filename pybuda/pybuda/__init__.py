@@ -53,3 +53,15 @@ from .run.api import detect_available_devices
 
 import pybuda.op as op
 import pybuda.transformers
+
+# Torch backend registration
+# TODO: move this in a separate file / module.
+from torch._dynamo.backends.registry import _BACKENDS
+from torch._dynamo import register_backend
+
+# register backend with torch:
+# - enables backend to be shown when calling torch._dynamo.list_backends()
+# - enables torch.compile(model, backend="<name_from_list_backends>"), where <name_from_list_backends> is "tt" in this case
+if "tt" in _BACKENDS:
+    del _BACKENDS["tt"]
+register_backend(compile_torch, "tt")
