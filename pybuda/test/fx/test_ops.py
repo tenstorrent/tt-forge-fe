@@ -20,7 +20,7 @@ def test_add():
     model = Add()
     inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
     golden = model(*inputs)
-    pybuda_mod = torch.compile(model, backend=compile_torch)
+    pybuda_mod = torch.compile(model, backend="tt")
     # inputs = [i.to("tt") for i in inputs]
     result = pybuda_mod(*inputs)
     result = [r.to("cpu") for r in result]

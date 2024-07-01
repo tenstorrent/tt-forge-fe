@@ -12,7 +12,7 @@ from contextlib import redirect_stdout
 
 from loguru import logger
 
-from pybuda._C.torch_device import get_default_device, unique_id, PyBudaTensorDesc, Program 
+from pybuda._C.torch_device import get_default_device, unique_id, PyBudaTensorDesc
 from pybuda.compiled_graph_state import CompiledGraphState
 from pybuda.fx.capture import CaptureFX
 from pybuda.fx.schedule import TensorSource
