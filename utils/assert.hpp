@@ -117,11 +117,17 @@ void tt_assert(
         trace_message_ss << "info:" << std::endl;
         tt_assert_message(trace_message_ss, messages...);
     }
+
+    if (env_as<bool>("TT_ASSERT_ABORT"))
+    {
+        // Just abort, the signal handler will print the stack trace.
+        abort();
+    }
+
     trace_message_ss << "backtrace:\n";
     trace_message_ss << tt::assert::backtrace_to_string(100, 3, " --- ");
     trace_message_ss << std::flush;
-    if (env_as<bool>("TT_ASSERT_ABORT"))
-        abort();
+
     throw std::runtime_error(trace_message_ss.str());
 }
 

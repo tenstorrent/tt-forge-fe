@@ -8,6 +8,7 @@
 #include <string>
 
 #include "utils/assert.hpp"
+#include "tt_torch_device/tt_device.hpp"
 
 inline void pybuda_signal_handler(int sig)
 {
@@ -22,6 +23,9 @@ inline void pybuda_signal_handler(int sig)
             break;
         case SIGFPE:
             signal_name = "floating point exception";
+            break;
+        case SIGABRT:
+            signal_name = "abort";
             break;
         default:
             signal_name = std::to_string(sig);
@@ -56,6 +60,8 @@ inline void pybuda_signal_handler(int sig)
         std::cerr << prefix << frame << std::endl;
     }
 
+    tt::close_devices();
+
     // Restore the default signal handler and raise the signal again.
     // The default signal handler will generate a core dump (if enabled).
     std::signal(sig, SIG_DFL);
@@ -69,7 +75,7 @@ class SignalHandlers
         {
             // For SIGSEGV, SIGILL and SIGFPE we register our own signal handlers,
             // to print the stacktrace before the program crashes.
-            for (auto sig : {SIGSEGV, SIGILL, SIGFPE})
+            for (auto sig : {SIGSEGV, SIGILL, SIGFPE, SIGABRT})
             {
                 if (std::signal(sig, pybuda_signal_handler) == SIG_ERR)
                 {
