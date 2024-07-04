@@ -26,17 +26,14 @@ namespace tt
 constexpr inline c10::DispatchKey DispatchKeyTT = c10::DispatchKey::PrivateUse1;
 
 // TorchDevice interposes potentially many underlying HWDevices
-class TorchDeviceImpl : public c10::impl::DeviceGuardImplInterface
+class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
 {
    public:
     TorchDeviceImpl(std::vector<TTDevice> const& tt_devices) : tt_devices(tt_devices) {}
 
     // TODO: check if this is ok... not sure if we should open devices in this class...
     ~TorchDeviceImpl() override {
-        for (auto& tt_device : tt_devices)
-        {
-            runtime::closeDevice(tt_device.rt_device);
-        }
+        close_devices();
     }
 
     // Torch overrides
@@ -92,6 +89,14 @@ class TorchDeviceImpl : public c10::impl::DeviceGuardImplInterface
     {
         TT_ASSERT(not tt_devices.empty());
         return tt_devices.front();
+    }
+
+    void close_devices()
+    {
+        for (auto& tt_device : tt_devices)
+        {
+            runtime::closeDevice(tt_device.rt_device);
+        }
     }
 
     std::vector<TTDevice> getTTDevices() const { return tt_devices; }
@@ -577,4 +582,9 @@ TORCH_LIBRARY_IMPL(_, PrivateUse1, m)
         return;
     fallback_registered = true;
     m.fallback(torch::CppFunction::makeFromBoxedFunction<&tt::fallback>());
+}
+
+void tt::close_devices()
+{
+    tt::TorchDeviceImpl::get().close_devices();
 }

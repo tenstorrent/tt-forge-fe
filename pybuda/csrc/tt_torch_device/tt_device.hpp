@@ -162,4 +162,7 @@ inline T align_up_tile(T d)
     d -= 1;
     return static_cast<T>(d - (d % kTileDim) + kTileDim);
 }
+
+void close_devices();
+
 }  // namespace tt
