@@ -64,7 +64,8 @@ constexpr LoggerABI kLoggerABI = LoggerABI::CXX11;
     X(Profile)         \
     X(TMFusion)        \
     X(TTDevice)        \
-    X(TorchDevice)
+    X(TorchDevice)     \
+    X(MLIRGenerator)
 
 enum LogType : uint32_t
 {
