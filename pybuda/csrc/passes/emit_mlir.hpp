@@ -10,8 +10,15 @@ class OpNode;
 class Node;
 class Shape;
 }
+
+namespace mlir {
+class MLIRContext;
+class ModuleOp;
+} // namespace mlir
+
 namespace tt::passes 
 {
-void emit_mlir(graphlib::Graph *graph);
+// Public API for generating MLIR from the PyBuda graph.
+void emit_mlir(tt::graphlib::Graph * graph);
 } // namespace tt:passes
 
