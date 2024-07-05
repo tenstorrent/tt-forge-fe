@@ -6,7 +6,6 @@ import typing
 from math import sqrt
 import os
 
-import pybuda._C.balancer as balancer
 from pybuda._C import DataFormat
 import torch
 
