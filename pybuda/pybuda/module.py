@@ -255,108 +255,108 @@ class PyTorchModule(Module):
             reset_func()
 
 
-# class TFModule(Module):
-#     """
-#     A wrapper around a TF module. Currently, TF modules can only run on a CPU device.
-#     """
-#     def __init__(self, name: str, 
-#             module: tf.keras.Model):
-#         """
-#         Create TF module wrapper.
+class TFModule(Module):
+    """
+    A wrapper around a TF module. Currently, TF modules can only run on a CPU device.
+    """
+    def __init__(self, name: str, 
+            module: tf.keras.Model):
+        """
+        Create TF module wrapper.
 
-#         Parameters
-#         ----------
-#         module: tf.keras.Model
-#             TF module
-#         """
+        Parameters
+        ----------
+        module: tf.keras.Model
+            TF module
+        """
 
-#         super().__init__(name)
+        super().__init__(name)
 
-#         if not isinstance(module, (tf.keras.Model, tf.keras.layers.Layer)):
-#             raise RuntimeError("tf.keras module expected, got " + str(type(module)))
+        if not isinstance(module, (tf.keras.Model, tf.keras.layers.Layer)):
+            raise RuntimeError("tf.keras module expected, got " + str(type(module)))
 
-#         self.module = module
+        self.module = module
 
-#     def forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
-#         """
-#         Run TF module forward, converting pytorch tensors as necessary
+    def forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
+        """
+        Run TF module forward, converting pytorch tensors as necessary
 
-#         Parameters
-#         ----------
-#         *args
-#             Inputs into the module
+        Parameters
+        ----------
+        *args
+            Inputs into the module
 
-#         **kwargs
-#             Keyword inputs into the moduls
+        **kwargs
+            Keyword inputs into the moduls
 
-#         Returns
-#         -------
-#         Tuple[tf.Tensor]
-#             Output tensors, one for each of the module outputs
-#         """
-#         args = to_tf_variables(args)
-#         kwargs = {k : tf.Variable(tf.convert_to_tensor(v.detach().numpy(), dtype=map_pt_dtype_to_tf(v.dtype)), trainable=v.requires_grad) for k, v in kwargs.items()}
-#         outputs = self.call(*args, **kwargs)
-#         outputs = to_pt_tensors(outputs)
-#         return outputs
+        Returns
+        -------
+        Tuple[tf.Tensor]
+            Output tensors, one for each of the module outputs
+        """
+        args = to_tf_variables(args)
+        kwargs = {k : tf.Variable(tf.convert_to_tensor(v.detach().numpy(), dtype=map_pt_dtype_to_tf(v.dtype)), trainable=v.requires_grad) for k, v in kwargs.items()}
+        outputs = self.call(*args, **kwargs)
+        outputs = to_pt_tensors(outputs)
+        return outputs
 
-#     def cpu_eval_forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
+    def cpu_eval_forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
 
-#         args = to_tf_tensors(args, force_float32=True)
-#         outputs = self.call(*args, **kwargs)
-#         outputs = flatten_structured_output([outputs])
-#         outputs = to_pt_tensors(outputs)
-#         return outputs
+        args = to_tf_tensors(args, force_float32=True)
+        outputs = self.call(*args, **kwargs)
+        outputs = flatten_structured_output([outputs])
+        outputs = to_pt_tensors(outputs)
+        return outputs
 
 
-#     def call(self, *args, **kwargs) -> Tuple[tf.Tensor]:
-#         """
-#         Run TF module forward, with pre-loaded inputs in input queues
+    def call(self, *args, **kwargs) -> Tuple[tf.Tensor]:
+        """
+        Run TF module forward, with pre-loaded inputs in input queues
 
-#         Parameters
-#         ----------
-#         *args
-#             Inputs into the module
+        Parameters
+        ----------
+        *args
+            Inputs into the module
 
-#         **kwargs
-#             Keyword inputs into the moduls
+        **kwargs
+            Keyword inputs into the moduls
 
-#         Returns
-#         -------
-#         Tuple[tf.Tensor]
-#             Output tensors, one for each of the module outputs
-#         """
-#         outputs = self.module(*args, **kwargs)
-#         return outputs
+        Returns
+        -------
+        Tuple[tf.Tensor]
+            Output tensors, one for each of the module outputs
+        """
+        outputs = self.module(*args, **kwargs)
+        return outputs
 
-#     def backward(self, *args) -> Tuple[tf.Tensor]:
-#         """
-#         Run TF module backward, with pre-loaded inputs in input queues
+    def backward(self, *args) -> Tuple[tf.Tensor]:
+        """
+        Run TF module backward, with pre-loaded inputs in input queues
 
-#         Parameters
-#         ----------
-#         *args: List[Tuple[tf.Tensor, tf.Tensor]]
-#             List of tuples of output tensors and incoming loss tensors
-#         """
-#         raise NotImplementedError
+        Parameters
+        ----------
+        *args: List[Tuple[tf.Tensor, tf.Tensor]]
+            List of tuples of output tensors and incoming loss tensors
+        """
+        raise NotImplementedError
 
-#     def set_parameters(self, **kwargs):
+    def set_parameters(self, **kwargs):
 
-#         raise NotImplementedError
+        raise NotImplementedError
 
-#     def get_parameters(self) -> List[Parameter]:
-#         params = []
-#         for param in self.module.trainable_variables:
-#             name = param.name
-#             data = param.numpy()
+    def get_parameters(self) -> List[Parameter]:
+        params = []
+        for param in self.module.trainable_variables:
+            name = param.name
+            data = param.numpy()
 
-#             pybuda_param = Parameter(
-#                 torch.Tensor(data),
-#                 requires_grad = True,
-#                 name=name)
-#             params.append(pybuda_param)
+            pybuda_param = Parameter(
+                torch.Tensor(data),
+                requires_grad = True,
+                name=name)
+            params.append(pybuda_param)
 
-#         return params
+        return params
 
 class OnnxModule(Module):
     """
@@ -949,4 +949,30 @@ class IntQueueHandle:
         self.module = module
         self.op_name = op_name
         self.output_index = output_index
+
+def wrap_module(module, name: str)-> Module:
+    """
+    Wrap a module in a PyBuda module
+
+    Parameters
+    ----------
+    module: Any
+        Module to wrap
+
+    name: str
+        Name of the module
+
+    Returns
+    -------
+    Module
+        Wrapped module
+    """
+    if isinstance(module, torch.nn.Module):
+        return PyTorchModule(name, module)
+    elif isinstance(module, tf.keras.Model):
+        return TFModule(name, module)
+    elif isinstance(module, PyBudaModule):
+        return module
+    else:
+        raise RuntimeError("Unsupported module type: " + str(type(module)))
 
