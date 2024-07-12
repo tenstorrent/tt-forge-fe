@@ -83,16 +83,11 @@ def pybuda_reset():
     global modules
     global optimizers
 
-    for d in devices:
-        d.shutdown_device()
-
     devices = []
     modules = []
     
     from pybuda.config import _clear_global_compiler_config
     _clear_global_compiler_config()
-    from pybuda.run.context import context_reset
-    context_reset()
     set_state_changed()
 
 def state_changed() -> bool:

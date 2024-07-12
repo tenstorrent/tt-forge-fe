@@ -26,8 +26,6 @@ if (os.environ.get("PYBUDA_ENABLE_EMULATION_DEVICE") == "1"):
 
 import pybuda
 from pybuda.verify.config import TestKind
-import pybuda.compile as COMPILE_INFO
-from pybuda.run.api import detect_available_devices
 from pybuda.torch_compile import reset_state
 
 collect_ignore = ["legacy_tests"]
@@ -88,7 +86,6 @@ def clear_pybuda():
     yield
 
     # clean up after each test
-    pybuda.shutdown()
     pybuda.pybuda_reset() 
     torch._dynamo.reset()
     reset_state()
@@ -382,8 +379,3 @@ def pytest_runtest_logreport(report):
             if os.environ.get(key, "") != default_value:
                 os.environ[key] = default_value
 
-    if report.failed:
-        last_stage = COMPILE_INFO.LAST_SUCCESSFUL_STAGE
-        if not last_stage: 
-            last_stage = "failed before compile"
-        print(f"\nLAST SUCCESSFUL COMPILE STAGE: {last_stage}\n")

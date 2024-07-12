@@ -12,8 +12,10 @@ dill==0.3.5.1
 # This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
 flatbuffers==23.5.26
 # This is needed to prevent AttributeError: module 'ml_dtypes' has no attribute 'float8_e4m3b11'
-#ml-dtypes==0.2.0
+ml-dtypes==0.2.0
 flax==0.6.0
+jax==0.4.13
+jaxlib==0.4.11
 loguru==0.5.3
 matplotlib==3.5.1
 # This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
@@ -21,9 +23,10 @@ matplotlib==3.5.1
 # They are both requirements of datasets. Multiprocess is however not fixed.
 # TODO: Remove when datasets is upgraded
 multiprocess==0.70.13
-# mxnet==1.6.0
+# Newer versions of mxnet cause issue with AnyJSONManager static object destruction (segfault)
+mxnet==1.6.0
 networkx==2.8.5
-numpy>=1.23.1
+numpy==1.23.1
 onnx>=1.15.0
 onnxruntime>=1.16.3
 opencv-python-headless==4.6.0.66

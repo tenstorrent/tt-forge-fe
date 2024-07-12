@@ -68,7 +68,6 @@ def do_verify(
         parameters: Dict[str, torch.Tensor],
         golden_input_grads: Tuple[torch.Tensor, ...],
         outputs: Tuple[Tensor, ...],
-        device: "TTDevice",
         intermediate_golden_tensors: Dict,
         verify_cfg: VerifyConfig,
         is_buda: bool,
