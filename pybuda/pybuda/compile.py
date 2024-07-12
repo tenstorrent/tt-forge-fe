@@ -2,16 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-from sys import intern
 from typing import Optional, List, Dict, Any, Tuple, Union
-from enum import Enum
 from dataclasses import dataclass, field
 
 import torch
 import tensorflow as tf
 from loguru import logger
 
-from .tensor import Tensor
+import pybuda
+from pybuda.compiled_graph_state import CompiledGraphState, CompiledModel, CompileResults
+from pybuda.config import (
+    CompilerConfig,
+    CompileDepth,
+    _get_global_compiler_config,
+)
 from pybuda._C import (
     link_past_cache_ios,
     move_index_to_mm_weights,
@@ -20,27 +24,20 @@ from pybuda._C import (
     run_post_optimize_decompose_graph_passes,
     run_consteval_graph_pass,
     run_post_autograd_graph_passes,
-    run_lower_to_mlir_passes,
+    run_pre_lowering_passes,
     dump_graph,
 )
-import pybuda
-from .parameter import Parameter
 import pybuda._C.autograd as pyautograd
-from pybuda._C.graph import Graph
-import pybuda.query as query
-from .verify import VerifyConfig, do_verify, verify_golden, _generate_random_losses, _run_pytorch_backward, get_intermediate_tensors
 import pybuda._C.graph as pygraph
-from .config import (
-    CompilerConfig,
-    CompileDepth,
-    _get_global_compiler_config,
-)
-from .pybudaglobal import state_changed, clear_state_changed
-from pybuda import PyBudaModule
-from pybuda.module import wrap_module
-from .tensor import Tensor, to_pt_tensors, to_buda_tensors
-from . import ci, utils
-from pybuda.tools.net2reportify import net2placement
+from pybuda._C.graph import Graph
+import pybuda.ci as ci
+from pybuda.module import PyBudaModule, wrap_module
+from pybuda.parameter import Parameter
+from pybuda.pybudaglobal import state_changed, clear_state_changed
+import pybuda.query as query
+from pybuda.tensor import Tensor, to_pt_tensors
+from pybuda.verify import VerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
+
 
 LAST_SUCCESSFUL_STAGE = None
 def init_log_last_successful_compile_stage():
@@ -95,22 +92,9 @@ def generate_override_config(graph, balancer_solution, placer_solution, nop_inst
     with open(path, "w") as fd:
         yaml.dump(overrides, fd, indent=2)
 
-class CompileResults:
-    """
-    Wrapper for result from the graph compiler. Contains initial and final graphs, output tensors,
-    and, optionally golden results for final output and intermediates, if desired.
-    """
-    outputs: List[Tensor]
-    golden_outputs: List[torch.Tensor]
-    golden_intermediates: Dict[str, torch.Tensor]
-    initial_graph: Graph
-    final_graph: Graph
-
-    pass_specific_output_kwargs: Dict[str, Any] = {}
-
 @dataclass
 class CompileContext:
-    modules: List[torch.nn.Module]
+    modules: List[PyBudaModule]
     graph_name: str
     compiler_cfg: CompilerConfig
     verify_cfg: VerifyConfig
@@ -215,7 +199,7 @@ def compile_main(
     return pybuda_compile_from_context(compile_context)
     
 
-def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
+def pybuda_compile_from_context(context: CompileContext) -> CompiledModel:
     """
     Run front-end compile passes and generate a Buda netlist, with a given compile context.
 
@@ -241,6 +225,7 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
         CompileDepth.AUTOGRAD: run_autograd_pass,
         CompileDepth.POST_AUTOGRAD_PASS: run_post_autograd_pass,
         CompileDepth.PRE_LOWERING_PASS: run_pre_lowering_pass,
+        CompileDepth.RUN_MLIR_COMPILER: run_mlir_compiler,
         CompileDepth.FINISH_COMPILE: finish_compile,
     }
 
@@ -271,7 +256,25 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
 
         context.stage = next_stage
 
-    return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.final_graph, pass_specific_output_kwargs=context.output_kwargs)
+    compile_results = generate_compile_results(
+        verify_cfg,
+        context.initial_graph_copy, context.outputs,
+        context.intermediate_tensors,
+        final_graph=context.final_graph,
+        pass_specific_output_kwargs = context.output_kwargs
+    )
+
+    compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], compile_results)
+
+    compiled_module = CompiledModel(
+        compiled_graph_state,
+        context.output_kwargs["binary"]
+    )
+
+    logger.info("Compilation completed.")
+
+    return compiled_module
+
 
 def pybuda_compile_torch(
         module_name: str,
@@ -776,10 +779,18 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph = context.graph
 
-    run_lower_to_mlir_passes(graph)
+    graph = run_pre_lowering_passes(graph)
     dump_graph(graph, graph_name, "pre_lowering")
 
     context.final_graph = graph
+    return CompileDepth.RUN_MLIR_COMPILER
+
+def run_mlir_compiler(context: CompileContext) -> CompileDepth:
+    graph = context.graph
+
+    binary = pybuda._C.run_mlir_compiler(graph)
+    context.output_kwargs["binary"] = binary
+
     return CompileDepth.FINISH_COMPILE
 
 
@@ -799,13 +810,6 @@ def finish_compile(context: CompileContext) -> CompileDepth:
     verify_cfg = context.verify_cfg
 
     context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(context.final_graph)
-    compile_results = generate_compile_results(
-        verify_cfg,
-        context.initial_graph_copy, context.outputs,
-        context.intermediate_tensors,
-        final_graph=context.final_graph,
-        pass_specific_output_kwargs = context.output_kwargs
-    )
 
     return CompileDepth.FULL
 

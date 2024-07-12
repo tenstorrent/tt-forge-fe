@@ -193,7 +193,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
 }
 
 // ********** Run pre-lowering passes **********
-graphlib::Graph* run_lower_to_mlir_passes(graphlib::Graph *graph)
+graphlib::Graph* run_pre_lowering_passes(graphlib::Graph *graph)
 {
     passes::print_graph(graph, "PRE_MLIR");
     // Recalculate shapes, and figure out implicit broadcasts that are missing
@@ -226,8 +226,6 @@ graphlib::Graph* run_lower_to_mlir_passes(graphlib::Graph *graph)
     // Fold tile broadcasts into reduce and inputs
     fold_tile_broadcast_ops_into_inputs(graph);
     fold_tile_broadcast_ops_into_reduce(graph);
-
-    std::shared_ptr<void> binary = passes::run_mlir_compiler(graph);
 
     return graph;
 }

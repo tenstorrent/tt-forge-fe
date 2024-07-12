@@ -11,6 +11,7 @@
 
 #include "pybuda/csrc/lower_to_buda/common.hpp"
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/types.h"
 #include "utils/assert.hpp"
 #include "utils/env.hpp"
 #include "utils/logger.hpp"
@@ -191,7 +192,12 @@ std::vector<torch::Tensor> dispatch(
         rt_outputs.emplace_back(create_tensor(outputs.back()));
     }
 
-    runtime::Event event = runtime::submit(device.rt_device, binary, program_idx, rt_inputs, rt_outputs);
+    if (!device.rt_device.has_value())
+    {
+        device.open_device();
+    }
+
+    runtime::Event event = runtime::submit(device.rt_device.value(), binary, program_idx, rt_inputs, rt_outputs);
     (void)event;
 
     // Clear old tensor uids and update with new ones
@@ -238,45 +244,6 @@ std::vector<torch::Tensor> dispatch(
         ++output_idx;
     }
     return outputs;
-}
-
-std::vector<TTDevice> query_available_tt_devices()
-{
-    static std::shared_ptr<TTContext> context = std::make_shared<TTContext>();
-    std::vector<TTDevice> d;
-
-    auto [system_desc, device_ids] = runtime::getCurrentSystemDesc();
-
-    int logical_device_index = 0;
-    ARCH arch = ARCH::Invalid;
-    for (std::uint32_t chip_desc_index : *system_desc->chip_desc_indices())
-    {
-        target::ChipDesc const* chip_desc = system_desc->chip_descs()->Get(chip_desc_index);
-        target::ChipCapability chip_capabilities = system_desc->chip_capabilities()->Get(logical_device_index);
-        bool mmio = bool(chip_capabilities & target::ChipCapability::HostMMIO);
-        if (not mmio)
-        {
-            continue;
-        }
-        switch(chip_desc->arch())
-        {
-            case target::Arch::Grayskull: arch = ARCH::GRAYSKULL; break;
-            case target::Arch::Wormhole_b0: arch = ARCH::WORMHOLE_B0; break;
-            case target::Arch::Blackhole: arch = ARCH::BLACKHOLE; break;
-            default: log_fatal(LogTTDevice, "Unknown chip type {}", chip_desc->arch());
-        }
-        ++logical_device_index;
-    }
-
-    if (arch == ARCH::Invalid)
-        log_fatal(LogTTDevice, "No available devices detected (To run with golden device, set PYBUDA_DEVMODE=1)");
-
-    runtime::Device rt_device = runtime::openDevice(device_ids);
-    d.emplace_back(rt_device, system_desc, device_ids, arch, true, 0, context);
-
-    log_debug(LogTTDevice, "Available devices:");
-    for (int i = 0; i < (int)d.size(); ++i) log_debug(LogTTDevice, "  [{}] {}", i, d[i].arch);
-    return d;
 }
 
 std::string get_device_cluster_yaml(TTDevice const&) { return "";} //TODO }
@@ -339,6 +306,7 @@ std::vector<size_t> original_shape(const torch::Tensor& tensor)
 
     return shape;
 }
+
 int unique_id(const torch::Tensor& tensor)
 {
     auto impl = tensor.unsafeGetTensorImpl();

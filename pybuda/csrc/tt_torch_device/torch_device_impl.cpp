@@ -29,12 +29,7 @@ constexpr inline c10::DispatchKey DispatchKeyTT = c10::DispatchKey::PrivateUse1;
 class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
 {
    public:
-    TorchDeviceImpl(std::vector<TTDevice> const& tt_devices) : tt_devices(tt_devices) {}
-
-    // TODO: check if this is ok... not sure if we should open devices in this class...
-    ~TorchDeviceImpl() override {
-        close_devices();
-    }
+    TorchDeviceImpl(const TTSystem& system) : tt_devices(system.devices) {}
 
     // Torch overrides
     virtual c10::DeviceType type() const override { return TT; }
@@ -71,7 +66,7 @@ class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
     // TT specific
     static TorchDeviceImpl& get()
     {
-        static TorchDeviceImpl tt_device_impl(query_available_tt_devices());
+        static TorchDeviceImpl tt_device_impl(TTSystem::get_system());
 
         return tt_device_impl;
     }
@@ -79,27 +74,19 @@ class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
 
     int get_next_unique_id() { return next_id++; }
 
-    TTDevice getTTDevice() const
+    std::shared_ptr<TTDevice> getTTDevice() const
     {
         TT_ASSERT(current_device.index() < (int)tt_devices.size());
         return tt_devices[current_device.index()];
     }
 
-    const TTDevice& getDefaultTTDevice() const
+    const std::shared_ptr<TTDevice>& getDefaultTTDevice() const
     {
         TT_ASSERT(not tt_devices.empty());
         return tt_devices.front();
     }
 
-    void close_devices()
-    {
-        for (auto& tt_device : tt_devices)
-        {
-            runtime::closeDevice(tt_device.rt_device);
-        }
-    }
-
-    std::vector<TTDevice> getTTDevices() const { return tt_devices; }
+    std::vector<std::shared_ptr<TTDevice>> getTTDevices() const { return tt_devices; }
 
     std::map<const void*, std::string> registered_output_transforms;
     std::vector<std::string> ordered_input_trasforms;
@@ -108,15 +95,15 @@ class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
    private:
     mutable c10::Device current_device = c10::Device(TT, 0);
     mutable c10::Stream current_stream = c10::Stream(c10::Stream::UNSAFE, c10::Device(TT, 0), 0);
-    std::vector<TTDevice> tt_devices;
+    std::vector<std::shared_ptr<TTDevice>> tt_devices;
     int next_id = 0;
 };
 
 // register backend
 c10::impl::DeviceGuardImplRegistrar tt_device_impl_reg(TT, &TorchDeviceImpl::get());
 
-const TTDevice& get_default_tt_device() { return TorchDeviceImpl::get().getDefaultTTDevice();}
-std::vector<TTDevice> get_available_tt_devices() { return TorchDeviceImpl::get().getTTDevices(); }
+const std::shared_ptr<TTDevice>& get_default_tt_device() { return TorchDeviceImpl::get().getDefaultTTDevice();}
+std::vector<std::shared_ptr<TTDevice>> get_available_tt_devices() { return TorchDeviceImpl::get().getTTDevices(); }
 
 struct Mallocator final : public c10::Allocator
 {
@@ -546,16 +533,16 @@ TORCH_LIBRARY_IMPL(aten, PrivateUse1, m)
     if (ops_registered)
         return;
     ops_registered = true;
-    m.impl("aten::empty.memory_format", &tt::empty);
-    m.impl("aten::empty_strided", &tt::empty_strided);
-    m.impl("aten::_copy_from", &tt::_copy_from);
+    // m.impl("aten::empty.memory_format", &tt::empty);
+    // m.impl("aten::empty_strided", &tt::empty_strided);
+    // m.impl("aten::_copy_from", &tt::_copy_from);
     // m.impl("aten::_to_copy", &tt::_to_copy);
     // m.impl("aten::to", &tt::to);
-    m.impl("aten::_copy_from_and_resize", &tt::_copy_from_and_resize);
-    m.impl("aten::_reshape_alias", &tt::_reshape_alias);
+    // m.impl("aten::_copy_from_and_resize", &tt::_copy_from_and_resize);
+    // m.impl("aten::_reshape_alias", &tt::_reshape_alias);
     // m.impl("aten::as_strided", &tt::as_strided);
-    m.impl("aten::index.Tensor_out", &tt::index_outf);
-    m.impl("aten::view", &tt::view);
+    // m.impl("aten::index.Tensor_out", &tt::index_outf);
+    // m.impl("aten::view", &tt::view);
 }
 
 bool fallback_registered = false;
@@ -567,7 +554,3 @@ TORCH_LIBRARY_IMPL(_, PrivateUse1, m)
     m.fallback(torch::CppFunction::makeFromBoxedFunction<&tt::fallback>());
 }
 
-void tt::close_devices()
-{
-    tt::TorchDeviceImpl::get().close_devices();
-}
