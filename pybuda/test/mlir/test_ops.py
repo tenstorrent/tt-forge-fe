@@ -3,6 +3,7 @@ import os
 import torch
 from torch import nn
 
+import pybuda
 
 def test_add():
     class Add(nn.Module):
@@ -17,7 +18,7 @@ def test_add():
     framework_model = Add()
     fw_out = framework_model(*inputs)
     
-    compiled_model = torch.compile(framework_model, backend="tt")
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
@@ -37,7 +38,7 @@ def test_subtract():
     framework_model = Subtract()
     fw_out = framework_model(*inputs)
     
-    compiled_model = torch.compile(framework_model, backend="tt")
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
@@ -57,7 +58,7 @@ def test_multiply():
     framework_model = Multiply()
     fw_out = framework_model(*inputs)
     
-    compiled_model = torch.compile(framework_model, backend="tt")
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
@@ -78,7 +79,7 @@ def test_relu():
     framework_model = ReLU()
     fw_out = framework_model(*inputs)
     
-    compiled_model = torch.compile(framework_model, backend="tt")
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
@@ -99,8 +100,8 @@ def test_linear():
     framework_model = Linear()
     fw_out = framework_model(*inputs)
     
-    compiled_model = torch.compile(framework_model.to("tt"), backend="tt")
-    co_out = compiled_model(*[i.to("tt") for i in inputs])
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
     assert [torch.allclose(fo, co) for fo, co in zip(fw_out, co_out)]
@@ -120,7 +121,7 @@ def test_softmax():
     framework_model = Softmax()
     fw_out = framework_model(*inputs)
     
-    compiled_model = torch.compile(framework_model, backend="tt")
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]

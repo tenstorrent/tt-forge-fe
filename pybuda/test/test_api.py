@@ -17,12 +17,19 @@ def test_torch():
             return torch.add(x1, x2)
 
     model = Add()
-    inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
+    shape = (1, 1024, 32)
+    inputs = [torch.rand(shape), torch.rand(shape)]
 
-    compiled_model = pybuda.compile(model, sample_inputs=[torch.rand(1, 32, 32), torch.rand(1, 32, 32)])
+    golden = model(*inputs)
 
-    # TODO: Run inference on the compiled model, in the following way:
-    # compiled_model(*inputs)
+    compiled_model = pybuda.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
+
+    output = compiled_model(*inputs)
+
+    print(f"golden: {golden}")
+    print(f"output: {output}")
+    if not torch.allclose(output[0], golden, rtol=1e-1):
+        raise ValueError("Output does not match the golden output")
 
 def test_tf():
     class TFAdd(tf.keras.Model):
@@ -33,8 +40,18 @@ def test_tf():
             return x1 + x2
 
     model = TFAdd()
-    inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
-    pybuda.compile(model, sample_inputs=[torch.rand(1, 32, 32), torch.rand(1, 32, 32)])
+    shape = (1, 1024, 32)
+    inputs = [torch.rand(shape), torch.rand(shape)]
 
-    # TODO: Run inference on the compiled model, in the following way:
-    # compiled_model(*inputs)
+    inputs_tf = [tf.convert_to_tensor(x) for x in inputs]
+    golden = model(inputs_tf[0], inputs_tf[1])
+    golden = torch.tensor(golden.numpy())
+
+    compiled_model = pybuda.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
+
+    output = compiled_model(*inputs)
+
+    print(f"golden: {golden}")
+    print(f"output: {output}")
+    if not torch.allclose(output[0], golden, rtol=1e-1):
+        raise ValueError("Output does not match the golden output")

@@ -39,11 +39,9 @@ void TorchDeviceModule(py::module &m_torch_device)
     py::class_<tt::TTDevice>tt_device (m_torch_device, "TTDevice");
     tt_device.def_readonly("arch", &tt::TTDevice::arch)
         .def_readonly("mmio", &tt::TTDevice::mmio)
-        .def_readonly("chip_ids", &tt::TTDevice::chip_ids)
         .def_readonly("input_runtime_transforms", &tt::TTDevice::input_runtime_transforms)
         .def_readonly("input_tile_bcast_dims", &tt::TTDevice::input_tile_bcast_dims)
         .def_readonly("output_runtime_transforms", &tt::TTDevice::output_runtime_transforms)
-        .def_readonly("system_desc", &tt::TTDevice::system_desc)
         .def_property_readonly("cluster_yaml", &tt::get_device_cluster_yaml)
         .def("torch_device", &tt::torch_device)
         .def("str", &tt::to_string)
@@ -54,7 +52,5 @@ void TorchDeviceModule(py::module &m_torch_device)
     m_torch_device.def("original_shape", tt::original_shape);
     m_torch_device.def("unique_id", tt::unique_id);
 }
-
-
 
 }

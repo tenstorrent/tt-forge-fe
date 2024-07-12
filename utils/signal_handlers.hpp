@@ -8,7 +8,7 @@
 #include <string>
 
 #include "utils/assert.hpp"
-#include "tt_torch_device/tt_device.hpp"
+#include "runtime/tt_device.hpp"
 
 inline void pybuda_signal_handler(int sig)
 {
@@ -60,7 +60,7 @@ inline void pybuda_signal_handler(int sig)
         std::cerr << prefix << frame << std::endl;
     }
 
-    tt::close_devices();
+    tt::TTSystem::get_system().close_devices();
 
     // Restore the default signal handler and raise the signal again.
     // The default signal handler will generate a core dump (if enabled).

@@ -4,13 +4,18 @@
 #pragma once
 #include <memory>
 
-namespace tt::graphlib
+#include "tt/runtime/types.h"
+
+namespace tt
 {
-    class Graph;
+    namespace graphlib
+    {
+        class Graph;
+    }
 }
 
 namespace tt::passes
 {
     /// Public API for running MLIR passes and generating binary.
-    std::shared_ptr<void> run_mlir_compiler(tt::graphlib::Graph *graph);
+    runtime::Binary run_mlir_compiler(tt::graphlib::Graph *graph);
 }

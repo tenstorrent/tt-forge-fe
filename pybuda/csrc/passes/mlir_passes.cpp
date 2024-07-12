@@ -10,24 +10,52 @@
 #include "mlir/IR/BuiltinOps.h"
 
 // TTMLIR headers
-#include "ttmlir/Dialect/TTIR/Passes.h"
-#include "ttmlir/Dialect/TTNN/Passes.h"
-#include "ttmlir/Dialect/TTNN/IR/TTNN.h"
+#include "ttmlir/Dialect/TTIR/Transforms/Passes.h"
+#include "ttmlir/Dialect/TTNN/Transforms/Passes.h"
+#include "ttmlir/Dialect/TTNN/Pipelines/Passes.h"
+#include "utils/logger.hpp"
 
 namespace tt::passes
 {
     /// Public API for running MLIR passes and generating binary.
     void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
     {
-        // Register required passes
-        mlir::tt::ttir::registerPasses();
-        mlir::tt::ttnn::registerPasses();
+        static bool _ = []() {
+            // Register required passes
+            mlir::tt::ttir::registerPasses();
+            mlir::tt::ttnn::registerPasses();
+
+            // Register pass pipelines
+            // This will internally register the pipelines in the MLIR pipeline registry. Then,
+            // the registry can be used to lookup the pipeline by its name and add it to the pass manager.
+            mlir::tt::ttnn::registerTTNNPipelines();
+
+            return true;
+        }();
+        (void)_;
 
         // Create a pass manager.
         mlir::PassManager pm(mlir_module.get()->getName());
 
-        // Create a pass pipeline
-        mlir::tt::ttnn::createTTIRToTTNNBackendPipeline(pm);
+        // Get the pipeline info for the wanted pipeline.
+        const auto pipelineInfo = mlir::PassPipelineInfo::lookup("ttir-to-ttnn-backend-pipeline");
+
+        // This error handler is necessary when adding the pipeline to the pass manager (via PassPipelineInfo).
+        // It's supposed to be called when there's an error during parsing of the pipeline options.
+        // However, I think it's wrongly implemented in the MLIR library, so it doesn't get called.
+        mlir::function_ref<mlir::LogicalResult(const mlir::Twine &)>  err_handler = [](const mlir::Twine &location) {
+            log_error(LogMLIRGenerator, "Error during parsing pipeline options: {}", location.str());
+            return mlir::failure();
+        };
+
+        // Pipeline options are empty for now.
+        std::string options{""};
+
+        auto result = pipelineInfo->addToPipeline(pm, options, err_handler);
+        if (mlir::failed(result))
+        {
+            throw std::runtime_error("Failed to add the pipeline to the pass manager!");
+        }
 
         // Run the pass manager.
         if (mlir::failed(pm.run(mlir_module.get())))

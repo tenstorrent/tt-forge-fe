@@ -26,8 +26,9 @@ class CompileDepth(Enum):
     AUTOGRAD = 6
     POST_AUTOGRAD_PASS = 7
     PRE_LOWERING_PASS = 8
-    FINISH_COMPILE = 9
-    FULL = 10
+    RUN_MLIR_COMPILER = 9
+    FINISH_COMPILE = 10
+    FULL = 11
 
     @classmethod
     def has_value(cls, value):

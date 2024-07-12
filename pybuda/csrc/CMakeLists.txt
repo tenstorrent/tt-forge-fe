@@ -38,6 +38,7 @@ add_subdirectory(autograd)
 add_subdirectory(shared_utils)
 add_subdirectory(backend_api)
 add_subdirectory(reportify)
+add_subdirectory(runtime)
 add_subdirectory(tt_torch_device)
 
 ### pybuda_csrc_objs ###
@@ -77,17 +78,23 @@ target_link_libraries(pybuda_csrc PRIVATE
     backend_api
     reportify
     tt_torch_device
+    runtime
     pybuda_csrc_objs
+
+    # NOTE: ordering of the libraries will affect the linking
     LLVM
     MLIR
+    TTNNTargetFlatbuffer
     MLIRTTDialect
     MLIRTTIRDialect
     MLIRTTNNDialect
-    MLIRTTIRTransforms
-    MLIRTTNNTransforms
     MLIRTTKernelDialect
     MLIRTTMetalDialect
+    MLIRTTIRTransforms
+    MLIRTTNNTransforms
     MLIRTTIRAnalysis
+    MLIRTTNNPipelines
+    TTMLIRTTNNToEmitC
     TTRuntime
     TTRuntimeTTNN
     tt_metal
