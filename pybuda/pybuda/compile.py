@@ -8,10 +8,10 @@ from enum import Enum
 from dataclasses import dataclass, field
 
 import torch
+import tensorflow as tf
 from loguru import logger
 
-from .ttdevice import TTDevice
-from .tensor import Tensor, pad_pytorch_tensor_to_buda
+from .tensor import Tensor
 from pybuda._C import (
     link_past_cache_ios,
     move_index_to_mm_weights,
@@ -20,12 +20,8 @@ from pybuda._C import (
     run_post_optimize_decompose_graph_passes,
     run_consteval_graph_pass,
     run_post_autograd_graph_passes,
-    run_pre_placer_buda_passes,
     run_lower_to_mlir_passes,
     dump_graph,
-    dump_epoch_type_graphs,
-    dump_epoch_id_graphs,
-    UnsupportedHWOpsError,
 )
 import pybuda
 from .parameter import Parameter
@@ -41,6 +37,7 @@ from .config import (
 )
 from .pybudaglobal import state_changed, clear_state_changed
 from pybuda import PyBudaModule
+from pybuda.module import wrap_module
 from .tensor import Tensor, to_pt_tensors, to_buda_tensors
 from . import ci, utils
 from pybuda.tools.net2reportify import net2placement
@@ -113,13 +110,13 @@ class CompileResults:
 
 @dataclass
 class CompileContext:
-    dev: TTDevice
+    modules: List[torch.nn.Module]
     graph_name: str
-    inputs: Tuple[Union[Tensor, List[Any], Dict[str, Any]],...]
     compiler_cfg: CompilerConfig
     verify_cfg: VerifyConfig
     microbatch_size: int
     microbatch_count: int
+    inputs: Optional[Tuple[Union[Tensor, List[Any], Dict[str, Any]],...]] = None
     graph: Optional[Graph] = None
     losses: Optional[List[Tensor]] = None
     output_kwargs: Dict[str, Any] = field(default_factory=dict)
@@ -146,7 +143,6 @@ class CompileContext:
 
 def calculate_grads(
         outputs: Tuple[Tensor, ...],
-        device: "TTDevice",
         intermediate_golden_tensors: Dict,
         is_buda: bool,
         losses=None):
@@ -176,6 +172,48 @@ def calculate_grads(
             _run_pytorch_backward(outputs, device, losses)
 
     return losses
+
+def compile_main(
+        module: torch.nn.Module | tf.keras.Model | PyBudaModule,
+        sample_inputs: Optional[Tuple[Union[Tensor, List[Any], Dict[str, Any]],...]] = None,
+        module_name: Optional[str] = None,
+):
+    """
+    Main entry point for compiling modules from different frameworks for Tenstorrent devices.
+    """
+
+    assert isinstance(module, torch.nn.Module) or isinstance(module, tf.keras.Model) or isinstance(module, PyBudaModule), "Only PyTorch, TensorFlow, and PyBuda modules are supported."
+
+    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg.apply_env_config_overrides()
+
+    if module_name is None:
+        module_name = module.__class__.__name__
+
+    assert module_name is not None
+
+    logger.info("Compiling module {}", module_name)
+
+    if (sample_inputs is None):
+        logger.error("No sample inputs provided for module {}", module_name)
+        assert False
+
+    assert sample_inputs is not None
+
+    wrapped_module = wrap_module(module, module_name)
+
+    compile_context: CompileContext = CompileContext(
+        modules=[wrapped_module],
+        graph_name=module_name,
+        compiler_cfg=compiler_cfg,
+        verify_cfg=VerifyConfig.disabled(),
+        microbatch_size=1,
+        microbatch_count=1,
+        inputs=sample_inputs,
+    )
+
+    return pybuda_compile_from_context(compile_context)
+    
 
 def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
     """
@@ -212,7 +250,6 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
         current_stage = context.stage
         verify_cfg = context.verify_cfg
         compiler_cfg = context.compiler_cfg
-        dev = context.dev
 
         # Execute the current stage.
         next_stage = stage_to_func[current_stage](context)
@@ -223,10 +260,9 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
         can_verify = current_stage != CompileDepth.INIT_COMPILE and current_stage != CompileDepth.PRE_LOWERING_PASS and current_stage != CompileDepth.POST_PATTERN_MATCHER
         should_verify = current_stage == CompileDepth.POST_AUTOGRAD_PASS and verify_cfg.verify_post_autograd_passes
 
-
         if (verify_cfg.verify_all or (verify_cfg.verify_last and should_early_stop_compilation) or should_verify) and can_verify:
             in_training = context.compiler_cfg.enable_training and current_stage.value >= CompileDepth.AUTOGRAD.value
-
+            assert False, "verification not working yet"
             do_verify(current_stage.name.lower(), in_training, context.graph, context.inputs, context.parameter_dict, context.input_grads, context.outputs, dev, context.intermediate_tensors, verify_cfg, False, losses=context.losses, targets=context.targets)
 
         if should_early_stop_compilation:
@@ -237,8 +273,53 @@ def pybuda_compile_from_context(context: CompileContext) -> CompileResults:
 
     return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.final_graph, pass_specific_output_kwargs=context.output_kwargs)
 
+def pybuda_compile_torch(
+        module_name: str,
+        module: torch.fx.GraphModule,
+        graph: Graph,
+        *inputs: Union[Tensor, List[Any], Dict[str, Any]]
+    ):
+    """
+    Entry point for pybuda compile for torch 2.0 api.
+
+    Parameters
+    ---------
+    module_name: str
+        Name of the module
+
+    module: torch.fx.GraphModule
+        Torch FX Module to compile
+
+    graph: Graph
+        Initial graph to compile (unlike other paths, the torch 2.0 path should already have an initial graph at this point)
+
+    inputs:
+        Sample inputs for the module
+
+    Returns
+    -------
+    CompileResults
+    """
+
+    inputs = list(inputs)
+
+    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg.apply_env_config_overrides()
+    
+    compile_context: CompileContext = CompileContext(
+        modules=[module],
+        graph_name=module_name,
+        inputs=inputs,
+        compiler_cfg=compiler_cfg,
+        verify_cfg=VerifyConfig.disabled(),
+        microbatch_size=1,
+        microbatch_count=1,
+        graph=graph,
+    )
+
+    return pybuda_compile_from_context(compile_context)
+
 def pybuda_compile(
-        dev: TTDevice,
         graph_name: str,
         *inputs: Union[Tensor, List[Any], Dict[str, Any]],
         targets: List[Tensor] = [],
@@ -290,7 +371,6 @@ def pybuda_compile(
     compiler_cfg.apply_env_config_overrides()
 
     compile_context: CompileContext = CompileContext(
-        dev=dev,
         graph_name=graph_name,
         inputs=inputs,
         compiler_cfg=compiler_cfg,
@@ -409,20 +489,12 @@ def generate_compile_results(
 
 def init_compile(context: CompileContext) -> CompileDepth:
     
-    dev = context.dev
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
-    targets = context.targets
 
     force_full = bool(int(os.environ.get("PYBUDA_FORCE_FULL_COMPILE_DEPTH", "0")))
     if force_full:
         compiler_cfg.compile_depth = CompileDepth.FULL
-
-    if len(targets) > 0:
-        assert dev.loss_module is not None, "Target provided for compilation, but this device has no loss module"
-
-    if dev.loss_module is not None:
-        assert len(targets) > 0, f"Device {dev} has a loss module, but no targets were provided for compilation"
 
     context.backend_output_directory = compiler_cfg.backend_output_dir
     ci.initialize_output_build_directory(context.backend_output_directory)
@@ -451,40 +523,31 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
 
-    if context.compiler_cfg.compile_tvm_to_python and context.dev.graph is None:
+    modules_ = []
+    if context.compiler_cfg.compile_tvm_to_python and context.graph is None:
         module_inputs = context.inputs
-        for index, module in enumerate(context.dev.modules):
+        for index, module in enumerate(context.modules):
             if not isinstance(module, PyBudaModule):
                 from .tvm_to_python import generate_pybuda_module
                 prev_state = state_changed()
+                if module_inputs is None:
+                    logger.error("No inputs provided for module {}", module.name)
+                    assert False
                 modules, dev_types, module_inputs = generate_pybuda_module(module, to_pt_tensors(module_inputs), context.compiler_cfg, module.name, context.verify_cfg,)
                 assert len(modules) == 1, "Attemping to load split model onto single devices"
-                context.dev.modules[index] = modules[0]
 
+                modules_.append(modules[0])
                 if index == 0:
                     context.inputs = module_inputs
 
                 if not(prev_state):
                     clear_state_changed()
 
-            if index < len(context.dev.modules) - 1 and not context.compiler_cfg.compile_subgraphs:
-                if module is context.dev.loss_module:
-                    if len(module_inputs) == 1:
-                        module_inputs = context.dev.modules[index].forward(module_inputs[0], context.targets[0])
-                    else:
-                        module_inputs = context.dev.modules[index].forward(tuple(module_inputs), tuple(context.targets))
-                else:
-                    module_inputs = context.dev.modules[index].forward(*module_inputs)
-
                 if isinstance(module_inputs, Tensor):
                     module_inputs = (module_inputs,) # Force a tuple
 
-    if context.dev.graph is None:
-        context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = context.dev.generate_graph(*context.inputs, return_intermediate=context.verify_cfg.intermediates, graph_name=context.graph_name, compiler_cfg=context.compiler_cfg, target_tensors=context.targets, verify_cfg=context.verify_cfg)
-    else:
-        context.graph = context.dev.graph
-        context.intermediate_tensors = context.dev.intermediate_tensors
-        context.outputs = context.dev.output_tensors
+    if context.graph is None:
+        context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(modules_, *context.inputs, return_intermediate=context.verify_cfg.intermediates, graph_name=context.graph_name, compiler_cfg=context.compiler_cfg, target_tensors=context.targets)
 
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")
@@ -503,7 +566,15 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
     context.initial_graph_copy = context.graph.clone() # save the original graph for verification and analysis
     context.input_grads = []
-    context.parameter_dict = {p.get_name() : p.value(is_buda=False) for p in context.dev.get_parameters()}
+
+    context.parameter_dict = {}
+    for module in context.modules:
+        if isinstance(module, pybuda.module.Module):
+            for p in module.get_parameters():
+                context.parameter_dict[p.get_name()] = p.value(is_buda=False)
+        elif isinstance(module, torch.fx.GraphModule):
+            for name, value in module.named_parameters():
+                context.parameter_dict[name] = value
 
     return CompileDepth.POST_INITIAL_GRAPH_PASS
 
@@ -609,7 +680,6 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     compiler_cfg = context.compiler_cfg
-    dev = context.dev
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
@@ -621,12 +691,6 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
         if original_node_id in intermediate_tensors:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
-
-    # Workaround for TVM and lack of parameters at the time optimizer is created
-    if dev.optimizer:
-        if dev.optimizer.device_params:
-            dev.optimizer.set_parameters_to_optimize(dev.modules[0].get_parameters())
-        dev.optimizer.set_optimizer_parameters()
 
     next_stage = CompileDepth.POST_AUTOGRAD_PASS
     if context.compiler_cfg.enable_training:
@@ -680,7 +744,6 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     compiler_cfg = context.compiler_cfg
-    dev = context.dev
     graph_name = context.graph_name
     graph, intermediate_tensors, losses, outputs = context.graph, context.intermediate_tensors, context.losses, context.outputs
 
@@ -690,6 +753,7 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
 
     dump_graph(graph, graph_name, "post_autograd_passes")
+    # TODO: training is dependent on TTDevice.py which is removed
     if compiler_cfg.enable_training:
         calculate_grads(outputs, dev, intermediate_tensors, False, losses)
 
@@ -709,15 +773,11 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     compiler_cfg = context.compiler_cfg
-    dev = context.dev
     graph_name = context.graph_name
     graph = context.graph
 
     run_lower_to_mlir_passes(graph)
     dump_graph(graph, graph_name, "pre_lowering")
-
-    for parameter in dev.get_parameters():
-        parameter._set_fp32_fallback(dev.fp32_fallback)
 
     context.final_graph = graph
     return CompileDepth.FINISH_COMPILE
@@ -737,15 +797,341 @@ def finish_compile(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     verify_cfg = context.verify_cfg
-    compiler_cfg = context.compiler_cfg
-    dev = context.dev
 
     context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(context.final_graph)
     compile_results = generate_compile_results(
         verify_cfg,
         context.initial_graph_copy, context.outputs,
         context.intermediate_tensors,
+        final_graph=context.final_graph,
         pass_specific_output_kwargs = context.output_kwargs
     )
 
     return CompileDepth.FULL
+
+def generate_graph(
+        modules,
+        *inputs: Tensor, 
+        target_tensors: List[Tensor] = [],
+        return_intermediate: bool = False, 
+        graph_name: str = "default_graph", 
+        compiler_cfg: Optional[CompilerConfig] = None, 
+        trace_only: bool = False) -> Tuple[Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]]:
+    """
+    Generate a buda graph from the passed modules, and return the graph and output tensors.
+    If input tensors have a value set, the output tensor will also have the calculated output value
+    set.
+
+    Parameters
+    ----------
+    inputs: Tuple[Tensor, ....]
+        Input tensors
+
+    target_tensors: List[Tensor]
+        Target inputs. Optional, if trace_only is set. Otherwise, value must be provided.
+
+    return_intermediate: bool
+        Optional. If set, a dictionary of node IDs -> tensors will be return with intermediate values, for data mismatch debug.
+
+    trace_only: bool
+        If set, the graph is made for a quick trace only and shouldn't have side-effects
+
+    Returns
+    -------
+    Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]
+        Buda graph, outputs, optional intermediates, original inputs, target tensor
+    """
+
+    '''
+    TODO: This function was copied over from ttdevice.py with some modifications. Probably needs to be refactored (possibly moved to cpp)
+    '''
+
+    from .pybudaglobal import start_tracing, stop_tracing
+    from pybuda.tvm_utils import flatten_inputs
+    from collections import deque
+    import inspect
+
+    from pybuda._C.graph import create_output, create_parameter_input, create_data_edge, create_activation_input, create_constant_input, create_op_node, create_target_input
+
+    output_to_module_name_prefix = {}
+    output_to_subgraph_index = {}
+
+    # Create the graph
+    graph = Graph(graph_name)
+    graph.set_microbatch(1)
+
+    if compiler_cfg is None:
+        compiler_cfg = _get_global_compiler_config()
+
+    graph.set_enable_training(compiler_cfg.enable_training)
+
+    # Trace through the modules
+    all_subgraph_outputs = []
+    outputs = inputs
+    for idx, module in enumerate(modules):
+
+        assert isinstance(module, PyBudaModule), "This function only supports PyBudaModule instances"
+
+        if compiler_cfg.compile_subgraphs:
+            outputs = inputs[idx]
+
+        start_tracing()
+        outputs = module.forward(*outputs)
+        stop_tracing()
+        if isinstance(outputs, Tensor):
+            outputs = (outputs,) # Force a tuple
+
+        for output in outputs:
+            output_to_module_name_prefix[output] = module.get_name()
+            if compiler_cfg.compile_subgraphs:
+                assert output not in output_to_subgraph_index, "Output tensor {} is produced by multiple modules".format(output)
+
+            output_to_subgraph_index[output] = module.subgraph_idx
+
+        all_subgraph_outputs += outputs
+
+    if trace_only:
+        return graph, all_subgraph_outputs, {}, inputs, target_tensors
+
+    visited_tensors = {}
+    pending_tensors = deque()
+    intermediate = {}
+    module_input_tensor_to_node: Dict[str, Tensor] = {}
+    module_output_tensor_to_node: Dict[str, Tensor] = {}
+    module_target_tensor_to_node: Dict[str, Tensor] = {}
+    module_loopback_tensor_to_node: Dict[str, Tensor] = {}
+    passthroughs: Set = set()
+
+    input_node_names = []
+    input_names_known = True
+    if isinstance(inputs[0], Tensor):
+        inputs = (inputs,)
+    for index, (module, submodule_input) in enumerate(zip(modules, inputs)):
+        submodule_input_node_names = list(inspect.signature(super(PyBudaModule, module).__getattribute__("forward")).parameters.keys())
+        if len(modules) > 1:
+            submodule_input_node_names = [f"{input_name}_{index}" for input_name in submodule_input_node_names]
+        input_node_names += submodule_input_node_names
+        if len(submodule_input_node_names) != len(submodule_input):
+            input_names_known = False
+    inputs, _, _ = flatten_inputs(inputs)
+
+    for out in all_subgraph_outputs:
+        is_loss_output = False # self.loss_module is not None
+        if out.src_op is None:
+
+            # No source op. It could be a pass-through, so let's compare to inputs
+            found = False
+            for input in inputs:
+                if input == out:
+                    # Found a passthrough
+                    outq = create_output(graph, 
+                        output_to_module_name_prefix.get(out, "") + f".output_passthrough_{len(passthroughs)}",
+                        out.shape.get_pytorch_shape(), 
+                        out.data_format,
+                        is_loss_output,
+                        output_to_subgraph_index.get(out, 0))
+                    passthroughs.add(input)
+                    found = True
+                    break
+
+            if not found:
+                raise RuntimeError("Untraced output tensor encountered")
+
+        else:
+            outq = create_output(graph, 
+                    output_to_module_name_prefix.get(out, "") + ".output_" + out.src_op.name, 
+                    out.shape.get_pytorch_shape(), 
+                    out.data_format,
+                    is_loss_output,
+                    output_to_subgraph_index.get(out, 0))
+        module_output_tensor_to_node[out] = outq
+        pending_tensors.append( (out, outq, 0, [], output_to_subgraph_index.get(out, 0)) )
+
+    recorded_parameters = {}
+
+    while pending_tensors:
+
+        tensor, output, port_index, operand_broadcast, subgraph_idx = pending_tensors.popleft()
+
+        if tensor in visited_tensors:
+            # Already created the note - let's add the edge and move on
+            create_data_edge(graph, visited_tensors[tensor], 0, output, port_index, operand_broadcast)
+            continue
+
+        if isinstance(tensor, int):
+            # integer constant. Don't add to visited tensors.
+            assert False # not supported any more
+
+        if isinstance(tensor, Parameter):
+            # parameter tensor
+            if tensor.get_name() is not None:
+                name = tensor.get_name()
+            else:
+                name = "parameter_" + graph.get_node_name(output)
+
+            if name in recorded_parameters:
+                # Multiple subgraphs might use the same parameter. If it is used in the same subgraph,
+                # we should have already found it in the visited_tensors dictionary. Putting an assert here
+                # to catch fallouts.
+                assert graph.get_subgraph_id_for_node(recorded_parameters[name]) != subgraph_idx, \
+                        "Trying to add parameter with name: {} that is used in the same subgraph".format(name)
+                create_data_edge(graph, recorded_parameters[name], 0, output, port_index, operand_broadcast)
+                continue
+
+            inq = create_parameter_input(
+                    graph, 
+                    name,
+                    tensor.shape.get_pytorch_shape(),
+                    tensor.requires_grad,
+                    tensor.data_format,
+                    subgraph_idx)
+            create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
+            visited_tensors[tensor] = inq
+            recorded_parameters[name] = inq
+            continue
+        
+        if tensor.src_op is None:
+            input_name = input_node_names[inputs.index(tensor)] if input_names_known and tensor in inputs else "input_" + str(port_index) + "_" + graph.get_node_name(output)
+            if tensor in passthroughs:
+                # passthrough input->output, add a nop
+                inq = create_activation_input(
+                        graph,
+                        input_name,
+                        tensor.shape.get_pytorch_shape(),
+                        tensor.requires_grad,
+                        tensor.data_format,
+                        subgraph_idx)
+
+                nop = create_op_node(graph, f"_passthrough_nop_{output}", 
+                        OpType("nop"), tensor.shape.get_pytorch_shape(), tensor.data_format, subgraph_idx, {})
+
+                create_data_edge(graph, inq, 0, nop, 0, operand_broadcast)
+                create_data_edge(graph, nop, 0, output, 0, operand_broadcast)
+                visited_tensors[tensor] = inq
+                module_input_tensor_to_node[tensor] = inq
+                continue
+
+            elif tensor in target_tensors:
+                # Target input
+                inq = create_target_input(
+                        graph,
+                        input_name,
+                        tensor.shape.get_pytorch_shape(),
+                        tensor.requires_grad,
+                        tensor.data_format,
+                        subgraph_idx)
+                create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
+                visited_tensors[tensor] = inq
+                module_target_tensor_to_node[tensor] = inq
+                continue
+
+            elif tensor.is_constant():
+                # Target input
+                inq = create_constant_input(
+                        graph,
+                        input_name,
+                        tensor.value(),
+                        tensor.shape.get_pytorch_shape(),
+                        tensor.data_format,
+                        subgraph_idx)
+                create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
+                visited_tensors[tensor] = inq
+                module_target_tensor_to_node[tensor] = inq
+                continue
+
+            else:
+                # input tensor
+                input_creator = create_activation_input if input_name not in compiler_cfg.loopback_outputs else create_parameter_input
+
+                if input_name in compiler_cfg.loopback_outputs:
+                    module.add_parameter(input_name, Parameter(tensor.value(), requires_grad=True, name=input_name))
+
+                inq = input_creator(
+                        graph,
+                        input_name,
+                        tensor.shape.get_pytorch_shape(),
+                        tensor.requires_grad,
+                        tensor.data_format,
+                        subgraph_idx)
+                create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
+                visited_tensors[tensor] = inq
+                if input_name not in compiler_cfg.loopback_outputs:
+                    module_input_tensor_to_node[tensor] = inq
+                elif input_name in compiler_cfg.loopback_outputs:
+                    module_loopback_tensor_to_node[tensor] = inq
+                    recorded_parameters[input_name] = inq
+                continue
+
+        elif tensor.src_op.op_type == "constant":
+            constant_value = tensor.src_op.attrs[0]
+            constant = create_constant_input(
+                    graph,
+                    "constant_" + str(port_index) + "_" + graph.get_node_name(output),
+                    constant_value,
+                    tensor.data_format,
+                    subgraph_idx)
+
+            create_data_edge(graph, constant, 0, output, port_index, operand_broadcast)
+            visited_tensors[tensor] = constant
+            continue
+
+        '''
+        print("ttdevice.py, create_op_node")
+        print(f"graph type: {type(graph)}")
+        print(f"src_op name: {tensor.src_op.name}")
+        print(f"src_op op_type: {tensor.src_op.op_type}")
+        print(f"src_op attrs: {tensor.src_op.attrs}")
+        print(f"shape: {tensor.shape.get_pytorch_shape()}")
+        print(f"data format: {tensor.data_format}")
+        '''
+
+        tags = {}
+        if tensor.src_layer is not None:
+            tags["layer"] = tensor.src_layer
+        op = create_op_node(graph, tensor.src_op.name, tensor.src_op.cpp_op_type, tensor.shape.get_pytorch_shape(), tensor.data_format, subgraph_idx, tags)
+
+        visited_tensors[tensor] = op
+        if return_intermediate and tensor.has_value():
+            intermediate[op] = tensor.value()
+
+        create_data_edge(graph, op, 0, output, port_index, operand_broadcast)
+
+        for i, t in enumerate(tensor.src_op.operands):
+            pending_tensors.append( (t, op, i, tensor.src_op.operand_broadcast, subgraph_idx) )
+
+    # Register input/output order of the module to the graph now that the nodes are created
+    module_inputs = [module_input_tensor_to_node[input_tensor] for input_tensor in inputs if input_tensor in module_input_tensor_to_node]
+    module_outputs = [module_output_tensor_to_node[output_tensor] for output_tensor in all_subgraph_outputs if output_tensor in module_output_tensor_to_node]
+    module_targets = [module_target_tensor_to_node[target_tensor] for target_tensor in target_tensors]
+    out_requires_grad = [output_tensor.requires_grad for output_tensor in all_subgraph_outputs if output_tensor in module_output_tensor_to_node]
+
+    # Remove unused inputs from list of module inputs
+    inputs = [input_tensor for input_tensor in inputs if input_tensor in module_input_tensor_to_node or input_tensor in module_output_tensor_to_node]
+
+    # Remove loopback inputs from list of module inputs
+    inputs = [input_tensor for input_tensor in inputs if input_tensor not in module_loopback_tensor_to_node]
+
+    if len(compiler_cfg.loopback_outputs):
+        output_to_remove = []
+        out_requires_grad_to_remove = []
+        for input_name, output_indices in compiler_cfg.loopback_outputs.items():
+            if isinstance(output_indices, int):
+                output_indices = [output_indices]
+            for output_index in output_indices:
+                input_id = graph.get_node_id(input_name)
+                output_id = module_outputs[output_index]
+                add_partial_datacopy_edge(graph, output_id, 0, input_id, 0)
+                output_to_remove.append(module_outputs[output_index])
+                out_requires_grad_to_remove.append(out_requires_grad[output_index])
+        [module_outputs.remove(value) for value in output_to_remove]
+        [out_requires_grad.remove(value) for value in out_requires_grad_to_remove]
+
+    graph.register_module_inputs(module_inputs)
+    graph.register_module_targets(module_targets)
+    graph.register_module_outputs(module_outputs, out_requires_grad)
+
+    if return_intermediate:
+        return graph, outputs, intermediate, inputs, target_tensors
+
+    return graph, outputs, {}, inputs, target_tensors
+

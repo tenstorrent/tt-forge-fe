@@ -10,7 +10,6 @@ import os
 import json
 
 import importlib
-from pybuda.ttdevice import TTDevice
 
 from pybuda.compile import CompileResults
 
@@ -21,6 +20,8 @@ import dataclasses
 from dataclasses_json import dataclass_json, config
 from pybuda.utils import as_json, dict_as_json, list_as_json, detach_tensors
 from pybuda.tensor import get_device_constant_and_parameters, get_post_const_eval_tensors 
+
+from pybuda.module import Module
 
 import torch
 def no_encoding(obj):
@@ -100,7 +101,7 @@ class CompiledGraphState:
     has_cache_buffers: bool = False
 
     @staticmethod
-    def from_compiled_graph(device: "TTDevice", compile_results: CompileResults) -> "CompiledGraphState":
+    def from_compiled_graph(module: Module, compile_results: CompileResults) -> "CompiledGraphState":
         graph = compile_results.final_graph
         ordered_input_names = graph.get_ordered_input_names()
         ordered_output_names = graph.get_ordered_output_names()
@@ -157,28 +158,35 @@ class CompiledGraphState:
         for name, tensor in graph.get_constant_input_runtime_tensor_transform_constants():
             constant_to_tensor[name] = tensor
 
+        # TODO: will be needed for training
         optimizer_param_info = {}
-        for param_name, opt_params in device.get_optimizer_params(is_buda=True).items():
-            optimizer_param_info[param_name] = []
-            for input_node, param_key in get_optimizer_param_info(graph, param_name):
-                optimizer_param_info[param_name].append((input_node.name, param_key))
 
         consteval_trace = compile_results.pass_specific_output_kwargs["consteval_trace"]
         has_cache_buffers = False
 
-        device_inputs = get_device_constant_and_parameters(
-            device, constant_to_tensor=constant_to_tensor
-        )
+        if isinstance(module, Module):
+            for p in module.get_parameters():
+                value = p.value(is_buda=False)
+                if value == None:
+                    raise ValueError(f"Parameter {p.get_name()} has no value")
+                constant_to_tensor[p.get_name()] = p.value(is_buda=False)
+        elif isinstance(module, torch.fx.GraphModule):
+            for name, value in module.named_parameters():
+                constant_to_tensor[name] = value
+
+        post_const_eval_constants = {}
         post_const_eval_constants: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
             graph,
-            device_inputs,
+            constant_to_tensor,
             consteval_trace,
             constant_to_tile_dims,
             ordered_constant_node_names
         )
+
+        post_const_eval_parameters = {}
         post_const_eval_parameters: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
             graph,
-            device_inputs,
+            constant_to_tensor,
             consteval_trace,
             parameter_to_tile_dims,
             ordered_parameter_node_names

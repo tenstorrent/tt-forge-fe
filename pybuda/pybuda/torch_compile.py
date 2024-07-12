@@ -189,15 +189,6 @@ def _compile(module, aten_module, module_name, sample_inputs, device, compiler_c
         logger.info("Compiling pt2 graph:")
         aten_module.graph.print_tabular()    
 
-    if _tt0 is None:
-        _tt0 = pybuda.TTDevice("tt0", arch=device.arch)
-
-    _tt0.place_module(pybuda.module.PyTorchModule(module_name, module))
-
-    assert (
-        _tt0.arch == device.arch
-    ), f"Mismatch in the arch compiling for vs the currently bound device {_tt0.arch} != {device.arch}"
-
     # Frontend Compile
     logger.debug("Appending to Graph")
     device_graph_changed, graph_inputs, intermediate_tensors, output_tensors, schedule = _capture.append_to_graph(
@@ -208,25 +199,19 @@ def _compile(module, aten_module, module_name, sample_inputs, device, compiler_c
     if not device_graph_changed:
         return None, None, schedule
 
-    _tt0.graph = _capture.get_buda_graph().clone()
-    _tt0.intermediate_tensors = intermediate_tensors
-    _tt0.output_tensors = [pybuda.Tensor.create_from_torch(output_tensor) for output_tensor in output_tensors]
     logger.debug("Frontend Compile")
     module = module.to("cpu")
 
-    fe_compile_result = pybuda.compile.pybuda_compile(
-        _tt0,
+    fe_compile_result = pybuda.pybuda_compile_torch(
         module_name,
-        #*[pybuda.Tensor.create_from_torch(sample_input.to("cpu")) for sample_input in sample_inputs],
-        *[pybuda.Tensor.create_from_torch(sample_input.to("cpu")) for sample_input in [g for gs in graph_inputs for g in gs]],
-        compiler_cfg=compiler_cfg,
-        microbatch_size=sample_inputs[0].shape[0],
-        # TODO: support all arguments
+        module,
+        _capture.get_buda_graph(),
+        *[pybuda.Tensor.create_from_torch(sample_input.to("cpu")) for sample_input in [g for gs in graph_inputs for g in gs]]
     )
 
     # Backend Compile
     logger.debug("Backend Compile")
-    compiled_graph_state = CompiledGraphState.from_compiled_graph(_tt0, fe_compile_result)
+    compiled_graph_state = CompiledGraphState.from_compiled_graph(module, fe_compile_result)
     workload = device.compile(
         _build_backend_compile_request(device, compiler_cfg, compiled_graph_state, _subgraph_index - 1, schedule.get_device_program_ids())
     )
@@ -439,13 +424,6 @@ def _torch_compile(
     cache=False,  # Disabled for now
     original_torch_device=None,
 ):
-    """
-    Ideally we can remove having to pass in tt0 (the ttdevice.py) object here,
-    but currently it's so coupled to our compile flow that it's too much work to
-    remove its dependency for this proof of concept.
-    Ideally pybuda.compile.pybuda_compile just takes a device_config dataclass
-    which has the device target information to decouple it from the runtime device.
-    """
     logger.info("Torch Compile")
     #global _ordered_inputs_per_subgraph
     #_ordered_inputs_per_subgraph[_subgraph_index] = [unique_id(inp) for inp in sample_inputs]
