@@ -18,7 +18,7 @@
 #include "passes/erase_consecutive_reshape.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/erase_unnecessary_4d_tm_sequence.hpp"
-#include "passes/emit_mlir.hpp"
+#include "passes/mlir_compiler.hpp"
 #include "passes/explicate_unsqueeze.hpp"
 #include "passes/fuse_conv2d_bias.hpp"
 #include "passes/fuse_pad_conv2d.hpp"
@@ -227,7 +227,7 @@ graphlib::Graph* run_lower_to_mlir_passes(graphlib::Graph *graph)
     fold_tile_broadcast_ops_into_inputs(graph);
     fold_tile_broadcast_ops_into_reduce(graph);
 
-    passes::emit_mlir(graph);
+    std::shared_ptr<void> binary = passes::run_mlir_compiler(graph);
 
     return graph;
 }

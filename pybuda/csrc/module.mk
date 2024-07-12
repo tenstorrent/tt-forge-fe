@@ -19,7 +19,7 @@ TTMLIR_TOOLCHAIN_DIR = /opt/ttmlir-toolchain
 RUNTIME_LIB_DIR = third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib
 MLIR_LIB_DIR = -L$(TTMLIR_TOOLCHAIN_DIR)/lib -Lthird_party/tt-mlir/build/lib -Lthird_party/tt-mlir/build/runtime/lib
 MLIR_LIBS = -Wl,-rpath,$(TTMLIR_TOOLCHAIN_DIR)/lib -lLLVM -lMLIR
-TT_MLIR_LIBS = -lMLIRTTDialect -lMLIRTTIRDialect
+TT_MLIR_LIBS = -lMLIRTTDialect -lMLIRTTIRDialect -lMLIRTTNNDialect -lMLIRTTIRTransforms -lMLIRTTNNTransforms -lMLIRTTKernelDialect -lMLIRTTMetalDialect -lMLIRTTIRAnalysis
 RUNTIME_LIBS = -lTTRuntime -lTTRuntimeTTNN -L$(RUNTIME_LIB_DIR) -Wl,-rpath,\$$ORIGIN/../../$(RUNTIME_LIB_DIR) -l:_ttnn.so -ltt_metal -ldevice -ltt_eager
 
 include pybuda/csrc/graph_lib/module.mk
