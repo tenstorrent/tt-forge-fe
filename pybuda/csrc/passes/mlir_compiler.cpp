@@ -10,7 +10,11 @@
 
 // MLIR headers
 #include "mlir/IR/BuiltinOps.h"
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
 #include "mlir/InitAllDialects.h"
+#pragma clang diagnostic pop
 
 // TTMLIR headers
 #include "ttmlir/Dialect/TT/IR/TT.h"

@@ -15,6 +15,8 @@
 #include "utils/logger.hpp"
 
 // MLIR headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/Tensor/IR/Tensor.h"
 #include "mlir/IR/BuiltinOps.h"
@@ -22,6 +24,7 @@
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/IR/OperationSupport.h"
 #include "mlir/IR/Verifier.h"
+#pragma clang diagnostic pop
 
 // TTMLIR headers
 #include "ttmlir/Dialect/TT/IR/TT.h"
@@ -249,8 +252,14 @@ class MLIRGenerator
                     return builder_.getF32Type();
                 case tt::DataFormat::Float16_b:
                     return builder_.getF16Type();
+                case tt::DataFormat::Float16:
+                    return builder_.getF16Type();
+                default:
+                    TT_ASSERT(false);
             }
-            assert(false);
+
+            // TODO add all supported types in switch
+            return builder_.getF32Type();
         }
 
         /// Get the MLIR type for a PyBuda node.

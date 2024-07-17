@@ -11,6 +11,11 @@
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
+#pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 namespace tt::sparse
 {
 

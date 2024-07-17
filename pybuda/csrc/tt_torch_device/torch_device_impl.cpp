@@ -142,23 +142,6 @@ void fallback(const c10::OperatorHandle& op, torch::jit::Stack* stack)
     at::native::cpu_fallback(op, stack);
 }
 
-static torch::ScalarType df_to_torch_scalar_type(DataFormat df)
-{
-    switch (df)
-    {
-        case DataFormat::Int8: return torch::ScalarType::Byte;
-        case DataFormat::UInt16: return torch::ScalarType::Short;
-        case DataFormat::RawUInt32: return torch::ScalarType::Int;
-        case DataFormat::Int32: return torch::ScalarType::Int;
-        case DataFormat::Float16: return torch::ScalarType::Half;
-        case DataFormat::Float32: return torch::ScalarType::Float;
-        case DataFormat::Float16_b: return torch::ScalarType::BFloat16;
-        default: break;
-    }
-
-    log_fatal(LogTTDevice, "Unhandled dtype {}", df);
-}
-
 static std::pair<std::vector<std::int64_t>, std::size_t> calculate_stride_size(
     torch::IntArrayRef size, torch::IntArrayRef stride, std::size_t scalar_size)
 {
