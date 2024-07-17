@@ -346,6 +346,6 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
         amp_level,
         amp_properties);
 
-    return std::move(lowered_graph);
+    return lowered_graph;
 }
 }  // namespace tt
