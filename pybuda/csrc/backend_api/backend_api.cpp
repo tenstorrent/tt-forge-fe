@@ -9,10 +9,25 @@
 
 namespace tt
 {
+template <class T>
+constexpr std::false_type false_type_t{};
+
 template <typename T>
 T DeviceConfig::get(std::string const &param, const bool system_level_command) const
 {
-    assert(false);
+    TT_ASSERT(false);
+    if constexpr (std::is_same_v<T, CoreCoord>)
+    {
+        return CoreCoord(1, 1);
+    }
+    else if constexpr (std::is_same_v<T, DeviceGrid>)
+    {
+        return DeviceGrid(1, 1);
+    }
+    else
+    {
+        return T();
+    }
 }
 
 // explicit instantiations
@@ -34,7 +49,7 @@ std::unordered_map<std::string, std::string> load_cached_sys_param(std::string y
     return cache;
 }
 
-void DeviceConfig::load_system_level_params() { assert(false); }
+void DeviceConfig::load_system_level_params() { TT_ASSERT(false); }
 
-std::unordered_map<std::uint32_t, std::uint32_t> DeviceConfig::get_harvested_cfg() const { assert(false); }
+std::unordered_map<std::uint32_t, std::uint32_t> DeviceConfig::get_harvested_cfg() const { TT_ASSERT(false); return {}; }
 }  // namespace tt

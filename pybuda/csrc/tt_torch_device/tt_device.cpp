@@ -110,6 +110,7 @@ void pad_to_buda_shape(torch::Tensor & tensor)
         cpu_tensor.unsafeGetTensorImpl()->set_stride(i, curr_stride);
         curr_stride *= cpu_tensor.sizes()[i];
     }
+
     tensor = cpu_tensor.to(tt_device);
 }
 
@@ -155,7 +156,7 @@ std::vector<torch::Tensor> dispatch(
     int input_idx = 0;
     std::vector<runtime::Tensor> rt_inputs;
     rt_inputs.reserve(workload->inputs.at(program_idx).size());
-    for (auto const& desc : workload->inputs.at(program_idx))
+    for ([[ maybe_unused ]] auto const& desc : workload->inputs.at(program_idx))
     {
         torch::Tensor & input = inputs.at(input_idx);
         auto impl = input.unsafeGetTensorImpl();
@@ -204,8 +205,8 @@ std::vector<torch::Tensor> dispatch(
         PyBudaTensorDesc const& desc = subgraph_outputs.at(output_idx );
 
         std::string runtime_transform = device.output_runtime_transforms.at(program_idx).at(output_idx );
-        auto impl = output.unsafeGetTensorImpl();
-        auto output_tensor_uid = dynamic_cast<TTMetaData*>(impl->get_backend_meta())->unique_output_id;
+        // auto impl = output.unsafeGetTensorImpl();
+        // auto output_tensor_uid = dynamic_cast<TTMetaData*>(impl->get_backend_meta())->unique_output_id;
 
         // if (queue_desc.io_type == IO_TYPE::RandomAccess) {
         //     register_output_runtime_transform(output, runtime_transform);
