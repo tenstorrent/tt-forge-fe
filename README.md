@@ -13,7 +13,7 @@ This is one off step. It will pull all dependencies needed for tt-forge.
 
 ### Build tt-forge
 * `source env/activate`
-* `cmake -G Ninja --build build .`
+* `cmake -G Ninja -B build .`
 * `cmake --build build`
 
 ### Cleanup
