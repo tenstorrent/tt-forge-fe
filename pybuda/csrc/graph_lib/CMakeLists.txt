@@ -9,5 +9,5 @@ add_library(graph
     utils.cpp
     python_bindings.cpp)
 
-target_compile_options(graph PRIVATE ${STATIC_LIB_FLAGS} ${PYBUDA_CSRC_CFLAGS})
+target_compile_options(graph PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
 

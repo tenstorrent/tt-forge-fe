@@ -5,4 +5,4 @@ add_library(shared_utils
     sparse_matmul_utils.cpp
     string_extension.cpp)
 
-target_compile_options(shared_utils PRIVATE ${STATIC_LIB_FLAGS} ${PYBUDA_CSRC_CFLAGS})
+target_compile_options(shared_utils PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
