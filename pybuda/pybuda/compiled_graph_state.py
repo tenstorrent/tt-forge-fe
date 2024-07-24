@@ -3,27 +3,21 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Dict, List, Any, Tuple, Optional
+from loguru import logger
+
 from dataclasses import dataclass, field
-from enum import Enum
-import inspect
-import os
-import json
-
-import importlib
-
-from pybuda.compile import CompileResults
+from dataclasses_json import dataclass_json, config
 
 from pybuda._C import DataFormat
-from pybuda._C.graph import Graph, get_constant_input_value, get_optimizer_param_info, RuntimeTensorTransform, RuntimeTensorTransformType, Shape
-
-import dataclasses
-from dataclasses_json import dataclass_json, config
-from pybuda.utils import as_json, dict_as_json, list_as_json, detach_tensors
-from pybuda.tensor import get_device_constant_and_parameters, get_post_const_eval_tensors 
-
+from pybuda._C.graph import Graph, RuntimeTensorTransform
+from pybuda._C.runtime import run_binary, Binary
+from pybuda.utils import list_as_json
+from pybuda.tensor import Tensor, get_post_const_eval_tensors
 from pybuda.module import Module
 
+
 import torch
+
 def no_encoding(obj):
     return obj # perform json-encoding later
 def no_decoding(obj):
@@ -32,6 +26,19 @@ def optional_no_encoding(obj):
     return None if obj is None else obj
 def optional_no_decoding(obj):
     return None if obj is None else obj
+
+class CompileResults:
+    """
+    Wrapper for result from the graph compiler. Contains initial and final graphs, output tensors,
+    and, optionally golden results for final output and intermediates, if desired.
+    """
+    outputs: List[Tensor]
+    golden_outputs: List[torch.Tensor]
+    golden_intermediates: Dict[str, torch.Tensor]
+    initial_graph: Graph
+    final_graph: Graph
+
+    pass_specific_output_kwargs: Dict[str, Any] = {}
 
 @dataclass_json
 @dataclass()
@@ -267,3 +274,32 @@ class CompiledGraphState:
 
     def get_ordered_output_runtime_transforms_for_subgraph(self, subgraph_idx):
         return [transform for i, transform in enumerate(self.ordered_output_runtime_tensor_transforms) if self.ordered_output_subgraph_indices[i] == subgraph_idx]
+
+class CompiledModel:
+    """
+    Callable object for running inference on the compiled model.
+    """
+    compiled_graph_state: CompiledGraphState
+    binary: Binary
+
+    def __init__(self, compiled_graph_state: CompiledGraphState, binary: Binary):
+        self.compiled_graph_state = compiled_graph_state
+        self.binary = binary
+
+    def __call__(self, *inputs: torch.Tensor) -> List[torch.Tensor]:
+        """
+        Run inference on the compiled model.
+
+        Parameters
+        ----------
+        inputs: Tuple[Tensor, ...]
+            Input tensors
+
+        Returns
+        -------
+        List[Tensor]
+            Output tensors
+        """
+        logger.info(f"Running model {self.compiled_graph_state.graph_name} on device...")
+        return run_binary(self.binary, 0, [*inputs])
+

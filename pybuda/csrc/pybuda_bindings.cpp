@@ -26,12 +26,15 @@ namespace py = pybind11;
 #include "passes/move_index_to_mm_weights.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/python_bindings.hpp"
+#include "passes/mlir_compiler.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
+#include "runtime/python_bindings.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
+
 namespace tt {
 
 PYBIND11_MODULE(_C, m) {
@@ -116,6 +119,9 @@ PYBIND11_MODULE(_C, m) {
     py::module_ m_torch_device = m.def_submodule("torch_device", "TT Torch Device");
     TorchDeviceModule(m_torch_device);
 
+    py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
+    RuntimeModule(m_runtime);
+
     py::enum_<tt::MathFidelity>(m, "MathFidelity")
         .value("LoFi", tt::MathFidelity::LoFi)
         .value("HiFi2", tt::MathFidelity::HiFi2)
@@ -178,7 +184,8 @@ PYBIND11_MODULE(_C, m) {
         py::arg("op_intermediates_to_save") = std::vector<std::string>{},
         py::arg("use_interactive_placer") = true,
         py::arg("enable_device_tilize") = false);
-    m.def("run_lower_to_mlir_passes", &run_lower_to_mlir_passes);
+    m.def("run_pre_lowering_passes", &run_pre_lowering_passes);
+    m.def("run_mlir_compiler", &passes::run_mlir_compiler);
 
     m.def(
         "dump_graph",

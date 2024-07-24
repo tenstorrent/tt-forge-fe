@@ -210,6 +210,11 @@ class MLIRGenerator
                 auto opResult = builder_.create<mlir::tt::ttir::AddOp>(get_pybuda_operation_location(graph, op_node), return_types, inputs, outputs, atributes);
                 return opResult.getResult(0);
             }
+            else if (op_node->op_name() == "multiply")
+            {
+                auto opResult = builder_.create<mlir::tt::ttir::MultiplyOp>(get_pybuda_operation_location(graph, op_node), return_types, inputs, outputs, atributes);
+                return opResult.getResult(0);
+            }
             else {
                 log_error("Unsupported operation for lowering from PyBuda to TTIR: {}", op_node->op_name());
                 throw std::runtime_error("Unsupported operation for lowering from PyBuda to TTIR");

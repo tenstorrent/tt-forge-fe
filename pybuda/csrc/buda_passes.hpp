@@ -49,7 +49,7 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
     bool use_interactive_placer = true,
     bool enable_device_tilize = false);
 
-// Pre-lowering passes, last-minute changes before going to buda ops
-graphlib::Graph* run_lower_to_mlir_passes(graphlib::Graph *graph);
+// Pre-lowering passes, last-minute changes before going to MLIR
+graphlib::Graph* run_pre_lowering_passes(graphlib::Graph *graph);
 
 }
