@@ -10,7 +10,13 @@
 export PYBUDA_TOOLCHAIN_DIR="${PYBUDA_TOOLCHAIN_DIR:-/opt/pybuda-toolchain}"
 
 # Set PYTHON_VERSION
+if [[ "$(uname)" == "Linux" ]]; then
 export PYBUDA_PYTHON_VERSION="${PYBUDA_PYTHON_VERSION:-python3.10}"
+elif [[ "$(uname)" == "Darwin" ]]; then
+export PYBUDA_PYTHON_VERSION="${PYBUDA_PYTHON_VERSION:-/usr/bin/python3}"
+else
+echo "Error: Unsupported OS $(uname)"
+fi
 
 # Set PYBUDA_VENV_DIR to a default value if not already set
 export PYBUDA_VENV_DIR="${PYBUDA_VENV_DIR:-${PYBUDA_TOOLCHAIN_DIR}/venv}"

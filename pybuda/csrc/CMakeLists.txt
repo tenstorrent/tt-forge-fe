@@ -1,10 +1,6 @@
-set(PYTHON_SITE_PACKAGES_DIR ${PYBUDA_VENV_DIR}/lib/${PYBUDA_PYTHON_VERSION}/site-packages)
-
 set(CMAKE_PREFIX_PATH 
-    ${PYTHON_SITE_PACKAGES_DIR}/torch
+    ${Python_SITELIB}/torch
     ${CMAKE_PREFIX_PATH})
-
-find_package(Python3 COMPONENTS Development REQUIRED)
 find_package(Torch REQUIRED)
 
 set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)

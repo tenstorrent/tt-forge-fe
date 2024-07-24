@@ -1,3 +1,5 @@
+set -e
+
 if [[ -z "$PYBUDA_PYTHON_VERSION" ]]; then
     echo "PYBUDA_PYTHON_VERSION environment variable is not set"
     exit 1
@@ -20,7 +22,7 @@ fi
 
 # Torch requires a specific version of wheel to be installed
 # which depends on the platform
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ "$(uname)" == "Darwin" ]]; then
     REQUIREMENTS_FILE="$CURRENT_SOURCE_DIR/mac_requirements.txt"
 else
     # TODO test on linux
@@ -30,6 +32,6 @@ fi
 $PYBUDA_PYTHON_VERSION -m venv $PYBUDA_VENV_DIR
 unset LD_PRELOAD
 source $PYBUDA_VENV_DIR/bin/activate
-python -m pip install --upgrade pip
+$PYBUDA_PYTHON_VERSION -m pip install --upgrade pip
 pip3 install wheel==0.37.1
 pip3 install -r $REQUIREMENTS_FILE -f https://download.pytorch.org/whl/cpu/torch_stable.html
