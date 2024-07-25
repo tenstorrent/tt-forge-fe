@@ -48,3 +48,11 @@ set(SHARED_LIB_FLAGS -fPIC)
 add_subdirectory(third_party)
 add_subdirectory(pybuda)
 
+### Generate stubs for ttforge
+### Run `cmake --build build -- make_stubs` to generate stubs
+add_custom_target(make_stubs
+    COMMAND pip install mypy
+    COMMAND stubgen -m pybuda._C -m pybuda._C.autograd -m pybuda._C.graph -m pybuda._C.torch_device -m pybuda._C.runtime -o pybuda -v
+    COMMENT "Generating stubs for ttforge"
+    USES_TERMINAL
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
