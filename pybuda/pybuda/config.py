@@ -174,7 +174,6 @@ class CompilerConfig:
     enable_auto_transposing_placement: bool = ("PYBUDA_ENABLE_AUTO_TRANSPOSE" in os.environ)  # compiler automatically detects ops to transpose on placement when the flag is set
     fracture_groups: List[Tuple[List[Tuple[str, int, int]], List[str], List[int]]] = field(default_factory=lambda: list()) # see insert_fracture_group
     conv_multi_op_fracture_factor_override: Dict[str, int] = field(default_factory=lambda: dict())  # override multi op fracture factor for conv
-    enable_stable_softmax: bool = True
     enable_single_buffer_fallback: bool = False
 
     backend_opt_level: int = 4 # backend optimization level
@@ -234,9 +233,6 @@ class CompilerConfig:
 
         if "PYBUDA_PRESTRIDE_DISABLE" in os.environ:
             self.enable_conv_prestride = not bool(int(os.environ["PYBUDA_PRESTRIDE_DISABLE"]))
-
-        if "PYBUDA_DISABLE_STABLE_SOFTMAX" in os.environ:
-            self.enable_stable_softmax = not bool(int(os.environ["PYBUDA_DISABLE_STABLE_SOFTMAX"]))
 
         if "PYBUDA_CONVERT_PARAMS_TO_TVM" in os.environ:
             self.convert_framework_params_to_tvm = bool(int(os.environ["PYBUDA_CONVERT_PARAMS_TO_TVM"]))
@@ -390,7 +386,6 @@ def set_configuration_options(
         backend_runtime_args: Optional[str] = None,
         enable_auto_fusing: Optional[bool] = None,
         enable_conv_prestride: Optional[bool] = None,
-        enable_stable_softmax: Optional[bool] = None,
         amp_level: Optional[int] = None,
         harvested_rows: Optional[List[List[int]]] = None,
         store_backend_db_to_yaml: Optional[bool] = None,
@@ -541,8 +536,6 @@ def set_configuration_options(
         g_compiler_config.enable_auto_fusing = enable_auto_fusing
     if enable_conv_prestride is not None:
         g_compiler_config.enable_conv_prestride = enable_conv_prestride
-    if enable_stable_softmax is not None:
-        g_compiler_config.enable_stable_softmax = enable_stable_softmax
     if amp_level is not None:
         g_compiler_config.amp_level = amp_level
     if harvested_rows is not None:
