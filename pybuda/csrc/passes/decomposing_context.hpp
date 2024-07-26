@@ -64,7 +64,7 @@ class DecomposingContext
     inline std::shared_ptr<void> get_compiler_cfg() { return compiler_cfg; }
 };
 
-std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_pybuda_graph(
+std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_graph(
     Graph* graph, const char* dispatcher_name, std::shared_ptr<void> compiler_cfg);
 
 }  // namespace tt

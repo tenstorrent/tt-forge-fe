@@ -1142,7 +1142,7 @@ void constant_pre_broadcast(Graph *graph)
     }
 }
 
-// Convert PyBuda graph to Buda graph
+// Convert TTForge graph to Buda graph
 std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph)
 {
 
@@ -1187,7 +1187,7 @@ std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph)
         Node* old_node = graph->node_by_id(old_node_id);
         Node* new_node = old_to_new.at(old_node);
 
-        new_node->set_pybuda_id(old_node->id());
+        new_node->set_tt_forge_id(old_node->id());
         copy_operand_edges_to_new_graph(graph, new_graph.get(), old_node, new_node, old_to_new, true, true);
 
         if (old_node->node_type() == NodeType::kPyOp and new_node->node_type() == NodeType::kPyOp)

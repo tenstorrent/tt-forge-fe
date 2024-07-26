@@ -9,7 +9,7 @@
 
 namespace tt {
 
-// Lowering context provide an API for Python to create lowered Buda ops, given a PyBuda op and
+// Lowering context provide an API for Python to create lowered Buda ops, given a TTForge op and
 // its operands.
 using Graph = graphlib::Graph;
 using Node = graphlib::Node;

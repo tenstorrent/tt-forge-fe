@@ -14,7 +14,7 @@ struct Gpt2Split : testing::Test
     Gpt2Split()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto weight = create_input(*graph, "weight", graphlib::Shape::create({768, 2304}), graphlib::InputNodeType::Parameter); 
@@ -86,7 +86,7 @@ struct Fuyu8bSplit : testing::Test
     Fuyu8bSplit()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto weight = create_input(*graph, "weight", graphlib::Shape::create({12288, 4096}), graphlib::InputNodeType::Parameter); 
