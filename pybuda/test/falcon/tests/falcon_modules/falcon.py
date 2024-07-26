@@ -1139,7 +1139,6 @@ class PyBudaTrainer():
         # pybuda workarounds
         os.environ["GOLDEN_WORMHOLE_B0"] = "1"
         os.environ["WHA0_DISABLE_RELAY_BUFS"] = "1"
-        os.environ["PYBUDA_ENABLE_STABLE_SOFTMAX"] = "1"
         os.environ["PYBUDA_CONVERT_PARAMS_TO_TVM"] = "0"
         os.environ["TT_BACKEND_TIMEOUT"] = "0"
 
