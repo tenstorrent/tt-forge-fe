@@ -459,28 +459,8 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         Result of the operation.
     
     """
-    
+
     if op_type == "softmax":
-        
-        assert len(inputs) == 1, "Softmax should have one operand."
-        assert len(attr) == 2, "Softmax should have two attributes."
-        x = inputs[0]
-        dim = attr[0]
-        stable = attr[1]
-
-        if stable and dc.get_compiler_cfg().enable_stable_softmax:
-            res_max = dc.op("reduce_max", (x, ), (dim, ))
-            res_x_max = dc.op("subtract", (x, res_max), ())
-            res_exp = dc.op(Exp.create(), (res_x_max, ), ())
-        else:
-            res_exp = dc.op(Exp.create(), (x, ), ())
-            
-
-        res_exp_sum = dc.op("reduce_sum", (res_exp, ), (dim, ))
-        res_exp_sum = dc.op("add", (res_exp_sum, dc.tensor(torch.zeros(res_exp_sum.shape.as_list()) + 1e-10)), ())
-        res_exp_sum_recip = dc.op(Reciprocal.create(), (res_exp_sum, ), ())
-        result = dc.op("multiply", (res_exp, res_exp_sum_recip), ())
-        dc.fuse(result)
         return
 
     if op_type == "softmax_bw":

@@ -59,9 +59,6 @@ class PyBudify(torch.nn.Module):
                 "GOLDEN_WORMHOLE_B0"
             ] = "1"  # golden should always simulate a B0 as that's all we use now
             os.environ[
-                "PYBUDA_ENABLE_STABLE_SOFTMAX"
-            ] = "1"  # improved accuracy - pybuda team surprised we need it though
-            os.environ[
                 "PYBUDA_CONVERT_PARAMS_TO_TVM"
             ] = "0"  # faster compile times... why would this ever be 1?
             os.environ[

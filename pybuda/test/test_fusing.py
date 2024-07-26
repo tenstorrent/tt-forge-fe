@@ -342,8 +342,6 @@ class FuseSoftmax(pybuda.PyBudaModule):
 @pytest.mark.parametrize("dim", ["r", "c"])
 def test_softmax(test_device, test_kind, dim):
 
-    pybuda.set_configuration_options(enable_stable_softmax=False)
-
     os.environ["PYBUDA_FUSE_REDUCE"] = "1"
 
     dim_index = -1 if dim == "c" else -2

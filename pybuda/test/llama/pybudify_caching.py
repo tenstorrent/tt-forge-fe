@@ -27,7 +27,6 @@ class PyBudify(torch.nn.Module):
             #os.environ["PYBUDA_DISABLE_FORK_JOIN_BUF"] = "1"
             # os.environ["PYBUDA_DRAM_PICK_CAPACITY"] = "1"
             os.environ["WHA0_DISABLE_RELAY_BUFS"] = "1"
-            os.environ["PYBUDA_ENABLE_STABLE_SOFTMAX"] = "1"
             os.environ["PYBUDA_FUSE_STOP_ON_RECIPROCAL"] = "1"
             os.environ["PYBUDA_PLACER_SNAKE"] = "1"
             os.environ["LOGGER_LEVEL"] = log_level
