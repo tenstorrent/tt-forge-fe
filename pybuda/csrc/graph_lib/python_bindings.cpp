@@ -58,7 +58,7 @@ py::object eval_input_bw(Node *node, py::object inputs, bool is_buda);
 void GraphModule(py::module &m_graph)
 {
     py::class_<Graph>(m_graph, "Graph")
-        .def(py::init([](std::string name) { return std::make_unique<Graph>(graphlib::IRLevel::IR_PYBUDA, name); }))
+        .def(py::init([](std::string name) { return std::make_unique<Graph>(graphlib::IRLevel::IR_TT_FORGE, name); }))
         .def("clone", [](Graph &self) { return self.clone(); })
         .def("get_node_name", [](const Graph &self, const graphlib::NodeId id) { return self.node_by_id(id)->name(); })
         .def("get_name", [](const Graph &self) { return self.name(); })
@@ -618,7 +618,7 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphl
     py::object eval_module;
 
     switch (ir_level) {
-        case graphlib::IRLevel::IR_PYBUDA: eval_module = py::module_::import("pybuda.op.eval.pybuda"); break;
+        case graphlib::IRLevel::IR_TT_FORGE: eval_module = py::module_::import("pybuda.op.eval.pybuda"); break;
         case graphlib::IRLevel::IR_BUDA: eval_module = py::module_::import("pybuda.op.eval.buda"); break;
         case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("pybuda.op.eval.pybuda"); break;
     }
@@ -670,7 +670,7 @@ py::object eval_relu(py::object tensor, graphlib::OpType type)
                                     : "min";
 
         graphlib::OpType relu("relu", {relu_threshold, relu_mode});
-        tensor = eval_op(relu, inputs, graphlib::IRLevel::IR_PYBUDA);
+        tensor = eval_op(relu, inputs, graphlib::IRLevel::IR_TT_FORGE);
     }
     return tensor;
 }
@@ -699,7 +699,7 @@ py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool 
         //
         if (!eval_for_output || (op_type.op != "reshape" && op_type.op != "transpose"))
         {
-            tensor = eval_op(op_type, {tensor}, graphlib::IRLevel::IR_PYBUDA);
+            tensor = eval_op(op_type, {tensor}, graphlib::IRLevel::IR_TT_FORGE);
         }
     }
 
@@ -718,7 +718,7 @@ void eval_partial_datacopy_golden_transforms(
 
     for (auto const &op_type : golden_transforms)
     {
-        output_tensor = eval_op(op_type, {output_tensor}, graphlib::IRLevel::IR_PYBUDA);
+        output_tensor = eval_op(op_type, {output_tensor}, graphlib::IRLevel::IR_TT_FORGE);
     }
 
     if (ret.at(output_index).ptr() == nullptr)
@@ -728,7 +728,8 @@ void eval_partial_datacopy_golden_transforms(
     else
     {
         graphlib::OpType overlay("add");
-        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor}, graphlib::IRLevel::IR_PYBUDA);
+        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor}, graphlib::IRLevel::IR_TT_FORGE
+        );
     }
 }
 
@@ -1453,7 +1454,7 @@ eval_graph(
                 }
             }
 
-            auto golden_node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA) ? node->pybuda_id() : node->id();
+            auto golden_node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA) ? node->tt_forge_id() : node->id();
             if (op_node->has_golden_id()) {
                 golden_node_id = op_node->golden_id(); // if a different intermediate node is used as a reference...
             }
@@ -1468,7 +1469,7 @@ eval_graph(
                 // Check if there's a gradient to check
                 if (gradient_edges.size() > 0) {
                     Node* producer = graph->node_by_id(gradient_edges.at(0).producer_node_id);
-                    auto node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA) ? producer->pybuda_id() : producer->id();
+                    auto node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA) ? producer->tt_forge_id() : producer->id();
                     auto golden_fwd = intermediate_golden_tensors.find(node_id);
                     if (golden_fwd != intermediate_golden_tensors.end()) {
                         bool is_valid = is_gradient_comparison_valid(graph, gradient_edges.at(0));

@@ -35,14 +35,14 @@ struct TTMetaData : public c10::BackendMeta {
     int unique_output_id = -1;
 };
 
-struct PyBudaTensorDesc
+struct TTForgeTensorDesc
 {
     std::string name;
     std::vector<std::int64_t> shape;
     int ptr = -1;
     std::optional<torch::Tensor> constant;
 
-    PyBudaTensorDesc(
+    TTForgeTensorDesc(
         std::string name,
         std::vector<std::int64_t> shape,
         int ptr,
@@ -58,19 +58,19 @@ using Program = int;
 struct Workload
 {
     std::shared_ptr<void> flatbuffer;
-    std::map<int, std::vector<PyBudaTensorDesc>> inputs;
-    std::vector<PyBudaTensorDesc> constants;
-    std::vector<PyBudaTensorDesc> parameters;
-    std::map<int, std::vector<PyBudaTensorDesc>> outputs;
+    std::map<int, std::vector<TTForgeTensorDesc>> inputs;
+    std::vector<TTForgeTensorDesc> constants;
+    std::vector<TTForgeTensorDesc> parameters;
+    std::map<int, std::vector<TTForgeTensorDesc>> outputs;
     bool initialized = false;
     std::unordered_map<int, bool> subgraph_link_tensor_populated;
 
     Workload(
         std::shared_ptr<void> flatbuffer,
-        std::map<int, std::vector<PyBudaTensorDesc>> const& inputs, // a vector per program
-        std::vector<PyBudaTensorDesc> const& constants,
-        std::vector<PyBudaTensorDesc> const& parameters,
-        std::map<int, std::vector<PyBudaTensorDesc>> const& outputs) :
+        std::map<int, std::vector<TTForgeTensorDesc>> const& inputs, // a vector per program
+        std::vector<TTForgeTensorDesc> const& constants,
+        std::vector<TTForgeTensorDesc> const& parameters,
+        std::map<int, std::vector<TTForgeTensorDesc>> const& outputs) :
         flatbuffer(flatbuffer),
         inputs(inputs),
         constants(constants),

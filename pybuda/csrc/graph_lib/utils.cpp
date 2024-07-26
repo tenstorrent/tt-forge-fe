@@ -1946,7 +1946,7 @@ std::unique_ptr<Node> ConstEvalGraph::promote_node(
     Graph *runtime_graph, Node *runtime_node, std::unique_ptr<Node> &&consteval_node_free)
 {
     TT_ASSERT(not runtime_graph or runtime_node);
-    TT_ASSERT(not runtime_graph or runtime_graph->get_ir_level() == IRLevel::IR_PYBUDA);
+    TT_ASSERT(not runtime_graph or runtime_graph->get_ir_level() == IRLevel::IR_TT_FORGE);
 
     graph_updated_since_autograd = true;
 

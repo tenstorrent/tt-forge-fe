@@ -14,7 +14,7 @@ struct FusePadConv2d : testing::Test
     FusePadConv2d()
     {
         // Two transposes feeding into eltwise which has a transpose after it
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         auto in0_a = create_input(*graph, "in0_a", graphlib::Shape::create({1, 3, 513, 513}));
         auto param0 = create_input(*graph, "param1", graphlib::Shape::create({32, 3, 3, 3}), graphlib::InputNodeType::Parameter);

@@ -16,7 +16,7 @@ struct EraseInverseOps : testing::Test
     EraseInverseOps()
     {
         // Two transposes feeding into eltwise which has a transpose after it
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         graphlib::Shape shape = graphlib::Shape::create({1, 1, 512, 160});
         graphlib::Shape shapeT = graphlib::Shape::create({1, 1, 160, 512});

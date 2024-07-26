@@ -158,7 +158,7 @@ NodeContext DecomposingContext::tensor(std::shared_ptr<void> tensor, graphlib::S
     return NodeContext(new_node);
 }
 
-std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_pybuda_graph(
+std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_graph(
     Graph *graph, const char *dispatcher_name, std::shared_ptr<void> compiler_cfg)
 {
     std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> inserted_node_id_mapping;

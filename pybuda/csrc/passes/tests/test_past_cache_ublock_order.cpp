@@ -14,7 +14,7 @@ struct PastCache : testing::Test
     PastCache()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto pcache = create_input(*graph, "pcache", graphlib::Shape::create({1, 1, 416, 384}), graphlib::InputNodeType::Parameter); 

@@ -208,7 +208,7 @@ std::vector<torch::Tensor> dispatch(
     const auto& subgraph_outputs = workload->outputs.at(program_idx);
     for (auto const& output : outputs)
     {
-        PyBudaTensorDesc const& desc = subgraph_outputs.at(output_idx );
+        TTForgeTensorDesc const& desc = subgraph_outputs.at(output_idx );
 
         std::string runtime_transform = device.output_runtime_transforms.at(program_idx).at(output_idx );
         // auto impl = output.unsafeGetTensorImpl();

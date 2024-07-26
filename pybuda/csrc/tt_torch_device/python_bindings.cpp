@@ -14,7 +14,7 @@ void TorchDeviceModule(py::module &m_torch_device)
     m_torch_device.def("get_default_device", &tt::get_default_tt_device, py::return_value_policy::reference);
     m_torch_device.def("get_available_devices", []() { return tt::get_available_tt_devices(); });
 
-    py::class_<tt::PyBudaTensorDesc>(m_torch_device, "PyBudaTensorDesc")
+    py::class_<tt::TTForgeTensorDesc>(m_torch_device, "TTForgeTensorDesc")
         .def(
             py::init<
                 std::string const&,
@@ -25,10 +25,10 @@ void TorchDeviceModule(py::module &m_torch_device)
             py::arg("shape"),
             py::arg("ptr") = -1,
             py::arg("constant") = std::nullopt)
-            .def_readonly("name", &tt::PyBudaTensorDesc::name)
-            .def_readonly("shape", &tt::PyBudaTensorDesc::shape)
-            .def_readonly("ptr", &tt::PyBudaTensorDesc::ptr)
-            .def_readonly("constant", &tt::PyBudaTensorDesc::constant);
+            .def_readonly("name", &tt::TTForgeTensorDesc::name)
+            .def_readonly("shape", &tt::TTForgeTensorDesc::shape)
+            .def_readonly("ptr", &tt::TTForgeTensorDesc::ptr)
+            .def_readonly("constant", &tt::TTForgeTensorDesc::constant);
 
     py::class_<tt::Workload, std::shared_ptr<tt::Workload>>(m_torch_device, "Workload")
         .def_readonly("inputs", &tt::Workload::inputs)

@@ -16,7 +16,7 @@ struct WhisperPastCacheBase : testing::Test
     WhisperPastCacheBase()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         // define input/weight nodes
@@ -95,7 +95,7 @@ struct WhisperPastCacheSubGraph : testing::Test
     WhisperPastCacheSubGraph()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         // define input/weight nodes
@@ -173,7 +173,7 @@ struct T5PastCacheRotate : testing::Test
     T5PastCacheRotate()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         // define input/weight nodes
@@ -278,7 +278,7 @@ struct Falcon40bPastCache : testing::Test
     Falcon40bPastCache()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         // define input/weight nodes
@@ -378,7 +378,7 @@ struct Fuyu8bPastCache : testing::Test
     Fuyu8bPastCache()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         // define input/weight nodes

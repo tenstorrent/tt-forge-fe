@@ -16,7 +16,7 @@ struct EraseUnnecessary4DSeq : testing::Test
     EraseUnnecessary4DSeq()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, NumOperands*58, 64, 64})); 

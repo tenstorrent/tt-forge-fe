@@ -44,7 +44,7 @@ class Node {
    private:
     std::string name_;
     NodeId unique_id_ = -1;
-    NodeId pybuda_id_ = -1;
+    NodeId tt_forge_id_ = -1;
 
     int padding_id = 0;
 
@@ -59,9 +59,9 @@ class Node {
     virtual ~Node() = default;
 
     NodeId id() const;
-    NodeId pybuda_id() const;
+    NodeId tt_forge_id() const;
     void set_id(NodeId node_id);
-    void set_pybuda_id(NodeId node_id);
+    void set_tt_forge_id(NodeId node_id);
     const std::string& name() const;
     void set_name(const std::string& name);
 

@@ -14,7 +14,7 @@ struct FuseReshapeTransposeIntoHSlice : testing::Test
     FuseReshapeTransposeIntoHSlice()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, 1, 1, 32}));
@@ -203,7 +203,7 @@ struct FuseTransposeReshapeIntoHStack : testing::Test
     FuseTransposeReshapeIntoHStack()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, 64, 1, 32}));
@@ -425,7 +425,7 @@ struct FuseReshapeIntoVSlice : testing::Test
     FuseReshapeIntoVSlice()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, 32, 2048, 32}));
@@ -468,7 +468,7 @@ struct FuseReshapeIntoVStack : testing::Test
     FuseReshapeIntoVStack()
     {
         // Initialize graph
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
         auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, 1024, 64, 32}));
