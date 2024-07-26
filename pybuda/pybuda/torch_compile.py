@@ -12,7 +12,7 @@ from contextlib import redirect_stdout
 
 from loguru import logger
 
-from pybuda._C.torch_device import get_default_device, unique_id, PyBudaTensorDesc
+from pybuda._C.torch_device import get_default_device, unique_id, TTForgeTensorDesc
 from pybuda.compiled_graph_state import CompiledGraphState
 from pybuda.fx.capture import CaptureFX
 from pybuda.fx.schedule import TensorSource
@@ -103,7 +103,7 @@ def _build_backend_compile_request(device, compiler_cfg, compiled_graph_state, s
     for program_id in program_ids:
         graph_idx = MixedGraph.get_program_subgraph_id(subgraph_idx, program_id)
         program_inputs = [
-            PyBudaTensorDesc(name, shape)
+            TTForgeTensorDesc(name, shape)
             for name, shape in zip(
                 compiled_graph_state.get_ordered_input_names_for_subgraph(graph_idx), compiled_graph_state.get_ordered_input_shapes_for_subgraph(graph_idx)
             )
@@ -130,7 +130,7 @@ def _build_backend_compile_request(device, compiler_cfg, compiled_graph_state, s
     #    input_tile_bcast_dims[i] = compiled_graph_state.get_ordered_input_tile_broadcast_dims_for_subgraph(i)
 
     constants = [
-        PyBudaTensorDesc(
+        TTForgeTensorDesc(
             name,
             constant.shape,
             constant=constant,
@@ -139,7 +139,7 @@ def _build_backend_compile_request(device, compiler_cfg, compiled_graph_state, s
     ]
 
     parameters = [
-        PyBudaTensorDesc(name, param.shape, ptr=0)
+        TTForgeTensorDesc(name, param.shape, ptr=0)
         for name, param in compiled_graph_state.post_const_eval_parameters.items()
     ]
 
@@ -147,7 +147,7 @@ def _build_backend_compile_request(device, compiler_cfg, compiled_graph_state, s
     for program_id in program_ids:
         graph_idx = MixedGraph.get_program_subgraph_id(subgraph_idx, program_id)
         program_outputs = [
-            PyBudaTensorDesc(name, shape)
+            TTForgeTensorDesc(name, shape)
             for name, shape in zip(
                 compiled_graph_state.get_ordered_output_names_for_subgraph(graph_idx), compiled_graph_state.get_ordered_output_shapes_for_subgraph(graph_idx)
             )

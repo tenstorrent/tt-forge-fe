@@ -10,7 +10,7 @@
 #include "utils/assert.hpp"
 #include "runtime/tt_device.hpp"
 
-inline void pybuda_signal_handler(int sig)
+inline void tt_forge_signal_handler(int sig)
 {
     std::string signal_name;
     switch (sig)
@@ -32,7 +32,7 @@ inline void pybuda_signal_handler(int sig)
             break;
     }
 
-    std::cerr << "pybuda_signal_handler - signal: " << sig << " (" << signal_name << ")" << std::endl;
+    std::cerr << "tt_forge_signal_handler - signal: " << sig << " (" << signal_name << ")" << std::endl;
     std::cerr << "stacktrace: " << std::endl;
 
     std::vector bt = tt::assert::backtrace(100, 0);
@@ -77,7 +77,7 @@ class SignalHandlers
             // to print the stacktrace before the program crashes.
             for (auto sig : {SIGSEGV, SIGILL, SIGFPE, SIGABRT})
             {
-                if (std::signal(sig, pybuda_signal_handler) == SIG_ERR)
+                if (std::signal(sig, tt_forge_signal_handler) == SIG_ERR)
                 {
                     std::cerr << "Failed to register signal handler for signal " << sig << std::endl;
                 }

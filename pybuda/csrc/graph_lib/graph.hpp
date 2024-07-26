@@ -44,7 +44,7 @@ class EdgeAttributes;
 
 enum class IRLevel
 {
-    IR_PYBUDA,
+    IR_TT_FORGE,
     IR_BUDA,
     IR_CONSTEVAL,
 };

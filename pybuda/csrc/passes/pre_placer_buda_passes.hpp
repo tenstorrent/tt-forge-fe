@@ -68,7 +68,7 @@ void validate_buffering_queues(graphlib::Graph *graph);
 
 void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallback, bool fp32_acc_supported);
 
-// Convert PyBuda graph to Buda graph
+// Convert TTForge graph to Buda graph
 std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph);
 
 void apply_math_fidelity(graphlib::Graph *graph, const MathFidelity default_math_fidelity);

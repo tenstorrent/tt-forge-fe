@@ -277,7 +277,7 @@ class GraphTest : public ::testing::Test
     std::unordered_map<std::string, int> op_name_id;
 };
 
-using PybudaGraphTest = GraphTest<graphlib::IRLevel::IR_PYBUDA>;
+using PybudaGraphTest = GraphTest<graphlib::IRLevel::IR_TT_FORGE>;
 using BudaGraphTest = GraphTest<graphlib::IRLevel::IR_BUDA>;
 
 inline DeviceConfig create_device_config(

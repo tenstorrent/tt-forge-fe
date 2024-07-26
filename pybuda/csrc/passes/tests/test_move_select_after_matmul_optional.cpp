@@ -15,7 +15,7 @@ struct MoveSelectAfterMatmulOptional : testing::Test
 
     MoveSelectAfterMatmulOptional()
     { 
-        graph = new graphlib::Graph(graphlib::IRLevel::IR_PYBUDA);
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // define input/param/const  
         auto act = create_input(*graph, "act", graphlib::Shape::create({1, 1, 6144, 21632})); 

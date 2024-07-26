@@ -438,7 +438,7 @@ public:
     {
         return py_attr(attr_name)(args...).template cast<T>();
     }
-    IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_PYBUDA : IRLevel::IR_BUDA; }
+    IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_TT_FORGE : IRLevel::IR_BUDA; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     void overwrite_op_attrs(std::vector<OpType::Attr> op_attrs) { op_type_.attr = op_attrs; }
