@@ -97,13 +97,11 @@ target_link_libraries(ttforge_csrc PRIVATE
     TTMLIRTTNNToEmitC
     TTRuntime
     TTRuntimeTTNN
+    TTMLIRTTIRToTTNN
     tt_metal
     device
     tt_eager
     ttnn
-    tt_metal
-    device
-    tt_eager
     flatbuffers
     xml2
     curses
