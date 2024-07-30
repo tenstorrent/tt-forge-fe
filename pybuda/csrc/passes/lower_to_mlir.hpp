@@ -15,7 +15,7 @@ namespace mlir {
 
 namespace tt::passes 
 {
-    // Public API for generating MLIR from the PyBuda graph.
+    // Public API for generating MLIR from the TT-Forge graph.
     mlir::OwningOpRef<mlir::ModuleOp> lower_to_mlir(tt::graphlib::Graph * graph, mlir::MLIRContext& context);
 } // namespace tt:passes
 
