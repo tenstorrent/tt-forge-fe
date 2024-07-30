@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Dict, List, Any, Tuple, Optional
+from enum import IntEnum
 from loguru import logger
 
 from dataclasses import dataclass, field
@@ -37,14 +38,15 @@ class CompileResults:
     golden_intermediates: Dict[str, torch.Tensor]
     initial_graph: Graph
     final_graph: Graph
+    loss_module: Optional[Module]
+    optimizer: Optional[torch.optim.Optimizer]
 
     pass_specific_output_kwargs: Dict[str, Any] = {}
 
 @dataclass_json
 @dataclass()
 class CompiledGraphState:
-    microbatch: int
-    graph_name: str
+    graph: Graph
     ordered_input_names: List[str]
     ordered_output_names: List[str]
     ordered_input_gradient_names: List[str]
@@ -197,12 +199,11 @@ class CompiledGraphState:
             consteval_trace,
             parameter_to_tile_dims,
             ordered_parameter_node_names,
-            False
+            is_buda=False
         )
 
         return CompiledGraphState(
-            microbatch=graph.get_microbatch(),
-            graph_name=graph.get_name(),
+            graph=graph,
             ordered_input_names=ordered_input_names,
             ordered_output_names=ordered_output_names,
             ordered_input_gradient_names=ordered_input_gradient_names,
@@ -279,16 +280,26 @@ class CompiledGraphState:
     def get_ordered_output_runtime_transforms_for_subgraph(self, subgraph_idx):
         return [transform for i, transform in enumerate(self.ordered_output_runtime_tensor_transforms) if self.ordered_output_subgraph_indices[i] == subgraph_idx]
 
+class ProgramId(IntEnum):
+    FORWARD = 0
+    BACKWARD = 1
+
 class CompiledModel:
     """
     Callable object for running inference on the compiled model.
     """
     compiled_graph_state: CompiledGraphState
-    binary: Binary
+    compiled_binary: Binary
+    inputs: List[torch.Tensor]
+    loss_module: Optional[Module]
+    optimizer: Optional[torch.optim.Optimizer]
 
-    def __init__(self, compiled_graph_state: CompiledGraphState, binary: Binary):
+    def __init__(self, compiled_graph_state: CompiledGraphState, compiled_binary: Binary, loss_module: Optional[Module] = None, optimizer: Optional[torch.optim.Optimizer] = None):
         self.compiled_graph_state = compiled_graph_state
-        self.binary = binary
+        self.compiled_binary = compiled_binary
+        self.inputs = []
+        self.loss_module = loss_module
+        self.optimizer = optimizer
 
     def __call__(self, *inputs: torch.Tensor) -> List[torch.Tensor]:
         """
@@ -296,7 +307,7 @@ class CompiledModel:
 
         Parameters
         ----------
-        inputs: Tuple[Tensor, ...]
+        inputs: [Tensor, ...]
             Input tensors
 
         Returns
@@ -304,7 +315,26 @@ class CompiledModel:
         List[Tensor]
             Output tensors
         """
-        logger.info(f"Running model {self.compiled_graph_state.graph_name} on device...")
+        self.inputs = [*inputs]
+
+        logger.info(f"Running model {self.compiled_graph_state.graph.get_name()} on device...")
         inputs_and_parameters = [*inputs, *self.compiled_graph_state.get_ordered_parameter_tensors()]
-        return run_binary(self.binary, 0, inputs_and_parameters)
+        outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
+        
+        if self.compiled_graph_state.graph.training():
+            # For executing loss and its backward graph on CPU, we need to tell torch to compute gradients
+            for output in outputs:
+                output.requires_grad = True
+
+        return outputs
+
+    def forward(self, *inputs: torch.Tensor) -> List[torch.Tensor]:
+        return self(inputs)
+
+    def backward(self, loss_grad: torch.Tensor) -> List[torch.Tensor]:
+        assert self.compiled_graph_state.graph.training(), "Model not compiled for training."
+
+        logger.info(f"Running backward pass on model {self.compiled_graph_state.graph.get_name()} on device...")
+        grads = run_binary(self.compiled_binary, int(ProgramId.BACKWARD), self.inputs + [loss_grad])
+        return grads
 

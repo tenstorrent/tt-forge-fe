@@ -65,8 +65,8 @@ void GraphModule(py::module &m_graph)
         .def(
             "get_node_id", [](const Graph &self, const std::string &name) { return self.get_node_by_name(name)->id(); })
         .def("has_node_with_id", &Graph::has_node_with_id)
-        .def("set_enable_training", &Graph::set_enable_training)
-        .def("enable_training", &Graph::enable_training)
+        .def("set_training", &Graph::set_training)
+        .def("training", &Graph::training)
         .def("set_microbatch", &Graph::set_microbatch)
         .def("get_microbatch", &Graph::get_microbatch)
         .def(
