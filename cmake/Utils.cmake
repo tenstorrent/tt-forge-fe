@@ -1,4 +1,4 @@
-### Utility functions for pybuda ###
+### Utility functions for tt-forge ###
 
 ### Check if an environment variable exists ###
 function(check_env_variable_internal VARIABLE_NAME ret)

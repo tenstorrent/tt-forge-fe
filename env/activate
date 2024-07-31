@@ -2,20 +2,20 @@
 
 # NOTE
 # These env variables are stored in this file because they are needed by both
-# toolchain project and the pybuda project. This file is sourced by both projects.
+# toolchain project and the tt-forge project. This file is sourced by both projects.
 # For tt-mlir we have similar env variables but since we build toolchain and binaries of tt-mlir
-# using install.sh from tt-mlir project, we only define them in pybuda project top level cmake file.
+# using install.sh from tt-mlir project, we only define them in tt-forge project top level cmake file.
 
-# Set PYBUDA_TOOLCHAIN_DIR to a default value if not already set
-export PYBUDA_TOOLCHAIN_DIR="${PYBUDA_TOOLCHAIN_DIR:-/opt/pybuda-toolchain}"
+# Set TTFORGE_TOOLCHAIN_DIR to a default value if not already set
+export TTFORGE_TOOLCHAIN_DIR="${TTFORGE_TOOLCHAIN_DIR:-/opt/ttforge-toolchain}"
 
 # Set PYTHON_VERSION
-export PYBUDA_PYTHON_VERSION="${PYBUDA_PYTHON_VERSION:-python3.10}"
+export TTFORGE_PYTHON_VERSION="${TTFORGE_PYTHON_VERSION:-python3.10}"
 
-# Set PYBUDA_VENV_DIR to a default value if not already set
-export PYBUDA_VENV_DIR="${PYBUDA_VENV_DIR:-${PYBUDA_TOOLCHAIN_DIR}/venv}"
+# Set TTFORGE_VENV_DIR to a default value if not already set
+export TTFORGE_VENV_DIR="${TTFORGE_VENV_DIR:-${TTFORGE_TOOLCHAIN_DIR}/venv}"
 
-[ -f $PYBUDA_VENV_DIR/bin/activate ] && source $PYBUDA_VENV_DIR/bin/activate
+[ -f $TTFORGE_VENV_DIR/bin/activate ] && source $TTFORGE_VENV_DIR/bin/activate
 
 if [ -n "$PROJECT_ROOT" ]; then
     export TT_METAL_HOME="$PROJECT_ROOT/third_party/tt-mlir/third_party/tt-metal/src/tt-metal"

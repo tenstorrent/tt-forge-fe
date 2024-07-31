@@ -1,5 +1,5 @@
-add_custom_target(install_pybuda ALL
+add_custom_target(install_ttforge ALL
     COMMAND cd "${CMAKE_SOURCE_DIR}/pybuda" && pip install -e .
-    COMMENT "Installing pybuda module")
+    COMMENT "Installing ttforge module")
 
-add_dependencies(install_pybuda run_after_pybuda_csrc)
+add_dependencies(install_ttforge run_after_ttforge_csrc)

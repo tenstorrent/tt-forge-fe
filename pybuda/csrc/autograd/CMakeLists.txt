@@ -4,5 +4,5 @@ add_library(autograd
     binding.cpp
     python_bindings.cpp)
 
-target_compile_options(autograd PRIVATE ${STATIC_LIB_FLAGS} ${PYBUDA_CSRC_CFLAGS})
+target_compile_options(autograd PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
 
