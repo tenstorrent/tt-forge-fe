@@ -1,3 +1,12 @@
+# tt-forge
+tt-forge is our front end compiler project aimed at utitlizing our latest [tt-mlir](https://github.com/tenstorrent/tt-mlir) project. This is a continuation of our work in [tt-buda](https://github.com/tenstorrent/tt-buda) and is built using some of the same functionality from that compiler.
+
+Project goals
+-----
+- Remove the [BBE](https://github.com/tenstorrent/tt-budabackend) requirements and link against tt-mlir
+- emit a graph as MLIR
+
+
 Building dependencies
 -----
 * `cmake3.20`
