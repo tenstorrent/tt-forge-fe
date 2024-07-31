@@ -3,8 +3,9 @@ tt-forge is our front end compiler project aimed at utitlizing our latest [tt-ml
 
 Project goals
 -----
-- Remove the [BBE](https://github.com/tenstorrent/tt-budabackend) requirements and link against tt-mlir
-- emit a graph as MLIR
+- Provide abstraction of many different frontend frameworks
+- Generically compile many kinds of model architectures without modification and with good performance
+- Abstract all Tenstorrent device architectures
 
 
 Building dependencies
