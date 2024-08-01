@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
+# SPDX-License-Identifier: Apache-2.0
+
 import pybuda
 from pybuda.verify.backend import verify_module
 from pybuda import VerifyConfig
