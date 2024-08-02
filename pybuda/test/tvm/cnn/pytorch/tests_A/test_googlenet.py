@@ -60,7 +60,6 @@ def test_googlenet_torchvision(test_kind, test_device):
     ):  # Always run with recompute in post-commit CI. Nightly tests both
         pytest.skip()
 
-    # Adding required environment variables as per https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/43
     import os
     # This will allow the test to pass but we should use conv padding to fix the issue instead
     # os.environ["PYBUDA_EXTRA_L1_MARGIN"] = "30000"

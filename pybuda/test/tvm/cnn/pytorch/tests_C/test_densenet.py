@@ -26,7 +26,6 @@ def test_densenet_121(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
 
-    # Add required env vars as per https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/48
     import os
     os.environ["PYBUDA_DISABLE_CONSTANT_FOLDING"] = "1"
 
@@ -56,7 +55,6 @@ def test_densenet_169(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
 
-    # Add required env vars as per https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/48
     import os
     os.environ["PYBUDA_DISABLE_CONSTANT_FOLDING"] = "1"
     os.environ["PYBUDA_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"
@@ -89,7 +87,6 @@ def test_densenet_201(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
 
-    # Add required env vars as per https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/48
     import os
     os.environ["PYBUDA_DISABLE_CONSTANT_FOLDING"] = "1"
     os.environ["PYBUDA_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"
@@ -122,7 +119,6 @@ def test_densenet_161(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
 
-    # Add required env vars as per https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/48
     import os
     os.environ["PYBUDA_DISABLE_CONSTANT_FOLDING"] = "1"
     os.environ["PYBUDA_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"

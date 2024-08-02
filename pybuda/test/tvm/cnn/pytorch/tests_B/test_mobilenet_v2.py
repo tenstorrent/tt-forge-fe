@@ -73,7 +73,6 @@ def test_mobilenetv2_deeplab(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()  # Backward is currently unsupported
 
-    # SET CONV PADDING ENVIRONMENT VARIABLE: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/36
     import os
     os.environ["PYBUDA_PAD_SPARSE_MM"] = "{25:26}"
     
