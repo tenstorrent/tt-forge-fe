@@ -91,6 +91,7 @@ def main():
     build_ids = args.build_ids
 
     # correct the build ids prefix
+    # TODO: Refactor the code to work on whatever new performance comparision we use in the future.
     prefix = "gitlab-pipeline-"
     build_ids = [(x if x.startswith(prefix) else prefix + str(x)) for x in build_ids]
 
@@ -106,7 +107,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-
+# TODO: Refactor the code to work on whatever new performance comparision we use in the future.
 def test_compare_perf():
     df = compare_perf(["gitlab-pipeline-479274", "gitlab-pipeline-479323"])
     print_diff(df)

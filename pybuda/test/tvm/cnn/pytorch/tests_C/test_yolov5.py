@@ -80,7 +80,6 @@ def test_yolov5_480x480(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()  # Backward is currently unsupported
 
-    # Add required env vars as per: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/46
     import os
     os.environ["PYBUDA_PAD_SPARSE_MM"] = "{13:16}"
     os.environ["PYBUDA_INSERT_SLICE_FOR_CONCAT"] = "1"
@@ -123,7 +122,6 @@ def test_yolov5m_640x640(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()  # Backward is currently unsupported
 
-    # Add required env vars as per: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/46
     import os
     os.environ["PYBUDA_PAD_SPARSE_MM"] = "{13:16, 3:4}"
     os.environ["PYBUDA_INSERT_SLICE_FOR_CONCAT"] = "1"
@@ -162,7 +160,6 @@ def test_yolov5_1280x1280(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()  # Backward is currently unsupported
 
-    # Add required env vars as per: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/46
     import os
     os.environ["PYBUDA_PAD_SPARSE_MM"] = "{13:16}"
     os.environ["PYBUDA_INSERT_SLICE_FOR_CONCAT"] = "1"

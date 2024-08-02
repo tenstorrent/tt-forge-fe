@@ -20,7 +20,6 @@ class NoInputModel(torch.nn.Module):
     def forward(self):
         return torch.tensor([1])
 
-@pytest.mark.skip(reason="https://yyz-gitlab.local.tenstorrent.com/tenstorrent/pybuda/-/issues/2475")
 def test_no_input_model():
     # Test the case where the model has no inputs
     generic_model_test(NoInputModel(), num_inputs=0)
@@ -61,7 +60,6 @@ def test_print():
     tensor = torch.rand(32, 32).to('tt')
     print(tensor)
 
-@pytest.mark.skip(reason="https://yyz-gitlab.local.tenstorrent.com/tenstorrent/pybuda/-/issues/2438")
 def test_longint():
     original_data = torch.randint(0, 10, (1, 8))
     tensor = original_data.to('tt').to(dtype=torch.int).to('cpu')

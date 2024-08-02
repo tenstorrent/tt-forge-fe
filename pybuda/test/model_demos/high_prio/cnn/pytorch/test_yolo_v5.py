@@ -83,7 +83,7 @@ def test_yolov5_320x320(test_device, size):
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size):
-    # Add required env vars as per: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/46
+    # env vars needed to support 640x640 yolov5 working 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.enable_auto_fusing = False
@@ -233,7 +233,7 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size
             os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"]  = f"{16*1024}"
 
     elif test_device.arch == BackendDevice.Wormhole_B0:
-        # Add required env vars as per: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/46
+        # env vars needed to support 640x640 yolov5 working 
         compiler_cfg.default_df_override = DataFormat.Float16_b
 
         os.environ["PYBUDA_RIBBON2"] = "1"
@@ -300,7 +300,7 @@ def test_yolov5_480x480(test_device, size):
 
 @pytest.mark.skip(reason="Not supported")
 def test_yolov5_1280x1280(test_device):
-    # Add required env vars as per: https://yyz-gitlab.local.tenstorrent.com/tenstorrent/model-demos/-/issues/46
+    # env vars needed to support 640x640 yolov5 working 
     os.environ["PYBUDA_PAD_SPARSE_MM"] = "{13:16}"
     os.environ["PYBUDA_INSERT_SLICE_FOR_CONCAT"] = "1"
 
