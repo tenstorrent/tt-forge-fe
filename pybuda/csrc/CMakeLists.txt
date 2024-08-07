@@ -58,7 +58,7 @@ add_dependencies(ttforge_csrc_objs build_tt_mlir)
 
 ######## ttforge_csrc ########
 
-set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/lib")
+set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/lib/SharedLib")
 set(TTRUNTIME_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/runtime/lib")
 set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
 set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
@@ -84,25 +84,9 @@ target_link_libraries(ttforge_csrc PRIVATE
     # NOTE: ordering of the libraries will affect the linking
     LLVM
     MLIR
-    TTNNTargetFlatbuffer
-    MLIRTTDialect
-    MLIRTTIRDialect
-    MLIRTTNNDialect
-    MLIRTTKernelDialect
-    MLIRTTMetalDialect
-    MLIRTTIRTransforms
-    MLIRTTNNTransforms
-    MLIRTTIRAnalysis
-    MLIRTTNNPipelines
-    TTMLIRTTNNToEmitC
-    TTRuntime
-    TTRuntimeTTNN
-    TTMLIRTTIRToTTNN
-    tt_metal
-    device
-    tt_eager
-    ttnn
-    flatbuffers
+
+    TTMLIR
+
     xml2
     curses
     z
