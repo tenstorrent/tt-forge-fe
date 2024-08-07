@@ -184,7 +184,11 @@ PYBIND11_MODULE(_C, m) {
         py::arg("op_intermediates_to_save") = std::vector<std::string>{},
         py::arg("use_interactive_placer") = true,
         py::arg("enable_device_tilize") = false);
-    m.def("run_pre_lowering_passes", &run_pre_lowering_passes);
+    m.def(
+        "run_pre_lowering_passes",
+        &run_pre_lowering_passes,
+        py::arg("graph"),
+        py::arg("default_df_override") = std::optional<DataFormat>{});
     m.def("run_mlir_compiler", &passes::run_mlir_compiler);
 
     m.def(

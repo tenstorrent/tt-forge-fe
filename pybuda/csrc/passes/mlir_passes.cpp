@@ -44,7 +44,7 @@ namespace tt::passes
         // It's supposed to be called when there's an error during parsing of the pipeline options.
         // However, I think it's wrongly implemented in the MLIR library, so it doesn't get called.
         mlir::function_ref<mlir::LogicalResult(const mlir::Twine &)>  err_handler = [](const mlir::Twine &location) {
-            log_error(LogMLIRGenerator, "Error during parsing pipeline options: {}", location.str());
+            log_error(LogMLIRCompiler, "Error during parsing pipeline options: {}", location.str());
             return mlir::failure();
         };
 
@@ -63,6 +63,19 @@ namespace tt::passes
             throw std::runtime_error("Failed to run MLIR compiler pass pipeline.");
         }
 
-        mlir_module.get().dump();
+#ifdef DEBUG
+        // Create a string to store the output
+        std::string moduleStr;
+        llvm::raw_string_ostream rso(moduleStr);
+
+        // Print the MLIR module
+        mlir::OpPrintingFlags printFlags;
+        printFlags.enableDebugInfo();
+        mlir_module.get()->print(rso, printFlags);
+
+        rso.flush();
+
+        log_trace(LogMLIRCompiler, "MLIR module after running passes:\n{}", moduleStr);
+#endif
     }
 }

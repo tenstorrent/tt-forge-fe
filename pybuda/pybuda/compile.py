@@ -779,7 +779,9 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph = context.graph
 
-    graph = run_pre_lowering_passes(graph)
+    graph = run_pre_lowering_passes(
+        graph,
+        compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
 
     context.final_graph = graph

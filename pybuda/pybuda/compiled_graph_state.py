@@ -196,7 +196,8 @@ class CompiledGraphState:
             constant_to_tensor,
             consteval_trace,
             parameter_to_tile_dims,
-            ordered_parameter_node_names
+            ordered_parameter_node_names,
+            False
         )
 
         return CompiledGraphState(
@@ -253,6 +254,9 @@ class CompiledGraphState:
 
     def get_parameter_tensor(self, name):
         return self.get_tensor(self.post_const_eval_parameters, name)
+    
+    def get_ordered_parameter_tensors(self):
+        return [self.get_parameter_tensor(name) for name in self.ordered_parameter_node_names]
 
     def get_ordered_input_names_for_subgraph(self, subgraph_idx):
         return [name for i, name in enumerate(self.ordered_input_names) if self.ordered_input_subgraph_indices[i] == subgraph_idx]
@@ -301,5 +305,6 @@ class CompiledModel:
             Output tensors
         """
         logger.info(f"Running model {self.compiled_graph_state.graph_name} on device...")
-        return run_binary(self.binary, 0, [*inputs])
+        inputs_and_parameters = [*inputs, *self.compiled_graph_state.get_ordered_parameter_tensors()]
+        return run_binary(self.binary, 0, inputs_and_parameters)
 
