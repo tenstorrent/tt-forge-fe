@@ -45,6 +45,7 @@ using namespace tt;
 /**
  * @brief Implementation of TT-MLIR emission from the TTForge graph.
  */
+
 class MLIRGenerator
 {
     public:
@@ -107,6 +108,25 @@ class MLIRGenerator
             }
             
             symbolTable_[node->name()] = {value, node};
+        }
+
+        // Convert a TTForge attribute to an MLIR attribute.
+        mlir::Attribute convert_to_mlir_attribute(const tt::BudaOpAttr& value) {
+            return std::visit([this](auto&& arg) -> mlir::Attribute {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, std::string>) {
+                    return builder_.getStringAttr(arg);
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    return builder_.getBoolAttr(arg);
+                } else if constexpr (std::is_same_v<T, int>) {
+                    return builder_.getI32IntegerAttr(arg);
+                } else if constexpr (std::is_same_v<T, float>) {
+                    return builder_.getF32FloatAttr(arg);
+                } else {
+                    // If type not handled, throw an exception or handle it appropriately
+                    throw std::runtime_error("Unhandled attribute type");
+                }
+            }, value);
         }
 
         /// Emit a new function in MLIR.
@@ -225,15 +245,13 @@ class MLIRGenerator
                 }
             }
 
-            // Workaround for now, need to figure out how to handle this properly
-            if(op_node->op_name() == "softmax")
+            for(const auto & attribute: op_node->op_type().named_attrs)
             {
-                log_info("Softmax");
-                int32_t dimension = std::get<int>(op_node->op_attrs()[0]);
-                mlir::NamedAttribute dimension_attribute = builder_.getNamedAttr(
-                        "dimension",
-                    builder_.getSI32IntegerAttr(dimension));
-                attributes.push_back(dimension_attribute);
+                // convert atribute to mlir atribute
+                auto mlir_atribute = convert_to_mlir_attribute(attribute.second);
+                mlir::NamedAttribute named_attribute = builder_.getNamedAttr(
+                                        attribute.first, mlir_atribute);
+                attributes.push_back(named_attribute);
             }
 
             auto op = builder_.create<TTIROp>(

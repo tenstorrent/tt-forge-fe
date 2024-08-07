@@ -51,7 +51,7 @@ def Softmax(
     Tensor
         Buda tensor
     """
-    return op("softmax", name, operandA, attrs=(dim, stable)).get_tensor()
+    return op("softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
 
 
 def LogSoftmax(
@@ -82,7 +82,7 @@ def LogSoftmax(
     Tensor
         Buda tensor
     """
-    return op("log_softmax", name, operandA, attrs=(dim, stable)).get_tensor()
+    return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
 
 def Layernorm(
         name: str,
