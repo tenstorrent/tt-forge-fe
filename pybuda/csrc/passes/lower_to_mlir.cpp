@@ -204,7 +204,7 @@ class MLIRGenerator
             ::llvm::ArrayRef<::llvm::StringRef> operation_attributes = TTIROp::getAttributeNames();
             for(auto attribute_name: operation_attributes)
             {
-                if(attribute_name.equals("operand_constraints"))
+                if(attribute_name == "operand_constraints")
                 {
                     // Create operation constraint attributes
                     mlir::NamedAttribute operand_constraints_attribute = builder_.getNamedAttr(
@@ -212,7 +212,7 @@ class MLIRGenerator
                     builder_.getArrayAttr(get_mlir_operand_constraint_attributes(graph, op_node)));
                     attributes.push_back(operand_constraints_attribute);
                 }
-                else if(attribute_name.equals(mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr()))
+                else if(attribute_name == mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr())
                 {
                     // Create operation segment sizes attributes
                     mlir::NamedAttribute operand_segment_sizes_attribute = builder_.getNamedAttr(
