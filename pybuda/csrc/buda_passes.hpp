@@ -50,6 +50,7 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
     bool enable_device_tilize = false);
 
 // Pre-lowering passes, last-minute changes before going to MLIR
-graphlib::Graph* run_pre_lowering_passes(graphlib::Graph *graph);
-
+graphlib::Graph* run_pre_lowering_passes(
+    graphlib::Graph *graph,
+    const std::optional<DataFormat> default_df_override = {});
 }

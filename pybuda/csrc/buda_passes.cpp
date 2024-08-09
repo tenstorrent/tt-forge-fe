@@ -44,6 +44,7 @@
 #include "passes/replace_incommutable_patterns.hpp"
 #include "passes/set_tile_dim.hpp"
 #include "passes/squeeze_to_reshape.hpp"
+#include "passes/dataformat.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "utils/assert.hpp"
@@ -193,7 +194,9 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
 }
 
 // ********** Run pre-lowering passes **********
-graphlib::Graph* run_pre_lowering_passes(graphlib::Graph *graph)
+graphlib::Graph* run_pre_lowering_passes(
+    graphlib::Graph *graph,
+    const std::optional<DataFormat> default_df_override)
 {
     passes::print_graph(graph, "PRE_MLIR");
     // Recalculate shapes, and figure out implicit broadcasts that are missing
@@ -226,6 +229,12 @@ graphlib::Graph* run_pre_lowering_passes(graphlib::Graph *graph)
     // Fold tile broadcasts into reduce and inputs
     fold_tile_broadcast_ops_into_inputs(graph);
     fold_tile_broadcast_ops_into_reduce(graph);
+
+    //
+    // Data formats
+    //
+    // Apply user overrides
+    passes::configure_output_data_formats(graph, default_df_override);
 
     return graph;
 }

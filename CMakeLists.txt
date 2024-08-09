@@ -36,6 +36,10 @@ endif()
 
 add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter)
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    add_compile_options(-DDEBUG)
+endif()
+
 set(TTFORGE_CSRC_WARNINGS -Wall -Wextra -Wno-pragmas -Wno-unused-parameter)
 set(CFLAGS_NO_WARN -DFMT_HEADER_ONLY)
 set(TTFORGE_CSRC_CFLAGS ${CFLAGS_NO_WARN} ${TTFORGE_CSRC_WARNINGS} -DUTILS_LOGGER_PYTHON_OSTREAM_REDIRECT=1)

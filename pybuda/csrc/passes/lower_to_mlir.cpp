@@ -52,7 +52,6 @@ class MLIRGenerator
         /// Construct a new MLIRGenerator object.
         MLIRGenerator(mlir::MLIRContext &context) : builder_(&context)
         {
-            tt::log_info("MLIRGenerator");
             init_lowering_handler_map();
         }
 
@@ -64,9 +63,6 @@ class MLIRGenerator
                       mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
             builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
             emit_mlir_function(graph);
-            mlir::OpPrintingFlags printFlags;
-            printFlags.enableDebugInfo();
-            graphModule_.print(llvm::outs(), printFlags);
 
             /// Verify the module after we have finished constructing it, this will check
             /// the structural properties of the IR and invoke any specific verifiers we
@@ -76,6 +72,22 @@ class MLIRGenerator
                 graphModule_.emitError("module verification failed.");
                 throw std::runtime_error("Generated MLIR module failed verification.");
             }
+
+#ifdef DEBUG
+            // Create a string to store the output
+            std::string moduleStr;
+            llvm::raw_string_ostream rso(moduleStr);
+
+            // Print the MLIR module
+            mlir::OpPrintingFlags printFlags;
+            printFlags.enableDebugInfo();
+            graphModule_.print(rso, printFlags);
+
+            rso.flush();
+
+            log_trace(LogMLIRCompiler, "MLIR module after lowering TT-Forge graph:\n{}", moduleStr);
+#endif
+
             return graphModule_;
         }
 
@@ -119,7 +131,7 @@ class MLIRGenerator
                 } else if constexpr (std::is_same_v<T, bool>) {
                     return builder_.getBoolAttr(arg);
                 } else if constexpr (std::is_same_v<T, int>) {
-                    return builder_.getI32IntegerAttr(arg);
+                    return builder_.getSI32IntegerAttr(arg);
                 } else if constexpr (std::is_same_v<T, float>) {
                     return builder_.getF32FloatAttr(arg);
                 } else {
@@ -133,11 +145,22 @@ class MLIRGenerator
         /// A function represents a set of TTForge operations that are executed to produce output results.
         /// This function will generate the MLIR code for each TTForge operation in the graph and emit the return operation for the function.
         mlir::func::FuncOp emit_mlir_function(tt::graphlib::Graph *graph) {
-            // Assemble the function arguments (inputs)
-            llvm::SmallVector<mlir::Type> arguments;
-            for (auto *input : graph->nodes_by_type(tt::graphlib::kInput))
+            // Assemble the function arguments (inputs and parameters)
+            llvm::SmallVector<mlir::Type> argument_types;
+            llvm::SmallVector<graphlib::Node *> argument_nodes;
+            
+            // Add the graph inputs to the argument list
+            for (auto *input: graph->ordered_module_inputs()) //for (auto *input : graph->nodes_by_type(tt::graphlib::kInput))
             {
-                arguments.push_back(get_node_type(input));
+                argument_nodes.push_back(input);
+                argument_types.push_back(get_node_type(input));
+            }
+
+            // Add the graph parameters to the argument list
+            for(auto *parameter: graph->get_parameter_nodes())
+            {
+                argument_nodes.push_back(parameter);
+                argument_types.push_back(get_node_type(parameter));
             }
 
             // Assemble the function return values (outputs)
@@ -148,18 +171,18 @@ class MLIRGenerator
             }
 
             // Create the function and emit it in the MLIR module.
-            auto funcType = builder_.getType<mlir::FunctionType>(mlir::TypeRange(arguments), mlir::TypeRange(returns));
+            auto funcType = builder_.getType<mlir::FunctionType>(mlir::TypeRange(argument_types), mlir::TypeRange(returns));
             auto func = builder_.create<mlir::func::FuncOp>(graphModule_.getLoc(), "main", funcType);
             
             // Start the body of the function by creating an entry block.
             mlir::Block *entryBlock = func.addEntryBlock();
 
             // Declare function arguments in the symbol table
-            for(auto namedValue: llvm::zip(graph->nodes_by_type(tt::graphlib::kInput), entryBlock->getArguments()))
+            for(auto namedValue: llvm::zip(argument_nodes, entryBlock->getArguments()))
             {
-                auto node = std::get<0>(namedValue);
-                auto arg = std::get<1>(namedValue);
-                declare(node, arg);
+                graphlib::Node* argument_node = std::get<0>(namedValue);
+                mlir::BlockArgument arg = std::get<1>(namedValue);
+                declare(argument_node, arg);
             }
             
             // Set the insertion point in the builder to the beginning of the function
@@ -177,12 +200,12 @@ class MLIRGenerator
                     continue;
                 }
 
-                log_trace(LogMLIRGenerator, "Emitting MLIR for node {}", node->name());
+                log_trace(LogMLIRCompiler, "Emitting MLIR for node {}", node->name());
                 tt::graphlib::OpNode *op_node = dynamic_cast<tt::graphlib::OpNode*>(node);
 
                 // Emit MLIR for the TTForge operation node
                 mlir::Value opValue = emit_mlir_tt_forge_operation(graph, op_node);
-                log_trace(LogMLIRGenerator, "Generated MLIR for node {} with value {}",
+                log_trace(LogMLIRCompiler, "Generated MLIR for node {} with value {}",
                     node->name(), covnert_mlir_value_to_string(opValue));
             }
             emit_mlir_return_op(graph);
@@ -349,7 +372,7 @@ class MLIRGenerator
                 case tt::DataFormat::Float32:
                     return builder_.getF32Type();
                 case tt::DataFormat::Float16_b:
-                    return builder_.getF16Type();
+                    return builder_.getBF16Type();
                 case tt::DataFormat::Float16:
                     return builder_.getF16Type();
                 default:
