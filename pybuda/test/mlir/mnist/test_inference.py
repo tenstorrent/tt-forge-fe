@@ -2,23 +2,12 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from pybuda._C import DataFormat
-from pybuda.config import _get_global_compiler_config
 import torch
-from torch import nn
-
 from .utils import *
-
 import pybuda
 
-
 def test_mnist_inference():
-    compiler_cfg = _get_global_compiler_config()
-    df = DataFormat.Float16_b
-    compiler_cfg.default_df_override = df
-    compiler_cfg.default_accumulate_df = df
-
-    inputs = [torch.rand(1, 784, dtype=torch.bfloat16)]
+    inputs = [torch.rand(1, 784)]
 
     framework_model = MNISTLinear()
     fw_out = framework_model(*inputs)
