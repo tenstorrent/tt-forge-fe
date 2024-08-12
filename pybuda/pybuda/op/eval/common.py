@@ -191,6 +191,27 @@ def calculate_pcc(a, b):
 
     return pcc
 
+# Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
+def compare_with_golden_pcc(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc, rtol=None, atol=None):
+    pcc_value = 0
+    if not (pcc is None or golden.flatten().size() == (1,)): # PCC for single values doesn't work
+        pcc_value = calculate_pcc(golden, calculated)
+        if pcc_value >= pcc :
+            logger.trace("PCC is correct")
+            logger.trace("Golden: (shape = {}", golden.shape)
+            logger.trace(golden)
+            logger.trace("Calculated: (shape = {}", calculated.shape)
+            logger.trace(calculated)
+            return True
+        else:
+            logger.error("Tensor mismatch")
+            return False
+    else:
+        # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
+        golden = golden.flatten()[0]
+        calculated = calculated.flatten()[0]
+        return torch.allclose(golden, calculated, atol=atol, rtol=rtol)
+
 def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, is_buda=False, rtol=None, atol=None, pcc=None, warning_only=False, relative_atol = None, verify_cfg = None):
     # Convert golden to pytorch tensor for comparisons
     if isinstance(golden, (tf.Tensor, tf.Variable)):

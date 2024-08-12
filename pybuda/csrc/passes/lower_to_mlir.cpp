@@ -134,6 +134,12 @@ class MLIRGenerator
                     return builder_.getSI32IntegerAttr(arg);
                 } else if constexpr (std::is_same_v<T, float>) {
                     return builder_.getF32FloatAttr(arg);
+                } else if constexpr (std::is_same_v<T, std::vector<int>>) {
+                    llvm::SmallVector<mlir::Attribute> attributes;
+                    for (auto& element : arg) {
+                        attributes.push_back(builder_.getI32IntegerAttr(element));
+                    }
+                    return builder_.getArrayAttr(attributes);
                 } else {
                     // If type not handled, throw an exception or handle it appropriately
                     throw std::runtime_error("Unhandled attribute type");
@@ -445,6 +451,8 @@ class MLIRGenerator
             lowering_handler_map["relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReluOp>;
             lowering_handler_map["matmul"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MatmulOp>;
             lowering_handler_map["softmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SoftmaxOp>;
+            lowering_handler_map["reduce_sum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SumOp>;
+            lowering_handler_map["reduce_avg"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MeanOp>;
         }
 };
 }
