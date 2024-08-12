@@ -7,7 +7,8 @@ from .common import PyBudaOp as op
 def ReduceSum(
         name: str,
         operandA: Tensor,
-        dim: int) -> Tensor:
+        dim: int,
+        keep_dim: bool = True) -> Tensor:
     """
     Reduce by summing along the given dimension
 
@@ -32,12 +33,13 @@ def ReduceSum(
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_sum", name, operandA, attrs=(dim,)).get_tensor()
+    return op("reduce_sum", name, operandA, attrs=(dim,), dim_arg=[dim], keep_dim= keep_dim).get_tensor()
 
 def ReduceAvg(
         name: str,
         operandA: Tensor,
-        dim: int) -> Tensor:
+        dim: int,
+        keep_dim: bool = True) -> Tensor:
     """
     Reduce by averaging along the given dimension
 
@@ -62,7 +64,7 @@ def ReduceAvg(
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_avg", name, operandA, attrs=(dim,)).get_tensor()
+    return op("reduce_avg", name, operandA, attrs=(dim,), dim_arg=[dim], keep_dim= keep_dim).get_tensor()
 
 def GroupedReduceAvg(
         name: str,
