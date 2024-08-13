@@ -11,8 +11,15 @@ on:
 jobs:
   build:
     runs-on: self-hosted # Github runners dont have enough storage space to build this image
-
+  
     steps:
+
+      - run: |
+          echo Pwd: $(pwd)
+          echo User: $(whoami)
+          ls -la /home/ubuntu/actions-runner/_work/tt-forge/tt-forge
+        shell: bash
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
