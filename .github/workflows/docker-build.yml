@@ -1,0 +1,67 @@
+name: Build in Docker
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+
+  build-and-test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["ubuntu-22-04"]
+        build: [
+          {runs-on: ubuntu-latest},
+          {runs-on: self-hosted},
+        ]
+
+    runs-on: ${{ matrix.build.runs-on }}
+
+    container:
+      image: ghcr.io/${{ github.repository }}/tt-forge-${{ matrix.image }}:latest
+      options: --user root
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+          submodules: recursive
+          fetch-depth: 0 # Fetch all history and tags
+
+    - name: Git safe dir
+      run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        create-symlink: true
+        key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
+
+    - name: Build
+      shell: bash
+      run: |
+        source env/activate
+        cmake -G Ninja -B build .
+        cmake --build build
+
+    - name: Run Test
+      shell: bash
+      run: |
+        source env/activate
+        pytest -svv pybuda/test/mlir/mnist/test_inference.py
+        pytest -svv pybuda/test/mlir/test_ops.py
+      continue-on-error: true
+
+    - name: Upload Test Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports-${{ matrix.build.runs-on }}
+        path: build/test/report.xml
+
+    - name: Show Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: build/test/report.xml
+        check_name: MLIR Tests

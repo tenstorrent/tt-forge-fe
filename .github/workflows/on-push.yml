@@ -1,0 +1,11 @@
+name: On push
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  docker-build:
+    uses: ./.github/workflows/docker-build.yml
+    secrets: inherit
