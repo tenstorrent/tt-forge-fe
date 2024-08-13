@@ -7,8 +7,6 @@ ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
 ENV PROJECT_NAME=tt-forge
 
-ENV GITHUB_TOKEN=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
-
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     software-properties-common \
@@ -56,7 +54,7 @@ RUN mkdir -p $BUILD_DIR && \
     mkdir -p $TTFORGE_TOOLCHAIN_DIR
 
 # Clone the project and update submodules
-RUN git clone https://$GITHUB_TOKEN@github.com/tenstorrent/tt-forge.git $BUILD_DIR/$PROJECT_NAME && \
+RUN git clone https://github.com/tenstorrent/tt-forge.git $BUILD_DIR/$PROJECT_NAME && \
     cd $BUILD_DIR/$PROJECT_NAME && \
     git submodule update --init --recursive -f
 
