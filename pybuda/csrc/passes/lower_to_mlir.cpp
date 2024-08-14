@@ -344,7 +344,7 @@ class MLIRGenerator
             return builder_.create<mlir::tensor::EmptyOp>(
                 get_tt_forge_operation_location(graph, node),
                 shape_vec,
-                get_float_type(node));
+                get_data_type(node));
         }
 
         /// Emit the return operation for the function.
@@ -364,8 +364,8 @@ class MLIRGenerator
                 mlir::ValueRange(returnValues));
         }
 
-        /// Get the MLIR float type type for a TTForge node.
-        mlir::FloatType get_float_type(graphlib::Node *node)
+        /// Get the MLIR data type for a TTForge node.
+        mlir::Type get_data_type(graphlib::Node *node)
         {
             switch (node->output_df())
             {
@@ -375,7 +375,10 @@ class MLIRGenerator
                     return builder_.getBF16Type();
                 case tt::DataFormat::Float16:
                     return builder_.getF16Type();
+                case tt::DataFormat::Int8:
+                    return builder_.getI8Type();
                 default:
+                    log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                     TT_ASSERT(false);
             }
             // TODO add all supported types in switch
@@ -390,7 +393,7 @@ class MLIRGenerator
             {
                 shape_vec.push_back((int64_t)dim);
             }
-            return mlir::RankedTensorType::get(shape_vec, get_float_type(node));
+            return mlir::RankedTensorType::get(shape_vec, get_data_type(node));
         }
 
         /// Get the location for a module.
