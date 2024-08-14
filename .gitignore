@@ -53,3 +53,6 @@ build_deps/
 # ClangD
 compile_commands.json
 \n\n# Exclude LFS files to keep the public repo small
+
+# Test reports
+reports/report.xml
