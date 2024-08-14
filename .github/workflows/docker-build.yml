@@ -18,9 +18,7 @@ jobs:
 
     container:
       image: ghcr.io/${{ github.repository }}/tt-forge-ubuntu-22-04:latest
-      options: |
-        --user root 
-        --device /dev/tenstorrent/0
+      options: --user root --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
         - /dev/hugepages-1G:/dev/hugepages-1G 
