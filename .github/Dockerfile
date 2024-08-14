@@ -24,7 +24,6 @@ RUN apt-get update && apt-get install -y \
     linux-tools-generic \
     ninja-build \
     wget \
-    libgtest-dev \
     cmake \
     ccache \
     doxygen \
@@ -54,7 +53,8 @@ RUN mkdir -p $BUILD_DIR && \
     mkdir -p $TTFORGE_TOOLCHAIN_DIR
 
 # Clone the project and update submodules
-RUN git clone https://github.com/tenstorrent/tt-forge.git $BUILD_DIR/$PROJECT_NAME && \
+# Pass in PAT to clone private repositories
+RUN git clone https://$GITHUB_TOKEN@github.com/tenstorrent/tt-forge.git $BUILD_DIR/$PROJECT_NAME && \
     cd $BUILD_DIR/$PROJECT_NAME && \
     git submodule update --init --recursive -f
 

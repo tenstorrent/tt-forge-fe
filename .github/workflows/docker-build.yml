@@ -11,17 +11,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build: [
-          # {runs-on: ubuntu-latest},
-          {runs-on: self-hosted},
-        ]
+        build:
+          - runs-on: self-hosted        
 
     runs-on: ${{ matrix.build.runs-on }}
 
     container:
       image: ghcr.io/${{ github.repository }}/tt-forge-ubuntu-22-04:latest
-      options: --user root
-
+      options: |
+        --user root 
+        --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G 
+        - /etc/udev/rules.d:/etc/udev/rules.d 
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
     - uses: actions/checkout@v4
       with:
