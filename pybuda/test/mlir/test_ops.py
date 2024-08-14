@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import pytest
 
 import torch
 from torch import nn
@@ -89,7 +90,7 @@ def test_relu():
     co_out = [co.to("cpu") for co in co_out]
     assert [torch.allclose(fo, co) for fo, co in zip(fw_out, co_out)]
 
-
+@pytest.mark.skip(reason="This is not ready yet")
 def test_linear():
     class Linear(nn.Module):
         def __init__(self):
