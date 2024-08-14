@@ -72,4 +72,4 @@ jobs:
       if: success() || failure()
       with:
         report_paths: reports/report.xml
-        check_name: MLIR Tests
+        check_name: TT-Forge Tests

@@ -37,11 +37,12 @@ add_custom_target(python-venv
     TTFORGE_VENV_DIR=${TTFORGE_VENV_DIR}
     bash ${CMAKE_CURRENT_SOURCE_DIR}/create_venv.sh)
 
+set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
 add_custom_target(build_tt_mlir_env ALL 
     COMMAND ${CMAKE_COMMAND} -E env 
     TTMLIR_TOOLCHAIN_DIR=${TTMLIR_TOOLCHAIN_DIR} # Export TTMLIR_TOOLCHAIN_DIR to use
     TTMLIR_VENV_DIR=${TTMLIR_VENV_DIR} # Export TTMLIR_VENV_DIR to use
-    bash ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/build_mlir_env.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/tt-mlir
+    bash ${CMAKE_SOURCE_DIR}/third_party/build_mlir_env.sh
+    WORKING_DIRECTORY ${TT_MLIR_ROOT_DIR}
     USES_TERMINAL
 )
