@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
 ENV PROJECT_NAME=tt-forge
+ARG GITHUB_TOKEN
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -69,5 +70,7 @@ RUN source env/activate && \
     cmake -G Ninja -B build . && \
     cmake --build build
 
-# # Clean up the build directory
-RUN rm -rf $BUILD_DIR/$PROJECT_NAME
+# Clean up the build directory
+RUN cd .. && \
+    rm -rf $BUILD_DIR/$PROJECT_NAME && \
+    unset GITHUB_TOKEN

@@ -5,9 +5,6 @@
 
 source env/activate
 
-cmake -B env/build env
-cmake --build env/build
-
 build_type=${BUILD_TYPE:-Release}
 c_compiler=${C_COMPILER:-clang}
 cxx_compiler=${CXX_COMPILER:-clang++}
