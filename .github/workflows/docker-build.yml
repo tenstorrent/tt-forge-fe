@@ -58,8 +58,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        pytest -svv pybuda/test/mlir/mnist/test_inference.py
-        pytest -svv pybuda/test/mlir/test_ops.py
+        pytest
       continue-on-error: true
 
     - name: Upload Test Report
