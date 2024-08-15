@@ -10,6 +10,7 @@ tt_debug
 build
 net2pipe_output/
 third_party/llvm
+venv/
 
 /llk_out/
 
