@@ -51,6 +51,7 @@ set(SHARED_LIB_FLAGS -fPIC)
 
 add_subdirectory(third_party)
 add_subdirectory(pybuda)
+add_subdirectory(docs)
 
 ### Generate stubs for ttforge
 ### Run `cmake --build build -- make_stubs` to generate stubs
