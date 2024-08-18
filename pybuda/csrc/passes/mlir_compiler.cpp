@@ -42,6 +42,12 @@ namespace tt::passes
 
         // Create a context with all registered dialects.
         mlir::MLIRContext context(registry);
+
+#ifdef DEBUG
+        // Context setting to have mlir print out stacktrace whenever errors occur
+        context.printStackTraceOnDiagnostic(true);
+#endif
+
         // Load all available dialects
         context.loadAllAvailableDialects();
 
