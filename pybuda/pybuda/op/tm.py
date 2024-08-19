@@ -161,7 +161,7 @@ def Transpose(
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, dim0=dim0, dim1=dim1, z_dim_slice=z_dim_slice).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
+    return op("transpose", name, operandA, attrs=(dim0, dim1, z_dim_slice), dim0=dim0, dim1=dim1).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
 
 def Reshape(
         name: str, 

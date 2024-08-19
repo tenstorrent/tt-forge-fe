@@ -148,8 +148,11 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
         if (not skip_erase_redundant) {
             if (not attempt_update)
                 attempt_update = passes::erase_consecutive_reshape(graph, true);
-            if (not attempt_update)
-                attempt_update = passes::fuse_tm_sequences(graph);
+
+            // TODO: Figure out if this is needed. (Issue #152)
+            // if (not attempt_update)
+            //     attempt_update = passes::fuse_tm_sequences(graph);
+
             passes::bypass_nop_tms(graph);
         }
     }
@@ -167,7 +170,9 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
 
     passes::move_select_after_matmul_optional(graph);
 
-    passes::fuse_tm_sequences(graph);
+    // Issue #152
+    // passes::fuse_tm_sequences(graph);
+
     reportify::dump_graph(graph->name(), "post_erase_inverse_ops", graph);
 }
 
