@@ -487,7 +487,7 @@ void fix_host_inputs(graphlib::Graph *graph)
 {
     // Skip training.
     //
-    if (graph->enable_training())
+    if (graph->training())
     {
         return;
     }
@@ -1149,7 +1149,7 @@ std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph)
     auto new_graph = std::make_unique<Graph>(graphlib::IRLevel::IR_BUDA, graph->name());
 
     new_graph->set_microbatch(graph->get_microbatch());
-    new_graph->set_enable_training(graph->enable_training());
+    new_graph->set_training(graph->training());
 
     // Mapping of old nodes to new ones. Where the old node maps to multiple new ones,
     // the output node is recorded as "new", because it will be used as operand into

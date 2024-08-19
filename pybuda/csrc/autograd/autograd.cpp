@@ -191,6 +191,8 @@ void autograd2_engine::create_backward_graph(const grad_map &requires_grad_map)
 
                 graph->add_edge(node, input_node, graphlib::EdgeType::kAutogradOutputToLoss);
                 add_fwd_to_bwd_map(graph->data_operands(node)[0], input_node, 0, true);
+
+                graph->register_module_inputs({input_node->id()}, true /* append */);
             }
         }
     }

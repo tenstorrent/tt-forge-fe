@@ -65,7 +65,7 @@ void add_inverse_to_input_edges(
         {
             if (clone_0_op->op_name() == "reshape")
                 try_consteval_op(graph, clone_0_op, true);
-            else if (clone_1_op->op_name() == "transpose" and not graph->enable_training() and not input->requires_grad())
+            else if (clone_1_op->op_name() == "transpose" and not graph->training() and not input->requires_grad())
                 try_consteval_op(graph, clone_0_op, true);
         }
     }

@@ -241,7 +241,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
             not(matmul_rhs->is_parameter() or matmul_rhs->is_constant() or matmul_rhs->is_optimizer_parameter()))
             return false;
 
-        if (graph->enable_training() and matmul_rhs->is_parameter())
+        if (graph->training() and matmul_rhs->is_parameter())
             return false;
     }
 

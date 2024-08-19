@@ -49,6 +49,14 @@ enum class IRLevel
     IR_CONSTEVAL,
 };
 
+enum class SubgraphType
+{
+    Forward,
+    Backward,
+    Loss,
+    Optimizer,
+};
+
 class Graph
 {
    public:
@@ -210,8 +218,8 @@ class Graph
     void set_id(int id) { this->unique_id_ = id; }
     int id() const { return this->unique_id_; }
     const std::string &name() const { return this->name_; }
-    bool enable_training() const { return enable_training_; }
-    void set_enable_training(bool enable_training) { enable_training_ = enable_training; }
+    bool training() const { return training_; }
+    void set_training(bool training) { training_ = training; }
     int get_microbatch() const { return microbatch_; }
     void set_microbatch(int microbatch) { microbatch_ = microbatch; }
 
@@ -297,7 +305,7 @@ class Graph
     std::string name_ = "";
     GraphId unique_id_;
     IRLevel ir_level_;
-    bool enable_training_ = false;
+    bool training_ = false;
     int microbatch_ = 0;
     NodeIdToSubgraphId node_id_to_subgraph_id_;
     unsigned int num_subgraphs_ = 0;
@@ -318,9 +326,9 @@ class Graph
     NodeIdToEdgeSet users_map_;
 
     EdgeToAttributes edge_to_attr_map_;
-    const std::unordered_set<const Node *> *virtual_node_traversal_context_ = nullptr;
-    const std::unordered_set<graphlib::Edge> *ignored_edges_traversal_context_ = nullptr;
-    const std::unordered_set<const Node *> *node_traversal_context_ = nullptr;
+    std::unique_ptr<const std::unordered_set<const Node *>> virtual_node_traversal_context_{};
+    std::unique_ptr<const std::unordered_set<graphlib::Edge>> ignored_edges_traversal_context_{};
+    std::unique_ptr<const std::unordered_set<const Node *>> node_traversal_context_{};
     std::unordered_set<NodeId> virtual_nodes_;
 
     friend class GraphTraversalContext;
@@ -362,60 +370,63 @@ NodeClassType *Graph::add_node(std::unique_ptr<NodeClassType> node, unsigned int
 //
 class GraphTraversalContext
 {
+    template <typename T>
+    using SetPtr = std::unique_ptr<const std::unordered_set<T>>;
+
    public:
     GraphTraversalContext(
-        graphlib::Graph *graph,
-        const std::unordered_set<const graphlib::Node *> *context_virtual_nodes,
-        const std::unordered_set<graphlib::Edge> *edges_to_ignore) :
+        Graph *graph,
+        SetPtr<const Node*> context_virtual_nodes,
+        SetPtr<Edge> edges_to_ignore) :
         graph(graph)
     {
-        virtual_node_traversal_context_cache = graph->virtual_node_traversal_context_;
-        ignored_edges_traversal_context_cache = graph->ignored_edges_traversal_context_;
-        node_traversal_context_cache = graph->node_traversal_context_;
-        graph->virtual_node_traversal_context_ = context_virtual_nodes;
-        graph->ignored_edges_traversal_context_ = edges_to_ignore;
+        virtual_node_traversal_context_cache = std::move(graph->virtual_node_traversal_context_);
+        ignored_edges_traversal_context_cache = std::move(graph->ignored_edges_traversal_context_);
+        node_traversal_context_cache = std::move(graph->node_traversal_context_);
+        graph->virtual_node_traversal_context_ = std::move(context_virtual_nodes);
+        graph->ignored_edges_traversal_context_ = std::move(edges_to_ignore);
         graph->node_traversal_context_ = nullptr;
     }
 
     GraphTraversalContext(
-        graphlib::Graph *graph, const std::unordered_set<const graphlib::Node *> *node_traversal_context) :
+        graphlib::Graph *graph, SetPtr<const Node*> node_traversal_context) :
         graph(graph)
     {
-        virtual_node_traversal_context_cache = graph->virtual_node_traversal_context_;
-        ignored_edges_traversal_context_cache = graph->ignored_edges_traversal_context_;
-        node_traversal_context_cache = graph->node_traversal_context_;
+        virtual_node_traversal_context_cache = std::move(graph->virtual_node_traversal_context_);
+        ignored_edges_traversal_context_cache = std::move(graph->ignored_edges_traversal_context_);
+        node_traversal_context_cache = std::move(graph->node_traversal_context_);
         graph->virtual_node_traversal_context_ = nullptr;
         graph->ignored_edges_traversal_context_ = nullptr;
-        graph->node_traversal_context_ = node_traversal_context;
+        graph->node_traversal_context_ = std::move(node_traversal_context);
     }
 
     GraphTraversalContext(
         graphlib::Graph *graph,
-        const std::unordered_set<const graphlib::Node *> *node_traversal_context,
-        const std::unordered_set<const graphlib::Node *> *context_virtual_nodes,
-        const std::unordered_set<graphlib::Edge> *edges_to_ignore) :
+        SetPtr<const Node*> node_traversal_context,
+        SetPtr<const Node*> context_virtual_nodes,
+        SetPtr<Edge> edges_to_ignore) :
         graph(graph)
     {
-        virtual_node_traversal_context_cache = graph->virtual_node_traversal_context_;
-        ignored_edges_traversal_context_cache = graph->ignored_edges_traversal_context_;
-        node_traversal_context_cache = graph->node_traversal_context_;
-        graph->virtual_node_traversal_context_ = context_virtual_nodes;
-        graph->ignored_edges_traversal_context_ = edges_to_ignore;
-        graph->node_traversal_context_ = node_traversal_context;
+        virtual_node_traversal_context_cache = std::move(graph->virtual_node_traversal_context_);
+        ignored_edges_traversal_context_cache = std::move(graph->ignored_edges_traversal_context_);
+        node_traversal_context_cache = std::move(graph->node_traversal_context_);
+        graph->virtual_node_traversal_context_ = std::move(context_virtual_nodes);
+        graph->ignored_edges_traversal_context_ = std::move(edges_to_ignore);
+        graph->node_traversal_context_ = std::move(node_traversal_context);
     }
 
     ~GraphTraversalContext()
     {
-        graph->virtual_node_traversal_context_ = virtual_node_traversal_context_cache;
-        graph->ignored_edges_traversal_context_ = ignored_edges_traversal_context_cache;
-        graph->node_traversal_context_ = node_traversal_context_cache;
+        graph->virtual_node_traversal_context_ = std::move(virtual_node_traversal_context_cache);
+        graph->ignored_edges_traversal_context_ = std::move(ignored_edges_traversal_context_cache);
+        graph->node_traversal_context_ = std::move(node_traversal_context_cache);
     }
 
    private:
     graphlib::Graph *graph;
-    const std::unordered_set<const Node *> *virtual_node_traversal_context_cache = nullptr;
-    const std::unordered_set<graphlib::Edge> *ignored_edges_traversal_context_cache = nullptr;
-    const std::unordered_set<const Node *> *node_traversal_context_cache = nullptr;
+    SetPtr<const Node*> virtual_node_traversal_context_cache = nullptr;
+    SetPtr<Edge> ignored_edges_traversal_context_cache = nullptr;
+    SetPtr<const Node*> node_traversal_context_cache = nullptr;
 };
 
 std::ostream &operator<<(std::ostream &out, const Edge &e);

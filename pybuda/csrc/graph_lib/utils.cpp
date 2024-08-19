@@ -2206,7 +2206,7 @@ bool is_consteval_capable_op(Graph *graph, Node *node, bool allow_forks)
     bool disable_forks = not allow_forks;
 
     auto requires_grad = [graph](graphlib::Node *n)
-    { return graph->enable_training() and n->as<graphlib::InputNode>()->requires_grad(); };
+    { return graph->training() and n->as<graphlib::InputNode>()->requires_grad(); };
 
     auto fork = [graph, disable_forks, requires_grad](graphlib::Node *n)
     { return (requires_grad(n) or disable_forks) and (graph->data_users(n).size() > 1); };
