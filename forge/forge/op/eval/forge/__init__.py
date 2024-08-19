@@ -19,6 +19,7 @@ from .tilizer import Tilizer
 from .clip import Clip
 from .cumulativesum import CumulativeSum
 from .argmax import Argmax
+from .convolution import Conv2d
 
 op_to_module_map = {
         "add":           "eltwise_binary",
@@ -111,7 +112,7 @@ op_to_module_map = {
         "reduce_max":         "reduce",
         "grouped_reduce_avg": "reduce",
 
-        "conv2d"            :        "convolution",
+        "conv2d"            :        Conv2d,
         "conv2d_transpose"  :        "convolution",
         "conv3d"            :        "convolution",
 
