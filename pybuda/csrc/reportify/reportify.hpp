@@ -5,7 +5,7 @@
 #include <string>
 #include <functional>
 
-#include "json_fwd.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "reportify/paths.hpp"
 
 namespace tt {

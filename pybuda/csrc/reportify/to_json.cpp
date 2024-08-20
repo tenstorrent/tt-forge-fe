@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "reportify/to_json.hpp"
 
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 
 namespace tt
 {

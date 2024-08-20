@@ -16,7 +16,7 @@
 #include "passes/dataformat.hpp"
 #include "reportify/paths.hpp"
 #include "reportify/to_json.hpp"
-#include "third_party/json/json.hpp"
+#include "nlohmann/json.hpp"
 #include "utils/logger.hpp"
 
 using Graph = tt::graphlib::Graph;

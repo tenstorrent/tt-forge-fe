@@ -27,6 +27,14 @@
 #include "fmt/ranges.h"
 #include "utils/env.hpp"
 
+template <typename T> struct fmt::formatter<T, std::enable_if_t<std::is_enum_v<T>, char>> : fmt::formatter<std::string> {
+    auto format(T t, format_context& ctx) const {
+        std::stringstream os;
+        os << t;
+        return formatter<std::string>::format(os.str(), ctx);
+    }
+};
+
 namespace tt
 {
 enum class LoggerABI

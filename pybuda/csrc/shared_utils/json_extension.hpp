@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include "third_party/json/json.hpp"
+#include "nlohmann/json.hpp"
  
 #include <optional>
 #include <variant>
@@ -17,7 +17,7 @@ namespace nlohmann {
         }
         static void from_json(const json& j, std::monostate&) {
             if (!j.is_null()) {
-                throw json::type_error::create(302, std::string("type must be null, but is ") + j.type_name(), j);
+                throw json::type_error::create(302, std::string("type must be null, but is ") + j.type_name(), &j);
             }
         }
     };
