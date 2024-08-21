@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ matrix.build.runs-on }}
 
     container:
-      image: ghcr.io/${{ github.repository }}/tt-forge-ubuntu-22-04:latest
+      image: ghcr.io/tenstorrent/tt-forge/tt-forge-ubuntu-22-04:latest
       options: --user root --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
