@@ -1,7 +1,10 @@
 # Summary
 
-[Introduction](./introduction.md)
+# Introduction
+- [Introduction](./introduction.md)
+
+# Project setup
+- [Building](./build.md)
 
 # User Guide
-
-- [Building](./build.md)
+- [Getting Started](./getting-started.md)
