@@ -37,6 +37,7 @@ from pybuda.parameter import Parameter
 from pybuda.pybudaglobal import state_changed, clear_state_changed
 import pybuda.query as query
 from pybuda.tensor import Tensor, to_pt_tensors
+from pybuda.typing import *
 from pybuda.verify import VerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 
 
@@ -163,7 +164,7 @@ def calculate_grads(
     return losses
 
 def compile_main(
-        module: torch.nn.Module | tf.keras.Model | PyBudaModule,
+        module: AnyModule,
         sample_inputs: List[torch.Tensor],
         module_name: Optional[str] = None,
         loss: Optional[torch.nn.Module | PyBudaModule] = None,
@@ -174,7 +175,7 @@ def compile_main(
 
     Parameters
     ----------
-    module: torch.nn.Module | tf.keras.Model | PyBudaModule
+    module: AnyModule
         Torch, TensorFlow, or PyBuda module to compile
 
     sample_inputs: List[torch.Tensor]
@@ -195,7 +196,7 @@ def compile_main(
 
     """
 
-    assert isinstance(module, torch.nn.Module) or isinstance(module, tf.keras.Model) or isinstance(module, PyBudaModule), "Only PyTorch, TensorFlow, and PyBuda modules are supported."
+    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, and PyBuda modules are supported."
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.apply_env_config_overrides()
@@ -569,25 +570,14 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     modules_ = []
     if context.compiler_cfg.compile_tvm_to_python and context.graph is None:
         module_inputs = context.inputs
-        for index, module in enumerate(context.modules):
+        for module in context.modules:
             if not isinstance(module, PyBudaModule):
-                from .tvm_to_python import generate_pybuda_module
-                prev_state = state_changed()
-                if module_inputs is None:
-                    logger.error("No inputs provided for module {}", module.name)
-                    assert False
-                modules, dev_types, module_inputs = generate_pybuda_module(module, to_pt_tensors(module_inputs), context.compiler_cfg, module.name, context.verify_cfg,)
-                assert len(modules) == 1, "Attemping to load split model onto single devices"
+                module, module_inputs = convert_to_forge_module(module, module_inputs, context.compiler_cfg, context.verify_cfg)
+                assert isinstance(module, PyBudaModule)
 
-                modules_.append(modules[0])
-                if index == 0:
-                    context.inputs = module_inputs
+                context.inputs = module_inputs
 
-                if not(prev_state):
-                    clear_state_changed()
-
-                if isinstance(module_inputs, Tensor):
-                    module_inputs = (module_inputs,) # Force a tuple
+            modules_.append(module)
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(modules_, *context.inputs, return_intermediate=context.verify_cfg.intermediates, graph_name=context.graph_name, compiler_cfg=context.compiler_cfg, target_tensors=context.targets)
@@ -856,6 +846,33 @@ def finish_compile(context: CompileContext) -> CompileDepth:
     context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(context.final_graph)
 
     return CompileDepth.FULL
+
+def convert_to_forge_module(module: AnyModule, module_inputs: Union[AnyTensor, List[AnyTensor]], compiler_cfg: CompilerConfig, verify_cfg: VerifyConfig) -> PyBudaModule:
+    """
+    Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).
+
+    Returns
+    -------
+    PyBudaModule, Tuple[Tensor, ...]
+    """
+
+    from .tvm_to_python import generate_pybuda_module
+    prev_state = state_changed()
+
+    if module_inputs is None:
+        logger.error("No inputs provided for module {}", module.name)
+        assert False
+
+    forge_module, dev_types, module_inputs = generate_pybuda_module(module, to_pt_tensors(module_inputs), compiler_cfg, module.name, verify_cfg,)
+    assert len(forge_module) == 1, "Attemping to load split model onto single devices"
+
+    if not(prev_state):
+        clear_state_changed()
+
+    if isinstance(module_inputs, Tensor):
+        module_inputs = (module_inputs,) # Force a tuple
+
+    return forge_module[0], module_inputs
 
 def generate_graph(
         modules,
