@@ -20,7 +20,7 @@ add_custom_target(build_tt_mlir ALL
 
 ### Build TVM ###
 
-add_custom_target(bulid_tvm ALL
+add_custom_target(build_tvm ALL
     COMMAND bash -c ${CMAKE_CURRENT_SOURCE_DIR}/tvm/install.sh
     COMMENT "Installing TVM"
     USES_TERMINAL
