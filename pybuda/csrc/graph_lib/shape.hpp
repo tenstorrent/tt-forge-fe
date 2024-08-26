@@ -7,7 +7,7 @@
 #include <ostream>
 #include "utils/assert.hpp"
 #include "lower_to_buda/common.hpp"
-#include "third_party/json/json.hpp"
+#include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
 namespace tt {

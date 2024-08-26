@@ -11,6 +11,7 @@ import tensorflow as tf
 
 import pybuda
 import pybuda.config
+from pybuda.tensor import to_buda_tensors, to_pt_tensors
 
 def test_torch():
     class Add(nn.Module):
@@ -59,3 +60,29 @@ def test_tf():
     print(f"output: {output}")
     if not torch.allclose(output[0], golden, rtol=1e-1):
         raise ValueError("Output does not match the golden output")
+
+def test_forge():
+    class ForgeAdd(pybuda.PyBudaModule):
+        def __init__(self):
+            super().__init__("PyBudaTest")
+
+        def forward(self, x, y):
+            return pybuda.op.Add("", x, y)
+
+    inputs = to_buda_tensors([torch.rand(1, 32, 32), torch.rand(1, 32, 32)])
+
+    model = ForgeAdd()
+    golden = model(*inputs)
+
+    compiled_model = pybuda.compile(model, sample_inputs=inputs)
+
+    # Issue #161 : currently, we expect inputs to be torch tensors
+    inputs = to_pt_tensors(inputs)
+    output = compiled_model(*inputs)
+
+    print(f"golden: {golden}")
+    print(f"output: {output}")
+
+    if not torch.allclose(output[0], golden.to_pytorch(), rtol=1e-1):
+        raise ValueError("Output does not match the golden output")
+

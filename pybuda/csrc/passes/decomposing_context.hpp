@@ -57,7 +57,7 @@ class DecomposingContext
 
     inline graphlib::NodeId get_output_node_id() { return output_node_id; }
 
-    inline bool is_training_enabled() { return graph->enable_training(); }
+    inline bool is_training_enabled() { return graph->training(); }
 
     inline std::string get_node_name() { return node_->name(); }
 

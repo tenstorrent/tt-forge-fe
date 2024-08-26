@@ -3,14 +3,20 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "mlir_compiler.hpp"
 #include <memory>
+#include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
 #include "mlir_passes.hpp"
 
 // PyBuda headers
 #include "graph_lib/graph.hpp"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#include "graph_lib/node_types.hpp"
+#pragma clang diagnostic pop
 
 // MLIR headers
 #include "mlir/IR/BuiltinOps.h"
+#include "utils/logger.hpp"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-local-typedef"
@@ -33,7 +39,7 @@ namespace tt::passes
     {
         // Register all the required dialects.
         mlir::DialectRegistry registry;
-            
+
         registry.insert<
             mlir::tt::TTDialect, mlir::tt::ttir::TTIRDialect,
             mlir::tt::ttnn::TTNNDialect, mlir::arith::ArithDialect,
@@ -42,24 +48,31 @@ namespace tt::passes
 
         // Create a context with all registered dialects.
         mlir::MLIRContext context(registry);
+
+#ifdef DEBUG
+        // Context setting to have mlir print out stacktrace whenever errors occur
+        context.printStackTraceOnDiagnostic(true);
+#endif
+
         // Load all available dialects
         context.loadAllAvailableDialects();
 
         // Generate MLIR from the PyBuda graph.
         mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(graph, context);
-        tt::log_info("MLIR module generated successfully.");
+
+        tt::log_info(LogMLIRCompiler, "MLIR module generated successfully.");
 
         // Run MLIR registered passes.
         run_mlir_passes(mlir_module);
-        tt::log_info("MLIR passes run successfully.");
+        tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
         // Generate binary from the MLIR module.
         auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
-        tt::log_info("Flatbuffer binary generated successfully.");
+        tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
 
         if (binary == nullptr)
         {
-            throw std::runtime_error("Failed to generate flatbuffer binary."); 
+            throw std::runtime_error("Failed to generate flatbuffer binary.");
         }
 
         return binary;

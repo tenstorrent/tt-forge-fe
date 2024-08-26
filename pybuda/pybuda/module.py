@@ -240,6 +240,8 @@ class PyTorchModule(Module):
         for name, param in itertools.chain(*all_params):
             if name in recorded_names:
                 continue
+            if param == None:
+                continue
             pybuda_param = Parameter(
                 param.cpu(),
                 requires_grad = param.requires_grad,

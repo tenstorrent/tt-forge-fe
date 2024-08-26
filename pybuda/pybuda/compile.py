@@ -30,12 +30,14 @@ from pybuda._C import (
 import pybuda._C.autograd as pyautograd
 import pybuda._C.graph as pygraph
 from pybuda._C.graph import Graph
+from pybuda._C.runtime import Binary
 import pybuda.ci as ci
-from pybuda.module import PyBudaModule, wrap_module
+from pybuda.module import Module, PyBudaModule, wrap_module
 from pybuda.parameter import Parameter
 from pybuda.pybudaglobal import state_changed, clear_state_changed
 import pybuda.query as query
 from pybuda.tensor import Tensor, to_pt_tensors
+from pybuda.typing import *
 from pybuda.verify import VerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 
 
@@ -94,13 +96,16 @@ def generate_override_config(graph, balancer_solution, placer_solution, nop_inst
 
 @dataclass
 class CompileContext:
-    modules: List[PyBudaModule]
+    modules: List[Module]
     graph_name: str
     compiler_cfg: CompilerConfig
     verify_cfg: VerifyConfig
     microbatch_size: int
     microbatch_count: int
-    inputs: Optional[Tuple[Union[Tensor, List[Any], Dict[str, Any]],...]] = None
+    inputs: Union[torch.Tensor, List[torch.Tensor]]
+    loss_module: Optional[Module] = None
+    optimizer: Optional[torch.optim.Optimizer] = None
+    training: bool = False
     graph: Optional[Graph] = None
     losses: Optional[List[Tensor]] = None
     output_kwargs: Dict[str, Any] = field(default_factory=dict)
@@ -124,6 +129,7 @@ class CompileContext:
     in_recompile: bool = False
     recompile_count: int = 0
     target_cycles_offset: int = 0
+    compiled_binary: Optional[Binary] = None
 
 def calculate_grads(
         outputs: Tuple[Tensor, ...],
@@ -158,15 +164,39 @@ def calculate_grads(
     return losses
 
 def compile_main(
-        module: torch.nn.Module | tf.keras.Model | PyBudaModule,
-        sample_inputs: Optional[Tuple[Union[Tensor, List[Any], Dict[str, Any]],...]] = None,
+        module: AnyModule,
+        sample_inputs: List[torch.Tensor],
         module_name: Optional[str] = None,
-):
+        loss: Optional[torch.nn.Module | PyBudaModule] = None,
+        optimizer: Optional[torch.optim.Optimizer] = None,
+) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
+
+    Parameters
+    ----------
+    module: AnyModule
+        Torch, TensorFlow, or PyBuda module to compile
+
+    sample_inputs: List[torch.Tensor]
+        List of sample inputs for the module (used to infer shapes)
+
+    module_name: Optional[str]
+        Name of the module. If not provided, the class name of the provided module will be used.
+
+    loss: Optional[torch.nn.Module | PyBudaModule]
+        Loss module for training.
+
+    optimizer: Optional[torch.optim.Optimizer]
+        Optimizer for training.
+
+    Returns
+    -------
+    CompiledModel - Callable object that can be used to run the compiled module on device.
+
     """
 
-    assert isinstance(module, torch.nn.Module) or isinstance(module, tf.keras.Model) or isinstance(module, PyBudaModule), "Only PyTorch, TensorFlow, and PyBuda modules are supported."
+    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, and PyBuda modules are supported."
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.apply_env_config_overrides()
@@ -185,6 +215,9 @@ def compile_main(
     assert sample_inputs is not None
 
     wrapped_module = wrap_module(module, module_name)
+    wrapped_loss = None
+    if loss is not None:
+        wrapped_loss = wrap_module(loss, module_name + "_loss")
 
     compile_context: CompileContext = CompileContext(
         modules=[wrapped_module],
@@ -194,6 +227,9 @@ def compile_main(
         microbatch_size=1,
         microbatch_count=1,
         inputs=sample_inputs,
+        loss_module=wrapped_loss,
+        optimizer=optimizer,
+        training=wrapped_loss is not None,
     )
 
     return pybuda_compile_from_context(compile_context)
@@ -266,9 +302,14 @@ def pybuda_compile_from_context(context: CompileContext) -> CompiledModel:
 
     compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], compile_results)
 
+
+    assert context.compiled_binary is not None
+
     compiled_module = CompiledModel(
         compiled_graph_state,
-        context.output_kwargs["binary"]
+        context.compiled_binary,
+        loss_module=context.loss_module,
+        optimizer=context.optimizer,
     )
 
     logger.info("Compilation completed.")
@@ -529,25 +570,14 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     modules_ = []
     if context.compiler_cfg.compile_tvm_to_python and context.graph is None:
         module_inputs = context.inputs
-        for index, module in enumerate(context.modules):
+        for module in context.modules:
             if not isinstance(module, PyBudaModule):
-                from .tvm_to_python import generate_pybuda_module
-                prev_state = state_changed()
-                if module_inputs is None:
-                    logger.error("No inputs provided for module {}", module.name)
-                    assert False
-                modules, dev_types, module_inputs = generate_pybuda_module(module, to_pt_tensors(module_inputs), context.compiler_cfg, module.name, context.verify_cfg,)
-                assert len(modules) == 1, "Attemping to load split model onto single devices"
+                module, module_inputs = convert_to_forge_module(module, module_inputs, context.compiler_cfg, context.verify_cfg)
+                assert isinstance(module, PyBudaModule)
 
-                modules_.append(modules[0])
-                if index == 0:
-                    context.inputs = module_inputs
+                context.inputs = module_inputs
 
-                if not(prev_state):
-                    clear_state_changed()
-
-                if isinstance(module_inputs, Tensor):
-                    module_inputs = (module_inputs,) # Force a tuple
+            modules_.append(module)
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(modules_, *context.inputs, return_intermediate=context.verify_cfg.intermediates, graph_name=context.graph_name, compiler_cfg=context.compiler_cfg, target_tensors=context.targets)
@@ -696,7 +726,7 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
 
     next_stage = CompileDepth.POST_AUTOGRAD_PASS
-    if context.compiler_cfg.enable_training:
+    if context.training:
         next_stage = CompileDepth.AUTOGRAD
 
     return next_stage
@@ -715,17 +745,20 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     compiler_cfg = context.compiler_cfg
-    dev = context.dev
     graph_name = context.graph_name
     graph, intermediate_tensors, outputs = context.graph, context.intermediate_tensors, context.outputs
 
-    autograd_config = pyautograd.AutogradConfig(recompute=compiler_cfg.enable_recompute, optimizer=dev.optimizer)
+    graph.set_training(True)
+
+    # NOTE: Don't pass optimizer, to avoid creating the optimizer graph (v0 will run optimizer on CPU)
+    autograd_config = pyautograd.AutogradConfig(recompute=compiler_cfg.enable_recompute, optimizer=None)
     autograd_engine = pyautograd.AutogradEngine(graph, autograd_config)
 
     graph = autograd_engine.run()
     dump_graph(graph, graph_name, "post_autograd")
 
-    context.losses = calculate_grads(outputs, dev, intermediate_tensors, False, context.losses)
+    # GOLDEN: 
+    # context.losses = calculate_grads(outputs, dev, intermediate_tensors, False, context.losses)
 
     # Record calculated input grads from the previous do_verify call and save so that we don't keep re-calculating and
     # accumulating on each verification call
@@ -779,7 +812,9 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph = context.graph
 
-    graph = run_pre_lowering_passes(graph)
+    graph = run_pre_lowering_passes(
+        graph,
+        compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
 
     context.final_graph = graph
@@ -788,8 +823,7 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
     graph = context.graph
 
-    binary = pybuda._C.run_mlir_compiler(graph)
-    context.output_kwargs["binary"] = binary
+    context.compiled_binary = pybuda._C.run_mlir_compiler(graph)
 
     return CompileDepth.FINISH_COMPILE
 
@@ -812,6 +846,33 @@ def finish_compile(context: CompileContext) -> CompileDepth:
     context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(context.final_graph)
 
     return CompileDepth.FULL
+
+def convert_to_forge_module(module: AnyModule, module_inputs: Union[AnyTensor, List[AnyTensor]], compiler_cfg: CompilerConfig, verify_cfg: VerifyConfig) -> PyBudaModule:
+    """
+    Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).
+
+    Returns
+    -------
+    PyBudaModule, Tuple[Tensor, ...]
+    """
+
+    from .tvm_to_python import generate_pybuda_module
+    prev_state = state_changed()
+
+    if module_inputs is None:
+        logger.error("No inputs provided for module {}", module.name)
+        assert False
+
+    forge_module, dev_types, module_inputs = generate_pybuda_module(module, to_pt_tensors(module_inputs), compiler_cfg, module.name, verify_cfg,)
+    assert len(forge_module) == 1, "Attemping to load split model onto single devices"
+
+    if not(prev_state):
+        clear_state_changed()
+
+    if isinstance(module_inputs, Tensor):
+        module_inputs = (module_inputs,) # Force a tuple
+
+    return forge_module[0], module_inputs
 
 def generate_graph(
         modules,
@@ -866,8 +927,6 @@ def generate_graph(
 
     if compiler_cfg is None:
         compiler_cfg = _get_global_compiler_config()
-
-    graph.set_enable_training(compiler_cfg.enable_training)
 
     # Trace through the modules
     all_subgraph_outputs = []

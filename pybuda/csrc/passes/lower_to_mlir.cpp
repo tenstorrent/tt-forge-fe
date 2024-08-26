@@ -45,13 +45,13 @@ using namespace tt;
 /**
  * @brief Implementation of TT-MLIR emission from the TTForge graph.
  */
+
 class MLIRGenerator
 {
     public:
         /// Construct a new MLIRGenerator object.
         MLIRGenerator(mlir::MLIRContext &context) : builder_(&context)
         {
-            tt::log_info("MLIRGenerator");
             init_lowering_handler_map();
         }
 
@@ -62,10 +62,20 @@ class MLIRGenerator
             graphModule_->setAttr(mlir::tt::SystemDescAttr::name,
                       mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
             builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
-            emit_mlir_function(graph);
-            mlir::OpPrintingFlags printFlags;
-            printFlags.enableDebugInfo();
-            graphModule_.print(llvm::outs(), printFlags);
+
+            {
+                auto traversal_context = graphlib::get_subgraph_traversal_context<graphlib::SubgraphType::Forward>(graph);
+                emit_mlir_function(graph);
+            }
+
+            if (graph->training())
+            {
+                auto traversal_context = graphlib::get_subgraph_traversal_context<graphlib::SubgraphType::Backward>(graph);
+                emit_mlir_function(graph, "backward");
+            }
+
+            log_info(LogMLIRCompiler, "MLIR module generated successfully.");
+            graphModule_.dump();
 
             /// Verify the module after we have finished constructing it, this will check
             /// the structural properties of the IR and invoke any specific verifiers we
@@ -75,6 +85,22 @@ class MLIRGenerator
                 graphModule_.emitError("module verification failed.");
                 throw std::runtime_error("Generated MLIR module failed verification.");
             }
+
+#ifdef DEBUG
+            // Create a string to store the output
+            std::string moduleStr;
+            llvm::raw_string_ostream rso(moduleStr);
+
+            // Print the MLIR module
+            mlir::OpPrintingFlags printFlags;
+            printFlags.enableDebugInfo();
+            graphModule_.print(rso, printFlags);
+
+            rso.flush();
+
+            log_trace(LogMLIRCompiler, "MLIR module after lowering TT-Forge graph:\n{}", moduleStr);
+#endif
+
             return graphModule_;
         }
 
@@ -97,7 +123,7 @@ class MLIRGenerator
 
         /// Map of lowering handlers for ttforge operations to MLIR.
         std::map<std::string, HandlerType> lowering_handler_map;
-        
+
         /// Declares a variable in the current (only) scope.
         /// The declaration corresponds to exactly one operation node in the TTForge graph.
         void declare(graphlib::Node *node, mlir::Value value) {
@@ -109,42 +135,103 @@ class MLIRGenerator
             symbolTable_[node->name()] = {value, node};
         }
 
+        // Convert a TTForge attribute to an MLIR attribute.
+        mlir::Attribute convert_to_mlir_attribute(const tt::BudaOpAttr& value) {
+            return std::visit([this](auto&& arg) -> mlir::Attribute {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, std::string>) {
+                    return builder_.getStringAttr(arg);
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    return builder_.getBoolAttr(arg);
+                } else if constexpr (std::is_same_v<T, int>) {
+                    return builder_.getSI32IntegerAttr(arg);
+                } else if constexpr (std::is_same_v<T, float>) {
+                    return builder_.getF32FloatAttr(arg);
+                } else if constexpr (std::is_same_v<T, std::vector<int>>) {
+                    llvm::SmallVector<mlir::Attribute> attributes;
+                    for (auto& element : arg) {
+                        attributes.push_back(builder_.getI32IntegerAttr(element));
+                    }
+                    return builder_.getArrayAttr(attributes);
+                } else {
+                    // If type not handled, throw an exception or handle it appropriately
+                    throw std::runtime_error("Unhandled attribute type");
+                }
+            }, value);
+        }
+
         /// Emit a new function in MLIR.
         /// A function represents a set of TTForge operations that are executed to produce output results.
         /// This function will generate the MLIR code for each TTForge operation in the graph and emit the return operation for the function.
-        mlir::func::FuncOp emit_mlir_function(tt::graphlib::Graph *graph) {
-            // Assemble the function arguments (inputs)
-            llvm::SmallVector<mlir::Type> arguments;
-            for (auto *input : graph->nodes_by_type(tt::graphlib::kInput))
+        mlir::func::FuncOp emit_mlir_function(tt::graphlib::Graph *graph, std::string fn_name = "forward") {
+            // Assemble the function arguments (inputs and parameters)
+            llvm::SmallVector<mlir::Type> argument_types;
+            llvm::SmallVector<graphlib::Node *> argument_nodes;
+            
+            symbolTable_.clear();
+
+            // Add the graph inputs to the argument list
+            for (auto *input: graph->ordered_module_inputs()) //for (auto *input : graph->nodes_by_type(tt::graphlib::kInput))
             {
-                arguments.push_back(get_node_type(input));
+                argument_nodes.push_back(input);
+                argument_types.push_back(get_node_type(input));
+            }
+
+            // Add the graph parameters to the argument list
+            for(auto *parameter: graph->get_parameter_nodes())
+            {
+                // Check whether the parameter is actually used in the current graph context,
+                // for example when compiling model for training we will emit separate mlirs
+                // for forward and backward subgraphs (via GraphTraversalContext).
+                if (graph->data_users(parameter).empty())
+                {
+                    continue;
+                }
+
+                argument_nodes.push_back(parameter);
+                argument_types.push_back(get_node_type(parameter));
             }
 
             // Assemble the function return values (outputs)
             llvm::SmallVector<mlir::Type> returns;
-            for (auto *output : graph->nodes_by_type(tt::graphlib::kOutput))
+            auto output_nodes = graph->nodes([](const graphlib::Node *node) {
+                return node->node_type() == tt::graphlib::NodeType::kOutput
+                 || (node->node_type() == tt::graphlib::NodeType::kQueue && node->as<graphlib::QueueNode>()->is_grad_accumulator());
+            });
+
+            for (auto *output : output_nodes)
             {
                 returns.push_back(get_node_type(output));
             }
 
             // Create the function and emit it in the MLIR module.
-            auto funcType = builder_.getType<mlir::FunctionType>(mlir::TypeRange(arguments), mlir::TypeRange(returns));
-            auto func = builder_.create<mlir::func::FuncOp>(graphModule_.getLoc(), "main", funcType);
+            auto funcType = builder_.getType<mlir::FunctionType>(mlir::TypeRange(argument_types), mlir::TypeRange(returns));
+            auto func = builder_.create<mlir::func::FuncOp>(graphModule_.getLoc(), fn_name, funcType);
             
+            // Set the function argument names
+            for(size_t i = 0; i < argument_nodes.size(); i++)
+            {
+                graphlib::Node* argument_node = argument_nodes[i];
+                llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
+                named_attributes.push_back(builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
+                func.setArgAttrs(i, named_attributes);
+            }
+
             // Start the body of the function by creating an entry block.
             mlir::Block *entryBlock = func.addEntryBlock();
 
             // Declare function arguments in the symbol table
-            for(auto namedValue: llvm::zip(graph->nodes_by_type(tt::graphlib::kInput), entryBlock->getArguments()))
+            for(auto namedValue: llvm::zip(argument_nodes, entryBlock->getArguments()))
             {
-                auto node = std::get<0>(namedValue);
-                auto arg = std::get<1>(namedValue);
-                declare(node, arg);
+                graphlib::Node* argument_node = std::get<0>(namedValue);
+                mlir::BlockArgument arg = std::get<1>(namedValue);
+                declare(argument_node, arg);
             }
             
             // Set the insertion point in the builder to the beginning of the function
             // body, it will be used throughout the codegen to create operations in this
             // function.
+            auto savedInsertionPoint = builder_.saveInsertionPoint();
             builder_.setInsertionPointToStart(entryBlock);
 
             // Walk the graph in topological order and generate MLIR for each TTForge operation
@@ -157,15 +244,20 @@ class MLIRGenerator
                     continue;
                 }
 
-                log_trace(LogMLIRGenerator, "Emitting MLIR for node {}", node->name());
-                tt::graphlib::OpNode *op_node = dynamic_cast<tt::graphlib::OpNode*>(node);
+                log_trace(LogMLIRCompiler, "Emitting MLIR for node {}", node->name());
+
+                tt::graphlib::OpNode *op_node = node->as<tt::graphlib::OpNode>();
 
                 // Emit MLIR for the TTForge operation node
                 mlir::Value opValue = emit_mlir_tt_forge_operation(graph, op_node);
-                log_trace(LogMLIRGenerator, "Generated MLIR for node {} with value {}",
+                log_trace(LogMLIRCompiler, "Generated MLIR for node {} with value {}",
                     node->name(), covnert_mlir_value_to_string(opValue));
             }
             emit_mlir_return_op(graph);
+
+            // Restore the saved insertion point.
+            builder_.restoreInsertionPoint(savedInsertionPoint);
+
             return func;
         }
 
@@ -204,7 +296,7 @@ class MLIRGenerator
             ::llvm::ArrayRef<::llvm::StringRef> operation_attributes = TTIROp::getAttributeNames();
             for(auto attribute_name: operation_attributes)
             {
-                if(attribute_name.equals("operand_constraints"))
+                if (attribute_name == "operand_constraints")
                 {
                     // Create operation constraint attributes
                     mlir::NamedAttribute operand_constraints_attribute = builder_.getNamedAttr(
@@ -212,7 +304,7 @@ class MLIRGenerator
                     builder_.getArrayAttr(get_mlir_operand_constraint_attributes(graph, op_node)));
                     attributes.push_back(operand_constraints_attribute);
                 }
-                else if(attribute_name.equals(mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr()))
+                else if (attribute_name == mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr())
                 {
                     // Create operation segment sizes attributes
                     mlir::NamedAttribute operand_segment_sizes_attribute = builder_.getNamedAttr(
@@ -225,15 +317,13 @@ class MLIRGenerator
                 }
             }
 
-            // Workaround for now, need to figure out how to handle this properly
-            if(op_node->op_name() == "softmax")
+            for(const auto & attribute: op_node->op_type().named_attrs)
             {
-                log_info("Softmax");
-                int32_t dimension = std::get<int>(op_node->op_attrs()[0]);
-                mlir::NamedAttribute dimension_attribute = builder_.getNamedAttr(
-                        "dimension",
-                    builder_.getSI32IntegerAttr(dimension));
-                attributes.push_back(dimension_attribute);
+                // convert atribute to mlir atribute
+                auto mlir_atribute = convert_to_mlir_attribute(attribute.second);
+                mlir::NamedAttribute named_attribute = builder_.getNamedAttr(
+                                        attribute.first, mlir_atribute);
+                attributes.push_back(named_attribute);
             }
 
             auto op = builder_.create<TTIROp>(
@@ -262,10 +352,13 @@ class MLIRGenerator
             tt::graphlib::OpNode *op_node)
         {
             llvm::SmallVector<mlir::Value> operands;
-            for (auto operand : graph->operands(op_node))
+
+            for (auto operand : graph->data_operands(op_node))
             {
+                TT_ASSERT(symbolTable_.find(operand->name()) != symbolTable_.end(), "Operand " + operand->name() + "not found in symbol table.");
                 operands.push_back(symbolTable_.at(operand->name()).first);
             }
+
             operands.push_back(emit_mlir_empty_tensor(graph, op_node));
             return operands;
         }
@@ -276,18 +369,21 @@ class MLIRGenerator
             tt::graphlib::OpNode *op_node)
         {
             llvm::SmallVector<mlir::Attribute> operand_constraints;
+
             for ([[maybe_unused]] auto& operand: graph->operands(op_node))
             {
                 mlir::Attribute operand_constraint_attribute = builder_.getAttr<mlir::tt::OperandConstraintAttr>(
                            mlir::tt::OperandConstraint::AnyDevice);
                 operand_constraints.push_back(operand_constraint_attribute);
             }
+
             for ([[maybe_unused]] auto& user: graph->data_users(op_node))
             {
                 mlir::Attribute operand_constraint_attribute = builder_.getAttr<mlir::tt::OperandConstraintAttr>(
                            mlir::tt::OperandConstraint::AnyDevice);
                 operand_constraints.push_back(operand_constraint_attribute);           
             }
+
             return operand_constraints;
         }
 
@@ -295,6 +391,7 @@ class MLIRGenerator
         mlir::Value emit_mlir_empty_tensor(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
         {
             llvm::SmallVector<int64_t> shape_vec;
+
             for(auto dim : node->shape().as_vector())
             {
                 shape_vec.push_back((int64_t)dim);
@@ -303,7 +400,7 @@ class MLIRGenerator
             return builder_.create<mlir::tensor::EmptyOp>(
                 get_tt_forge_operation_location(graph, node),
                 shape_vec,
-                get_float_type(node));
+                get_data_type(node));
         }
 
         /// Emit the return operation for the function.
@@ -311,9 +408,16 @@ class MLIRGenerator
         {
             // Assemble the function return values (outputs)
             llvm::SmallVector<mlir::Value> returnValues;
-            for (auto *output : graph->nodes_by_type(tt::graphlib::kOutput))
+
+            auto output_nodes = graph->nodes([](const graphlib::Node *node) {
+                return node->node_type() == tt::graphlib::NodeType::kOutput
+                 || (node->node_type() == tt::graphlib::NodeType::kQueue && node->as<graphlib::QueueNode>()->is_grad_accumulator());
+            });
+
+            for (auto *output : output_nodes)
             {
-                auto output_operand = graph->operands(output)[0];
+                TT_ASSERT(graph->data_operands(output).size() == 1, "Output node must have exactly one operand.");
+                auto output_operand = graph->data_operands(output)[0];
                 auto outputValue = symbolTable_[output_operand->name()].first;
                 returnValues.push_back(outputValue);
             }
@@ -323,20 +427,24 @@ class MLIRGenerator
                 mlir::ValueRange(returnValues));
         }
 
-        /// Get the MLIR float type type for a TTForge node.
-        mlir::FloatType get_float_type(graphlib::Node *node)
+        /// Get the MLIR data type for a TTForge node.
+        mlir::Type get_data_type(graphlib::Node *node)
         {
             switch (node->output_df())
             {
                 case tt::DataFormat::Float32:
                     return builder_.getF32Type();
                 case tt::DataFormat::Float16_b:
-                    return builder_.getF16Type();
+                    return builder_.getBF16Type();
                 case tt::DataFormat::Float16:
                     return builder_.getF16Type();
+                case tt::DataFormat::Int8:
+                    return builder_.getI8Type();
                 default:
+                    log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                     TT_ASSERT(false);
             }
+
             // TODO add all supported types in switch
             return builder_.getF32Type();
         }
@@ -345,11 +453,13 @@ class MLIRGenerator
         mlir::Type get_node_type(graphlib::Node *node)
         {
             std::vector<int64_t> shape_vec;
+
             for (auto dim : node->shape().as_vector())
             {
                 shape_vec.push_back((int64_t)dim);
             }
-            return mlir::RankedTensorType::get(shape_vec, get_float_type(node));
+
+            return mlir::RankedTensorType::get(shape_vec, get_data_type(node));
         }
 
         /// Get the location for a module.
@@ -392,6 +502,9 @@ class MLIRGenerator
             lowering_handler_map["relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReluOp>;
             lowering_handler_map["matmul"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MatmulOp>;
             lowering_handler_map["softmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SoftmaxOp>;
+            lowering_handler_map["reduce_sum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SumOp>;
+            lowering_handler_map["reduce_avg"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MeanOp>;
+            // lowering_handler_map["sqrt"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SqrtOp>;
         }
 };
 }

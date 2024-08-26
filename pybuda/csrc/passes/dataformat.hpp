@@ -39,6 +39,8 @@ void configure_a_b_format_conversion(
     graphlib::Graph *graph, const DeviceConfig &device_config, const std::optional<DataFormat> default_df_override);
 void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& device_config);
 void validate_post_placer_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config);
+void configure_output_data_formats(
+    graphlib::Graph *graph, std::optional<DataFormat> default_df_override);
 
 void run_dataformat_passes(
     graphlib::Graph *graph,

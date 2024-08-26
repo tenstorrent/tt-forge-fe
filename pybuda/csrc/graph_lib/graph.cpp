@@ -549,7 +549,7 @@ std::vector<Node*> Graph::nodes(std::function<bool(Node*)> node_filter) const
 {
     std::vector<Node *> ret;
     for (Node *node: nodes_)
-        if (node_filter(node)) ret.push_back(node);
+        if (node_filter(node) && is_node_visible(node)) ret.push_back(node);
     return ret;
 }
 
@@ -745,7 +745,12 @@ std::ostream &operator<<(std::ostream &out, const Graph &g) {
 std::vector<Node *> Graph::ordered_module_inputs() const {
     std::vector<Node*> ordered_inputs;
     for (auto input_node_id : this->ordered_module_input_node_ids_) {
-        ordered_inputs.push_back(this->node_by_id(input_node_id));
+        Node* node = this->node_by_id(input_node_id);
+
+        if (this->is_node_visible(node) && this->user_edges(node).size() != 0)
+        {
+            ordered_inputs.push_back(this->node_by_id(input_node_id));
+        }
     }
     return ordered_inputs;
 }

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "graph_lib/node_types.hpp"
-#include "json_fwd.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "lower_to_buda/common.hpp"
 
 namespace std

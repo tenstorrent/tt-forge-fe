@@ -10,3 +10,12 @@
 [submodule "third_party/tt-mlir"]
 	path = third_party/tt-mlir
 	url = https://github.com/tenstorrent/tt-mlir.git
+[submodule "third_party/fmt"]
+	path = third_party/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "third_party/json"]
+	path = third_party/json
+	url = https://github.com/nlohmann/json
+[submodule "third_party/pybind11_json"]
+	path = third_party/pybind11_json
+	url = https://github.com/pybind/pybind11_json

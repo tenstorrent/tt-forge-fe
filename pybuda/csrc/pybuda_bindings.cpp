@@ -8,7 +8,8 @@
 #pragma clang diagnostic pop
 
 #include <pybind11/stl.h>
-#include "third_party/json/pybind11_json.hpp"
+#include "pybind11_json/pybind11_json.hpp"
+
 
 #include <sstream>
 namespace py = pybind11;
@@ -184,7 +185,11 @@ PYBIND11_MODULE(_C, m) {
         py::arg("op_intermediates_to_save") = std::vector<std::string>{},
         py::arg("use_interactive_placer") = true,
         py::arg("enable_device_tilize") = false);
-    m.def("run_pre_lowering_passes", &run_pre_lowering_passes);
+    m.def(
+        "run_pre_lowering_passes",
+        &run_pre_lowering_passes,
+        py::arg("graph"),
+        py::arg("default_df_override") = std::optional<DataFormat>{});
     m.def("run_mlir_compiler", &passes::run_mlir_compiler);
 
     m.def(

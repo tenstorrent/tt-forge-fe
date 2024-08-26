@@ -34,7 +34,7 @@ TTSystem detect_available_devices() {
             case target::Arch::Grayskull: arch = ARCH::GRAYSKULL; break;
             case target::Arch::Wormhole_b0: arch = ARCH::WORMHOLE_B0; break;
             case target::Arch::Blackhole: arch = ARCH::BLACKHOLE; break;
-            default: log_fatal(LogTTDevice, "Unknown chip type {}", chip_desc->arch());
+            default: log_fatal(LogTTDevice, "Unknown chip type {}", target::EnumNameArch(chip_desc->arch()));
         }
 
         auto device = std::make_shared<TTDevice>(std::nullopt, system_desc, arch, mmio, logical_device_index);
