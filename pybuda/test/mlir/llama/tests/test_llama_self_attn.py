@@ -12,7 +12,7 @@ from pybuda.op.eval.common import compare_with_golden_pcc
 @pytest.mark.xfail(reason="Squeeze op is not supported on MLIR.")
 def test_llama_self_attn():
     # Define wrapper function
-    class Wrapper(torch.nn.Module):
+    class SelfAttention(torch.nn.Module):
         def __init__(self, model):
             super().__init__()
             self.model = model
@@ -24,7 +24,7 @@ def test_llama_self_attn():
     
     # Load Llama 3B model and tokenizer
     framework_model = load_model()
-    framework_model = Wrapper(framework_model.model.layers[0].self_attn)
+    framework_model = SelfAttention(framework_model.model.layers[0].self_attn)
 
     # Input samples
     inputs = [
