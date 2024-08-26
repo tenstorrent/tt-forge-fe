@@ -9,8 +9,8 @@ add_custom_target(build_tt_mlir ALL
     C_COMPILER=${CMAKE_C_COMPILER} # Export C compiler to use
     TTMLIR_TOOLCHAIN_DIR=${TTMLIR_TOOLCHAIN_DIR} # Export TTMLIR_TOOLCHAIN_DIR to use
     TTMLIR_VENV_DIR=${TTMLIR_VENV_DIR} # Export TTMLIR_VENV_DIR to use
-    TTMLIR_ENABLE_RUNTIME=ON # Always build runtime
-    TT_RUNTIME_ENABLE_PERF_TRACE=ON # Always enable perf trace
+    TTMLIR_ENABLE_RUNTIME=${TTMLIR_ENABLE_RUNTIME} # Export TTMLIR_ENABLE_RUNTIME to use
+    TT_RUNTIME_ENABLE_PERF_TRACE=${TT_RUNTIME_ENABLE_PERF_TRACE} # Export TT_RUNTIME_ENABLE_PERF_TRACE to use
     bash ${CMAKE_CURRENT_SOURCE_DIR}/build_mlir.sh
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tt-mlir
     BYPRODUCTS ${METAL_LIB_DIR}/_ttnn.so # Workaround how Ninja handles dependencies

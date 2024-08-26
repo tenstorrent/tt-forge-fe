@@ -49,6 +49,14 @@ set(CONFIG_LDFLAGS "")
 set(STATIC_LIB_FLAGS -fPIC)
 set(SHARED_LIB_FLAGS -fPIC)
 
+if (NOT DEFINED TTMLIR_ENABLE_RUNTIME)
+    set(TTMLIR_ENABLE_RUNTIME OFF)
+endif()
+
+if (NOT DEFINED TT_RUNTIME_ENABLE_PERF_TRACE)
+    set(TT_RUNTIME_ENABLE_PERF_TRACE OFF)
+endif()
+
 add_subdirectory(third_party)
 add_subdirectory(pybuda)
 add_subdirectory(docs)
