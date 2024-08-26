@@ -73,7 +73,7 @@ static torch::ScalarType dt_to_torch_scalar_type(target::DataType df)
         default: break;
     }
 
-    log_fatal(LogTTDevice, "Unhandled dtype {}", df);
+    log_fatal(LogTTDevice, "Unhandled dtype {}", target::EnumNameDataType(df));
 }
 
 void pad_to_buda_shape(torch::Tensor & tensor)

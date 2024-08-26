@@ -12,7 +12,7 @@
 #include "graph_lib/graph.hpp"
 #include "lower_to_buda/common.hpp"
 #include "graph_lib/defines.hpp"
-#include "third_party/json/json.hpp"
+#include "nlohmann/json.hpp"
 #include "shared_utils/json_extension.hpp"
 
 

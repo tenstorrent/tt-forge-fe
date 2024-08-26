@@ -8,7 +8,8 @@
 #pragma clang diagnostic pop
 
 #include <pybind11/stl.h>
-#include "third_party/json/pybind11_json.hpp"
+#include "pybind11_json/pybind11_json.hpp"
+
 
 #include <sstream>
 namespace py = pybind11;

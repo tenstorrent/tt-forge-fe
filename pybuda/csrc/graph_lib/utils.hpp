@@ -18,7 +18,7 @@ namespace py = pybind11;
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "python_bindings_common.hpp"
-#include "third_party/json/json.hpp"
+#include "nlohmann/json.hpp"
 
 template <typename T>
 constexpr auto type_name(const T &) noexcept
