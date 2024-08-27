@@ -95,3 +95,5 @@ _Note: `clean_all.sh` script will not clean toolchain (LLVM) build artifacts and
 3. `TTFORGE_TOOLCHAIN_DIR` - Specifies the directory where tt-forge dependencies will be installed. Defaults to `/opt/ttforge-toolchain` if not defined.
 4. `TTFORGE_VENV_DIR` - Specifies the virtual environment directory for tt-forge. Defaults to `/opt/ttforge-toolchain/venv` if not defined.
 5. `TTFORGE_PYTHON_VERSION` - Specifies the Python version to use. Defaults to `python3.10` if not defined.
+6. `TTMLIR_ENABLE_RUNTIME` - Specifies whether runtime code is enabled or not. Currently defaults to `ON` given runtime is required. It will affect the value of `TTMLIR_ENABLE_RUNTIME` in [tt-mlir](https://github.com/tenstorrent/tt-mlir).
+7. `TT_RUNTIME_ENABLE_PERF_TRACE` - Specifies whether perf trace code is enabled or not. Defaults to `OFF`. It will affect the value of `ENABLE_TRACY` in [tt-metal](https://github.com/tenstorrent/tt-metal).
