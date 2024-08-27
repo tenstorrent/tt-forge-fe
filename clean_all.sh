@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
+# SPDX-License-Identifier: Apache-2.0
+
 rm -rf build
 rm -rf env/build
 rm -rf third_party/tt-mlir/build

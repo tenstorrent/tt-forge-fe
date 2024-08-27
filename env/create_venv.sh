@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
+# SPDX-License-Identifier: Apache-2.0
+
 if [[ -z "$TTFORGE_PYTHON_VERSION" ]]; then
     echo "TTFORGE_PYTHON_VERSION environment variable is not set"
     exit 1
