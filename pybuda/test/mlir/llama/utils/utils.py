@@ -6,7 +6,7 @@ from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
 
 import pybuda
 
-def load_model(model_path="openlm-research/open_llama_3b"):
+def load_model(model_path="openlm-research/open_llama_3b", use_cache=False):
     # Compiler configurations
     compiler_cfg = pybuda.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -18,6 +18,7 @@ def load_model(model_path="openlm-research/open_llama_3b"):
     config.num_hidden_layers = 26
     config.pad_token_id = 0
     config.return_dict = False
+    config.use_cache = use_cache
     framework_model = LlamaForCausalLM.from_pretrained(
         model_path, device_map="auto", config=config
     )
