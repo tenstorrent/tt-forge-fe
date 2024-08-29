@@ -43,11 +43,8 @@ jobs:
           export WORKPLACE=/home/ubuntu/actions-runner/_work
           echo "Deleting work folder $WORKPLACE"
           sudo rm -rf $WORKPLACE
+          mkdir -p $GITHUB_WORKSPACE
 
-  free-space:
-    needs: cleanup
-    runs-on: n150
-    steps:
       - name: Report free space after cleanup
         run: |
           echo "Free space after cleanup:"
