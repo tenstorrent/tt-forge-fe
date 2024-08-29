@@ -1,0 +1,38 @@
+name: Cleanup Workflow
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      runner_name:
+        description: 'Select the self-hosted runner to clean'
+        required: true
+        default: 'n150-5'
+
+jobs:
+  cleanup:
+    # runs-on: ${{ github.event.inputs.runner_name }}
+    runs-on: n150-5
+    
+    steps:
+      - name: Report free space before cleanup
+        run: |
+          echo "Free space before cleanup:"
+          df -h
+
+      - name: Purge all Docker cached images
+        run: |
+          echo "Removing all unused Docker images..."
+          docker system prune -fa
+          echo "Docker images purged."
+
+      - name: Delete work folder
+        run: |
+          echo "Deleting work folder $GITHUB_WORKSPACE"
+          rm -rf $GITHUB_WORKSPACE/*
+          echo "Work folder deleted."
+
+      - name: Report free space after cleanup
+        run: |
+          echo "Free space after cleanup:"
+          df -h
