@@ -1,13 +1,12 @@
-name: Cleanup Workflow
+name: Cleanup Runner
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       runner_name:
         description: 'Select the self-hosted runner to clean'
         required: true
-        default: 'n150-5'
+        default: 'n150'
       purge_docker:
         description: 'Purge docker images'
         required: true
@@ -21,8 +20,7 @@ on:
 
 jobs:
   cleanup:
-    # runs-on: ${{ github.event.inputs.runner_name }}
-    runs-on: n150
+    runs-on: ${{ github.event.inputs.runner_name }}
     
     steps:
       - name: Report free space before cleanup
@@ -31,14 +29,14 @@ jobs:
           df -h
 
       - name: Purge all Docker cached images
-        # if: ${{ github.event.inputs.delete_workspace }}
+        if: ${{ github.event.inputs.purge_docker }}
         run: |
           echo "Removing all unused Docker images..."
           docker system prune -fa
           echo "Docker images purged."
 
       - name: Delete work folder
-        # if: ${{ github.event.inputs.delete_workspace }}
+        if: ${{ github.event.inputs.delete_workspace }}
         run: |
           export WORKPLACE=/home/ubuntu/actions-runner/_work
           echo "Deleting work folder $WORKPLACE"
