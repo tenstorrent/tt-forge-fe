@@ -28,9 +28,9 @@ jobs:
 
       - name: Delete work folder
         run: |
-          echo "Deleting work folder $GITHUB_WORKSPACE"
-          rm -rf $GITHUB_WORKSPACE/*
-          echo "Work folder deleted."
+          export WORKPLACE=/home/ubuntu/actions-runner/_work
+          echo "Deleting work folder $WORKPLACE"
+          sudo rm -rf $WORKPLACE
 
       - name: Report free space after cleanup
         run: |
