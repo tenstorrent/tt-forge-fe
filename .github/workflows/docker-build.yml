@@ -26,11 +26,6 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
-    - uses: actions/checkout@v4
-      with:
-          submodules: recursive
-          fetch-depth: 0 # Fetch all history and tags
-
     - name: Set reusable strings
       id: strings
       shell: bash
@@ -40,6 +35,18 @@ jobs:
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+    - uses: actions/checkout@v4
+      with:
+          submodules: recursive
+          fetch-depth: 0 # Fetch all history and tags
+
+    # Clean everything from submodules (needed to avoid issues
+    # with cmake generated files leftover from previous builds)
+    - name: Cleanup submodules
+      run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -51,8 +58,14 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        cmake -G Ninja -B build .
-        cmake --build build
+        cmake -G Ninja \
+        -B ${{ steps.strings.outputs.build-output-dir }} \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_C_COMPILER=clang \
+        -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
     - name: Run Test
       shell: bash
