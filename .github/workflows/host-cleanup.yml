@@ -12,7 +12,7 @@ on:
 jobs:
   cleanup:
     # runs-on: ${{ github.event.inputs.runner_name }}
-    runs-on: n150-5
+    runs-on: n150
     
     steps:
       - name: Report free space before cleanup
