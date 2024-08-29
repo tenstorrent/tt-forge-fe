@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.build.runs-on }}
 
     container:
-      image: ghcr.io/tenstorrent/tt-forge/tt-forge-ubuntu-22-04:latest
+      image: ghcr.io/${{ github.repository }}/tt-forge-fe-ubuntu-22-04:latest
       options: --user root --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -71,4 +71,4 @@ jobs:
       if: success() || failure()
       with:
         report_paths: reports/report.xml
-        check_name: TT-Forge Tests
+        check_name: TT-Forge-fe Tests
