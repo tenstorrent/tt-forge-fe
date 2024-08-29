@@ -295,3 +295,36 @@ def test_sqrt(x_shape, y_shape):
     
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+
+# @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
+# @pytest.mark.parametrize("token_num", [1, 7, 32])
+# @pytest.mark.parametrize("embedding_dim", [128, 512, 3200])
+@pytest.mark.xfail(reason="L1 allocation issue on Metal")
+@pytest.mark.parametrize("vocab_size", [32000])
+@pytest.mark.parametrize("token_num", [12])
+@pytest.mark.parametrize("embedding_dim", [3200])
+def test_embedding(vocab_size, token_num, embedding_dim):
+    compiler_cfg = pybuda.config._get_global_compiler_config()
+    compiler_cfg.enable_tvm_cpu_fallback = False
+
+    class Embedding(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embedding = nn.Embedding(vocab_size, embedding_dim)
+
+        def forward(self, x):
+            return self.embedding(x)
+
+    inputs = [
+        torch.randint(0, vocab_size, (1, token_num)),
+    ]
+
+    framework_model = Embedding()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
