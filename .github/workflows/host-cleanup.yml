@@ -22,7 +22,7 @@ on:
 jobs:
   cleanup:
     # runs-on: ${{ github.event.inputs.runner_name }}
-    runs-on: n150-5
+    runs-on: n150
     
     steps:
       - name: Report free space before cleanup
@@ -45,7 +45,8 @@ jobs:
           sudo rm -rf $WORKPLACE
 
   free-space:
-    runs-on: n150-5
+    needs: cleanup
+    runs-on: n150
     steps:
       - name: Report free space after cleanup
         run: |
