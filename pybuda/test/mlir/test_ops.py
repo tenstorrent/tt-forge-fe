@@ -276,7 +276,6 @@ def test_mean(x_shape, y_shape, dim):
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 def test_sqrt(x_shape, y_shape):    
-    pytest.skip("FFE: Requires MLIR uplift")
     class Sqrt(nn.Module):
         def __init__(self):
             super().__init__()
