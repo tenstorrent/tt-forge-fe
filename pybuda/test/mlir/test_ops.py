@@ -20,17 +20,48 @@ def test_add():
         def forward(self, a, b):
             return a + b
         
-    inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
+    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
     
     framework_model = Add()
     fw_out = framework_model(*inputs)
-    
+
     compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
-    
+
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
+
+@pytest.mark.parametrize("params", [
+    ((1, 32, 64), (-1, -2)),
+    ((1, 64, 32), (1, 2)),
+    ((1, 32, 64, 128), (3, 2)),
+    ((32, 128), (0, 1)),
+    ((18, 65), (1, 0)),
+    ((6, 33, 34), (-1, 1))
+])
+def test_transpose(params):
+    class Transpose(nn.Module):
+        def __init__(self, dims):
+            super().__init__()
+            self.dims = dims
+
+        def forward(self, a):
+            return torch.transpose(a, *self.dims)
+
+    input_shape, dims = params
+    inputs = [torch.rand(input_shape)]
+
+    framework_model = Transpose(dims)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 def test_subtract():
     class Subtract(nn.Module):
@@ -49,6 +80,7 @@ def test_subtract():
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 
@@ -69,6 +101,7 @@ def test_multiply():
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 
@@ -90,6 +123,7 @@ def test_relu():
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 @pytest.mark.skip(reason="This is not ready yet")
@@ -111,6 +145,7 @@ def test_linear():
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 
@@ -132,6 +167,7 @@ def test_softmax():
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 @pytest.mark.parametrize("input_shape", [(1,32,32), (1,64,64), (1,128,128,128)], ids=["32","64","128"])

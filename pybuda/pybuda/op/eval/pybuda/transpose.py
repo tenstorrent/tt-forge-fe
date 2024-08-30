@@ -10,11 +10,10 @@ from pybuda._C import UnsupportedHWOpsError
 
 class TransposeTM(PyTM):
     @classmethod
-    def create(cls, dim0, dim1, z_dim_slice=-1):
+    def create(cls, dim0, dim1):
         self = cls("transpose")
         self.dim0 = dim0
         self.dim1 = dim1
-        self.z_dim_slice = z_dim_slice
         return self
 
     def eval(self, tensors):
@@ -28,19 +27,8 @@ class TransposeTM(PyTM):
 
     def backward(self, ac, operand, inputs, output, grad):
         assert operand == 0, "Invalid operand index"
-        z_dim_slice = self.z_dim_slice
-        if (self.dim0 == -3 and self.dim1 == -4) or (
-            self.dim0 == -4 and self.dim1 == -3
-        ):
-            z_dim_slice = -1
-        elif self.dim0 == -3 or self.dim0 == -4:
-            z_dim_slice = grad.shape[self.dim1]
-        elif self.dim1 == -3 or self.dim1 == -4:
-            z_dim_slice = grad.shape[self.dim0]
-        else:
-            z_dim_slice = -1
         return ac.op(
-            TransposeTM.create(self.dim0, self.dim1, z_dim_slice=z_dim_slice),
+            TransposeTM.create(self.dim0, self.dim1),
             [grad],
         )
 
