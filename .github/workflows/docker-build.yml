@@ -71,4 +71,4 @@ jobs:
       if: success() || failure()
       with:
         report_paths: reports/report.xml
-        check_name: TT-Forge-fe Tests
+        check_name: TT-Forge-FE Tests
