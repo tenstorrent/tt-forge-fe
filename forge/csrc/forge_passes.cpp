@@ -230,6 +230,9 @@ graphlib::Graph* run_pre_lowering_passes(
     // Apply user overrides
     passes::configure_output_data_formats(graph, default_df_override);
 
+    // Recalculate shapes before lowering to MLIR
+    recalculate_shapes(graph);
+
     return graph;
 }
 

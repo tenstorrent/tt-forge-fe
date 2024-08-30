@@ -1047,7 +1047,7 @@ def unsqueeze_input_for_reshape_decomp(dc, inp):
     current_shape = inp.shape.as_list()
     while len(current_shape) < 4:
         current_shape.insert(0, 1)
-        inp = dc.op("unsqueeze", (inp,), (0, len(inp.shape.as_list())))
+        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0, len(inp.shape.as_list())))
 
     return inp
 
@@ -1057,7 +1057,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
     while current_shape_len > len(orig_out_shape):
         current_shape_len -= 1
-        output = dc.op("squeeze", (output,), (0,))
+        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0}, (0,))
 
     return output
 
@@ -1315,7 +1315,6 @@ def decompose(type, attr, dc, inputs):
 
                     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
                 else:
-                    # import pdb; pdb.set_trace()
                     orig_shape = result.shape
                     if len(orig_shape) == 2:
                         result = dc.op("reshape", [result], (1, orig_shape[-2]*orig_shape[-1]))
@@ -1403,10 +1402,10 @@ def decompose(type, attr, dc, inputs):
         if is_rank_only_reshape and rank != 0:
             result = inputs[0]
             while rank < 0:
-                result = dc.op("squeeze", [result], (0,))
+                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
                 rank += 1
             while rank > 0:
-                result = dc.op("unsqueeze", [result], (0, len(result.shape.as_list())))
+                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
                 rank -= 1
             dc.fuse(result)
             return
@@ -1542,10 +1541,10 @@ def decompose_xy_flatten_reshape(inputs, dc, orig_shape, attr):
         result = dc.op(TransposeTM.create(-2, -1), [result])
 
     while len(result.shape) > len(attr):
-        result = dc.op("squeeze", [result], (0,))
+        result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
 
     while len(result.shape) < len(attr):
-        result = dc.op("unsqueeze", [result], (0, len(result.shape.as_list())))
+        result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
 
     if orig_shape[-3] > 1:
         s = create_flattened_padding_removal_sparse_picker_matrix(result.shape[-2], 0, 1, TILE_DIM)
@@ -1652,7 +1651,7 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
     if orig_shape[-2] > 1:
         result = dc.op("vslice", [result], (orig_shape[-2], ))
     elif len(result.shape) == 2:
-        result = dc.op("unsqueeze", [result], (0, 2,))
+        result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0},  (0, 2,))
     _orig_shape = result.shape
     slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
     result = dc.op(TransposeTM.create(-2, -1), [result])
@@ -1776,7 +1775,7 @@ def decompose_post_optimize(type, attr, dc, inputs):
             )
 
             while len(result.shape) < 3:
-                result = dc.op("unsqueeze", [result,], (0, len(result.shape.as_list())))
+                result = dc.op_with_named_attrs("unsqueeze", [result,], {"dim": 0}, (0, len(result.shape.as_list())))
 
             spm = torch.stack([spm]*result.shape[-3], -3).unsqueeze(0)
             result = dc.op(TransposeTM.create(-2, -1), [result,])
@@ -1917,10 +1916,11 @@ def decompose_post_autograd(type, attr, dc, inputs):
         if is_rank_only_reshape and rank != 0:
             result = inputs[0]
             while rank < 0:
-                result = dc.op("squeeze", [result], (0,))
+                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
                 rank += 1
             while rank > 0:
-                result = dc.op("unsqueeze", [result], (0, len(result.shape.as_list())))
+                import pdb; pdb.set_trace
+                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
                 rank -= 1
             dc.fuse(result)
             return
