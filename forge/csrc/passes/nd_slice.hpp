@@ -296,3 +296,13 @@ inline std::ostream& operator<<(std::ostream& out, NDSlice::Slice const& c)
     return out;
 }
 }  // namespace tt::passes
+
+template<> struct fmt::formatter<tt::passes::NDSlice> : fmt::formatter<std::string_view>
+{
+    inline auto format(const tt::passes::NDSlice& nd_slice, fmt::format_context& ctx) const -> decltype(ctx.out())
+    {
+        std::ostringstream oss;
+        oss << nd_slice;
+        return fmt::formatter<std::string_view>::format(oss.str(), ctx);
+    }
+};

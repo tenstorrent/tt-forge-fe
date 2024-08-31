@@ -554,3 +554,23 @@ TORCH_LIBRARY_IMPL(_, PrivateUse1, m)
     m.fallback(torch::CppFunction::makeFromBoxedFunction<&tt::fallback>());
 }
 
+template<> struct fmt::formatter<c10::Device> : fmt::formatter<std::string_view>
+{
+    inline auto format(const c10::Device& device, fmt::format_context& ctx) const -> decltype(ctx.out())
+    {
+        std::ostringstream oss;
+        oss << device;
+        return fmt::formatter<std::string_view>::format(oss.str(), ctx);
+    }
+};
+
+template<> struct fmt::formatter<c10::OperatorName> : fmt::formatter<std::string_view>
+{
+    inline auto format(const c10::OperatorName& operator_name, fmt::format_context& ctx) const -> decltype(ctx.out())
+    {
+        std::ostringstream oss;
+        oss << operator_name;
+        return fmt::formatter<std::string_view>::format(oss.str(), ctx);
+    }
+};
+

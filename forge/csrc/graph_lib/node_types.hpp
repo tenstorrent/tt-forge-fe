@@ -655,3 +655,13 @@ inline std::string to_string(InputNodeType t)
 
 }  // namespace graphlib
 }  // namespace tt
+
+template<> struct fmt::formatter<tt::graphlib::OpType> : fmt::formatter<std::string_view>
+{
+    inline auto format(const tt::graphlib::OpType& op_type, fmt::format_context& ctx) const -> decltype(ctx.out())
+    {
+        std::ostringstream oss;
+        oss << op_type;
+        return fmt::formatter<std::string_view>::format(oss.str(), ctx);
+    }
+};
