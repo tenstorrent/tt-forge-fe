@@ -63,6 +63,32 @@ def test_transpose(params):
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
+@pytest.mark.parametrize("source_and_target_shape",
+    [((8, 32, 256), (2, 4, 32, 256)),
+     ((8, 32, 32), (1, 2, 4, 32, 32)),
+     ((8192, 128), (1, 256, 32, 128))
+     ],
+    ids=["1", "2", "3"])
+def test_reshape(source_and_target_shape):
+    source_shape, target_shape = source_and_target_shape
+    class Reshape(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.reshape(a, target_shape)
+
+    inputs = [torch.rand(source_shape)]
+    framework_model = Reshape()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+
 def test_subtract():
     class Subtract(nn.Module):
         def __init__(self):
