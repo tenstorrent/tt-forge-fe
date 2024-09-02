@@ -476,7 +476,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         assert len(out_shape) > dim and dim >= -len(out_shape), "Given dimension is out of the shape"
 
         grad_out = dc.op("multiply", (grad, output), ())
-        gout_sum = dc.op("reduce_sum", (grad_out, ), (dim, ))
+        gout_sum = dc.op_with_named_attrs("reduce_sum", (grad_out, ), {"keep_dim": True}, (dim, ))
         gout_sub = dc.op("subtract", (grad, gout_sum), ())
         result = dc.op("multiply", (gout_sub, output), ())
         dc.fuse(result)
