@@ -203,7 +203,7 @@ def Reshape(
 
     assert tensor_volume == volume
 
-    return op("reshape", name, operandA, attrs=shape).get_tensor()
+    return op("reshape", name, operandA, attrs=shape, shape=shape).get_tensor()
 
 def Index(
         name: str,

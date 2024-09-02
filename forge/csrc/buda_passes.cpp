@@ -11,7 +11,6 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/query.hpp"
 #include "graph_lib/utils.hpp"
-#include "passes/bind_reshape_to_io.hpp"
 #include "passes/constant_folding.hpp"
 #include "passes/dataformat.hpp"
 #include "passes/decomposing_context.hpp"
@@ -24,7 +23,6 @@
 #include "passes/fuse_pad_conv2d.hpp"
 #include "passes/fuse_per_channel_ops.hpp"
 #include "passes/fuse_redundant_tm_sequence.hpp"
-#include "passes/fuse_reshape_transpose_into_slice.hpp"
 #include "passes/generate_initial_flops_estimate.hpp"
 #include "passes/hoist_transforms_to_inputs.hpp"
 #include "passes/insert_inverse_on_io.hpp"
@@ -102,14 +100,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
     passes::lower_concat_to_runtime_transform(graph);
 
     passes::bypass_nop_tms(graph);
-    // Fuses reshape and transpose pairs into slice or stack ops. More precisely, core ideas is
-    // to fuse valid:
-    //   - reshape + transpose => hslice
-    //   - transpose + reshape => hstack
-    //   - reshape => vslice
-    //   - reshape => vstack
-    passes::fuse_reshape_transpose_pairs_into_slice_or_stack_tm(graph);
-    recalculate_shapes(graph);
 
     // Erase all inverse ops possible. 
     // Then, if no inverse ops are erased, then attempt to insert inverse ops on the output. 
@@ -162,7 +152,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
     passes::hoist_transforms_to_inputs(graph);
     passes::erase_consecutive_reshape(graph, true);
     passes::lower_reinterpret_shape(graph);
-    passes::bind_reshape_to_io(graph);
 
     passes::fuse_per_channel_ops(graph);
     if (not env_as<bool>("FORGE_DISABLE_CONSTANT_FOLDING"))
