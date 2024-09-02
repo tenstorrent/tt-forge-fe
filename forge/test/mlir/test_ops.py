@@ -82,12 +82,11 @@ def test_reshape(source_and_target_shape):
     framework_model = Reshape()
     fw_out = framework_model(*inputs)
 
-    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 def test_subtract():
     class Subtract(nn.Module):
