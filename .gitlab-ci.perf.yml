@@ -1,17 +1,17 @@
 include:
   - .gitlab-ci.wheels.yml
 
-  # PyBuda repo, Grayskull e150
+  # Forge repo, Grayskull e150
   - ci/gitlab-test-lists/.gitlab-ci.grayskull_e150_perf_bfp8_b_nightly.yml
   - ci/gitlab-test-lists/.gitlab-ci.grayskull_e150_perf_fp16_nightly.yml
   - ci/gitlab-test-lists/.gitlab-ci.grayskull_e150_perf_release_nightly.yml
 
-  # PyBuda repo, Grayskull e75
+  # Forge repo, Grayskull e75
   - ci/gitlab-test-lists/.gitlab-ci.grayskull_e75_perf_bfp8_b_nightly.yml
   - ci/gitlab-test-lists/.gitlab-ci.grayskull_e75_perf_fp16_nightly.yml
   - ci/gitlab-test-lists/.gitlab-ci.grayskull_e75_perf_release_nightly.yml
   
-  # PyBuda repo, Wormhole B0
+  # Forge repo, Wormhole B0
   - ci/gitlab-test-lists/.gitlab-ci.wormhole_b0_silicon_perf_bfp8_b_nightly.yml
   - ci/gitlab-test-lists/.gitlab-ci.wormhole_b0_silicon_perf_fp16_nightly.yml
   - ci/gitlab-test-lists/.gitlab-ci.wormhole_b0_silicon_perf_release_nightly.yml
@@ -27,18 +27,18 @@ include:
   - ci/gitlab-test-lists/benchmarking/.gitlab-ci.grayskull_e150_perf_release_public.yml
 
 # Dissable other jobs from .gitlab-ci.wheels.yml
-pybuda-gs-latest-bbe-wheel:
+forge-gs-latest-bbe-wheel:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE !~ /\[no_ci_perf/)
 
-pybuda-wh-b0-latest-bbe-wheel:
+forge-wh-b0-latest-bbe-wheel:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE !~ /\[no_ci_perf/)
 
-pybuda-gs-unittests:
+forge-gs-unittests:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE !~ /\[no_ci_perf/)
 
-pybuda-wh-b0-unittests:
+forge-wh-b0-unittests:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE !~ /\[no_ci_perf/)
