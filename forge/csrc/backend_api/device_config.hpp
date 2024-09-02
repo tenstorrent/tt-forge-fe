@@ -452,3 +452,13 @@ inline std::ostream& operator<<(std::ostream& os, DeviceConfig const& device_con
 }
 
 }  // namespace tt
+
+template<> struct fmt::formatter<tt::DeviceConfig> : fmt::formatter<std::string_view>
+{
+    inline auto format(const tt::DeviceConfig& device_config, fmt::format_context& ctx) const -> decltype(ctx.out())
+    {
+        std::ostringstream oss;
+        oss << device_config;
+        return fmt::formatter<std::string_view>::format(oss.str(), ctx);
+    }
+};
