@@ -9,7 +9,7 @@ from test.mlir.llama.utils.utils import load_model
 from pybuda.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.xfail(reason="Embedding op is not supported on MLIR.")
+@pytest.mark.xfail(reason="L1 allocation issue on Metal")
 def test_llama_embedding():    
     # Load Llama 3B model and tokenizer
     framework_model = load_model()
@@ -20,7 +20,7 @@ def test_llama_embedding():
     inputs = [
         torch.randint(0, vocab_size, (1, 12)), # Input token IDs
     ]
-
+    
     # Sanity run
     golden_output = framework_model(*inputs)
 
@@ -33,4 +33,3 @@ def test_llama_embedding():
     
     # Validate results
     assert compare_with_golden_pcc(golden=golden_output, calculated=tt_out[0], pcc=0.99)
-
