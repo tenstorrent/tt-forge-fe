@@ -29,9 +29,9 @@ blobgen_cmd_log
 python_api/env
 python_api/*.so
 python_api/test_run_on_device_out
-pybuda/pybuda/*.so
+forge/forge/*.so
 __pycache__
-pybuda/pybuda.egg-info/
+forge/forge.egg-info/
 
 *.vcd 
 

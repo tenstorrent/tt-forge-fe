@@ -14,9 +14,9 @@ from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 
 
-pybuda_files = {
+forge_files = {
     "test" : {
-        "path": "pybuda/test",
+        "path": "forge/test",
         "files": [
             "conftest.py",
             "__init__.py",
@@ -52,16 +52,16 @@ class MyBuild(build_ext):
             env = os.environ.copy()
             env.update(additional_env_variables)
             nproc = os.cpu_count()
-            subprocess.check_call(["make", f"-j{nproc}", "pybuda", r'DEVICE_VERSIM_INSTALL_ROOT=\$$ORIGIN/../..'], env=env)
+            subprocess.check_call(["make", f"-j{nproc}", "forge", r'DEVICE_VERSIM_INSTALL_ROOT=\$$ORIGIN/../..'], env=env)
 
-            src = "build/lib/libpybuda_csrc.so"
+            src = "build/lib/libforge_csrc.so"
             self.copy_file(src, os.path.join(build_lib, filename))
 
-            self._copy_pybuda(build_lib)
+            self._copy_forge(build_lib)
 
-    def _copy_pybuda(self, target_path):
+    def _copy_forge(self, target_path):
 
-        for t, d in pybuda_files.items():
+        for t, d in forge_files.items():
             path = target_path + "/" + d["path"]
             os.makedirs(path, exist_ok=True)
 
@@ -86,13 +86,13 @@ with open("python_env/core_requirements.txt", "r") as f:
 with open("python_env/dist_requirements.txt", "r") as f:
     requirements += [r for r in f.read().splitlines() if not r.startswith("-r")]
 
-# pybuda._C
-pybuda_c = TTExtension("pybuda._C")
+# forge._C
+forge_c = TTExtension("forge._C")
 
 
-ext_modules = [pybuda_c]
+ext_modules = [forge_c]
 
-packages = [p for p in find_packages("pybuda") if not p.startswith("test")]
+packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
 short_hash = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
 date = subprocess.check_output(['git', 'show', '-s', '--format=%cd', "--date=format:%y%m%d", 'HEAD']).decode('ascii').strip()
@@ -103,7 +103,7 @@ arch_code = arch_codes[os.environ["BACKEND_ARCH_NAME"]]
 version = "0.1." + date + "+dev." + arch_code + "." + short_hash
 
 setup(
-    name='pybuda',
+    name='forge',
     version=version,
     author='Tenstorrent',
     url="http://www.tenstorrent.com",
@@ -111,8 +111,8 @@ setup(
     description='AI/ML framework for Tenstorrent devices',
     python_requires='>=3.8',
     packages=packages,
-    package_data={"pybuda": ["tti/runtime_param_yamls/*.yaml"]},
-    package_dir={"pybuda": "pybuda/pybuda"},
+    package_data={"forge": ["tti/runtime_param_yamls/*.yaml"]},
+    package_dir={"forge": "forge/forge"},
     long_description=long_description,
     long_description_content_type="text/markdown",
     ext_modules=ext_modules,
@@ -120,7 +120,7 @@ setup(
     zip_safe=False,
     install_requires=requirements,
     license="TBD",
-    keywords="pybuda machine learning tenstorrent",
+    keywords="forge machine learning tenstorrent",
     # PyPI
     classifiers=[
         "Development Status :: 3 - Alpha",

@@ -1,0 +1,62 @@
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------ #
+# Models with data Formats that have good accuracy on Wormhole B0 and that we release as official numbers
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------ #
+
+
+# ResNet bfp8_b
+forge/test/benchmark/benchmark.py -m resnet -c resnet50 -mb 256 -o forge-silicon-wh-b0-perf-all-perf.json
+
+#ResNet quant fp32
+forge/test/benchmark/benchmark.py -m resnet_quant -c resnet50 -df Fp32 -mf HiFi4 -mb 64 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Mobilenet v1 bfp8_b
+forge/test/benchmark/benchmark.py -m mobilenet_v1 -c 224 -mb 256 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Mobilenet v2 bfp8_b
+forge/test/benchmark/benchmark.py -m mobilenet_v2 -c 224 -mb 256 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Mobilenet v3 fp16_b
+forge/test/benchmark/benchmark.py -m mobilenet_v3_timm -c large -df Fp16_b -mf HiFi2 -mb 64 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Vit bfp8_b
+forge/test/benchmark/benchmark.py -m vit -c base -mb 256 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Deit bfp8_b
+forge/test/benchmark/benchmark.py -m deit -c base -mb 256 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# VoVNet v2 bfp8_b
+forge/test/benchmark/benchmark.py -m vovnet_v2 -c 39 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# OpenPose Body fp16
+forge/test/benchmark/benchmark.py -m openpose_osmr_body -c 2d -df Fp16 -mf HiFi3 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# OpenPose Hand bfp8_b
+forge/test/benchmark/benchmark.py -m openpose_hand -c basic -o forge-silicon-wh-b0-perf-all-perf.json
+
+# HRNet bfp8_b
+forge/test/benchmark/benchmark.py -m hrnet -c v2_w64 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# YOLOv3 bfp8_b
+# Issue to make it run with mb 64 tenstorrent/forge#1298
+forge/test/benchmark/benchmark.py -m yolo_v3 -c default -mb 32 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# YOLOv5 fp16_b
+forge/test/benchmark/benchmark.py -m yolo_v5 -c s -df Fp16_b -mf HiFi3 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Inception v4 bfp8_b
+forge/test/benchmark/benchmark.py -m inception_v4 -c 224 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# UNet bfp8_b
+forge/test/benchmark/benchmark.py -m unet -c 256 -mb 64 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Bert large bfp8_b
+forge/test/benchmark/benchmark.py -m bert -c large_tc -mb 64 -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Whisper fp16_b
+forge/test/benchmark/benchmark.py -m whisper -c small --loop_count 1 -mb 1 -df Fp16_b -mf HiFi3 --single-thread --generative -o forge-silicon-wh-b0-perf-all-perf.json
+
+# T5 fp16_b
+forge/test/benchmark/benchmark.py -m t5 -c large --loop_count 1 -mb 1 -df Fp16_b -mf HiFi3 --single-thread --generative -o forge-silicon-wh-b0-perf-all-perf.json
+
+# Flan-T5 fp16_b
+forge/test/benchmark/benchmark.py -m flan_t5 -c large --loop_count 1 -mb 1 -df Fp16_b -mf HiFi3 --single-thread --generative -o forge-silicon-wh-b0-perf-all-perf.json

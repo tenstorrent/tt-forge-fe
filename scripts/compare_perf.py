@@ -25,7 +25,7 @@ def get_perf_from_es(es, build_id):
         },
         "size": 100
     }
-    perf_res = es.search(index="pybuda-perf-ci", body=query)
+    perf_res = es.search(index="forge-perf-ci", body=query)
     hits = perf_res['hits']['hits']
     return [{
         "build_id": h["_source"]["build_id"],

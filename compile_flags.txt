@@ -11,5 +11,5 @@
 -I/usr/include/python3.8
 -Igui_lib
 -Ithird_party/json
--Ipybuda/csrc
+-Iforge/csrc
 -Ithird_party/fmt

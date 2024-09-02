@@ -9,7 +9,7 @@ Script run command : bash ./scripts/bisect.sh
 
 INPUTS:
 Enter Pytest Command: 
-pytest --devtype golden pybuda/test/model_demos/high_prio/cnn/pytorch/test_xception.py::test_xception_timm[Golden-xception] --device-config gs_e150
+pytest --devtype golden forge/test/model_demos/high_prio/cnn/pytorch/test_xception.py::test_xception_timm[Golden-xception] --device-config gs_e150
 Enter Passing Commit Id: 
 8e576abe7fdc250ba88775322b448fa05acf52d1 #passing commit id
 Enter Failing Commit Id:
@@ -28,9 +28,9 @@ set_evn_flags() {
     local arch=$1
     local runtype=$2
     local device_config=$3
-    export PYBUDA_VERIFY_POST_AUTOGRAD_PASSES=1
-    export PYBUDA_VERIFY_POST_PLACER=1
-    export PYBUDA_VERIFY_NET2PIPE=3
+    export FORGE_VERIFY_POST_AUTOGRAD_PASSES=1
+    export FORGE_VERIFY_POST_PLACER=1
+    export FORGE_VERIFY_NET2PIPE=3
     export PYTEST_ADDOPTS=" -svv"
 
     if [ "$arch" = "wormhole_b0" ] ; then
@@ -38,14 +38,14 @@ set_evn_flags() {
         export ARCH_NAME=wormhole_b0
 
         if [ "$device_config" = "no" ] ; then
-            export PYBUDA_FORCE_EMULATE_HARVESTED=1 
+            export FORGE_FORCE_EMULATE_HARVESTED=1 
         fi
         
         if [ "$runtype" = "compile" ] ; then
             export GOLDEN_WORMHOLE_B0=1 
-            export PYBUDA_DEVMODE=1 
-            export PYBUDA_EMULATE_SILICON_DEVICE=1 
-            export PYBUDA_VERIFY_GOLDEN=1
+            export FORGE_DEVMODE=1 
+            export FORGE_EMULATE_SILICON_DEVICE=1 
+            export FORGE_VERIFY_GOLDEN=1
         else
             export PYTEST_ADDOPTS=" -svv --silicon-only"
         fi
@@ -56,13 +56,13 @@ set_evn_flags() {
         export ARCH_NAME=grayskull
 
         if [ "$device_config" = "e300" ] ; then
-            export PYBUDA_FORCE_EMULATE_HARVESTED=1 
+            export FORGE_FORCE_EMULATE_HARVESTED=1 
         fi
 
         if [ "$runtype" = "compile" ] ; then
-            export PYBUDA_DEVMODE=1 
-            export PYBUDA_EMULATE_SILICON_DEVICE=1 
-            export PYBUDA_VERIFY_GOLDEN=1
+            export FORGE_DEVMODE=1 
+            export FORGE_EMULATE_SILICON_DEVICE=1 
+            export FORGE_VERIFY_GOLDEN=1
         else
             export PYTEST_ADDOPTS=" -svv --silicon-only"
         fi
@@ -113,7 +113,7 @@ env_clean_and_build() {
         rm -rf .hlkc_cache  
         rm -rf wheel_out/  
         rm -rf wheel_env/  
-        rm -rf pybuda.egg-info/ 
+        rm -rf forge.egg-info/ 
         rm -rf wheele_env/ 
         rm -rf generated_modules 
         rm -rf tt_build 
