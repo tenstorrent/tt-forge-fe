@@ -328,3 +328,36 @@ def test_embedding(vocab_size, token_num, embedding_dim):
 
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+
+@pytest.mark.xfail(reason="Program expects 2 inputs, found 1 in input tensors vector")
+@pytest.mark.parametrize("shape", [
+    (7,),           # 1D tensor
+    (32,),          # 1D tensor
+    (7, 32),        # 2D tensor
+    (32, 41),       # 2D tensor
+    (1, 7, 32),     # 3D tensor
+    (1, 32, 41),    # 3D tensor
+    (1, 7, 32, 41), # 4D tensor
+    (2, 7, 32, 41)  # 4D tensor
+])
+def test_reciprocal(shape):
+    class Reciprocal(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.reciprocal(x)
+        
+    inputs = [
+        torch.rand(*shape) + 0.1,  # Adding 0.1 to avoid division by zero
+    ]
+
+    framework_model = Reciprocal()
+    fw_out = framework_model(*inputs)
+    
+    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+    
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
