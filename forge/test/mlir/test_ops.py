@@ -10,7 +10,8 @@ import torch
 from torch import nn
 
 import forge
-from forge.op.eval.common import compare_with_golden_pcc
+from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
+
 
 def test_add():
     class Add(nn.Module):
@@ -87,6 +88,29 @@ def test_reshape(source_and_target_shape):
 
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+@pytest.mark.parametrize("dims", [
+    (1, 32, 64), (6, 33), (4, 16, 17)
+])
+def test_greater_equal(dims):
+    class GreaterEqual(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return torch.greater_equal(a, b)
+
+    inputs = [torch.rand(dims), torch.rand(dims)]
+
+    framework_model = GreaterEqual()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    output = co_out[0].to(torch.bool)
+    assert compare_with_golden(golden=fw_out, calculated=output)
 
 def test_subtract():
     class Subtract(nn.Module):

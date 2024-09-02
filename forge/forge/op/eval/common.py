@@ -14,7 +14,7 @@ import numpy as np
 
 from collections import defaultdict
 from loguru import logger
-
+from scipy.spatial import distance
 
 from ...forgeglobal import TILE_DIM
 
@@ -191,26 +191,55 @@ def calculate_pcc(a, b):
 
     return pcc
 
-# Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
-def compare_with_golden_pcc(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc, rtol=None, atol=None):
-    pcc_value = 0
-    if not (pcc is None or golden.flatten().size() == (1,)): # PCC for single values doesn't work
-        pcc_value = calculate_pcc(golden, calculated)
-        if pcc_value >= pcc :
-            logger.trace("PCC is correct")
-            logger.trace("Golden: (shape = {}", golden.shape)
-            logger.trace(golden)
-            logger.trace("Calculated: (shape = {}", calculated.shape)
-            logger.trace(calculated)
-            return True
-        else:
-            logger.error("Tensor mismatch")
-            return False
+#Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
+def compare_with_golden(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor):
+    if golden.dtype == torch.bool:
+        return compare_with_golden_bool(golden, calculated)
+    if golden.flatten().size() != (1,): # PCC for single values doesn't work
+        return compare_with_golden_pcc(golden, calculated)
     else:
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
-        return torch.allclose(golden, calculated, atol=atol, rtol=rtol)
+        return torch.allclose(golden, calculated)
+
+# Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
+def compare_with_golden_pcc(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc: float = 0.99, rtol=None, atol=None):
+    assert pcc is not None
+    assert golden.flatten().size() != (1,), "PCC for single values doesn't work"
+
+    pcc_value = calculate_pcc(golden, calculated)
+    if pcc_value >= pcc :
+        logger.trace("PCC is correct")
+        logger.trace("Golden: (shape = {}", golden.shape)
+        logger.trace(golden)
+        logger.trace("Calculated: (shape = {}", calculated.shape)
+        logger.trace(calculated)
+        return True
+    else:
+        logger.error("Tensor mismatch")
+        return False
+
+def compare_with_golden_bool(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, dissimilarity_threshold=0.001):
+    if calculated.dtype != torch.bool:
+        calculated = calculated.to(torch.bool)
+
+    golden_squeezed = golden.view(-1).detach().numpy()
+    calculated_squeezed = calculated.view(-1).detach().numpy()
+    dissimilarity = distance.rogerstanimoto(golden_squeezed, calculated_squeezed)
+
+    #threshold picked empirically. We will update it as TTNN evolves
+    if dissimilarity <= dissimilarity_threshold:
+        logger.trace("Bool vectors are not dissimilar. Dissimiliarity = {}", dissimilarity)
+        logger.trace("Golden: (shape = {}", golden.shape)
+        logger.trace(golden)
+        logger.trace("Calculated: (shape = {}", calculated.shape)
+        logger.trace(calculated)
+        return True
+    else:
+        logger.error("Tensor mismatch. Dissimiliarity = {}", dissimilarity)
+        return False
+
 
 def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, is_forge=False, rtol=None, atol=None, pcc=None, warning_only=False, relative_atol = None, verify_cfg = None):
     # Convert golden to pytorch tensor for comparisons
