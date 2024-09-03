@@ -27,5 +27,5 @@ jobs:
           file: .github/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/tt-forge-ubuntu-22-04:${{ github.sha }}
-            ghcr.io/${{ github.repository }}/tt-forge-ubuntu-22-04:latest
+            ghcr.io/${{ github.repository }}/tt-forge-fe-ubuntu-22-04:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/tt-forge-fe-ubuntu-22-04:latest

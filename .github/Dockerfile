@@ -5,7 +5,7 @@ SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
-ENV PROJECT_NAME=tt-forge
+ENV PROJECT_NAME=tt-forge-fe
 ARG GITHUB_TOKEN
 
 # Install dependencies
@@ -55,7 +55,7 @@ RUN mkdir -p $BUILD_DIR && \
 
 # Clone the project and update submodules
 # Pass in PAT to clone private repositories
-RUN git clone https://$GITHUB_TOKEN@github.com/tenstorrent/tt-forge.git $BUILD_DIR/$PROJECT_NAME && \
+RUN git clone https://$GITHUB_TOKEN@github.com/tenstorrent/$PROJECT_NAME.git $BUILD_DIR/$PROJECT_NAME && \
     cd $BUILD_DIR/$PROJECT_NAME && \
     git submodule update --init --recursive -f
 
