@@ -10,6 +10,8 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
 from .transpose import TransposeTM
 from .nop import Nop
+from .nop import Nop
+from ..interface import PyOp
 
 from ..common import to_torch_operands
 from ..sparse_utils import (
@@ -19,6 +21,110 @@ from ..sparse_utils import (
     create_avg_pool2d_count_include_pad_False_picker_matrix,
     create_conv2d_sparse_picker_matrix,
 )
+
+class MaxPool2d(PyOp):
+    @classmethod
+    def create(
+            cls,
+            input_height: int,
+            input_width: int,
+            kernel_height: int,
+            kernel_width: int,
+            stride_height: int,
+            stride_width: int ,
+            dilation_height: int,
+            dilation_width: int,
+            ceil_mode: bool,
+            padding_left: int,
+            padding_right: int,
+            padding_top: int,
+            padding_bottom: int,
+            channel_last: bool):
+    
+        self = cls("max_pool2d")
+        self.input_height = input_height
+        self.input_width = input_width
+        self.kernel_height = kernel_height
+        self.kernel_width = kernel_width
+        self.stride_height = stride_height
+        self.stride_width = stride_width
+        self.dilation_height = dilation_height
+        self.dilation_width = dilation_width
+        self.ceil_mode = ceil_mode
+        self.padding_left = padding_left
+        self.padding_right = padding_right
+        self.padding_top = padding_top
+        self.padding_bottom = padding_bottom
+        self.channel_last = channel_last
+
+        return self
+    
+    def eval(self, tensors):
+        activations = to_torch_operands(*tensors)[0]
+
+        if self.channel_last:
+            activations = activations.permute((0,3,1,2))
+
+        padded_activations = torch.nn.functional.pad(
+            activations, 
+            (self.padding_left, self.padding_right, self.padding_top, self.padding_bottom),
+            value=float("-inf"),
+        )
+        result = torch.nn.functional.max_pool2d(
+            padded_activations,
+            kernel_size=(self.kernel_height, self.kernel_width),
+            stride=(self.stride_height, self.stride_width),
+            padding=0,
+            dilation=(self.dilation_height, self.dilation_width),
+            ceil_mode=bool(self.ceil_mode),
+            return_indices=False,
+        )
+        if self.channel_last:
+            result = result.permute((0,2,3,1))
+
+        return result
+    
+    def shape(self, input_shapes):
+        act = input_shapes[0]
+
+        batch_size = act[0]
+        channels = act[-1] if self.channel_last else act[-3]
+
+        h_in = act[-3] if self.channel_last else act[-2]
+        w_in = act[-2] if self.channel_last else act[-1]
+
+        h_numerator = (h_in + (self.padding_top + self.padding_bottom) - self.dilation_height*(self.kernel_height-1)-1)
+        h_out = math.floor(1 + (h_numerator / self.stride_height))
+
+        w_numerator = (w_in + (self.padding_left + self.padding_right) - self.dilation_width*(self.kernel_width-1)-1)
+        w_out = math.floor(1 + (w_numerator / self.stride_width))
+        
+
+        out_shape = [batch_size, h_out, w_out, channels] if self.channel_last else [batch_size, channels, h_out, w_out]
+
+        return out_shape, []
+    
+    def backward(self, ac, operand, inputs, output, grad):
+        pass
+
+    def lower(self, lc, tensors, outputs):
+        pass
+
+    def is_tm(self) -> bool:
+        return False
+
+    def is_eltwise(self) -> bool:
+        return False
+
+    def is_eltwise_binary(self) -> bool:
+        return False
+
+    def is_eltwise_unary(self) -> bool:
+        return False
+
+    def is_eltwise_nary(self) -> bool:
+        return False
+
 
 def eval(type, attr, ops):
     assert len(ops) == 1, "Pool ops should have one input"

@@ -96,8 +96,8 @@ class Conv2d(PyOp):
         batch_size = act[0]
         cout = weight[0]
 
-        h_in = act[-3]
-        w_in = act[-2]
+        h_in = act[-3] if self.channel_last else act[-2]
+        w_in = act[-2] if self.channel_last else act[-1]
 
         h_numerator = (h_in + (self.padding_top + self.padding_bottom) - self.dilation_height*(weight[-2]-1)-1)
         h_out = math.floor(1 + (h_numerator / self.stride_height))
