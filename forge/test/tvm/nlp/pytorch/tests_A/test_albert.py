@@ -82,7 +82,7 @@ def test_albert_pipeline(test_device, version, add_pooling_layer):
     outputs = output_q.get()
 
     torch_outputs = model(input_ids, attention_mask=attention_mask)
-    assert compare_tensor_to_golden("albert", torch_outputs[0], outputs[0].value(), is_buda=True, relative_atol=relative_atol)
+    assert compare_tensor_to_golden("albert", torch_outputs[0], outputs[0].value(), is_forge=True, relative_atol=relative_atol)
 
 
 def test_albert_v1(test_kind, test_device):
@@ -90,7 +90,7 @@ def test_albert_v1(test_kind, test_device):
         pytest.skip()
 
     if test_kind.is_training():
-        _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     
     input_shape = (1, 768, 768)
     

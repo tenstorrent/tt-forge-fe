@@ -78,7 +78,7 @@ def test_tvm_rotate_every_two(test_kind, test_device):
             return key
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     config = GPTJConfig()
     model = GPTJRotateEveryTwo(config)
     mod = TFModule("fixed_pos_embedding_tf", model)

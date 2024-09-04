@@ -26,8 +26,8 @@ namespace graphlib
 
 bool is_eltwise(const OpNode *op)
 {
-    bool is_buda = dynamic_cast<const BudaOpNode *>(op) != nullptr;
-    py::object eval_module = py::module_::import(is_buda ? "forge.op.eval.buda" : "forge.op.eval.forge");
+    bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
+    py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise = eval_module.attr("is_eltwise");
     // TODO: better determination of non elementwise ops
     bool is_concatenate = op->op_name() == "concatenate";
@@ -36,31 +36,31 @@ bool is_eltwise(const OpNode *op)
 
 bool is_eltwise_nary(const OpNode *op)
 {
-    bool is_buda = dynamic_cast<const BudaOpNode *>(op) != nullptr;
-    py::object eval_module = py::module_::import(is_buda ? "forge.op.eval.buda" : "forge.op.eval.forge");
+    bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
+    py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise_nary = eval_module.attr("is_eltwise_nary");
     return is_eltwise_nary(op->op_type()).cast<bool>();
 }
 
 bool is_eltwise_unary(const OpNode *op)
 {
-    bool is_buda = dynamic_cast<const BudaOpNode *>(op) != nullptr;
-    py::object eval_module = py::module_::import(is_buda ? "forge.op.eval.buda" : "forge.op.eval.forge");
+    bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
+    py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise_unary = eval_module.attr("is_eltwise_unary");
     return is_eltwise_unary(op->op_type()).cast<bool>();
 }
 
 bool is_eltwise_binary(const OpNode *op)
 {
-    bool is_buda = dynamic_cast<const BudaOpNode *>(op) != nullptr;
-    py::object eval_module = py::module_::import(is_buda ? "forge.op.eval.buda" : "forge.op.eval.forge");
+    bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
+    py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise_binary = eval_module.attr("is_eltwise_binary");
     return is_eltwise_binary(op->op_type()).cast<bool>();
 }
 
 bool is_reduce_z(OpNode const *op)
 {
-    return (op->op_name() == "reduce" and std::get<std::string>(op->buda_attrs().at("dim")) == "z") or
+    return (op->op_name() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z") or
            op->has_tag("reduce_z");
 }
 
@@ -159,14 +159,14 @@ void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
         {
             graphlib::Shape trans_shape(true, Shape::Type::FREE, srcB_shape.as_vector());
             trans_shape.set_tile_dim(srcA_tile_dim);
-            auto padded_srcB_shape = graphlib::Shape::to_buda(trans_shape);
+            auto padded_srcB_shape = graphlib::Shape::to_forge(trans_shape);
             graph->operands(op_node)[1]->set_shape(padded_srcB_shape);
         }
         else if (srcA_tile_volume < srcB_tile_volume)
         {
             graphlib::Shape trans_shape(true, Shape::Type::FREE, srcA_shape.as_vector());
             trans_shape.set_tile_dim(srcB_tile_dim);
-            auto padded_srcA_shape = graphlib::Shape::to_buda(trans_shape);
+            auto padded_srcA_shape = graphlib::Shape::to_forge(trans_shape);
             graph->operands(op_node)[0]->set_shape(padded_srcA_shape);
         }
         else
@@ -188,7 +188,7 @@ void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
         {
             graphlib::Shape trans_shape(true, Shape::Type::FREE, rhs->shape().as_vector());
             trans_shape.set_tile_dim(TileDim::Dim32x32);
-            auto padded_rhs_shape = graphlib::Shape::to_buda(trans_shape);
+            auto padded_rhs_shape = graphlib::Shape::to_forge(trans_shape);
             rhs->set_shape(padded_rhs_shape);
         }
     }
@@ -199,7 +199,7 @@ void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
         {
             graphlib::Shape trans_shape(true, Shape::Type::FREE, operand->shape().as_vector());
             trans_shape.set_tile_dim(TileDim::Dim32x32);
-            auto padded_shape = graphlib::Shape::to_buda(trans_shape);
+            auto padded_shape = graphlib::Shape::to_forge(trans_shape);
             operand->set_shape(padded_shape);
         }
     }
@@ -211,7 +211,7 @@ void validate_tile_dims(Graph *graph, graphlib::OpNode *op_node)
             {
                 graphlib::Shape trans_shape(true, Shape::Type::FREE, operand->shape().as_vector());
                 trans_shape.set_tile_dim(TileDim::Dim32x32);
-                auto padded_shape = graphlib::Shape::to_buda(trans_shape);
+                auto padded_shape = graphlib::Shape::to_forge(trans_shape);
                 operand->set_shape(padded_shape);
             }
         }
@@ -695,7 +695,7 @@ std::pair<Edge, Edge> insert_node_on_edge(
     graph->copy_node_attributes(inherit_consumer_attrs ? consumer : producer, node);
 
     // Don't copy "gradient op" flag, since the last node is still the one accumulating
-    if ((node->node_type() == NodeType::kBudaOp) || (node->node_type() == NodeType::kPyOp))
+    if ((node->node_type() == NodeType::kForgeOp) || (node->node_type() == NodeType::kPyOp))
         node->as<graphlib::OpNode>()->set_gradient_op(false);
 
     // Create new edges
@@ -776,13 +776,13 @@ std::pair<Edge, Edge> insert_node_on_edge(
     return std::make_pair(new_edge0, new_edge1);
 }
 
-std::tuple<BudaOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering, bool hoist_tms, bool remove_edge)
+std::tuple<ForgeOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering, bool hoist_tms, bool remove_edge)
 {
     const Node *src = graph->node_by_id(edge.producer_node_id);
     const Node *dest = graph->node_by_id(edge.consumer_node_id);
 
-    BudaOpNode *nop = graph->add_node(
-        graphlib::create_node<graphlib::BudaOpNode>(nop_name, "nop"),
+    ForgeOpNode *nop = graph->add_node(
+        graphlib::create_node<graphlib::ForgeOpNode>(nop_name, "nop"),
         graph->get_subgraph_id_for_node(src->id()));
     nop->set_shape(src->shape());
     nop->set_buffering_op(is_buffering);
@@ -790,9 +790,9 @@ std::tuple<BudaOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge,
     nop->set_epoch_type(dest->get_epoch_type());
     nop->set_output_df(src->output_df());
 
-    if (src->node_type() == NodeType::kBudaOp)
+    if (src->node_type() == NodeType::kForgeOp)
     {
-        const BudaOpNode *src_op = src->as<BudaOpNode>();
+        const ForgeOpNode *src_op = src->as<ForgeOpNode>();
         if (src_op->op_name() != "dequantization")
         {
             nop->set_accumulate_df(src_op->accumulate_df());
@@ -820,14 +820,14 @@ void copy_control_edges(Graph *graph, Node *old_dest, Node *new_dest)
         }
         Node *new_consumer = data_operand;
 
-        if (new_consumer->node_type() != NodeType::kBudaOp)
+        if (new_consumer->node_type() != NodeType::kForgeOp)
         {
             // If `new_dest` is an OutputNode, we'll fetch it off of its data-operand since we still want to
             // copy this control edge over (consider kInputToGradient being connected to kOutput node)
             new_consumer = data_operand;
         }
 
-        if (new_consumer->node_type() != NodeType::kBudaOp)
+        if (new_consumer->node_type() != NodeType::kForgeOp)
         {
             continue;
         }
@@ -1442,7 +1442,7 @@ graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape
 {
     std::vector<Shape> shapes = {shape};
     std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        get_op_shape(tm, shapes, ir_level == IRLevel::IR_BUDA, shape.get_tile_dim());
+        get_op_shape(tm, shapes, ir_level == IRLevel::IR_FORGE, shape.get_tile_dim());
     shape = std::get<0>(shape_data);
     TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
     return shape;
@@ -1491,7 +1491,7 @@ graphlib::Shape post_tms_shape(
 
 std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node)
 {
-    graphlib::BudaOpNode const *op = dynamic_cast<graphlib::BudaOpNode const *>(node);
+    graphlib::ForgeOpNode const *op = dynamic_cast<graphlib::ForgeOpNode const *>(node);
     TT_ASSERT(op);
     if (not op)
         return std::make_pair(0, 0);
@@ -1500,7 +1500,7 @@ std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node con
         auto attrs = graph->get_edge_attributes(user);
         for (auto const &tm : attrs->get_tms())
         {
-            if (tm.op == "buda_unpad")
+            if (tm.op == "forge_unpad")
             {
                 int rt = std::get<int>(tm.attr[0]);
                 int ct = std::get<int>(tm.attr[1]);
@@ -1512,7 +1512,7 @@ std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node con
 }
 
 bool tms_support_kernel_broadcast(
-    Shape producer_shape, std::vector<OpType> const &tms, UBlockOrder ublock_order, int ublock_ct, bool is_buda)
+    Shape producer_shape, std::vector<OpType> const &tms, UBlockOrder ublock_order, int ublock_ct, bool is_forge)
 {
     if (not std::any_of(tms.begin(), tms.end(), [](auto const &op_type) { return op_type.op == "broadcast"; }))
         return false;
@@ -1565,7 +1565,7 @@ bool tms_support_kernel_broadcast(
             ublock_order = flip_ublock_order(ublock_order);
         }
 
-        shape = ::get_tm_shape(tm, shape, is_buda);
+        shape = ::get_tm_shape(tm, shape, is_forge);
     }
 
     return true;
@@ -1593,7 +1593,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
         {
             std::vector<Shape> shapes = {operand_shape};
             std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-                get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_BUDA, operand_shape.get_tile_dim());
+                get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_FORGE, operand_shape.get_tile_dim());
             operand_shape = std::get<0>(shape_data);
             TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
             log_trace(LogGraphCompiler, "    TM {} {}", tm.as_string(), operand_shape);
@@ -1615,16 +1615,16 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
         return;
     }
 
-    if ((node->node_type() != NodeType::kPyOp) && (node->node_type() != NodeType::kBudaOp) &&
-        (node->node_type() != NodeType::kBudaNaryTM))
+    if ((node->node_type() != NodeType::kPyOp) && (node->node_type() != NodeType::kForgeOp) &&
+        (node->node_type() != NodeType::kForgeNaryTM))
         return;
 
-    graphlib::OpType op_type = node->node_type() == NodeType::kBudaNaryTM
-                                   ? dynamic_cast<graphlib::BudaNaryTMNode *>(node)->op_type()
+    graphlib::OpType op_type = node->node_type() == NodeType::kForgeNaryTM
+                                   ? dynamic_cast<graphlib::ForgeNaryTMNode *>(node)->op_type()
                                    : dynamic_cast<graphlib::OpNode *>(node)->op_type();
 
     std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        get_op_shape(op_type, operand_shapes, graph->get_ir_level() == IRLevel::IR_BUDA, node->shape().get_tile_dim());
+        get_op_shape(op_type, operand_shapes, graph->get_ir_level() == IRLevel::IR_FORGE, node->shape().get_tile_dim());
 
     log_trace(LogGraphCompiler, "  {}", std::get<0>(shape_data));
     node->set_shape(std::get<0>(shape_data));
@@ -1641,10 +1641,10 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
             {
                 int dim = std::get<1>(b);
                 int size = std::get<2>(b);
-                bool const is_buda = graph->get_ir_level() == IRLevel::IR_BUDA;
-                if (is_buda and dim >= 2)
+                bool const is_forge = graph->get_ir_level() == IRLevel::IR_FORGE;
+                if (is_forge and dim >= 2)
                 {
-                    size /= graphlib::Shape::BUDA_TILE_DIM;
+                    size /= graphlib::Shape::FORGE_TILE_DIM;
                 }
                 graph->get_edge_attributes(e)->set_broadcast_dim(dim, size);
             }
@@ -1730,7 +1730,7 @@ tt::graphlib::Node *get_input_queue_producer(Graph const *graph, tt::graphlib::I
             graph->node_by_id(partial_datacopy_edges[0].producer_node_id)->as<graphlib::OutputNode>();
         auto output_producer = graph->data_operands(output);
         TT_ASSERT(output_producer.size() == 1);
-        TT_ASSERT(output_producer[0]->node_type() == graphlib::NodeType::kBudaOp);
+        TT_ASSERT(output_producer[0]->node_type() == graphlib::NodeType::kForgeOp);
         return output_producer[0];
     }
 
@@ -1772,7 +1772,7 @@ UBlockOrder get_output_ublock_order(Graph const *graph, Node const *node)
         return get_input_queue_ublock_order(graph, node);
     }
 
-    graphlib::BudaOpNode const *op_node = dynamic_cast<graphlib::BudaOpNode const *>(node);
+    graphlib::ForgeOpNode const *op_node = dynamic_cast<graphlib::ForgeOpNode const *>(node);
     if (op_node and op_node->op_name() == "reduce")
     {
         return UBlockOrder::R;
@@ -1805,11 +1805,11 @@ bool try_insert_nop_on_transpose_edge(Graph *graph, Edge &edge)
         return false;  // Even number of transposes cancel out
 
     // Add a NOP on the edge, and move TMs after last transpose to it
-    graphlib::BudaOpNode *nop = graph->add_node(
-        graphlib::create_node<graphlib::BudaOpNode>(
+    graphlib::ForgeOpNode *nop = graph->add_node(
+        graphlib::create_node<graphlib::ForgeOpNode>(
             node->name() + "_transpose_nop_" + std::to_string(edge.edge_creation_id), "nop"),
         graph->get_subgraph_id_for_node(node->id()));
-    nop->copy_parent_op_attributes(node->as<graphlib::BudaOpNode>());
+    nop->copy_parent_op_attributes(node->as<graphlib::ForgeOpNode>());
 
     auto [new_edge0, new_edge1] = graphlib::insert_node_on_edge(graph, edge, nop);
 
@@ -1831,11 +1831,11 @@ bool try_insert_nop_on_transpose_edge(Graph *graph, Edge &edge)
         {
             // Assign last transpose to its own edge so it could be streamed. We might need an extra Nop for this
             // purpose.
-            graphlib::BudaOpNode *nop2 = graph->add_node(
-                graphlib::create_node<graphlib::BudaOpNode>(
+            graphlib::ForgeOpNode *nop2 = graph->add_node(
+                graphlib::create_node<graphlib::ForgeOpNode>(
                     node->name() + "_transpose_nop_2_" + std::to_string(edge.edge_creation_id), "nop"),
                 graph->get_subgraph_id_for_node(node->id()));
-            nop2->copy_parent_op_attributes(node->as<graphlib::BudaOpNode>());
+            nop2->copy_parent_op_attributes(node->as<graphlib::ForgeOpNode>());
 
             auto [mid_edge, last_edge] = graphlib::insert_node_on_edge(graph, new_edge1, nop2);
             graph->get_edge_attributes(mid_edge)->set_tms(
@@ -2142,14 +2142,14 @@ std::unique_ptr<ConstEvalGraph> ConstEvalGraph::clone(Node *new_runtime_input, c
     return cloned;
 }
 
-void ConstEvalGraph::pad_output_to_buda_dims(std::string const &name_prefix)
+void ConstEvalGraph::pad_output_to_forge_dims(std::string const &name_prefix)
 {
     graphlib::Node *output = get_output();
     graphlib::Shape shape = output->shape();
 
     for (int dim : {-1, -2})
     {
-        if (shape[dim] % graphlib::Shape::BUDA_TILE_DIM != 0)
+        if (shape[dim] % graphlib::Shape::FORGE_TILE_DIM != 0)
         {
             graphlib::OpType pad_tile("pad_tile", {dim, (int)shape[dim]});
             auto consteval_pad_tile = graphlib::create_node<graphlib::PyOpNode>(
@@ -2322,9 +2322,9 @@ bool can_swap_operands(Graph *graph, Node *node)
 {
     if (graph->data_operands(node).size() != 2)
         return false;
-    if (node->node_type() == kBudaOp)
+    if (node->node_type() == kForgeOp)
     {
-        auto op = node->as<BudaOpNode>()->op_type().op;
+        auto op = node->as<ForgeOpNode>()->op_type().op;
         return ((op != "sub") && (op != "matmul"));
     }
 

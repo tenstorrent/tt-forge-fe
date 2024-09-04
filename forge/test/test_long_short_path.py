@@ -7,7 +7,7 @@ import forge
 import forge.op
 from forge import ForgeModule, Tensor
 from forge._C.balancer import BalancerConfig, PolicyType
-from forge._C import run_pre_placer_buda_passes
+from forge._C import run_pre_placer_forge_passes
 from .common import compile, ModuleBuilder
 from forge.verify import verify_module, VerifyConfig, TestKind
 from forge._C.backend_api import BackendDevice

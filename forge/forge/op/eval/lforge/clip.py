@@ -4,40 +4,35 @@
 
 import os
 
-from ..interface import BudaEltwiseUnaryOp
+from ..interface import ForgeEltwiseUnaryOp
 
 import torch
-import forge
 from forge.utils import align_up_tile, round_up_div
 from .tm import eval as tm_eval
 from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
 
-class Reciprocal(BudaEltwiseUnaryOp):
+class Clip(ForgeEltwiseUnaryOp):
     @classmethod
-    def create(cls, approximate_mode=None, vector=None):
-        self = cls("reciprocal")
-        if approximate_mode is not None:
-            self.set_buda_attr("approximate_mode", approximate_mode)
-        if vector is not None:
-            self.set_buda_attr("vector", vector)
+    def create(cls, min=float('-inf'), max=float('inf')):
+        self = cls("clip")
+        self.min = min
+        self.max = max
         return self
 
     def eval(self, tensors):
-        assert len(tensors) == 1, "Reciprocal should have one input"
+        assert len(tensors) == 1, "clip should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-
-        ret = torch.reciprocal(tensors[0] + 1e-10)  # add epsilon to avoid infinity
-
+        ret = torch.clip(tensors[0], min=self.min, max=self.max)
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
 
         return ret
 
     def shape(self, tensor_shapes, tile_height, tile_width):
-        assert len(tensor_shapes) == 1, "Reciprocal should have one input"
+        assert len(tensor_shapes) == 1, "Clip should have one input"
         shape = tensor_shapes[0]
         if tile_height == TILE_DIM:
             shape[-2] = align_up_tile(shape[-2])
@@ -57,7 +52,7 @@ class Reciprocal(BudaEltwiseUnaryOp):
         return None
 
     def execution_cycles(self, arch_name, op_model) -> int:
-        op_model_desc = op_model_to_desc("reciprocal", arch_name, op_model)
+        op_model_desc = op_model_to_desc("clip", arch_name, op_model)
 
         compiler_cache_cycles = get_compiler_cached_cycles(op_model_desc)
         if compiler_cache_cycles is not None:

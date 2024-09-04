@@ -10,7 +10,7 @@
 
 #include <utility>
 
-#include "forge/csrc/lower_to_buda/common.hpp"
+#include "forge/csrc/lower_to_forge/common.hpp"
 #include "forge/csrc/tt_torch_device/python_bindings.hpp"
 #include "forge/csrc/tt_torch_device/tt_device.hpp"
 #include "utils/assert.hpp"
@@ -138,13 +138,13 @@ static std::pair<std::vector<std::int64_t>, std::size_t> calculate_stride_size(
     if (size.empty())
         return std::make_pair(std::vector<std::int64_t>{}, 0);
 
-    std::vector<std::int64_t> buda_stride(stride.size());
+    std::vector<std::int64_t> forge_stride(stride.size());
     std::int64_t dim = (std::int64_t)size.size();
 
     std::size_t size_bytes = 1;
     for (std::int64_t i = dim - 1; i >= 0; --i)
     {
-        buda_stride[i] = size_bytes;
+        forge_stride[i] = size_bytes;
         size_bytes *= (i - dim) >= -2 ? align_up_tile(size[i]) : size[i];
     }
 
@@ -152,7 +152,7 @@ static std::pair<std::vector<std::int64_t>, std::size_t> calculate_stride_size(
     if (dim == 1)
         size_bytes *= kTileDim;
 
-    return std::make_pair(buda_stride, size_bytes * scalar_size);
+    return std::make_pair(forge_stride, size_bytes * scalar_size);
 }
 
 void register_output_runtime_transform(torch::Tensor const& tensor, std::string transform)
@@ -206,11 +206,11 @@ torch::Tensor empty_strided(
     c10::optional<bool> /*pin_memory*/)
 {
     c10::ScalarType type = dtype ? *dtype : c10::kFloat;
-    auto [buda_stride, size_bytes] = calculate_stride_size(size, stride, scalarTypeToTypeMeta(type).itemsize());
+    auto [forge_stride, size_bytes] = calculate_stride_size(size, stride, scalarTypeToTypeMeta(type).itemsize());
 
     if (size.size() == 1 and size[0] == 0)
     {
-        buda_stride = {0};
+        forge_stride = {0};
     }
 
     c10::Storage storage(c10::Storage::use_byte_size_t(), size_bytes, Mallocator::get());
@@ -219,7 +219,7 @@ torch::Tensor empty_strided(
     c10::intrusive_ptr<c10::TensorImpl> impl = c10::make_intrusive<c10::TensorImpl>(
         std::move(storage), dispatch_keyset, caffe2::TypeMeta::fromScalarType(type));
 
-    impl->set_sizes_and_strides(torch::IntArrayRef(size), torch::IntArrayRef(buda_stride));
+    impl->set_sizes_and_strides(torch::IntArrayRef(size), torch::IntArrayRef(forge_stride));
 
     c10::intrusive_ptr<c10::BackendMeta> backend_meta{std::unique_ptr<c10::BackendMeta>(new TTMetaData())};
     TTMetaData *tt_meta = dynamic_cast<TTMetaData*>(backend_meta.get());
@@ -341,7 +341,7 @@ torch::Tensor _copy_from(const torch::Tensor& self, const torch::Tensor& dest, b
     TT_ASSERT(dest.strides().back() == 1);
     if (self.device().is_cpu() and dest.device().type() == TT)
     {
-        // pad to buda
+        // pad to forge
         
         // std::string transform = get_runtime_transform(dest, true);
         // torch::Tensor evaled = eval_runtime_transform(self, transform);
@@ -404,8 +404,8 @@ torch::Tensor _copy_from_and_resize(const torch::Tensor& self, const torch::Tens
     PyGILState_Release(gstate);
     if (dest.device().type() == TT)
     {
-        auto [buda_stride, size_bytes] = calculate_stride_size(self.sizes(), self.strides(), self.dtype().itemsize());
-        dest.getIntrusivePtr()->set_sizes_and_strides(self.sizes(), buda_stride);
+        auto [forge_stride, size_bytes] = calculate_stride_size(self.sizes(), self.strides(), self.dtype().itemsize());
+        dest.getIntrusivePtr()->set_sizes_and_strides(self.sizes(), forge_stride);
     }
 
     return ::tt::_copy_from(self, dest, false);
@@ -428,8 +428,8 @@ torch::Tensor _reshape_alias(torch::Tensor const& self, c10::IntArrayRef size, c
 
     if (self.device().type() == TT)
     {
-        auto [buda_stride, size_bytes] = calculate_stride_size(size, stride, self.dtype().itemsize());
-        self.getIntrusivePtr()->set_sizes_and_strides(size, buda_stride);
+        auto [forge_stride, size_bytes] = calculate_stride_size(size, stride, self.dtype().itemsize());
+        self.getIntrusivePtr()->set_sizes_and_strides(size, forge_stride);
     }
     else
     {
@@ -451,9 +451,9 @@ torch::Tensor as_strided(const torch::Tensor & self, c10::IntArrayRef size, c10:
     PyGILState_Release(gstate);
     if (self.device().type() == TT)
     {
-        auto [buda_stride, size_bytes] = calculate_stride_size(size, stride, self.dtype().itemsize());
+        auto [forge_stride, size_bytes] = calculate_stride_size(size, stride, self.dtype().itemsize());
         // TT_ASSERT(not storage_offset, "Unhandled");
-        self.getIntrusivePtr()->set_sizes_and_strides(size, buda_stride);
+        self.getIntrusivePtr()->set_sizes_and_strides(size, forge_stride);
     }
     else
     {

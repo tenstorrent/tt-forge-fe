@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 
-# Set home directory paths for forge and buda
+# Set home directory paths for forge and forge
 def set_home_paths():
     import sys
     import pathlib
@@ -18,8 +18,8 @@ def set_home_paths():
         os.environ["FORGE_HOME"] = str(forge_path)
     if "TVM_HOME" not in os.environ:
         os.environ["TVM_HOME"] = str(base_path) + "/tvm"
-    if "BUDA_OUT" not in os.environ:
-        os.environ["BUDA_OUT"] = str(out_path)
+    if "FORGE_OUT" not in os.environ:
+        os.environ["FORGE_OUT"] = str(out_path)
     if "LOGGER_FILE" in os.environ:
         sys.stdout = open(os.environ["LOGGER_FILE"], "w")
         logger.remove()

@@ -14,7 +14,7 @@ from forge._C import DataFormat, MathFidelity
 from forge._C.graph import UBlockOrder, Shape
 from forge._C.backend_api import get_op_model_param
 from .tm import eval as tm_eval
-from forge.tensor import pad_pytorch_tensor_to_buda
+from forge.tensor import pad_pytorch_tensor_to_forge
 from forge._C.backend_api import get_op_model_execution_cycles
 
 from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
@@ -102,7 +102,7 @@ def eval(type, attr, ops):
         torch.set_rng_state(rng_state)
 
         # Re-pad if previously tilized
-        ret = pad_pytorch_tensor_to_buda(ret, [])
+        ret = pad_pytorch_tensor_to_forge(ret, [])
 
         # Re-t-stream
         if is_r_major:
@@ -171,7 +171,7 @@ def shape(op_type, attr, ops, tile_height, tile_width):
         # extend 4D -> 5D for unsqueeze NOP
         if len(attr) == 2 and attr[0] == "unsqueeze":
             if attr[1] == 4:
-                ops_updated = Shape.create_buda([1] + ops[0], tile_height, tile_width)
+                ops_updated = Shape.create_forge([1] + ops[0], tile_height, tile_width)
                 return ops_updated, []
 
     return ops[0], []

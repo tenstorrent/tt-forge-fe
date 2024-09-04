@@ -11,7 +11,7 @@ import tensorflow as tf
 
 import forge
 import forge.config
-from forge.tensor import to_buda_tensors, to_pt_tensors
+from forge.tensor import to_forge_tensors, to_pt_tensors
 
 def test_torch():
     class Add(nn.Module):
@@ -69,7 +69,7 @@ def test_forge():
         def forward(self, x, y):
             return forge.op.Add("", x, y)
 
-    inputs = to_buda_tensors([torch.rand(1, 32, 32), torch.rand(1, 32, 32)])
+    inputs = to_forge_tensors([torch.rand(1, 32, 32), torch.rand(1, 32, 32)])
 
     model = ForgeAdd()
     golden = model(*inputs)

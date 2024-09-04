@@ -13,18 +13,18 @@ from loguru import logger
 from forge.forgeglobal import align_up_tile
 import torch
 
-from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_buda, narrow_buda_tensor_to_pytorch
+from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
 from .config import VerifyConfig, should_waive_gradient
 from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 
-def _generate_random_losses(outputs, is_buda):
+def _generate_random_losses(outputs, is_forge):
     losses = []
     for out in outputs:
         if out.requires_grad:
             shape = list(out.shape.get_pytorch_shape())
-            if is_buda:
+            if is_forge:
                 while len(shape) < 4:
                     shape.insert(0, 1)
                 while len(shape) > 4:
@@ -41,7 +41,7 @@ def _run_pytorch_backward(outputs, device, losses):
     for i, o in enumerate(outputs):
         if o.requires_grad:
             if device.loss_module is None:
-                loss = narrow_buda_tensor_to_pytorch(losses[i], o.value().shape)
+                loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
                 o.value().backward(loss, retain_graph=retain_graph)
             else:
                 o.value().backward(retain_graph=True) # this is loss
@@ -51,12 +51,12 @@ def get_intermediate_tensors(
         inputs: Tuple[Tensor, ...],
         parameters: Dict[str, torch.Tensor],
         device: "TTDevice",
-        is_buda: bool,
+        is_forge: bool,
 ):
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
 
-    if is_buda:
-        torch_inputs = [pad_pytorch_tensor_to_buda(t, graph.get_tile_broadcast_dims_for_input(i)) for i, t in enumerate(torch_inputs)]
+    if is_forge:
+        torch_inputs = [pad_pytorch_tensor_to_forge(t, graph.get_tile_broadcast_dims_for_input(i)) for i, t in enumerate(torch_inputs)]
     intermediates = pygraph.get_intermediate_tensors(graph, torch_inputs, parameters, device, relative_atol=1.0, pcc = 0.0)
     return intermediates
 
@@ -70,7 +70,7 @@ def do_verify(
         outputs: Tuple[Tensor, ...],
         intermediate_golden_tensors: Dict,
         verify_cfg: VerifyConfig,
-        is_buda: bool,
+        is_forge: bool,
         losses=None,
         targets: List[Tensor] = [],
         balancer_solution=None):
@@ -82,8 +82,8 @@ def do_verify(
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
     torch_targets: List[torch.Tensor] = [i.value() for i in targets]
 
-    if is_buda:
-        torch_inputs = [pad_pytorch_tensor_to_buda(
+    if is_forge:
+        torch_inputs = [pad_pytorch_tensor_to_forge(
                 tensor=t,
                 tile_broadcast_dims=graph.get_tile_broadcast_dims_for_input(i),
                 squeeze=False,
@@ -107,11 +107,11 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_buda=is_buda, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
 
     else:
         if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_buda)
+            losses = _generate_random_losses(outputs, is_forge)
         elif losses is None:
             losses = []
 
@@ -150,14 +150,14 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_buda=is_buda, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
 
         # Verify bwd gradients
         # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
         assert len(golden_input_grads) == 0 or (len(golden_input_grads) == len(bwd_gradients)), f"Golden has {len(golden_input_grads)} input gradients, but graph eval returned {len(bwd_gradients)}"
         for bwd_index, golden_input_grad in enumerate(golden_input_grads):
             evaled = bwd_gradients[bwd_index]
-            ok &= compare_tensor_to_golden(f"Bwd gradient {bwd_index}", golden_input_grad, evaled, is_buda=is_buda, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Bwd gradient {bwd_index}", golden_input_grad, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
 
         # Verify parameter gradients:
         device_parameters = device.get_parameters()
@@ -172,7 +172,7 @@ def do_verify(
                 assert golden is not None
                 evaled = parameter_to_gradients[parameter_name]
                 warning_only = should_waive_gradient(parameter_name, verify_cfg)
-                ok &= compare_tensor_to_golden(f"Gradient for {parameter_name}", golden, evaled, is_buda=is_buda, verify_cfg=verify_cfg, warning_only=warning_only)
+                ok &= compare_tensor_to_golden(f"Gradient for {parameter_name}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg, warning_only=warning_only)
 
         # Verify parameter updates:
         optimizer = device.get_optimizer()
@@ -191,7 +191,7 @@ def do_verify(
                     )
                     evaled = parameter_to_updated_parameter[parameter_name]
                     warning_only = should_waive_gradient(parameter_name, verify_cfg)
-                    ok &= compare_tensor_to_golden(f"Parameter Update for {parameter_name}", golden, evaled, is_buda=is_buda, verify_cfg=verify_cfg, warning_only=warning_only)
+                    ok &= compare_tensor_to_golden(f"Parameter Update for {parameter_name}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg, warning_only=warning_only)
 
     msg = f"Stage {stage_name}: Data mismatch detected"
     if not ok:

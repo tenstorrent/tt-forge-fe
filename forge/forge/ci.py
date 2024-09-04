@@ -11,7 +11,7 @@ from pathlib import Path
 from forge.utils import (
     get_forge_git_hash,
     resolve_output_build_directory,
-    write_buda_envs_configs,
+    write_forge_envs_configs,
     clear_test_output_build_directory,
     create_test_output_build_directory,
     get_current_pytest,
@@ -111,7 +111,7 @@ def write_netlist(net, netlist_filename: str) -> str:
         f.write(net.dump_to_yaml())
 
 
-def write_netlist_and_buda_envs_config(
+def write_netlist_and_forge_envs_config(
     net, graph_name: str, default_directory: str
 ) -> str:
     comment_test_info(net)
@@ -119,7 +119,7 @@ def write_netlist_and_buda_envs_config(
     netlist_name = graph_name + "_netlist.yaml"
     netlist_filename = os.path.join(netlist_dir, netlist_name)
 
-    write_buda_envs_configs(netlist_dir)
+    write_forge_envs_configs(netlist_dir)
     write_netlist(net, netlist_filename)
 
     if not enabled():

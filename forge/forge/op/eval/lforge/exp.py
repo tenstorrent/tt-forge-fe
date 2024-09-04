@@ -4,29 +4,31 @@
 
 import os
 
-from ..interface import BudaEltwiseUnaryOp
+from ..interface import ForgeEltwiseUnaryOp
 
 import torch
+import forge
+from forge._C import UnsupportedHWOpsError
 from forge.utils import align_up_tile, round_up_div
-from .tm import eval as tm_eval
+from ..common import to_torch_operands
+from forge.tensor import pad_pytorch_tensor_to_forge
 from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
 
-class Tanh(BudaEltwiseUnaryOp):
+class Exp(ForgeEltwiseUnaryOp):
     @classmethod
-    def create(cls, vector=None):
-        self = cls("tanh")
-        if vector is not None:
-            self.set_buda_attr("vector", vector)
+    def create(cls, approximate_mode=None):
+        self = cls("exp")
+        if approximate_mode is not None:
+            self.set_forge_attr("approximate_mode", approximate_mode)
         return self
 
     def eval(self, tensors):
-        assert len(tensors) == 1, "Tanh should have one input"
+        assert len(tensors) == 1, "Exp should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-
-        ret = torch.tanh(tensors[0])
+        ret = torch.exp(tensors[0])
 
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
@@ -34,7 +36,7 @@ class Tanh(BudaEltwiseUnaryOp):
         return ret
 
     def shape(self, tensor_shapes, tile_height, tile_width):
-        assert len(tensor_shapes) == 1, "Log should have one input"
+        assert len(tensor_shapes) == 1, "Exp should have one input"
         shape = tensor_shapes[0]
         if tile_height == TILE_DIM:
             shape[-2] = align_up_tile(shape[-2])
@@ -54,7 +56,7 @@ class Tanh(BudaEltwiseUnaryOp):
         return None
 
     def execution_cycles(self, arch_name, op_model) -> int:
-        op_model_desc = op_model_to_desc("tanh", arch_name, op_model)
+        op_model_desc = op_model_to_desc("exp", arch_name, op_model)
 
         compiler_cache_cycles = get_compiler_cached_cycles(op_model_desc)
         if compiler_cache_cycles is not None:

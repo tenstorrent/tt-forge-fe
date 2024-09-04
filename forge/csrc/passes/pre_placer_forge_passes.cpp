@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
-#include "passes/pre_placer_buda_passes.hpp"
+#include "passes/pre_placer_forge_passes.hpp"
 
 #include "autograd/binding.hpp"
 #include "passes/lowering_context.hpp"
@@ -13,8 +13,8 @@ namespace tt {
 void lower_to_buffering_queues(Graph* graph) {
     std::vector<Node *> nodes = graphlib::topological_sort(*graph);
     for (Node* node : nodes) {
-        if (node->node_type() == NodeType::kBudaOp and node->as<graphlib::BudaOpNode>()->op_name() == "dram_queue") {
-            int entries = std::get<int>(node->as<graphlib::BudaOpNode>()->op_attrs().at(0));
+        if (node->node_type() == NodeType::kForgeOp and node->as<graphlib::ForgeOpNode>()->op_name() == "dram_queue") {
+            int entries = std::get<int>(node->as<graphlib::ForgeOpNode>()->op_attrs().at(0));
             graphlib::QueueNode *buffering_queue = graph->add_node(
                 graphlib::create_node<graphlib::BufferingQueueNode>("lowered_" + node->name(), entries),
                 graph->get_subgraph_id_for_node(node->id()));
@@ -32,24 +32,24 @@ void split_unsupported_gradient_ops(graphlib::Graph *graph, const DeviceConfig &
 
     auto is_unsupported_gradient_op = [&supported_gradient_ops](Node *n)
     {
-        if (n->node_type() != graphlib::kBudaOp)
+        if (n->node_type() != graphlib::kForgeOp)
             return false;
-        return n->as<graphlib::BudaOpNode>()->is_gradient_op() and
-               supported_gradient_ops.find(n->as<graphlib::BudaOpNode>()->op_name()) == supported_gradient_ops.end();
+        return n->as<graphlib::ForgeOpNode>()->is_gradient_op() and
+               supported_gradient_ops.find(n->as<graphlib::ForgeOpNode>()->op_name()) == supported_gradient_ops.end();
     };
 
     std::vector<Node *> unsupported_gradient_ops = graphlib::topological_sort(*graph, is_unsupported_gradient_op);
     for (Node *node : unsupported_gradient_ops)
     {
-        graphlib::BudaOpNode *op = dynamic_cast<graphlib::BudaOpNode *>(node);
+        graphlib::ForgeOpNode *op = dynamic_cast<graphlib::ForgeOpNode *>(node);
         TT_ASSERT(op);
         auto users = graph->user_data_edges(node);
         TT_ASSERT(users.size() == 1, "Gradient ops should only have a single user");
         auto user_edge = users[0];
-        graphlib::BudaOpNode *gradient_accumulator =
+        graphlib::ForgeOpNode *gradient_accumulator =
             graph->add_node(
                 op->clone(op->name() + "_gradient_accumulator"),
-                graph->get_subgraph_id_for_node(op->id()))->as<graphlib::BudaOpNode>();
+                graph->get_subgraph_id_for_node(op->id()))->as<graphlib::ForgeOpNode>();
         gradient_accumulator->change_op_type(OpType("nop", {}, {}));
         insert_node_on_edge(graph, user_edge, gradient_accumulator);
         gradient_accumulator->set_gradient_op(true);
@@ -57,7 +57,7 @@ void split_unsupported_gradient_ops(graphlib::Graph *graph, const DeviceConfig &
     }
 }
 
-static bool compatible_relu_attrs(BudaOpAttrs const &dst_attrs, BudaOpAttrs const &src_attrs)
+static bool compatible_relu_attrs(ForgeOpAttrs const &dst_attrs, ForgeOpAttrs const &src_attrs)
 {
     if (dst_attrs.find("relu_en") == dst_attrs.end())
         return true;
@@ -73,22 +73,22 @@ static bool can_hoist_relu(graphlib::Graph *graph, Node *nop)
 {
     std::vector<Node *> operand_nodes = graph->data_operands(nop);
     TT_ASSERT(operand_nodes.size() == 1);
-    graphlib::BudaOpNode *producer = dynamic_cast<graphlib::BudaOpNode *>(operand_nodes[0]);
+    graphlib::ForgeOpNode *producer = dynamic_cast<graphlib::ForgeOpNode *>(operand_nodes[0]);
 
     // Can only hoist relu into ops
     if (not producer)
         return false;
 
     // Cannot hoist gradient nops
-    if (nop->as<graphlib::BudaOpNode>()->is_gradient_op() or producer->is_gradient_op())
+    if (nop->as<graphlib::ForgeOpNode>()->is_gradient_op() or producer->is_gradient_op())
         return false;
 
     bool producer_forks = graph->data_users(producer).size() > 1;
     if (producer_forks)
         return false;
 
-    BudaOpAttrs const &producer_attrs = producer->buda_attrs();
-    BudaOpAttrs const &nop_attrs = nop->as<graphlib::BudaOpNode>()->buda_attrs();
+    ForgeOpAttrs const &producer_attrs = producer->forge_attrs();
+    ForgeOpAttrs const &nop_attrs = nop->as<graphlib::ForgeOpNode>()->forge_attrs();
     for (auto const &[k, v] : nop_attrs)
     {
         if (k != "relu_en" and k != "relu_mode" and k != "relu_threshold")
@@ -107,8 +107,8 @@ static void hoist_relu(graphlib::Graph *graph, Node *nop)
     TT_ASSERT(operand_nodes.size() == 1);
     Node *producer = operand_nodes[0];
 
-    BudaOpAttrs const &producer_attrs = producer->as<graphlib::BudaOpNode>()->buda_attrs();
-    BudaOpAttrs relu_attrs = nop->as<graphlib::BudaOpNode>()->buda_attrs();
+    ForgeOpAttrs const &producer_attrs = producer->as<graphlib::ForgeOpNode>()->forge_attrs();
+    ForgeOpAttrs relu_attrs = nop->as<graphlib::ForgeOpNode>()->forge_attrs();
 
     if (producer_attrs.find("relu_threshold") != producer_attrs.end())
     {
@@ -124,22 +124,22 @@ static void hoist_relu(graphlib::Graph *graph, Node *nop)
                                                             : std::min(producer_threshold, nop_threshold);
     }
 
-    graphlib::OpType op_type = producer->as<graphlib::BudaOpNode>()->op_type();
-    for (auto const &[k, v] : relu_attrs) op_type.buda_attrs[k] = v;
-    producer->as<graphlib::BudaOpNode>()->change_op_type(op_type);
+    graphlib::OpType op_type = producer->as<graphlib::ForgeOpNode>()->op_type();
+    for (auto const &[k, v] : relu_attrs) op_type.forge_attrs[k] = v;
+    producer->as<graphlib::ForgeOpNode>()->change_op_type(op_type);
 }
 
 // Remove NOPs from the graph that have no TMs
 void remove_nops(graphlib::Graph *graph)
 {
     auto is_nop_node = [](Node *n) {
-        return (n->node_type() == graphlib::kBudaOp) && (n->as<graphlib::BudaOpNode>()->op_type() == "nop");
+        return (n->node_type() == graphlib::kForgeOp) && (n->as<graphlib::ForgeOpNode>()->op_type() == "nop");
     };
 
     auto cannot_bypass_nary_tm_operand = [graph](Node *n)
     {
-        bool operand_is_nary_tm = graph->data_operands(n)[0]->node_type() == graphlib::kBudaNaryTM;
-        bool user_is_op = graph->data_operands(n)[0]->node_type() == graphlib::kBudaOp;
+        bool operand_is_nary_tm = graph->data_operands(n)[0]->node_type() == graphlib::kForgeNaryTM;
+        bool user_is_op = graph->data_operands(n)[0]->node_type() == graphlib::kForgeOp;
         return operand_is_nary_tm and not user_is_op;
     };
 
@@ -179,11 +179,11 @@ void remove_nops(graphlib::Graph *graph)
             graphlib::bypass_node(graph, node, true);
             continue;
         }
-        if (not node->as<graphlib::BudaOpNode>()->buda_attrs().empty()) {
+        if (not node->as<graphlib::ForgeOpNode>()->forge_attrs().empty()) {
             // by default, just skip for now until we get a clearer picture on which nops can be skipped
             continue;
         }
-        if (node->as<graphlib::BudaOpNode>()->is_gradient_op()) {
+        if (node->as<graphlib::ForgeOpNode>()->is_gradient_op()) {
             // don't remove nops that have the `is_gradient_op` flag tagged
             continue;
         }
@@ -226,7 +226,7 @@ void tag_subgraph_nodes(graphlib::Graph *graph)
 {
     auto is_op_node = [](graphlib::Node *n)
     {
-        return (n->node_type() == graphlib::kBudaOp);
+        return (n->node_type() == graphlib::kForgeOp);
     };
     auto is_input_node = [](graphlib::Node *n)
     {
@@ -236,7 +236,7 @@ void tag_subgraph_nodes(graphlib::Graph *graph)
     for (graphlib::Node *output_node: graph->ordered_module_outputs())
     {
         std::vector<graphlib::Node *> reachable = reachable_nodes(graph, output_node, is_op_node);
-        if (reachable.size() == graph->nodes_by_type(graphlib::kBudaOp).size())  // No disjoint subgraphs
+        if (reachable.size() == graph->nodes_by_type(graphlib::kForgeOp).size())  // No disjoint subgraphs
             return;
 
         bool found = false;
@@ -283,10 +283,10 @@ void fix_transposes(graphlib::Graph *graph, const DeviceConfig &device_config)
 {
     for (graphlib::Node *node : graphlib::topological_sort(*graph)) 
     {
-        if (node->node_type() != graphlib::NodeType::kBudaOp)
+        if (node->node_type() != graphlib::NodeType::kForgeOp)
             continue;
 
-        graphlib::BudaOpNode *opnode = node->as<graphlib::BudaOpNode>();
+        graphlib::ForgeOpNode *opnode = node->as<graphlib::ForgeOpNode>();
 
         // No need to insert nop before a nop
         if(opnode->op_type().op == "nop")
@@ -303,7 +303,7 @@ void fix_transposes(graphlib::Graph *graph, const DeviceConfig &device_config)
             // EXCEPTION = We dont support if input 1 == matmul
             bool is_input1_matmul = (operand_data_edges.size() > 1) && [&]() -> bool{
                 auto producer_input1 = graph->node_by_id(operand_data_edges.at(1).producer_node_id);
-                return (producer_input1->node_type() == graphlib::NodeType::kBudaOp) && (producer_input1->as<graphlib::BudaOpNode>()->is_matmul());
+                return (producer_input1->node_type() == graphlib::NodeType::kForgeOp) && (producer_input1->as<graphlib::ForgeOpNode>()->is_matmul());
             }();
             
             auto start_indx = is_input1_matmul ? 0 : 1;
@@ -337,9 +337,9 @@ void fix_tms_on_output(graphlib::Graph *graph)
         if (tms.size() == 0)
             continue;
 
-        graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
+        graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
                     n->name() + "_tm_nop", "nop"), graph->get_subgraph_id_for_node(n->id()));
-        nop->copy_parent_op_attributes(graph->node_by_id(edges[0].producer_node_id)->as<graphlib::BudaOpNode>());
+        nop->copy_parent_op_attributes(graph->node_by_id(edges[0].producer_node_id)->as<graphlib::ForgeOpNode>());
         graphlib::insert_node_on_edge(graph, edges[0], nop);
     }
 }
@@ -356,10 +356,10 @@ void insert_queues_for_op_intermediates(graphlib::Graph *graph, const std::vecto
                 op_intermediate);
         }
         auto node = graph->get_node_by_name(op_intermediate);
-        if (node->node_type() != graphlib::NodeType::kBudaOp)
+        if (node->node_type() != graphlib::NodeType::kForgeOp)
         {
             log_error(
-                "Intermediate queue insertion on node with name {}, but {} is not a BudaOpNode",
+                "Intermediate queue insertion on node with name {}, but {} is not a ForgeOpNode",
                 op_intermediate,
                 op_intermediate);
         }
@@ -412,22 +412,22 @@ void fix_untilized_outputs(graphlib::Graph *graph, const DeviceConfig &device_co
         std::vector<Edge> edges = graph->operand_data_edges(n);
         TT_ASSERT(edges.size() == 1);
         Node *source = graph->node_by_id(edges[0].producer_node_id);
-        TT_ASSERT(source->node_type() == NodeType::kBudaOp);
+        TT_ASSERT(source->node_type() == NodeType::kForgeOp);
 
-        graphlib::BudaOpNode *node = source->as<graphlib::BudaOpNode>();
+        graphlib::ForgeOpNode *node = source->as<graphlib::ForgeOpNode>();
 
         bool is_reduce_z =
-            (node->op_name() == "reduce") and (std::get<std::string>(node->buda_attrs().at("dim")) == "z");
+            (node->op_name() == "reduce") and (std::get<std::string>(node->forge_attrs().at("dim")) == "z");
         bool needs_nop =
             node->is_matmul() || is_reduce_z || (graph->data_users(node).size() > 1) || (is_multichip_wormhole);
 
         if (!needs_nop)
             continue;
 
-        graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
+        graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
                     node->name() + "_output_nop_" + std::to_string(output_nop_indices[node]++), "nop"),
                     graph->get_subgraph_id_for_node(n->id()));
-        nop->copy_parent_op_attributes(source->as<graphlib::BudaOpNode>());
+        nop->copy_parent_op_attributes(source->as<graphlib::ForgeOpNode>());
         nop->as<graphlib::TaggedNode>()->add_tags(source->as<graphlib::TaggedNode>()->get_tags());
         graphlib::insert_node_on_edge(graph, edges[0], nop);
     }
@@ -436,9 +436,9 @@ void fix_untilized_outputs(graphlib::Graph *graph, const DeviceConfig &device_co
 // Replace 'buffer' with 'nop' ops
 void replace_buffers_with_nops (graphlib::Graph *graph)
 {
-    for (Node *n : graph->nodes_by_type(NodeType::kBudaOp))
+    for (Node *n : graph->nodes_by_type(NodeType::kForgeOp))
     {
-        auto op = n->as<graphlib::BudaOpNode>();
+        auto op = n->as<graphlib::ForgeOpNode>();
         if (op->op_type().op == "buffer") {
             auto op_type = op->op_type();
             op_type.op = "nop";
@@ -449,16 +449,16 @@ void replace_buffers_with_nops (graphlib::Graph *graph)
 
 void insert_nop_on_matmul_input(graphlib::Graph *graph)
 {
-    for (Node *n : graph->nodes_by_type(NodeType::kBudaOp))
+    for (Node *n : graph->nodes_by_type(NodeType::kForgeOp))
     {
-        auto op = n->as<graphlib::BudaOpNode>();
+        auto op = n->as<graphlib::ForgeOpNode>();
         if (op->op_type().op == "matmul") {
             auto operand_edges = graph->operand_data_edges(op);
             if (operand_edges[0].producer_node_id == operand_edges[1].producer_node_id)
             {
-                graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
+                graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
                             op->name() + "_input_nop", "nop"), graph->get_subgraph_id_for_node(n->id()));
-                nop->copy_parent_op_attributes(op->as<graphlib::BudaOpNode>());
+                nop->copy_parent_op_attributes(op->as<graphlib::ForgeOpNode>());
                 graphlib::insert_node_on_edge(graph, operand_edges[1], nop);
             }
         }
@@ -475,7 +475,7 @@ void insert_tilize_op_on_input(graphlib::Graph *graph){
         {
             for (auto user_edge : graph->user_edges(op))
             {
-                graphlib::BudaOpNode *tilize = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>
+                graphlib::ForgeOpNode *tilize = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>
                 (op->name() + "_"+graph->node_by_id(user_edge.consumer_node_id)->name()+"_tilizer","tilizer"), graph->get_subgraph_id_for_node(n->id()));
                 graphlib::insert_node_on_edge(graph, user_edge, tilize, true, true, 0, true);
             }
@@ -515,8 +515,8 @@ void fix_host_inputs(graphlib::Graph *graph)
                 }
             }
 
-            graphlib::BudaOpNode *nop = graph->add_node(
-                graphlib::create_node<graphlib::BudaOpNode>(input_node->name() + "_input_buffer_nop", "nop"),
+            graphlib::ForgeOpNode *nop = graph->add_node(
+                graphlib::create_node<graphlib::ForgeOpNode>(input_node->name() + "_input_buffer_nop", "nop"),
                 graph->get_subgraph_id_for_node(input_node->id()));
             nop->set_shape(input_node->shape());
             graph->copy_node_attributes(input_node, nop);
@@ -569,7 +569,7 @@ std::vector<std::vector<std::string>> update_epoch_breaks_for_partial_datacopy(
 
 void calculate_ublock_order(graphlib::Graph *graph)
 {
-    auto eval_module = py::module_::import("forge.op.eval.buda");
+    auto eval_module = py::module_::import("forge.op.eval.lforge");
     py::function forge_input_ublock_order = eval_module.attr("get_f_forge_input_ublock_order");
 
     auto relate = [forge_input_ublock_order](
@@ -727,7 +727,7 @@ void calculate_ublock_order(graphlib::Graph *graph)
             if (edge_attrs->get_ublock_order() != ublock_order) {
                 // Insert NOP to transpose ublock order
                 auto producer_node = graph->node_by_id(edge.producer_node_id);
-                auto nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
+                auto nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
                     producer_node->name() + "_partial_datacopy_nop", "nop"),
                     graph->get_subgraph_id_for_node(producer_node->id()));
                 
@@ -759,7 +759,7 @@ void calculate_ublock_order(graphlib::Graph *graph)
             auto edge_attrs = graph->get_edge_attributes(e);
             if (edge_attrs->get_ublock_order() != producer_ublock_order) {
                 // Insert NOP to transpose ublock order
-                auto nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
+                auto nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
                     node->name() + "_subgraph_link_nop", "nop"),
                     graph->get_subgraph_id_for_node(node->id()));
                 auto original_ublock_order = edge_attrs->get_ublock_order();
@@ -818,7 +818,7 @@ void split_broadcasts(Graph* graph)
     std::vector<Edge> edge_candidates;
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() != NodeType::kBudaOp)
+        if (node->node_type() != NodeType::kForgeOp)
         {
             continue;
         }
@@ -868,7 +868,7 @@ void split_broadcasts(Graph* graph)
                 if (tms[i].op == "broadcast")
                 {
                     int broadcast_dim = std::get<int>(tms[i].attr[0]);
-                    broadcast_dim = broadcast_dim < 0? broadcast_dim + graphlib::Shape::BUDA_DIM_COUNT: broadcast_dim;
+                    broadcast_dim = broadcast_dim < 0? broadcast_dim + graphlib::Shape::FORGE_DIM_COUNT: broadcast_dim;
                     if (broadcast_dim != 1 && (first_non_t_broadcast_idx == -1))
                     {
                         // non t-dim broadcast
@@ -929,10 +929,10 @@ std::tuple<Node *, Edge, Edge> split_broadcast(Graph *graph, Node *consumer, Edg
         }
         break;
     }
-    graphlib::BudaOpNode *nop =
-        graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(nop_name, "nop"),
+    graphlib::ForgeOpNode *nop =
+        graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(nop_name, "nop"),
         graph->get_subgraph_id_for_node(consumer->id()));
-    nop->copy_parent_op_attributes(consumer->as<graphlib::BudaOpNode>());
+    nop->copy_parent_op_attributes(consumer->as<graphlib::ForgeOpNode>());
     auto [new_edge0, new_edge1] = graphlib::insert_node_on_edge(graph, edge, nop);
 
     // new_edge0 gets all tms up to and including specified broadcast op (at idx_of_broadcast_tm), edge1 gets the rest
@@ -955,13 +955,13 @@ void validate_buffering_queues(graphlib::Graph *graph) {
         if (node->as<graphlib::QueueNode>()->is_buffering()) {
             // verify that we're only buffering queues are inserted between ops
             for (Node *operand : graph->data_operands(node)) {
-                if (operand->node_type() != graphlib::NodeType::kBudaOp) {
-                    log_fatal("buffering queue: {} has operand: {} that is not a BudaOp", node->name(), operand->name());
+                if (operand->node_type() != graphlib::NodeType::kForgeOp) {
+                    log_fatal("buffering queue: {} has operand: {} that is not a ForgeOp", node->name(), operand->name());
                 }
             }
             for (Node *user : graph->data_users(node)) {
-                if (user->node_type() != graphlib::NodeType::kBudaOp) {
-                    log_fatal("buffering queue: {} has user: {} that is not a BudaOp", node->name(), user->name());
+                if (user->node_type() != graphlib::NodeType::kForgeOp) {
+                    log_fatal("buffering queue: {} has user: {} that is not a ForgeOp", node->name(), user->name());
                 }
             }
         }
@@ -1036,7 +1036,7 @@ void insert_partial_datacopy_tms(graphlib::Graph *graph) {
                     if (producer_edge.edge_type != EdgeType::kDataLoopback)
                         continue;
                     auto producer = graph->node_by_id(producer_edge.producer_node_id);
-                    graphlib::BudaOpNode *nop = graph->add_node(graphlib::create_node<graphlib::BudaOpNode>(
+                    graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
                                 input_node->name() + "_tm_nop", "nop"), graph->get_subgraph_id_for_node(producer->id()));
                     graph->remove_edge(producer_edge);
                     graphlib::Edge data_edge = Edge(producer->id(), 0, nop->id(), 0, EdgeType::kData);
@@ -1142,11 +1142,11 @@ void constant_pre_broadcast(Graph *graph)
     }
 }
 
-// Convert TTForge graph to Buda graph
-std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph)
+// Convert TTForge graph to Forge graph
+std::unique_ptr<Graph> lower_to_forge_ops(Graph *graph)
 {
 
-    auto new_graph = std::make_unique<Graph>(graphlib::IRLevel::IR_BUDA, graph->name());
+    auto new_graph = std::make_unique<Graph>(graphlib::IRLevel::IR_FORGE, graph->name());
 
     new_graph->set_microbatch(graph->get_microbatch());
     new_graph->set_training(graph->training());
@@ -1191,7 +1191,7 @@ std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph)
         copy_operand_edges_to_new_graph(graph, new_graph.get(), old_node, new_node, old_to_new, true, true);
 
         if (old_node->node_type() == NodeType::kPyOp and new_node->node_type() == NodeType::kPyOp)
-            new_node->as<graphlib::BudaOpNode>()->set_gradient_op(old_node->as<graphlib::PyOpNode>()->is_gradient_op());
+            new_node->as<graphlib::ForgeOpNode>()->set_gradient_op(old_node->as<graphlib::PyOpNode>()->is_gradient_op());
     }
 
     return new_graph;
@@ -1200,20 +1200,20 @@ std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph)
 
 static Node* create_recompute_op(graphlib::Graph* graph, Node* fwd_node, std::unordered_map<Node*, Node*>& fwd_to_recompute)
 {
-    graphlib::BudaOpNode *recompute_node = graph->add_node(
-        graphlib::create_node<graphlib::BudaOpNode>(fwd_node->name() + "_recompute", fwd_node->as<graphlib::OpNode>()->op_type()),
+    graphlib::ForgeOpNode *recompute_node = graph->add_node(
+        graphlib::create_node<graphlib::ForgeOpNode>(fwd_node->name() + "_recompute", fwd_node->as<graphlib::OpNode>()->op_type()),
         graph->get_subgraph_id_for_node(fwd_node->id()));
 
     recompute_node->set_shape(fwd_node->shape());
     recompute_node->set_output_df(fwd_node->output_df());
-    recompute_node->set_intermediate_df(fwd_node->as<graphlib::BudaOpNode>()->intermediate_df());
-    recompute_node->set_accumulate_df(fwd_node->as<graphlib::BudaOpNode>()->accumulate_df());
+    recompute_node->set_intermediate_df(fwd_node->as<graphlib::ForgeOpNode>()->intermediate_df());
+    recompute_node->set_accumulate_df(fwd_node->as<graphlib::ForgeOpNode>()->accumulate_df());
     recompute_node->set_epoch_type(graphlib::NodeEpochType::Backward);
 
     std::unordered_map<graphlib::NodeId, graphlib::NodeId> producer_remap;
 
     // For sparse matmul we much duplicate the constant inputs, these need to be unique per instance
-    if (fwd_node->as<graphlib::BudaOpNode>()->is_sparse_matmul())
+    if (fwd_node->as<graphlib::ForgeOpNode>()->is_sparse_matmul())
     {
         auto operands = graph->data_operands(fwd_node);
         TT_ASSERT(operands.size() == 3);
@@ -1294,7 +1294,7 @@ void insert_recompute_ops(graphlib::Graph *graph)
     for (Node* node : topo_order)
     {
         if (node->get_epoch_type() == graphlib::NodeEpochType::Forward and
-            (node->node_type() == graphlib::NodeType::kPyOp or node->node_type() == graphlib::NodeType::kBudaOp))
+            (node->node_type() == graphlib::NodeType::kPyOp or node->node_type() == graphlib::NodeType::kForgeOp))
         {
             Node *recompute_node = create_recompute_op(graph, node, forward_to_recompute);
             recompute_node_names.push_back(recompute_node->name());

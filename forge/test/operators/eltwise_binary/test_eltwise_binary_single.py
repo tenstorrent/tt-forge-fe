@@ -54,7 +54,7 @@ def test_eltwise_binary_single(
     print(f"Shape --> {shape}")
     print("\n")
 
-    architecture = f'models.{model}.BudaElementWiseBinaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    architecture = f'models.{model}.ForgeElementWiseBinaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

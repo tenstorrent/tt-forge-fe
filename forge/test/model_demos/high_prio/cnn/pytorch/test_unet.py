@@ -210,7 +210,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load,
-            "mateuszbuda/brain-segmentation-pytorch",
+            "mateuszforge/brain-segmentation-pytorch",
             variant,
             in_channels=3,
             out_channels=1,
@@ -221,7 +221,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
     tt_model = forge.PyTorchModule("pt_unet_torchhub", model)
     
     # Download an example input image  
-    url, filename = ("https://github.com/mateuszbuda/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png", "TCGA_CS_4944.png")
+    url, filename = ("https://github.com/mateuszforge/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png", "TCGA_CS_4944.png")
     try: urllib.URLopener().retrieve(url, filename)
     except: urllib.request.urlretrieve(url, filename)
     input_image = Image.open(filename)

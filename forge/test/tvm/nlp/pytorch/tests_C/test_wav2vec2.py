@@ -67,7 +67,7 @@ def test_wav2vec2_base_conv_feature_encoder(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     framework_model = download_model(
         Wav2Vec2Model.from_pretrained,

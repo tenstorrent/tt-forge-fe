@@ -4,7 +4,7 @@
 #
 # Tests for testing of element-wise binary comparison operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 from ast import operator
@@ -82,7 +82,7 @@ def test_comparison(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaComparisonTest(' +\
+    architecture = f'models.{model}.ForgeComparisonTest(' +\
                                         f'shape={shape} ,' +\
                                         f'opname="{op}" ,' +\
                                         f'operator=forge.op.{op} ,' +\

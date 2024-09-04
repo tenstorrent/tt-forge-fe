@@ -98,7 +98,7 @@ def populate_torch_adv_index_args(graph, nid, compiler_cfg):
 def populate_torch_reshape_args(graph, nid, compiler_cfg):
     curr_node, args = _populate_torch_init_args(graph, nid)
     
-    output_shape = list(curr_node["buda_shape"])
+    output_shape = list(curr_node["forge_shape"])
     output_shape[0] = -1
 
     args['attr'] = {
@@ -314,8 +314,8 @@ def populate_torch_concat_args(graph, nid, compiler_cfg):
     
     # Determine dim
     dim = None
-    act_shape = graph["nodes"][curr_node["inputs"][0][0]]["buda_shape"]
-    curr_node_shape = curr_node["buda_shape"]
+    act_shape = graph["nodes"][curr_node["inputs"][0][0]]["forge_shape"]
+    curr_node_shape = curr_node["forge_shape"]
     for dim, (i, o) in enumerate(zip(act_shape, curr_node_shape)):
         if i != o:
             dim = int(dim - len(act_shape))
@@ -397,7 +397,7 @@ def _populate_torch_init_args(graph, nid):
         "inplace": False
     }
     for i in range(0, int(curr_node['attrs']['num_inputs'])):
-        args['inp'].append(graph["nodes"][curr_node["inputs"][i][0]]["buda_name"])
+        args['inp'].append(graph["nodes"][curr_node["inputs"][i][0]]["forge_name"])
     
     return curr_node, args
     
@@ -541,8 +541,8 @@ pytorch_ops_needing_arguments = {
 def populate_binary_stack_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["buda_shape"]
-    node_shape = node["buda_shape"]
+    input_shape = graph["nodes"][node["inputs"][0][0]]["forge_shape"]
+    node_shape = node["forge_shape"]
 
     for dim, (i, o) in enumerate(zip(input_shape, node_shape)):
         if i != o:
@@ -643,7 +643,7 @@ def populate_argmax_args(graph, nid, compiler_cfg):
 
     dim = int(node["attrs"]["axis"][0][0])
     if dim >= 0:
-        dim -= len(list(graph["nodes"][nid]["buda_shape"]))
+        dim -= len(list(graph["nodes"][nid]["forge_shape"]))
 
     args = [("dim", f"{dim}"),]
     return args
@@ -823,7 +823,7 @@ def populate_vslice_args(graph, nid, compiler_cfg):
     return args
 
 def populate_hslice_args(graph, nid, compiler_cfg):
-    slices = graph["nodes"][nid]["buda_shape"][-3]
+    slices = graph["nodes"][nid]["forge_shape"][-3]
 
     args = [("slices", f"{slices}"),]
     return args
@@ -962,7 +962,7 @@ def populate_layernorm_args(graph, nid, compiler_cfg):
 def populate_transpose_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     axes = [int(axis) for axis in node["attrs"]["axes"][0]]
-    transpose_shape = list(graph["nodes"][nid]["buda_shape"])
+    transpose_shape = list(graph["nodes"][nid]["forge_shape"])
 
     assert int(node["attrs"]["num_inputs"]) == 1
 
@@ -1002,7 +1002,7 @@ def populate_transpose_args(graph, nid, compiler_cfg):
     return args
 
 def populate_reshape_args(graph, nid, compiler_cfg):
-    output_shape = graph["nodes"][nid]["buda_shape"]
+    output_shape = graph["nodes"][nid]["forge_shape"]
     args = []
     args.append(("shape", f"{output_shape}"))
     return args
@@ -1010,10 +1010,10 @@ def populate_reshape_args(graph, nid, compiler_cfg):
 def populate_concatenate_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
-    buda_shape = node["buda_shape"]
+    forge_shape = node["forge_shape"]
     concat_axis = int(node["attrs"]["axis"][0][0])
     if concat_axis >= 0:
-        concat_axis -= len(buda_shape)
+        concat_axis -= len(forge_shape)
     
     args = [("axis", f"{concat_axis}"),]
     return args
@@ -1021,7 +1021,7 @@ def populate_concatenate_args(graph, nid, compiler_cfg):
 def populate_repeat_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
-    buda_shape = node["buda_shape"]
+    forge_shape = node["forge_shape"]
     reps = list(map(int, node["attrs"]["reps"][0]))
     args = [("factors", f"{reps}")]
     return args
@@ -1029,10 +1029,10 @@ def populate_repeat_args(graph, nid, compiler_cfg):
 def populate_stack_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
-    buda_shape = node["buda_shape"]
+    forge_shape = node["forge_shape"]
     stack_axis = int(node["attrs"]["axis"][0][0])
     if stack_axis >= 0:
-        stack_axis -= len(buda_shape)
+        stack_axis -= len(forge_shape)
     
     args = [("axis", f"{stack_axis}"),]
     return args
@@ -1085,13 +1085,13 @@ def populate_pad_args(graph, nid, compiler_cfg):
     else:
         assert False
 
-    tvm_pad_mode_to_buda_mode = {
+    tvm_pad_mode_to_forge_mode = {
         "constant" : "constant",
         "edge"     : "replicate",
         "reflect"  : "reflect",
     }
 
-    args.append(("mode", f"\"{tvm_pad_mode_to_buda_mode[mode]}\"",))
+    args.append(("mode", f"\"{tvm_pad_mode_to_forge_mode[mode]}\"",))
     args.append(("channel_last", f"{channel_last}",))
 
     return args
@@ -1159,7 +1159,7 @@ def populate_unsupported_args(graph, nid, compiler_cfg):
     args = []
     op_type = node["name"]
     args.append(("op_type", f"\"{op_type}\""))
-    output_shape = node["buda_shape"]
+    output_shape = node["forge_shape"]
     args.append(("output_shape", f"{output_shape}"))
     for k, v in node["attrs"].items():
         if k == "num_outputs" or k == "num_inputs" or k == "shape":
@@ -1204,9 +1204,9 @@ def populate_prelu_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     axis = int(node["attrs"]["axis"][0][0])
 
-    buda_shape = node["buda_shape"]
+    forge_shape = node["forge_shape"]
     if axis >= 0:
-        axis -= len(buda_shape)
+        axis -= len(forge_shape)
     args.append(("axis", f"\"{axis}\"",))
 
 # def populate_dropout_args(graph, nid, training):
@@ -1244,7 +1244,7 @@ def populate_requantize_args(graph, nid, compiler_cfg):
     return args
 
 # keep sorted
-tvm_to_buda_op_map = {
+tvm_to_forge_op_map = {
     "abs"                           : "abs",
     "add"                           : "add",
     "argmax"                        : "argmax",
@@ -1295,8 +1295,8 @@ tvm_to_buda_op_map = {
     "nn.prelu"                      : "prelu",
     "forge.adv_index"              : "adv_index",
     "forge.binary_stack"           : "binary_stack",
-    "forge.buda_conv2d_transpose_with_bias"  : "conv2d_transpose",
-    "forge.buda_conv2d_with_bias"  : "conv2d",
+    "forge.forge_conv2d_transpose_with_bias"  : "conv2d_transpose",
+    "forge.forge_conv2d_with_bias"  : "conv2d",
     "forge.concatenate"            : "concatenate",
     "forge.dropout"                : "dropout",
     "forge.hslice"                 : "hslice",
@@ -1328,7 +1328,7 @@ tvm_to_buda_op_map = {
     "qnn.dense"                     : "matmul",
 }
 
-buda_op_to_function_name = {
+forge_op_to_function_name = {
     "abs"                           : "forge.op.Abs",
     "add"                           : "forge.op.Add",
     "adv_index"                     : "forge.op.AdvIndex",
@@ -1345,7 +1345,7 @@ buda_op_to_function_name = {
     "conv3d"                        : "forge.op.Conv3d",
     "cos"                           : "forge.op.Cosine",
     "cumsum"                        : "forge.op.CumSum",
-    "dropout"                       : "forge.op.Identity", # (Temporary): change when buda supports dropout
+    "dropout"                       : "forge.op.Identity", # (Temporary): change when forge supports dropout
     "embedding"                     : "forge.op.Embedding",
     "equal"                         : "forge.op.Equal",
     "exp"                           : "forge.op.Exp",
@@ -1510,26 +1510,26 @@ def cleanup_temporary_files():
     
     generated_files = []
             
-def get_buda_outputs(buda_mods, devices, buda_inputs):
-    from forge.tensor import to_buda_tensors, to_pt_tensors
+def get_forge_outputs(forge_mods, devices, forge_inputs):
+    from forge.tensor import to_forge_tensors, to_pt_tensors
 
-    for i, (mod, dev) in enumerate(zip(buda_mods, devices)):
+    for i, (mod, dev) in enumerate(zip(forge_mods, devices)):
         if dev == "CPUDevice":
-            buda_inputs = to_pt_tensors(buda_inputs)
+            forge_inputs = to_pt_tensors(forge_inputs)
         else:
-            buda_inputs = to_buda_tensors(to_pt_tensors(buda_inputs))
-        buda_inputs = mod.forward(*buda_inputs)
+            forge_inputs = to_forge_tensors(to_pt_tensors(forge_inputs))
+        forge_inputs = mod.forward(*forge_inputs)
 
-    if not isinstance(buda_inputs, (list, tuple)):
-        buda_inputs = [buda_inputs]
-    return to_buda_tensors(buda_inputs)
+    if not isinstance(forge_inputs, (list, tuple)):
+        forge_inputs = [forge_inputs]
+    return to_forge_tensors(forge_inputs)
 
-def verify_framework_vs_buda_codegen(frame_outputs, buda_outputs, verify_cfg):
+def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
     from forge.op.eval import compare_tensor_to_golden
     test_pass = True
-    for i, (golden, output) in enumerate(zip(frame_outputs, buda_outputs)):
+    for i, (golden, output) in enumerate(zip(frame_outputs, forge_outputs)):
         test_pass &= compare_tensor_to_golden(f"Framework vs. Forge codegen output {i}", golden, output.value(),
-                                is_buda=False, verify_cfg=verify_cfg)
+                                is_forge=False, verify_cfg=verify_cfg)
 
         assert test_pass, f"Data mismatch on output {i} between framework and Forge codegen"
     logger.info("Verified python codegen agains framework")
@@ -1629,7 +1629,7 @@ def generate_forge_module(framework_mod, inputs, compiler_cfg=None, graph_name=N
     counter += 1
     sys.path.append(".")
 
-    buda_mods = []
+    forge_mods = []
     devices = []
     for writer in module_writers:
         module = importlib.import_module(writer.import_module_path())
@@ -1639,14 +1639,14 @@ def generate_forge_module(framework_mod, inputs, compiler_cfg=None, graph_name=N
 
         devices.append(writer.dev)
         if writer.dev == "CPUDevice":
-            buda_mod = forge.PyTorchModule(writer.module_name, TestClass())
-            buda_mod.module.process_framework_parameters(framework_mod.module)
+            forge_mod = forge.PyTorchModule(writer.module_name, TestClass())
+            forge_mod.module.process_framework_parameters(framework_mod.module)
         else:
-            buda_mod = TestClass(writer.module_name)
-            buda_mod.process_framework_parameters(framework_mod.module)
-            assert not any([param.value() is None for param in buda_mod.get_parameters()]), f"Could not retrieve parameters from framework and tvm"
+            forge_mod = TestClass(writer.module_name)
+            forge_mod.process_framework_parameters(framework_mod.module)
+            assert not any([param.value() is None for param in forge_mod.get_parameters()]), f"Could not retrieve parameters from framework and tvm"
         
-        buda_mods.append(buda_mod)
+        forge_mods.append(forge_mod)
 
         if not compiler_cfg.retain_tvm_python_files:
             global generated_files
@@ -1659,15 +1659,15 @@ def generate_forge_module(framework_mod, inputs, compiler_cfg=None, graph_name=N
                 cleanup_temporary_files()
 
     if devices[0] == "CPUDevice":
-        buda_inputs = forge.tensor.to_pt_tensors(flattened_inputs)
+        forge_inputs = forge.tensor.to_pt_tensors(flattened_inputs)
     else:
-        buda_inputs = forge.tensor.to_buda_tensors(flattened_inputs)
+        forge_inputs = forge.tensor.to_forge_tensors(flattened_inputs)
 
     if verify_cfg is not None and verify_cfg.verify_forge_codegen_vs_framework:
-        buda_outputs = get_buda_outputs(buda_mods, devices, buda_inputs)
-        verify_framework_vs_buda_codegen(framework_outputs, buda_outputs, verify_cfg=verify_cfg)
+        forge_outputs = get_forge_outputs(forge_mods, devices, forge_inputs)
+        verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
 
-    return buda_mods, devices, buda_inputs
+    return forge_mods, devices, forge_inputs
 
 def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, compiler_cfg=None, verify_cfg=None, input_names=[]):
     if compiler_cfg is None:
@@ -1699,7 +1699,7 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
         if node["attrs"]["framework_dtype"] != "N/A":
             return node["attrs"]["framework_dtype"]
         else:
-            logger.debug(f"Node \'{node['buda_name']}\' does not have a framework dtype specified. Using TVM generated dtype.")
+            logger.debug(f"Node \'{node['forge_name']}\' does not have a framework dtype specified. Using TVM generated dtype.")
             return node["attrs"]["dtype"][0][0]
 
     span_lexer = re.compile("\S+$").search
@@ -1740,25 +1740,25 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
 
         def make_parser_friendly_name(node, node_type):
             if framework == "tensorflow" or framework == "tf_graphdef" or framework == "jax":
-                node["buda_name"] = node["buda_name"].replace(".", "_").replace("/", "_")
+                node["forge_name"] = node["forge_name"].replace(".", "_").replace("/", "_")
             elif framework == "pytorch":
-                node["buda_name"] = node["buda_name"].replace(".", "_")
+                node["forge_name"] = node["forge_name"].replace(".", "_")
             elif framework == "onnx":
-                node["buda_name"] = node["buda_name"].replace(".", "_").replace("/", "_").replace(":", "_")
+                node["forge_name"] = node["forge_name"].replace(".", "_").replace("/", "_").replace(":", "_")
             elif framework == "tflite":
-                node["buda_name"] = node["buda_name"].replace(".", "_").replace("/", "_").replace(":", "_")
+                node["forge_name"] = node["forge_name"].replace(".", "_").replace("/", "_").replace(":", "_")
 
             # Preventing variable names starting with an integer in generated python
-            if node["buda_name"][0] in [f"{n}" for n in range(10)]:
-                node["buda_name"] = f"{node_type}_{node['name']}"
+            if node["forge_name"][0] in [f"{n}" for n in range(10)]:
+                node["forge_name"] = f"{node_type}_{node['name']}"
 
-        # Clean up Buda name
+        # Clean up Forge name
         for node in graph["nodes"]:
-            node["buda_name"] = node['name']
+            node["forge_name"] = node['name']
             
         # Check for unsupported ops
         has_unsupported_ops = False
-        json_graph_op_map = tvm_to_buda_op_map if json_graph["device"] == "tt" else tvm_to_pytorch_op_map
+        json_graph_op_map = tvm_to_forge_op_map if json_graph["device"] == "tt" else tvm_to_pytorch_op_map
         for nid, node in enumerate(graph["nodes"]):
             if node["op"] != "kernel":
                 continue
@@ -1775,7 +1775,7 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
             node["nid"] = nid
             node["users"] = []
             shape = node["attrs"]["shape"][0][0]
-            node["buda_shape"] = tuple(shape)
+            node["forge_shape"] = tuple(shape)
             if node["op"] == "input":
                 if node["name"] not in weights:
                     make_parser_friendly_name(node, "input_")
@@ -1785,10 +1785,10 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                         inp_idx = json_graph["nid_to_input_idx"][nid]
                         forge_inputs[inp_idx] = flattened_pytorch_inputs[inp_idx]
 
-                    graph_input_names[inp_idx] = node["buda_name"]
+                    graph_input_names[inp_idx] = node["forge_name"]
                     node["op"] = "*"
                     logger.trace(
-                        f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']} type: input"
+                        f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: input"
                     )
                 else:
                     tensor, requires_grad = weights[node["name"]]
@@ -1797,10 +1797,10 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                     if (requires_grad or json_graph["device"] == 'cpu') and len(tensor.shape) > 0:
                         # CPU PyTorch module requires non-trainable weights in a nn.Parameter with 
                         # requires_grad=False, a constant buffer does not work.
-                        params[node["nid"]] = (node["buda_name"], node["buda_shape"], requires_grad, _determine_node_dtype(node))
+                        params[node["nid"]] = (node["forge_name"], node["forge_shape"], requires_grad, _determine_node_dtype(node))
                         node["op"] = "parameter"
                         logger.trace(
-                            f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']} type: parameter, requires_grad: {requires_grad}"
+                            f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: parameter, requires_grad: {requires_grad}"
                         )
                     else:
                         if torch.numel(tensor) == 1 and len(tensor.shape) == 0:
@@ -1809,15 +1809,15 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                             tensor = tensor.reshape(tensor.shape[-4:])
                         if requires_grad:
                             node["op"] = "parameter"
-                            params[node["nid"]] = (node["buda_name"], tensor.shape, requires_grad, _determine_node_dtype(node))
+                            params[node["nid"]] = (node["forge_name"], tensor.shape, requires_grad, _determine_node_dtype(node))
                             logger.trace(
-                                f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']} type: Parameter"
+                                f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: Parameter"
                             )
                         else:
                             node["op"] = "constant"
-                            constants[node["nid"]] = (node["buda_name"], tensor.shape, _determine_node_dtype(node))
+                            constants[node["nid"]] = (node["forge_name"], tensor.shape, _determine_node_dtype(node))
                             logger.trace(
-                                f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']} type: Constant"
+                                f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: Constant"
                             )
 
             elif node["op"] == "const":
@@ -1832,35 +1832,35 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                     if tensor.dtype == torch.bool:
                         requires_grad = False
                         node["attrs"]["is_param"] = "0"
-                    params_from_tvm[node["buda_name"]] = torch.nn.Parameter(tensor, requires_grad=requires_grad)
-                    params[node["nid"]] = (node["buda_name"], node["buda_shape"], requires_grad, _determine_node_dtype(node))
+                    params_from_tvm[node["forge_name"]] = torch.nn.Parameter(tensor, requires_grad=requires_grad)
+                    params[node["nid"]] = (node["forge_name"], node["forge_shape"], requires_grad, _determine_node_dtype(node))
                     node["op"] = "parameter"
                     logger.trace(
-                        f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']} type: parameter, requires_grad: {requires_grad}"
+                        f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: parameter, requires_grad: {requires_grad}"
                     )
                 else:
                     if torch.numel(tensor) == 1 and len(tensor.shape) == 0:
                         tensor = tensor.reshape((1,))
                     if len(tensor.shape) > 4 and all([x == 1 for x in tensor.shape[0:-4]]):
                         tensor = tensor.reshape(tensor.shape[-4:])
-                    params_from_tvm[node["buda_name"]] = tensor
+                    params_from_tvm[node["forge_name"]] = tensor
                     node["op"] = "constant"
-                    constants[node["nid"]] = (node["buda_name"], tensor.shape, _determine_node_dtype(node))
+                    constants[node["nid"]] = (node["forge_name"], tensor.shape, _determine_node_dtype(node))
                     logger.trace(
-                        f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']} type: Constant"
+                        f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: Constant"
                     )
 
             elif node["op"] == "kernel":
-                op_map = tvm_to_buda_op_map if json_graph["device"] == "tt" else tvm_to_pytorch_op_map
+                op_map = tvm_to_forge_op_map if json_graph["device"] == "tt" else tvm_to_pytorch_op_map
                 if node["name"] in op_map:
                     op_type = op_map[node["name"]]
                 else:
                     op_type = "unsupported"
                 node["op"] = op_type
 
-                function_map = buda_op_to_function_name if json_graph["device"] == "tt" else pytorch_op_to_function_name
+                function_map = forge_op_to_function_name if json_graph["device"] == "tt" else pytorch_op_to_function_name
                 function_name = function_map[op_type]
-                node["buda_name"] = op_type + f"_{nid}"
+                node["forge_name"] = op_type + f"_{nid}"
 
                 args = ()
                 argument_getter = forge_ops_needing_arguments if json_graph["device"] == "tt" else pytorch_ops_needing_arguments
@@ -1877,7 +1877,7 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                     _, args = _populate_torch_init_args(graph, nid)
                     
                 logger.trace(
-                    f"Node: {nid} shape: {node['buda_shape']} name: {node['buda_name']}  type: op"
+                    f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']}  type: op"
                 )
 
                 assert "num_inputs" in node["attrs"]
@@ -1939,7 +1939,7 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                     if "users" not in input_node:
                         input_node["users"] = []
                     input_node["users"].append(nid)
-                    input_names.append(input_node["buda_name"])
+                    input_names.append(input_node["forge_name"])
                 # Handle concatenate case when a single node name in referenced twice in the input list
                 if node["name"] == "forge.concatenate" and len(input_names) == 1:              
                     inp_shape = graph["nodes"][node["inputs"][input_port][0]]["attrs"]["shape"][0][0]
@@ -1950,8 +1950,8 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
 
                 ops[node["nid"]] = Operation(
                     function_name=function_name,
-                    # node_name=node["buda_name"],
-                    output_name=node["buda_name"],
+                    # node_name=node["forge_name"],
+                    output_name=node["forge_name"],
                     input_names=input_names,
                     args=args,
                     src_layer=span_to_src_layer(node),
@@ -1962,15 +1962,15 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
 
         for output_nid in output_nodes:
             output_node = graph["nodes"][output_nid]
-            returns[output_nid] = output_node["buda_name"]
-            if len(output_node["buda_shape"]) == 0:
-                returns_requiring_batch_dim_fix.append(output_node["buda_name"])
-            elif output_node["buda_shape"][0] != 1:
-                returns_requiring_batch_dim_fix.append(output_node["buda_name"])
+            returns[output_nid] = output_node["forge_name"]
+            if len(output_node["forge_shape"]) == 0:
+                returns_requiring_batch_dim_fix.append(output_node["forge_name"])
+            elif output_node["forge_shape"][0] != 1:
+                returns_requiring_batch_dim_fix.append(output_node["forge_name"])
 
             new_output_nid = len(graph["nodes"])
             graph["nodes"].append({
-                "buda_name":output_node["buda_name"] + "_output",
+                "forge_name":output_node["forge_name"] + "_output",
                 "op":"output",
                 "nid":new_output_nid,
                 "inputs":[[output_nid, 0, 0]],
@@ -2019,16 +2019,16 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
         #             if "users" in node:
         #                 for user in node["users"]:
         #                     if user not in subgraph_matches[0] and node["op"] != "*":
-        #                         submodule_outputs[node["nid"]] = node["buda_name"]
-        #                         if node["buda_shape"][0] != 1:
-        #                             submodule_outputs_requiring_batch_dim_fix.append(node["buda_name"])
+        #                         submodule_outputs[node["nid"]] = node["forge_name"]
+        #                         if node["forge_shape"][0] != 1:
+        #                             submodule_outputs_requiring_batch_dim_fix.append(node["forge_name"])
 
         #         # add ops for each submodule call
         #         idx = max(sorted(submodule_input_ports)) + 0.5
         #         input_nids = list(sorted(submodule_input_ports.keys()))
 
         #         input_nodes = [graph["nodes"][input_nid] if submodule_input_ports[input_nid] == -1 else graph["nodes"][graph["nodes"][input_nid]["inputs"][submodule_input_ports[input_nid]][0]] for input_nid in input_nids]
-        #         submodule_inputs = {input_node["nid"]:input_node["buda_name"] for input_node in input_nodes}
+        #         submodule_inputs = {input_node["nid"]:input_node["forge_name"] for input_node in input_nodes}
         #         activations = [input_node_name for _, input_node_name in sorted(graph_input_names.items())]
                 
         #         ops[idx] = Operation(
@@ -2052,7 +2052,7 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
         #                     matched_nid = graph["nodes"][matched_user]["inputs"][submodule_input_ports[input_nid]][0]
 
         #                 idx = matched_nid + 0.5
-        #                 activations.append(graph["nodes"][matched_nid]["buda_name"])
+        #                 activations.append(graph["nodes"][matched_nid]["forge_name"])
 
         #             # unlike ops, submodules should not have repeated inputs
         #             activations = list(dict.fromkeys(activations))
@@ -2091,7 +2091,7 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
 
         #         #replace references to outputs of each submodule with submodule
         #         for idx, subgraph in enumerate(subgraph_matches):
-        #             name_to_replace = graph["nodes"][subgraph[output_nids[0]]]["buda_name"]
+        #             name_to_replace = graph["nodes"][subgraph[output_nids[0]]]["forge_name"]
 
         #             replace_node_name(name_to_replace, f"layer_{idx}")
 

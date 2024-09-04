@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.nop import Nop as BudaNop
+from ..lforge.nop import Nop as ForgeNop
 
 
 class Nop(PyEltwiseUnaryOp):
@@ -52,4 +52,4 @@ class Nop(PyEltwiseUnaryOp):
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
 
-        lc.op(BudaNop.create(), tensors, tile_height=tile_height, tile_width=tile_width)
+        lc.op(ForgeNop.create(), tensors, tile_height=tile_height, tile_width=tile_width)

@@ -24,7 +24,7 @@ def test_mnasnet(test_kind, test_device):
         pytest.skip()
     else:
         compiler_cfg.compile_depth = (
-            CompileDepth.BUDA_GRAPH_PRE_PLACER
+            CompileDepth.FORGE_GRAPH_PRE_PLACER
         )  # Unsupported HW ops
 
     framework_model = MNASNet(1.0)

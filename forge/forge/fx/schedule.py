@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #
-# Schedule describes the order of execution of FX and Buda graphs, and the mapping of inputs and outputs
+# Schedule describes the order of execution of FX and Forge graphs, and the mapping of inputs and outputs
 #
 
 from typing import List, Dict, Set, Tuple, Optional

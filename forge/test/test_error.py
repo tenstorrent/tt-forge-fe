@@ -12,9 +12,9 @@ import forge
 from forge import CPUDevice, TTDevice, PyTorchModule, set_device_pipeline, ForgeModule, Tensor
 from .test_user import ForgeTestModule, _safe_read
 
-class BudaMatmul(ForgeModule):
+class ForgeMatmul(ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     def __init__(self, name):

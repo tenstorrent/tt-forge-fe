@@ -4,7 +4,7 @@
 
 import os
 
-from ..interface import BudaEltwiseUnaryOp
+from ..interface import ForgeEltwiseUnaryOp
 
 import torch
 from forge.utils import align_up_tile, round_up_div
@@ -12,7 +12,7 @@ from .tm import eval as tm_eval
 from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
-class Tilizer(BudaEltwiseUnaryOp):
+class Tilizer(ForgeEltwiseUnaryOp):
     @classmethod
     def create(cls):
         self = cls("tilizer")

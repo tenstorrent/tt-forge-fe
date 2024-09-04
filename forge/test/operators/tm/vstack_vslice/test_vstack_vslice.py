@@ -4,7 +4,7 @@
 #
 # Tests for testing of vstack, and vslice operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -71,7 +71,7 @@ def test_vstack_vslice(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaVStackVSliceTest(shape={shape}, slice={slice})'
+    architecture = f'models.{model}.ForgeVStackVSliceTest(shape={shape}, slice={slice})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

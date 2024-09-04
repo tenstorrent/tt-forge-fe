@@ -4,7 +4,7 @@
 #
 # Tests for testing of reduce operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -69,7 +69,7 @@ def test_reduce(
     print(f"Keepdim --> {keepdim}")
     print("\n")
 
-    architecture = f'models_nd.{model}.BudaReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}, dim={dim}, keepdim={keepdim})'
+    architecture = f'models_nd.{model}.ForgeReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}, dim={dim}, keepdim={keepdim})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

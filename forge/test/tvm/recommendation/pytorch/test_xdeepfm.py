@@ -114,7 +114,7 @@ def test_xdeepfm_cin(test_kind, test_device):
 def test_xdeepfm_dnn(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     data = pd.read_csv(os.path.join(os.path.dirname(__file__), "deepctr_torch/movielens_sample.txt"))
     sparse_features = [

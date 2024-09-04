@@ -97,7 +97,7 @@ def test_tvm_t5_onnx(test_kind, test_device):
     )
 
     compiler_cfg = _get_global_compiler_config()
-    # compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER 
+    # compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER 
     # compiler_cfg.tvm_graph_load_path = "onnx_t5_fallback"
     compiler_cfg.retain_tvm_python_files = True
     # compiler_cfg.enable_tvm_unsupported_ops = True

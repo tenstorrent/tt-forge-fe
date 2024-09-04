@@ -27,7 +27,7 @@ template<> const TaggedNode* Node::as<TaggedNode>() const
 }
 template<> const OpNode* Node::as<OpNode>() const
 {
-    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kBudaOp);
+    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
     return dynamic_cast<OpNode const *>(this);
 }
 
@@ -39,17 +39,17 @@ const PyOpNode *Node::as<PyOpNode>() const
 }
 
 template <>
-const BudaOpNode *Node::as<BudaOpNode>() const
+const ForgeOpNode *Node::as<ForgeOpNode>() const
 {
-    TT_ASSERT(this->node_type() == NodeType::kBudaOp);
-    return dynamic_cast<BudaOpNode const *>(this);
+    TT_ASSERT(this->node_type() == NodeType::kForgeOp);
+    return dynamic_cast<ForgeOpNode const *>(this);
 }
 
 template <>
-const BudaNaryTMNode *Node::as<BudaNaryTMNode>() const
+const ForgeNaryTMNode *Node::as<ForgeNaryTMNode>() const
 {
-    TT_ASSERT(this->node_type() == NodeType::kBudaNaryTM);
-    return dynamic_cast<BudaNaryTMNode const *>(this);
+    TT_ASSERT(this->node_type() == NodeType::kForgeNaryTM);
+    return dynamic_cast<ForgeNaryTMNode const *>(this);
 }
 
 template<> TaggedNode* Node::as<TaggedNode>()
@@ -62,7 +62,7 @@ template<> TaggedNode* Node::as<TaggedNode>()
 template <>
 OpNode *Node::as<OpNode>()
 {
-    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kBudaOp);
+    TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
     return dynamic_cast<OpNode *>(this);
 }
 
@@ -74,17 +74,17 @@ PyOpNode *Node::as<PyOpNode>()
 }
 
 template <>
-BudaOpNode *Node::as<BudaOpNode>()
+ForgeOpNode *Node::as<ForgeOpNode>()
 {
-    TT_ASSERT(this->node_type() == NodeType::kBudaOp);
-    return dynamic_cast<BudaOpNode *>(this);
+    TT_ASSERT(this->node_type() == NodeType::kForgeOp);
+    return dynamic_cast<ForgeOpNode *>(this);
 }
 
 template <>
-BudaNaryTMNode *Node::as<BudaNaryTMNode>()
+ForgeNaryTMNode *Node::as<ForgeNaryTMNode>()
 {
-    TT_ASSERT(this->node_type() == NodeType::kBudaNaryTM);
-    return dynamic_cast<BudaNaryTMNode *>(this);
+    TT_ASSERT(this->node_type() == NodeType::kForgeNaryTM);
+    return dynamic_cast<ForgeNaryTMNode *>(this);
 }
 
 template<> InputNode* Node::as<InputNode>()
@@ -191,8 +191,8 @@ std::vector<int> create_permute_xy_order(const int rank) {
     return order;
 }
 
-std::unique_ptr<Node> BudaOpNode::clone(std::string const& name) {
-    std::unique_ptr<BudaOpNode> node = create_node<BudaOpNode>(this->name(), this->op_type());
+std::unique_ptr<Node> ForgeOpNode::clone(std::string const& name) {
+    std::unique_ptr<ForgeOpNode> node = create_node<ForgeOpNode>(this->name(), this->op_type());
     node->Node::clone(this, name);
     node->set_gradient_op(this->is_gradient_op());
     node->set_golden_transforms(this->get_golden_transforms());
@@ -203,7 +203,7 @@ std::unique_ptr<Node> BudaOpNode::clone(std::string const& name) {
     return node;
 }
 
-void BudaOpNode::copy_lowered_op_attributes(PyOpNode *node)
+void ForgeOpNode::copy_lowered_op_attributes(PyOpNode *node)
 {
     epoch_type_ = node->get_epoch_type();
     set_gradient_op(node->is_gradient_op());
@@ -212,15 +212,15 @@ void BudaOpNode::copy_lowered_op_attributes(PyOpNode *node)
     // accumulate df will not be set here, we'll have an overall default
 
     // If there are golden transforms, they operate on forge shapes,
-    // so we need to insert narrowing in order make BUDA compatible
+    // so we need to insert narrowing in order make FORGE compatible
     set_golden_transforms(node->get_golden_transforms());
     if (not get_golden_transforms().empty())
     {
         int r = node->shape().size() > 1 ? node->shape()[-2] : 1;
         int c = node->shape()[-1];
-        if ((r % Shape::BUDA_TILE_DIM) != 0)
+        if ((r % Shape::FORGE_TILE_DIM) != 0)
             add_golden_transform(graphlib::OpType("narrow", {-2, 0, r, r}, {}));
-        if ((c % Shape::BUDA_TILE_DIM) != 0)
+        if ((c % Shape::FORGE_TILE_DIM) != 0)
             add_golden_transform(graphlib::OpType("narrow", {-1, 0, c, c}, {}));
     }
 
@@ -228,7 +228,7 @@ void BudaOpNode::copy_lowered_op_attributes(PyOpNode *node)
     this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
 }
 
-void BudaOpNode::copy_parent_op_attributes(BudaOpNode *node)
+void ForgeOpNode::copy_parent_op_attributes(ForgeOpNode *node)
 {
     epoch_type_ = node->get_epoch_type();
     set_output_df(node->output_df());
@@ -236,7 +236,7 @@ void BudaOpNode::copy_parent_op_attributes(BudaOpNode *node)
     set_accumulate_df(node->accumulate_df());
 }
 
-void BudaNaryTMNode::copy_lowered_op_attributes(PyOpNode *node)
+void ForgeNaryTMNode::copy_lowered_op_attributes(PyOpNode *node)
 {
     epoch_type_ = node->get_epoch_type();
     set_output_df(node->output_df());
@@ -260,7 +260,7 @@ void PyOpNode::copy_parent_op_attributes(PyOpNode *node)
 
 bool OpNode::is_tm() const
 {
-    std::string path = node_type() == NodeType::kPyOp ? "forge.op.eval.forge" : "forge.op.eval.buda";
+    std::string path = node_type() == NodeType::kPyOp ? "forge.op.eval.forge" : "forge.op.eval.lforge";
     py::object eval_module = py::module_::import(path.c_str());
     py::function is_tm = eval_module.attr("is_tm");
     return is_tm(op_type()).cast<bool>();
@@ -383,7 +383,7 @@ std::unique_ptr<Node> OutputNode::clone(std::string const& name) {
 static py::function get_f_instance(IRLevel ir_level)
 {
     auto eval_module =
-        py::module_::import((ir_level == IRLevel::IR_BUDA) ? "forge.op.eval.buda" : "forge.op.eval.forge");
+        py::module_::import((ir_level == IRLevel::IR_FORGE) ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     return eval_module.attr("get_f_instance");
 }
 
@@ -417,7 +417,7 @@ std::unique_ptr<Node> ConstantInputNode::clone(std::string const& name) {
     if (consteval_graph_)
         node->consteval_graph_ = consteval_graph_->clone(node.get());
     node->add_tags(this->as<TaggedNode>()->get_tags());
-    node->sparse_buda = sparse_buda;
+    node->sparse_forge = sparse_forge;
     return node;
 }
 

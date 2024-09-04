@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
-#include "passes/pre_placer_buda_passes.hpp"
+#include "passes/pre_placer_forge_passes.hpp"
 #include "test/common.hpp"
 
 namespace tt::test
@@ -12,13 +12,13 @@ static int count_nop_node(std::vector<graphlib::Node*> const& operands)
     int count = 0;
     for (auto* node : operands)
     {
-        if ((node->node_type() == graphlib::kBudaOp) && (node->as<graphlib::OpNode>()->op_type().op == "nop"))
+        if ((node->node_type() == graphlib::kForgeOp) && (node->as<graphlib::OpNode>()->op_type().op == "nop"))
             count++;
     }
     return count;
 }
 
-struct TestTransposeSrcAUnary : public GraphTest<graphlib::IRLevel::IR_BUDA>
+struct TestTransposeSrcAUnary : public GraphTest<graphlib::IRLevel::IR_FORGE>
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -33,7 +33,7 @@ struct TestTransposeSrcAUnary : public GraphTest<graphlib::IRLevel::IR_BUDA>
     std::string op_name;
 };
 
-struct TestTransposeSrcABinary : public GraphTest<graphlib::IRLevel::IR_BUDA>
+struct TestTransposeSrcABinary : public GraphTest<graphlib::IRLevel::IR_FORGE>
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -52,7 +52,7 @@ struct TestTransposeSrcABinary : public GraphTest<graphlib::IRLevel::IR_BUDA>
 };
 
 
-struct TestTransposeSrcABinaryBoth : public GraphTest<graphlib::IRLevel::IR_BUDA>
+struct TestTransposeSrcABinaryBoth : public GraphTest<graphlib::IRLevel::IR_FORGE>
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -75,7 +75,7 @@ struct TestTransposeSrcABinaryBoth : public GraphTest<graphlib::IRLevel::IR_BUDA
 
 
 // Currently wh_b0 optimization unsupported for nary ops
-struct TestTransposeSrcANary : public GraphTest<graphlib::IRLevel::IR_BUDA>
+struct TestTransposeSrcANary : public GraphTest<graphlib::IRLevel::IR_FORGE>
 {
    protected:
     virtual std::vector<OpType*> create_graph() override

@@ -27,9 +27,9 @@ from test.common import ModuleBuilder, run, run_torch
 
 verify_cfg = VerifyConfig(run_golden=True) # Run backend golden check on all tests in here
 
-class BudaTest(ForgeModule):
+class ForgeTest(ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (1, 1, 64, 64)
@@ -46,12 +46,12 @@ def test_input(pt_format):
     """
     Test basic pytorch types, with no explicit request for conversion
     """
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, dtype=pt_format))
-    act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True, dtype=pt_format))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, dtype=pt_format))
+    act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True, dtype=pt_format))
 
     forge_compile(tt0, "sanity", act1, act2, compiler_cfg=CompilerConfig(enable_training=False), verify_cfg=verify_cfg)
 
@@ -63,23 +63,23 @@ def test_input_with_conversion(pt_format, target_format):
     Test basic pytorch types, with explicit request for conversion to tt dataformat
     """
     if target_format == DataFormat.Bfp8 or target_format == DataFormat.Bfp8_b:
-        # tenstorrent/budabackend#263
+        # tenstorrent/forgebackend#263
         pytest.skip()
 
     if pt_format == torch.int8:
         # Not supported through non-backend path
         pytest.skip()
 
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(mod)
 
     if pt_format == torch.int8:
-        act1 = Tensor.create_from_torch(torch.randint(size=BudaTest.shape, high=100, dtype=pt_format), dev_data_format=target_format)
-        act2 = Tensor.create_from_torch(torch.randint(size=BudaTest.shape, high=100, dtype=pt_format), dev_data_format=target_format)
+        act1 = Tensor.create_from_torch(torch.randint(size=ForgeTest.shape, high=100, dtype=pt_format), dev_data_format=target_format)
+        act2 = Tensor.create_from_torch(torch.randint(size=ForgeTest.shape, high=100, dtype=pt_format), dev_data_format=target_format)
     else:
-        act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, dtype=pt_format), dev_data_format=target_format)
-        act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True, dtype=pt_format), dev_data_format=target_format)
+        act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, dtype=pt_format), dev_data_format=target_format)
+        act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True, dtype=pt_format), dev_data_format=target_format)
 
     forge_compile(tt0, "sanity", act1, act2, compiler_cfg=CompilerConfig(enable_training=False), verify_cfg=verify_cfg)
 
@@ -91,7 +91,7 @@ def test_input_with_conversion_backend(pt_format, target_format):
     Test basic pytorch types, with explicit request for conversion to tt dataformat
     """
 
-    verify_module(BudaTest("input_conversion"), [BudaTest.shape, BudaTest.shape],
+    verify_module(ForgeTest("input_conversion"), [ForgeTest.shape, ForgeTest.shape],
             input_params = [
                 {"data_format": pt_format,
                  "dev_data_format": target_format },
@@ -100,9 +100,9 @@ def test_input_with_conversion_backend(pt_format, target_format):
                  "requires_grad": pt_format != torch.int8} ],
             verify_cfg=VerifyConfig(test_kind=TestKind.INFERENCE))
 
-class BudaDFTest(forge.ForgeModule):
+class ForgeDFTest(forge.ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (64, 64)
@@ -130,10 +130,10 @@ format_ids = ["bfloat", "bfp8b", "bfp4b"]
 @pytest.mark.parametrize("input1_df", formats, ids=format_ids)
 @pytest.mark.parametrize("input2_df", formats, ids=format_ids)
 def test_data_formats(test_kind, test_device, param1_df, param2_df, input1_df, input2_df):
-    mod = BudaDFTest("data_formats")
+    mod = ForgeDFTest("data_formats")
     mod.weights1.set_data_format(param1_df)
     mod.weights2.set_data_format(param2_df)
-    verify_module(mod, [(1, *BudaDFTest.shape), (1, *BudaDFTest.shape)],
+    verify_module(mod, [(1, *ForgeDFTest.shape), (1, *ForgeDFTest.shape)],
             VerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch),
             input_params=[{"dtype": input1_df}, {"dtype": input2_df}])
 

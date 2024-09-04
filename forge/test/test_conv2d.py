@@ -727,11 +727,11 @@ def test_max_pool2d(
     training = test_kind.is_training()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.enable_broadcast_splitting = True # tenstorrent/budabackend#694
+    compiler_cfg.enable_broadcast_splitting = True # tenstorrent/forgebackend#694
     compiler_cfg.enable_conv_prestride = False
 
     if training:
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     df = DataFormat.Float16
     compiler_cfg.default_df_override = df
@@ -852,7 +852,7 @@ def test_avg_pool2d(
     divisor_override
 ):
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_cfg.enable_conv_prestride = False
 
     mod = AvgPool2dModule(

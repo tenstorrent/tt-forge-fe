@@ -81,7 +81,7 @@ def eval(type, attr, ops):
                     result.append(t_ops[0].select(dim, offset + i))
                 else:
                     result.append(zero_slice)
-        return forge.tensor.pad_pytorch_tensor_to_buda(torch.stack(result, dim=dim), [])
+        return forge.tensor.pad_pytorch_tensor_to_forge(torch.stack(result, dim=dim), [])
 
     if type == "gather":
         assert len(attr) == 5, "Gather should have 5 attributes"
@@ -99,7 +99,7 @@ def eval(type, attr, ops):
                 offset += 1
             else:
                 result.append(zero_slice)
-        return forge.tensor.pad_pytorch_tensor_to_buda(torch.stack(result, dim=dim), [])
+        return forge.tensor.pad_pytorch_tensor_to_forge(torch.stack(result, dim=dim), [])
 
     if type == "hslice":
         assert len(attr) == 1, "HSlice should have one attribute, the slice size"
@@ -244,7 +244,7 @@ def eval(type, attr, ops):
         prestrided_activations = prestrided_activations.view(w, 1, z, r * c)
         # prestrided_activations = prestrided_activations.transpose(-1, -2)
 
-        # Buda padding to tile size
+        # Forge padding to tile size
         r = prestrided_activations.shape[-2]
         c = prestrided_activations.shape[-1]
         pad_r = align_up_tile(r) - r
@@ -253,8 +253,8 @@ def eval(type, attr, ops):
 
         return prestrided_activations
 
-    if type == "buda_pad":
-        assert len(attr) == 3, "Buda pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
+    if type == "forge_pad":
+        assert len(attr) == 3, "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
         r_tiles, c_tiles, value = attr
         operand = t_ops[0]
         shape = operand.shape
@@ -266,7 +266,7 @@ def eval(type, attr, ops):
             new_c_size = c_tiles * TILE_DIM
         return torch.nn.functional.pad(operand, [0, new_c_size, 0, new_r_size], value=value)
 
-    if type == "buda_unpad":
+    if type == "forge_unpad":
         assert len(attr) == 4, "Padding unpad should have four attributes. The paddings and the original shape."
         r_tiles, c_tiles, orig_r, orig_c = attr
         orig_r = align_up_tile(orig_r)
@@ -383,7 +383,7 @@ def shape(type, attr, ops, tile_height, tile_width):
         return tuple(target_shape), []
 
     if type == "tile_broadcast":
-        # shape no-op because buda shapes already are at tile-level
+        # shape no-op because forge shapes already are at tile-level
         return ops[0], []
 
     if type == "conv2d_depthwise_weights":
@@ -445,8 +445,8 @@ def shape(type, attr, ops, tile_height, tile_width):
 
         return tuple(reshape_shape), []
 
-    if type == "buda_pad":
-        assert len(attr) == 3, "Buda pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
+    if type == "forge_pad":
+        assert len(attr) == 3, "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
         r_tiles, c_tiles, value = attr
         shape = ops[0]
         # Padding is always given in tiles, so we need to recompute the padding in the original dimension
@@ -456,8 +456,8 @@ def shape(type, attr, ops, tile_height, tile_width):
             shape[-1] += c_tiles * TILE_DIM
         return tuple(shape), []
 
-    if type == "buda_unpad":
-        assert len(attr) == 4, "Buda unpad should have four attributes. The paddings and the original shape."
+    if type == "forge_unpad":
+        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
         r_tiles, c_tiles, orig_r, orig_c = attr
         orig_r = align_up_tile(orig_r)
         orig_c = align_up_tile(orig_c)
@@ -495,5 +495,5 @@ def execution_cycles(type, arch_name, op_model) -> int:
         # TODO
         return 0
     else:
-        assert False, "Only reshape should be a tm op in buda at this point"
+        assert False, "Only reshape should be a tm op in forge at this point"
     

@@ -1255,7 +1255,7 @@ class ForgeTrainer():
                                          performance_trace=perf_level,
                                          backend_opt_level=4,
                                          enable_auto_transposing_placement=True,
-                                        #  backend_cluster_descriptor_path="/proj_sw/user_dev/jrock/forge-falcon-stable-avx/forge/third_party/budabackend/wormhole_2chip_cluster.yaml" if args.num_chips > 1 else None,
+                                        #  backend_cluster_descriptor_path="/proj_sw/user_dev/jrock/forge-falcon-stable-avx/forge/third_party/forgebackend/wormhole_2chip_cluster.yaml" if args.num_chips > 1 else None,
                                          )
         forge.config._get_global_compiler_config().use_interactive_placer = True
 

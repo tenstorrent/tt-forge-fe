@@ -597,7 +597,7 @@ def decompose(type, attr, dc, inputs):
             # Transpose back
             result = dc.op(TransposeTM.create(-2, -1), [result])
 
-        # Undo buda conv shape for golden check
+        # Undo forge conv shape for golden check
         result = dc.op(TransposeTM.create(-2, -1), [result])
         result = dc.op("narrow", [result], (-2, 0, cin*dout, result.shape[-2]))
         result = dc.op("narrow", [result], (-1, 0, yout*xout, result.shape[-1]))

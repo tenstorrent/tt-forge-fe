@@ -86,7 +86,7 @@ def test_afn_dnn_linear(test_kind, test_device, afn_dnn_hidden_units, sparse_fea
 )
 def test_afn_ltl(test_kind, test_device, afn_dnn_hidden_units, sparse_feature_num, dense_feature_num):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     if test_kind.is_training():
         # clip not defined in eltwise unary backward
         _get_global_compiler_config().compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH

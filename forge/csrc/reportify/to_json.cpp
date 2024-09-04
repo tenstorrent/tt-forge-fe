@@ -24,7 +24,7 @@ void to_json(json& j, OpType const& op_type)
     j["op_type"] = {};
     j["op_type"]["type"] = op_type.op;
     j["op_type"]["attrs"] = op_type.attr;
-    j["op_type"]["buda_attrs"] = op_type.buda_attrs;
+    j["op_type"]["forge_attrs"] = op_type.forge_attrs;
     j["op_type"]["named_attrs"] = op_type.named_attrs;
 }
 

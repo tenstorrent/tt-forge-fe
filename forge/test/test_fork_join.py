@@ -110,7 +110,7 @@ class ForkJoin(forge.ForgeModule):
 @pytest.mark.parametrize("format", [DataFormat.Bfp8_b, DataFormat.Float16_b], ids=["bfp8", "fp16"])
 def test_fork_join(test_kind, test_device, format):
     if test_device.arch == forge.BackendDevice.Blackhole:
-         pytest.skip("Skip until BudaBackend#2628 is consumed.")
+         pytest.skip("Skip until ForgeBackend#2628 is consumed.")
 
     microbatch_count = 16
 

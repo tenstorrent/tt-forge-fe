@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include "graph_lib/defines.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "passes/amp.hpp"
 
 namespace tt

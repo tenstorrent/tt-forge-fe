@@ -165,7 +165,7 @@ TEST_H_DISABLE_PADDING_PASS_FLAG = False
 TEST_H_PADDING_PASS_ELEMENT_WISE_FLAG = True
 TEST_H_PADDING_PASS_MATMUL_FLAG = True
 TEST_H_PADDING_PASS_BUFFER_QUEUE_FLAG = False
-TEST_E_PADDING_PASS_DISABLE_BUDA_OP_FLAG = False
+TEST_E_PADDING_PASS_DISABLE_FORGE_OP_FLAG = False
 
 TEST_H_VERIFY_ALL_FLAG = True
 TEST_H_PRINT_GRAPH_VIZ_FLAG = False
@@ -388,7 +388,7 @@ def test_padding_pass_h_argument(
         paddings=paddings
     )
 
-    # BudaDramQueue in combination with t-streaming raises an error on budabackend 
+    # ForgeDramQueue in combination with t-streaming raises an error on forgebackend 
     if TEST_H_PADDING_PASS_BUFFER_QUEUE_FLAG:
         override = OpOverride()
         override.t_stream_dir = "n"

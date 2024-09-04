@@ -80,8 +80,8 @@ op_to_module_map = {
         "conv2d_grouped_weights":   "tm",
         "conv2d_prestride_act":     "tm",
         "tile_broadcast":           "tm",
-        "buda_pad":                 "tm",
-        "buda_unpad":               "tm",
+        "forge_pad":                 "tm",
+        "forge_unpad":               "tm",
 
 
         "constant":  "constant",
@@ -131,10 +131,10 @@ def is_eltwise_nary(op_type):
 
 @lru_cache(maxsize=len(op_to_module_map))
 def _get_module_or_class(op_name):
-    assert op_name in op_to_module_map, f"Buda op module not defined for {op_name}"
+    assert op_name in op_to_module_map, f"Forge op module not defined for {op_name}"
     module_name_or_cls = op_to_module_map[op_name]
     if type(module_name_or_cls) is str:
-        return importlib.import_module("." + module_name_or_cls, package="forge.op.eval.buda")
+        return importlib.import_module("." + module_name_or_cls, package="forge.op.eval.lforge")
     else:
         return module_name_or_cls
 

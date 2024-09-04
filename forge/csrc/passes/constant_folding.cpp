@@ -94,7 +94,7 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
         return;
     }
 
-    TT_ASSERT(size % graphlib::Shape::BUDA_TILE_DIM == 0);
+    TT_ASSERT(size % graphlib::Shape::FORGE_TILE_DIM == 0);
 
     // Handle with a pad_tile op
     auto *pad_tile = graph->add_node(

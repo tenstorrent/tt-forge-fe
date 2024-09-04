@@ -9,7 +9,7 @@
 
 namespace tt {
 
-// Lowering context provide an API for Python to create lowered Buda ops, given a TTForge op and
+// Lowering context provide an API for Python to create lowered Forge ops, given a TTForge op and
 // its operands.
 using Graph = graphlib::Graph;
 using Node = graphlib::Node;
@@ -53,8 +53,8 @@ public:
             graphlib::OpType const& op_type,
             std::vector<NodeContext> const& operands,
             std::string const& tag = "",
-            int tile_height = graphlib::Shape::BUDA_TILE_DIM,
-            int tile_width = graphlib::Shape::BUDA_TILE_DIM);
+            int tile_height = graphlib::Shape::FORGE_TILE_DIM,
+            int tile_width = graphlib::Shape::FORGE_TILE_DIM);
         NodeContext tm(graphlib::OpType const &op_type, NodeContext const &operand);
         NodeContext nary_tm(graphlib::OpType const &op_type, std::vector<NodeContext> const &operands);
         NodeContext constant(float value, std::pair<int, int> rc_dims);
@@ -63,7 +63,7 @@ public:
         NodeContext tensor_with_blob(
             std::shared_ptr<void> value,
             graphlib::Shape shape,
-            sparse::SparseBUDA sparse_buda,
+            sparse::SparseFORGE sparse_forge,
             DataFormat df = DataFormat::Invalid);
 
         void set_output_df(NodeContext node, DataFormat df);

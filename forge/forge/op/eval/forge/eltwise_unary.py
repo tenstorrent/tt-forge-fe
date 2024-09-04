@@ -8,16 +8,16 @@ import torch.nn.functional
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
 from .tanh import Tanh
-from ..buda.log import Log as BudaLog
+from ..lforge.log import Log as ForgeLog
 from .nop import Nop
-from ..buda.nop import Nop as BudaNop
+from ..lforge.nop import Nop as ForgeNop
 from .buffer import Buffer
 
-from ..buda.exp import Exp as BudaExp
+from ..lforge.exp import Exp as ForgeExp
 from .exp import Exp
 from .reciprocal import Reciprocal
 
@@ -196,7 +196,7 @@ def lower(type, attr, lc, ops, outputs):
             threshold = attr[0] - f32_epsilon
         if len(attr) > 1:
             mode = attr[1]
-        lc.op(BudaNop.create(relu_en=True, relu_threshold=threshold, relu_mode=mode), ops)
+        lc.op(ForgeNop.create(relu_en=True, relu_threshold=threshold, relu_mode=mode), ops)
         
     elif type == "leaky_relu":
         lc.op("lrelu", ops, attr, {"slope": attr[0]})
@@ -221,7 +221,7 @@ def lower(type, attr, lc, ops, outputs):
             node_shape = lc.forge_shape()
             tile_height = calculate_tile_size(node_shape[-2])
             if node_shape[-2] % tile_height == 0:
-                lc.op(BudaNop.create(), ops, tile_height=tile_height,tile_width=TILE_DIM)
+                lc.op(ForgeNop.create(), ops, tile_height=tile_height,tile_width=TILE_DIM)
                 return # Don't need to tile bcast to full tile
 
 
@@ -239,7 +239,7 @@ def lower(type, attr, lc, ops, outputs):
             else:
                 const_shape = (1, 1, broadcast_dim, TILE_DIM)
             
-            tensor = torch.zeros(const_shape, dtype=buda_dataformat_to_pytorch_dtype(ops[0].output_df))
+            tensor = torch.zeros(const_shape, dtype=forge_dataformat_to_pytorch_dtype(ops[0].output_df))
             tensor[:, :, 0:output_dim, 0] = 1.0 # row broadcast
             const = lc.tensor(tensor)
             if output_dim % TILE_DIM != 0:
@@ -254,7 +254,7 @@ def lower(type, attr, lc, ops, outputs):
                 const_shape = (ops[0].shape[0], 1, TILE_DIM, broadcast_dim, )
             else:
                 const_shape = (1, 1, TILE_DIM, broadcast_dim, )
-            tensor = torch.zeros(const_shape, dtype=buda_dataformat_to_pytorch_dtype(ops[0].output_df))
+            tensor = torch.zeros(const_shape, dtype=forge_dataformat_to_pytorch_dtype(ops[0].output_df))
             tensor[:, :, 0, 0:output_dim] = 1.0 # column broadcast
             const = lc.tensor(tensor)
             if output_dim % TILE_DIM != 0:
@@ -274,10 +274,10 @@ def lower(type, attr, lc, ops, outputs):
         if bool(training):
             r = ops[0].shape[-2] if len(ops[0].shape) > 1 else 1
             c = ops[0].shape[-1]
-            buda_attr = {"p": p, "seed": seed}
-            lc.op(type, ops, attr + [r, c, 1, 1, True, False], buda_attr) # straigh 1-1 for all other unaries
+            forge_attr = {"p": p, "seed": seed}
+            lc.op(type, ops, attr + [r, c, 1, 1, True, False], forge_attr) # straigh 1-1 for all other unaries
         else:
-            lc.op(BudaNop.create(), ops)
+            lc.op(ForgeNop.create(), ops)
     elif type == "gelu":
         lc.op("gelu", ops, attr, {"approximate_mode": "true" if attr[0] == "tanh" else "false"})
     elif type == "gelu_derivative":
@@ -293,7 +293,7 @@ def lower(type, attr, lc, ops, outputs):
             max_value = 65504.0
 
         if (min_value == 0) and (max_value >= 0):
-            lc.op(BudaNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"), (ops[0], ))
+            lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"), (ops[0], ))
             return
 
         shape = list(ops[0].shape.as_list())
@@ -317,26 +317,26 @@ def lower(type, attr, lc, ops, outputs):
 
         res = lc.op("subtract", (ops[0], min_value_tensor))
                 # x - min_value
-        res = lc.op(BudaNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res, ))
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res, ))
                 # ReLU(x - min_value)
         res = lc.op("subtract", (diff_tensor, res))
                 # diff_value - ReLU(x - min_value), diff = max - min
-        res = lc.op(BudaNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res, ))
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res, ))
                 # ReLU(diff_value - ReLU(x - min_value))
         lc.op("subtract", (max_value_tensor, res))
                 # max_value - ReLU(diff_value - ReLU(x - min_value))
 
     elif type == "pow":
         if isinstance(attr[0], int):
-            buda_attr = {"exp": attr[0]}
-            lc.op("power", ops, attr, buda_attr)
+            forge_attr = {"exp": attr[0]}
+            lc.op("power", ops, attr, forge_attr)
         else:
             exponent_value = attr[0]
             shape = list(ops[0].shape.as_list()) 
-            ln_x = lc.op(BudaLog.create(), ops)
+            ln_x = lc.op(ForgeLog.create(), ops)
             y_ln_x = lc.op("multiply", (lc.tensor(torch.zeros(shape) + exponent_value), ln_x)) 
             approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-            lc.op(BudaExp.create(approximate_mode=approximate_mode), [y_ln_x])          
+            lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])          
 
     else:
         # Find proper tile sizes
@@ -344,11 +344,11 @@ def lower(type, attr, lc, ops, outputs):
             node_shape = list(ops[0].shape)
             tile_height = calculate_tile_size(node_shape[-2])
             tile_width = calculate_tile_size(node_shape[-1])
-            buda_attr = {} if tile_height == TILE_DIM else {"vector": "r"}
+            forge_attr = {} if tile_height == TILE_DIM else {"vector": "r"}
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
-            buda_attr = {}
-        lc.op(type, ops, attr, buda_attr, "", tile_height, TILE_DIM) # straigh 1-1 for all other unaries
+            forge_attr = {}
+        lc.op(type, ops, attr, forge_attr, "", tile_height, TILE_DIM) # straigh 1-1 for all other unaries
 
 def backward(type, attr, ac, operand, inputs, output, grad):
 
@@ -522,7 +522,7 @@ def decompose(type, attr, dc, inputs):
         # We do that by taking complement of [0, 0, 1, 0, 0, 1] => [1, 1, 0, 1, 1, 0] and multiplying it 
         # with size(6) and add it to [0,0,2,0,0,5] => [6,6,2,6,6,5] and just find argmin of this array which is 2.
 
-        data_type = buda_dataformat_to_pytorch_dtype(inp_node.output_df)
+        data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
         indices_shape = [dim if i == axis + len(input_shape) else 1 for i, dim in enumerate(input_shape)]
 
         indices = torch.arange(input_shape[axis], dtype=data_type).reshape(indices_shape)
@@ -570,7 +570,7 @@ def decompose(type, attr, dc, inputs):
 
     elif type == "gelu" and bool(int(os.environ.get("FORGE_DECOMPOSE_GELU", "0"))):
         inp_node = inputs[0]
-        data_type = buda_dataformat_to_pytorch_dtype(inp_node.output_df)
+        data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
         one_half = dc.tensor(torch.ones((1), dtype=data_type) * 0.5)
         sqrt_2pi = dc.tensor(torch.ones((1), dtype=data_type) * 0.79788)
         one = dc.tensor(torch.ones((1), dtype=data_type))

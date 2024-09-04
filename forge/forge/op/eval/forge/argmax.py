@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.abs import Abs as BudaAbs
+from ..lforge.abs import Abs as ForgeAbs
 
 
 class Argmax(PyEltwiseUnaryOp):
@@ -81,7 +81,7 @@ class Argmax(PyEltwiseUnaryOp):
         if axis >= 0:
             axis -= len(input_shape)
 
-        data_type = buda_dataformat_to_pytorch_dtype(inp_node.output_df)
+        data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
         range_shape = [
             dim if i == axis + len(input_shape) else 1
             for i, dim in enumerate(input_shape)

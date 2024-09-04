@@ -10,7 +10,7 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
 import numpy as np
 from ..common import to_torch_operands
-from forge.tensor import pytorch_dtype_to_buda_dataformat
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 from .reciprocal import Reciprocal
 
 STRING_TO_TORCH_DTYPE = {
@@ -46,7 +46,7 @@ def eval(type, attr, ops):
             STRING_TO_UPPER_LIMIT[out_dtype],)
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
 
-    elif type == "buda_quantize":
+    elif type == "forge_quantize":
         zero_point, axis, out_dtype = attr
         input_float = ops[0].float()
         scale = ops[1].float()
@@ -76,7 +76,7 @@ def eval(type, attr, ops):
         output_float = (input_int8 - zero_point) * scale
         return output_float
 
-    elif type == "buda_dequantize":
+    elif type == "forge_dequantize":
         zero_point, axis = attr
         input_int8 = ops[0].float()
         scale = ops[1].float()
@@ -111,7 +111,7 @@ def eval(type, attr, ops):
 
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
 
-    elif type == "buda_requantize":
+    elif type == "forge_requantize":
         zp, axis, rounding, out_dtype = attr
         input_int32 = ops[0].float()
         scale = ops[1].float()
@@ -128,7 +128,7 @@ def shape(type, attr, ops):
     op0 = ops[0]
     op1 = ops[1]
 
-    if type == "quantize" or type == "buda_quantize":
+    if type == "quantize" or type == "forge_quantize":
         axis = attr[1]
         if axis < 0:
             axis = len(ops[0]) + axis
@@ -144,7 +144,7 @@ def shape(type, attr, ops):
             if op0[dim] != op1[dim]:
                 broadcast.append((1, dim - len(op0), op0[dim]))
 
-    if type == "buda_requantize" or type == "buda_dequantize":
+    if type == "forge_requantize" or type == "forge_dequantize":
         for dim in range(1, len(ops[0])):
             if ops[0][dim] != ops[1][dim]:
                 broadcast.append((1, dim - len(ops[0]), ops[0][dim]))
@@ -152,11 +152,11 @@ def shape(type, attr, ops):
 
 
 def lower(type, attr, lc, ops, outputs):
-    if type == "buda_quantize":
+    if type == "forge_quantize":
         lc.op("quantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM) # straight 1-1 for all other binaries
-    elif type == "buda_dequantize":
+    elif type == "forge_dequantize":
         lc.op("dequantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM) # straight 1-1 for all other binaries
-    elif type == "buda_requantize":
+    elif type == "forge_requantize":
         lc.op("requantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM)
 
     else:
@@ -169,10 +169,10 @@ def decompose(type, attr, dc, inputs):
     if type == "quantize":
         zero_point, axis, out_dtype = attr
         torch_dtype = STRING_TO_TORCH_DTYPE[out_dtype]
-        buda_dtype = pytorch_dtype_to_buda_dataformat(torch_dtype)
+        forge_dtype = pytorch_dtype_to_forge_dataformat(torch_dtype)
         scale = inputs[1]
         scale = dc.op(Reciprocal.create(), [scale], output_df=scale.output_df)
-        out = dc.op("buda_quantize", [inputs[0], scale], attrs=attr, output_df=buda_dtype)
+        out = dc.op("forge_quantize", [inputs[0], scale], attrs=attr, output_df=forge_dtype)
         dc.fuse(out)
         return
 
@@ -214,8 +214,8 @@ def decompose(type, attr, dc, inputs):
         new_scale = dc.op("multiply", [inp_scale, recip_out_scale],output_df=out_scale.output_df,)
 
         torch_dtype = STRING_TO_TORCH_DTYPE[out_dtype]
-        buda_dtype = pytorch_dtype_to_buda_dataformat(torch_dtype)
-        out = dc.op("buda_requantize", [act, new_scale], attrs=(out_zp, axis, rounding, out_dtype),output_df=buda_dtype)
+        forge_dtype = pytorch_dtype_to_forge_dataformat(torch_dtype)
+        out = dc.op("forge_requantize", [act, new_scale], attrs=(out_zp, axis, rounding, out_dtype),output_df=forge_dtype)
         dc.fuse(out)
         return
 
@@ -239,6 +239,6 @@ def decompose(type, attr, dc, inputs):
                 scale_shape = scale_shape + [1]
 
 
-        out = dc.op("buda_dequantize", [act, scale], attrs=attr,)
+        out = dc.op("forge_dequantize", [act, scale], attrs=attr,)
         dc.fuse(out)
         return

@@ -36,7 +36,7 @@ def test_tvm_SqueezeBertEncoder(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER 
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER 
 
     if test_kind.is_training():
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
@@ -89,7 +89,7 @@ def test_tvm_SqueezeBertPooler(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER 
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER 
 
     if test_kind.is_training():
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH

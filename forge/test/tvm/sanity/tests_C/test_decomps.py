@@ -185,7 +185,7 @@ def test_reshape(input_shape):
     assert torch.all(goal == res.value())
 
     mod = PyTorchModule("axelnet_reshape", AlexnetReshape(newshape, input_shape))
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER # Avoid no grids error
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER # Avoid no grids error
     verify_module(
         mod,
         (input_shape,),
@@ -507,7 +507,7 @@ def test_vslice(input_shape):
     assert torch.all(goal == result.value())
 
     mod = PyTorchModule("axelnet_reshape", AlexnetReshape(newshape, input_shape))
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER # Avoid no grids error
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER # Avoid no grids error
     verify_module(
         mod,
         (input_shape,),
@@ -561,7 +561,7 @@ def test_vstack(input_shape):
     assert torch.all(goal == result.value())
 
     mod = PyTorchModule("axelnet_reshape", AlexnetReshape(newshape, input_shape))
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER # Avoid no grids error
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER # Avoid no grids error
     verify_module(
         mod,
         (input_shape,),
@@ -626,7 +626,7 @@ def test_full_flatten(input_shape):
     assert torch.all(result.value() == goal)
     
     mod = PyTorchModule("axelnet_reshape", AlexnetReshape(newshape, input_shape))
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER # Avoid no grids error
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER # Avoid no grids error
     verify_module(
         mod,
         (input_shape,),

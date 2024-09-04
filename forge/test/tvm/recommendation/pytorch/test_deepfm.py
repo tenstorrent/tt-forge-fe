@@ -116,7 +116,7 @@ def test_DeepFM(test_device, use_fm, hidden_size, sparse_feature_num, dense_feat
     outputs = output_q.get()
 
     
-    assert compare_tensor_to_golden("deepfm", torch_outputs[0], outputs[0].value(), is_buda=True, relative_atol=relative_atol)
+    assert compare_tensor_to_golden("deepfm", torch_outputs[0], outputs[0].value(), is_forge=True, relative_atol=relative_atol)
 
 
 def test_deepfm_fm(test_kind, test_device):

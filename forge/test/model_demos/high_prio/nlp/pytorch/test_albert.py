@@ -41,7 +41,7 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
                 compiler_cfg.enable_enumerate_u_kt = False
 
         elif test_device.arch == BackendDevice.Wormhole_B0:
-            # until tenstorrent/budabackend#1120 is resolved
+            # until tenstorrent/forgebackend#1120 is resolved
             forge.config.set_configuration_options(
                 enable_auto_fusing=False,
                 enable_enumerate_u_kt=False,

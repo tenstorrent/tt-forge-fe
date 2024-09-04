@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.abs import Abs as BudaAbs
+from ..lforge.abs import Abs as ForgeAbs
 
 
 class Abs(PyEltwiseUnaryOp):
@@ -59,7 +59,7 @@ class Abs(PyEltwiseUnaryOp):
             tile_height, tile_width = TILE_DIM, TILE_DIM
 
         lc.op(
-            BudaAbs.create(vector=vector),
+            ForgeAbs.create(vector=vector),
             tensors,
             tile_height=tile_height,
             tile_width=tile_width,

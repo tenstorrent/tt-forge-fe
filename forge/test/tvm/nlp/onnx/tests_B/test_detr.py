@@ -47,7 +47,7 @@ def test_detr_encoder_layer(test_kind, test_device):
         compiler_cfg.compile_depth = CompileDepth.FULL
     else:
         # Unsupported HW op: heaviside
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     # Configure PyTorch module
     pytorch_module = DetrModel.from_pretrained(
@@ -116,7 +116,7 @@ def test_detr_decoder_layer(test_kind, test_device):
         compiler_cfg.compile_depth = CompileDepth.FULL
     else:
         # Unsupported HW op: heaviside
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     # Configure PyTorch module
     pytorch_module = DetrModel.from_pretrained(

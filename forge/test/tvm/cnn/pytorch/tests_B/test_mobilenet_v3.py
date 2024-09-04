@@ -71,7 +71,7 @@ def test_mobilenet_v3_large(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     model = download_model(torch.hub.load, 
         "pytorch/vision:v0.10.0", "mobilenet_v3_large", pretrained=True

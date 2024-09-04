@@ -84,7 +84,7 @@ def test_linear_looped(training, recompute):
     if not training and recompute:
         pytest.skip()  # inference + recompute is the same as just inference
 
-    class BudaTest(ForgeModule):
+    class ForgeTest(ForgeModule):
         shape = (1, 1, 64, 64)
 
         def __init__(self, name):
@@ -101,14 +101,14 @@ def test_linear_looped(training, recompute):
 
             return m2g
 
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
 
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
-    mod.set_parameter("weights2", torch.rand(*BudaTest.shape, requires_grad=True))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
+    mod.set_parameter("weights2", torch.rand(*ForgeTest.shape, requires_grad=True))
 
     forge_compile(
         tt0,

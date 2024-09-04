@@ -6,7 +6,7 @@ from typing import Optional
 import torch
 from loguru import logger
 
-from .tensor import Tensor, TensorShape, TensorBase, pytorch_dtype_to_buda_dataformat, pad_pytorch_tensor_to_buda, buda_dataformat_to_pytorch_dtype
+from .tensor import Tensor, TensorShape, TensorBase, pytorch_dtype_to_forge_dataformat, pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
 from .forgeglobal import lazy_trace_data
 from forge._C import DataFormat
 import forge
@@ -61,12 +61,12 @@ class Parameter(TensorBase):
         if dev_data_format is not None:
             self._data_format = dev_data_format
         elif self._value is not None:
-            self._data_format = pytorch_dtype_to_buda_dataformat(self._value.dtype)
+            self._data_format = pytorch_dtype_to_forge_dataformat(self._value.dtype)
         else:
             self._data_format = DataFormat.Float32 # default
 
     def __repr__(self):
-        ret = f"Buda Parameter {self.get_name()} {self.shape}"
+        ret = f"Forge Parameter {self.get_name()} {self.shape}"
         if self.has_value():
             ret = f"{ret}\n {self.value()}"
         return ret
@@ -140,17 +140,17 @@ class Parameter(TensorBase):
         lazy_trace_data(value)
         self._value = value
         if self._data_format is None:
-            self._data_format = pytorch_dtype_to_buda_dataformat(self._value.dtype, fp32_fallback=self.fp32_fallback)
+            self._data_format = pytorch_dtype_to_forge_dataformat(self._value.dtype, fp32_fallback=self.fp32_fallback)
 
 
-    def value(self, is_buda = False) -> torch.Tensor:
+    def value(self, is_forge = False) -> torch.Tensor:
         """
-        Return parameter value, optionally padded to buda dimensions.
+        Return parameter value, optionally padded to forge dimensions.
         """
 
         if self._value is not None:
             # parameters are never tile-broadcast
-            ret = pad_pytorch_tensor_to_buda(self._value, []) if is_buda else self._value
+            ret = pad_pytorch_tensor_to_forge(self._value, []) if is_forge else self._value
             ret.requires_grad = self.requires_grad
             return ret
 
@@ -185,7 +185,7 @@ class Parameter(TensorBase):
         Return this parameter's data format, using PyTorch types
         """
         assert self._data_format is not None, "No data type set for parameter yet"
-        return buda_dataformat_to_pytorch_dtype(self._data_format)
+        return forge_dataformat_to_pytorch_dtype(self._data_format)
 
     def set_data_format(self, df: DataFormat):
         """
@@ -198,7 +198,7 @@ class Parameter(TensorBase):
         """
         self._data_format = df
         if self._value is not None:
-            self._value = self._value.type(buda_dataformat_to_pytorch_dtype(df))
+            self._value = self._value.type(forge_dataformat_to_pytorch_dtype(df))
 
     @classmethod
     def create_from_torch(cls, torch_tensor: torch.Tensor) -> "Parameter":

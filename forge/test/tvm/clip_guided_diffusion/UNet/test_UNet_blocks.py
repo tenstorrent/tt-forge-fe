@@ -174,7 +174,7 @@ def test_tvm_unet_resblock_downsample_resblock(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True))
     
     evaluate_framework_vs_forge(model, ret, act1, torch_emb)
@@ -214,7 +214,7 @@ def test_tvm_unet_resblock_upsample_resblock(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True))
     
     evaluate_framework_vs_forge(model, ret, act1, torch_emb)
@@ -255,7 +255,7 @@ def test_tvm_unet_resblock_attention_block(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True),)
     
     evaluate_framework_vs_forge(model, ret, act1, torch_emb)
@@ -286,7 +286,7 @@ def test_tvm_unet_resblock_attention_block_resblock(training=False, recompute=Fa
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True),)
 
     evaluate_framework_vs_forge(model, ret, act1, torch_emb)
@@ -316,7 +316,7 @@ def test_tvm_unet_resblock_attention_block_downsample_resblock(training=False, r
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True),)
     
     evaluate_framework_vs_forge(model, ret, act1, torch_emb)
@@ -356,7 +356,7 @@ def test_tvm_group_norm(shape, num_groups, training=False, recompute=False):
         compiler_cfg=CompilerConfig(
         enable_training=training, 
         enable_recompute=recompute, 
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER),
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER),
         verify_cfg=VerifyConfig(intermediates=True),)
     
     evaluate_framework_vs_forge(model, ret, act1)
@@ -394,7 +394,7 @@ def test_tvm_unet_upsample(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute, 
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True),)
 
     evaluate_framework_vs_forge(model, ret, act1)
@@ -430,7 +430,7 @@ def test_tvm_avg_pool(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True),)
     
     evaluate_framework_vs_forge(model, ret, act1)
@@ -494,7 +494,7 @@ def test_tvm_attention_block(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training,
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER
         ),
         verify_cfg=VerifyConfig(intermediates=True),
     )
@@ -532,7 +532,7 @@ def test_tvm_timestep_embed_sequential(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True))
     
     evaluate_framework_vs_forge(model, ret, act1, torch_emb)
@@ -570,7 +570,7 @@ def test_tvm_timestep_embedding(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute, 
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=VerifyConfig(intermediates=True),)
     
     evaluate_framework_vs_forge(model, ret, act1)

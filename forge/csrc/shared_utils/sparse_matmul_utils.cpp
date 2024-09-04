@@ -65,14 +65,14 @@ static bool comp_zcr_ublocked(SparseIndex const& a, SparseIndex const& b, int u_
     return a.z < b.z;
 }
 
-std::ostream& operator<<(std::ostream& out, SparseBUDA::Layout layout)
+std::ostream& operator<<(std::ostream& out, SparseFORGE::Layout layout)
 {
     switch (layout)
     {
-        case SparseBUDA::Layout::Default: out << "SparseBUDA::Layout::Default"; break;
-        case SparseBUDA::Layout::ZMajor: out << "SparseBUDA::Layout::ZMajor"; break;
-        case SparseBUDA::Layout::ZMajorDataflow: out << "SparseBUDA::Layout::ZMajorDataflow"; break;
-        default: out << "SparseBUDA::Layout::Unknown"; break;
+        case SparseFORGE::Layout::Default: out << "SparseFORGE::Layout::Default"; break;
+        case SparseFORGE::Layout::ZMajor: out << "SparseFORGE::Layout::ZMajor"; break;
+        case SparseFORGE::Layout::ZMajorDataflow: out << "SparseFORGE::Layout::ZMajorDataflow"; break;
+        default: out << "SparseFORGE::Layout::Unknown"; break;
     }
     return out;
 }
@@ -270,7 +270,7 @@ class StripAllocator
             new_size = orig_size * n;
             end_ptr = base_ptr() + orig_size;
             from_end = end_ptr - reinterpret_cast<std::uint8_t*>(prev_strip_ptr);
-            buda_strips.resize(new_size / sizeof(std::uint32_t), 0);
+            forge_strips.resize(new_size / sizeof(std::uint32_t), 0);
         }
 
         // Duplicate the section N-1 times
@@ -294,23 +294,23 @@ class StripAllocator
             alignof(strip_info_struct));
     }
 
-    std::pair<std::vector<std::int32_t>, int> finish_buda_strips() const
+    std::pair<std::vector<std::int32_t>, int> finish_forge_strips() const
     {
         if (prev_strip_ptr)
         {
             prev_strip_ptr->f.last_strip_in_row = true;
             prev_strip_ptr->f.last_strip_in_tile = true;
         }
-        return std::make_pair(buda_strips, num_strips);
+        return std::make_pair(forge_strips, num_strips);
     }
 
    private:
-    std::uint8_t* base_ptr() { return reinterpret_cast<std::uint8_t*>(buda_strips.data()); }
-    std::size_t allocation_size_bytes() const { return buda_strips.size() * sizeof(std::uint32_t); }
+    std::uint8_t* base_ptr() { return reinterpret_cast<std::uint8_t*>(forge_strips.data()); }
+    std::size_t allocation_size_bytes() const { return forge_strips.size() * sizeof(std::uint32_t); }
     std::size_t allocate_tile()
     {
         auto start = allocation_size_bytes();
-        buda_strips.resize(buda_strips.size() + kTileSize / sizeof(std::uint32_t), 0);
+        forge_strips.resize(forge_strips.size() + kTileSize / sizeof(std::uint32_t), 0);
         return start;
     }
 
@@ -359,7 +359,7 @@ class StripAllocator
     }
 
    private:
-    std::vector<std::int32_t> buda_strips;
+    std::vector<std::int32_t> forge_strips;
     std::size_t strip_offset = 0;
     strip_info_struct* prev_strip_ptr = nullptr;
     int num_strips = 0;
@@ -549,17 +549,17 @@ static std::pair<std::vector<std::int32_t>, int> encode_strips(
 
     allocator.repeat(t_factor_c, m_k * dimz, sparse_ublock_idx_bits);
 
-    return allocator.finish_buda_strips();
+    return allocator.finish_forge_strips();
 }
 
 static void print_info_indices(
-    std::vector<std::int32_t> const& buda_indices, int sparse_ublock_idx_bits)
+    std::vector<std::int32_t> const& forge_indices, int sparse_ublock_idx_bits)
 {
     using IndexType = std::remove_extent_t<decltype(strip_info_struct::F::index_array)>;
     int ublock_tile_index_bytes = 16 - sparse_ublock_idx_bits;
-    std::uint8_t const* base_ptr = reinterpret_cast<std::uint8_t const*>(buda_indices.data());
-    TT_ASSERT((int)buda_indices.size() % (TILE_DIM * TILE_DIM) == 0);
-    for (int tile_id = 0; tile_id < (int)(buda_indices.size() / (TILE_DIM * TILE_DIM)); ++tile_id)
+    std::uint8_t const* base_ptr = reinterpret_cast<std::uint8_t const*>(forge_indices.data());
+    TT_ASSERT((int)forge_indices.size() % (TILE_DIM * TILE_DIM) == 0);
+    for (int tile_id = 0; tile_id < (int)(forge_indices.size() / (TILE_DIM * TILE_DIM)); ++tile_id)
     {
         fmt::print("tile[{}]\n", tile_id);
         strip_info_struct const* info = reinterpret_cast<strip_info_struct const*>(
@@ -603,7 +603,7 @@ static void print_info_indices(
     }
 }
 
-SparseBUDA::SparseBUDA(
+SparseFORGE::SparseFORGE(
     std::vector<SparseCOO> sparse_zs,
     std::vector<SparseIndex> sparse_indices,
     std::vector<std::int64_t> sparse_shape,
@@ -623,7 +623,7 @@ SparseBUDA::SparseBUDA(
 
     TT_ASSERT(sparse_shape[1] % TILE_DIM == 0);
     std::uint32_t sparse_ct = sparse_shape[1] / TILE_DIM;
-    TT_ASSERT(sparse_ct < SparseBUDA::kMaxSparseIndexValue, "Sparse matrix too wide");
+    TT_ASSERT(sparse_ct < SparseFORGE::kMaxSparseIndexValue, "Sparse matrix too wide");
 }
 
 enum EncodingBitErrors
@@ -634,21 +634,21 @@ enum EncodingBitErrors
 
 // Returns negative value if failed
 //
-int SparseBUDA::get_sparse_tile_ptr_bits(int grid_r, int t_factor_r, int u_rt) const
+int SparseFORGE::get_sparse_tile_ptr_bits(int grid_r, int t_factor_r, int u_rt) const
 {
     // TODO: num_sparse_tiles should be calculated per core, and max should be used as the result of this fn
     // TODO: also account for fracture factor!
 
     std::uint32_t num_sparse_tiles = (std::uint32_t)(sparse_uniq_tiles.size() / (TILE_DIM * TILE_DIM));
     TT_ASSERT(num_sparse_tiles > 0);
-    if (num_sparse_tiles > SparseBUDA::kMaxSparseTiles)
+    if (num_sparse_tiles > SparseFORGE::kMaxSparseTiles)
     {
         return MaxSparseTilesExceeded;
     }
 
     // TODO: This can be divided by fracture factor
     std::uint32_t max_ublocks_r = this->sparse_shape[0] / (TILE_DIM * grid_r * t_factor_r * u_rt);
-    if (max_ublocks_r > SparseBUDA::kMaxUblocksR)
+    if (max_ublocks_r > SparseFORGE::kMaxUblocksR)
     {
         return MaxUBlocksRExceeded;
     }
@@ -660,21 +660,21 @@ int SparseBUDA::get_sparse_tile_ptr_bits(int grid_r, int t_factor_r, int u_rt) c
 
 // Returns negative value if failed
 //
-int SparseBUDA::get_sparse_ublock_idx_bits(int grid_r, int t_factor_r, int u_rt) const
+int SparseFORGE::get_sparse_ublock_idx_bits(int grid_r, int t_factor_r, int u_rt) const
 {
     // TODO: num_sparse_tiles should be calculated per core, and max should be used as the result of this fn
     // TODO: also account for fracture factor!
 
     std::uint32_t num_sparse_tiles = (std::uint32_t)(sparse_uniq_tiles.size() / (TILE_DIM * TILE_DIM));
     TT_ASSERT(num_sparse_tiles > 0);
-    if (num_sparse_tiles > SparseBUDA::kMaxSparseTiles)
+    if (num_sparse_tiles > SparseFORGE::kMaxSparseTiles)
     {
         return MaxSparseTilesExceeded;
     }
 
     // TODO: This can be divided by fracture factor
     std::uint32_t max_ublocks_r = this->sparse_shape[0] / (TILE_DIM * grid_r * t_factor_r * u_rt);
-    if (max_ublocks_r > SparseBUDA::kMaxUblocksR)
+    if (max_ublocks_r > SparseFORGE::kMaxUblocksR)
     {
         return MaxUBlocksRExceeded;
     }
@@ -685,7 +685,7 @@ int SparseBUDA::get_sparse_ublock_idx_bits(int grid_r, int t_factor_r, int u_rt)
 }
 
 
-int SparseBUDA::get_max_u_kt(int grid_r, int t_factor_r, int u_rt, int sparse_tile_ptr_bits) const
+int SparseFORGE::get_max_u_kt(int grid_r, int t_factor_r, int u_rt, int sparse_tile_ptr_bits) const
 {
     int ublock_bits = 16;
     if (sparse_tile_ptr_bits == 0)
@@ -701,7 +701,7 @@ int SparseBUDA::get_max_u_kt(int grid_r, int t_factor_r, int u_rt, int sparse_ti
     return (1 << ublock_bits);
 }
 
-SparseBUDA::Layout SparseBUDA::create_layout(bool z_major, int fracture_factor)
+SparseFORGE::Layout SparseFORGE::create_layout(bool z_major, int fracture_factor)
 {
     Layout layout = Layout::Default;
     if (z_major and (fracture_factor == 1) and not env_as<bool>("FORGE_SPARSE_DISABLE_LAYOUT_DATAFLOW"))
@@ -712,16 +712,16 @@ SparseBUDA::Layout SparseBUDA::create_layout(bool z_major, int fracture_factor)
 }
 
 static std::vector<SparseCOO> vslice_layout(
-    SparseCOO const& sparse, int grid_r, int t_factor_r, int bcast_factor, SparseBUDA::Layout layout)
+    SparseCOO const& sparse, int grid_r, int t_factor_r, int bcast_factor, SparseFORGE::Layout layout)
 {
-    if (layout == SparseBUDA::Layout::Default)
+    if (layout == SparseFORGE::Layout::Default)
         return sparse.vslice(grid_r * t_factor_r);
 
-    if (layout == SparseBUDA::Layout::ZMajorDataflow and ((sparse.rt() / grid_r / t_factor_r) % bcast_factor != 0))
+    if (layout == SparseFORGE::Layout::ZMajorDataflow and ((sparse.rt() / grid_r / t_factor_r) % bcast_factor != 0))
         return {};
 
     int dflow_factor =
-        (layout == SparseBUDA::Layout::ZMajorDataflow) ? (sparse.rt() / grid_r / t_factor_r / bcast_factor) : 1;
+        (layout == SparseFORGE::Layout::ZMajorDataflow) ? (sparse.rt() / grid_r / t_factor_r / bcast_factor) : 1;
     std::vector<SparseCOO> vsliced = sparse.vslice(grid_r * t_factor_r * bcast_factor * dflow_factor);
     std::vector<SparseCOO> slices;
     slices.reserve(grid_r * t_factor_r);
@@ -731,7 +731,7 @@ static std::vector<SparseCOO> vslice_layout(
         std::vector<SparseCOO> b_slices;
         b_slices.reserve(grid_r * dflow_factor * bcast_factor);
 
-        if (layout == SparseBUDA::Layout::ZMajorDataflow)
+        if (layout == SparseFORGE::Layout::ZMajorDataflow)
         {
             for (int r = 0; r < grid_r; r++)
             {
@@ -748,7 +748,7 @@ static std::vector<SparseCOO> vslice_layout(
         }
         else
         {
-            TT_ASSERT(layout == SparseBUDA::Layout::ZMajor);
+            TT_ASSERT(layout == SparseFORGE::Layout::ZMajor);
             for (int b = 0; b < bcast_factor; b++)
             {
                 for (int r = 0; r < grid_r; r++)
@@ -769,7 +769,7 @@ static std::vector<SparseCOO> vslice_layout(
     return slices;
 }
 
-std::unordered_map<int, std::vector<int>> SparseBUDA::get_par_t_values(
+std::unordered_map<int, std::vector<int>> SparseFORGE::get_par_t_values(
     int grid_r,
     std::vector<int> potential_ts,
     std::vector<SparseCOO>& sparse_zs,
@@ -921,7 +921,7 @@ std::unordered_map<int, std::vector<int>> SparseBUDA::get_par_t_values(
 }
 
 std::tuple<SparseTiles, EncodingTiles, std::vector<uint32_t>, std::vector<uint32_t>, std::vector<int>>
-SparseBUDA::get_sparse_tiles_and_encodings(
+SparseFORGE::get_sparse_tiles_and_encodings(
     int grid_r,
     int t_factor_r,
     int t_factor_c,
@@ -949,7 +949,7 @@ SparseBUDA::get_sparse_tiles_and_encodings(
     int virtual_grid_r = grid_r * fracture_factor;
 
     SparseTiles sparse_tiles;
-    EncodingTiles buda_indices;
+    EncodingTiles forge_indices;
     std::vector<int> num_strips_per_row;
 
     std::vector<SparseCOO> slice_ztr;  // |z * t * r * b|
@@ -992,12 +992,12 @@ SparseBUDA::get_sparse_tiles_and_encodings(
             sparse_ublock_idx_bits,
             t_factor_r,
             t_factor_c);
-        buda_indices.push_back(encoded);
+        forge_indices.push_back(encoded);
         num_strips_per_row.push_back(num_strips);
         if (env_as<bool>("FORGE_SPARSE_PRINT_INDICES"))
         {
             fmt::print("Grid_r[{}] {} {}\n", g_r, layout, t_factor_r);
-            print_info_indices(buda_indices.back(), sparse_ublock_idx_bits);
+            print_info_indices(forge_indices.back(), sparse_ublock_idx_bits);
         }
     }
 
@@ -1021,28 +1021,28 @@ SparseBUDA::get_sparse_tiles_and_encodings(
         sparse_tiles[idx].insert(sparse_tiles[idx].end(), sparse_max_len - sparse_tiles[idx].size(), 0);
     }
 
-    // Pad buda indices
+    // Pad forge indices
     uint32_t indices_max_len =
         static_cast<uint32_t>(std::max_element(
-                                  buda_indices.begin(),
-                                  buda_indices.end(),
+                                  forge_indices.begin(),
+                                  forge_indices.end(),
                                   [](const std::vector<std::int32_t>& lhs, const std::vector<std::int32_t>& rhs)
                                   { return lhs.size() < rhs.size(); })
                                   ->size());
     // round up to make divisible by 1024
     indices_max_len = (indices_max_len + TILE_DIM * TILE_DIM - 1) / (TILE_DIM * TILE_DIM) * (TILE_DIM * TILE_DIM);
-    for (size_t idx = 0; idx < buda_indices.size(); idx++)
+    for (size_t idx = 0; idx < forge_indices.size(); idx++)
     {
-        buda_indices[idx].insert(buda_indices[idx].end(), indices_max_len - buda_indices[idx].size(), 0);
+        forge_indices[idx].insert(forge_indices[idx].end(), indices_max_len - forge_indices[idx].size(), 0);
     }
 
     std::vector<uint32_t> sparse_shape = {1, 1, grid_r * TILE_DIM, sparse_max_len * fracture_factor / TILE_DIM};
     std::vector<uint32_t> encodings_shape = {1, 1, grid_r * TILE_DIM, indices_max_len * fracture_factor / TILE_DIM};
 
-    return std::make_tuple<>(sparse_tiles, buda_indices, sparse_shape, encodings_shape, num_strips_per_row);
+    return std::make_tuple<>(sparse_tiles, forge_indices, sparse_shape, encodings_shape, num_strips_per_row);
 }
 
-int SparseBUDA::get_encoding_tiles_per_core_estimate(int grid_r, int t_factor_r, int u_rt, int u_kt) const
+int SparseFORGE::get_encoding_tiles_per_core_estimate(int grid_r, int t_factor_r, int u_rt, int u_kt) const
 {
     // strip index (with last_* bits)   4b
     // number of ublocks                2b
@@ -1190,7 +1190,7 @@ int SparseBUDA::get_encoding_tiles_per_core_estimate(int grid_r, int t_factor_r,
     return (max_space + tile_bytes - 1) / tile_bytes;
 }
 
-int SparseBUDA::get_sparse_tiles_per_core_estimate(int grid_r, int t_factor_r) const
+int SparseFORGE::get_sparse_tiles_per_core_estimate(int grid_r, int t_factor_r) const
 {
     TT_ASSERT(this->sparse_shape[0] / TILE_DIM >= grid_r * t_factor_r);
     TT_ASSERT(this->sparse_shape[0] / TILE_DIM % (grid_r * t_factor_r) == 0);
@@ -1219,12 +1219,12 @@ int SparseBUDA::get_sparse_tiles_per_core_estimate(int grid_r, int t_factor_r) c
         ->size();
 }
 
-SparseBUDA compress_sparse_tensor_and_strip_info(
+SparseFORGE compress_sparse_tensor_and_strip_info(
     std::vector<SparseCOO> const& sparse_zs, int bcast_factor, int fracture_factor)
 {
     int zdim = (int)sparse_zs.size();
     auto [sparse_indices, tiles] = compress_unique_tiles(sparse_zs);
-    return SparseBUDA(sparse_zs, sparse_indices, sparse_zs[0].shape, tiles, zdim, bcast_factor, fracture_factor);
+    return SparseFORGE(sparse_zs, sparse_indices, sparse_zs[0].shape, tiles, zdim, bcast_factor, fracture_factor);
 }
 
 std::ostream& operator<<(std::ostream& out, const SparseCOO::SortOrder& sort_order)

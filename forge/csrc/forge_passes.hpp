@@ -26,7 +26,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
     graphlib::Graph *graph, py::object compiler_cfg_object);
 
 // Run lowering passes
-std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
+std::unique_ptr<graphlib::Graph> run_pre_placer_forge_passes(
     graphlib::Graph *graph,
     const DeviceConfig &device_config,
     std::vector<std::uint32_t> chip_ids = {0},

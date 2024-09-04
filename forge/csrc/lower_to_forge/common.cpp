@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "utils/assert.hpp"
 
 namespace tt {
@@ -85,7 +85,7 @@ inline void to_netlist(std::ostream &os, std::variant<Ts...> const &variant)
     std::visit([&os](auto &&value) { to_netlist(os, value); }, variant);
 }
 
-std::ostream &operator<<(std::ostream &os, const BudaName &name)
+std::ostream &operator<<(std::ostream &os, const ForgeName &name)
 {
     bool needs_quotes = contains(name.name, " ") or contains(name.name, "/");
     if (needs_quotes)
@@ -96,7 +96,7 @@ std::ostream &operator<<(std::ostream &os, const BudaName &name)
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const BudaBlocks &bb) {
+std::ostream &operator<<(std::ostream &os, const ForgeBlocks &bb) {
     TT_ASSERT(bb.z > 0);
     TT_ASSERT(bb.mblock_m > 0);
     TT_ASSERT(bb.mblock_n > 0);
@@ -108,7 +108,7 @@ std::ostream &operator<<(std::ostream &os, const BudaBlocks &bb) {
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os, const BudaOpAttr &attr)
+std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr)
 {
     to_netlist(os, attr);
     return os;

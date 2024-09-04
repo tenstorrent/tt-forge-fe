@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "forge/csrc/lower_to_buda/common.hpp"
+#include "forge/csrc/lower_to_forge/common.hpp"
 #include "tt/runtime/runtime.h"
 #include "tt/runtime/types.h"
 #include "utils/assert.hpp"
@@ -76,7 +76,7 @@ static torch::ScalarType dt_to_torch_scalar_type(target::DataType df)
     log_fatal(LogTTDevice, "Unhandled dtype {}", target::EnumNameDataType(df));
 }
 
-void pad_to_buda_shape(torch::Tensor & tensor)
+void pad_to_forge_shape(torch::Tensor & tensor)
 {
     auto tt_device = tensor.device();
     auto cpu_tensor = tensor.to(torch::kCPU);

@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.exp import Exp as BudaExp
+from ..lforge.exp import Exp as ForgeExp
 
 
 class Exp(PyEltwiseUnaryOp):
@@ -46,7 +46,7 @@ class Exp(PyEltwiseUnaryOp):
     def lower(self, lc, tensors, outputs):
         assert len(tensors) == 1, "Exp should  have one input"
         approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(BudaExp.create(approximate_mode=approximate_mode), tensors)
+        lc.op(ForgeExp.create(approximate_mode=approximate_mode), tensors)
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

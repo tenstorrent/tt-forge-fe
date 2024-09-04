@@ -13,16 +13,16 @@
 
 namespace tt {
 
-struct BudaBlocks {
+struct ForgeBlocks {
     int z;
     int ublock_rt, ublock_ct;
     int mblock_m, mblock_n;
 };
 
-struct BudaName
+struct ForgeName
 {
     std::string name;
-    BudaName(std::string const &name) : name(name) {}
+    ForgeName(std::string const &name) : name(name) {}
 };
 
 struct DramLoc
@@ -39,17 +39,17 @@ struct DramLoc
     }
 };
 
-using BudaOpAttrQueueDramLocs = std::vector<DramLoc>;
+using ForgeOpAttrQueueDramLocs = std::vector<DramLoc>;
 
-using BudaKernelBroadcastInputs = std::unordered_map<std::string, int>;
+using ForgeKernelBroadcastInputs = std::unordered_map<std::string, int>;
 
-enum class BudaQueueLayout
+enum class ForgeQueueLayout
 {
     Tilized,
     Flat
 };
 
-using BudaOpAttr = ::std::variant<
+using ForgeOpAttr = ::std::variant<
     std::string,
     bool,
     int,
@@ -58,14 +58,14 @@ using BudaOpAttr = ::std::variant<
     std::vector<int>,
     std::vector<std::tuple<int, int, int>>,
     std::vector<std::tuple<int, int, int, int>>,
-    BudaOpAttrQueueDramLocs,
-    BudaKernelBroadcastInputs>;
-using BudaOpAttrs = ::std::map<std::string, BudaOpAttr>;
+    ForgeOpAttrQueueDramLocs,
+    ForgeKernelBroadcastInputs>;
+using ForgeOpAttrs = ::std::map<std::string, ForgeOpAttr>;
 
-std::ostream &operator<<(std::ostream &os, const BudaName &name);
-std::ostream &operator<<(std::ostream &os, const BudaBlocks &bb);
+std::ostream &operator<<(std::ostream &os, const ForgeName &name);
+std::ostream &operator<<(std::ostream &os, const ForgeBlocks &bb);
 std::ostream &operator<<(std::ostream &os, const DramLoc &attr);
-std::ostream &operator<<(std::ostream &os, const BudaOpAttr &attr);
+std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr);
 
 enum class ExpPrecision : uint8_t
 {

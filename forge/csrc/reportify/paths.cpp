@@ -41,7 +41,7 @@ std::string get_default_reportify_path(const std::string& test_name) {
 }
 
 std::string get_pass_reports_relative_directory() {
-  std::string retstring("/buda_reports/Passes/");
+  std::string retstring("/forge_reports/Passes/");
 
   return retstring;
 }

@@ -18,9 +18,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaLeakyReluTest(ForgeModule):
+class ForgeLeakyReluTest(ForgeModule):
     """
-        Buda Test 1
+        Forge Test 1
 
     """
 
@@ -37,7 +37,7 @@ class BudaLeakyReluTest(ForgeModule):
         shape,
         alpha
     ):
-        super().__init__("Buda Test 1")
+        super().__init__("Forge Test 1")
 
         self.testname = "Operator LeakyRelu, Test 1"
         self.shape = shape
@@ -45,14 +45,14 @@ class BudaLeakyReluTest(ForgeModule):
         
         self.train_param = forge.Parameter(*self.shape, requires_grad=True)
 
-        input = BudaLeakyReluTest.INPUTS_DISTRIBUTION(
-            BudaLeakyReluTest.INPUTS_RANGE_MIN, 
-            BudaLeakyReluTest.INPUTS_RANGE_MAX).sample(self.shape)
+        input = ForgeLeakyReluTest.INPUTS_DISTRIBUTION(
+            ForgeLeakyReluTest.INPUTS_RANGE_MIN, 
+            ForgeLeakyReluTest.INPUTS_RANGE_MAX).sample(self.shape)
         self.inputs = [Tensor.create_from_torch(input)]
 
-        weights = BudaLeakyReluTest.WEIGHTS_DISTRIBUTION(
-            BudaLeakyReluTest.WEIGHTS_RANGE_MIN, 
-            BudaLeakyReluTest.WEIGHTS_RANGE_MAX).sample(self.shape)
+        weights = ForgeLeakyReluTest.WEIGHTS_DISTRIBUTION(
+            ForgeLeakyReluTest.WEIGHTS_RANGE_MIN, 
+            ForgeLeakyReluTest.WEIGHTS_RANGE_MAX).sample(self.shape)
         weights.requires_grad = True
         self.set_parameter("train_param", weights)
 

@@ -40,7 +40,7 @@ def eval(type, attr, ops):
         for i in range(len(t_ops)):
             res += torch.nn.functional.pad(t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1]))
 
-        # To buda shape
+        # To forge shape
         res = res.reshape(1, res.shape[1], res.shape[2] * res.shape[3], 1)
         res = res.transpose(1, 3)
 

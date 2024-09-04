@@ -26,9 +26,9 @@ import forge.query as query
 
 verify_cfg = VerifyConfig(run_golden=True) # Run backend golden check on all tests in here
 
-class BudaTest(ForgeModule):
+class ForgeTest(ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (1, 1, 64, 64)
@@ -47,7 +47,7 @@ class BudaTest(ForgeModule):
 
 class ForkJoinTest(ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (1, 1, 64, 64)
@@ -69,18 +69,18 @@ class ForkJoinTest(ForgeModule):
 def test_epoch_break():
     training = False
 
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     sgd_optimizer = forge.optimizers.SGD(
         learning_rate=0.5, parameters=mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
-    act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
+    act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True))
 
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
-    mod.set_parameter("weights2", torch.rand(*BudaTest.shape, requires_grad=True))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
+    mod.set_parameter("weights2", torch.rand(*ForgeTest.shape, requires_grad=True))
     sgd_optimizer.set_optimizer_parameters()
 
     compiler_cfg = CompilerConfig(enable_training=training, compile_depth=CompileDepth.BALANCER_PASS)
@@ -100,18 +100,18 @@ def test_epoch_break():
 def test_chip_break():
     training = False
 
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     sgd_optimizer = forge.optimizers.SGD(
         learning_rate=0.5, parameters=mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer, chip_ids=[0, 1, 2])
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
-    act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
+    act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True))
 
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
-    mod.set_parameter("weights2", torch.rand(*BudaTest.shape, requires_grad=True))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
+    mod.set_parameter("weights2", torch.rand(*ForgeTest.shape, requires_grad=True))
     sgd_optimizer.set_optimizer_parameters()
 
     compiler_cfg = CompilerConfig(enable_training=training, compile_depth=CompileDepth.BALANCER_PASS)
@@ -172,11 +172,11 @@ def test_epoch_break_fork_join():
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
-    act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
+    act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True))
 
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
-    mod.set_parameter("weights2", torch.rand(*BudaTest.shape, requires_grad=True))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
+    mod.set_parameter("weights2", torch.rand(*ForgeTest.shape, requires_grad=True))
     sgd_optimizer.set_optimizer_parameters()
 
     compiler_cfg = CompilerConfig(enable_training=training, compile_depth=CompileDepth.BALANCER_PASS)

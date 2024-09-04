@@ -57,17 +57,17 @@ def test_bert_cross_entropy_loss_torch():
     pytorch_masked_lm_labels = torch.empty(128, dtype=torch.long).random_(
         TEST_VOCAB_SAMPLING_RANGE
     )
-    buda_masked_lm_labels = torch.zeros(*mlm_labels_shape)
+    forge_masked_lm_labels = torch.zeros(*mlm_labels_shape)
 
     for i, class_label in enumerate(pytorch_masked_lm_labels.view(-1)):
-        buda_masked_lm_labels[:, :, i, class_label] = 1.0
+        forge_masked_lm_labels[:, :, i, class_label] = 1.0
 
     pytorch_loss = torch.nn.CrossEntropyLoss()(
         predictions.view(-1, TEST_VOCAB_SIZE), pytorch_masked_lm_labels.view(-1)
     )
     pytorch_ops_loss = cross_entropy_loss_torch_ops(
         predictions.view(-1, TEST_VOCAB_SIZE),
-        buda_masked_lm_labels.view(TEST_SEQUENCE_LENGTH, TEST_VOCAB_SIZE),
+        forge_masked_lm_labels.view(TEST_SEQUENCE_LENGTH, TEST_VOCAB_SIZE),
     )
 
     assert torch.allclose(pytorch_loss, pytorch_ops_loss)
@@ -89,19 +89,19 @@ def test_bert_cross_entropy_loss_forge(training, recompute):
     pytorch_masked_lm_labels = torch.empty(128, dtype=torch.long).random_(
         TEST_VOCAB_SAMPLING_RANGE
     )
-    buda_masked_lm_labels = torch.zeros(mlm_labels_shape)
+    forge_masked_lm_labels = torch.zeros(mlm_labels_shape)
 
     for i, class_label in enumerate(pytorch_masked_lm_labels.view(-1)):
-        buda_masked_lm_labels[0, 0, i, class_label] = 1.0
+        forge_masked_lm_labels[0, 0, i, class_label] = 1.0
 
     predictions_tensor = Tensor.create_from_torch(predictions)
-    buda_masked_lm_labels_tensor = Tensor.create_from_torch(buda_masked_lm_labels)
+    forge_masked_lm_labels_tensor = Tensor.create_from_torch(forge_masked_lm_labels)
 
     ret = forge_compile(
         tt0,
         "cross_entropy_loss",
         predictions_tensor,
-        buda_masked_lm_labels_tensor,
+        forge_masked_lm_labels_tensor,
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute

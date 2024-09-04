@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "test/common.hpp"
-#include "passes/pre_placer_buda_passes.hpp"
+#include "passes/pre_placer_forge_passes.hpp"
 
 namespace tt::test
 {

@@ -183,11 +183,11 @@ class PyEltwiseNaryOp(PyEltwiseOp):
         return True
 
 
-class BudaOp(OpTypeWrapper):
+class ForgeOp(OpTypeWrapper):
     """
-    Buda IR Op interface
+    Forge IR Op interface
 
-    All Buda IR ops must inherit and implement this interface
+    All Forge IR ops must inherit and implement this interface
     """
 
     @classmethod
@@ -199,7 +199,7 @@ class BudaOp(OpTypeWrapper):
 
         For example:
 
-        class Transpose(BudaOp):
+        class Transpose(ForgeOp):
             @classmethod
             def create(cls, dim0, dim1):
                 self = cls("transpose") # <- OpTypeWrapper base class __init__
@@ -242,11 +242,11 @@ class BudaOp(OpTypeWrapper):
         raise NotImplemented()
 
 
-class BudaTM(BudaOp):
+class ForgeTM(ForgeOp):
     """
-    Buda IR TM interface
+    Forge IR TM interface
 
-    All Buda IR tms must inherit and implement this interface
+    All Forge IR tms must inherit and implement this interface
     """
 
     def is_tm(self) -> bool:
@@ -265,7 +265,7 @@ class BudaTM(BudaOp):
         return False
 
 
-class BudaEltwiseOp(BudaOp):
+class ForgeEltwiseOp(ForgeOp):
     def is_tm(self) -> bool:
         return False
 
@@ -282,16 +282,16 @@ class BudaEltwiseOp(BudaOp):
         return False
 
 
-class BudaEltwiseBinaryOp(BudaEltwiseOp):
+class ForgeEltwiseBinaryOp(ForgeEltwiseOp):
     def is_eltwise_binary(self) -> bool:
         return True
 
 
-class BudaEltwiseUnaryOp(BudaEltwiseOp):
+class ForgeEltwiseUnaryOp(ForgeEltwiseOp):
     def is_eltwise_unary(self) -> bool:
         return True
 
 
-class BudaEltwiseNaryOp(BudaEltwiseOp):
+class ForgeEltwiseNaryOp(ForgeEltwiseOp):
     def is_eltwise_nary(self) -> bool:
         return True
