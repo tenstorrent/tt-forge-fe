@@ -4,6 +4,7 @@
 #include "graph_lib/defines.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node_types.hpp"
+#include "lower_to_buda/common.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "python_bindings_common.hpp"
 
@@ -203,6 +204,47 @@ void PassesModule(py::module &m_passes)
             },
             py::arg("type"),
             py::arg("operands"),
+            py::arg("attrs") = std::vector<int>{},
+            py::arg("copy_tms") = true,
+            py::arg("dont_decompose") = false,
+            py::arg("optimize_hoist") = false,
+            py::arg("output_df") = DataFormat::Invalid)
+        .def(
+            "op_with_named_attrs",
+            [](tt::DecomposingContext &self,
+               std::variant<std::string, py::object> const &type,
+               std::vector<NodeContext> const &operands,
+               BudaOpAttrs const &named_attrs,
+               std::vector<graphlib::OpType::Attr> const &attrs = {},
+               bool copy_tms = true,
+               bool dont_decompose = false,
+               bool optimize_hoist = false,
+               DataFormat output_df = DataFormat::Invalid)
+            {
+                if (std::holds_alternative<std::string>(type))
+                {
+                    TT_LOG_ASSERT(
+                        not has_newstyle_interface(std::get<std::string>(type), false),
+                        "Error decomposing a type with old OpType interface, expects new OpType interface {}",
+                        std::get<std::string>(type));
+                    return self.op(
+                        graphlib::OpType(std::get<std::string>(type), attrs, {}, named_attrs),
+                        operands,
+                        copy_tms,
+                        dont_decompose,
+                        optimize_hoist,
+                        output_df);
+                }
+                else
+                {
+                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
+                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
+                    return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
+                }
+            },
+            py::arg("type"),
+            py::arg("operands"),
+            py::arg("named_attrs"),
             py::arg("attrs") = std::vector<int>{},
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,
