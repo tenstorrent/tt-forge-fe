@@ -13,8 +13,9 @@ from forge._C import DataFormat
 from forge._C.graph import Graph, RuntimeTensorTransform
 from forge._C.runtime import run_binary, Binary
 from forge.utils import list_as_json
-from forge.tensor import Tensor, get_post_const_eval_tensors
+from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors
 from forge.module import Module
+from forge.typing import AnyTensor
 
 
 import torch
@@ -304,7 +305,7 @@ class CompiledModel:
         self.loss_module = loss_module
         self.optimizer = optimizer
 
-    def __call__(self, *inputs: torch.Tensor) -> List[torch.Tensor]:
+    def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         """
         Run inference on the compiled model.
 
@@ -319,9 +320,13 @@ class CompiledModel:
             Output tensors
         """
         self.inputs = [*inputs]
+        inputs_and_parameters = [*inputs, *self.compiled_graph_state.get_ordered_constant_tensors(), *self.compiled_graph_state.get_ordered_parameter_tensors()]
+
+        if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
+            logger.info("Converting inputs and parameters to PyTorch tensors...")
+            inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
 
         logger.info(f"Running model {self.compiled_graph_state.graph.get_name()} on device...")
-        inputs_and_parameters = [*inputs, *self.compiled_graph_state.get_ordered_constant_tensors(), *self.compiled_graph_state.get_ordered_parameter_tensors()]
         outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
         
         if self.compiled_graph_state.graph.training():
@@ -331,7 +336,7 @@ class CompiledModel:
 
         return outputs
 
-    def forward(self, *inputs: torch.Tensor) -> List[torch.Tensor]:
+    def forward(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         return self(inputs)
 
     def backward(self, loss_grad: torch.Tensor) -> List[torch.Tensor]:

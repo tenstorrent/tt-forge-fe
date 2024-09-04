@@ -17,7 +17,7 @@ def Conv2d(
     bias: Optional[Union[Tensor, Parameter]] = None,
     stride: int = 1,
     padding: Union[int, str, List] = "same",
-    dilation: int = 1,
+    dilation: Union[int, List] = 1,
     groups: int = 1,
     channel_last: bool = False,
 ) -> Tensor:
@@ -45,6 +45,8 @@ def Conv2d(
     """
     if isinstance(stride, int):
         stride = [stride] * 2
+    if isinstance(dilation, int):
+        dilation = [dilation]*2
 
     padding = conv2d_padding_to_canonical(padding, (weights.shape[2], weights.shape[3]))
 
@@ -52,29 +54,20 @@ def Conv2d(
     if bias is not None:
         inputs.append(bias)
 
-    # Attrs are:
-    # [
-    #     stride_height,
-    #     stride_width,
-    #     dilation,
-    #     groups,
-    #     padding_left,
-    #     padding_right,
-    #     padding_top,
-    #     padding_bottom,
-    #     is_convtranspose2d,
-    #     output_height_transpose,
-    #     output_width_transpose,
-    #     stride_transpose,
-    #     channel_last,
-    # ]
-    attrs = stride + [dilation, groups] + padding + [False, 0, 0, 0, channel_last]
-
     return op(
         "conv2d",
         name,
         *inputs,
-        attrs=attrs,
+        stride_height=stride[0],
+        stride_width=stride[1],
+        dilation_height=dilation[0],
+        dilation_width=dilation[1],
+        groups=groups,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        channel_last=channel_last,
     ).get_tensor()
 
 
