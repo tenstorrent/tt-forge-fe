@@ -1,0 +1,8 @@
+rm perf.json
+
+# emulate runs on harvested machines
+export FORGE_FORCE_EMULATE_HARVESTED=1
+
+forge/test/benchmark/benchmark.py -m simple_add -c default -opt 4 -o perf.json --auto_transpose
+forge/test/benchmark/benchmark.py -m simple_add -c default1 -opt 4 -o perf.json --auto_transpose
+forge/test/benchmark/benchmark.py -m simple_add -c default2 -opt 4 -o perf.json --auto_transpose

@@ -1,0 +1,11 @@
+name: On PR
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  docker-build:
+    uses: ./.github/workflows/docker-build.yml
+    secrets: inherit

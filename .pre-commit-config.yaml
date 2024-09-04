@@ -1,0 +1,6 @@
+repos:
+   - repo: https://github.com/espressif/check-copyright/
+    rev: v1.0.3
+    hooks:
+      - id: check-copyright
+        args: ['--config', '.github/check-spdx.yaml']
