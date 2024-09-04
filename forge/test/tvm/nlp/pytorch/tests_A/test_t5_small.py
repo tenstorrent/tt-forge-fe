@@ -200,7 +200,7 @@ def test_t5_encoder_pipeline(test_device):
     outputs = output_q.get()
 
     torch_outputs = t5_model(input_ids, attention_mask=attention_mask)
-    assert compare_tensor_to_golden("t5_encoder", torch_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("t5_encoder", torch_outputs[0], outputs[0].value(), is_forge=True)
 
 
 @pytest.mark.skip(reason="Tested with fallback")
@@ -295,7 +295,7 @@ def test_t5_small_fallback(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_cfg.enable_tvm_constant_prop = True
     
 

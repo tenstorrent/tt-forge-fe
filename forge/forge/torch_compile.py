@@ -205,7 +205,7 @@ def _compile(module, aten_module, module_name, sample_inputs, device, compiler_c
     fe_compile_result = forge.forge_compile_torch(
         module_name,
         module,
-        _capture.get_buda_graph(),
+        _capture.get_forge_graph(),
         *[forge.Tensor.create_from_torch(sample_input.to("cpu")) for sample_input in [g for gs in graph_inputs for g in gs]]
     )
 

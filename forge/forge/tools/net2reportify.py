@@ -115,7 +115,7 @@ def net2reportify(netlist_name, netlist, extract_graphs=[], verbose=False):
     write_reportify_graph(
         netlist_name,
         reportify_graph,
-        f"buda_reports/Passes/{netlist_name}.buda",
+        f"forge_reports/Passes/{netlist_name}.forge",
         verbose=verbose,
     )
 
@@ -134,9 +134,9 @@ def net2placement(
 
     if device_yaml is None:
         if netlist["devices"]["arch"] == "grayskull":
-            device_yaml = "third_party/budabackend/device/grayskull_120_arch.yaml"
+            device_yaml = "third_party/forgebackend/device/grayskull_120_arch.yaml"
         elif netlist["devices"]["arch"] == "wormhole_b0":
-            device_yaml = "third_party/budabackend/device/wormhole_b0_80_arch.yaml"
+            device_yaml = "third_party/forgebackend/device/wormhole_b0_80_arch.yaml"
         else:
             raise RuntimeError(f"Unknown device type {netlist['devices']['arch']}")
 

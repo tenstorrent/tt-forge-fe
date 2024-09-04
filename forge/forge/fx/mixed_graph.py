@@ -552,7 +552,7 @@ class MixedGraph:
 
 
     def generate_schedule(self, subgraph_idx: int, aten_module: torch.fx.GraphModule) -> Schedule:
-        # For given subgraph, figure out a schedule of FX and Buda graphs that need to run, and how to map inputs to outputs
+        # For given subgraph, figure out a schedule of FX and Forge graphs that need to run, and how to map inputs to outputs
         schedule = Schedule(
                 self.input_nodes_per_subgraph[subgraph_idx], 
                 self.output_nodes_per_subgraph[subgraph_idx], 

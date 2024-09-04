@@ -4,7 +4,7 @@
 #
 # Tests for testing of pad operator
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -80,7 +80,7 @@ def test_hstack_hslice(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaPadTest(shape={shape}, pad={pad})'
+    architecture = f'models.{model}.ForgePadTest(shape={shape}, pad={pad})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch)
     tt0.place_module(model)
@@ -91,7 +91,7 @@ def test_hstack_hslice(
         compiler_cfg=CompilerConfig(
                         enable_training=training,
                         enable_recompute=recompute,
-                        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER, # some reshapes decomposed into unsupported MMs
+                        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER, # some reshapes decomposed into unsupported MMs
                      ), 
         verify_cfg=VerifyConfig()
     )

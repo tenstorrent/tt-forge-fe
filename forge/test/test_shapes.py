@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 """
-Testing of various shapes that are not natively supported by Buda
+Testing of various shapes that are not natively supported by Forge
 """
 
 import pytest

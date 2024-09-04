@@ -18,7 +18,7 @@ from loguru import logger
 
 from ...forgeglobal import TILE_DIM
 
-from ...tensor import narrow_buda_tensor_to_pytorch, pad_pytorch_tensor_to_buda, buda_dataformat_to_pytorch_dtype
+from ...tensor import narrow_forge_tensor_to_pytorch, pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
 from forge import DataFormat, MathFidelity
 
 def to_torch_operands(*ops):
@@ -62,22 +62,22 @@ def cast_for_cpu_eval(t_ops, op_name=None):
                 original_type = torch.int8
     return t_ops, original_type
 
-def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], is_buda: bool, df: DataFormat) -> torch.Tensor:
+def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], is_forge: bool, df: DataFormat) -> torch.Tensor:
     dim_r, dim_c = dims
     if dim_r < 0:
-        dim_r = TILE_DIM if is_buda else 0
+        dim_r = TILE_DIM if is_forge else 0
     if dim_c < 0:
-        dim_c = TILE_DIM if is_buda else 0
+        dim_c = TILE_DIM if is_forge else 0
 
     tensor_r = dim_r
     tensor_c = dim_c
-    if is_buda and (tensor_c % 32 != 0):
+    if is_forge and (tensor_c % 32 != 0):
         tensor_c += 32 - tensor_c % 32
-    if is_buda and (tensor_r % 32 != 0):
+    if is_forge and (tensor_r % 32 != 0):
         tensor_r += 32 - tensor_r % 32
 
-    dtype = buda_dataformat_to_pytorch_dtype(df)
-    if is_buda:
+    dtype = forge_dataformat_to_pytorch_dtype(df)
+    if is_forge:
         tensor = torch.zeros(1, 1, tensor_r, tensor_c, dtype=dtype)
         tensor[:, :, 0:dim_r, 0:dim_c] = value
     else:
@@ -93,30 +93,30 @@ def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], is_bu
 
     return tensor
 
-def create_constant_tensor_from_tile(tile: List[float], is_buda: bool, df: DataFormat) -> torch.Tensor:
+def create_constant_tensor_from_tile(tile: List[float], is_forge: bool, df: DataFormat) -> torch.Tensor:
 
-    assert is_buda, "Tile tensors should only be created for buda graphs"
+    assert is_forge, "Tile tensors should only be created for forge graphs"
     assert len(tile) == TILE_DIM * TILE_DIM, "Incorrect number of elements in tile"
     tensor = torch.FloatTensor(tile)
     tensor = tensor.reshape(1, 1, TILE_DIM, TILE_DIM)
-    tensor = tensor.type(buda_dataformat_to_pytorch_dtype(df))
+    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
-def create_constant_tensor_from_tensor(tensor_values: List[float], tensor_shape: List[int], is_buda: bool, df: DataFormat) -> torch.Tensor:
+def create_constant_tensor_from_tensor(tensor_values: List[float], tensor_shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
     assert prod(tensor_shape) == len(tensor_values)
     tensor = torch.FloatTensor(tensor_values)
     tensor = tensor.reshape(tensor_shape)
-    if is_buda:
-        tensor = pad_pytorch_tensor_to_buda(tensor, [])
-    tensor = tensor.type(buda_dataformat_to_pytorch_dtype(df))
+    if is_forge:
+        tensor = pad_pytorch_tensor_to_forge(tensor, [])
+    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
-def create_constant_tensor(flat_data: List[float], shape: List[int], is_buda: bool, df: DataFormat) -> torch.Tensor:
+def create_constant_tensor(flat_data: List[float], shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
     tensor = torch.FloatTensor(flat_data)
     tensor = tensor.reshape(*shape)
-    if is_buda:
-        tensor = pad_pytorch_tensor_to_buda(tensor)
-    tensor = tensor.type(buda_dataformat_to_pytorch_dtype(df))
+    if is_forge:
+        tensor = pad_pytorch_tensor_to_forge(tensor)
+    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
 
@@ -212,7 +212,7 @@ def compare_with_golden_pcc(golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
         calculated = calculated.flatten()[0]
         return torch.allclose(golden, calculated, atol=atol, rtol=rtol)
 
-def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, is_buda=False, rtol=None, atol=None, pcc=None, warning_only=False, relative_atol = None, verify_cfg = None):
+def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, is_forge=False, rtol=None, atol=None, pcc=None, warning_only=False, relative_atol = None, verify_cfg = None):
     # Convert golden to pytorch tensor for comparisons
     if isinstance(golden, (tf.Tensor, tf.Variable)):
         golden = torch.from_numpy(golden.numpy())
@@ -223,8 +223,8 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
     if golden.dtype == torch.bool and calculated.dtype == torch.bool:
         return bool(torch.all(golden == calculated))
 
-    if is_buda:
-        calculated = narrow_buda_tensor_to_pytorch(calculated, golden.shape)
+    if is_forge:
+        calculated = narrow_forge_tensor_to_pytorch(calculated, golden.shape)
 
     if rtol is None or (isinstance(rtol, dict) and (golden.dtype not in rtol or rtol[golden.dtype] is None)):
         if verify_cfg is not None and golden.dtype in verify_cfg.rtol and verify_cfg.rtol[golden.dtype] is not None:
@@ -449,7 +449,7 @@ def data_format_to_int(df: DataFormat) -> int:
 
 #                 # requant/dequant part of matmul is calculated separately for now, and we need to pass
 #                 # matmul output format here
-#                 if "requant" in op_model.buda_op_attrs() or "dequant" in op_model.buda_op_attrs():
+#                 if "requant" in op_model.forge_op_attrs() or "dequant" in op_model.forge_op_attrs():
 #                     desc.data_format = DataFormat.Int32
 
 #         if type == "depthwise":
@@ -462,15 +462,15 @@ def data_format_to_int(df: DataFormat) -> int:
 #                 desc.version = 2
 
 #         desc.op_attr = op_model.get_reduce_dim()
-#         # desc.op_attr is only used to capture the dim of reduce - ideally, we should support tt::BudaOpAttrs in
+#         # desc.op_attr is only used to capture the dim of reduce - ideally, we should support tt::ForgeOpAttrs in
 #         # tt_op_model_desc - when we do, uncomment the line below
-#         # desc.op_attr = op_model.buda_op_attrs()
+#         # desc.op_attr = op_model.forge_op_attrs()
 
-#         # If reduce_z, we manually copy the "z" param to special field in tt_op_model_desc - we should pass all buda attrs
-#         if type == "reduce" and op_model.buda_op_attrs()["dim"] == "z":
-#             desc.reduce_z = op_model.buda_op_attrs()["z"]
+#         # If reduce_z, we manually copy the "z" param to special field in tt_op_model_desc - we should pass all forge attrs
+#         if type == "reduce" and op_model.forge_op_attrs()["dim"] == "z":
+#             desc.reduce_z = op_model.forge_op_attrs()["z"]
 
-#     attrs = op_model.buda_op_attrs()
+#     attrs = op_model.forge_op_attrs()
 #     # If the attributes contain approximate mode set it.
 #     if 'approximate_mode' in attrs:
 #         desc.approx_mode = attrs['approximate_mode'] == 'true'

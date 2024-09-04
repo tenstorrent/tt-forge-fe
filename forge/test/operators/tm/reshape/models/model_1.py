@@ -18,9 +18,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaReshapeTest(ForgeModule):
+class ForgeReshapeTest(ForgeModule):
     """
-        Buda Test 1
+        Forge Test 1
 
     """
 
@@ -28,7 +28,7 @@ class BudaReshapeTest(ForgeModule):
         self,
         old_shape,
         new_shape):
-        super().__init__("Buda Test 1")
+        super().__init__("Forge Test 1")
 
         assert np.prod(old_shape) == np.prod(new_shape), "Size of a tensor should stay the same"
 

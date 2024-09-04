@@ -46,7 +46,7 @@ def test_conv2d():
         forge_mod = torch.compile(model, backend=compile_torch, dynamic=False)
         result = forge_mod(inputs)
         result = result.to("cpu")
-        assert forge.op.eval.compare_tensor_to_golden(f"conv2d", golden, result, is_buda=True, pcc=0.99)
+        assert forge.op.eval.compare_tensor_to_golden(f"conv2d", golden, result, is_forge=True, pcc=0.99)
     else: 
         from forge.verify.backend import verify_module
         mod = forge.PyTorchModule("conv", model)
@@ -82,7 +82,7 @@ def test_bn():
     result = forge_mod(inputs)
     result = result.to("cpu")
 
-    assert forge.op.eval.compare_tensor_to_golden(f"linear", golden, result, is_buda=True, pcc=0.99)
+    assert forge.op.eval.compare_tensor_to_golden(f"linear", golden, result, is_forge=True, pcc=0.99)
 
 def test_linear():
     class Linear(nn.Module):
@@ -103,4 +103,4 @@ def test_linear():
     result = forge_mod(*[i.to("tt") for i in inputs])
     result = result.to("cpu")
 
-    assert forge.op.eval.compare_tensor_to_golden(f"linear", golden, result, is_buda=True, pcc=0.99)
+    assert forge.op.eval.compare_tensor_to_golden(f"linear", golden, result, is_forge=True, pcc=0.99)

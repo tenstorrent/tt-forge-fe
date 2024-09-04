@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/lowering_context.hpp"
 
-#include "buda_passes.hpp"
+#include "forge_passes.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "passes/decomposing_context.hpp"
@@ -95,10 +95,10 @@ NodeContext LoweringContext::op(
     int tile_height,
     int tile_width)
 {
-    Node *lowered_node = lower_node<graphlib::BudaOpNode>(op_type, operands);
+    Node *lowered_node = lower_node<graphlib::ForgeOpNode>(op_type, operands);
     TileDim target_tile_dim = graphlib::get_tile_dim_from_height_width(tile_height, tile_width);
 
-    lowered_node->set_tile_dim(target_tile_dim); // propagate TileDim to buda op
+    lowered_node->set_tile_dim(target_tile_dim); // propagate TileDim to forge op
     if (tag != "")
         lowered_node->as<graphlib::TaggedNode>()->tag(tag);
 
@@ -107,10 +107,10 @@ NodeContext LoweringContext::op(
 
 NodeContext LoweringContext::nary_tm(graphlib::OpType const &op_type, std::vector<NodeContext> const &operands)
 {
-    graphlib::BudaNaryTMNode *tm = lower_node<graphlib::BudaNaryTMNode>(op_type, operands);
+    graphlib::ForgeNaryTMNode *tm = lower_node<graphlib::ForgeNaryTMNode>(op_type, operands);
 
     graphlib::OpType nop_op_type = graphlib::OpType("nop", {}, {});
-    graphlib::BudaOpNode *nop = lower_node<graphlib::BudaOpNode>(nop_op_type, {tm});
+    graphlib::ForgeOpNode *nop = lower_node<graphlib::ForgeOpNode>(nop_op_type, {tm});
     return NodeContext(nop);
 }
 
@@ -118,7 +118,7 @@ NodeContext LoweringContext::nary_tm(graphlib::OpType const &op_type, std::vecto
 NodeContext LoweringContext::tm(graphlib::OpType const &tm_op_type, NodeContext const &operand)
 {
     graphlib::OpType nop_op_type = graphlib::OpType("nop", {}, {});
-    graphlib::BudaOpNode *nop = lower_node<graphlib::BudaOpNode>(nop_op_type, {operand});
+    graphlib::ForgeOpNode *nop = lower_node<graphlib::ForgeOpNode>(nop_op_type, {operand});
 
     std::vector<graphlib::Edge> operands_edges = new_graph->operand_data_edges(nop);
     TT_ASSERT(operands_edges.size() == 1);
@@ -194,17 +194,17 @@ NodeContext LoweringContext::tensor(std::shared_ptr<void> tensor, graphlib::Shap
 {
     auto new_node = new_graph->add_node(graphlib::create_node<graphlib::ConstantInputNode>(
         "lc.input_tensor." + node->name() + "." + std::to_string(this->op_index++), tensor, shape), subgraph_idx);
-    new_node->set_shape(graphlib::Shape::create_buda(shape.as_vector()));
+    new_node->set_shape(graphlib::Shape::create_forge(shape.as_vector()));
     new_node->set_output_df((df != DataFormat::Invalid) ? df : node->output_df());
     new_node->as<graphlib::TaggedNode>()->add_tags(this->node->as<graphlib::TaggedNode>()->get_tags());
     return NodeContext(new_node);
 }
 
 NodeContext LoweringContext::tensor_with_blob(
-    std::shared_ptr<void> tensor, graphlib::Shape shape, sparse::SparseBUDA sparse_buda, DataFormat df)
+    std::shared_ptr<void> tensor, graphlib::Shape shape, sparse::SparseFORGE sparse_forge, DataFormat df)
 {
     NodeContext nc = LoweringContext::tensor(tensor, shape, df);
-    new_graph->node_by_id(nc.id)->as<tt::graphlib::ConstantInputNode>()->set_sparse_buda(sparse_buda);
+    new_graph->node_by_id(nc.id)->as<tt::graphlib::ConstantInputNode>()->set_sparse_forge(sparse_forge);
     return nc;
 }
 
@@ -256,11 +256,11 @@ Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNode
         graphlib::Shape shape = old_node->shape();
         shape = shape.canonical();
         int tile_size_r = calculate_tile_size(shape[-2]); 
-        int tile_size_c = graphlib::Shape::BUDA_TILE_DIM; // Force Column to 32 for now
+        int tile_size_c = graphlib::Shape::FORGE_TILE_DIM; // Force Column to 32 for now
         auto calculated_tile_dim = graphlib::get_tile_dim_from_height_width(tile_size_r, tile_size_c);
         old_node->set_tile_dim(calculated_tile_dim);
     }
-    new_node->set_shape(graphlib::Shape::to_buda(old_node->shape()));
+    new_node->set_shape(graphlib::Shape::to_forge(old_node->shape()));
 
     if (requires_lowering_to_ram(old_node)) {
         new_node->as<graphlib::QueueNode>()->set_memory_access_type(graphlib::MemoryAccessType::RAM);
@@ -281,11 +281,11 @@ Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNode
     {
         graphlib::RuntimeTensorTransform runtime_tensor_transform = input->get_runtime_tensor_transform();
 
-        bool buda_shape_already_reinterpret =
+        bool forge_shape_already_reinterpret =
             runtime_tensor_transform.type == graphlib::RuntimeTensorTransformType::ReinterpretShape &&
             runtime_tensor_transform.original_shape.is_valid() and
             runtime_tensor_transform.original_shape == new_node->shape();
-        if (buda_shape_already_reinterpret)
+        if (forge_shape_already_reinterpret)
         {
             // clear the reinterpret shape
             input->set_runtime_tensor_transform(graphlib::RuntimeTensorTransform());
@@ -296,11 +296,11 @@ Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNode
     {
         graphlib::RuntimeTensorTransform runtime_tensor_transform = output->get_runtime_tensor_transform();
 
-        bool buda_shape_already_reinterpret =
+        bool forge_shape_already_reinterpret =
             runtime_tensor_transform.type == graphlib::RuntimeTensorTransformType::ReinterpretShape &&
             runtime_tensor_transform.original_shape.is_valid() and
             runtime_tensor_transform.reinterpreted_shape == new_node->shape();
-        if (buda_shape_already_reinterpret)
+        if (forge_shape_already_reinterpret)
         {
             // clear the reinterpret shape
             output->set_runtime_tensor_transform(graphlib::RuntimeTensorTransform());
@@ -310,7 +310,7 @@ Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNode
     return new_node;
 }
 
-// Use python + lowering context to convert Forge node to Buda node
+// Use python + lowering context to convert Forge node to Forge node
 void lower_node(const LoweringContext &lc)
 {
     graphlib::PyOpNode *node = lc.get_node();
@@ -377,13 +377,13 @@ void copy_operand_edges_to_new_graph(
 
 void lower_edge_tms(Graph *old_graph, Edge &old_edge, std::shared_ptr<graphlib::EdgeAttributes> new_attr)
 {
-    // Broadcasts were in the original dimensions, so we need to convert to 4d buda
+    // Broadcasts were in the original dimensions, so we need to convert to 4d forge
     std::vector<graphlib::OpType> old_tms = old_graph->get_edge_attributes(old_edge)->get_tms();
 
     for (const graphlib::OpType &tm : old_tms)
     {
         // Handle delta calculation for producers that are greater then 4D. For 4D shapes
-        // and below, we need to account for 4 dimensions to match the Buda expectations.
+        // and below, we need to account for 4 dimensions to match the Forge expectations.
         int delta = 0;
         int producer_rank = old_graph->node_by_id(old_edge.producer_node_id)->shape().as_vector().size();
         if (producer_rank <= 4) {
@@ -400,16 +400,16 @@ void lower_edge_tms(Graph *old_graph, Edge &old_edge, std::shared_ptr<graphlib::
             std::get<int>(new_tm.attr[0]) += delta;
         }
 
-        if ( (std::get<int>(new_tm.attr[0]) >= 2) && (std::get<int>(new_tm.attr[1]) % graphlib::Shape::BUDA_TILE_DIM != 0) )
+        if ( (std::get<int>(new_tm.attr[0]) >= 2) && (std::get<int>(new_tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM != 0) )
         {
             // snap up to tile dim
-            std::get<int>(new_tm.attr[1]) += graphlib::Shape::BUDA_TILE_DIM - (std::get<int>(new_tm.attr[1]) % graphlib::Shape::BUDA_TILE_DIM);
+            std::get<int>(new_tm.attr[1]) += graphlib::Shape::FORGE_TILE_DIM - (std::get<int>(new_tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM);
         }
         //std::cout << " to " << new_tm.attr[0] << ", " << new_tm.attr[1] << std::endl;
 
         if (tm.op == "broadcast" and std::get<int>(new_tm.attr[0]) >= 2)
         {
-            std::get<int>(new_tm.attr[1]) /= graphlib::Shape::BUDA_TILE_DIM;
+            std::get<int>(new_tm.attr[1]) /= graphlib::Shape::FORGE_TILE_DIM;
         }
 
         TT_ASSERT(std::get<int>(new_tm.attr[0]) >= 0 && std::get<int>(new_tm.attr[0]) <= 3, "Invalid broadcast dim after lowering");

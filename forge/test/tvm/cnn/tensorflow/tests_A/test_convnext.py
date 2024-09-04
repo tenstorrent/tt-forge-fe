@@ -33,7 +33,7 @@ def test_tvm_convnext(test_kind, test_device):
     compiler_cfg.balancer_policy = "CNN"
     # tenstorrent/forge#842
     compiler_cfg.compile_depth = (
-        CompileDepth.BUDA_GRAPH_PRE_PLACER
+        CompileDepth.FORGE_GRAPH_PRE_PLACER
     )
 
     cfg = ConvNextConfig.from_pretrained("facebook/convnext-tiny-224")

@@ -151,8 +151,8 @@ class TestPaddingPassE_2(forge.ForgeModule):
         
         # Layer 2
         if explicit_padding:
-            pad1 = forge.op.BudaPad("pad1", x, (4, 4), 0.0)
-            pad2 = forge.op.BudaPad("pad2", self.train_param, (4, 4), 0.0)
+            pad1 = forge.op.ForgePad("pad1", x, (4, 4), 0.0)
+            pad2 = forge.op.ForgePad("pad2", self.train_param, (4, 4), 0.0)
             mul = forge.op.Multiply("mul", pad1, pad2)
         else:
             mul = forge.op.Multiply("mul", x, self.train_param)
@@ -161,7 +161,7 @@ class TestPaddingPassE_2(forge.ForgeModule):
         exp = forge.op.Exp("exp", mul)
 
         if explicit_padding:
-            unpad = forge.op.BudaUnpad("unpad", exp, (192, 192), (4, 4))
+            unpad = forge.op.ForgeUnpad("unpad", exp, (192, 192), (4, 4))
             return unpad
         else:
             return exp
@@ -194,8 +194,8 @@ class TestPaddingPassE_3(forge.ForgeModule):
                 pad_rt, pad_ct = 7, 7
             else:
                 pad_rt, pad_ct = 0, 0
-            pad1 = forge.op.BudaPad("pad1", x, (pad_rt, pad_ct), 0.0)
-            pad2 = forge.op.BudaPad("pad2", self.train_param, (pad_rt, pad_ct), 0.0)
+            pad1 = forge.op.ForgePad("pad1", x, (pad_rt, pad_ct), 0.0)
+            pad2 = forge.op.ForgePad("pad2", self.train_param, (pad_rt, pad_ct), 0.0)
             mul1 = forge.op.Multiply("mul1", pad1, pad2)
         else:
             mul1 = forge.op.Multiply("mul1", x, self.train_param)
@@ -223,7 +223,7 @@ class TestPaddingPassE_3(forge.ForgeModule):
                 pad_rt, pad_ct = 7, 7
             else:
                 pad_rt, pad_ct = 0, 0
-            unpad = forge.op.BudaUnpad("unpad", mul5, (orig_r, orig_c), (pad_rt, pad_ct))
+            unpad = forge.op.ForgeUnpad("unpad", mul5, (orig_r, orig_c), (pad_rt, pad_ct))
             return unpad
         else:
             return mul5
@@ -233,7 +233,7 @@ TEST_E_DISABLE_PADDING_PASS_FLAG = False
 TEST_E_PADDING_PASS_ELEMENT_WISE_FLAG = True
 TEST_E_PADDING_PASS_MATMUL_FLAG = True
 TEST_E_PADDING_PASS_BUFFER_QUEUE_FLAG = False
-TEST_E_PADDING_PASS_DISABLE_BUDA_OP_FLAG = False
+TEST_E_PADDING_PASS_DISABLE_FORGE_OP_FLAG = False
 
 TEST_E_FORGE_DISABLE_OP_FUSING = True
 
@@ -276,10 +276,10 @@ def set_environment():
         os.environ["FORGE_PADDING_PASS_MATMUL"] = "1"
     if TEST_E_PADDING_PASS_BUFFER_QUEUE_FLAG:
         os.environ["FORGE_PADDING_PASS_BUFFER_QUEUE"] = "1"
-    if TEST_E_PADDING_PASS_DISABLE_BUDA_OP_FLAG:
-        os.environ["FORGE_PADDING_PASS_DISABLE_BUDA_OP"] = "1"
+    if TEST_E_PADDING_PASS_DISABLE_FORGE_OP_FLAG:
+        os.environ["FORGE_PADDING_PASS_DISABLE_FORGE_OP"] = "1"
     else:
-        os.environ["FORGE_PADDING_PASS_DISABLE_BUDA_OP"] = "0"
+        os.environ["FORGE_PADDING_PASS_DISABLE_FORGE_OP"] = "0"
 
     # Environment variables that controls operation fusing
     if TEST_E_FORGE_DISABLE_OP_FUSING:

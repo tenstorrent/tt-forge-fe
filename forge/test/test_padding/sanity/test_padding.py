@@ -34,7 +34,7 @@ from forge.verify import TestKind, verify_module
 
 
 
-class BudaPadTest1(ForgeModule):
+class ForgePadTest1(ForgeModule):
     """
     Test wrapper for padding pad
     """
@@ -46,9 +46,9 @@ class BudaPadTest1(ForgeModule):
         self.value = value
 
     def forward(self, act):
-        return forge.op.BudaPad("buda_pad", act, self.paddings, self.value)
+        return forge.op.ForgePad("forge_pad", act, self.paddings, self.value)
 
-class BudaPadTest2(ForgeModule):
+class ForgePadTest2(ForgeModule):
     """
     Test wrapper for padding pad
     """
@@ -60,16 +60,16 @@ class BudaPadTest2(ForgeModule):
         self.value = value
 
     def forward(self, act1, act2):
-        pad1 = forge.op.BudaPad("buda_pad1", act1, self.paddings, self.value)
-        pad2 = forge.op.BudaPad("buda_pad2", act2, self.paddings, self.value)
+        pad1 = forge.op.ForgePad("forge_pad1", act1, self.paddings, self.value)
+        pad2 = forge.op.ForgePad("forge_pad2", act2, self.paddings, self.value)
         multiply = forge.op.Multiply("multiply", pad1, pad2)
         return multiply
 
-@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op buda_pad, type nop, input 0. Backend should be updated.")
+@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op forge_pad, type nop, input 0. Backend should be updated.")
 @pytest.mark.parametrize("shape", ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200)), ids=[f"shape={'x'.join([str(dim) for dim in shape])}" for shape in ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200))])
 @pytest.mark.parametrize("value", (0.0, 1.0), ids=[f"value={str(value)}" for value in(0.0, 1.0)])
 @pytest.mark.parametrize("paddings", ((0, 0), (0, 10), (11, 0), (11, 10)), ids=["no-padding", "C-padding", "R-padding", "RC-padding"])
-def test_buda_pad1(
+def test_forge_pad1(
     training,
     test_device,
     paddings,
@@ -80,9 +80,9 @@ def test_buda_pad1(
     if training:
         pytest.skip() # no backward pass for padding pad
 
-    test_name = f"buda_pad1_{str(paddings[0])}_{str(paddings[1])}_{value}_shape={'x'.join([str(item) for item in shape])}"
+    test_name = f"forge_pad1_{str(paddings[0])}_{str(paddings[1])}_{value}_shape={'x'.join([str(item) for item in shape])}"
 
-    mod = BudaPadTest1(name="buda_pad1", paddings=paddings, value=value)
+    mod = ForgePadTest1(name="forge_pad1", paddings=paddings, value=value)
 
     input_shapes = (shape, )
 
@@ -98,11 +98,11 @@ def test_buda_pad1(
         )
     )
 
-@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op buda_pad, type nop, input 0. Backend should be updated.")
+@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op forge_pad, type nop, input 0. Backend should be updated.")
 @pytest.mark.parametrize("shape", ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200)), ids=[f"shape={'x'.join([str(dim) for dim in shape])}" for shape in ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200))])
 @pytest.mark.parametrize("value", (0.0, -0.5), ids=[f"value={str(value)}" for value in (0.0, -0.5)])
 @pytest.mark.parametrize("paddings", ((0, 0), (0, 10), (11, 0), (11, 10)), ids=["no-padding", "C-padding", "R-padding", "RC-padding"])
-def test_buda_pad2(
+def test_forge_pad2(
     training,
     test_device,
     paddings,
@@ -113,9 +113,9 @@ def test_buda_pad2(
     if training:
         pytest.skip() # no backward pass for padding pad
 
-    test_name = f"buda_pad2_{str(paddings[0])}_{str(paddings[1])}_{value}_shape={'x'.join([str(item) for item in shape])}"
+    test_name = f"forge_pad2_{str(paddings[0])}_{str(paddings[1])}_{value}_shape={'x'.join([str(item) for item in shape])}"
 
-    mod = BudaPadTest2(name=test_name, paddings=paddings, value=value)
+    mod = ForgePadTest2(name=test_name, paddings=paddings, value=value)
 
     input_shapes = (shape, shape)
 
@@ -131,7 +131,7 @@ def test_buda_pad2(
         )
     )
 
-class BudaUnpadTest1(ForgeModule):
+class ForgeUnpadTest1(ForgeModule):
     """
     Test wrapper for padding unpad
     """
@@ -143,9 +143,9 @@ class BudaUnpadTest1(ForgeModule):
         self.original_length = original_length
 
     def forward(self, act):
-        return forge.op.BudaUnpad("buda_unpad", act, self.original_length, self.paddings)
+        return forge.op.ForgeUnpad("forge_unpad", act, self.original_length, self.paddings)
 
-class BudaUnpadTest2(ForgeModule):
+class ForgeUnpadTest2(ForgeModule):
     """
     Test wrapper for padding unpad
     """
@@ -157,14 +157,14 @@ class BudaUnpadTest2(ForgeModule):
         self.original_length = original_length
 
     def forward(self, act1, act2):
-        unpad1 = forge.op.BudaUnpad("buda_unpad1", act1, self.original_length, self.paddings)
-        unpad2 = forge.op.BudaUnpad("buda_unpad2", act2, self.original_length, self.paddings)
+        unpad1 = forge.op.ForgeUnpad("forge_unpad1", act1, self.original_length, self.paddings)
+        unpad2 = forge.op.ForgeUnpad("forge_unpad2", act2, self.original_length, self.paddings)
         multiply = forge.op.Multiply("multiply", unpad1, unpad2)
         return multiply
 
 @pytest.mark.parametrize("original_shape", ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200)), ids=[f"shape={'x'.join([str(dim) for dim in shape])}" for shape in ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200))])
 @pytest.mark.parametrize("paddings", ((0, 0), (0, 10), (11, 0), (11, 10)), ids=["no-padding", "C-padding", "R-padding", "RC-padding"])
-def test_buda_unpad1(
+def test_forge_unpad1(
     training,
     test_device,
     paddings,
@@ -181,9 +181,9 @@ def test_buda_unpad1(
     shape[-2] = (align_up_tile(original_shape[-2]) // TILE_DIM + paddings[-2]) * TILE_DIM
     input_shapes = (shape, )
 
-    test_name = f"buda_unpad1_{str(paddings[0])}_{str(paddings[1])}_orig_shape={'x'.join([str(item) for item in original_shape])}_shape={'x'.join([str(item) for item in shape])}"
+    test_name = f"forge_unpad1_{str(paddings[0])}_{str(paddings[1])}_orig_shape={'x'.join([str(item) for item in original_shape])}_shape={'x'.join([str(item) for item in shape])}"
 
-    mod = BudaUnpadTest1(name=test_name, original_length=original_length, paddings=paddings)
+    mod = ForgeUnpadTest1(name=test_name, original_length=original_length, paddings=paddings)
 
     verify_module(
         mod,
@@ -199,7 +199,7 @@ def test_buda_unpad1(
 
 @pytest.mark.parametrize("original_shape", ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200)), ids=[f"shape={'x'.join([str(dim) for dim in shape])}" for shape in ((1, 200, 300), (3, 200, 300), (1, 5, 100, 200))])
 @pytest.mark.parametrize("paddings", ((0, 0), (0, 10), (11, 0), (11, 10)), ids=["no-padding", "C-padding", "R-padding", "RC-padding"])
-def test_buda_unpad2(
+def test_forge_unpad2(
     training,
     test_device,
     paddings,
@@ -216,9 +216,9 @@ def test_buda_unpad2(
     shape[-2] = (align_up_tile(original_shape[-2]) // TILE_DIM + paddings[-2]) * TILE_DIM
     input_shapes = (shape, shape)
 
-    test_name = f"buda_unpad2_{str(paddings[0])}_{str(paddings[1])}_orig_shape={'x'.join([str(item) for item in original_shape])}_shape={'x'.join([str(item) for item in shape])}"
+    test_name = f"forge_unpad2_{str(paddings[0])}_{str(paddings[1])}_orig_shape={'x'.join([str(item) for item in original_shape])}_shape={'x'.join([str(item) for item in shape])}"
 
-    mod = BudaUnpadTest2(name=test_name, original_length=original_length, paddings=paddings)
+    mod = ForgeUnpadTest2(name=test_name, original_length=original_length, paddings=paddings)
 
     verify_module(
         mod,
@@ -247,14 +247,14 @@ class PaddingTest1(ForgeModule):
     def forward(self, x1, x2):
 
         # pad inputs, x1 and x2
-        pad_x1 = forge.op.BudaPad("buda_pad1", x1, self.paddings, self.value)
-        pad_x2 = forge.op.BudaPad("buda_pad2", x2, self.paddings, self.value)
+        pad_x1 = forge.op.ForgePad("forge_pad1", x1, self.paddings, self.value)
+        pad_x2 = forge.op.ForgePad("forge_pad2", x2, self.paddings, self.value)
 
         # multiply padded inputs
         multiply = forge.op.Multiply("multiply", pad_x1, pad_x2)
 
         # unpad the result of the multiplication
-        unpad_multiply = forge.op.BudaUnpad("buda_unpad", multiply, self.original_length, self.paddings)
+        unpad_multiply = forge.op.ForgeUnpad("forge_unpad", multiply, self.original_length, self.paddings)
 
         return unpad_multiply
 
@@ -273,17 +273,17 @@ class PaddingTest2(ForgeModule):
     def forward(self, x1, x2):
 
         # pad inputs, x1 and x2
-        pad1 = forge.op.BudaPad("buda_pad1", x1, self.paddings, self.value)
-        pad2 = forge.op.BudaPad("buda_pad2", x2, self.paddings, self.value)
+        pad1 = forge.op.ForgePad("forge_pad1", x1, self.paddings, self.value)
+        pad2 = forge.op.ForgePad("forge_pad2", x2, self.paddings, self.value)
 
         # add padded inputs
         add = forge.op.Add("add", pad1, pad2)
 
         # unpad the result of the addition
-        unpad_add = forge.op.BudaUnpad("unpad_add", add, self.original_length, self.paddings)
+        unpad_add = forge.op.ForgeUnpad("unpad_add", add, self.original_length, self.paddings)
 
         # pad again the result of the addition
-        pad3 = forge.op.BudaPad("buda_pad3", unpad_add, self.paddings, self.value)
+        pad3 = forge.op.ForgePad("forge_pad3", unpad_add, self.paddings, self.value)
 
         exp = forge.op.Exp("exp", x1)
 
@@ -291,11 +291,11 @@ class PaddingTest2(ForgeModule):
         mm = forge.op.Matmul("matmul", pad3, exp)
 
         # unpad the result of the matrix multiplication
-        unpad_mm = forge.op.BudaUnpad("unpad_mm", mm, self.original_length, self.paddings)
+        unpad_mm = forge.op.ForgeUnpad("unpad_mm", mm, self.original_length, self.paddings)
 
         return unpad_mm
 
-@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op buda_pad, type nop, input 0. Backend should be updated.")
+@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op forge_pad, type nop, input 0. Backend should be updated.")
 @pytest.mark.parametrize("shape", ((1, 200, 300), (3, 200, 300), (1, 5, 400, 200)), ids=[f"shape={'x'.join([str(dim) for dim in shape])}" for shape in ((1, 200, 300), (3, 200, 300), (1, 5, 400, 200))])
 @pytest.mark.parametrize("value", (0.0, -0.5), ids=[f"value={str(value)}" for value in (0.0, -0.5)])
 @pytest.mark.parametrize("paddings", ((0, 0), (0, 5), (5, 0), (5, 5)), ids=["no-padding", "C-padding", "R-padding", "RC-padding"])
@@ -334,7 +334,7 @@ def test_padding1(
     )
 
 
-@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op buda_pad, type nop, input 0. Backend should be updated.")
+@pytest.mark.xfail(reason="Unsupported TM op pad! Found on op forge_pad, type nop, input 0. Backend should be updated.")
 @pytest.mark.parametrize("shape", ((1, 800, 800), (3, 700, 700), (1, 5, 200, 200)), ids=[f"shape={'x'.join([str(dim) for dim in shape])}" for shape in ((1, 800, 800), (3, 700, 700), (1, 5, 200, 200))])
 @pytest.mark.parametrize("value", (0.0, -0.5), ids=[f"value={str(value)}" for value in (0.0, -0.5)])
 @pytest.mark.parametrize("paddings", ((0, 0), (5, 0)), ids=["no-padding", "R-padding"])

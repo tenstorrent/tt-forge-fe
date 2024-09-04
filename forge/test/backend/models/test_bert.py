@@ -474,7 +474,7 @@ def test_pt_encoder(test_kind, test_device, size, encoder_count, num_chips):
         seq_len = 128
         if test_device.is_silicon() and test_kind.is_training():
             _get_global_compiler_config().enable_broadcast_splitting = True # fork error workaround
-            forge.config.override_op_size("bw_in0_matmul_128_matmul_1", (1, 2)) # tenstorrent/budabackend#667
+            forge.config.override_op_size("bw_in0_matmul_128_matmul_1", (1, 2)) # tenstorrent/forgebackend#667
             #pytest.skip("Issue 667") # unsure why, but CI fails even with the workaround above, while it passes in interactive runs
     elif size == "large":
         model_name = "bert-large-uncased"

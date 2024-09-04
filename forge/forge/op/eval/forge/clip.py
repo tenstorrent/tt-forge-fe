@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.nop import Nop as BudaNop
+from ..lforge.nop import Nop as ForgeNop
 
 
 class Clip(PyEltwiseUnaryOp):
@@ -60,7 +60,7 @@ class Clip(PyEltwiseUnaryOp):
             max_value = 65504.0
 
         if (min_value == 0) and (max_value >= 0):
-            res = lc.op(BudaNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"),(tensors[0],))
+            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"),(tensors[0],))
             return
 
         shape = list(tensors[0].shape.as_list())
@@ -86,13 +86,13 @@ class Clip(PyEltwiseUnaryOp):
 
         res = lc.op("subtract", (tensors[0], min_value_tensor))
         # x - min_value
-        res = lc.op(BudaNop.create(relu_en=True, relu_threshold=0.0 ,relu_mode="min"),(res,))
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0 ,relu_mode="min"),(res,))
 
         # ReLU(x - min_value)
         res = lc.op("subtract", (diff_tensor, res))
         # diff_value - ReLU(x - min_value), diff = max - min
         res = lc.op(
-            BudaNop.create(relu_en=True, relu_threshold=0.0,relu_mode="min"),
+            ForgeNop.create(relu_en=True, relu_threshold=0.0,relu_mode="min"),
             (res,))
         
         # ReLU(diff_value - ReLU(x - min_value))

@@ -43,7 +43,7 @@ static std::vector<graphlib::Node *> find_path_to_requant(
         if (not op)
             break;
 
-        if (op->op_name() == "buda_requantize")
+        if (op->op_name() == "forge_requantize")
         {
             found_requant = true;
             path.push_back(op);

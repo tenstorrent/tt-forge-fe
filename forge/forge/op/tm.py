@@ -4,7 +4,7 @@
 from typing import Union, Tuple, List, Dict
 from ..forgeglobal import TILE_DIM
 from .common import ForgeOp as op
-from ..tensor import Tensor, pytorch_dtype_to_buda_dataformat
+from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 
 import torch
 
@@ -30,7 +30,7 @@ def HSlice(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     hdim = operandA.shape.c
@@ -59,7 +59,7 @@ def HStack(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     if slices == -1:
         slices = operandA.shape.z
@@ -87,7 +87,7 @@ def VSlice(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     vdim = operandA.shape.r
@@ -116,7 +116,7 @@ def VStack(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     if slices == -1:
         slices = operandA.shape.z
@@ -144,7 +144,7 @@ def Transpose(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     assert dim0 != dim1
 
@@ -161,7 +161,7 @@ def Transpose(
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, attrs=(dim0, dim1, z_dim_slice), dim0=dim0, dim1=dim1).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
+    return op("transpose", name, operandA, attrs=(dim0, dim1, z_dim_slice), dim0=dim0, dim1=dim1).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
 def Reshape(
         name: str, 
@@ -181,7 +181,7 @@ def Reshape(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     tensor_volume = 1
     for dim in operandA.shape.dims:
@@ -238,7 +238,7 @@ def Index(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     if dim >= 0:
         dim -= len(operandA.shape)
@@ -284,7 +284,7 @@ def AdvIndex(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
@@ -319,7 +319,7 @@ def Select(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     dims = len(operandA.shape.dims)
     if dim < 0:
@@ -366,7 +366,7 @@ def Pad(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     assert len(pad) == 2 or len(pad) == 4, "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
     assert mode in ["constant", "replicate", "reflect"], "Currently pad op only supports constant/replicate/reflect mode"
@@ -406,7 +406,7 @@ def PadTile(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("pad_tile", name, operandA, attrs=(dim, original_length)).get_tensor()
@@ -437,7 +437,7 @@ def Broadcast(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
   
     return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
@@ -464,7 +464,7 @@ def Repeat(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     assert len(operandA.shape) == len(factors)
     return op("repeat", name, operandA, attrs=factors).get_tensor()
@@ -490,7 +490,7 @@ def Unsqueeze(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
   
     return op("unsqueeze", name, operandA, attrs=(dim, len(operandA.shape))).get_tensor()
@@ -516,7 +516,7 @@ def Squeeze(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
   
     return op("squeeze", name, operandA, attrs=(dim,)).get_tensor()
@@ -555,7 +555,7 @@ def Narrow(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("narrow", name, operandA, attrs=(dim, start, length, original_length)).get_tensor()
@@ -579,12 +579,12 @@ def PixelShuffle(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,)).get_tensor()
 
 
-def BudaPad(
+def ForgePad(
         name: str,
         operandA: Tensor,
         paddings: Tuple[int, int],
@@ -606,10 +606,10 @@ def BudaPad(
     value: float
         Value to pad with
     """
-    return op("buda_pad", name, operandA, attrs=(paddings[0], paddings[1], value)).get_tensor()
+    return op("forge_pad", name, operandA, attrs=(paddings[0], paddings[1], value)).get_tensor()
 
 
-def BudaUnpad(
+def ForgeUnpad(
         name: str,
         operandA: Tensor,
         original_length: Tuple[int, ...],
@@ -631,4 +631,4 @@ def BudaUnpad(
     paddings: Tuple[int, int]
         Tuple of paddings for R and C dimensions
     """
-    return op("buda_unpad", name, operandA, attrs=(paddings[0], paddings[1], original_length[0], original_length[1])).get_tensor()
+    return op("forge_unpad", name, operandA, attrs=(paddings[0], paddings[1], original_length[0], original_length[1])).get_tensor()

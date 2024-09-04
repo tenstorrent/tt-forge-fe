@@ -15,9 +15,9 @@ import forge
 from forge import ForgeModule, Tensor
 
 
-class BudaElementWiseUnaryTest(ForgeModule):
+class ForgeElementWiseUnaryTest(ForgeModule):
     """
-        Buda Test 10
+        Forge Test 10
 
         In this test we have 11 unary operations, and 2 input tensors and 2 trainable variables.
 
@@ -29,7 +29,7 @@ class BudaElementWiseUnaryTest(ForgeModule):
     """
 
     def __init__(self, operator, opname, shape, **kwargs):
-        super().__init__("Buda Test 10")
+        super().__init__("Forge Test 10")
         self.operator = operator
         self.opname = opname
         self.testname = "Operator " + opname + " Test 10"

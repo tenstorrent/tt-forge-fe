@@ -13,7 +13,7 @@ import torch
 from loguru import logger
 
 from forge._C.graph import create_op_node, create_data_edge, create_parameter_input, create_activation_input, create_output, create_constant_input, add_subgraph_io_link_edge
-from forge.tensor import pytorch_dtype_to_buda_dataformat
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 from forge.fx.nodes import get_forge_node, torch_constant_ops, is_supported_op, get_unsupported_nodes
 from forge.config import _get_global_compiler_config
 from forge.fx.mixed_graph import MixedGraph
@@ -43,7 +43,7 @@ class CaptureFX:
         assert self.graph is not None
         self.graph.capture_sample_outputs(outputs, subgraph_id)
 
-    def get_buda_graph(self) -> forge._C.graph.Graph:
+    def get_forge_graph(self) -> forge._C.graph.Graph:
         assert self.graph is not None
         return self.graph.graph
 
@@ -62,7 +62,7 @@ class CaptureFX:
 
         activations = [torch.rand(sample_input.shape).to(sample_input.dtype).to("cpu") for sample_input in sample_inputs]
         device_graph_changed, graph_inputs, intermediate_tensors, output_tensors, schedule = self._append_to_graph(module, aten_module, activations, subgraph_id)
-        logger.debug(f"Appending to graph done, captured {len(self.get_buda_graph().nodes())} nodes")
+        logger.debug(f"Appending to graph done, captured {len(self.get_forge_graph().nodes())} nodes")
         return device_graph_changed, graph_inputs, intermediate_tensors, output_tensors, schedule
 
     def eval_node(self, node):
@@ -79,7 +79,7 @@ class CaptureFX:
     
     def add_op(self, node, name, forge_node, subgraph_idx):
         shape = node.meta['tensor_meta'].shape if forge_node.shape is None else forge_node.shape
-        dtype = pytorch_dtype_to_buda_dataformat(node.meta['tensor_meta'].dtype) if forge_node.dtype is None else forge_node.dtype
+        dtype = pytorch_dtype_to_forge_dataformat(node.meta['tensor_meta'].dtype) if forge_node.dtype is None else forge_node.dtype
     
         logger.trace("add_op: {} shape: {} dtype: {}", name, shape, dtype)
         self.add_constants_if_necessary(forge_node.args, subgraph_idx)
@@ -93,16 +93,16 @@ class CaptureFX:
         if len(shape) == 0:
             shape = [1]
         nid = create_op_node(
-                self.get_buda_graph(),
+                self.get_forge_graph(),
                 f"{name}_{subgraph_idx}",
                 forge_node.op,
                 [int(dim) for dim in shape],
-                pytorch_dtype_to_buda_dataformat(dtype),
+                pytorch_dtype_to_forge_dataformat(dtype),
                 subgraph_idx,
                 tags)
         
         for i, input_node in enumerate(forge_node.args):
-            create_data_edge(self.get_buda_graph(), self.node_to_id[input_node], 0, nid, i, [])
+            create_data_edge(self.get_forge_graph(), self.node_to_id[input_node], 0, nid, i, [])
     
         if isinstance(node.target, torch._ops.OpOverloadPacket):
             # We will add NOP in cases where input to current subgraph is left on device
@@ -115,11 +115,11 @@ class CaptureFX:
     
     def add_input(self, node, subgraph_idx):
         nid = create_activation_input(
-                self.get_buda_graph(),
+                self.get_forge_graph(),
                 f"{node.name}_{subgraph_idx}",
                 [int(dim) for dim in node.meta['tensor_meta'].shape],
                 node.meta["tensor_meta"].requires_grad,
-                pytorch_dtype_to_buda_dataformat(node.meta["tensor_meta"].dtype),
+                pytorch_dtype_to_forge_dataformat(node.meta["tensor_meta"].dtype),
                 subgraph_idx)
         return nid
         
@@ -128,11 +128,11 @@ class CaptureFX:
         if tensor in self.const_to_id:
             return self.const_to_id[tensor]
         nid = create_constant_input(
-                self.get_buda_graph(), 
+                self.get_forge_graph(), 
                 f"{name}_{subgraph_idx}",
                 tensor,
                 [int(dim) for dim in tensor.shape],
-                pytorch_dtype_to_buda_dataformat(tensor.dtype),
+                pytorch_dtype_to_forge_dataformat(tensor.dtype),
                 subgraph_idx)
         self.const_to_id[tensor] = nid
         return nid
@@ -141,11 +141,11 @@ class CaptureFX:
         if name in self.param_to_id:
             return self.param_to_id[name]
         nid = create_parameter_input(
-                self.get_buda_graph(), 
+                self.get_forge_graph(), 
                 name,
                 [int(dim) for dim in torch_param.shape],
                 torch_param.requires_grad,
-                pytorch_dtype_to_buda_dataformat(torch_param.dtype),
+                pytorch_dtype_to_forge_dataformat(torch_param.dtype),
                 subgraph_idx)
         self.param_to_id[name] = nid
         return nid
@@ -157,13 +157,13 @@ class CaptureFX:
         for index, meta in enumerate(node.meta['tensor_meta']):
             arg = node.args[0][index]
             nid = create_output(
-                    self.get_buda_graph(), 
+                    self.get_forge_graph(), 
                     node.name + "_" + arg.name + "_" + str(subgraph_idx),
                     [int(dim) for dim in meta.shape],
-                    pytorch_dtype_to_buda_dataformat(meta.dtype),
+                    pytorch_dtype_to_forge_dataformat(meta.dtype),
                     False,  #TODO Loss output
                     subgraph_idx)
-            create_data_edge(self.get_buda_graph(), self.node_to_id[arg], 0, nid, index, [])
+            create_data_edge(self.get_forge_graph(), self.node_to_id[arg], 0, nid, index, [])
             output_nids.append(nid)
             output_requires_grad.append(meta.requires_grad)
             output_tensors.append(self.id_to_intermed[self.node_to_id[arg]])
@@ -323,7 +323,7 @@ class CaptureFX:
                             input_id = self.add_input(node, graph_idx)
             
                             idx, output_index = self.graph.get_output_index(uid)
-                            add_subgraph_io_link_edge(self.get_buda_graph(), self.output_nodes_per_subgraph[idx][output_index], 0, input_id, 0)
+                            add_subgraph_io_link_edge(self.get_forge_graph(), self.output_nodes_per_subgraph[idx][output_index], 0, input_id, 0)
                             created = True
                             logger.trace(f"Linking input edge from {self.output_nodes_per_subgraph[idx][output_index]} to {input_id}")
 
@@ -353,8 +353,8 @@ class CaptureFX:
         
             self.output_nodes_per_subgraph[graph_idx].append(output_nids)
 
-        self.get_buda_graph().register_module_inputs(module_inputs, append=True)
-        self.get_buda_graph().register_module_outputs(output_nids, output_requires_grad, append=True)
+        self.get_forge_graph().register_module_inputs(module_inputs, append=True)
+        self.get_forge_graph().register_module_outputs(output_nids, output_requires_grad, append=True)
         return True, graph_inputs, self.id_to_intermed, output_tensors, schedule
     
 def generate_device_inputs_from_sample_inputs(inputs: List[torch.Tensor], schedule: Schedule) -> List[List[torch.Tensor]]:

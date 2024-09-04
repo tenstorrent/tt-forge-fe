@@ -38,7 +38,7 @@ def test_gptj_block(test_kind, test_device):
     compiler_cfg.retain_tvm_python_files = True
     if not test_kind.is_training():
         # Unsupported HW ops
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         # Unsupported concatenate backward pass
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH

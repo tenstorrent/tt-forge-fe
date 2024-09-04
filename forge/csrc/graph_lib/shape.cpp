@@ -29,9 +29,9 @@ Shape Shape::create(std::vector<std::uint32_t> values)
     return s;
 }
 
-Shape Shape::create_buda(std::vector<std::uint32_t> values, int tile_height, int tile_width)
+Shape Shape::create_forge(std::vector<std::uint32_t> values, int tile_height, int tile_width)
 {
-    TT_ASSERT(values.size() >= BUDA_DIM_COUNT and values.size() <= BUDA_MAX_DIM_COUNT, "Shape must be 4/5-dimensional");
+    TT_ASSERT(values.size() >= FORGE_DIM_COUNT and values.size() <= FORGE_MAX_DIM_COUNT, "Shape must be 4/5-dimensional");
     TT_ASSERT(values[values.size() - 1] % tile_width == 0, "Column dimension must be divisible by tile size", Shape::create(values));
     TT_ASSERT(values[values.size() - 2] % tile_height == 0, "Row dimension must be divisible by tile size", Shape::create(values));
 
@@ -39,19 +39,19 @@ Shape Shape::create_buda(std::vector<std::uint32_t> values, int tile_height, int
     Shape s;
     s.dims_ = values;
     s.valid_ = true;
-    s.type_ = BUDA;
+    s.type_ = FORGE;
     s.tile_dim_ = tile_dim;
     return s;
 }
 
-Shape Shape::create_buda(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c) {
+Shape Shape::create_forge(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c) {
 
-    TT_ASSERT(r % BUDA_TILE_DIM == 0, "Row dimension must be divisible by tile size");
-    TT_ASSERT(c % BUDA_TILE_DIM == 0, "Column dimension must be divisible by tile size");
+    TT_ASSERT(r % FORGE_TILE_DIM == 0, "Row dimension must be divisible by tile size");
+    TT_ASSERT(c % FORGE_TILE_DIM == 0, "Column dimension must be divisible by tile size");
     Shape s;
     s.dims_ = {w, z, r, c};
     s.valid_ = true;
-    s.type_ = BUDA;
+    s.type_ = FORGE;
     return s;
 }
 
@@ -62,49 +62,49 @@ Shape Shape::create_with_type_from_other(const Shape &other, std::vector<std::ui
     s.valid_ = true;
     s.type_ = FREE;
 
-    if (other.type_ == BUDA) {
-        s.type_ = BUDA;
-        TT_ASSERT(s.dims_.size() >= BUDA_DIM_COUNT and s.dims_.size() <= BUDA_MAX_DIM_COUNT, "Shape must be 4/5-dimensional");
-        TT_ASSERT(s.dims_[-1] % BUDA_TILE_DIM == 0, "Row dimension must be divisible by tile size");
-        TT_ASSERT(s.dims_[-2] % BUDA_TILE_DIM == 0, "Column dimension must be divisible by tile size");
+    if (other.type_ == FORGE) {
+        s.type_ = FORGE;
+        TT_ASSERT(s.dims_.size() >= FORGE_DIM_COUNT and s.dims_.size() <= FORGE_MAX_DIM_COUNT, "Shape must be 4/5-dimensional");
+        TT_ASSERT(s.dims_[-1] % FORGE_TILE_DIM == 0, "Row dimension must be divisible by tile size");
+        TT_ASSERT(s.dims_[-2] % FORGE_TILE_DIM == 0, "Column dimension must be divisible by tile size");
     }
 
     return s;
 }
 
-Shape Shape::to_buda(const Shape &other)
+Shape Shape::to_forge(const Shape &other)
 {
-    if (other.type_ == BUDA)
+    if (other.type_ == FORGE)
         return other;
 
     std::vector<std::uint32_t> dims = other.dims_;
 
     // Make it at most 5D
-    while (dims.size() > BUDA_MAX_DIM_COUNT) {
-        TT_ASSERT(dims[0] == 1, "Too many dimensions to convert to buda shape");
+    while (dims.size() > FORGE_MAX_DIM_COUNT) {
+        TT_ASSERT(dims[0] == 1, "Too many dimensions to convert to forge shape");
         dims.erase(dims.begin());
     }
-    while (dims.size() < BUDA_DIM_COUNT) {
+    while (dims.size() < FORGE_DIM_COUNT) {
         dims.insert(dims.begin(), 1);
     }
     
-    int buda_tile_r = tt::graphlib::get_row_size_from_tile_size(other.tile_dim_);
-    int buda_tile_c = tt::graphlib::get_col_size_from_tile_size(other.tile_dim_);
+    int forge_tile_r = tt::graphlib::get_row_size_from_tile_size(other.tile_dim_);
+    int forge_tile_c = tt::graphlib::get_col_size_from_tile_size(other.tile_dim_);
 
     // Snap to tile sizes
     size_t dim_r = dims.size() - 2;
     for (std::size_t dim = dim_r; dim <= (dim_r+1); dim++) {
-        int current_buda_dim = dim == dim_r ? buda_tile_r : buda_tile_c;
-        if (dims[dim] % current_buda_dim != 0) 
+        int current_forge_dim = dim == dim_r ? forge_tile_r : forge_tile_c;
+        if (dims[dim] % current_forge_dim != 0) 
         {
-            dims[dim] += current_buda_dim - (dims[dim] % current_buda_dim);
+            dims[dim] += current_forge_dim - (dims[dim] % current_forge_dim);
         }
     }
 
     Shape s;
     s.dims_ = dims;
     s.valid_ = true;
-    s.type_ = BUDA;
+    s.type_ = FORGE;
     s.tile_dim_ = other.tile_dim_;
     return s;
 }
@@ -233,7 +233,7 @@ std::vector<DimBroadcast> Shape::broadcast_dims(const Shape &other) const
                 TT_ASSERT(my_dim == 1, "Invalid broadcast shapes: " + as_string() + " vs " + other.as_string());
             else
                 TT_ASSERT( 
-                    ((i >= 2) && my_dim == BUDA_TILE_DIM) ||
+                    ((i >= 2) && my_dim == FORGE_TILE_DIM) ||
                     ((i < 2) && my_dim == 1), "Invalid broadcast shapes: " + as_string() + " vs " + other.as_string());
             ret.push_back(std::make_tuple(0, dims_.size() - 1 - i, other_dim));
         }
@@ -244,24 +244,24 @@ std::vector<DimBroadcast> Shape::broadcast_dims(const Shape &other) const
 std::uint32_t Shape::rt() const 
 { 
     TT_ASSERT(valid_, "Shape is not set."); 
-    TT_ASSERT(type_ == BUDA, "Accessing buda dimensions in non-buda shape.");
-    int buda_tile_r = tt::graphlib::get_row_size_from_tile_size(tile_dim_);
+    TT_ASSERT(type_ == FORGE, "Accessing forge dimensions in non-forge shape.");
+    int forge_tile_r = tt::graphlib::get_row_size_from_tile_size(tile_dim_);
     int dim_r = dims_.size() - 2;
-    return dims_[dim_r] / buda_tile_r; 
+    return dims_[dim_r] / forge_tile_r; 
 }
 
 std::uint32_t Shape::ct() const 
 { 
     TT_ASSERT(valid_, "Shape is not set."); 
-    TT_ASSERT(type_ == BUDA, "Accessing buda dimensions in non-buda shape.");
+    TT_ASSERT(type_ == FORGE, "Accessing forge dimensions in non-forge shape.");
     int dim_c = dims_.size() - 1;
-    return dims_[dim_c] / BUDA_TILE_DIM; 
+    return dims_[dim_c] / FORGE_TILE_DIM; 
 }
 
 std::uint32_t Shape::z() const 
 { 
     TT_ASSERT(valid_, "Shape is not set."); 
-    TT_ASSERT(type_ == BUDA, "Accessing buda dimensions in non-buda shape.");
+    TT_ASSERT(type_ == FORGE, "Accessing forge dimensions in non-forge shape.");
     int dim_z = dims_.size() - 3;
     return dims_[dim_z];
 }
@@ -269,22 +269,22 @@ std::uint32_t Shape::z() const
 std::uint32_t Shape::w() const 
 { 
     TT_ASSERT(valid_, "Shape is not set."); 
-    TT_ASSERT(type_ == BUDA, "Accessing buda dimensions in non-buda shape.");
+    TT_ASSERT(type_ == FORGE, "Accessing forge dimensions in non-forge shape.");
     int dim_w = dims_.size() - 4; 
     return dims_[dim_w];
 }
 
 bool Shape::is_single_tile() const
 {
-    TT_ASSERT(type_ == BUDA, "'Single-tile' is only meaningful in buda context.");
+    TT_ASSERT(type_ == FORGE, "'Single-tile' is only meaningful in forge context.");
     return w() == 1 && z() == 1 && rt() == 1 && ct() == 1;
 }
 
 bool Shape::is_unit(int index) const
 {
     index = negative_index(index);
-    if (is_buda() and index >= -2)
-        return (*this)[index] == BUDA_TILE_DIM;
+    if (is_forge() and index >= -2)
+        return (*this)[index] == FORGE_TILE_DIM;
     return (*this)[index] == 1;
 }
 
@@ -305,9 +305,9 @@ Shape Shape::create_from_pickled(bool valid, int type, std::vector<std::uint32_t
         return Shape::create(dims);
     }
 
-    if (((Shape::Type)type) == Type::BUDA)
+    if (((Shape::Type)type) == Type::FORGE)
     {
-        return Shape::create_buda(dims);
+        return Shape::create_forge(dims);
     }
 
     throw std::runtime_error("Invalid shape type");

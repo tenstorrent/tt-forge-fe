@@ -175,10 +175,10 @@ class CompiledGraphState:
 
         if isinstance(module, Module):
             for p in module.get_parameters():
-                value = p.value(is_buda=False)
+                value = p.value(is_forge=False)
                 if value == None:
                     raise ValueError(f"Parameter {p.get_name()} has no value")
-                constant_to_tensor[p.get_name()] = p.value(is_buda=False)
+                constant_to_tensor[p.get_name()] = p.value(is_forge=False)
         elif isinstance(module, torch.fx.GraphModule):
             for name, value in module.named_parameters():
                 constant_to_tensor[name] = value
@@ -199,7 +199,7 @@ class CompiledGraphState:
             consteval_trace,
             parameter_to_tile_dims,
             ordered_parameter_node_names,
-            is_buda=False
+            is_forge=False
         )
 
         return CompiledGraphState(
@@ -252,6 +252,9 @@ class CompiledGraphState:
 
     def get_constant_tensor(self, name):
         return self.get_tensor(self.post_const_eval_constants, name)
+    
+    def get_ordered_constant_tensors(self):
+        return [self.get_constant_tensor(name) for name in self.ordered_constant_node_names]
 
     def get_parameter_tensor(self, name):
         return self.get_tensor(self.post_const_eval_parameters, name)
@@ -318,7 +321,7 @@ class CompiledModel:
         self.inputs = [*inputs]
 
         logger.info(f"Running model {self.compiled_graph_state.graph.get_name()} on device...")
-        inputs_and_parameters = [*inputs, *self.compiled_graph_state.get_ordered_parameter_tensors()]
+        inputs_and_parameters = [*inputs, *self.compiled_graph_state.get_ordered_constant_tensors(), *self.compiled_graph_state.get_ordered_parameter_tensors()]
         outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
         
         if self.compiled_graph_state.graph.training():

@@ -531,7 +531,7 @@ def test_tvm_gpt2_fallback(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     
     compiler_cfg.enable_tvm_constant_prop = True
     compiler_cfg.tvm_constnat_prop_mask={"attn.c_attn.weight", "attn.c_attn.bias"} 

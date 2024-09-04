@@ -36,7 +36,7 @@ class PtFuseTMMultiUser(ForgeModule):
 
 def test_fuse_tm_sequence_multi_user(test_device):
     """
-       Test case to fuse tm sequence when there are multiple user for the matched pattern in optimization buda passes
+       Test case to fuse tm sequence when there are multiple user for the matched pattern in optimization forge passes
 
        Pattern to Match:
                 vslice

@@ -4,6 +4,7 @@
 #include "graph_lib/defines.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node_types.hpp"
+#include "lower_to_forge/common.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "python_bindings_common.hpp"
 
@@ -13,10 +14,10 @@
 
 namespace tt {
 
-static bool has_newstyle_interface(std::string const &op_name, bool is_buda)
+static bool has_newstyle_interface(std::string const &op_name, bool is_forge)
 {
     py::object eval_module =
-        is_buda ? py::module_::import("forge.op.eval.buda") : py::module_::import("forge.op.eval.forge");
+        is_forge ? py::module_::import("forge.op.eval.lforge") : py::module_::import("forge.op.eval.forge");
     return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
 }
 
@@ -29,10 +30,10 @@ void PassesModule(py::module &m_passes)
                std::variant<std::string, py::object> const &type,
                std::vector<NodeContext> const &operands,
                std::vector<graphlib::OpType::Attr> const &attrs = {},
-               BudaOpAttrs const &buda_attrs = {},
+               ForgeOpAttrs const &forge_attrs = {},
                std::string const &tag = "",
-               int tile_height = graphlib::Shape::BUDA_TILE_DIM,
-               int tile_width = graphlib::Shape::BUDA_TILE_DIM)
+               int tile_height = graphlib::Shape::FORGE_TILE_DIM,
+               int tile_width = graphlib::Shape::FORGE_TILE_DIM)
             {
                 if (std::holds_alternative<std::string>(type))
                 {
@@ -41,7 +42,7 @@ void PassesModule(py::module &m_passes)
                         "Error lowering a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs, buda_attrs),
+                        graphlib::OpType(std::get<std::string>(type), attrs, forge_attrs),
                         operands,
                         tag,
                         tile_height,
@@ -50,7 +51,7 @@ void PassesModule(py::module &m_passes)
                 else
                 {
                     TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
-                    TT_ASSERT(buda_attrs.size() == 0, "Illegal mixing of API modes");
+                    TT_ASSERT(forge_attrs.size() == 0, "Illegal mixing of API modes");
                     auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
                     return self.op(op_type, operands, tag, tile_height, tile_width);
                 }
@@ -58,17 +59,17 @@ void PassesModule(py::module &m_passes)
             py::arg("type"),
             py::arg("operands"),
             py::arg("attrs") = std::vector<int>{},
-            py::arg("buda_attrs") = BudaOpAttrs{},
+            py::arg("forge_attrs") = ForgeOpAttrs{},
             py::arg("tag") = "",
-            py::arg("tile_height") = graphlib::Shape::BUDA_TILE_DIM,
-            py::arg("tile_width") = graphlib::Shape::BUDA_TILE_DIM)
+            py::arg("tile_height") = graphlib::Shape::FORGE_TILE_DIM,
+            py::arg("tile_width") = graphlib::Shape::FORGE_TILE_DIM)
         .def(
             "tm",
             [](tt::LoweringContext &self,
                std::variant<std::string, py::object> const &type,
                NodeContext const &operand,
                std::vector<graphlib::OpType::Attr> const &attrs = {},
-               BudaOpAttrs const &buda_attrs = {})
+               ForgeOpAttrs const &forge_attrs = {})
             {
                 if (std::holds_alternative<std::string>(type))
                 {
@@ -76,12 +77,12 @@ void PassesModule(py::module &m_passes)
                         not has_newstyle_interface(std::get<std::string>(type), true),
                         "Error lowering a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
-                    return self.tm(graphlib::OpType(std::get<std::string>(type), attrs, buda_attrs), operand);
+                    return self.tm(graphlib::OpType(std::get<std::string>(type), attrs, forge_attrs), operand);
                 }
                 else
                 {
                     TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
-                    TT_ASSERT(buda_attrs.size() == 0, "Illegal mixing of API modes");
+                    TT_ASSERT(forge_attrs.size() == 0, "Illegal mixing of API modes");
                     auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
                     return self.tm(op_type, operand);
                 }
@@ -89,14 +90,14 @@ void PassesModule(py::module &m_passes)
             py::arg("type"),
             py::arg("operand"),
             py::arg("attrs") = std::vector<int>{},
-            py::arg("buda_attrs") = BudaOpAttrs{})
+            py::arg("forge_attrs") = ForgeOpAttrs{})
         .def(
             "nary_tm",
             [](tt::LoweringContext &self,
                std::variant<std::string, py::object> const &type,
                std::vector<NodeContext> const &operands,
                std::vector<graphlib::OpType::Attr> const &attrs = {},
-               BudaOpAttrs const &buda_attrs = {})
+               ForgeOpAttrs const &forge_attrs = {})
             {
                 if (std::holds_alternative<std::string>(type))
                 {
@@ -104,12 +105,12 @@ void PassesModule(py::module &m_passes)
                         not has_newstyle_interface(std::get<std::string>(type), true),
                         "Error lowering a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
-                    return self.nary_tm(graphlib::OpType(std::get<std::string>(type), attrs, buda_attrs), operands);
+                    return self.nary_tm(graphlib::OpType(std::get<std::string>(type), attrs, forge_attrs), operands);
                 }
                 else
                 {
                     TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
-                    TT_ASSERT(buda_attrs.size() == 0, "Illegal mixing of API modes");
+                    TT_ASSERT(forge_attrs.size() == 0, "Illegal mixing of API modes");
                     auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
                     return self.nary_tm(op_type, operands);
                 }
@@ -117,7 +118,7 @@ void PassesModule(py::module &m_passes)
             py::arg("type"),
             py::arg("operands"),
             py::arg("attrs") = std::vector<int>{},
-            py::arg("buda_attrs") = BudaOpAttrs{})
+            py::arg("forge_attrs") = ForgeOpAttrs{})
         .def("shape", &tt::LoweringContext::shape, py::arg("node"), py::arg("use_new_graph") = false)
         .def(
             "set_broadcast_dim",
@@ -143,17 +144,17 @@ void PassesModule(py::module &m_passes)
             py::arg("tensor"),
             py::arg("df") = DataFormat::Invalid)
         .def(
-            "tensor_with_sparse_buda",
-            [](tt::LoweringContext &self, py::object tensor, tt::sparse::SparseBUDA sparse_buda, DataFormat df)
+            "tensor_with_sparse_forge",
+            [](tt::LoweringContext &self, py::object tensor, tt::sparse::SparseFORGE sparse_forge, DataFormat df)
             {
                 return self.tensor_with_blob(
                     make_shared_py_object(tensor),
                     graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()),
-                    sparse_buda,
+                    sparse_forge,
                     df);
             },
             py::arg("tensor"),
-            py::arg("sparse_buda"),
+            py::arg("sparse_forge"),
             py::arg("df") = DataFormat::Invalid)
         .def(
             "get_pytorch_tensor",
@@ -203,6 +204,47 @@ void PassesModule(py::module &m_passes)
             },
             py::arg("type"),
             py::arg("operands"),
+            py::arg("attrs") = std::vector<int>{},
+            py::arg("copy_tms") = true,
+            py::arg("dont_decompose") = false,
+            py::arg("optimize_hoist") = false,
+            py::arg("output_df") = DataFormat::Invalid)
+        .def(
+            "op_with_named_attrs",
+            [](tt::DecomposingContext &self,
+               std::variant<std::string, py::object> const &type,
+               std::vector<NodeContext> const &operands,
+               ForgeOpAttrs const &named_attrs,
+               std::vector<graphlib::OpType::Attr> const &attrs = {},
+               bool copy_tms = true,
+               bool dont_decompose = false,
+               bool optimize_hoist = false,
+               DataFormat output_df = DataFormat::Invalid)
+            {
+                if (std::holds_alternative<std::string>(type))
+                {
+                    TT_LOG_ASSERT(
+                        not has_newstyle_interface(std::get<std::string>(type), false),
+                        "Error decomposing a type with old OpType interface, expects new OpType interface {}",
+                        std::get<std::string>(type));
+                    return self.op(
+                        graphlib::OpType(std::get<std::string>(type), attrs, {}, named_attrs),
+                        operands,
+                        copy_tms,
+                        dont_decompose,
+                        optimize_hoist,
+                        output_df);
+                }
+                else
+                {
+                    TT_ASSERT(attrs.size() == 0, "Illegal mixing of API modes");
+                    auto const &op_type = std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
+                    return self.op(op_type, operands, copy_tms, dont_decompose, optimize_hoist, output_df);
+                }
+            },
+            py::arg("type"),
+            py::arg("operands"),
+            py::arg("named_attrs"),
             py::arg("attrs") = std::vector<int>{},
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,

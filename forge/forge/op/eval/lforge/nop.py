@@ -4,7 +4,7 @@
 
 import os
 
-from ..interface import BudaEltwiseUnaryOp
+from ..interface import ForgeEltwiseUnaryOp
 
 import torch
 from forge.utils import align_up_tile, round_up_div
@@ -13,28 +13,44 @@ from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
 
-class Log(BudaEltwiseUnaryOp):
+class Nop(ForgeEltwiseUnaryOp):
     @classmethod
-    def create(cls, vector=None):
-        self = cls("log")
-        if vector is not None:
-          self.set_buda_attr("vector", vector)
+    def create(
+        cls,
+        relu_en=False,
+        relu_threshold=0,
+        relu_mode=None,
+        squeeze=None,
+        squeeze_dim=None,
+        unsqueeze=None,
+        unsqueeze_dim=None,
+    ):
+        self = cls("nop")
+        # Adding relu forge attr for Nop relu
+        if relu_en == True:
+            self.set_forge_attr("relu_en", relu_en)
+            self.set_forge_attr("relu_threshold", relu_threshold)
+            self.set_forge_attr("relu_mode", relu_mode)
+        # Adding (un)squeeze attr for Nop (un)squeeze
+        self.squeeze = squeeze
+        self.squeeze_dim = squeeze_dim
+        self.unsqueeze = unsqueeze
+        self.unsqueeze_dim = unsqueeze_dim
+
         return self
 
     def eval(self, tensors):
-        assert len(tensors) == 1, "Log should have one input"
+        assert len(tensors) == 1, "nop should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-
-        ret = torch.log(tensors[0] + 1e-10)
+        ret = tensors[0]
 
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
-
         return ret
 
     def shape(self, tensor_shapes, tile_height, tile_width):
-        assert len(tensor_shapes) == 1, "Log should have one input"
+        assert len(tensor_shapes) == 1, "Eltwise unary should have one input"
         shape = tensor_shapes[0]
         if tile_height == TILE_DIM:
             shape[-2] = align_up_tile(shape[-2])
@@ -45,6 +61,20 @@ class Log(BudaEltwiseUnaryOp):
                 f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}"
             )
 
+        # Add NOP squeeze condition squash 5D -> 4D for squeeze NOP
+        if hasattr(self, 'squeeze') and hasattr(self, 'squeeze_dim'):
+            if (self.squeeze and self.squeeze_dim != None):
+                if self.squeeze_dim == 0:
+                    ops_updated = Shape.create_forge(shape[1:], tile_height, tile_width)
+                    return ops_updated, []
+
+        # Add NOP unsqueeze condition extend 4D -> 5D for unsqueeze NOP
+        if hasattr(self, 'unsqueeze') and hasattr(self, 'unsqueeze_dim'):
+            if (self.unsqueeze is not None and self.unsqueeze_dim is not None):
+                if self.unsqueeze_dim == 4:
+                    ops_updated = Shape.create_forge([1] + shape, tile_height, tile_width)
+                    return ops_updated, []
+
         return shape, []
 
     def parallelization(self, op_shape, fracture_factor):
@@ -54,7 +84,7 @@ class Log(BudaEltwiseUnaryOp):
         return None
 
     def execution_cycles(self, arch_name, op_model) -> int:
-        op_model_desc = op_model_to_desc("log", arch_name, op_model)
+        op_model_desc = op_model_to_desc("nop", arch_name, op_model)
 
         compiler_cache_cycles = get_compiler_cached_cycles(op_model_desc)
         if compiler_cache_cycles is not None:

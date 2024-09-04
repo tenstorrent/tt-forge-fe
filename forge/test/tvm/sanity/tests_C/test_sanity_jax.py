@@ -144,7 +144,7 @@ def test_tvm_multiple_outputs(test_kind, test_device):
             arch=test_device.arch,
             devtype=test_device.devtype,
             test_kind=test_kind,
-            # verify_each_buda_pass=True,
+            # verify_each_forge_pass=True,
         )
     )
 
@@ -267,9 +267,9 @@ def test_tvm_conv2d(test_kind, test_device):
 
     compiler_config = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_config.enable_xla_jax_convert = True
 
     # Initialize module
@@ -372,9 +372,9 @@ def test_tvm_dense(test_kind, test_device):
 
     compiler_config = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     compiler_config.enable_xla_jax_convert = True
     # Initialize module
@@ -414,9 +414,9 @@ def test_tvm_conv2d_transpose(test_kind, test_device):
 
     compiler_config = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_config.enable_xla_jax_convert = True
     compiler_config.varify_tvm_compile = True
 
@@ -461,9 +461,9 @@ def test_tvm_conv2d_dilated(test_kind, test_device):
 
     compiler_config = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_config.enable_xla_jax_convert = True
 
     # Initialize module

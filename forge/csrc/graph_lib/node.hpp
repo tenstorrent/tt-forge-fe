@@ -10,7 +10,7 @@
 #include <functional>
 #include "graph_lib/defines.hpp"
 #include "graph_lib/shape.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 
 namespace tt {
 

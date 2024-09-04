@@ -413,6 +413,7 @@ def test_sigmoid(shape):
     fw_out = framework_model(*inputs)
     
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]

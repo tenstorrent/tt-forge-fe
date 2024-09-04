@@ -273,8 +273,8 @@ def test_learning_rate_scheduler_with_linear_warmup_and_decay(cfg, bias_correcti
         def get_lr(self):
             return next(self.get_lr_iterable)
         
-        def get_scheduler_params(self, name, is_buda):
-            opt_params = self.optimizer.get_optimizer_params(name, is_buda=is_buda)
+        def get_scheduler_params(self, name, is_forge):
+            opt_params = self.optimizer.get_optimizer_params(name, is_forge=is_forge)
             return {'lr': opt_params['lr']}
 
         def get_pytorch_scheduler(self, optimizer: torch.optim.Optimizer):

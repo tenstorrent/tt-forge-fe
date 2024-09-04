@@ -126,7 +126,7 @@ class CompilerConfig:
     enable_tm_cpu_fallback: bool = False    # Extend CPU fallback for TM ops
     tm_cpu_fallback_max_depth: int = 10     # Max search depth for extended CPU fallback
 
-    enable_tvm_dropout: bool = False        # (Temporary): Remove when buda supports dropout
+    enable_tvm_dropout: bool = False        # (Temporary): Remove when forge supports dropout
     enable_tvm_unsupported_ops: bool = False# Create "unsupported" forge ops in python file, allowing user to modify later
     enable_op_level_comparision: bool = False # Should we need to compare every op with framework output at each compilation stage.
     enable_tvm_constant_prop: bool = False  # Should we constant prop in tvm
@@ -215,7 +215,7 @@ class CompilerConfig:
                     "generate_initial_graph": CompileDepth.GENERATE_INITIAL_GRAPH,
                     "post_initial_graph_pass": CompileDepth.POST_INITIAL_GRAPH_PASS,
                     "pre_lowering_pass": CompileDepth.PRE_LOWERING_PASS,
-                    "buda_graph_pre_placer": CompileDepth.BUDA_GRAPH_PRE_PLACER,
+                    "forge_graph_pre_placer": CompileDepth.FORGE_GRAPH_PRE_PLACER,
                     "balancer_pass": CompileDepth.BALANCER_PASS,
                     "generate_netlist": CompileDepth.GENERATE_NETLIST,
                     "post_pattern_matcher": CompileDepth.POST_PATTERN_MATCHER,

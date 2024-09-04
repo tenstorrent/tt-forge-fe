@@ -15,16 +15,16 @@ import forge
 from forge import ForgeModule, Tensor
 
 
-class BudaMatmulTest(ForgeModule):
+class ForgeMatmulTest(ForgeModule):
     """
-        Buda Test 3
+        Forge Test 3
 
         In this test we have 10 operations, and three input tensors and three trainable variables.
         One operand represents input and the other one is trainable paramater.
     """
 
     def __init__(self, shape):
-        super().__init__("Buda Test 3")
+        super().__init__("Forge Test 3")
         self.testname = "Operator Matmul Test 3"
         self.shape = shape
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)

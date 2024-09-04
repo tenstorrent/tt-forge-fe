@@ -73,7 +73,7 @@ def test_tvm_roberta_layer(test_kind, test_device):
     )
     os.remove(save_path)
 
-# This test fails after lowering to buda due to output mismatch
+# This test fails after lowering to forge due to output mismatch
 # def test_tvm_roberta_onnx(test_kind, test_device):
 #     if test_kind == TestKind.TRAINING: # only run recompute test in post-commit
 #         pytest.skip()
@@ -121,7 +121,7 @@ def test_tvm_roberta(test_kind, test_device):
         pytest.skip()
 
     if test_device.arch == BackendDevice.Blackhole:
-         pytest.skip("Skip until BudaBackend#2628 is consumed.")
+         pytest.skip("Skip until ForgeBackend#2628 is consumed.")
 
     input_shape = (1, 256, 256)
     roberta_model = RobertaModel.from_pretrained("arampacha/roberta-tiny", torchscript=True)

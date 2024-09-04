@@ -15,7 +15,7 @@ from forge._C.graph import (
 from .forgeglobal import TILE_DIM
 from forge.module import ForgeModule
 import forge
-from forge.tensor import pytorch_dtype_to_buda_dataformat
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 from forge._C import DataFormat
 from forge._C.graph import OpType
 from forge.op.resize import RESIZE2d_METHOD_TO_INT
@@ -33,8 +33,8 @@ import json
 
 def populate_binary_stack_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["buda_shape"]
-    node_shape = node["buda_shape"]
+    input_shape = graph["nodes"][node["inputs"][0][0]]["forge_shape"]
+    node_shape = node["forge_shape"]
 
     for dim, (i, o) in enumerate(zip(input_shape, node_shape)):
         if i != o:
@@ -148,7 +148,7 @@ def populate_vstack_attrs(graph, nid, attrs):
     
 
 def populate_hslice_attrs(graph, nid, attrs):
-    attrs.append(graph["nodes"][nid]["buda_shape"][-3])
+    attrs.append(graph["nodes"][nid]["forge_shape"][-3])
 
 
 def populate_hstack_attrs(graph, nid, attrs):
@@ -261,7 +261,7 @@ def populate_pad_attrs(graph, nid, attrs):
 def populate_transpose_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     axes = [int(axis) for axis in node["attrs"]["axes"][0]]
-    transpose_shape = list(graph["nodes"][nid]["buda_shape"])
+    transpose_shape = list(graph["nodes"][nid]["forge_shape"])
 
     assert int(node["attrs"]["num_inputs"]) == 1
 
@@ -299,17 +299,17 @@ def populate_transpose_attrs(graph, nid, attrs):
     
 
 def populate_reshape_attrs(graph, nid, attrs):
-    output_shape = graph["nodes"][nid]["buda_shape"]
+    output_shape = graph["nodes"][nid]["forge_shape"]
     for x in output_shape:
         attrs.append(x)
 
 def populate_concatenate_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
 
-    buda_shape = node["buda_shape"]
+    forge_shape = node["forge_shape"]
     concat_axis = int(node["attrs"]["axis"][0][0])
     if concat_axis >= 0:
-        concat_axis -= len(buda_shape)
+        concat_axis -= len(forge_shape)
     attrs.append(concat_axis)
 
 def populate_broadcast_attrs(graph, nid, attrs):
@@ -352,7 +352,7 @@ def populate_resize2d_attrs(graph, nid, attrs):
         attrs.append(0)
 
 
-def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
+def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
     class SubGraph(ForgeModule):
         def __init__(self, fn_name, attributes):
             super().__init__("subgraph")
@@ -377,7 +377,7 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
                 )
 
     node = graph["nodes"][nid]
-    op_type = tvm_to_buda_op_map[node["name"]]
+    op_type = tvm_to_forge_op_map[node["name"]]
 
     subgraph = SubGraph(fn_name=op_type, attributes=attrs)
 
@@ -415,7 +415,7 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
         if tensor in visited_tensors:
             if output is not None:
                 create_data_edge(
-                    buda_graph,
+                    forge_graph,
                     visited_tensors[tensor],
                     0,
                     output,
@@ -434,14 +434,14 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
             if tensor.get_name() is not None:
                 name = tensor.get_name()
             else:
-                name = "parameter_" + buda_graph.get_node_name(output)
+                name = "parameter_" + forge_graph.get_node_name(output)
 
             inq = create_parameter_input(
                 graph, name, tensor.shape.get_pytorch_shape(), tensor.requires_grad
             )
             if output is not None:
                 create_data_edge(
-                    buda_graph, inq, 0, output, port_index, operand_broadcast
+                    forge_graph, inq, 0, output, port_index, operand_broadcast
                 )
                 logger.debug("Edge from: {}:0 to: {}:{}", inq, output, port_index)
             else:
@@ -452,28 +452,28 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
         if tensor.src_op is None:
             # input tensor from main graph
             input_node = graph["nodes"][input_nids[inputs.index(tensor)]]
-            buda_id = input_node["bid"]
+            forge_id = input_node["bid"]
 
-            logger.debug("Setting {} as input to subgraph", buda_id)
+            logger.debug("Setting {} as input to subgraph", forge_id)
             create_data_edge(
-                buda_graph, buda_id, 0, output, port_index, operand_broadcast
+                forge_graph, forge_id, 0, output, port_index, operand_broadcast
             )
-            logger.debug("Edge from: {}:0 to: {}:{}", buda_id, output, port_index)
-            visited_tensors[tensor] = buda_id
+            logger.debug("Edge from: {}:0 to: {}:{}", forge_id, output, port_index)
+            visited_tensors[tensor] = forge_id
             continue
 
         elif tensor.src_op.op_type == "constant":
             constant_value = tensor.src_op.attrs[0]
             constant = create_constant_input(
-                buda_graph,
-                "constant_" + str(port_index) + "_" + buda_graph.get_node_name(output),
+                forge_graph,
+                "constant_" + str(port_index) + "_" + forge_graph.get_node_name(output),
                 constant_value,
                 tensor.data_format,
             )
 
             if output is not None:
                 create_data_edge(
-                    buda_graph, constant, 0, output, port_index, operand_broadcast
+                    forge_graph, constant, 0, output, port_index, operand_broadcast
                 )
                 logger.debug("Edge from: {}:0 to: {}:{}", constant, output, port_index)
             else:
@@ -482,7 +482,7 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
             continue
 
         op = create_op_node(
-            buda_graph,
+            forge_graph,
             f"{tensor.src_op.name}_{nid}",
             tensor.src_op.cpp_op_type,
             tensor.shape.get_pytorch_shape(),
@@ -496,7 +496,7 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
         intermediate[op] = tensor.value()
 
         if output is not None:
-            create_data_edge(buda_graph, op, 0, output, port_index, operand_broadcast)
+            create_data_edge(forge_graph, op, 0, output, port_index, operand_broadcast)
             logger.debug("Edge from: {}:0 to: {}:{}", op, output, port_index)
         else:
             set_as_subgraph_output(op, tensor)
@@ -506,13 +506,13 @@ def expand_compound_op(graph, nid, attrs, buda_graph, intermediate):
 
 
 # keep sorted
-tvm_to_buda_op_map = {
+tvm_to_forge_op_map = {
     "abs"                           : "abs",
     "add"                           : "add",
     "argmax"                        : "argmax",
     "broadcast_to"                  : "broadcast",
     "forge.binary_stack"           : "binary_stack",
-    "forge.buda_conv2d_with_bias"  : "conv2d",
+    "forge.forge_conv2d_with_bias"  : "conv2d",
     "forge.concatenate"            : "concatenate",
     "forge.hslice"                 : "hslice",
     "forge.hstack"                 : "hstack",
@@ -553,7 +553,7 @@ tvm_to_buda_op_map = {
     "where"                         : "where",
 }
 
-compound_buda_ops = [
+compound_forge_ops = [
     "layernorm",
     "softmax",
 ]
@@ -621,7 +621,7 @@ def str_to_dataformat(t: str) -> DataFormat:
 
     raise RuntimeError("Unsupported format: " + t)
 
-def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name, verify_cfg=None):
+def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_name, verify_cfg=None):
     from forge.op.eval.forge import get_f_forge_shape  # avoid circular import
     from forge.op.eval.forge import get_f_forge_eval  # avoid circular import
     from forge._C.graph import OpType
@@ -630,7 +630,7 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
     module = torchmod.module
     json_graph, pytorch_inputs, weights = load_tvm_graph(inputs, module, compiler_cfg, graph_name, framework, verify_cfg=verify_cfg)
 
-    buda_module = ModuleWrapper(module, torchmod.name + "_tvm")
+    forge_module = ModuleWrapper(module, torchmod.name + "_tvm")
 
     nid_to_bid = {}
     intermediate = {}
@@ -656,13 +656,13 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
 
     ordered_output_bids = [None] * len(output_nodes)
 
-    def create_output_if_needed(nid, buda_graph, graph):
+    def create_output_if_needed(nid, forge_graph, graph):
         node = graph["nodes"][nid]
 
         if nid in output_nodes:
             output_name = "output_" + node["name"] + "_" + str(nid)
             outq = create_output(
-                buda_graph, output_name, node["buda_shape"],
+                forge_graph, output_name, node["forge_shape"],
                 str_to_dataformat(node["attrs"]["dtype"][0][0]),
                 False, # TODO: loss output?
             )
@@ -670,11 +670,11 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                 f"Ouput: {outq} name: + {output_name}"
             )
             ordered_output_bids[output_nodes.index(nid)] = outq
-            create_data_edge(buda_graph, node["bid"], 0, outq, 0, [])
+            create_data_edge(forge_graph, node["bid"], 0, outq, 0, [])
     
     for nid, node in enumerate(graph["nodes"]):
         shape = node["attrs"]["shape"][0][0]
-        node["buda_shape"] = tuple(shape)
+        node["forge_shape"] = tuple(shape)
         if node["op"] == "input":
             if node["name"] not in weights:
                 if "nid_to_input_idx" in json_graph.keys() and len(json_graph["nid_to_input_idx"]) != 0:
@@ -684,7 +684,7 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                     requires_grad = pytorch_inputs[input_nodes.index(nid)].requires_grad
 
                 inq = create_activation_input(
-                    buda_graph, "input_" + node["name"], node["buda_shape"], requires_grad,
+                    forge_graph, "input_" + node["name"], node["forge_shape"], requires_grad,
                     str_to_dataformat(node["attrs"]["dtype"][0][0])
                 )
 
@@ -697,7 +697,7 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                 node["bid"] = inq
                 node["tensor"] = tensor
                 logger.debug(
-                    f"Node: {node['bid']} shape: {node['buda_shape']} name: {buda_graph.get_node_name(node['bid'])} type: input"
+                    f"Node: {node['bid']} shape: {node['forge_shape']} name: {forge_graph.get_node_name(node['bid'])} type: input"
                 )
             else:
                 input_nodes.remove(nid)
@@ -706,13 +706,13 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                 if len(shape) == 0:
                     constant_value = tensor.item()
                     inq = create_constant_input(
-                            buda_graph,
+                            forge_graph,
                             "constant_" + node["name"],
                             constant_value,
                             str_to_dataformat(node["attrs"]["dtype"][0][0]))
                     node["tensor"] = tensor
                     logger.debug(
-                        f"Node: {inq} shape: {node['buda_shape']} name: {buda_graph.get_node_name(inq)} type: constant"
+                        f"Node: {inq} shape: {node['forge_shape']} name: {forge_graph.get_node_name(inq)} type: constant"
                     )
                 else:
                     param = forge.Parameter(
@@ -720,17 +720,17 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                         requires_grad=tensor.requires_grad,
                         name=node["name"],
                     )
-                    buda_module._parameters[node["name"]] = param
+                    forge_module._parameters[node["name"]] = param
                     inq = create_parameter_input(
-                        buda_graph,
+                        forge_graph,
                         node["name"],
                         param.shape.get_pytorch_shape(),
                         param.requires_grad,
-                        pytorch_dtype_to_buda_dataformat(tensor.dtype)
+                        pytorch_dtype_to_forge_dataformat(tensor.dtype)
                     )
                     node["tensor"] = tensor
                     logger.debug(
-                        f"Node: {inq} shape: {node['buda_shape']} name: {buda_graph.get_node_name(inq)} type: parameter, requires_grad: {param.requires_grad}"
+                        f"Node: {inq} shape: {node['forge_shape']} name: {forge_graph.get_node_name(inq)} type: parameter, requires_grad: {param.requires_grad}"
                     )
                 node["bid"] = inq
         elif node["op"] == "const":
@@ -745,7 +745,7 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
             if len(shape) == 0:
                 constant_value = tensor.item()
                 inq = create_constant_input(
-                        buda_graph,
+                        forge_graph,
                         "constant_" + node["name"],
                         constant_value,
                         str_to_dataformat(node["attrs"]["dtype"][0][0]))
@@ -759,22 +759,22 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                     requires_grad=requires_grad,
                     name=node["name"],
                 )
-                buda_module._parameters[node["name"]] = param
+                forge_module._parameters[node["name"]] = param
                 inq = create_parameter_input(
-                    buda_graph,
+                    forge_graph,
                     node["name"],
                     param.shape.get_pytorch_shape(),
                     param.requires_grad,
-                    pytorch_dtype_to_buda_dataformat(tensor.dtype),
+                    pytorch_dtype_to_forge_dataformat(tensor.dtype),
                 )
 
             node["bid"] = inq
             logger.debug(
-                f"Node: {node['bid']} shape: {node['buda_shape']} name: {buda_graph.get_node_name(node['bid'])} type: constant"
+                f"Node: {node['bid']} shape: {node['forge_shape']} name: {forge_graph.get_node_name(node['bid'])} type: constant"
             )
         elif node["op"] == "kernel":
 
-            op_type = tvm_to_buda_op_map[node["name"]]
+            op_type = tvm_to_forge_op_map[node["name"]]
             name = node["name"] + f"_{nid}"
 
             attrs = []
@@ -783,19 +783,19 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
             if op_type in ops_needing_attributes:
                 named_attrs = ops_needing_attributes[op_type](graph=graph, nid=nid, attrs=attrs)
 
-            if op_type in compound_buda_ops:
+            if op_type in compound_forge_ops:
                 expand_compound_op(
                     graph=graph,
                     nid=nid,
                     attrs=attrs,
-                    buda_graph=buda_graph,
+                    forge_graph=forge_graph,
                     intermediate=intermediate,
                 )
-                create_output_if_needed(nid, buda_graph, graph)
+                create_output_if_needed(nid, forge_graph, graph)
                 continue
 
             cpp_op_type = OpType(op_type, attrs) if named_attrs is None else OpType(op_type, named_attrs=named_attrs)
-            op = create_op_node(buda_graph, name, cpp_op_type, node["buda_shape"], str_to_dataformat(node["attrs"]["dtype"][0][0]), {})
+            op = create_op_node(forge_graph, name, cpp_op_type, node["forge_shape"], str_to_dataformat(node["attrs"]["dtype"][0][0]), {})
             node["bid"] = op
 
             # TVM nn.pad has 2 inputs [Data, pad_value]
@@ -804,13 +804,13 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
                 pad_value_node = graph["nodes"][node["inputs"][1][0]]
                 assert pad_value_node["tensor"].ndim == 0, "Pad value should be a single element"
                 assert pad_value_node["tensor"].numpy().item() == 0, "Forge only support padding with 0"
-                remove_node(buda_graph, pad_value_node["bid"])
+                remove_node(forge_graph, pad_value_node["bid"])
                 # Remove from json
                 node["attrs"]["num_inputs"] = '1'
 
 
             logger.debug(
-                f"Node: {node['bid']} shape: {node['buda_shape']} name: {buda_graph.get_node_name(node['bid'])} type: op"
+                f"Node: {node['bid']} shape: {node['forge_shape']} name: {forge_graph.get_node_name(node['bid'])} type: op"
             )
 
             assert "num_inputs" in node["attrs"]
@@ -819,7 +819,7 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
             forward_inputs = []
             for input_port in range(int(node["attrs"]["num_inputs"])):
                 input_node = graph["nodes"][node["inputs"][input_port][0]]
-                shapes.append(input_node["buda_shape"])
+                shapes.append(input_node["forge_shape"])
                 forward_inputs.append(input_node["tensor"])
 
             shape, operand_broadcast = get_f_forge_shape(OpType(op_type, attrs))(shapes)
@@ -829,34 +829,34 @@ def compile_tvm_for_forge(buda_graph, torchmod, inputs, compiler_cfg, graph_name
 
             for input_port in range(int(node["attrs"]["num_inputs"])):
                 input_node = graph["nodes"][node["inputs"][input_port][0]]
-                buda_id = input_node["bid"]
+                forge_id = input_node["bid"]
 
                 create_data_edge(
-                    buda_graph, buda_id, 0, op, input_port, operand_broadcast
+                    forge_graph, forge_id, 0, op, input_port, operand_broadcast
                 )
                 logger.debug(
                     f"Edge from: {input_node['bid']}:0 to: {node['bid']}:{input_port}"
                 )
 
-        create_output_if_needed(nid, buda_graph, graph)
+        create_output_if_needed(nid, forge_graph, graph)
 
     assert None not in ordered_output_bids
     ordered_input_bids = [graph["nodes"][nid]["bid"] for nid in input_nodes]
 
     # TODO: figure out how to get requires_grad for output nodes?
-    buda_graph.register_module_inputs(ordered_input_bids)
-    buda_graph.register_module_outputs(ordered_output_bids, [True] * len(ordered_output_bids))
+    forge_graph.register_module_inputs(ordered_input_bids)
+    forge_graph.register_module_outputs(ordered_output_bids, [True] * len(ordered_output_bids))
 
-    buda_inputs = []
-    for buda_input in input_nodes:
-        buda_inputs.append(
-            forge.Tensor.create_from_torch(graph["nodes"][buda_input]["tensor"])
+    forge_inputs = []
+    for forge_input in input_nodes:
+        forge_inputs.append(
+            forge.Tensor.create_from_torch(graph["nodes"][forge_input]["tensor"])
         )
 
-    buda_outputs = []
+    forge_outputs = []
     for output in output_nodes:
-        buda_outputs.append(
+        forge_outputs.append(
             forge.Tensor.create_from_torch(graph["nodes"][output]["tensor"])
         )
 
-    return buda_graph, buda_module, buda_inputs, buda_outputs, intermediate
+    return forge_graph, forge_module, forge_inputs, forge_outputs, intermediate

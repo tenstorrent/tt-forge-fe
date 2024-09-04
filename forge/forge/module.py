@@ -12,7 +12,7 @@ from loguru import logger
 
 import forge
 from .forgeglobal import register_module, lazy_trace_data
-from .tensor import SomeTensor, Tensor, to_pt_tensors, to_tf_tensors, to_tf_variables, pytorch_dtype_to_buda_dataformat, buda_dataformat_to_pytorch_dtype
+from .tensor import SomeTensor, Tensor, to_pt_tensors, to_tf_tensors, to_tf_variables, pytorch_dtype_to_forge_dataformat, forge_dataformat_to_pytorch_dtype
 from .parameter import Parameter
 import onnx
 import onnxruntime
@@ -770,11 +770,11 @@ class ForgeModule(Module):
         lazy_trace_data(data)
 
         if isinstance(data, torch.Tensor):
-            data = forge.Tensor.create_from_torch(data, constant=True, dev_data_format=pytorch_dtype_to_buda_dataformat(data.dtype))
+            data = forge.Tensor.create_from_torch(data, constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype))
 
         import numpy as np
         if isinstance(data, np.ndarray):
-            data = forge.Tensor.create_from_torch(torch.Tensor(data), constant=True, dev_data_format=pytorch_dtype_to_buda_dataformat(data.dtype))
+            data = forge.Tensor.create_from_torch(torch.Tensor(data), constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype))
 
         assert isinstance(data, forge.Tensor)
         self._constants[name] = data

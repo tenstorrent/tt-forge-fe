@@ -4,7 +4,7 @@
 #
 # Tests for testing of element-wise binary operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -74,7 +74,7 @@ def test_eltwise_binary(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaElementWiseBinaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    architecture = f'models.{model}.ForgeElementWiseBinaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch)
     tt0.place_module(model)

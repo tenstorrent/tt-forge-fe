@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from ..tensor import Tensor, pytorch_dtype_to_buda_dataformat
+from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 from .common import ForgeOp as op
 import torch
 
@@ -38,10 +38,10 @@ def Quantize(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
-    return op("quantize", name, operandA, operandB, attrs=(zero_point, axis, str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
+    return op("quantize", name, operandA, operandB, attrs=(zero_point, axis, str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
 
 def Dequantize(
@@ -71,11 +71,11 @@ def Dequantize(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
 
-    return op("dequantize", name, operandA, operandB, attrs=(zero_point, axis,)).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
+    return op("dequantize", name, operandA, operandB, attrs=(zero_point, axis,)).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
 def Requantize(
         name: str,
@@ -119,14 +119,14 @@ def Requantize(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op(
-        "requantize", name, operandA, operand_inp_scale,operand_out_scale,attrs=(output_zero_point, input_zero_point, axis,rounding,str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
+        "requantize", name, operandA, operand_inp_scale,operand_out_scale,attrs=(output_zero_point, input_zero_point, axis,rounding,str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
 
-def BudaRequantize(
+def ForgeRequantize(
         name: str,
         operandA: Tensor,
         scale: Tensor,
@@ -138,4 +138,4 @@ def BudaRequantize(
 
 
     return op(
-        "buda_requantize", name, operandA, scale,attrs=(zero_point,axis,rounding,str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_buda_dataformat(out_dtype))
+        "forge_requantize", name, operandA, scale,attrs=(zero_point,axis,rounding,str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))

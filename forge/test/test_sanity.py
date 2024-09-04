@@ -47,9 +47,9 @@ backend_devices = {
     "blackhole": BackendDevice.Blackhole
 }
 
-class BudaTestAdd(ForgeModule):
+class ForgeTestAdd(ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (1, 1, 32, 32)
@@ -65,9 +65,9 @@ class BudaTestAdd(ForgeModule):
         a3 = forge.op.Add("add3", a1, a2)
         return a3
 
-class BudaTest(ForgeModule):
+class ForgeTest(ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (1, 1, 64, 64)
@@ -139,18 +139,18 @@ class SimpleLinear(ForgeModule):
 
 def test_trace(training):
 
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     sgd_optimizer = forge.optimizers.SGD(
         learning_rate=0.5, parameters=mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
-    act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
+    act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True))
 
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
-    mod.set_parameter("weights2", torch.rand(*BudaTest.shape, requires_grad=True))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
+    mod.set_parameter("weights2", torch.rand(*ForgeTest.shape, requires_grad=True))
     sgd_optimizer.set_optimizer_parameters()
 
     forge_compile(tt0, "sanity", act1, act2, compiler_cfg=CompilerConfig(enable_training=training), verify_cfg=verify_cfg)
@@ -158,18 +158,18 @@ def test_trace(training):
 
 def test_trace_add_params(training):
 
-    mod = BudaTest("test_module")
+    mod = ForgeTest("test_module")
     sgd_optimizer = forge.optimizers.SGD(
         learning_rate=0.5, parameters=mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
-    act2 = Tensor.create_from_torch(torch.rand(*BudaTest.shape, requires_grad=True))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
+    act2 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape, requires_grad=True))
 
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
-    mod.set_parameter("weights2", torch.rand(*BudaTest.shape, requires_grad=True))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
+    mod.set_parameter("weights2", torch.rand(*ForgeTest.shape, requires_grad=True))
     sgd_optimizer.set_optimizer_parameters()
 
     forge_compile(tt0, "add_params", act1, act2, compiler_cfg=CompilerConfig(enable_training=training), verify_cfg=verify_cfg)
@@ -187,11 +187,11 @@ def test_trace_matmul(training, bias):
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
     tt0.place_module(mod)
 
-    act1 = Tensor.create_from_torch(torch.rand(*BudaTest.shape))
-    mod.set_parameter("weights1", torch.rand(*BudaTest.shape, requires_grad=True))
+    act1 = Tensor.create_from_torch(torch.rand(*ForgeTest.shape))
+    mod.set_parameter("weights1", torch.rand(*ForgeTest.shape, requires_grad=True))
 
     if bias:
-        shape = (1, 1, 1, BudaTest.shape[-1])
+        shape = (1, 1, 1, ForgeTest.shape[-1])
         mod.set_parameter("bias1", torch.rand(shape, requires_grad=True))
 
     sgd_optimizer.set_optimizer_parameters()
@@ -200,7 +200,7 @@ def test_trace_matmul(training, bias):
 
 
 def test_trace_log(test_kind):
-    class BudaLogModule(ForgeModule):
+    class ForgeLogModule(ForgeModule):
         shape = (1, 1, 64, 64)
 
         def __init__(self, name):
@@ -209,11 +209,11 @@ def test_trace_log(test_kind):
         def forward(self, act1):
             return forge.op.Log("log", act1)
 
-    verify.verify_module(BudaLogModule("log_module"), [(1, 1, 64, 64)], VerifyConfig(
+    verify.verify_module(ForgeLogModule("log_module"), [(1, 1, 64, 64)], VerifyConfig(
         graph_name="log", test_kind=test_kind, devtype=BackendType.NoBackend))
 
     """
-    mod = BudaLogModule("log_module")
+    mod = ForgeLogModule("log_module")
     sgd_optimizer = forge.optimizers.SGD(
         learning_rate=0.5, parameters=mod.get_parameters()
     )
@@ -221,14 +221,14 @@ def test_trace_log(test_kind):
     tt0.place_module(mod)
 
     act1 = Tensor.create_from_torch(
-        torch.rand(*BudaLogModule.shape, requires_grad=True)
+        torch.rand(*ForgeLogModule.shape, requires_grad=True)
     )
     sgd_optimizer.set_optimizer_parameters()
     forge_compile(tt0, "log", act1, compiler_cfg=CompilerConfig(enable_training=training), verify_cfg=verify_cfg)
     """
 
 def test_trace_add():
-    class BudaAddModule(ForgeModule):
+    class ForgeAddModule(ForgeModule):
         shape = (1, 1, 128, 128)
 
         def __init__(self, name):
@@ -237,10 +237,10 @@ def test_trace_add():
         def forward(self, act1, act2):
             return forge.op.Add("add", act1, act2)
 
-    verify.verify_module(BudaAddModule("add_module"), [(1, 1, 128, 128), (1, 1, 128, 128)], VerifyConfig())
+    verify.verify_module(ForgeAddModule("add_module"), [(1, 1, 128, 128), (1, 1, 128, 128)], VerifyConfig())
 
 def test_trace_constant():
-    class BudaAddModule(ForgeModule):
+    class ForgeAddModule(ForgeModule):
         shape = (1, 1, 128, 128)
 
         def __init__(self, name):
@@ -250,12 +250,12 @@ def test_trace_constant():
             constant = forge.op.Constant("constant", constant=2.0)
             return forge.op.Add("add", act1, constant)
 
-    mod = BudaAddModule("add_module")
+    mod = ForgeAddModule("add_module")
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(mod)
 
     act1 = Tensor.create_from_torch(
-        torch.rand(*BudaAddModule.shape, requires_grad=True)
+        torch.rand(*ForgeAddModule.shape, requires_grad=True)
     )
 
     vcfg = VerifyConfig(run_golden=False) # segfaults, need to skip running golden
@@ -300,7 +300,7 @@ def test_reshape(mode, shapes):
     training = mode == "training"
 
     @compile(
-        compiler_cfg=CompilerConfig(enable_training=training, compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER),
+        compiler_cfg=CompilerConfig(enable_training=training, compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER),
         verify_cfg=VerifyConfig(run_golden=False),  # reshape not supported by backend
     )
     def simple_reshape(x):
@@ -414,7 +414,7 @@ def test_slice_stack(mode, shape, factor, direction):
 
 
 def test_trace_add_sub_rsub():
-    class BudaAddSubRSubModule(ForgeModule):
+    class ForgeAddSubRSubModule(ForgeModule):
         def __init__(self, name):
             super().__init__(name)
             self.one = forge.Parameter(1, requires_grad=True)
@@ -447,7 +447,7 @@ def test_trace_add_sub_rsub():
 
 
     shape = (1, 1, 128, 128)
-    mod = BudaAddSubRSubModule("add_sub_rsub")
+    mod = ForgeAddSubRSubModule("add_sub_rsub")
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(mod)
 
@@ -609,7 +609,7 @@ def test_sparse_matmul(test_device, config):
         sparse = Tensor.create_from_torch(torch.stack(pickers).unsqueeze(0), constant=True)
     elif config == "c_stream":
 
-        pytest.skip() # tenstorrent/budabackend#1543
+        pytest.skip() # tenstorrent/forgebackend#1543
         forge.config.override_t_stream_dir("sparse0.lc2", "C")
         forge.config.override_t_stream_shape("sparse0.lc2", (1, 32))
         iH, iW = (64, 64)
@@ -776,7 +776,7 @@ def test_pad(
         compiler_cfg=CompilerConfig(
             enable_training=training,
             enable_recompute=recompute,
-            compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER,
+            compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER,
         ),
         verify_cfg=verify_cfg,
     )
@@ -1058,7 +1058,7 @@ def test_consumer_ops_belonging_to_different_chips(test_kind):
     arch = backend_devices[os.environ.get("BACKEND_ARCH_NAME", "grayskull")]
 
     if arch == BackendDevice.Blackhole:
-        pytest.skip("Blackhole doesn't support chip breaks. Skipping until BudaBackend#2650 is fixed.")
+        pytest.skip("Blackhole doesn't support chip breaks. Skipping until ForgeBackend#2650 is fixed.")
 
     compiler_cfg = _get_global_compiler_config()
     # tenstorrent/forge#480
@@ -1252,7 +1252,7 @@ def test_large_reshape(shape):
     block_size = shape[2] 
     
     @compile(
-        compiler_cfg=CompilerConfig(enable_training=False, compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER),
+        compiler_cfg=CompilerConfig(enable_training=False, compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER),
         verify_cfg=VerifyConfig(run_golden=True),  # reshape not supported by backend
     )
     def simple_large_reshape(x, y): 
@@ -1573,7 +1573,7 @@ def test_grad_eltwise_op(test_device):
     test_kind = TestKind.TRAINING
 
     if test_device.arch == forge.BackendDevice.Blackhole:
-         pytest.skip("Skip until BudaBackend#2628 is consumed.")
+         pytest.skip("Skip until ForgeBackend#2628 is consumed.")
 
     @run(
         verify_cfg=VerifyConfig(
@@ -1814,7 +1814,7 @@ def test_read_back_intermediates(test_kind, test_device):
                     op_name,
                     golden_intermediates[op_name],
                     device_intermediates[op_name][idx],
-                    is_buda=True,
+                    is_forge=True,
                 )
 
 

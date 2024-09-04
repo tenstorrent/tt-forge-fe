@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from forge.verify.backend import verify_module
 from test.tvm.recommendation.pytorch.deepctr_torch.layers.interaction import CIN, FM, AFMLayer, BiInteractionPooling, BilinearInteraction, ConvLayer, CrossNet, CrossNetMix, InnerProductLayer, InteractingLayer, LogTransformLayer, OutterProductLayer
-from tvm.contrib.forge_compile import compile_tf_graphdef_for_buda
+from tvm.contrib.forge_compile import compile_tf_graphdef_for_forge
 from deepctr_torch.layers.interaction import *
 import torch
 from torch import nn
@@ -100,7 +100,7 @@ def test_bilinear_interaction(training):
 # TODO: Figure out why this test can't have batch_size > 1 but others can
 def test_cin(test_kind, test_device):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     if test_kind.is_training():
         _get_global_compiler_config().compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
 
@@ -125,7 +125,7 @@ def test_cin(test_kind, test_device):
 # TODO: Figure out why this test can't have batch_size > 1 but others can
 def test_afm_layer(test_kind, test_device):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     if test_kind.is_training():
         _get_global_compiler_config().compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
 
@@ -191,7 +191,7 @@ def test_crossnet(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
         
     batch_size = 1
     units = 32
@@ -254,7 +254,7 @@ def test_inner_product_layer(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip("concatenate backward not implemented in op/eval/forge/eltwise_nary.py")
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     
     batch_size = 20
     embedding_size = 32

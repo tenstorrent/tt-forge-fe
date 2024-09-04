@@ -632,7 +632,7 @@ static void commute(
 }
 
 // temporarily apply the pass only inside of moving-splice pass (it seems some tests intentionally use identical ops)
-// TODO: remove the same pass from buda_pass.cpp for now
+// TODO: remove the same pass from forge_pass.cpp for now
 static void internal_merge_identical_user_ops(graphlib::Graph *graph) {
     std::unordered_set<graphlib::Node *> removed_nodes;
     for (auto *node : graphlib::topological_sort(*graph)) {

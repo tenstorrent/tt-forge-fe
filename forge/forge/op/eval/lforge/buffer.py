@@ -2,9 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
-from ..interface import BudaEltwiseUnaryOp
+from ..interface import ForgeEltwiseUnaryOp
 
 import torch
 from forge.utils import align_up_tile, round_up_div
@@ -13,26 +11,24 @@ from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
 
-class Clip(BudaEltwiseUnaryOp):
+class Buffer(ForgeEltwiseUnaryOp):
     @classmethod
-    def create(cls, min=float('-inf'), max=float('inf')):
-        self = cls("clip")
-        self.min = min
-        self.max = max
+    def create(cls):
+        self = cls("buffer")
         return self
 
     def eval(self, tensors):
-        assert len(tensors) == 1, "clip should have one input"
+        assert len(tensors) == 1, "buffer should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-        ret = torch.clip(tensors[0], min=self.min, max=self.max)
+        ret = tensors[0]
+
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
-
         return ret
 
     def shape(self, tensor_shapes, tile_height, tile_width):
-        assert len(tensor_shapes) == 1, "Clip should have one input"
+        assert len(tensor_shapes) == 1, "buffer should have one input"
         shape = tensor_shapes[0]
         if tile_height == TILE_DIM:
             shape[-2] = align_up_tile(shape[-2])
@@ -52,7 +48,7 @@ class Clip(BudaEltwiseUnaryOp):
         return None
 
     def execution_cycles(self, arch_name, op_model) -> int:
-        op_model_desc = op_model_to_desc("clip", arch_name, op_model)
+        op_model_desc = op_model_to_desc("buffer", arch_name, op_model)
 
         compiler_cache_cycles = get_compiler_cached_cycles(op_model_desc)
         if compiler_cache_cycles is not None:

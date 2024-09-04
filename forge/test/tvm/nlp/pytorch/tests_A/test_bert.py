@@ -71,7 +71,7 @@ def test_bert_encoder(test_kind, test_device, size):
 def test_pt_pretrain_heads(test_device):
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     test_device.devtype = BackendType.NoBackend
     config = download_model(BertConfig.from_pretrained, "prajjwal1/bert-tiny", torchscript=True)
     bert = BertForPreTraining(config)

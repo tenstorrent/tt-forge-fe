@@ -9,7 +9,7 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/utils.hpp"
 #include "graph_lib/node_types.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "passes/fracture.hpp"
 
 namespace tt {
@@ -68,8 +68,8 @@ void validate_buffering_queues(graphlib::Graph *graph);
 
 void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallback, bool fp32_acc_supported);
 
-// Convert TTForge graph to Buda graph
-std::unique_ptr<Graph> lower_to_buda_ops(Graph *graph);
+// Convert TTForge graph to Forge graph
+std::unique_ptr<Graph> lower_to_forge_ops(Graph *graph);
 
 void apply_math_fidelity(graphlib::Graph *graph, const MathFidelity default_math_fidelity);
 
@@ -77,7 +77,7 @@ void fix_data_formats(graphlib::Graph *graph, bool fix_data_formats);
 
 void validate_data_formats(graphlib::Graph *graph);
 
-bool is_relu_in_buda_attrs(const BudaOpAttrs& buda_attrs);
+bool is_relu_in_forge_attrs(const ForgeOpAttrs& forge_attrs);
     
 bool has_hoistable_relu(graphlib::Graph *graph, Node* node);
 

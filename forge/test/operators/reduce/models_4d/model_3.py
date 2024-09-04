@@ -15,9 +15,9 @@ import forge
 from forge import ForgeModule, Tensor
 
 
-class BudaReduceTest(ForgeModule):
+class ForgeReduceTest(ForgeModule):
     """
-        Buda Test 3
+        Forge Test 3
 
     Args:
         operator (function): Forge reduce operator.
@@ -26,7 +26,7 @@ class BudaReduceTest(ForgeModule):
     """
 
     def __init__(self, operator, opname, shape):
-        super().__init__("Buda Test 3")
+        super().__init__("Forge Test 3")
         self.operator = operator
         self.opname = opname
         self.testname = "Operator " + opname + " Test 3"

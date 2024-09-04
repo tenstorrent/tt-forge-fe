@@ -30,7 +30,7 @@ SomeTensor = Union[torch.Tensor, "Tensor", np.ndarray]
 
 class TensorShape:
     """
-    Convenience wrapper for tensor dimensions. All Buda tensors are fixed to 4 dimensions - rows, columns, Z, W. Forge tensors are free to have any dimensions.
+    Convenience wrapper for tensor dimensions. All Forge tensors are fixed to 4 dimensions - rows, columns, Z, W. Forge tensors are free to have any dimensions.
     """
 
     def __init__(self, *dims):
@@ -195,9 +195,9 @@ class Tensor(TensorBase):
         """
         raise RuntimeError("Children should override")
 
-    def to_buda_shape(self) -> "Tensor":
+    def to_forge_shape(self) -> "Tensor":
         """
-        Returns a Tensor padded to 4d / tiles used by Buda.
+        Returns a Tensor padded to 4d / tiles used by Forge.
         """
         raise RuntimeError("Children should override")
 
@@ -281,7 +281,7 @@ class TensorFromPytorch(Tensor):
     def __init__(self, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat], constant: bool):
         super().__init__()
         self._value = torch_tensor
-        self._data_format: DataFormat = dev_data_format if dev_data_format is not None else pytorch_dtype_to_buda_dataformat(self._value.dtype)
+        self._data_format: DataFormat = dev_data_format if dev_data_format is not None else pytorch_dtype_to_forge_dataformat(self._value.dtype)
         self._constant: bool = constant
 
     def has_value(self) -> bool:
@@ -300,7 +300,7 @@ class TensorFromPytorch(Tensor):
     def set_requires_grad(self, requires_grad: bool):
         self._value.requires_grad = requires_grad
 
-    def to_buda_shape(
+    def to_forge_shape(
             self, tile_broadcast_dims: List[int],
             reinterpret_shape: Optional[List[int]] = None,
             clone: bool = False, squeeze: bool = False,
@@ -308,20 +308,20 @@ class TensorFromPytorch(Tensor):
             tile_r = TILE_DIM,
             tile_c = TILE_DIM) -> "Tensor":
         """
-        Returns a Tensor padded to 4d / tiles used by Buda. 
+        Returns a Tensor padded to 4d / tiles used by Forge. 
         """
         if clone:
             value = self._value.clone()
         else:
             value = self._value
-            if is_buda_shape(value) and reinterpret_shape is None:
+            if is_forge_shape(value) and reinterpret_shape is None:
                 return self
 
         if reinterpret_shape is not None:
             if reinterpret_shape[0] == 1:
                 reinterpret_shape[0] = microbatch
             value = value.view(reinterpret_shape)
-        new_tensor = pad_pytorch_tensor_to_buda(
+        new_tensor = pad_pytorch_tensor_to_forge(
             value, tile_broadcast_dims, squeeze, microbatch, tile_r, tile_c)
         return Tensor.create_from_torch(new_tensor)
 
@@ -343,7 +343,7 @@ class TensorFromPytorch(Tensor):
         """
         Convert this tensor to data_format
         """
-        new_pt_tensor = self._value.type(buda_dataformat_to_pytorch_dtype(data_format))
+        new_pt_tensor = self._value.type(forge_dataformat_to_pytorch_dtype(data_format))
         return Tensor.create_from_torch(new_pt_tensor, dev_data_format=data_format)
 
     @property
@@ -451,7 +451,7 @@ class TensorFromTrace(Tensor):
         assert not self.has_value()
 
         # generate zeros
-        pt = torch.zeros(size=self.shape.get_pytorch_shape(), dtype=buda_dataformat_to_pytorch_dtype(self.data_format))
+        pt = torch.zeros(size=self.shape.get_pytorch_shape(), dtype=forge_dataformat_to_pytorch_dtype(self.data_format))
         pt.requires_grad = self.requires_grad
         return pt
 
@@ -481,8 +481,8 @@ class TensorFromTrace(Tensor):
 
 #         return tensor
 
-#     def to_buda_shape(self) -> "Tensor":
-#         raise RuntimeError("Tensor descriptor should not be converted to buda shape")
+#     def to_forge_shape(self) -> "Tensor":
+#         raise RuntimeError("Tensor descriptor should not be converted to forge shape")
 
 #     def to_tensor_desc(self) -> "PytorchTensorDesc":
 #         return self.descriptor
@@ -507,10 +507,10 @@ class TensorFromTrace(Tensor):
 #         if len(shape_transform) > 1:
 #             new_shape[-2] = shape_transform[-2]
 #             new_shape = (*shape_transform[:-2], new_shape[-2], new_shape[-1])
-#             new_tensor = narrow_buda_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
+#             new_tensor = narrow_forge_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
 #         else:
 #             new_shape = (new_shape[-1],)
-#             new_tensor = narrow_buda_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
+#             new_tensor = narrow_forge_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
 
 #         new_tensor = new_tensor.reshape(original_shape)
         
@@ -519,7 +519,7 @@ class TensorFromTrace(Tensor):
 
 #     @property
 #     def pt_data_format(self) -> torch.dtype:
-#         return buda_dataformat_to_pytorch_dtype(self.descriptor.format)
+#         return forge_dataformat_to_pytorch_dtype(self.descriptor.format)
 
 #     @property
 #     def data_format(self) -> DataFormat:
@@ -529,7 +529,7 @@ class TensorFromTrace(Tensor):
 #         """
 #         Convert this tensor to data_format
 #         """
-#         new_pt_tensor = self.value().type(buda_dataformat_to_pytorch_dtype(data_format))
+#         new_pt_tensor = self.value().type(forge_dataformat_to_pytorch_dtype(data_format))
 #         new_pt_tensor.requires_grad = self.requires_grad
 #         return Tensor.create_from_torch(new_pt_tensor, dev_data_format=data_format)
 
@@ -556,7 +556,7 @@ class TensorFromTrace(Tensor):
 #     if data.shape[-2] % TILE_DIM != 0:
 #         raise RuntimeError(f"{msg}: Shape {data.shape}: Row of {data.shape[-2]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
 
-def pytorch_dtype_to_buda_dataformat(dtype: torch.dtype, fp32_fallback: Optional[DataFormat] = None) -> DataFormat:
+def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optional[DataFormat] = None) -> DataFormat:
 
     if isinstance(dtype, DataFormat):
         return dtype
@@ -595,7 +595,7 @@ def pytorch_dtype_to_buda_dataformat(dtype: torch.dtype, fp32_fallback: Optional
     raise RuntimeError("Unsupported torch dtype " + str(dtype))
 
 
-def buda_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
+def forge_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
     assert isinstance(data_format, DataFormat)
 
     if data_format == DataFormat.Float32:
@@ -629,7 +629,7 @@ def buda_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
 
 def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
     """
-    Return True if both PyTorch and Buda data formats are exactly the same
+    Return True if both PyTorch and Forge data formats are exactly the same
     """
 
     if tt_df == DataFormat.Float32:
@@ -682,7 +682,7 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
 #         # Therefore, when we know the data format, we should check if the tensor
 #         # is appropriate/supported PyTorch format. If that isn't the case, we should
 #         # convert it to the appropriate PyTorch aligned format.
-#         pytorch_dtype = buda_dataformat_to_pytorch_dtype(format)
+#         pytorch_dtype = forge_dataformat_to_pytorch_dtype(format)
 #         if t.dtype != pytorch_dtype:
 #             logger.warning(f"Converting tensor from {t.dtype} to {pytorch_dtype}")
 #             t = t.type(pytorch_dtype)
@@ -780,8 +780,8 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
 #     return tensor_desc_to_pytorch_tensor(desc)
 
 
-def pad_sparse_pytorch_tensor_to_buda(sparse: torch.Tensor) -> torch.Tensor:
-    assert len(sparse.shape) == 4, "This function should only be invoked from pad_pytorch_tensor_to_buda"
+def pad_sparse_pytorch_tensor_to_forge(sparse: torch.Tensor) -> torch.Tensor:
+    assert len(sparse.shape) == 4, "This function should only be invoked from pad_pytorch_tensor_to_forge"
     sparse_r = align_up_tile(sparse.shape[-2])
     sparse_c = align_up_tile(sparse.shape[-1])
     sparse = sparse.coalesce()
@@ -792,20 +792,20 @@ def pad_sparse_pytorch_tensor_to_buda(sparse: torch.Tensor) -> torch.Tensor:
             dtype=sparse.dtype,
         )
 
-def is_buda_shape(tensor: torch.Tensor, min_dim = -1) -> bool:
+def is_forge_shape(tensor: torch.Tensor, min_dim = -1) -> bool:
     dim_ok = len(tensor.shape) >= min_dim if min_dim > 0 else len(tensor.shape) == 4
     if not dim_ok or len(tensor.shape) > 4:
         return False
     return (tensor.shape[-1] % TILE_DIM == 0 and tensor.shape[-2] % TILE_DIM == 0)
 
-def pad_pytorch_tensor_to_buda(
+def pad_pytorch_tensor_to_forge(
         tensor: torch.Tensor, tile_broadcast_dims: List[int], squeeze: bool = False, microbatch = 1, tile_r = TILE_DIM, tile_c = TILE_DIM) -> torch.Tensor:
     """
     Pad pytorch tensor to 4D tile-snapped dimensions. Broadcast given dims to tile size.
     """
     # Skip padding if not needed
     min_dim = 2 if squeeze and tensor.shape[0] != microbatch and len(tensor.shape) > 2 else 4
-    if is_buda_shape(tensor, min_dim):
+    if is_forge_shape(tensor, min_dim):
         return tensor
 
     new_tensor = tensor
@@ -823,12 +823,12 @@ def pad_pytorch_tensor_to_buda(
     if new_tensor.shape[0] < microbatch:
         new_tensor = new_tensor.broadcast_to([microbatch, *new_tensor.shape[1:]]).contiguous()
     
-    if is_buda_shape(new_tensor):
+    if is_forge_shape(new_tensor):
         new_tensor = new_tensor.detach().contiguous()
         return new_tensor # done after adjusting number of dims
 
     if new_tensor.is_sparse:
-        return pad_sparse_pytorch_tensor_to_buda(new_tensor)
+        return pad_sparse_pytorch_tensor_to_forge(new_tensor)
 
     def get_pad(dim, tile_dim):
         if dim % tile_dim > 0:
@@ -872,7 +872,7 @@ def pad_pytorch_tensor_to_buda(
     ret.requires_grad = tensor.requires_grad
     return ret
 
-def narrow_buda_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_microbatch_dim: bool = False) -> torch.Tensor:
+def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_microbatch_dim: bool = False) -> torch.Tensor:
     """
     Narrow 4D / tile-snapped tensor to original pytorch shape
     """
@@ -959,7 +959,7 @@ def change_rank(tensor: torch.Tensor, rank: int):
 
 def to_tf_variables(tensors: Tuple[Union[torch.Tensor, Tensor], ...], convert_format: bool = False) -> Tuple[tf.Variable, ...]:
     """
-    Take a tuple of either pytorch, TF or buda tensors, and return TF Variables.
+    Take a tuple of either pytorch, TF or forge tensors, and return TF Variables.
     """
     tf_variables = []
     if not isinstance(tensors, (list, tuple)):
@@ -997,7 +997,7 @@ def to_tf_variables(tensors: Tuple[Union[torch.Tensor, Tensor], ...], convert_fo
 
 def to_tf_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]], convert_format: bool = False, force_float32: bool = False) -> Tuple[torch.Tensor, ...]:
     """
-    Take a tuple of either tensorflow or buda tensors, and return pytorch tensors. Generate zero-tensors
+    Take a tuple of either tensorflow or forge tensors, and return pytorch tensors. Generate zero-tensors
     if no value exists.
     """
     tf_tensors = []
@@ -1040,7 +1040,7 @@ def to_tf_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
 
 def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]], convert_format: bool = False) -> Tuple[torch.Tensor, ...]:
     """
-    Take a tuple of either pytorch or buda tensors, and return pytorch tensors. Generate zero-tensors
+    Take a tuple of either pytorch or forge tensors, and return pytorch tensors. Generate zero-tensors
     if no value exists.
     """
     pytorch_tensors = []
@@ -1083,7 +1083,7 @@ def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
 
 def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]], convert_format: bool = False) -> Tuple[torch.Tensor, ...]:
     """
-    Take a tuple of either pytorch or buda tensors, and return pytorch tensors. Generate zero-tensors
+    Take a tuple of either pytorch or forge tensors, and return pytorch tensors. Generate zero-tensors
     if no value exists.
     """
     jax_tensors = []
@@ -1123,32 +1123,32 @@ def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], 
     ret = tuple(jax_tensors) if isinstance(tensors, (tuple, list)) else (jax_tensors,)
     return ret
 
-def to_buda_tensors(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[Tensor, ...]:
+def to_forge_tensors(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[Tensor, ...]:
     """
-    Take a tuple of either pytorch or buda tensors, and return buda tensors
+    Take a tuple of either pytorch or forge tensors, and return forge tensors
     """
-    buda_tensors = []
+    forge_tensors = []
     for t in tensors:
         if isinstance(t, torch.Tensor):
-            buda_tensors.append(Tensor.create_from_torch(t))
+            forge_tensors.append(Tensor.create_from_torch(t))
         elif isinstance(t, Tensor):
-            buda_tensors.append(t)
+            forge_tensors.append(t)
         elif isinstance(t, (tf.Tensor, tf.Variable)):
             pt = torch.Tensor(t.numpy()).type(map_tf_dtype_to_pt(t.dtype))
             pt.requires_grad = t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
-            buda_tensors.append(Tensor.create_from_torch(pt))
+            forge_tensors.append(Tensor.create_from_torch(pt))
         elif t is None:
             continue
         elif isinstance(t, (list, tuple)):
-            buda_tensors.append(to_buda_tensors(t))
+            forge_tensors.append(to_forge_tensors(t))
         elif isinstance(t, dict):
             tensor_list = list(t.values())
-            pb_dict = {k:v for (k, _), v, in zip(t.items(), to_buda_tensors(tensor_list))}
-            buda_tensors.append(pb_dict)
+            pb_dict = {k:v for (k, _), v, in zip(t.items(), to_forge_tensors(tensor_list))}
+            forge_tensors.append(pb_dict)
         else:
             raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
-    return tuple(buda_tensors)
+    return tuple(forge_tensors)
 
 def remove_microbatch(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[torch.Tensor, ...]:
     out = []
@@ -1174,7 +1174,7 @@ def get_constant_inputs(
     device_constant_and_parameters,
     consteval_trace,
     name: str,
-    is_buda: bool,
+    is_forge: bool,
     epoch_type: str
 ) -> Dict[str, torch.Tensor]:
 
@@ -1182,7 +1182,7 @@ def get_constant_inputs(
 
     if consteval_graph is None:
         if name in constant_nodes:
-            return { name: get_constant_input_value(constant_nodes[name], is_buda) }
+            return { name: get_constant_input_value(constant_nodes[name], is_forge) }
         return { name: device_constant_and_parameters[name] }
     def is_node_in_epoch(node):
         return consteval_graph["nodes"][node]["epoch_type"] == epoch_type
@@ -1192,7 +1192,7 @@ def get_constant_inputs(
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             if node_name in constant_nodes:
-                values[node_name] = get_constant_input_value(constant_nodes[node_name], is_buda)
+                values[node_name] = get_constant_input_value(constant_nodes[node_name], is_forge)
             else:
                 values[node_name] = device_constant_and_parameters[node_name]
     return values
@@ -1202,7 +1202,7 @@ def consteval_tensor(
     tensor_to_tile_dims,
     name: str,
     inputs: Dict[str, torch.Tensor],
-    is_buda: bool,
+    is_forge: bool,
     epoch_type: str
 ) -> torch.Tensor:
     import forge.op.eval.forge as eval_module
@@ -1237,11 +1237,11 @@ def consteval_tensor(
         if node["opcode"] == "Input":
             input_value = inputs[node_name]
 
-            if is_buda:
-                input_value = narrow_buda_tensor_to_pytorch(input_value, node["cache"]["shape"], has_microbatch_dim=False)
+            if is_forge:
+                input_value = narrow_forge_tensor_to_pytorch(input_value, node["cache"]["shape"], has_microbatch_dim=False)
 
             node_to_tensor[node_name] = input_value
-        elif node["opcode"] in {"BudaOp", "ForgeOp"}:
+        elif node["opcode"] in {"ForgeOp", "ForgeOp"}:
             inputs_after_tms: List[torch.Tensor] = []
             for input_index, operand in enumerate(node["input_nodes"]):
                 operand_tensor = node_to_tensor[operand]
@@ -1257,8 +1257,8 @@ def consteval_tensor(
             output = node_to_tensor[node["input_nodes"][0]]
 
     assert output is not None, "Expect a valid tensor output out of consteval"
-    if is_buda:
-        output = pad_pytorch_tensor_to_buda(output, [], tile_r=tile_r, tile_c=tile_c)
+    if is_forge:
+        output = pad_pytorch_tensor_to_forge(output, [], tile_r=tile_r, tile_c=tile_c)
     return output
 
 
@@ -1267,11 +1267,11 @@ def consteval_input(
     tensor_to_tile_dims,
     name: str,
     inputs: Dict[str, torch.Tensor],
-    is_buda: bool
+    is_forge: bool
 ) -> torch.Tensor:
-    return consteval_tensor(consteval_trace, tensor_to_tile_dims, name, inputs, is_buda, "Forward")
+    return consteval_tensor(consteval_trace, tensor_to_tile_dims, name, inputs, is_forge, "Forward")
 
-def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_buda: bool = False) -> torch.Tensor:
+def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
     consteval_graph = compiled_graph_state.consteval_trace.get(name, None)
     if consteval_graph is None:
         return tensor.shape
@@ -1283,9 +1283,9 @@ def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_bu
             return node["cache"]["shape"]
     assert False, "No output node found in consteval graph"
 
-def consteval_input_bw(compiled_graph_state, name: str, tensor: torch.Tensor, is_buda: bool) -> torch.Tensor:
+def consteval_input_bw(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool) -> torch.Tensor:
     inputs = {name: tensor}
-    return consteval_tensor(compiled_graph_state.consteval_trace, compiled_graph_state.parameter_to_tile_dims, name, inputs, is_buda, "Backward")
+    return consteval_tensor(compiled_graph_state.consteval_trace, compiled_graph_state.parameter_to_tile_dims, name, inputs, is_forge, "Backward")
 
 def compare_tensors(t0, t1):
     return torch.equal(t0, t1)
@@ -1296,7 +1296,7 @@ def const_eval_tensor(
     consteval_trace,
     tensor_to_tile_dims,
     input_name,
-    is_buda = True
+    is_forge = True
 ):
     contains_recorded_operations = consteval_trace[input_name]
     if contains_recorded_operations:
@@ -1305,15 +1305,15 @@ def const_eval_tensor(
             tensor_to_tile_dims,
             input_name,
             inputs,
-            is_buda,
+            is_forge,
         )
     else:
         tile_r, tile_c = tensor_to_tile_dims.get(input_name, (TILE_DIM, TILE_DIM))
-        value = pad_pytorch_tensor_to_buda(inputs[input_name], [], tile_r=tile_r, tile_c=tile_c) if is_buda else inputs[input_name]
+        value = pad_pytorch_tensor_to_forge(inputs[input_name], [], tile_r=tile_r, tile_c=tile_c) if is_forge else inputs[input_name]
     # cast if necessary
-    buda_dtype = pytorch_dtype_to_buda_dataformat(value.dtype)
-    if value.dtype != buda_dataformat_to_pytorch_dtype(buda_dtype):
-        value = value.to(buda_dataformat_to_pytorch_dtype(buda_dtype))
+    forge_dtype = pytorch_dtype_to_forge_dataformat(value.dtype)
+    if value.dtype != forge_dataformat_to_pytorch_dtype(forge_dtype):
+        value = value.to(forge_dataformat_to_pytorch_dtype(forge_dtype))
     return value
 
 
@@ -1321,7 +1321,7 @@ def get_device_constant_and_parameters(device, *, constant_to_tensor=None, updat
     inputs = {}
     if updated_parameter_values is None:
         for p in device.get_parameters(ignore_unused_parameters=False):
-            value = p.value(is_buda=False)
+            value = p.value(is_forge=False)
             if value is None:
                 raise RuntimeError(f"Parameter {p.get_name()} has not value set.")
             inputs[p.get_name()] = value
@@ -1335,7 +1335,7 @@ def get_device_constant_and_parameters(device, *, constant_to_tensor=None, updat
     return inputs
 
 
-def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval_trace, input_to_tile_dims, ordered_input_names, is_buda=True) -> Dict[str, torch.Tensor]:
+def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval_trace, input_to_tile_dims, ordered_input_names, is_forge=True) -> Dict[str, torch.Tensor]:
     post_const_eval_constants: Dict[str, torch.Tensor] = {}
 
     constant_nodes = {
@@ -1350,7 +1350,7 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
             device_constant_and_parameters,
             consteval_trace,
             input_name,
-            is_buda,
+            is_forge,
             "Forward"
         )
 
@@ -1361,7 +1361,7 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
                     consteval_trace,
                     input_to_tile_dims,
                     input_name,
-                    is_buda,
+                    is_forge,
                 )
             ],
             fix_non_contiguos=True,
@@ -1399,7 +1399,7 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
 #     tile_r = queue.tile_height
 #     tile_c = queue.tile_width
 #     microbatch = queue.input_count
-#     tensor = pad_pytorch_tensor_to_buda(tensor, tile_bcast_dims, squeeze=True, microbatch=microbatch, tile_r=tile_r, tile_c=tile_c)
+#     tensor = pad_pytorch_tensor_to_forge(tensor, tile_bcast_dims, squeeze=True, microbatch=microbatch, tile_r=tile_r, tile_c=tile_c)
 #     return tensor, queue
 
 # def _prestride_shape(tensor: torch.Tensor, stride_height: int, stride_width: int, queue: DramIODesc):

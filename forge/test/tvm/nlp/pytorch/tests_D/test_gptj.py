@@ -36,7 +36,7 @@ def test_gptj_block(test_kind, test_device):
     input_shape = (1, 128, 4096)
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     if test_device.arch == BackendDevice.Wormhole_B0 or test_device.arch == BackendDevice.Blackhole:
         pytest.skip() # see tenstorrent/forge#969

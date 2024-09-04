@@ -65,7 +65,7 @@ def get_vgg_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -83,7 +83,7 @@ def get_mobilenetv2_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -93,7 +93,7 @@ def get_mobilenetv2_model(training, recompute):
 
 def get_unet_model(training, recompute):
     model = torch.hub.load(
-        "mateuszbuda/brain-segmentation-pytorch",
+        "mateuszforge/brain-segmentation-pytorch",
         "unet",
         in_channels=3,
         out_channels=1,
@@ -107,7 +107,7 @@ def get_unet_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
 
     return model, [
@@ -123,7 +123,7 @@ def get_densenet_block(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
 
     return model.features.denseblock1, [
@@ -163,7 +163,7 @@ def get_resnet_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
 
     return model, [
@@ -232,7 +232,7 @@ def get_gptj_block(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -269,7 +269,7 @@ def get_gptneo_125M_block(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model.h[0], [
@@ -324,7 +324,7 @@ def get_efficientnet_layer(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model.layers[0], [
@@ -340,7 +340,7 @@ def get_bert_encoder(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model.encoder, [
@@ -356,7 +356,7 @@ def get_albert_attention(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model.encoder.albert_layer_groups[0].albert_layers[0].attention, [
@@ -377,7 +377,7 @@ def get_alexnet_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -392,7 +392,7 @@ def get_fcn_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -470,7 +470,7 @@ def get_unet_resblock_upsample_resblock(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [act1, torch_emb], compile_cfg
@@ -496,7 +496,7 @@ def get_unet_resblock_attention_block(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [act1, torch_emb], compile_cfg
@@ -514,7 +514,7 @@ def get_unet_attention_block(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [act1], compile_cfg
@@ -599,7 +599,7 @@ def get_resnext_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [act,], compile_cfg
@@ -648,7 +648,7 @@ def get_mnasnet_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -665,7 +665,7 @@ def get_mobilenet_v1_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -684,7 +684,7 @@ def get_convnext_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -701,7 +701,7 @@ def get_hrnet_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -718,7 +718,7 @@ def get_dense_depth_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -754,7 +754,7 @@ def get_mono_depth_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -771,7 +771,7 @@ def get_open_pose_body_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -788,7 +788,7 @@ def get_open_pose_hand_torch(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [

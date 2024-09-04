@@ -817,7 +817,7 @@ bool is_elementwise(graphlib::OpNode *op)
 
 bool is_quantization_ops(graphlib::OpNode *op)
 {
-    return op->op_name() == "buda_quantize" or op->op_name() == "buda_dequantize" or op->op_name() == "buda_requantize";
+    return op->op_name() == "forge_quantize" or op->op_name() == "forge_dequantize" or op->op_name() == "forge_requantize";
 }
 
 

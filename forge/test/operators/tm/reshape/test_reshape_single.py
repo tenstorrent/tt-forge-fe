@@ -4,7 +4,7 @@
 #
 # Tests for testing of reshape operator
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 
@@ -60,7 +60,7 @@ def test_reshape(
     print(f"New Operation --> {new_shape}")
     print("\n")
 
-    architecture = f'models.{model}.BudaReshapeTest(old_shape={old_shape}, new_shape={new_shape})'
+    architecture = f'models.{model}.ForgeReshapeTest(old_shape={old_shape}, new_shape={new_shape})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

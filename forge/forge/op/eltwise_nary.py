@@ -30,7 +30,7 @@ def Concatenate(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     result: Tensor = op("concatenate", name, *operands, attrs=(axis,)).get_tensor()
@@ -62,7 +62,7 @@ def Where(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     result: Tensor = op("where", name, condition, x, y).get_tensor()
@@ -98,7 +98,7 @@ def IndexCopy(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     if dim < 0:
         dim += len(operandA.shape)
@@ -128,7 +128,7 @@ def Stack(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     result: Tensor = op("stack", name, *operands, attrs=(axis,)).get_tensor()
@@ -163,7 +163,7 @@ def Interleave(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     assert axis == -3, "Only support Z dim interleave"
     assert stride == 1, "Only support interleave with stride 1 for now"

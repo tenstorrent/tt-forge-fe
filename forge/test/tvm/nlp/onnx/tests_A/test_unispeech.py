@@ -33,7 +33,7 @@ def test_unispeech(test_kind, test_device):
     if test_kind.is_training():
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
     else:
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER  # Unsupported HW ops
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER  # Unsupported HW ops
 
     framework_model = UniSpeechModel.from_pretrained(
         "microsoft/unispeech-sat-base", torchscript=True

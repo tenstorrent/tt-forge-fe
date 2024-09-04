@@ -30,9 +30,9 @@ from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 from .transpose import TransposeTM
-from ..buda.splice import Splice
+from ..lforge.splice import Splice
 from .nop import Nop
-from ..buda.nop import Nop as BudaNop
+from ..lforge.nop import Nop as ForgeNop
 from .buffer import Buffer
 
 def eval(type, attr, ops):
@@ -387,8 +387,8 @@ def eval(type, attr, ops):
         assert len(attr) == 1, "Pixel shuffle should have one attribute."
         return torch.nn.functional.pixel_shuffle(ops[0], attr[0])
 
-    if type == "buda_pad":
-        assert len(attr) == 3, "Buda pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
+    if type == "forge_pad":
+        assert len(attr) == 3, "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
         r_tiles, c_tiles, value = attr
         operand = t_ops[0]
         shape = operand.shape
@@ -405,8 +405,8 @@ def eval(type, attr, ops):
         result = torch.nn.functional.pad(result, [0, new_c_size, 0, new_r_size], value=value)
         return result
 
-    if type == "buda_unpad":
-        assert len(attr) == 4, "Buda unpad should have four attributes. The paddings and the original shape."
+    if type == "forge_unpad":
+        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
         r_tiles, c_tiles, orig_r, orig_c = attr
         operand = t_ops[0]
         if r_tiles > 0:
@@ -688,8 +688,8 @@ def shape(type, attr, ops):
         output_shape = (*orig_shape[:-3], orig_shape[-3] // upscale_factor**2, orig_shape[-2] * upscale_factor, orig_shape[-1] * upscale_factor)
         return output_shape, []
 
-    if type == "buda_pad":
-        assert len(attr) == 3, "Buda pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
+    if type == "forge_pad":
+        assert len(attr) == 3, "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
         r_tiles, c_tiles, value = attr
         shape = list(ops[0])
         # Padding is always given in tiles, so we need to recompute the padding in the original dimension
@@ -699,8 +699,8 @@ def shape(type, attr, ops):
             shape[-1] = (align_up_tile(shape[-1]) // TILE_DIM + c_tiles) * TILE_DIM
         return tuple(shape), []
 
-    if type == "buda_unpad":
-        assert len(attr) == 4, "Buda unpad should have four attributes. The paddings and the original shape."
+    if type == "forge_unpad":
+        assert len(attr) == 4, "Forge unpad should have four attributes. The paddings and the original shape."
         r_tiles, c_tiles, orig_r, orig_c = attr
         if r_tiles > 0:
             assert ops[0][-2] == align_up_tile(orig_r) + r_tiles * TILE_DIM
@@ -735,13 +735,13 @@ def lower(type, attr, lc, ops, outputs):
 
         # Squeeze / unsqueeze ops that do not reshape a 4d tensor are nops
         if all([orig == new for orig, new in zip(orig_shape, attr)]):
-            lc.op(BudaNop.create(), ops)
+            lc.op(ForgeNop.create(), ops)
         else:
             orig_w = orig_shape[-4]
             orig_z = orig_shape[-3]
             orig_r = orig_shape[-2]
             orig_c = orig_shape[-1]
-            buda_attrs = {
+            forge_attrs = {
                 "orig_w": orig_w,
                 "orig_z": orig_z,
                 "orig_r": orig_r,
@@ -751,7 +751,7 @@ def lower(type, attr, lc, ops, outputs):
                 "r": attr[2],
                 "c": attr[3],
             }
-            lc.op(type, ops, (orig_w, orig_z, orig_r, orig_c, *attr), buda_attrs)
+            lc.op(type, ops, (orig_w, orig_z, orig_r, orig_c, *attr), forge_attrs)
 
     elif type == "transpose":
         # Transpose has 3 attrs, [axis_0, axis_1, output Z-dim size]
@@ -830,7 +830,7 @@ def lower(type, attr, lc, ops, outputs):
         )
 
     elif type == "pad_tile":
-        return lc.op(BudaNop.create(), ops)
+        return lc.op(ForgeNop.create(), ops)
 
     elif type == "narrow":
         assert len(attr) == 4
@@ -838,15 +838,15 @@ def lower(type, attr, lc, ops, outputs):
         if dim >= 0:
             dim -= len(ops[0].shape)
         if dim >= -2 and align_up_tile(length) == align_up_tile(ops[0].shape[dim]):
-            return lc.op(BudaNop.create(), ops)
+            return lc.op(ForgeNop.create(), ops)
         else:
-            raise NotImplementedError("Unimplemented narrow in buda")
+            raise NotImplementedError("Unimplemented narrow in forge")
 
     elif type == "pad":
         assert ((len(attr) == 4 and attr[0] == 0) or 
                (len(attr) == 6 and attr[0] == 0 and attr[2] == 0) or
                (attr[-2] != 0)), "Nop does not support left/top padding for constant mode"
-        return lc.op(BudaNop.create(), ops)
+        return lc.op(ForgeNop.create(), ops)
 
     elif type == "unsqueeze":
         assert len(attr) == 2
@@ -854,26 +854,26 @@ def lower(type, attr, lc, ops, outputs):
         #assert input_ndim + 1 <= 4, "Cannot unsqueeze beyond 4D"
         if input_ndim + 1 > 4:
             assert attr[0] == 0, f"Unsqueeze 4D tensors to 5D is only supported for the 1st dim: {attr[0]}" 
-            return lc.op(BudaNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=attr[1]), ops, tag="dont_remove")
+            return lc.op(ForgeNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=attr[1]), ops, tag="dont_remove")
 
-        return lc.op(BudaNop.create(), ops)
+        return lc.op(ForgeNop.create(), ops)
 
     elif type == "squeeze":
         assert len(attr) == 1
         if len(ops[0].shape) >= 5:
             assert attr[0] == 0, f"Squeeze 5D tensors to 4D is only supported for the 1st dim: {attr[0]}" 
-            return lc.op(BudaNop.create(squeeze="squeeze", squeeze_dim=attr[0]), ops, tag="dont_remove")
+            return lc.op(ForgeNop.create(squeeze="squeeze", squeeze_dim=attr[0]), ops, tag="dont_remove")
 
-        return lc.op(BudaNop.create(), ops)
+        return lc.op(ForgeNop.create(), ops)
 
     elif (type == "hstack" or type == "hslice") and attr[0] == 1:
-        return lc.op(BudaNop.create(), ops)
+        return lc.op(ForgeNop.create(), ops)
 
-    elif type == "buda_pad":
-        return lc.tm("buda_pad", ops[0], attr, { "rt": attr[0], "ct": attr[1], "pad_value": attr[2]})
+    elif type == "forge_pad":
+        return lc.tm("forge_pad", ops[0], attr, { "rt": attr[0], "ct": attr[1], "pad_value": attr[2]})
 
-    elif type == "buda_unpad":
-        return lc.tm("buda_unpad", ops[0], attr, { "rt": attr[0], "ct": attr[1], "orig_r": attr[2], "orig_c": attr[3]})
+    elif type == "forge_unpad":
+        return lc.tm("forge_unpad", ops[0], attr, { "rt": attr[0], "ct": attr[1], "orig_r": attr[2], "orig_c": attr[3]})
 
     else:
         lc.tm(type, ops[0], attr)  # straight 1-1 for other tms
@@ -985,7 +985,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 )
             raise ArgumentError("Only dim == 2 and dim == 3 are supported.")
         else:
-            raise NotImplementedError("Unimplemented narrow in buda")
+            raise NotImplementedError("Unimplemented narrow in forge")
 
     elif type == "pad":  # TODO: update it for replicate mode
         assert len(attr) == 4 or len(attr) == 6, "Not supported padding type"
@@ -1047,7 +1047,7 @@ def unsqueeze_input_for_reshape_decomp(dc, inp):
     current_shape = inp.shape.as_list()
     while len(current_shape) < 4:
         current_shape.insert(0, 1)
-        inp = dc.op("unsqueeze", (inp,), (0, len(inp.shape.as_list())))
+        inp = dc.op_with_named_attrs("unsqueeze", (inp,), {"dim": 0}, (0, len(inp.shape.as_list())))
 
     return inp
 
@@ -1057,7 +1057,7 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 
     while current_shape_len > len(orig_out_shape):
         current_shape_len -= 1
-        output = dc.op("squeeze", (output,), (0,))
+        result = dc.op_with_named_attrs("squeeze", [output], {"dim": 0}, (0,))
 
     return output
 
@@ -1105,7 +1105,7 @@ def decompose(type, attr, dc, inputs):
             sparse_r = align_up_tile(attr[-2]) // 32
             if sparse_r in sparse_r_padding:
                 padded_r = sparse_r_padding[sparse_r] - sparse_r
-                result = dc.op("buda_unpad", [act], (padded_r, 0, attr[-2], act.shape[-1]))
+                result = dc.op("forge_unpad", [act], (padded_r, 0, attr[-2], act.shape[-1]))
                 dc.fuse(result)
                 return            
 
@@ -1315,7 +1315,6 @@ def decompose(type, attr, dc, inputs):
 
                     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
                 else:
-                    # import pdb; pdb.set_trace()
                     orig_shape = result.shape
                     if len(orig_shape) == 2:
                         result = dc.op("reshape", [result], (1, orig_shape[-2]*orig_shape[-1]))
@@ -1403,10 +1402,10 @@ def decompose(type, attr, dc, inputs):
         if is_rank_only_reshape and rank != 0:
             result = inputs[0]
             while rank < 0:
-                result = dc.op("squeeze", [result], (0,))
+                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
                 rank += 1
             while rank > 0:
-                result = dc.op("unsqueeze", [result], (0, len(result.shape.as_list())))
+                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
                 rank -= 1
             dc.fuse(result)
             return
@@ -1512,17 +1511,17 @@ def decompose_xy_flatten_reshape(inputs, dc, orig_shape, attr):
 
     if orig_shape[-3] > 1:
         result = dc.op("hslice", [result], (orig_shape[-3],))
-        # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/budabackend#656
+        # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/forgebackend#656
         
     rt = align_up_tile(r_new) // TILE_DIM
     if pad_for_factrization:
         rt = sparse_r_padding[orig_shape[-2]]
     result = dc.op("vslice", [result], (rt,))
-    # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/budabackend#656
+    # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/forgebackend#656
     result = dc.op("hstack", [result], (rt,))
 
     if orig_shape[-3] > 1:
-        # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/budabackend#656
+        # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/forgebackend#656
         result = dc.op("vstack", [result], (orig_shape[-3],))
 
 
@@ -1542,10 +1541,10 @@ def decompose_xy_flatten_reshape(inputs, dc, orig_shape, attr):
         result = dc.op(TransposeTM.create(-2, -1), [result])
 
     while len(result.shape) > len(attr):
-        result = dc.op("squeeze", [result], (0,))
+        result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
 
     while len(result.shape) < len(attr):
-        result = dc.op("unsqueeze", [result], (0, len(result.shape.as_list())))
+        result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
 
     if orig_shape[-3] > 1:
         s = create_flattened_padding_removal_sparse_picker_matrix(result.shape[-2], 0, 1, TILE_DIM)
@@ -1652,7 +1651,7 @@ def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
     if orig_shape[-2] > 1:
         result = dc.op("vslice", [result], (orig_shape[-2], ))
     elif len(result.shape) == 2:
-        result = dc.op("unsqueeze", [result], (0, 2,))
+        result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0},  (0, 2,))
     _orig_shape = result.shape
     slice_factor = attr[-2] if attr[-1] < TILE_DIM else (math.ceil(attr[-2] / TILE_DIM) * TILE_DIM)
     result = dc.op(TransposeTM.create(-2, -1), [result])
@@ -1776,7 +1775,7 @@ def decompose_post_optimize(type, attr, dc, inputs):
             )
 
             while len(result.shape) < 3:
-                result = dc.op("unsqueeze", [result,], (0, len(result.shape.as_list())))
+                result = dc.op_with_named_attrs("unsqueeze", [result,], {"dim": 0}, (0, len(result.shape.as_list())))
 
             spm = torch.stack([spm]*result.shape[-3], -3).unsqueeze(0)
             result = dc.op(TransposeTM.create(-2, -1), [result,])
@@ -1917,10 +1916,11 @@ def decompose_post_autograd(type, attr, dc, inputs):
         if is_rank_only_reshape and rank != 0:
             result = inputs[0]
             while rank < 0:
-                result = dc.op("squeeze", [result], (0,))
+                result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
                 rank += 1
             while rank > 0:
-                result = dc.op("unsqueeze", [result], (0, len(result.shape.as_list())))
+                import pdb; pdb.set_trace
+                result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
                 rank -= 1
             dc.fuse(result)
             return

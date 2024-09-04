@@ -4,7 +4,7 @@
 
 #include "decomposing_context.hpp"
 
-#include "buda_passes.hpp"
+#include "forge_passes.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "reportify/reportify.hpp"

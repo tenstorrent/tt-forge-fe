@@ -52,7 +52,7 @@ def get_vgg_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
 
     return model, [
@@ -71,7 +71,7 @@ def get_mobilenetv2_model(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [
@@ -388,7 +388,7 @@ def get_resnet_tf(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [act], compile_cfg
@@ -411,7 +411,7 @@ def get_roberta_encoder_tf(training, recompute):
     compile_cfg = CompilerConfig(
         enable_training=training,
         enable_recompute=recompute,
-        compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+        compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
     )
     
     return model, [act], compile_cfg

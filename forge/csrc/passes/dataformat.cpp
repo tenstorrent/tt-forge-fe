@@ -4,10 +4,10 @@
 #include "passes/dataformat.hpp"
 
 #include "backend_api/device_config.hpp"
-#include "buda_passes.hpp"
+#include "forge_passes.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "passes/amp.hpp"
 #include "utils/logger.hpp"
 
@@ -131,7 +131,7 @@ static DataFormat get_highest_precision_data_format(const std::vector<DataFormat
 
 
 DataFormat get_inferred_accumulate_df(
-    const graphlib::Graph *graph, const graphlib::BudaOpNode *op, const bool fp32_acc_supported)
+    const graphlib::Graph *graph, const graphlib::ForgeOpNode *op, const bool fp32_acc_supported)
 {
     // infer the accumulation data-format; opt to highest-precision setting
     // data formats out of the unpacker gasket
@@ -166,10 +166,10 @@ void apply_math_fidelity(
 {
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() != graphlib::NodeType::kBudaOp)
+        if (node->node_type() != graphlib::NodeType::kForgeOp)
             continue;
 
-        auto op = node->as<graphlib::BudaOpNode>();
+        auto op = node->as<graphlib::ForgeOpNode>();
 
         op->set_math_fidelity(default_math_fidelity);
         if (bool enable_integer_mode = is_configured_for_int8(graph, op) or is_configured_for_int32(graph, op); enable_integer_mode)
@@ -214,10 +214,10 @@ void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallbac
         if (node->output_df() == DataFormat::Float32)
             node->set_output_df(fp32_fallback);
 
-        if (node->node_type() != graphlib::NodeType::kBudaOp)
+        if (node->node_type() != graphlib::NodeType::kForgeOp)
             continue;
 
-        graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
+        graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
         if (!fp32_acc_supported &&
             (op->accumulate_df() == DataFormat::Float32 or op->intermediate_df() == DataFormat::Float32))
         {
@@ -258,7 +258,7 @@ void configure_input_data_formats(graphlib::Graph *graph)
 
     for (Node *node : graphlib::topological_sort(*graph))
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
             // Convert constant input data formats to match that of other inputs
             auto operands = graph->data_operands(node);
@@ -364,9 +364,9 @@ void configure_a_b_format_conversion(
     // to make sure we conform to this constraint.
     for (Node *node : graphlib::topological_sort(*graph))
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::BudaOpNode *op = dynamic_cast<graphlib::BudaOpNode *>(node);
+            graphlib::ForgeOpNode *op = dynamic_cast<graphlib::ForgeOpNode *>(node);
             std::vector<DataFormat> all_data_formats = get_data_formats(graph->data_operands(op));
             if (not are_data_formats_same_exponent_widths(all_data_formats))
             {
@@ -377,9 +377,9 @@ void configure_a_b_format_conversion(
 
     for (Node *node : graphlib::topological_sort(*graph))
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::BudaOpNode *op = dynamic_cast<graphlib::BudaOpNode *>(node);
+            graphlib::ForgeOpNode *op = dynamic_cast<graphlib::ForgeOpNode *>(node);
 
             if (device_config.is_grayskull() and is_exponent_width_reconfigured(op->accumulate_df(), op->output_df()))
             {
@@ -422,9 +422,9 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
 {
     for (Node *node : graphlib::topological_sort(*graph))
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::BudaOpNode *op = dynamic_cast<graphlib::BudaOpNode *>(node);
+            graphlib::ForgeOpNode *op = dynamic_cast<graphlib::ForgeOpNode *>(node);
             TT_ASSERT(op);
             if (op->op_name() == "nop" and not op->is_gradient_op())
             {
@@ -435,7 +435,7 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
 
             // Both sparse and reduce z don't have support for reconfiguring unpacker from spill,
             // so they must have input_df == output_df == intermediate_df == accumulate_df
-            bool is_reduce_z = op->op_name() == "reduce" and std::get<std::string>(op->buda_attrs().at("dim")) == "z";
+            bool is_reduce_z = op->op_name() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z";
             if (op->is_sparse_matmul() or is_reduce_z)
             {
                 int input_idx = op->is_sparse_matmul() ? 1 : 0;
@@ -517,9 +517,9 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
                 }
                 if (op->output_df() != DataFormat::Int8 
                     and op->op_name() != "dequantization"
-                    and op->buda_attrs().find("has_dequant") == op->buda_attrs().end())
+                    and op->forge_attrs().find("has_dequant") == op->forge_attrs().end())
                 {
-                    if (op->buda_attrs().find("has_requant") != op->buda_attrs().end()) {
+                    if (op->forge_attrs().find("has_requant") != op->forge_attrs().end()) {
                         log_warning(
                             "Op {} is configured for Int8, but output_df != Int8. "
                             "Setting output_df from {} to Int8.",
@@ -566,8 +566,8 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
                 if (op->output_df() != DataFormat::Int32)
                 {
                     // Requantization must be applied
-                    if (not (op->buda_attrs().find("has_requant") != op->buda_attrs().end() and
-                             std::get<bool>(op->buda_attrs().at("has_requant")))) {
+                    if (not (op->forge_attrs().find("has_requant") != op->forge_attrs().end() and
+                             std::get<bool>(op->forge_attrs().at("has_requant")))) {
                         log_warning(
                             "Op {} is configured for Int32, but output_df != Int32. "
                             "Setting output_df from {} to Int32.",
@@ -638,10 +638,10 @@ void configure_accumulation_data_formats(
     // apply user-overrides if set, otherwise infer using the input data formats loaded into src registers
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() != graphlib::NodeType::kBudaOp)
+        if (node->node_type() != graphlib::NodeType::kForgeOp)
             continue;
 
-        graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
+        graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
         std::optional<DataFormat> acc_df_override = std::nullopt;
         if (default_accumulate_df)
         {
@@ -688,14 +688,14 @@ void configure_intermediate_data_formats(graphlib::Graph *graph)
     // apply user-overrides if set, otherwise infer using the input data formats loaded into src registers
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() != graphlib::NodeType::kBudaOp)
+        if (node->node_type() != graphlib::NodeType::kForgeOp)
             continue;
 
-        graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
+        graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
         op->set_intermediate_df(op->accumulate_df());
 
         if (op->op_type() == "reduce" 
-            and std::get<std::string>(op->buda_attrs().at("dim")) == "z"
+            and std::get<std::string>(op->forge_attrs().at("dim")) == "z"
             and op->output_df() == DataFormat::Int8)
         {
             op->set_intermediate_df(op->output_df());
@@ -709,9 +709,9 @@ void fix_math_fidelity(graphlib::Graph *graph)
     
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
+            graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
             if (bool enable_int8_mode = is_configured_for_int8(graph, op);
                 enable_int8_mode and op->math_fidelity() != MathFidelity::HiFi4)
             {
@@ -743,9 +743,9 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
 {
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
+            graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
             std::vector<DataFormat> all_data_formats = get_data_formats(graph->data_operands(op));
 
             if (op->is_gradient_op())
@@ -787,7 +787,7 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
                     op->name(),
                     operand_data_formats);
             }
-            if (op->op_type() == "reduce" and std::get<std::string>(op->buda_attrs().at("dim")) == "z")
+            if (op->op_type() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z")
             {
                 all_data_formats.push_back(op->intermediate_df());
                 all_data_formats.push_back(op->output_df());
@@ -891,12 +891,12 @@ void validate_post_placer_data_formats(const graphlib::Graph *graph, const Devic
 
     for (Node *node : graph->nodes())
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            if (graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>(); op->is_matmul())
+            if (graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>(); op->is_matmul())
             {
-                const auto& buda_attrs = op->buda_attrs();
-                if (auto mk_it = buda_attrs.find("m_k"); mk_it != buda_attrs.end() and std::get<int>(mk_it->second) > 1)
+                const auto& forge_attrs = op->forge_attrs();
+                if (auto mk_it = forge_attrs.find("m_k"); mk_it != forge_attrs.end() and std::get<int>(mk_it->second) > 1)
                 {
                     std::vector<DataFormat> all_data_formats = get_data_formats(graph->data_operands(op));
                     all_data_formats.push_back(op->intermediate_df());
@@ -935,7 +935,7 @@ void configure_stochastic_rounding(graphlib::Graph *graph, const bool is_stochas
 
     for (Node *node : graphlib::topological_sort(*graph))
     {
-        if (graphlib::BudaOpNode *op = dynamic_cast<graphlib::BudaOpNode *>(node); op != nullptr)
+        if (graphlib::ForgeOpNode *op = dynamic_cast<graphlib::ForgeOpNode *>(node); op != nullptr)
         {
             const bool use_stochastic_rounding = op->accumulate_df() != DataFormat::Float32;
             if ((op->is_matmul() or graphlib::is_eltwise_binary(op)) and use_stochastic_rounding)
@@ -945,9 +945,9 @@ void configure_stochastic_rounding(graphlib::Graph *graph, const bool is_stochas
                     log_fatal(LogGraphCompiler, "User has requested stochastic rounding but accumulate_df = Float32");
                 }
 
-                BudaOpAttrs buda_attrs = op->buda_attrs();
-                buda_attrs["srnd_fpu_en"] = use_stochastic_rounding;
-                op->overwrite_buda_attrs(buda_attrs);
+                ForgeOpAttrs forge_attrs = op->forge_attrs();
+                forge_attrs["srnd_fpu_en"] = use_stochastic_rounding;
+                op->overwrite_forge_attrs(forge_attrs);
             }
         }
     }

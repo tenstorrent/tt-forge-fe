@@ -157,7 +157,7 @@ def test_xglm(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    # compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    # compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     configuration = XGLMConfig()
     model = XGLMDecoderLayer(configuration)

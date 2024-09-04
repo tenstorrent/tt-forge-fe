@@ -4,7 +4,7 @@
 #
 # Tests for testing of clip operator
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -75,7 +75,7 @@ def test_clip(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaClipTest(shape={shape}, min_value={min_value}, max_value={max_value})'
+    architecture = f'models.{model}.ForgeClipTest(shape={shape}, min_value={min_value}, max_value={max_value})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

@@ -17,9 +17,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaVStackVSliceTest(ForgeModule):
+class ForgeVStackVSliceTest(ForgeModule):
     """
-        Buda Test 4
+        Forge Test 4
 
     """
 
@@ -27,7 +27,7 @@ class BudaVStackVSliceTest(ForgeModule):
         self,
         shape, 
         slice):
-        super().__init__("Buda Test 4")
+        super().__init__("Forge Test 4")
 
         assert hasattr(shape, '__iter__'), "Shape must be iterable"
         assert len(shape) == 4, "Shape must be 4"

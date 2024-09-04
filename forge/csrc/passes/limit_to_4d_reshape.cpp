@@ -13,7 +13,7 @@
 namespace tt::passes
 {
 
-using Attr = BudaOpAttr;
+using Attr = ForgeOpAttr;
 
 static bool is_reshape(graphlib::Node const *node)
 {
@@ -143,7 +143,7 @@ void decompose_nd_reshape_split(graphlib::Graph *graph) {
     for (auto node : graph->nodes())
     {
         // Only consider reshape nodes with last dimension tile_dim aligned
-        if (not is_reshape(node) or node->shape()[-1] % graphlib::Shape::BUDA_TILE_DIM != 0)
+        if (not is_reshape(node) or node->shape()[-1] % graphlib::Shape::FORGE_TILE_DIM != 0)
             continue;
 
         auto consumers = graph->users(node);

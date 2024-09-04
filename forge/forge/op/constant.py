@@ -20,6 +20,6 @@ def Constant(name: str, *, constant: float) -> Tensor:
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     return op("constant", name, attrs=(constant,)).get_tensor()

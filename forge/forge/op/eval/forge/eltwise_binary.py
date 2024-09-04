@@ -9,12 +9,12 @@ from forge.tensor import Tensor
 import numpy as np
 import torch
 from .transpose import TransposeTM
-from ..buda.exp import Exp as BudaExp
+from ..lforge.exp import Exp as ForgeExp
 from .reciprocal import Reciprocal
 from .log import Log
-from ..buda.log import Log as BudaLog
+from ..lforge.log import Log as ForgeLog
 from .nop import Nop
-from ..buda.nop import Nop as BudaNop
+from ..lforge.nop import Nop as ForgeNop
 
 from ..common import to_torch_operands
 from forge.utils import align_up_tile
@@ -132,9 +132,9 @@ def lower(type, attr, lc, ops, outputs):
                     # diff = (A - B) * amplifier
             diff_one = lc.op("add", (diff, one))
                     # diff + 1.0
-            res = lc.op(BudaNop.create(relu_en=True, relu_threshold=1.0, relu_mode="min" ), (diff_one, ))
+            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="min" ), (diff_one, ))
                     # res = ReLU(diff + 1.0, 1.0)
-            res = lc.op(BudaNop.create(relu_en=True, relu_threshold=1.0, relu_mode="max"), (res, ))
+            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="max"), (res, ))
                     # res = Inv_ReLU(res, 1.0)
             return res
 
@@ -167,10 +167,10 @@ def lower(type, attr, lc, ops, outputs):
             ne(A, B)
     elif type == "power":
         #lc.op("power_binary", ops, attr)  # 'power' backend op is unary
-        ln_x = lc.op(BudaLog.create(), [ops[0]])
+        ln_x = lc.op(ForgeLog.create(), [ops[0]])
         y_ln_x = lc.op("multiply", (ops[1], ln_x)) 
         approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(BudaExp.create(approximate_mode=approximate_mode), [y_ln_x])            
+        lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])            
     else:
         # Find proper tile sizes
         if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
@@ -184,11 +184,11 @@ def lower(type, attr, lc, ops, outputs):
         ops1_dims = len(ops[1].shape)
         if ops0_dims == 5 and ops1_dims < 5:
             while ops1_dims < 5:
-                ops[1] = lc.op(BudaNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=ops1_dims), [ops[1]], tag="dont_remove")
+                ops[1] = lc.op(ForgeNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=ops1_dims), [ops[1]], tag="dont_remove")
                 ops1_dims += 1
         elif ops1_dims == 5 and ops0_dims < 5:
             while ops0_dims < 5:
-                ops[0] = lc.op(BudaNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=ops0_dims), [ops[0]], tag="dont_remove")
+                ops[0] = lc.op(ForgeNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=ops0_dims), [ops[0]], tag="dont_remove")
                 ops0_dims += 1
         lc.op(type, ops, attr, {}, "", tile_height, TILE_DIM) # straight 1-1 for all other binaries
 
@@ -421,9 +421,9 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
         while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op("unsqueeze", [operand0], (0, len(operand0.shape)))
+            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0} (0, len(operand0.shape)))
         while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op("unsqueeze", [operand1], (0, len(operand1.shape)))
+            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0} (0, len(operand1.shape)))
 
         if (slice_factor != None):
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))

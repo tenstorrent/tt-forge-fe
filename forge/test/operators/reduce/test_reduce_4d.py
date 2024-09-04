@@ -4,7 +4,7 @@
 #
 # Tests for testing of reduce operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 # In these tests we suppose that all shapes are 4-dimensional and keepdim is always True
 # (e.g, before reduce shape=(64, 32, 256, 128), after reduce over dimension 2 shape=(64, 32, 1, 128))
@@ -70,7 +70,7 @@ def test_reduce(
         pytest.skip("These models return intermediate nodes. That's not supported today." 
                     "Autograd is trying to do backward pass twice for the same subpath in the graph and that's not correct. ")
 
-    architecture = f'models_4d.{model}.BudaReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    architecture = f'models_4d.{model}.ForgeReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

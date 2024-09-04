@@ -11,9 +11,9 @@ from forge.op.loss import L1Loss, CrossEntropyLoss
 from forge.verify import VerifyConfig, verify_module
 import os
 
-class BudaTest(forge.ForgeModule):
+class ForgeTest(forge.ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (64, 64)
@@ -33,13 +33,13 @@ class BudaTest(forge.ForgeModule):
 def test_l1_loss(test_kind, test_device):
     os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
 
-    verify_module(BudaTest("test_l1_loss"), [(1, *BudaTest.shape), (1, *BudaTest.shape)],
+    verify_module(ForgeTest("test_l1_loss"), [(1, *ForgeTest.shape), (1, *ForgeTest.shape)],
             loss_module=L1Loss("l1_loss"),
             verify_cfg=VerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch))
 
 def test_ce_loss(test_kind, test_device):
     os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
 
-    verify_module(BudaTest("test_ce_loss"), [(1, *BudaTest.shape), (1, *BudaTest.shape)],
+    verify_module(ForgeTest("test_ce_loss"), [(1, *ForgeTest.shape), (1, *ForgeTest.shape)],
             loss_module=CrossEntropyLoss("ce_loss"),
             verify_cfg=VerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch))

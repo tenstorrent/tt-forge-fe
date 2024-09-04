@@ -335,9 +335,9 @@ def test_gpt2_inference(devtype, dataformat):
     res_pt = blocks(*embed_out)
 
     # Set up TT Device with module
-    buda_blocks = forge.PyTorchModule("gpt2_blocks", blocks)
+    forge_blocks = forge.PyTorchModule("gpt2_blocks", blocks)
     tt0 = forge.TTDevice('tt0', devtype=devtype, arch=BackendDevice.Wormhole_B0, fp32_fallback=dataformat)
-    tt0.place_module(buda_blocks)
+    tt0.place_module(forge_blocks)
 
     hidden_tt = embed_out[0].clone().detach()
     mask_tt = embed_out[1].clone().detach()
@@ -395,11 +395,11 @@ def test_pt_gpt2_generate(devtype, test_kind):
     print(blocks.gpt2.h[0].attn.embed_dim)
     print(blocks.gpt2.h[0].attn.split_size)
 
-    buda_blocks = forge.PyTorchModule("gpt2_blocks", blocks)
+    forge_blocks = forge.PyTorchModule("gpt2_blocks", blocks)
 
     cpu0 = forge.CPUDevice("cpu0", module=forge.PyTorchModule("gpt2_embeddings", embedding))
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, arch=BackendDevice.Wormhole_B0, num_chips=1,
-                           module=buda_blocks)
+                           module=forge_blocks)
     cpu1 = forge.CPUDevice("cpu1", module=forge.PyTorchModule("gpt2_lm_head", lm_head))
 
     dummy_text = "Text to generate input tensor for the compiler "

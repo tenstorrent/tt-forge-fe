@@ -12,7 +12,7 @@ from ..common import to_torch_operands
 from .transpose import TransposeTM
 from .nop import Nop
 from .buffer import Buffer
-from ..buda.splice import Splice
+from ..lforge.splice import Splice
 from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
 from ..sparse_utils import (
     create_flattened_padding_removal_sparse_picker_matrix,
@@ -48,7 +48,7 @@ def eval(type, attr, ops):
         for i in range(len(t_ops)):
             res += torch.nn.functional.pad(t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1]))
 
-        # To buda shape
+        # To forge shape
         res = res.reshape(1, res.shape[1], res.shape[2] * res.shape[3], 1)
         res = res.transpose(1, 3)
 
@@ -171,11 +171,11 @@ def lower(type, attr, lc, ops, outputs):
         assert len(attr) == 1, "index_copy should have 1 attr"
         dim = attr[0]
 
-        buda_attrs = {
+        forge_attrs = {
             "axis" : dim,
         }
 
-        return lc.op("index_copy", ops, attr, buda_attrs)
+        return lc.op("index_copy", ops, attr, forge_attrs)
 
     elif type == "where":
         assert False, "Where is meant to be removed by consteval"

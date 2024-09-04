@@ -70,7 +70,7 @@ def clear_forge():
     if "FORGE_RESET_DEV_BEFORE_TEST" in os.environ:
         # Reset device between tests
         # For this to work, pytest must be called with --forked
-        subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["BUDA_HOME"])
+        subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
 
     import random
     random.seed(0)

@@ -228,7 +228,7 @@ def test_tvm_conv(test_kind, test_device, input_shape, filter_size, kernel_size,
             return self.conv(x1)
 
     mod = TFModule("conv2d_tf", Convolution())
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     verify_module(
         mod,
         (input_shape,),
@@ -491,7 +491,7 @@ def test_tvm_conv_uneven_padding(channel_format):
         compiler_cfg=CompilerConfig(
             enable_training=False,
             enable_recompute=False,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
         ),
         verify_cfg=VerifyConfig(
             intermediates=True,
@@ -645,7 +645,7 @@ def test_tvm_logical_not(test_kind, test_device):
 
 def test_tvm_index(test_kind, test_device):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class Index(tf.keras.Model):
         def __init__(self):
             super().__init__()

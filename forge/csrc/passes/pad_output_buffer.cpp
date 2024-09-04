@@ -10,18 +10,18 @@
 
 namespace tt::passes
 {
-// Insert buda_pad op on specified edge
-void insert_buda_pad(graphlib::Graph *graph, graphlib::Edge edge, int rt_pad_amount, int ct_pad_amount, graphlib::Shape original_output_shape, graphlib::Node *output_node)
+// Insert forge_pad op on specified edge
+void insert_forge_pad(graphlib::Graph *graph, graphlib::Edge edge, int rt_pad_amount, int ct_pad_amount, graphlib::Shape original_output_shape, graphlib::Node *output_node)
 {
     // Get node from edge
     graphlib::Node *node = graph->node_by_id(edge.consumer_node_id);
 
-    // Construct buda_pad node and insert in graph
-    graphlib::OpType buda_pad_op_type("buda_pad", {rt_pad_amount, ct_pad_amount, 0});
-    auto buda_pad_ref_node = graph->add_node(
-        graphlib::create_node<graphlib::PyOpNode>(node->name() + "_pad", buda_pad_op_type),
+    // Construct forge_pad node and insert in graph
+    graphlib::OpType forge_pad_op_type("forge_pad", {rt_pad_amount, ct_pad_amount, 0});
+    auto forge_pad_ref_node = graph->add_node(
+        graphlib::create_node<graphlib::PyOpNode>(node->name() + "_pad", forge_pad_op_type),
         graph->get_subgraph_id_for_node(node->id()));
-    graphlib::insert_node_on_edge(graph, edge, buda_pad_ref_node);
+    graphlib::insert_node_on_edge(graph, edge, forge_pad_ref_node);
 
     // Add runtime transform to referent node
     graphlib::RuntimeTensorTransform runtime_tensor_transform(original_output_shape);
@@ -53,8 +53,8 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
         graphlib::Shape original_output_shape = output_node->shape();
 
         // If the output shape is not divisible by the grid size, pad to nearest multiple
-        int original_output_rt = graphlib::Shape::to_buda(original_output_shape).rt();
-        int original_output_ct = graphlib::Shape::to_buda(original_output_shape).ct();
+        int original_output_rt = graphlib::Shape::to_forge(original_output_shape).rt();
+        int original_output_ct = graphlib::Shape::to_forge(original_output_shape).ct();
 
         if ((original_output_rt * original_output_ct) < pad_threshold)
             continue;
@@ -68,8 +68,8 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
 
         // Construct new padded shape
         graphlib::Shape padded_shape = original_output_shape;
-        padded_shape[-1] = original_output_shape[-1] + (ct_pad_amount * graphlib::Shape::BUDA_TILE_DIM);
-        padded_shape[-2] = original_output_shape[-2] + (rt_pad_amount * graphlib::Shape::BUDA_TILE_DIM);
+        padded_shape[-1] = original_output_shape[-1] + (ct_pad_amount * graphlib::Shape::FORGE_TILE_DIM);
+        padded_shape[-2] = original_output_shape[-2] + (rt_pad_amount * graphlib::Shape::FORGE_TILE_DIM);
 
         // Get output edges
         std::vector<graphlib::Edge> edges = graph->operand_data_edges(output_node);
@@ -89,7 +89,7 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
             if (ct_pad_amount != 0)
             {
                 padded_ct = true;
-                insert_buda_pad(graph, edges[1], 0, ct_pad_amount, original_output_shape, output_node);
+                insert_forge_pad(graph, edges[1], 0, ct_pad_amount, original_output_shape, output_node);
                 graphlib::Node *producer = graph->node_by_id(edges[1].producer_node_id);
                 if (producer->node_type() == graphlib::NodeType::kInput)
                 {
@@ -111,9 +111,9 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
         if (rt_pad_amount == 0 and ct_pad_amount == 0)
             continue;
 
-        // Construct buda_pad node and insert in graph
-        graphlib::Edge buda_pad_ref_edge = graph->operand_data_edges(output_node)[0];
-        insert_buda_pad(graph, buda_pad_ref_edge, rt_pad_amount, ct_pad_amount, original_output_shape, output_node);
+        // Construct forge_pad node and insert in graph
+        graphlib::Edge forge_pad_ref_edge = graph->operand_data_edges(output_node)[0];
+        insert_forge_pad(graph, forge_pad_ref_edge, rt_pad_amount, ct_pad_amount, original_output_shape, output_node);
     }
 
     recalculate_shapes(graph);

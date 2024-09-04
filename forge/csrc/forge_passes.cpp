@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include "buda_passes.hpp"
+#include "forge_passes.hpp"
 
 #include <algorithm>
 #include <map>
@@ -37,7 +37,7 @@
 #include "passes/passes_utils.hpp"
 #include "passes/post_autograd_graph_passes.hpp"
 #include "passes/pre_lowering_passes.hpp"
-#include "passes/pre_placer_buda_passes.hpp"
+#include "passes/pre_placer_forge_passes.hpp"
 #include "passes/print_graph.hpp"
 #include "passes/replace_incommutable_patterns.hpp"
 #include "passes/set_tile_dim.hpp"
@@ -61,7 +61,7 @@ void lower_reshape(Graph *, graphlib::OpNode *node)
 {
     graphlib::OpType op_type = node->op_type();
     TT_ASSERT(op_type.attr.size() == 4);
-    op_type.buda_attrs = {
+    op_type.forge_attrs = {
         {"w", std::get<int>(op_type.attr[0])},
         {"z", std::get<int>(op_type.attr[1])},
         {"r", std::get<int>(op_type.attr[2])},
@@ -230,11 +230,14 @@ graphlib::Graph* run_pre_lowering_passes(
     // Apply user overrides
     passes::configure_output_data_formats(graph, default_df_override);
 
+    // Recalculate shapes before lowering to MLIR
+    recalculate_shapes(graph);
+
     return graph;
 }
 
 // ********** Run lowering passes **********
-std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
+std::unique_ptr<graphlib::Graph> run_pre_placer_forge_passes(
     graphlib::Graph *graph,
     const DeviceConfig &device_config,
     std::vector<std::uint32_t> chip_ids,
@@ -261,8 +264,8 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_buda_passes(
 
     passes::print_graph(graph, "PRE_PLACER");
 
-    // Create buda ops / tms
-    std::unique_ptr<graphlib::Graph> lowered_graph = lower_to_buda_ops(graph);
+    // Create forge ops / tms
+    std::unique_ptr<graphlib::Graph> lowered_graph = lower_to_forge_ops(graph);
 
     // lower user-defined buffering queues to actual queue types
     lower_to_buffering_queues(lowered_graph.get());

@@ -12,7 +12,7 @@ using namespace tt;
 namespace tt::test
 {
 
-struct ProducerQueueDataFormatMismatch : public BudaGraphTest
+struct ProducerQueueDataFormatMismatch : public ForgeGraphTest
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -54,7 +54,7 @@ TEST_F(ProducerQueueDataFormatMismatch, test_data_formats_fixed)
 }
 
 
-struct ReduceFeedingSplice : public BudaGraphTest
+struct ReduceFeedingSplice : public ForgeGraphTest
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -64,7 +64,7 @@ struct ReduceFeedingSplice : public BudaGraphTest
         auto reduce = create_op(
             "reduce",
             {activations},
-            tt::BudaOpAttrs{{"dim", std::string("z")}, {"type", std::string("max")}, {"z", 4}},
+            tt::ForgeOpAttrs{{"dim", std::string("z")}, {"type", std::string("max")}, {"z", 4}},
             1,
             std::string("max"),
             4);
@@ -84,7 +84,7 @@ struct ReduceFeedingSplice : public BudaGraphTest
 
         // Configure dfs
         activations->set_output_df(DataFormat::Bfp8_b);
-        reduce->as<graphlib::BudaOpNode>()->set_intermediate_df(DataFormat::Bfp8_b);
+        reduce->as<graphlib::ForgeOpNode>()->set_intermediate_df(DataFormat::Bfp8_b);
         reduce->set_output_df(DataFormat::Bfp8_b);
 
 
@@ -93,7 +93,7 @@ struct ReduceFeedingSplice : public BudaGraphTest
     std::string reduce_name;
 };
 
-struct AliasedQueueWriteback : public BudaGraphTest
+struct AliasedQueueWriteback : public ForgeGraphTest
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -136,7 +136,7 @@ TEST_F(AliasedQueueWriteback, test_aliased_queue_writeback_satisfied)
     tt::passes::validate_data_formats(graph,  tt::test::create_device_config());
 }
 
-struct NopDataFormatPropagation : public BudaGraphTest
+struct NopDataFormatPropagation : public ForgeGraphTest
 {
    protected:
     virtual std::vector<OpType*> create_graph() override

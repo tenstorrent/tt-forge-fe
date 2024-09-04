@@ -45,7 +45,7 @@ class EdgeAttributes;
 enum class IRLevel
 {
     IR_TT_FORGE,
-    IR_BUDA,
+    IR_FORGE,
     IR_CONSTEVAL,
 };
 
@@ -85,7 +85,7 @@ class Graph
     // instead of copy-constructor, prefer to explicitly provide a clone() method
     // for clearer semantics and avoid accidental copy-constructor usage.
     // Optionally pass your own graph ptr to clone into otherwise,
-    // Returns a raw (buda-compatibility) pointer to heap-allocated deep copy of the input graph
+    // Returns a raw (forge-compatibility) pointer to heap-allocated deep copy of the input graph
     Graph *clone(Graph *cloned = nullptr) const;
 
     IRLevel get_ir_level() const { return ir_level_; }

@@ -54,7 +54,7 @@ def test_onnx_quantized_resnet(test_device):
     # os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
     os.environ["FORGE_FRACTURIZATION_DISABLE"] = "1"
     # os.environ["FORGE_REPRODUCE_SUBGRAPH"] = "1"
-    # os.environ["FORGE_REPRODUCE_SUBGRAPH_INPUT"] = "quantize_0.dc.buda_quantize.1"
+    # os.environ["FORGE_REPRODUCE_SUBGRAPH_INPUT"] = "quantize_0.dc.forge_quantize.1"
     # os.environ["FORGE_REPRODUCE_SUBGRAPH_OUTPUT"] = "conv2d_1.dc.matmul.11"
 
     # Sanity run

@@ -6,7 +6,7 @@
 #include <vector>
 #include <ostream>
 #include "utils/assert.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
@@ -20,7 +20,7 @@ class Shape {
 public:
     enum Type {
         FREE,   // any number of dimensions
-        BUDA    // 4D, snapped to tile sizes
+        FORGE    // 4D, snapped to tile sizes
     };
 private:
     bool valid_ = false;
@@ -29,18 +29,18 @@ private:
     TileDim tile_dim_ = TileDim::Dim32x32;
 
 public:
-    constexpr static int BUDA_TILE_DIM = 32;
-    constexpr static int BUDA_DIM_COUNT = 4;
-    constexpr static int BUDA_MAX_DIM_COUNT = 5;
+    constexpr static int FORGE_TILE_DIM = 32;
+    constexpr static int FORGE_DIM_COUNT = 4;
+    constexpr static int FORGE_MAX_DIM_COUNT = 5;
 
     Shape() = default;
     Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims);
 
     static Shape create(std::vector<std::uint32_t> dims);
-    static Shape create_buda(std::vector<std::uint32_t> dims, int tile_height = BUDA_TILE_DIM, int tile_width = BUDA_TILE_DIM);
-    static Shape create_buda(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c);
+    static Shape create_forge(std::vector<std::uint32_t> dims, int tile_height = FORGE_TILE_DIM, int tile_width = FORGE_TILE_DIM);
+    static Shape create_forge(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c);
     static Shape create_with_type_from_other(const Shape &other, std::vector<std::uint32_t> dims);
-    static Shape to_buda(const Shape &other);
+    static Shape to_forge(const Shape &other);
 
     std::vector<std::uint32_t>::iterator begin() { return dims_.begin(); }
     std::vector<std::uint32_t>::iterator end() { return dims_.end(); }
@@ -58,7 +58,7 @@ public:
     bool operator!=(const Shape &other) const;
 
     bool is_valid() const { return valid_; }
-    bool is_buda() const { return type_ == BUDA; }
+    bool is_forge() const { return type_ == FORGE; }
     Shape::Type type() const { return type_; }
 
     std::vector<std::uint32_t> as_vector() const;
@@ -70,7 +70,7 @@ public:
     int negative_index(int index) const { return (index < 0) ? index : (index - (int)size()); }
     int positive_index(int index) const { return (index < 0) ? (index + (int)size()) : index; }
     bool index_in_bounds(int index) const { return positive_index(index) >= 0 and positive_index(index) < (int)size(); }
-    // If buda shape, returns true if single tile for R/C dims
+    // If forge shape, returns true if single tile for R/C dims
     // otherwise returns true if provided dim == 1
     bool is_unit(int index) const;
     bool is_single_tile() const;
@@ -83,9 +83,9 @@ public:
     std::vector<DimBroadcast> broadcast_dims(const Shape &other) const;
 
     // Common factory func
-    static Shape single_tile() { return create_buda(1, 1, BUDA_TILE_DIM, BUDA_TILE_DIM); }
+    static Shape single_tile() { return create_forge(1, 1, FORGE_TILE_DIM, FORGE_TILE_DIM); }
 
-    // Buda dimensions accessors
+    // Forge dimensions accessors
     std::uint32_t rt() const;
     std::uint32_t ct() const;
     std::uint32_t z() const;
@@ -98,7 +98,7 @@ public:
     // Macro used to generate the to_json/from_json methods for each shape type
     NLOHMANN_JSON_SERIALIZE_ENUM(Shape::Type, {
         {Shape::Type::FREE, "FREE"},
-        {Shape::Type::BUDA, "BUDA"}
+        {Shape::Type::FORGE, "FORGE"}
     });
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Shape, valid_, type_, dims_)
 };
@@ -109,7 +109,7 @@ template <typename T>
 inline T align_up_tile(T d)
 {
     d -= 1;
-    return static_cast<T>(d - (d % graphlib::Shape::BUDA_TILE_DIM) + graphlib::Shape::BUDA_TILE_DIM);
+    return static_cast<T>(d - (d % graphlib::Shape::FORGE_TILE_DIM) + graphlib::Shape::FORGE_TILE_DIM);
 }
 
 } // namespace graphlib

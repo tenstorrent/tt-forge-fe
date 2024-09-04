@@ -27,7 +27,7 @@ def DRAMQueue(name: str, operandA: Tensor, *, num_entries: int) -> Tensor:
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("dram_queue", name, operandA, attrs=(num_entries,)).get_tensor()

@@ -29,7 +29,7 @@ def test_wav2vec2(test_kind, test_device):
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
     else:
         # Unsupported HW ops
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER  
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER  
 
     framework_model = Wav2Vec2Model.from_pretrained(
         "facebook/wav2vec2-base", torchscript=True

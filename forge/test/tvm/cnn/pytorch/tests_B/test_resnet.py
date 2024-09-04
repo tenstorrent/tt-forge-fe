@@ -47,7 +47,7 @@ def test_resnet_pytorch(test_kind, test_device):
     if not test_kind.is_training():
         compiler_cfg.compile_depth = CompileDepth.FULL
     else:
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
         # compiler_cfg.compile_depth = CompileDepth.FULL
     compiler_cfg.balancer_policy = "CNN"
     # compiler_cfg.place_on_new_epoch("max_pool2d_14.dc.reshape.0_operand_commute_clone411.dc.sparse_matmul.4.lc2")

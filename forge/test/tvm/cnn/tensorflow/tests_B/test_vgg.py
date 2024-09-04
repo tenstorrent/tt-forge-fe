@@ -23,7 +23,7 @@ def test_tvm_vgg16_tf(training):
     if training:
         pytest.skip()
 
-    compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     model = tf.keras.applications.VGG16(
         include_top=True,

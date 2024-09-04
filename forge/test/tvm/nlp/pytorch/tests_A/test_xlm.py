@@ -185,7 +185,7 @@ def test_tvm_xlm_attention(test_kind, test_device):
 
     if test_kind.is_training():
         compiler_cfg = _get_global_compiler_config()
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     config = XLMConfig()
 
@@ -212,7 +212,7 @@ def test_tvm_xlm_FFN(test_kind, test_device):
 
     if test_kind.is_training():
         compiler_cfg = _get_global_compiler_config()
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     recompute = True
 

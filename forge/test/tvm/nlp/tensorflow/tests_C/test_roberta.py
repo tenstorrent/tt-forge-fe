@@ -141,5 +141,5 @@ def test_roberta(test_device):
     tf_outputs = roberta_model(input_ids)
     torch_outputs = forge.tensor.to_pt_tensors(tf_outputs[0])
     
-    assert compare_tensor_to_golden("roberta", torch_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("roberta", torch_outputs[0], outputs[0].value(), is_forge=True)
 

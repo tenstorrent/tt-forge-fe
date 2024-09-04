@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 from ..interface import PyTM
-from ..buda.transpose import TransposeTM as BudaTransposeTM
+from ..lforge.transpose import TransposeTM as ForgeTransposeTM
 from .. import sparse_utils
 from forge._C import UnsupportedHWOpsError
 
@@ -42,7 +42,7 @@ class TransposeTM(PyTM):
 
         if self.dim0 == -2 and self.dim1 == -1:
             lc.tm(
-                BudaTransposeTM.create(self.dim0, self.dim1, z_dim_slice=self.z_dim_slice),
+                ForgeTransposeTM.create(self.dim0, self.dim1, z_dim_slice=self.z_dim_slice),
                 tensors[0],
             )
         else:

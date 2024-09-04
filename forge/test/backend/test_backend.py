@@ -11,9 +11,9 @@ import forge
 from forge import DataFormat, BackendDevice, BackendType
 from forge.verify import verify_module, verify_module_pipeline, VerifyConfig, TestKind
 
-class BudaTest(forge.ForgeModule):
+class ForgeTest(forge.ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     """
 
     shape = (64, 64)
@@ -35,21 +35,21 @@ class BudaTest(forge.ForgeModule):
             return add
 
 def test_basic(test_kind):
-    verify_module(BudaTest("verify_module"), [(2, 64, 64), (2, 64, 64)],
+    verify_module(ForgeTest("verify_module"), [(2, 64, 64), (2, 64, 64)],
             VerifyConfig(test_kind=test_kind, run_net2pipe=True))
 
 def test_basic_wormhole(test_kind):
     if test_kind == TestKind.TRAINING_RECOMPUTE:
-        pytest.skip() # tenstorrent/budabackend#382
-    verify_module(BudaTest("verify_module"), [(1, 64, 64), (1, 64, 64)],
+        pytest.skip() # tenstorrent/forgebackend#382
+    verify_module(ForgeTest("verify_module"), [(1, 64, 64), (1, 64, 64)],
            VerifyConfig(test_kind=test_kind, run_net2pipe=True))
 
 def test_multi_input_inference():
-    verify_module(BudaTest("verify_module"), [(1, 64, 64), (1, 64, 64)],
+    verify_module(ForgeTest("verify_module"), [(1, 64, 64), (1, 64, 64)],
             VerifyConfig(test_kind=TestKind.INFERENCE, run_net2pipe=True, microbatch_count=10))
 
 def test_multi_output(test_kind):
-    verify_module(BudaTest("verify_module", multi_output=True), [(1, 64, 64), (1, 64, 64)],
+    verify_module(ForgeTest("verify_module", multi_output=True), [(1, 64, 64), (1, 64, 64)],
             VerifyConfig(test_kind=test_kind, run_net2pipe=True))
 
 
@@ -68,7 +68,7 @@ def test_multi_input_training(steps, accumulation_steps, microbatch_count, micro
     elif acc_step_inputs >= 16:
         pcc = 0.97
 
-    verify_module(BudaTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
+    verify_module(ForgeTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
             VerifyConfig(
                 test_kind=TestKind.TRAINING, 
                 steps=steps,
@@ -80,12 +80,12 @@ def test_multi_input_training(steps, accumulation_steps, microbatch_count, micro
 
 @pytest.mark.parametrize("microbatch_size", (2, 64), ids=("microbatch2", "microbatch64"))
 def test_microbatch_inference(microbatch_size):
-    verify_module(BudaTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
+    verify_module(ForgeTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
             VerifyConfig(test_kind=TestKind.INFERENCE, run_net2pipe=True))
 
 @pytest.mark.skip(reason="Golden doesn't support concurrent")
 def test_concurrent(test_kind):
-    verify_module(BudaTest("verify_module"), [(64, 64), (64, 64)],
+    verify_module(ForgeTest("verify_module"), [(64, 64), (64, 64)],
             VerifyConfig(test_kind=test_kind, sequential=False, run_net2pipe=True))
 
 # Test the scenario where tile broadcast folds into an input node

@@ -203,7 +203,7 @@ def test_onnx_quantized_mm_int8_no_bias(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             verify_forge_codegen_vs_framework=True,
-            # verify_all=True, # need to update matmul eval in buda 
+            # verify_all=True, # need to update matmul eval in forge 
         ),
     )
 

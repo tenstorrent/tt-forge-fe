@@ -109,14 +109,14 @@ def generate_blobgen_cmd(
 
 def pipegen(
     net2pipe_output_dir,
-    device_yaml="third_party/budabackend/device/grayskull_120_arch.yaml",
+    device_yaml="third_party/forgebackend/device/grayskull_120_arch.yaml",
     run_blobgen=False,
     verbose=False,
 ):
-    if "BUDA_HOME" not in os.environ:
-        pipegen_root_path = "./third_party/budabackend/"
+    if "FORGE_HOME" not in os.environ:
+        pipegen_root_path = "./third_party/forgebackend/"
     else:
-        pipegen_root_path = os.environ["BUDA_HOME"] + "/"
+        pipegen_root_path = os.environ["FORGE_HOME"] + "/"
     pipegen_path = pipegen_root_path + "build/bin/pipegen2"
     assert os.path.isdir(net2pipe_output_dir)
     root = net2pipe_output_dir
@@ -238,7 +238,7 @@ def net2pipe_stats(net2pipe_output_dir):
 
 def net2pipe(
     netlist,
-    device_yaml="third_party/budabackend/device/grayskull_120_arch.yaml",
+    device_yaml="third_party/forgebackend/device/grayskull_120_arch.yaml",
     cluster_cfg_yaml=None,
     stats=False,
     run_pipegen=False,
@@ -250,10 +250,10 @@ def net2pipe(
     stderr = f"{net2pipe_output_dir}/net2pipe.stderr"
     subprocess.run(["rm", "-rf", net2pipe_output_dir])
     subprocess.run(["mkdir", "-p", net2pipe_output_dir])
-    if "BUDA_HOME" not in os.environ:
-        net2pipe_root_path = "./third_party/budabackend/"
+    if "FORGE_HOME" not in os.environ:
+        net2pipe_root_path = "./third_party/forgebackend/"
     else:
-        net2pipe_root_path = os.environ["BUDA_HOME"] + "/"
+        net2pipe_root_path = os.environ["FORGE_HOME"] + "/"
     net2pipe_path = net2pipe_root_path + "build/bin/net2pipe"
     cmd = [
         net2pipe_path,
@@ -326,7 +326,7 @@ def main():
     parser.add_argument(
         "--device-yaml",
         type=str,
-        default="third_party/budabackend/device/grayskull_120_arch.yaml",
+        default="third_party/forgebackend/device/grayskull_120_arch.yaml",
         help="Device yaml to use",
     )
     parser.add_argument(

@@ -28,7 +28,7 @@ def test_efficientnet_layer(test_kind, test_device):
         pytest.skip()  # Backward is currently unsupported
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_cfg.balancer_policy = "CNN"
 
     model = download_model(torch.hub.load, 

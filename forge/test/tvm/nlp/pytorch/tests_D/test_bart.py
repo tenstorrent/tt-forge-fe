@@ -42,7 +42,7 @@ def test_bart_decoder(test_kind, test_device):
         pytest.skip()
 
     if test_kind.is_training():
-        _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     input_shape = (1, 768, 768)
 
@@ -163,7 +163,7 @@ def test_bart_encoder_pipeline(test_device):
     outputs = output_q.get()
     
     torch_outputs = model.encoder(input_ids)
-    assert compare_tensor_to_golden("bart_encoder", torch_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("bart_encoder", torch_outputs[0], outputs[0].value(), is_forge=True)
 
 @pytest.mark.skip(reason="Tested with fallback")
 def test_bart_decoder_pipeline(test_device):
@@ -195,7 +195,7 @@ def test_bart_decoder_pipeline(test_device):
     outputs = output_q.get()
 
     torch_outputs = model.decoder(input_ids)
-    assert compare_tensor_to_golden("bart_decoder", torch_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("bart_decoder", torch_outputs[0], outputs[0].value(), is_forge=True)
 
 
 @pytest.mark.parametrize("size", ["base", "large"])

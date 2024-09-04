@@ -76,7 +76,7 @@ def test_wav2vec2_feature_encoder(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     if not test_kind.is_training():
         # Unsupported HW ops
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         # TODO: Tensor mismatch on bw_in0_gelu_197_multiply_1 from layernorm_196
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
@@ -118,10 +118,10 @@ def test_wav2vec2_feature_projection(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     if not test_kind.is_training():
         # Segmentation fault on balancer - access params through backend api
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         # Segmentation fault on balancer - access params through backend api
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     config = Wav2Vec2Config()
     framework_module = TFWav2Vec2_FeatureProjection(config)
