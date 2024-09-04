@@ -1,16 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+#
 # SPDX-License-Identifier: Apache-2.0
+#
+# This file incorporates work covered by the following copyright and permission notice:
+# SPDX-FileCopyrightText: Copyright (c) 2016 Facebook, Inc
+# SPDX-License-Identifier: Caffe2
+
 from typing import Dict, List, Optional, Tuple, Iterable
 
 import torch
 import numpy as np
 
 
-# SPDX-FileCopyrightText: Copyright (c) 2016 Facebook, Inc
-#
-# SPDX-License-Identifier: Caffe2
-# https://github.com/pytorch/pytorch/blob/main/torch/optim/adam.py
+
 def adam_no_bias_correction(params: List[torch.Tensor],
          grads: List[torch.Tensor],
          exp_avgs: List[torch.Tensor],
