@@ -288,20 +288,6 @@ def test_gpt2_past_cache(test_device):
         attention_mask[0][480 + current_token_index] = 1
 
     print(f"Generated text: {prefix_text}")
-    
-    # prefix_text = "My name is Ljubisa, and I am"
-    # inputs = tokenizer(prefix_text, max_length=64, pad_to_max_length=True, truncation=True)
-    # input_ids_pt = torch.tensor(inputs["input_ids"]).int().unsqueeze(0)
-    # attention_mask = torch.tensor(inputs["attention_mask"]).int().unsqueeze(0)
-
-    # for i in range(tokens_to_generate):
-    #     embedding_output = embeddings(input_ids_pt, attention_mask)
-    #     model_output = blocks(*embedding_output)
-    #     lm_head_out = lm_head(model_output)
-    #     next_token = torch.argmax(lm_head_out, dim=-1)[0][last_prefix_token + i]
-    #     next_token_index = last_prefix_token + i + 1
-    #     input_ids_pt[0][next_token_index] = next_token
-    #     attention_mask[0][next_token_index] = 1
 
 def test_tvm_past_cache_generate(test_device):
     class PastCache(torch.nn.Module):
