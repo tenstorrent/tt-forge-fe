@@ -99,8 +99,9 @@ class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
     int next_id = 0;
 };
 
-// register backend
-c10::impl::DeviceGuardImplRegistrar tt_device_impl_reg(TT, &TorchDeviceImpl::get());
+// NOTE: We'll need to rework implementation of DeviceGuard to avoid opening the device
+// on library load. This causes a hang in tt-metal during device close.
+// c10::impl::DeviceGuardImplRegistrar tt_device_impl_reg(TT, &TorchDeviceImpl::get());
 
 const std::shared_ptr<TTDevice>& get_default_tt_device() { return TorchDeviceImpl::get().getDefaultTTDevice();}
 std::vector<std::shared_ptr<TTDevice>> get_available_tt_devices() { return TorchDeviceImpl::get().getTTDevices(); }

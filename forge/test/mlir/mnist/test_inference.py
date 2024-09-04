@@ -14,7 +14,7 @@ def test_mnist_inference():
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*[i.to("tt") for i in inputs])
+    co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
