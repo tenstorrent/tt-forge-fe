@@ -28,7 +28,7 @@ def Add(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -56,7 +56,7 @@ def Subtract(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -84,7 +84,7 @@ def Multiply(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -112,7 +112,7 @@ def Divide(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -139,7 +139,7 @@ def Max(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -166,7 +166,7 @@ def Min(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -193,7 +193,7 @@ def Heaviside(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -224,7 +224,7 @@ def BinaryStack(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -251,7 +251,7 @@ def Power(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -280,7 +280,7 @@ def Equal(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -309,7 +309,7 @@ def NotEqual(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -337,7 +337,7 @@ def Greater(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -365,7 +365,7 @@ def Less(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -393,7 +393,7 @@ def GreaterEqual(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -421,7 +421,7 @@ def LessEqual(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
 
     """
 
@@ -454,7 +454,7 @@ def _Eltwise(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     result: Tensor = op(op_type, name, operandA, operandB).get_tensor()
@@ -483,7 +483,7 @@ def LogicalAnd(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("logical_and", name, operandA, operandA).get_tensor()

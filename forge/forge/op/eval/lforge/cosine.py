@@ -4,36 +4,38 @@
 
 import os
 
-from ..interface import BudaEltwiseUnaryOp
+from ..interface import ForgeEltwiseUnaryOp
 
 import torch
 import forge
+
 from forge.utils import align_up_tile, round_up_div
 from .tm import eval as tm_eval
+from forge.tensor import pad_pytorch_tensor_to_forge
 from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
 
-class Abs(BudaEltwiseUnaryOp):
+class Cosine(ForgeEltwiseUnaryOp):
     @classmethod
     def create(cls, vector=None):
-        self = cls("abs")
+        self = cls("cosine")
         if vector is not None:
-           self.set_buda_attr("vector", vector)
+            self.set_forge_attr("vector", vector)
         return self
 
     def eval(self, tensors):
-        assert len(tensors) == 1, "Abs should have one input"
+        assert len(tensors) == 1, "Cosine should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-        ret = torch.abs(tensors[0])
+        ret = torch.cos(tensors[0])
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
 
         return ret
 
     def shape(self, tensor_shapes, tile_height, tile_width):
-        assert len(tensor_shapes) == 1, "Abs should have one input"
+        assert len(tensor_shapes) == 1, "Cosine should have one input"
         shape = tensor_shapes[0]
         if tile_height == TILE_DIM:
             shape[-2] = align_up_tile(shape[-2])
@@ -53,7 +55,7 @@ class Abs(BudaEltwiseUnaryOp):
         return None
 
     def execution_cycles(self, arch_name, op_model) -> int:
-        op_model_desc = op_model_to_desc("abs", arch_name, op_model)
+        op_model_desc = op_model_to_desc("cosine", arch_name, op_model)
 
         compiler_cache_cycles = get_compiler_cached_cycles(op_model_desc)
         if compiler_cache_cycles is not None:

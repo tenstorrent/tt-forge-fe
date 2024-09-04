@@ -10,8 +10,8 @@ import time
 import os
 
 import forge
-from forge.op.eval.buda.splice import Splice
-from forge.op.eval.buda.tm import eval as tm_eval
+from forge.op.eval.lforge.splice import Splice
+from forge.op.eval.lforge.tm import eval as tm_eval
 from forge._C.balancer import OpShape
 from forge.forgeglobal import TILE_DIM
 

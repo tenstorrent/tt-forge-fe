@@ -136,7 +136,7 @@ class MLIRGenerator
         }
 
         // Convert a TTForge attribute to an MLIR attribute.
-        mlir::Attribute convert_to_mlir_attribute(const tt::BudaOpAttr& value) {
+        mlir::Attribute convert_to_mlir_attribute(const tt::ForgeOpAttr& value) {
             return std::visit([this](auto&& arg) -> mlir::Attribute {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, std::string>) {

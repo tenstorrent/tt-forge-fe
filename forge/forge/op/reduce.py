@@ -26,7 +26,7 @@ def ReduceSum(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     assert (dim >= -4) and (dim <= 3)
@@ -57,7 +57,7 @@ def ReduceAvg(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     assert (dim >= -4) and (dim <= 3)
@@ -99,7 +99,7 @@ def GroupedReduceAvg(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     assert (dim >= -4) and (dim <= 3)
@@ -127,7 +127,7 @@ def ReduceMax(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     if stride == -1:
         stride = int(operandA.shape[dim])

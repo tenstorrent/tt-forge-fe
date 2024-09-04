@@ -17,9 +17,9 @@ from forge import ForgeModule, Tensor
 
 
 
-class BudaReduceTest(ForgeModule):
+class ForgeReduceTest(ForgeModule):
     """
-        Buda Test 3
+        Forge Test 3
 
     Args:
         operator (function): Forge reduce operator.
@@ -34,7 +34,7 @@ class BudaReduceTest(ForgeModule):
         shape,
         dim,
         keepdim):
-        super().__init__("Buda Test 3")
+        super().__init__("Forge Test 3")
 
         assert hasattr(shape, '__iter__'), "Shape must be iterable"
         assert dim < len(shape), "Dimension out of the shape"

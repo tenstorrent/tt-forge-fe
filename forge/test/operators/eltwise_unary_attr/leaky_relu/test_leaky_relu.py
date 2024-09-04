@@ -4,7 +4,7 @@
 #
 # Tests for testing of leaky relu operator
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -69,7 +69,7 @@ def test_leaky_relu(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaLeakyReluTest(shape={shape}, alpha={alpha})'
+    architecture = f'models.{model}.ForgeLeakyReluTest(shape={shape}, alpha={alpha})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

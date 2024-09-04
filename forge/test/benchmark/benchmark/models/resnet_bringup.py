@@ -82,11 +82,11 @@ class ConvCustomTStreamModule(forge.ForgeModule):
         x = forge.op.VSlice("", x, x.shape.rt)
 
         # Buffer between vslice and hslice
-        x = forge.op.Buffer("", x)  # HW workaround for: tenstorrent/budabackend#656
+        x = forge.op.Buffer("", x)  # HW workaround for: tenstorrent/forgebackend#656
 
         # tms before sparse mm
         x = forge.op.HSlice("", x, self.kH * self.kW)
-        x = forge.op.Buffer("", x)  # HW workaround for: tenstorrent/budabackend#656
+        x = forge.op.Buffer("", x)  # HW workaround for: tenstorrent/forgebackend#656
         x = forge.op.VStack("", x, x.shape[-3] // self.sparse_mm_t)
 
         # create sparse picker

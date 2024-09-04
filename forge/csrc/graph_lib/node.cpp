@@ -49,7 +49,7 @@ Shape Node::shape_of_operand(const Graph* graph, const Node* operand, bool ignor
             if (ignore_broadcasts and tm.op == "broadcast")
                 continue;
             std::vector<Shape> shapes = {operand_shape};
-            std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_BUDA);
+            std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_FORGE);
             operand_shape = std::get<0>(shape_data);
             TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
         }
@@ -89,7 +89,7 @@ void Node::clone(Node const* other, std::string const& name)
 
 std::string Node::get_type() const
 {
-    if (node_type_ == NodeType::kPyOp or node_type_ == NodeType::kBudaOp) {
+    if (node_type_ == NodeType::kPyOp or node_type_ == NodeType::kForgeOp) {
         OpNode const* op = this->as<OpNode>();
         return node_type_to_string(node_type_) + "::" + op->op_name();
     } else {
@@ -117,8 +117,8 @@ std::string node_type_to_string(const NodeType& node_type)
         case NodeType::kInput: return "Input";
         case NodeType::kOutput: return "Output";
         case NodeType::kQueue: return "Queue";
-        case NodeType::kBudaOp: return "BudaOp";
-        case NodeType::kBudaNaryTM: return "BudaNaryTM";
+        case NodeType::kForgeOp: return "ForgeOp";
+        case NodeType::kForgeNaryTM: return "ForgeNaryTM";
         case NodeType::kPyOp: return "ForgeOp";
         default: TT_ASSERT(false, "Invalid node type");
     }

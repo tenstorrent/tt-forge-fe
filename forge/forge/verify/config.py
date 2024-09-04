@@ -63,7 +63,7 @@ class VerifyConfig:
     golden_ignore_df_precision: bool = True # When running golden, run at full FP32 and ignore actual netlist types
     chip_ids: Union[List[int], List[Tuple[int]]] = None  # chip IDs to run on
     num_chips: int = None # number of chips to run on
-    verify_each_buda_pass: bool = False # Whether or not to verify tvm outputs after each buda pass
+    verify_each_forge_pass: bool = False # Whether or not to verify tvm outputs after each forge pass
     golden_compare_callback: Optional[Callable[[object, object], bool]] = None # Supply additional golden compare function
 
     verify_tvm_compile: bool = False         # Should tvm run forward and verify the results
@@ -119,7 +119,7 @@ class VerifyConfig:
         verify_pipeline_result_vs_framework = True
         verify_forge_codegen_vs_framework = True
         verify_tvm_compile = True
-        verify_each_buda_pass = True
+        verify_each_forge_pass = True
 
     def __post_init__(self):
         # set defaults if not set explicitly by user. Relax under silicon, focus on pcc more.

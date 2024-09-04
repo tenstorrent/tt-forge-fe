@@ -274,7 +274,7 @@ def shape(op_type, attr, ops):
 
 def lower(op_type, attr, lc, ops, outputs):
     """
-    Translates complex operations into simpler buda operations.
+    Translates complex operations into simpler forge operations.
 
     Parameters
     ----------
@@ -286,7 +286,7 @@ def lower(op_type, attr, lc, ops, outputs):
 
     lc:
         Lowering Context, Forge C++ API for breaking 
-        Forge graph/subgraph into Buda operations.
+        Forge graph/subgraph into Forge operations.
 
     ops:
         Input operands, tensors.

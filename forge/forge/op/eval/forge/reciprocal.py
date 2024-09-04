@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.reciprocal import Reciprocal as BudaReciprocal
+from ..lforge.reciprocal import Reciprocal as ForgeReciprocal
 
 
 class Reciprocal(PyEltwiseUnaryOp):
@@ -42,7 +42,7 @@ class Reciprocal(PyEltwiseUnaryOp):
     def lower(self, lc, tensors, outputs):
         assert len(tensors) == 1, "Reciprocal should  have one input"
         approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(BudaReciprocal.create(approximate_mode=approximate_mode), tensors)
+        lc.op(ForgeReciprocal.create(approximate_mode=approximate_mode), tensors)
 
     def backward(self, ac, operand, inputs, output, grad):
         assert len(inputs) == 1, "Reciprocal should have one input"

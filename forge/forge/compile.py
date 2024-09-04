@@ -122,8 +122,8 @@ class CompileContext:
     perf_model_results: Optional[Dict[str, float]] = None
     use_interactive_placer: bool = False
     fracture_chip_id_assignments: Dict[str, int] = field(default_factory=dict)
-    buda_targets: List[Tensor] = field(default_factory=list)
-    buda_losses: List[Tensor] = field(default_factory=list)
+    forge_targets: List[Tensor] = field(default_factory=list)
+    forge_losses: List[Tensor] = field(default_factory=list)
     placer_retry_count: int = 0
     backend_output_directory: str = ""
     in_recompile: bool = False
@@ -134,7 +134,7 @@ class CompileContext:
 def calculate_grads(
         outputs: Tuple[Tensor, ...],
         intermediate_golden_tensors: Dict,
-        is_buda: bool,
+        is_forge: bool,
         losses=None):
     """
     Verify graph vs. pytorch golden
@@ -156,7 +156,7 @@ def calculate_grads(
     if not losses or run_backward:
 
         if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_buda)
+            losses = _generate_random_losses(outputs, is_forge)
 
         if run_backward:
             _run_pytorch_backward(outputs, device, losses)
@@ -237,7 +237,7 @@ def compile_main(
 
 def forge_compile_from_context(context: CompileContext) -> CompiledModel:
     """
-    Run front-end compile passes and generate a Buda netlist, with a given compile context.
+    Run front-end compile passes and generate a Forge netlist, with a given compile context.
 
     Parameters
     ----------
@@ -373,7 +373,7 @@ def forge_compile(
         microbatch_size: int = 1,
         microbatch_count: int = 1) -> CompileResults:
     """
-    Run front-end compile passes and generate a Buda netlist for given input tensors. Optionally verify
+    Run front-end compile passes and generate a Forge netlist for given input tensors. Optionally verify
     against PyTorch model.
 
     This version has significant amount of verification built-in, and is primarily used for testing. A "deliverable"
@@ -503,7 +503,7 @@ def generate_compile_results(
         Intermediated tensors
 
     final_graph: Graph
-        Buda graph
+        Forge graph
 
     netlist_filename: str
         Netlist file name
@@ -604,7 +604,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     for module in context.modules:
         if isinstance(module, forge.module.Module):
             for p in module.get_parameters():
-                context.parameter_dict[p.get_name()] = p.value(is_buda=False)
+                context.parameter_dict[p.get_name()] = p.value(is_forge=False)
         elif isinstance(module, torch.fx.GraphModule):
             for name, value in module.named_parameters():
                 context.parameter_dict[name] = value
@@ -883,7 +883,7 @@ def generate_graph(
         compiler_cfg: Optional[CompilerConfig] = None, 
         trace_only: bool = False) -> Tuple[Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]]:
     """
-    Generate a buda graph from the passed modules, and return the graph and output tensors.
+    Generate a forge graph from the passed modules, and return the graph and output tensors.
     If input tensors have a value set, the output tensor will also have the calculated output value
     set.
 
@@ -904,7 +904,7 @@ def generate_graph(
     Returns
     -------
     Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]
-        Buda graph, outputs, optional intermediates, original inputs, target tensor
+        Forge graph, outputs, optional intermediates, original inputs, target tensor
     """
 
     '''

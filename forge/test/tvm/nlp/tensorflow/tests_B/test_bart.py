@@ -152,7 +152,7 @@ def test_bart_encoder_pipeline(test_device):
     outputs = output_q.get()
     
     tf_outputs = model.get_encoder()(input_ids)
-    assert compare_tensor_to_golden("bart_encoder", tf_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("bart_encoder", tf_outputs[0], outputs[0].value(), is_forge=True)
 
 @pytest.mark.skip(reason="Tested with fallback")
 def test_bart_decoder_pipeline(test_device):
@@ -182,7 +182,7 @@ def test_bart_decoder_pipeline(test_device):
     output_q = forge.run_inference(_verify_cfg=VerifyConfig(verify_last=True))
     outputs = output_q.get()
  
-    assert compare_tensor_to_golden("bart_decoder", tf_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("bart_decoder", tf_outputs[0], outputs[0].value(), is_forge=True)
 
 
 @pytest.mark.parametrize("size", ["base", "large"])

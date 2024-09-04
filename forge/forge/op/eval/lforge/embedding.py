@@ -4,7 +4,7 @@
 import torch
 from forge._C.graph import UBlockOrder
 from ..common import to_torch_operands
-from forge.tensor import pad_pytorch_tensor_to_buda, align_up_tile
+from forge.tensor import pad_pytorch_tensor_to_forge, align_up_tile
 
 
 def eval(type, attr, ops):
@@ -15,7 +15,7 @@ def eval(type, attr, ops):
     indices = t_ops[1].reshape(-1).narrow(0, 0, num_indices)
     table = t_ops[0].squeeze(0).squeeze(0)
     r = torch.embedding(table, indices)
-    return pad_pytorch_tensor_to_buda(r, [])
+    return pad_pytorch_tensor_to_forge(r, [])
 
 
 def shape(type, attr, ops, tile_height, tile_width):

@@ -45,7 +45,7 @@ def test_unet_osmr_cityscape_pytorch():
     output = result[0].to("cpu")
 
     # Compare the result
-    assert forge.op.eval.compare_tensor_to_golden(f"pt_unet_osmr_cityscape", golden[0], output, is_buda=True, pcc=0.99)
+    assert forge.op.eval.compare_tensor_to_golden(f"pt_unet_osmr_cityscape", golden[0], output, is_forge=True, pcc=0.99)
 
 
 def test_resnet(): 
@@ -83,7 +83,7 @@ def test_resnet():
     output = result[0].to("cpu")
     
     # Compare the result
-    assert forge.op.eval.compare_tensor_to_golden(f"pt_resnet50", golden[0], output, is_buda=True, pcc=0.99)
+    assert forge.op.eval.compare_tensor_to_golden(f"pt_resnet50", golden[0], output, is_forge=True, pcc=0.99)
 
 def test_gpt2():
     config = GPT2Config.from_pretrained("gpt2")
@@ -106,7 +106,7 @@ def test_gpt2():
     next_token_logits = next_token_logits.to("cpu")
 
     res = result[0].to("cpu")
-    assert forge.op.eval.compare_tensor_to_golden(f"gpt2", golden[0], res, is_buda=True, pcc=0.99)
+    assert forge.op.eval.compare_tensor_to_golden(f"gpt2", golden[0], res, is_forge=True, pcc=0.99)
     
 def test_gen():
     torch.set_num_threads(1)
@@ -160,7 +160,7 @@ def test_bert():
 
     result = [r.to("cpu") for r in result]
     for i, (g, r) in enumerate(zip(golden, result)):
-        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_buda=True, pcc=0.99)
+        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_forge=True, pcc=0.99)
 
     inp2 = torch.randint(0, 10000, (1, 128)).int()
     golden = bert_cpu(inp2)
@@ -169,7 +169,7 @@ def test_bert():
     result = forge_mod(inp2)
     result = [r.to("cpu") for r in result]
     for i, (g, r) in enumerate(zip(golden, result)):
-        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_buda=True, pcc=0.99)
+        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_forge=True, pcc=0.99)
 
     inp3 = torch.randint(0, 10000, (1, 64)).int()
     golden = bert_cpu(inp3)
@@ -177,7 +177,7 @@ def test_bert():
     result = forge_mod(inp3)
     result = [r.to("cpu") for r in result]
     for i, (g, r) in enumerate(zip(golden, result)):
-        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_buda=True, pcc=0.99)
+        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_forge=True, pcc=0.99)
 
     inp4 = torch.randint(0, 10000, (1, 128)).int()
     golden = bert_cpu(inp4)
@@ -185,7 +185,7 @@ def test_bert():
     result = forge_mod(inp4)
     result = [r.to("cpu") for r in result]
     for i, (g, r) in enumerate(zip(golden, result)):
-        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_buda=True, pcc=0.99)
+        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_forge=True, pcc=0.99)
 
     inp5 = torch.randint(0, 10000, (1, 64)).int()
     golden = bert_cpu(inp5)
@@ -193,7 +193,7 @@ def test_bert():
     result = forge_mod(inp5)
     result = [r.to("cpu") for r in result]
     for i, (g, r) in enumerate(zip(golden, result)):
-        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_buda=True, pcc=0.99)
+        assert forge.op.eval.compare_tensor_to_golden(f"bert_{i}", g, r, is_forge=True, pcc=0.99)
 
 from diffusers import StableDiffusionPipeline
 

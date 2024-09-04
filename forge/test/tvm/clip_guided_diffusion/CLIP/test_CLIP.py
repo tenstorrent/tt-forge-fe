@@ -35,7 +35,7 @@ def test_tvm_CLIP(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     pytorch_clip_text_encoder, pytorch_clip_without_text_encoder, pytorch_clip, clip_config = create_CLIP()
     encoded_text = pytorch_clip_text_encoder()
@@ -59,7 +59,7 @@ def test_tvm_CLIP(test_kind, test_device):
 
 def test_tvm_visiontransformer(test_kind, test_device):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     if test_kind.is_training():
         pytest.skip()
 

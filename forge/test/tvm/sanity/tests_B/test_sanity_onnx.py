@@ -128,7 +128,7 @@ def test_tvm_avg_pool_onnx(test_kind, test_device, input_shape, pool_out_size):
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class AdaptiveAvgPool(nn.Module):
         def __init__(self):
             super().__init__()
@@ -248,7 +248,7 @@ def test_tvm_emb_linear_onnx_fallback(test_kind, test_device):
 #     if test_kind.is_training():
 #         pytest.xfail()  # Backward is currently unsupported
 
-#     _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+#     _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
 #     if align_corners and upsample_mode != "bilinear":
 #         pytest.skip()

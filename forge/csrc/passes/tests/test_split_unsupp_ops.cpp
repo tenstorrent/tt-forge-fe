@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
-#include "passes/pre_placer_buda_passes.hpp"
+#include "passes/pre_placer_forge_passes.hpp"
 #include "test/common.hpp"
 
 
@@ -12,13 +12,13 @@ static bool find_outgoing_op(std::vector<graphlib::Node*> const& users, std::str
 {
     for (auto* node : users)
     {
-        if ((node->node_type() == graphlib::kBudaOp) && (node->as<graphlib::OpNode>()->op_type().op == type))
+        if ((node->node_type() == graphlib::kForgeOp) && (node->as<graphlib::OpNode>()->op_type().op == type))
             return true;
     }
     return false;
 }
 
-struct TestGradEltwiseAdd : public BudaGraphTest
+struct TestGradEltwiseAdd : public ForgeGraphTest
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -36,7 +36,7 @@ struct TestGradEltwiseAdd : public BudaGraphTest
     std::string op_name;
 };
 
-struct TestGradEltwiseSubtract : public BudaGraphTest
+struct TestGradEltwiseSubtract : public ForgeGraphTest
 {
    protected:
     virtual std::vector<OpType*> create_graph() override

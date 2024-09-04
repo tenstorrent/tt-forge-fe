@@ -26,7 +26,7 @@ def test_tvm_dalle_Encoder(test_kind, test_device):
         pytest.skip()
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     input_shape = (1, 3, 224, 224)
 
@@ -54,7 +54,7 @@ def test_tvm_dalle_Decoder(test_kind, test_device):
     compiler_cfg.balancer_policy = "Ribbon"
     os.environ["FORGE_RIBBON2"] = "1"
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     input_shape = (1, 8192, 32, 32)
 

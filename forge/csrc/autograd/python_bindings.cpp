@@ -11,10 +11,10 @@
 
 namespace tt {
 
-static bool has_newstyle_interface(std::string const &op_name, bool is_buda)
+static bool has_newstyle_interface(std::string const &op_name, bool is_forge)
 {
     py::object eval_module =
-        is_buda ? py::module_::import("forge.op.eval.buda") : py::module_::import("forge.op.eval.forge");
+        is_forge ? py::module_::import("forge.op.eval.lforge") : py::module_::import("forge.op.eval.forge");
     return eval_module.attr("has_newstyle_interface")(op_name).cast<bool>();
 }
 

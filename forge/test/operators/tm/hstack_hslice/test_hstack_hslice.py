@@ -4,7 +4,7 @@
 #
 # Tests for testing of hstack, and hslice operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -69,7 +69,7 @@ def test_hstack_hslice(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaHStackHSliceTest(shape={shape}, slice={slice})'
+    architecture = f'models.{model}.ForgeHStackHSliceTest(shape={shape}, slice={slice})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

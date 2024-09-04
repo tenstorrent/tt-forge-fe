@@ -33,7 +33,7 @@ class Optimizer:
         """
         raise RuntimeError("Subclasses should implement this.")
 
-    def get_optimizer_params(self, parameter_name, is_buda) -> Optional[Dict[str, Tensor]]:
+    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
         raise RuntimeError("Subclasses should implement this.")
 
     def generate_op_trace(self, parameter, gradient):
@@ -93,7 +93,7 @@ class SGD(Optimizer):
         """
         Return a dict of optimizer parameter names to tensor
         """
-        # Buda needs a pytorch array for now
+        # Forge needs a pytorch array for now
         # TODO(jchu): modify these two lines when we deprecate the old path
         learning_rate_torch = torch.full( (1,), self.learning_rate, dtype=dtype)
 
@@ -103,17 +103,17 @@ class SGD(Optimizer):
     def get_optimizer_state_keys(self) -> List:
         return []
 
-    def get_optimizer_params(self, parameter_name, is_buda) -> Optional[Dict[str, Tensor]]:
+    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
         if parameter_name not in self.parameter_to_opt_inputs:
             return None
 
         ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_buda:
+        if is_forge:
             for k, v in ret.items():
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_buda_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
+                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
         return ret
 
 
@@ -275,17 +275,17 @@ class Adam(Optimizer):
                     parameter.get_name()
                 ] = self.get_cpu_param_dict(parameter.pt_data_format, parameter.shape.get_pytorch_shape())
 
-    def get_optimizer_params(self, parameter_name, is_buda) -> Optional[Dict[str, Tensor]]:
+    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
         if parameter_name not in self.parameter_to_opt_inputs:
             return None
 
         ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_buda:
+        if is_forge:
             for k, v in ret.items():
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_buda_shape(
+                ret[k] = v.to_forge_shape(
                     tile_broadcast_dims=tile_broadcast_dims, clone=True
                 )
         return ret
@@ -622,18 +622,18 @@ class LAMB(Optimizer):
         }
 
 
-    def get_optimizer_params(self, parameter_name, is_buda) -> Optional[Dict[str, Tensor]]:
+    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
 
         if parameter_name not in self.parameter_to_opt_inputs:
             return None
 
         ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_buda:
+        if is_forge:
             for k, v in ret.items():
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_buda_shape(
+                ret[k] = v.to_forge_shape(
                     tile_broadcast_dims=tile_broadcast_dims, clone=True
                 )
         return ret
@@ -941,18 +941,18 @@ class LARS(Optimizer):
         }
 
 
-    def get_optimizer_params(self, parameter_name, is_buda) -> Optional[Dict[str, Tensor]]:
+    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
 
         if parameter_name not in self.parameter_to_opt_inputs:
             return None
 
         ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_buda:
+        if is_forge:
             for k, v in ret.items():
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_buda_shape(
+                ret[k] = v.to_forge_shape(
                     tile_broadcast_dims=tile_broadcast_dims, clone=True
                 )
         return ret

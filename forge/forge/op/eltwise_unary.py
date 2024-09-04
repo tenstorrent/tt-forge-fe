@@ -22,7 +22,7 @@ def Abs(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("abs", name, operandA).get_tensor()
@@ -45,7 +45,7 @@ def Exp(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("exp", name, operandA).get_tensor()
@@ -69,7 +69,7 @@ def Log(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("log", name, operandA).get_tensor()
@@ -95,7 +95,7 @@ def Pow(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("pow", name, operandA, attrs=(exponent,)).get_tensor()
@@ -127,7 +127,7 @@ def Identity(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     if unsqueeze==None and unsqueeze_dim==None:
@@ -156,7 +156,7 @@ def Buffer(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("buffer", name, operandA).get_tensor()
@@ -180,7 +180,7 @@ def Reciprocal(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("reciprocal", name, operandA).get_tensor()
@@ -203,7 +203,7 @@ def Sqrt(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("sqrt", name, operandA).get_tensor()
@@ -228,7 +228,7 @@ def Relu(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     if threshold == 0.0 and mode == "min":
         return op("relu", name, operandA).get_tensor() # avoid threshold < 0.0 error due to FP arithmetics
@@ -257,7 +257,7 @@ def LeakyRelu(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("leaky_relu", name, operandA, attrs=(alpha,)).get_tensor()
@@ -285,7 +285,7 @@ def Gelu(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("gelu", name, operandA, attrs=(approximate,)).get_tensor()
@@ -307,7 +307,7 @@ def Sigmoid(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("sigmoid", name, operandA).get_tensor()
@@ -330,7 +330,7 @@ def Argmax(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     if  dim is not None:
@@ -363,7 +363,7 @@ def Clip(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("clip", name, operandA, min=min, max=max).get_tensor()
@@ -391,7 +391,7 @@ def Sine(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("sine", name, operandA).get_tensor()
@@ -419,7 +419,7 @@ def Cosine(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("cosine", name, operandA).get_tensor()
@@ -442,7 +442,7 @@ def Tanh(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("tanh", name, operandA).get_tensor()
@@ -479,7 +479,7 @@ def CumSum(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     
     assert not exclusive, "Currently not supported"        
@@ -505,7 +505,7 @@ def LogicalNot(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("logical_not", name, operandA).get_tensor()
@@ -540,7 +540,7 @@ def Dropout(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("dropout", name, operandA, attrs=(p, training, seed)).get_tensor()
@@ -563,7 +563,7 @@ def Tilize(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     return op("tilizer", name, operandA).get_tensor()

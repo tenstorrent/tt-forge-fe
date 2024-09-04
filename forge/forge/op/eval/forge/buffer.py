@@ -12,7 +12,7 @@ from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.buffer import Buffer as BudaBuffer
+from ..lforge.buffer import Buffer as ForgeBuffer
 
 
 class Buffer(PyEltwiseUnaryOp):
@@ -55,5 +55,5 @@ class Buffer(PyEltwiseUnaryOp):
             tile_height, tile_width = TILE_DIM, TILE_DIM
 
         lc.op(
-            BudaBuffer.create(), tensors, tile_height=tile_height, tile_width=tile_width
+            ForgeBuffer.create(), tensors, tile_height=tile_height, tile_width=tile_width
         )

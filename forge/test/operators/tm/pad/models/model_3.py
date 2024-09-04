@@ -17,9 +17,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaPadTest(ForgeModule):
+class ForgePadTest(ForgeModule):
     """
-        Buda Test 3
+        Forge Test 3
 
     """
 
@@ -28,7 +28,7 @@ class BudaPadTest(ForgeModule):
         shape,
         pad
     ):
-        super().__init__("Buda Test 3")
+        super().__init__("Forge Test 3")
 
 
         self.testname = "Operator Pad, Test 3"

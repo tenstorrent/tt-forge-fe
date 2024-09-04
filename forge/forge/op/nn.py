@@ -49,7 +49,7 @@ def Softmax(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     return op("softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
 
@@ -80,7 +80,7 @@ def LogSoftmax(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
     return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
 
@@ -105,7 +105,7 @@ def Layernorm(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     if name == "":
@@ -155,7 +155,7 @@ def Batchnorm(
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     # NOTE: the decomposition below does not assume training context (running_mean/var update is not included)
@@ -204,7 +204,7 @@ class Linear(ForgeModule):
     Returns
     -------
     Tensor
-        Buda tensor
+        Forge tensor
     """
 
     def __init__(

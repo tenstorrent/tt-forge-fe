@@ -17,7 +17,7 @@ from loguru import logger
 devices = []     # Ordered list of devices running in a pipeline
 modules = []
 
-# Tile dimension in buda. All dimensions must be divisible by this.
+# Tile dimension in forge. All dimensions must be divisible by this.
 TILE_DIM = 32 
 
 # CoreGrid type

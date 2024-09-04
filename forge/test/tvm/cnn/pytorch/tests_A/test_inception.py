@@ -25,7 +25,7 @@ def test_inceptionv3_a_pytorch(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     if not test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
 
@@ -82,7 +82,7 @@ def test_inceptionv3_c_pytorch(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     if not test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
 
@@ -164,7 +164,7 @@ def test_inceptionv3_full_pytorch(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     if not test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
 

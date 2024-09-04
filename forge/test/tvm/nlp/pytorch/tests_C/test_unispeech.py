@@ -65,7 +65,7 @@ def test_unispeech_conv_feature_encoder(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER  # Unsupported HW ops
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER  # Unsupported HW ops
 
     framework_model = download_model(
         UniSpeechModel.from_pretrained,

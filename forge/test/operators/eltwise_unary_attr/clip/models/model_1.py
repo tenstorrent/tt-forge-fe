@@ -18,9 +18,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaClipTest(ForgeModule):
+class ForgeClipTest(ForgeModule):
     """
-        Buda Test 1
+        Forge Test 1
 
     """
 
@@ -38,7 +38,7 @@ class BudaClipTest(ForgeModule):
         min_value,
         max_value
     ):
-        super().__init__("Buda Test 1")
+        super().__init__("Forge Test 1")
 
         self.testname = "Operator Clip, Test 1"
         self.shape = shape
@@ -47,14 +47,14 @@ class BudaClipTest(ForgeModule):
         
         self.train_param = forge.Parameter(*self.shape, requires_grad=True)
 
-        input = BudaClipTest.INPUTS_DISTRIBUTION(
-            BudaClipTest.INPUTS_RANGE_MIN, 
-            BudaClipTest.INPUTS_RANGE_MAX).sample(self.shape)
+        input = ForgeClipTest.INPUTS_DISTRIBUTION(
+            ForgeClipTest.INPUTS_RANGE_MIN, 
+            ForgeClipTest.INPUTS_RANGE_MAX).sample(self.shape)
         self.inputs = [Tensor.create_from_torch(input)]
 
-        weights = BudaClipTest.WEIGHTS_DISTRIBUTION(
-            BudaClipTest.WEIGHTS_RANGE_MIN, 
-            BudaClipTest.WEIGHTS_RANGE_MAX).sample(self.shape)
+        weights = ForgeClipTest.WEIGHTS_DISTRIBUTION(
+            ForgeClipTest.WEIGHTS_RANGE_MIN, 
+            ForgeClipTest.WEIGHTS_RANGE_MAX).sample(self.shape)
         weights.requires_grad = True
         self.set_parameter("train_param", weights)
 

@@ -22,13 +22,13 @@ using DimBroadcast = tt::graphlib::DimBroadcast;
 using TileDim = tt::TileDim;
 
 std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
-    OpType type, std::vector<Shape> &operands, bool is_buda, TileDim tile_dim = TileDim::Dim32x32);
-inline Shape get_tm_shape(OpType type, Shape operand, bool is_buda)
+    OpType type, std::vector<Shape> &operands, bool is_forge, TileDim tile_dim = TileDim::Dim32x32);
+inline Shape get_tm_shape(OpType type, Shape operand, bool is_forge)
 {
     Shape shape;
     std::vector<Shape> operands = {operand};
     std::vector<DimBroadcast> bcast;
-    std::tie(shape, bcast) = ::get_op_shape(type, operands, is_buda, operand.get_tile_dim());
+    std::tie(shape, bcast) = ::get_op_shape(type, operands, is_forge, operand.get_tile_dim());
     return shape;
 }
 NodeContext insert_backward(

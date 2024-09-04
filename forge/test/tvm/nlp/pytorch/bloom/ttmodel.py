@@ -290,7 +290,7 @@ class ScaleMaskSoftmax(torch.nn.Module):
         self.scale = scale
 
         # Unlike BigScience's implementation we take a slice of a constant mask instead of passing it
-        # as an additional input because Buda needs use constant folding to handle where operators
+        # as an additional input because Forge needs use constant folding to handle where operators
         self.mask = torch.tril(torch.ones((args.seq_length, args.seq_length), dtype=torch.uint8)).view(
                 1, 1, args.seq_length, args.seq_length)
        

@@ -16,10 +16,10 @@ namespace py = pybind11;
 
 #include "autograd/python_bindings.hpp"
 #include "backend_api/device_config.hpp"
-#include "buda_passes.hpp"
+#include "forge_passes.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/python_bindings.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "passes/amp.hpp"
 #include "passes/consteval.hpp"
 #include "passes/fracture.hpp"
@@ -114,7 +114,7 @@ PYBIND11_MODULE(_C, m) {
     py::module_ m_autograd = m.def_submodule("autograd", "Submodule defining autograd_engine.");
     AutogradModule(m_autograd);
 
-    py::module_ m_passes = m.def_submodule("passes", "API to Buda Passes");
+    py::module_ m_passes = m.def_submodule("passes", "API to Forge Passes");
     PassesModule(m_passes);
 
     py::module_ m_torch_device = m.def_submodule("torch_device", "TT Torch Device");
@@ -162,8 +162,8 @@ PYBIND11_MODULE(_C, m) {
     m.def("run_consteval_graph_pass", &passes::run_consteval_graph_pass);
     m.def("run_post_autograd_graph_passes", &run_post_autograd_graph_passes);
     m.def(
-        "run_pre_placer_buda_passes",
-        &run_pre_placer_buda_passes,
+        "run_pre_placer_forge_passes",
+        &run_pre_placer_forge_passes,
         py::arg("graph"),
         py::arg("device_config"),
         py::arg("chip_ids") = std::vector<std::uint32_t>{0},
@@ -236,14 +236,14 @@ PYBIND11_MODULE(_C, m) {
         .def_readonly("cols", &sparse::SparseCOO::cols)
         .def_readonly("vals", &sparse::SparseCOO::vals);
 
-    py::class_<tt::sparse::SparseBUDA>(m, "SparseBUDA")
-        .def_readonly("sparse_indices", &sparse::SparseBUDA::sparse_indices)
-        .def_readonly("sparse_shape", &sparse::SparseBUDA::sparse_shape)
-        .def_readonly("zdim", &sparse::SparseBUDA::zdim)
-        .def_readonly("bcast_factor", &sparse::SparseBUDA::bcast_factor)
-        .def("get_sparse_tile_ptr_bits", &sparse::SparseBUDA::get_sparse_tile_ptr_bits)
-        .def("get_sparse_ublock_idx_bits", &sparse::SparseBUDA::get_sparse_ublock_idx_bits)
-        .def("get_sparse_tiles_and_encodings", [](tt::sparse::SparseBUDA &self, int grid_r) {
+    py::class_<tt::sparse::SparseFORGE>(m, "SparseFORGE")
+        .def_readonly("sparse_indices", &sparse::SparseFORGE::sparse_indices)
+        .def_readonly("sparse_shape", &sparse::SparseFORGE::sparse_shape)
+        .def_readonly("zdim", &sparse::SparseFORGE::zdim)
+        .def_readonly("bcast_factor", &sparse::SparseFORGE::bcast_factor)
+        .def("get_sparse_tile_ptr_bits", &sparse::SparseFORGE::get_sparse_tile_ptr_bits)
+        .def("get_sparse_ublock_idx_bits", &sparse::SparseFORGE::get_sparse_ublock_idx_bits)
+        .def("get_sparse_tiles_and_encodings", [](tt::sparse::SparseFORGE &self, int grid_r) {
             return self.get_sparse_tiles_and_encodings(grid_r);
         });
 

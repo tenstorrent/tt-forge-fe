@@ -103,8 +103,8 @@ op_to_module_map = {
         "unsqueeze":                   "tm",
         "squeeze":                     "tm",
         "pixel_shuffle":               "tm",
-        "buda_pad":                 "tm",
-        "buda_unpad":               "tm",
+        "forge_pad":                 "tm",
+        "forge_unpad":               "tm",
 
         "reduce_avg":         "reduce",
         "reduce_sum":         "reduce",
@@ -136,11 +136,11 @@ op_to_module_map = {
         "batchnorm" : "nn", 
 
         "quantize"            : "quantize",
-        "buda_quantize"       : "quantize",
+        "forge_quantize"       : "quantize",
         "dequantize"          : "quantize",
         "requantize"          : "quantize",
-        "buda_requantize"     : "quantize",
-        "buda_dequantize"     : "quantize",
+        "forge_requantize"     : "quantize",
+        "forge_dequantize"     : "quantize",
 }
 
 
@@ -224,7 +224,7 @@ def get_f_forge_lower(op_type):
     module_or_class = _get_module_or_class(op_type.op)
     if isinstance(module_or_class, ModuleType):
         if op_type.op == "matmul" or op_type.op == "sparse_matmul":
-            return lambda *inputs : module_or_class.lower(op_type.op, op_type.attr, op_type.buda_attrs, *inputs)
+            return lambda *inputs : module_or_class.lower(op_type.op, op_type.attr, op_type.forge_attrs, *inputs)
         return lambda *inputs : module_or_class.lower(op_type.op, op_type.attr, *inputs)
     else:
         return module_or_class(op_type).lower

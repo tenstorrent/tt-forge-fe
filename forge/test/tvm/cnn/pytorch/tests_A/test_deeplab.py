@@ -24,7 +24,7 @@ def test_deeplabv3_pytorch(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.compile_depth = (
-        CompileDepth.BUDA_GRAPH_PRE_PLACER
+        CompileDepth.FORGE_GRAPH_PRE_PLACER
     )  # Unsupported HW ops
 
     model = download_model(torch.hub.load, 

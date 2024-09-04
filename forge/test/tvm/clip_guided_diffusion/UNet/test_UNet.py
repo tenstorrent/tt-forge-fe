@@ -119,7 +119,7 @@ def test_tvm_unet_time_embed(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute, 
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER), 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER), 
             verify_cfg=verify_cfg,)
 
     evaluate_framework_vs_forge(model, ret, embedded_res)
@@ -152,7 +152,7 @@ def test_tvm_unet_emb_precomp(training=False, recompute=False):
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute, 
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER, 
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER, 
             compile_tvm_to_python=False), 
             verify_cfg=verify_cfg,)
     evaluate_framework_vs_forge(UNet_no_emb, ret, act1, embedded_res)

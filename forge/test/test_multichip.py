@@ -150,7 +150,7 @@ def test_four_chip_wormhole_sanity():
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_consteval = False
     forge.set_configuration_options(
-        backend_cluster_descriptor_path="third_party/budabackend/wormhole_2x4_sequential_cluster.yaml"
+        backend_cluster_descriptor_path="third_party/forgebackend/wormhole_2x4_sequential_cluster.yaml"
     )
 
     module = ModuleBuilder(linked_list_four_chips)
@@ -191,9 +191,9 @@ def test_linked_list_multichip_auto_placer():
 
 
 
-class BudaTrain(forge.ForgeModule):
+class ForgeTrain(forge.ForgeModule):
     """
-    Simple buda module for basic testing, with parameters
+    Simple forge module for basic testing, with parameters
     """
     shape = (64, 64)
 
@@ -216,7 +216,7 @@ def test_training_sanity_multichip_grayskull(test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_consteval = False
     compiler_cfg.use_interactive_placer = False
-    verify_module(BudaTrain("verify_module"), [(microbatch_size, *BudaTrain.shape), (microbatch_size, *BudaTrain.shape)],
+    verify_module(ForgeTrain("verify_module"), [(microbatch_size, *ForgeTrain.shape), (microbatch_size, *ForgeTrain.shape)],
             VerifyConfig(test_kind=TestKind.TRAINING, arch=BackendDevice.Grayskull, 
                 steps=1,
                 microbatch_count=1,
@@ -228,7 +228,7 @@ def test_training_sanity_multichip_wormhole(test_device):
     forge.set_chip_break("sqrt")
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_consteval = False
-    verify_module(BudaTrain("verify_module"), [(microbatch_size, *BudaTrain.shape), (microbatch_size, *BudaTrain.shape)],
+    verify_module(ForgeTrain("verify_module"), [(microbatch_size, *ForgeTrain.shape), (microbatch_size, *ForgeTrain.shape)],
             VerifyConfig(test_kind=TestKind.TRAINING, arch=BackendDevice.Wormhole_B0, 
                 steps=1,
                 microbatch_count=1,

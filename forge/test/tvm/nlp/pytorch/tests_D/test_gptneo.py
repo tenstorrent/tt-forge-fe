@@ -28,7 +28,7 @@ def test_gptneo_block(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     torch.manual_seed(52)
     input_shape = (1, 64, 2560)
@@ -61,7 +61,7 @@ def test_gptneo_full(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config() 
     compiler_cfg.balancer_policy = "CNN"
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER 
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER 
 
     #Fusing disabled due to tenstorrent/forge#789
     if test_kind == TestKind.INFERENCE and test_device.arch == BackendDevice.Wormhole_B0:

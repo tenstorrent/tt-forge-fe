@@ -30,7 +30,7 @@ static std::string fractured_name(graphlib::Node* node, int index, int dim = 0, 
            node->name();
 }
 
-static int dim_tiles(int d) { return (d + graphlib::Shape::BUDA_TILE_DIM - 1) / graphlib::Shape::BUDA_TILE_DIM; }
+static int dim_tiles(int d) { return (d + graphlib::Shape::FORGE_TILE_DIM - 1) / graphlib::Shape::FORGE_TILE_DIM; }
 
 static bool is_parameter(graphlib::InputNode* input)
 {

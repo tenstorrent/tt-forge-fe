@@ -61,7 +61,7 @@ def test_roberta_pipeline(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if not test_kind.is_training():
-        pass#compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        pass#compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         pass# compiler_cfg.compile_depth = CompileDepth.POST_INITIAL_GRAPH_PASS
 
@@ -86,7 +86,7 @@ def test_roberta_pipeline(test_kind, test_device):
     outputs = output_q.get()
 
     torch_outputs = model(input_ids)
-    assert compare_tensor_to_golden("roberta", torch_outputs[0], outputs[0].value(), is_buda=True)
+    assert compare_tensor_to_golden("roberta", torch_outputs[0], outputs[0].value(), is_forge=True)
 
 
 def test_roberta_encoder(test_kind, test_device):

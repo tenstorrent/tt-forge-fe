@@ -4,7 +4,7 @@
 #
 # Tests for testing of softmax operator
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -75,7 +75,7 @@ def test_softmax(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.BudaSoftmaxTest(shape={shape}, dim={dim}, stable={stable})'
+    architecture = f'models.{model}.ForgeSoftmaxTest(shape={shape}, dim={dim}, stable={stable})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

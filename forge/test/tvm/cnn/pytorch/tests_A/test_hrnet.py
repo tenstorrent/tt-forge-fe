@@ -59,7 +59,7 @@ def test_hrnet_basic_block(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.compile_depth = (
-        CompileDepth.BUDA_GRAPH_PRE_PLACER
+        CompileDepth.FORGE_GRAPH_PRE_PLACER
     )  # Unsupported HW ops
 
     framework_model = timm.create_model("hrnet_w18")
@@ -90,7 +90,7 @@ def test_hrnet_fuse_layer(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.compile_depth = (
-        CompileDepth.BUDA_GRAPH_PRE_PLACER
+        CompileDepth.FORGE_GRAPH_PRE_PLACER
     )  # Unsupported HW ops
 
     framework_model = timm.create_model("hrnet_w18")

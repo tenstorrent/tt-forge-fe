@@ -53,7 +53,7 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
 #
 #    activations = np.random.uniform(low=0, high=0.1, size=(1, input_channels, act_r_dim, act_c_dim)).astype("float32")
 #
-#    # Transpose for buda, leaving the original activations for pytorch expected_result
+#    # Transpose for forge, leaving the original activations for pytorch expected_result
 #    npad = ( (0, 0), (0, padded_inp_channels - input_channels), (0, padded_r_dim - act_r_dim), (0, padded_c_dim - act_c_dim) )
 #    act_padded = np.pad(activations, pad_width=npad, mode='constant', constant_values=0)
 #    act_transposed = np.transpose(act_padded, (0, 2, 1, 3))
@@ -67,7 +67,7 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
 #    return torch.tensor(activations), torch.tensor(act_transposed)
 #
 #    
-#def transform_buda_conv2d_output(result, act_c_dim, act_r_dim, stride, channel_size=None):
+#def transform_forge_conv2d_output(result, act_c_dim, act_r_dim, stride, channel_size=None):
 #    # Re-transpose back
 #    act_c_dim = math.ceil(act_c_dim / stride)
 #    act_r_dim = math.ceil(act_r_dim / stride)
@@ -84,11 +84,11 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
 #
 #def extract_reduce_outputs(result, dim, keepdims):
 #    dim_param_to_int = {
-#        buda.Dim.R : (-2,),
-#        buda.Dim.C : (-1,),
-#        buda.Dim.Z : (-3,),
-#        buda.Dim.RC : (-2, -1),
-#        buda.Dim.ZR : (-3, -2),
+#        forge.Dim.R : (-2,),
+#        forge.Dim.C : (-1,),
+#        forge.Dim.Z : (-3,),
+#        forge.Dim.RC : (-2, -1),
+#        forge.Dim.ZR : (-3, -2),
 #    }
 #
 #    operate_dim = dim_param_to_int[dim]
@@ -198,10 +198,10 @@ def get_forge_git_hash() -> Optional[str]:
     except:
         return None
 
-def get_budabackend_git_hash() -> Optional[str]:
+def get_forgebackend_git_hash() -> Optional[str]:
     try:
         git_hash = (
-            subprocess.check_output(["git", "rev-parse", "--short", "HEAD:third_party/budabackend"], stderr=subprocess.STDOUT)
+            subprocess.check_output(["git", "rev-parse", "--short", "HEAD:third_party/forgebackend"], stderr=subprocess.STDOUT)
             .decode("utf-8")
             .strip()
         )
@@ -212,13 +212,13 @@ def get_budabackend_git_hash() -> Optional[str]:
     except:
         return None
 
-def budabackend_path() -> str:
-    if "BUDA_HOME" in os.environ:
-        return os.environ["BUDA_HOME"]
+def forgebackend_path() -> str:
+    if "FORGE_HOME" in os.environ:
+        return os.environ["FORGE_HOME"]
 
-    if os.path.exists(os.getcwd() + '/third_party/budabackend'):
+    if os.path.exists(os.getcwd() + '/third_party/forgebackend'):
         # must be in forge root
-        return "third_party/budabackend/"
+        return "third_party/forgebackend/"
     else:
         return ""
 
@@ -226,13 +226,13 @@ def budabackend_path() -> str:
 def resolve_device_descriptor_path(device_yaml_override: str) -> str:
     if os.path.isfile(device_yaml_override):
         return device_yaml_override
-    elif os.path.isfile(budabackend_path() + f"device/{device_yaml_override}"):
-        return budabackend_path() + f"device/{device_yaml_override}"
+    elif os.path.isfile(forgebackend_path() + f"device/{device_yaml_override}"):
+        return forgebackend_path() + f"device/{device_yaml_override}"
     else:
         raise FileNotFoundError(f"Device descriptor file not found: {device_yaml_override}")
 
 
-def get_buda_compile_and_runtime_configs() -> Dict[str, str]: 
+def get_forge_compile_and_runtime_configs() -> Dict[str, str]: 
     """
     Capture compile-time and runtime environment variables used to compile and run on the device.
     Eventually we want to separate out compile-time and runtime environment variables but we don't
@@ -246,9 +246,9 @@ def get_buda_compile_and_runtime_configs() -> Dict[str, str]:
     return compile_and_runtime_env_vars
 
 
-def write_buda_envs_configs(dst_dir: str) -> None:
+def write_forge_envs_configs(dst_dir: str) -> None:
     with open(os.path.join(dst_dir, "compile_and_runtime_config.json"), "w") as json_file:
-        json.dump(get_buda_compile_and_runtime_configs(), json_file, indent=4)
+        json.dump(get_forge_compile_and_runtime_configs(), json_file, indent=4)
 
 
 def get_tmp_dir() -> str:
@@ -316,10 +316,10 @@ def resolve_output_build_directory(*, directory_prefix: str = None) -> str:
     output_build_directory = get_output_build_dir()
     os.makedirs(output_build_directory, exist_ok=True)
 
-    buda_env_options = get_buda_compile_and_runtime_configs()
-    buda_env_options_hash = generate_hash(str(buda_env_options))
+    forge_env_options = get_forge_compile_and_runtime_configs()
+    forge_env_options_hash = generate_hash(str(forge_env_options))
 
-    test_permutation = buda_env_options_hash + get_current_pytest()
+    test_permutation = forge_env_options_hash + get_current_pytest()
     hashed_suffix = generate_hash(test_permutation)
 
     test_output_directory_name =  "_".join(filter(None, [directory_prefix, hashed_suffix]))

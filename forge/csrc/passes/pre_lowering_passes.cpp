@@ -98,10 +98,10 @@ static void insert_tile_broadcasts(
             int brcst_size = (size > 32) ? 32 : size;
 
             // If we allow conseval for non tile-aligned inputs we end up with very large input tensors that waste DRAM
-            try_consteval &= (user_shape[dim] % graphlib::Shape::BUDA_TILE_DIM) == 0;
+            try_consteval &= (user_shape[dim] % graphlib::Shape::FORGE_TILE_DIM) == 0;
 
             // If node is constant, and not divisible by TILE_DIM, we need to broadcast the whole thing
-            if (producer_is_constant and user_shape[dim] % graphlib::Shape::BUDA_TILE_DIM != 0)
+            if (producer_is_constant and user_shape[dim] % graphlib::Shape::FORGE_TILE_DIM != 0)
                 brcst_size = size;
             op_type.attr = {dim, brcst_size};
 
@@ -135,7 +135,7 @@ static void insert_tile_broadcasts(
 
             // If user shape is not divisible by TILE_DIM, tile_broadcast lowering logic will handle
             // broadcast
-            if (user_shape[dim] % graphlib::Shape::BUDA_TILE_DIM == 0)
+            if (user_shape[dim] % graphlib::Shape::FORGE_TILE_DIM == 0)
             {
                 graph->get_edge_attributes(new_out_edge)->set_tms(target_tms);
             }
@@ -502,10 +502,10 @@ static bool swap_reshape(Graph *graph, graphlib::PyOpNode *add, graphlib::PyOpNo
         return false;
 
     if (env_as<bool>("FORGE_FUSE_MATMUL_GELU")) {
-        TT_ASSERT((add->op_type().op == "add") || (add->op_type().op == "gelu") || (add->op_type().op == "buda_requantize"));
+        TT_ASSERT((add->op_type().op == "add") || (add->op_type().op == "gelu") || (add->op_type().op == "forge_requantize"));
     }
     else {
-        TT_ASSERT((add->op_type().op == "add") || (add->op_type().op == "buda_requantize"));
+        TT_ASSERT((add->op_type().op == "add") || (add->op_type().op == "forge_requantize"));
     }
 
     if (graph->data_users(reshape).size() > 1)
@@ -624,7 +624,7 @@ void fuse_bias(Graph *graph)
         bool broadcast = false;
         for (auto tm : tms)
             // Broadcast must be to tile dim, otherwise in-kernel broadcast will broadcast too far
-            if ( (tm.op == "broadcast") && (std::get<int>(tm.attr[1]) % graphlib::Shape::BUDA_TILE_DIM == 0) ) {
+            if ( (tm.op == "broadcast") && (std::get<int>(tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM == 0) ) {
                 broadcast = true;
                 break;
             }
@@ -677,7 +677,7 @@ void fuse_requantize(Graph *graph)
     for (Node *node : graphlib::topological_sort(*graph))
     {
         // Look for bias
-        if ( (node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "buda_requantize") )
+        if ( (node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "forge_requantize") )
             continue;
 
         graphlib::PyOpNode *op = node->as<graphlib::PyOpNode>();
@@ -717,9 +717,9 @@ void fuse_requantize(Graph *graph)
         // copy over zp attrs
         matmul_attrs.push_back(requant_attrs[0]); // Add requant zp to the back of matmul attr
         matmul->overwrite_op_attrs(matmul_attrs);
-        auto matmul_buda_attr = matmul->op_type().buda_attrs;
-        matmul_buda_attr["requant"] = "true";
-        matmul->overwrite_buda_attrs(matmul_buda_attr);
+        auto matmul_forge_attr = matmul->op_type().forge_attrs;
+        matmul_forge_attr["requant"] = "true";
+        matmul->overwrite_forge_attrs(matmul_forge_attr);
         matmul->set_output_df(op->output_df());
 
         // Get user edges for requant, and copy over to matmul
@@ -774,11 +774,11 @@ void fuse_gelu(Graph *graph)
             continue;
 
         auto mmul = operands[0]->as<graphlib::PyOpNode>();
-        auto matmul_attrs = mmul->op_type().buda_attrs;
+        auto matmul_attrs = mmul->op_type().forge_attrs;
         if (matmul_attrs.find("sfpu_op") != matmul_attrs.end())
             continue;
         matmul_attrs["sfpu_op"] = "gelu";
-        mmul->overwrite_buda_attrs(matmul_attrs);
+        mmul->overwrite_forge_attrs(matmul_attrs);
 
         // Ok to merge
         log_trace(LogGraphCompiler, "Merging {} and {}", operands[0]->name(), op->name());

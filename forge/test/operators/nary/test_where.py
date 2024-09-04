@@ -146,10 +146,10 @@ def test_where_verify_module(test_device, cond_values):
     mod = Model("where_test_model")
 
     condition_torch = torch.tensor(cond_values, dtype=torch.bool)   # torch works only with bool type - explicit define dtype  
-    condition_buda = forge.tensor.Tensor.create_from_torch(torch.tensor(cond_values))  # buda can work also with other types
+    condition_forge = forge.tensor.Tensor.create_from_torch(torch.tensor(cond_values))  # forge can work also with other types
 
     print(f"condition_torch:\n{condition_torch}")  # condition is a boolean tensor
-    print(f"condition_buda:\n{condition_buda}")    # condition is a float tensor
+    print(f"condition_forge:\n{condition_forge}")    # condition is a float tensor
 
     x_tensor = forge.tensor.Tensor.create_from_torch(
         torch.tensor([[[1000., 1000.],
@@ -164,10 +164,10 @@ def test_where_verify_module(test_device, cond_values):
 
     result_torch = torch.where(condition_torch, forge.tensor.Tensor.to_pytorch(x_tensor), forge.tensor.Tensor.to_pytorch(y_tensor))
     print(f"result_torch:\n{result_torch}")
-    result_buda = forge.op.Where("Where0", condition_buda, x_tensor, y_tensor)
-    print(f"result_buda:\n{result_buda}")
+    result_forge = forge.op.Where("Where0", condition_forge, x_tensor, y_tensor)
+    print(f"result_forge:\n{result_forge}")
 
-    output_are_the_same = torch.eq(result_torch, forge.tensor.Tensor.to_pytorch(result_buda)).all()
+    output_are_the_same = torch.eq(result_torch, forge.tensor.Tensor.to_pytorch(result_forge)).all()
     print(f"\nAre results equal: {output_are_the_same}")
     if not output_are_the_same:
         # never failing here
@@ -186,5 +186,5 @@ def test_where_verify_module(test_device, cond_values):
             devtype=test_device.devtype,
             arch=test_device.arch,
         ),
-        inputs=[(condition_buda, x_tensor, y_tensor)],
+        inputs=[(condition_forge, x_tensor, y_tensor)],
     )

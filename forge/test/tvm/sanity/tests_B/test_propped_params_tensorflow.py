@@ -56,7 +56,7 @@ def are_tensor_sets_disjoint(A, B):
 def set_equal(A, B):
     return is_a_subset_b(A, B) and is_a_subset_b(B, A)
 
-def assert_params(framework_mod, buda_mods, const_propped, no_grad_tensors = []):
+def assert_params(framework_mod, forge_mods, const_propped, no_grad_tensors = []):
     # const_propped = [t.numpy() for t in const_propped]
 
     grad_not_required_framework = no_grad_tensors
@@ -67,23 +67,23 @@ def assert_params(framework_mod, buda_mods, const_propped, no_grad_tensors = [])
         else:
             grad_not_required_framework.append(tensor.numpy())
 
-    buda_params = []
-    for mod in buda_mods:
-        buda_params = buda_params + mod.get_parameters()
+    forge_params = []
+    for mod in forge_mods:
+        forge_params = forge_params + mod.get_parameters()
 
-    grad_required_buda = []
-    grad_not_required_buda = []
-    for tensor in buda_params:
+    grad_required_forge = []
+    grad_not_required_forge = []
+    for tensor in forge_params:
         if tensor.requires_grad:
-            grad_required_buda.append(tensor.value().detach().numpy())
+            grad_required_forge.append(tensor.value().detach().numpy())
         else:
-            grad_not_required_buda.append(tensor.value().detach().numpy())
+            grad_not_required_forge.append(tensor.value().detach().numpy())
 
-    # The requires_grad tensors in the framework should still be requires_grad in buda
-    assert is_a_subset_b(const_propped, grad_required_buda)
+    # The requires_grad tensors in the framework should still be requires_grad in forge
+    assert is_a_subset_b(const_propped, grad_required_forge)
 
-    # The non requires_grad tensors of the framework should be a subset of the non requires_grad tensors of the buda mod
-    assert are_tensor_sets_disjoint(grad_not_required_framework, grad_required_buda)
+    # The non requires_grad tensors of the framework should be a subset of the non requires_grad tensors of the forge mod
+    assert are_tensor_sets_disjoint(grad_not_required_framework, grad_required_forge)
 
 def test_bert():
 
@@ -112,9 +112,9 @@ def test_bert():
     const_propped = model.model.layer[0].intermediate.dense.get_weights()
 
     mod = TFModule("tf_bert", model)
-    buda_mods, _, buda_inputs = generate_forge_module(mod, inputs)
+    forge_mods, _, forge_inputs = generate_forge_module(mod, inputs)
 
-    assert_params(model, buda_mods, const_propped, [model.am, model.hm])
+    assert_params(model, forge_mods, const_propped, [model.am, model.hm])
 
 def test_gpt2():
 
@@ -136,13 +136,13 @@ def test_gpt2():
     
     const_propped = [model.transformer.h[0].attn.c_attn.weight.numpy(), model.transformer.h[0].attn.c_attn.bias.numpy()]
 
-    buda_mods, _, buda_inputs = generate_forge_module(mod, inputs, verify_cfg=VerifyConfig(pcc=0.99))
+    forge_mods, _, forge_inputs = generate_forge_module(mod, inputs, verify_cfg=VerifyConfig(pcc=0.99))
 
     new_const_propped = []
     for tensor in const_propped:
         new_const_propped = new_const_propped + tf.split(tensor, 3, -1)
 
-    assert_params(model, buda_mods, new_const_propped)
+    assert_params(model, forge_mods, new_const_propped)
 
 
 def test_opt():
@@ -160,6 +160,6 @@ def test_opt():
 
     input_shape = (1, 768)
     inputs = [tf.random.uniform(input_shape, maxval=input_shape[-1], dtype=tf.int32)]
-    buda_mods, _, buda_inputs = generate_forge_module(mod, inputs)
+    forge_mods, _, forge_inputs = generate_forge_module(mod, inputs)
 
-    assert_params(model, buda_mods, const_propped)
+    assert_params(model, forge_mods, const_propped)

@@ -53,7 +53,7 @@ def init_resblock(
 
 def test_tvm_resblock(test_kind, test_device):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     t_embed = 64
     ch = 32
     out_channels = 32
@@ -81,7 +81,7 @@ def test_tvm_upsample_resblock(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     model = init_resblock(64, 64, time_embed_dim=64, upsample=True)
     mod = PyTorchModule("ResBlockUpsample", model)
 
@@ -106,7 +106,7 @@ def test_tvm_downsample_resblock(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip()
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     model = init_resblock(32, 32, time_embed_dim=64, downsample=True)
     
     mod = PyTorchModule("ResBlockDownsample", model)

@@ -47,13 +47,13 @@ eval_graph(
     bool allow_modified_shapes,
     bool return_intermediates);
 
-py::object get_constant_input_value(graphlib::Node *node, bool is_buda);
+py::object get_constant_input_value(graphlib::Node *node, bool is_forge);
 py::object eval_input(
     Node *node,
     std::unordered_map<std::string, py::object> inputs,
-    bool is_buda,
+    bool is_forge,
     graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Forward);
-py::object eval_input_bw(Node *node, py::object inputs, bool is_buda);
+py::object eval_input_bw(Node *node, py::object inputs, bool is_forge);
 
 void GraphModule(py::module &m_graph)
 {
@@ -179,7 +179,7 @@ void GraphModule(py::module &m_graph)
         .def("get_tile_height", &Shape::get_tile_height)
         .def("get_tile_width", &Shape::get_tile_width)
         .def_static("create", &Shape::create, py::arg("values"))
-        .def_static("create_buda", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_buda))
+        .def_static("create_forge", py::overload_cast<std::vector<std::uint32_t>, int, int>(&Shape::create_forge))
         .def_static(
             "create_with_type_from_other", Shape::create_with_type_from_other, py::arg("other"), py::arg("values"))
         .def("len", [](Shape const &shape) { return shape.as_vector().size(); })
@@ -227,7 +227,7 @@ void GraphModule(py::module &m_graph)
 
     py::enum_<Shape::Type>(shape, "Type")
         .value("FREE", Shape::Type::FREE)
-        .value("BUDA", Shape::Type::BUDA)
+        .value("FORGE", Shape::Type::FORGE)
         .export_values();
 
     py::class_<tt::Node, tt::raw_ptr<tt::Node>>(m_graph, "Node")
@@ -264,11 +264,11 @@ void GraphModule(py::module &m_graph)
         .def_readonly("op", &tt::graphlib::OpType::op)
         .def_readonly("attr", &tt::graphlib::OpType::attr)
         .def_readonly("named_attrs", &tt::graphlib::OpType::named_attrs)
-        .def_readonly("buda_attrs", &tt::graphlib::OpType::buda_attrs)
+        .def_readonly("forge_attrs", &tt::graphlib::OpType::forge_attrs)
         .def(
-            "set_buda_attr",
+            "set_forge_attr",
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr const &attr)
-            { op_type.buda_attrs[name] = attr; })
+            { op_type.forge_attrs[name] = attr; })
         .def(
             "__getattr__",
             [](tt::graphlib::OpType const &op_type, std::string const &name) { return op_type.get_attr(name); })
@@ -282,8 +282,8 @@ void GraphModule(py::module &m_graph)
         .value("kInput", tt::graphlib::NodeType::kInput)
         .value("kOutput", tt::graphlib::NodeType::kOutput)
         .value("kPyOp", tt::graphlib::NodeType::kPyOp)
-        .value("kBudaOp", tt::graphlib::NodeType::kBudaOp)
-        .value("kBudaNaryTM", tt::graphlib::NodeType::kBudaNaryTM)
+        .value("kForgeOp", tt::graphlib::NodeType::kForgeOp)
+        .value("kForgeNaryTM", tt::graphlib::NodeType::kForgeNaryTM)
         .value("kQueue", tt::graphlib::NodeType::kQueue)
         .export_values();
 
@@ -619,14 +619,14 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphl
 
     switch (ir_level) {
         case graphlib::IRLevel::IR_TT_FORGE: eval_module = py::module_::import("forge.op.eval.forge"); break;
-        case graphlib::IRLevel::IR_BUDA: eval_module = py::module_::import("forge.op.eval.buda"); break;
+        case graphlib::IRLevel::IR_FORGE: eval_module = py::module_::import("forge.op.eval.lforge"); break;
         case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("forge.op.eval.forge"); break;
     }
 
     py::function forge_eval = eval_module.attr("get_f_forge_eval")(type);
 
     log_trace(LogEval, "  eval_op: {}", type);
-    bool has_requant = type.buda_attrs.find("requant") != type.buda_attrs.end() and std::get<bool>(type.buda_attrs.at("requant"));
+    bool has_requant = type.forge_attrs.find("requant") != type.forge_attrs.end() and std::get<bool>(type.forge_attrs.at("requant"));
 
     std::vector<py::object> inputs_;
     if (has_requant) {
@@ -641,10 +641,10 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphl
     py::object common_module = py::module_::import("forge.op.eval");
     common_module.attr("eval_debug_print")(type.op, inputs, result);
 
-    if (has_requant and ir_level == graphlib::IRLevel::IR_BUDA and type.op == "matmul")
+    if (has_requant and ir_level == graphlib::IRLevel::IR_FORGE and type.op == "matmul")
     {
         std::vector<py::object> requant_inps = {result, inputs.back()};
-        graphlib::OpType requant("requantization", {type.buda_attrs.at("zero_point")});
+        graphlib::OpType requant("requantization", {type.forge_attrs.at("zero_point")});
         auto requant_eval = eval_module.attr("get_f_forge_eval")(requant);
         result = requant_eval(requant_inps);
     }
@@ -658,15 +658,15 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphl
 py::object eval_relu(py::object tensor, graphlib::OpType type)
 {
 
-    auto relu_match = type.buda_attrs.find("relu_en");
-    if (relu_match != type.buda_attrs.end()) {
+    auto relu_match = type.forge_attrs.find("relu_en");
+    if (relu_match != type.forge_attrs.end()) {
         std::vector<py::object> inputs;
         inputs.push_back(tensor);
-        float relu_threshold = (type.buda_attrs.find("relu_threshold") != type.buda_attrs.end())
-                                   ? std::get<float>(type.buda_attrs["relu_threshold"])
+        float relu_threshold = (type.forge_attrs.find("relu_threshold") != type.forge_attrs.end())
+                                   ? std::get<float>(type.forge_attrs["relu_threshold"])
                                    : 0.0;
-        std::string relu_mode = (type.buda_attrs.find("relu_mode") != type.buda_attrs.end())
-                                    ? std::get<std::string>(type.buda_attrs["relu_mode"])
+        std::string relu_mode = (type.forge_attrs.find("relu_mode") != type.forge_attrs.end())
+                                    ? std::get<std::string>(type.forge_attrs["relu_mode"])
                                     : "min";
 
         graphlib::OpType relu("relu", {relu_threshold, relu_mode});
@@ -737,10 +737,10 @@ bool compare_tensor_to_golden(const std::string &name, const py::object &golden,
         float relative_atol, float pcc, graphlib::IRLevel ir_level, bool warning_only = false)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
-    bool is_buda = ir_level == graphlib::IRLevel::IR_BUDA;
+    bool is_forge = ir_level == graphlib::IRLevel::IR_FORGE;
 
     if (pcc == 0.0) 
-        return eval_module.attr("compare_tensor_to_golden")(name, golden, calculated, is_buda, 
+        return eval_module.attr("compare_tensor_to_golden")(name, golden, calculated, is_forge, 
                 py::none(), /* rtol */
                 py::none(), /* atol */
                 py::none(), /* pcc */
@@ -748,7 +748,7 @@ bool compare_tensor_to_golden(const std::string &name, const py::object &golden,
                 relative_atol,
                 py::none() /* verify_cfg */).cast<bool>();
 
-    return eval_module.attr("compare_tensor_to_golden")(name, golden, calculated, is_buda, 
+    return eval_module.attr("compare_tensor_to_golden")(name, golden, calculated, is_forge, 
                 py::none(), /* rtol */
                 py::none(), /* atol */
                 pcc,
@@ -757,20 +757,20 @@ bool compare_tensor_to_golden(const std::string &name, const py::object &golden,
                 py::none() /* verify_cfg */).cast<bool>();
 }
 
-py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, bool is_buda, DataFormat df) {
+py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, bool is_forge, DataFormat df) {
     py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, is_buda, df);
+    return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, is_forge, df);
 }
 
-py::object create_constant_tensor(const std::vector<float> &tile_value, bool is_buda, DataFormat df) {
+py::object create_constant_tensor(const std::vector<float> &tile_value, bool is_forge, DataFormat df) {
     py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_tile")(tile_value, is_buda, df);
+    return eval_module.attr("create_constant_tensor_from_tile")(tile_value, is_forge, df);
 }
 
-py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, bool is_buda, tt::DataFormat df)
+py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, bool is_forge, tt::DataFormat df)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
-    return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), is_buda, df);
+    return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), is_forge, df);
 }
 
 
@@ -813,7 +813,7 @@ std::vector<py::object> eval_operand_tms(
 py::object consteval_input(
     Node *runtime_node,
     std::unordered_map<std::string, py::object> inputs,
-    bool is_buda,
+    bool is_forge,
     graphlib::NodeEpochType node_epoch_type)
 {
     TT_ASSERT(
@@ -833,12 +833,12 @@ py::object consteval_input(
     TT_ASSERT(consteval_graph->get_ir_level() == graphlib::IRLevel::IR_CONSTEVAL);
 
     py::object tensor_module;
-    py::function narrow_buda_tensor_to_pytorch;
-    py::function pad_pytorch_tensor_to_buda;
-    if (is_buda) {
+    py::function narrow_forge_tensor_to_pytorch;
+    py::function pad_pytorch_tensor_to_forge;
+    if (is_forge) {
         tensor_module = py::module_::import("forge.tensor");
-        narrow_buda_tensor_to_pytorch = tensor_module.attr("narrow_buda_tensor_to_pytorch");
-        pad_pytorch_tensor_to_buda = tensor_module.attr("pad_pytorch_tensor_to_buda");
+        narrow_forge_tensor_to_pytorch = tensor_module.attr("narrow_forge_tensor_to_pytorch");
+        pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
     }
 
     if (node_epoch_type == graphlib::NodeEpochType::Backward)
@@ -861,7 +861,7 @@ py::object consteval_input(
             auto input_node = node->as<graphlib::InputNode>();
             if (input_node->is_constant())
             {
-                input_value = get_constant_input_value(node, is_buda);
+                input_value = get_constant_input_value(node, is_forge);
             }
             else
             {
@@ -870,8 +870,8 @@ py::object consteval_input(
 
             TT_ASSERT(not input_value.is_none());
 
-            if (is_buda) {
-                input_value = narrow_buda_tensor_to_pytorch(input_value, node->shape().as_vector());
+            if (is_forge) {
+                input_value = narrow_forge_tensor_to_pytorch(input_value, node->shape().as_vector());
             }
             node_outputs.insert({node->id(), {input_value}});
             continue;
@@ -889,8 +889,8 @@ py::object consteval_input(
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
 
         auto type = op_node->op_type();
-        auto relu_match = type.buda_attrs.find("relu");
-        TT_ASSERT(relu_match == type.buda_attrs.end(), "ConstEval doesn't support relu");
+        auto relu_match = type.forge_attrs.find("relu");
+        TT_ASSERT(relu_match == type.forge_attrs.end(), "ConstEval doesn't support relu");
 
         std::vector<py::object> inputs = eval_operand_tms(consteval_graph, node, node_outputs);
         output = eval_op(op_node->op_type(), inputs, consteval_graph->get_ir_level());
@@ -900,36 +900,36 @@ py::object consteval_input(
 
     TT_ASSERT(output.ptr() != nullptr, runtime_node->name());
 
-    if (is_buda) {
-        output = pad_pytorch_tensor_to_buda(output, std::vector<int>{});
+    if (is_forge) {
+        output = pad_pytorch_tensor_to_forge(output, std::vector<int>{});
     }
 
     return output;
 }
 
 py::object eval_input(
-    Node *node, std::unordered_map<std::string, py::object> inputs, bool is_buda, graphlib::NodeEpochType epoch_type)
+    Node *node, std::unordered_map<std::string, py::object> inputs, bool is_forge, graphlib::NodeEpochType epoch_type)
 {
     graphlib::InputNode *input = node->as<graphlib::InputNode>();
 
     if (input->get_consteval_graph())
     {
-        return consteval_input(node, inputs, is_buda, epoch_type);
+        return consteval_input(node, inputs, is_forge, epoch_type);
     }
-    else if (is_buda)
+    else if (is_forge)
     {
         auto tensor_module = py::module_::import("forge.tensor");
-        auto pad_pytorch_tensor_to_buda = tensor_module.attr("pad_pytorch_tensor_to_buda");
-        return pad_pytorch_tensor_to_buda(inputs.at(node->name()), input->get_tile_broadcast_dims());
+        auto pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
+        return pad_pytorch_tensor_to_forge(inputs.at(node->name()), input->get_tile_broadcast_dims());
     }
 
     return inputs.at(node->name());
 }
 
-py::object eval_input_bw(Node *node, py::object input_value, bool is_buda)
+py::object eval_input_bw(Node *node, py::object input_value, bool is_forge)
 {
     std::unordered_map<std::string, py::object> inputs = {{node->name(), input_value}};
-    return eval_input(node, inputs, is_buda, graphlib::NodeEpochType::Backward);
+    return eval_input(node, inputs, is_forge, graphlib::NodeEpochType::Backward);
 }
 
 py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_value, bool flip = false)
@@ -956,9 +956,9 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
         node->name(),
         node->shape(),
         runtime_tensor_transform.reinterpreted_shape);
-    const bool is_buda = graph->get_ir_level() == graphlib::IRLevel::IR_BUDA;
+    const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
     std::vector<graphlib::OpType::Attr> attr;
-    if (is_buda)
+    if (is_forge)
     {
         auto original = runtime_tensor_transform.original_shape.canonical();
         auto reinterpreted = runtime_tensor_transform.reinterpreted_shape.canonical();
@@ -1006,27 +1006,27 @@ py::object eval_unpad(Graph *graph, Node *node, py::object input_value)
     if (runtime_tensor_transform.type != graphlib::RuntimeTensorTransformType::Unpad)
         return input_value;
 
-    // Determine buda_unpad attributes based on original and padded shape
+    // Determine forge_unpad attributes based on original and padded shape
     graphlib::Shape original_shape = runtime_tensor_transform.unpadded_shape;
     int orig_c = original_shape[-1];
     int orig_r = original_shape[-2];
 
     graphlib::Shape padded_shape = node->shape();
-    int pad_ct = (padded_shape[-1] / graphlib::Shape::BUDA_TILE_DIM) - graphlib::Shape::to_buda(original_shape).ct();
+    int pad_ct = (padded_shape[-1] / graphlib::Shape::FORGE_TILE_DIM) - graphlib::Shape::to_forge(original_shape).ct();
     if (pad_ct < 0)
         pad_ct = 0;
-    int pad_rt = (padded_shape[-2] / graphlib::Shape::BUDA_TILE_DIM) - graphlib::Shape::to_buda(original_shape).rt();
+    int pad_rt = (padded_shape[-2] / graphlib::Shape::FORGE_TILE_DIM) - graphlib::Shape::to_forge(original_shape).rt();
     if (pad_rt < 0)
         pad_rt = 0;
 
-    // Populate attributes and construct buda_unpad op for evaluation
+    // Populate attributes and construct forge_unpad op for evaluation
     std::vector<graphlib::OpType::Attr> attr;
     attr.emplace_back(pad_rt);
     attr.emplace_back(pad_ct);
     attr.emplace_back(orig_r);
     attr.emplace_back(orig_c);
 
-    graphlib::OpType unpad("buda_unpad", attr);
+    graphlib::OpType unpad("forge_unpad", attr);
     return eval_op(unpad, {input_value}, graph->get_ir_level());
 }
 
@@ -1102,7 +1102,7 @@ py::object eval_concatenate(Graph *graph, std::vector<Node *> nodes, std::vector
             if (runtime_tensor_transform.concat_group == conat_group and (size_t)runtime_tensor_transform.concat_index == i)
             {
                 concat_inputs.push_back(input_values[i]);
-                if (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA)
+                if (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE)
                 {
                     int length_at_dim = nodes[i]->shape()[runtime_tensor_transform.concat_dim];
                     attr.emplace_back(length_at_dim);
@@ -1167,7 +1167,7 @@ bool compare_tensors(std::shared_ptr<void> tensor0, std::shared_ptr<void> tensor
     return compare_tensors_func(tensor0_pt, tensor1_pt).cast<bool>();
 }
 
-py::object get_constant_input_value(graphlib::Node *node, bool is_buda)
+py::object get_constant_input_value(graphlib::Node *node, bool is_forge)
 {
     TT_ASSERT(node->as<graphlib::InputNode>()->is_constant());
     graphlib::ConstantInputNode *cnode = node->as<graphlib::ConstantInputNode>();
@@ -1175,16 +1175,16 @@ py::object get_constant_input_value(graphlib::Node *node, bool is_buda)
     if (cnode->is_single_value()) {
         auto constant_value = cnode->constant_value();
         auto constant_dims = cnode->constant_dims();
-        return create_constant_tensor(constant_value, constant_dims, is_buda, node->output_df());
+        return create_constant_tensor(constant_value, constant_dims, is_forge, node->output_df());
     } else if (cnode->is_single_tile()) {
         auto constant_tile = cnode->tile_value();
-        return create_constant_tensor(constant_tile, is_buda, node->output_df());
+        return create_constant_tensor(constant_tile, is_forge, node->output_df());
     } else if (cnode->is_tensor()) {
         auto tensor = borrow_shared_py_object(cnode->tensor());
-        if (is_buda) {
+        if (is_forge) {
             py::object tensor_module = py::module_::import("forge.tensor");
-            py::function pad_pytorch_tensor_to_buda = tensor_module.attr("pad_pytorch_tensor_to_buda");
-            tensor = pad_pytorch_tensor_to_buda(
+            py::function pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
+            tensor = pad_pytorch_tensor_to_forge(
                 tensor,
                 node->as<graphlib::InputNode>()->get_tile_broadcast_dims(),
                 false, // squeeze
@@ -1218,7 +1218,7 @@ bool is_gradient_comparison_valid(Graph* graph, const graphlib::Edge& gradient_e
 static std::unordered_map<std::string, py::object> get_graph_input_mapping(
     Graph *graph, const std::unordered_map<std::string, py::object> &parameters, py::object optimizer)
 {
-    const bool is_buda = graph->get_ir_level() == graphlib::IRLevel::IR_BUDA;
+    const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
     std::unordered_map<std::string, py::object> graph_inputs = parameters;
 
     for (Node *node : tt::graphlib::topological_sort(*graph))
@@ -1229,7 +1229,7 @@ static std::unordered_map<std::string, py::object> get_graph_input_mapping(
 
         if (input->is_constant())
         {
-            graph_inputs.insert({input->name(), get_constant_input_value(input, is_buda)});
+            graph_inputs.insert({input->name(), get_constant_input_value(input, is_forge)});
         }
         else if (input->is_optimizer_parameter())
         {
@@ -1240,7 +1240,7 @@ static std::unordered_map<std::string, py::object> get_graph_input_mapping(
             TT_ASSERT(optimizer_edges.size() == 1);
 
             std::string param_name = graph->node_by_id(optimizer_edges[0].producer_node_id)->name();
-            py::object optimizer_params = optimizer.attr("get_optimizer_params")(param_name, is_buda);
+            py::object optimizer_params = optimizer.attr("get_optimizer_params")(param_name, is_forge);
             if (optimizer_params.is_none())
                 continue;
 
@@ -1298,7 +1298,7 @@ eval_graph(
     std::unordered_map<std::string, py::object> updated_parameter_mapping;
     std::unordered_map<std::string, py::object> intermediate_tensors;
 
-    const bool is_buda = graph->get_ir_level() == graphlib::IRLevel::IR_BUDA;
+    const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
 
     auto optimizer = tt_device.attr("get_optimizer")();
     std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, parameters, optimizer);
@@ -1312,7 +1312,7 @@ eval_graph(
         if (input->is_constant())
         {
             log_debug(tt::LogTest, "Populating constant: {}", node->name());
-            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_buda));
+            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
         }
         else if (input->is_parameter())
         {
@@ -1320,12 +1320,12 @@ eval_graph(
             if (param_name.empty())
                 param_name = node->name();
             log_debug(tt::LogTest, "Populating module parameter: {}", param_name);
-            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_buda));
+            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
         }
         else if (input->is_optimizer_parameter())
         {
             log_debug(tt::LogTest, "Populating optimizer parameter: {}", node->name());
-            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_buda));
+            node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
         }
     }
 
@@ -1416,16 +1416,16 @@ eval_graph(
             continue;
         }
 
-        if (node->node_type() == NodeType::kBudaNaryTM)
+        if (node->node_type() == NodeType::kForgeNaryTM)
         {
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
             py::object obj =
-                eval_op(node->as<graphlib::BudaNaryTMNode>()->op_type(), inputs, graph->get_ir_level(), false);
+                eval_op(node->as<graphlib::ForgeNaryTMNode>()->op_type(), inputs, graph->get_ir_level(), false);
             node_outputs[node->id()].push_back(obj);
             continue;
         }
 
-        if ((node->node_type() != NodeType::kPyOp) && (node->node_type() != NodeType::kBudaOp))
+        if ((node->node_type() != NodeType::kPyOp) && (node->node_type() != NodeType::kForgeOp))
             continue;
 
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
@@ -1454,7 +1454,7 @@ eval_graph(
                 }
             }
 
-            auto golden_node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA) ? node->tt_forge_id() : node->id();
+            auto golden_node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? node->tt_forge_id() : node->id();
             if (op_node->has_golden_id()) {
                 golden_node_id = op_node->golden_id(); // if a different intermediate node is used as a reference...
             }
@@ -1469,7 +1469,7 @@ eval_graph(
                 // Check if there's a gradient to check
                 if (gradient_edges.size() > 0) {
                     Node* producer = graph->node_by_id(gradient_edges.at(0).producer_node_id);
-                    auto node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_BUDA) ? producer->tt_forge_id() : producer->id();
+                    auto node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? producer->tt_forge_id() : producer->id();
                     auto golden_fwd = intermediate_golden_tensors.find(node_id);
                     if (golden_fwd != intermediate_golden_tensors.end()) {
                         bool is_valid = is_gradient_comparison_valid(graph, gradient_edges.at(0));
@@ -1506,7 +1506,7 @@ eval_graph(
             for (const auto& loopback_edge : loopback_edges) {
                 Node* consumer_node = graph->node_by_id(loopback_edge.consumer_node_id);
                 if (consumer_node->node_type() == NodeType::kInput) {
-                    updated_parameter_mapping[consumer_node->name()] = eval_input_bw(consumer_node, obj, is_buda);
+                    updated_parameter_mapping[consumer_node->name()] = eval_input_bw(consumer_node, obj, is_forge);
                 }
             }
 
@@ -1524,7 +1524,7 @@ eval_graph(
                             graphlib::Node *optimizer = operands[0];
                             ret = eval_t_streaming_tms(ret, graph, optimizer);
                         }
-                        ret = eval_input_bw(producer, ret, is_buda);
+                        ret = eval_input_bw(producer, ret, is_forge);
                         ret = eval_runtime_tensor_transform(graph, {producer}, {ret}, true).at(0);
                     }
 
@@ -1566,7 +1566,7 @@ eval_graph(
             for (const auto& gradient_user_edge : gradient_user_edges) {
                 py::object gradient = node_outputs.at(gradient_user_edge.consumer_node_id).at(0);
                 gradient = eval_golden_transforms(graph->node_by_id(gradient_user_edge.consumer_node_id), gradient);
-                gradient = eval_input_bw(node, gradient, is_buda);
+                gradient = eval_input_bw(node, gradient, is_forge);
                 gradient = eval_runtime_tensor_transform(graph, {node}, {gradient}, true).at(0);
                 input_to_gradient_mapping[node->name()] = gradient;
             }
@@ -1622,14 +1622,14 @@ eval_graph(
         {
             if (input_to_gradient_mapping.find(node->name()) == input_to_gradient_mapping.end())
                 continue;
-            bwd_gradients.push_back(eval_input_bw(node, input_to_gradient_mapping.at(node->name()), is_buda));
+            bwd_gradients.push_back(eval_input_bw(node, input_to_gradient_mapping.at(node->name()), is_forge));
         }
     }
 
     if (!dump_tensors_path.empty()) {
         for (auto &[node_id, output_tensor] : node_outputs) {
             auto node = graph->node_by_id(node_id);
-            if ((node->node_type() == NodeType::kPyOp) || (node->node_type() == NodeType::kBudaOp)) {
+            if ((node->node_type() == NodeType::kPyOp) || (node->node_type() == NodeType::kForgeOp)) {
                 dump_tensor(output_tensor.at(0), dump_tensors_path + "/" + "intermediates." + node->name());
             }  else if (node->node_type() == NodeType::kInput) {
                 if (updated_parameter_mapping.find(node->name()) != updated_parameter_mapping.end()) {

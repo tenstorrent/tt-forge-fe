@@ -24,7 +24,7 @@ from forge.config import _get_global_compiler_config
 
 def test_fibinet_se(test_kind, test_device):
     # Unsupported HW ops
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     filed_size = 32
     batch_size = 1

@@ -4,10 +4,10 @@
 
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM, align_up_tile
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 from .transpose import TransposeTM
 from .nop import Nop
-from ..buda.nop import Nop as BudaNop
+from ..lforge.nop import Nop as ForgeNop
 import torch
 import numpy as np
 import math
@@ -130,15 +130,15 @@ def lower(type, attr, lc, ops, outputs):
             padded_input = lc.op("add", [ops[0], const], (), {})
             ops = [padded_input]
 
-        buda_attr = {"dim": ["w", "z", "r", "c"][reduce_dim], "type": "max"}
+        forge_attr = {"dim": ["w", "z", "r", "c"][reduce_dim], "type": "max"}
         z = input_shape[1]
         if reduce_dim == 1:
             z = input_shape[-3] if len(attr) == 1 else attr[1]
-            buda_attr["z"] = z
-        lc.op("reduce", ops, (reduce_dim, "max", z), buda_attr)
+            forge_attr["z"] = z
+        lc.op("reduce", ops, (reduce_dim, "max", z), forge_attr)
         return
 
-    dtype = buda_dataformat_to_pytorch_dtype(ops[0].output_df)
+    dtype = forge_dataformat_to_pytorch_dtype(ops[0].output_df)
     is_z = (len(input_shape) - reduce_dim) == 3
     if is_z:
         if type == "grouped_reduce_avg":
@@ -168,7 +168,7 @@ def lower(type, attr, lc, ops, outputs):
 
     if reduce_len == 1 and not tile_broadcast:
         # Nothing to reduce
-        lc.op(BudaNop.create(), ops)
+        lc.op(ForgeNop.create(), ops)
         return
 
     if reduce_len % TILE_DIM == 0 and type != "grouped_reduce_avg":

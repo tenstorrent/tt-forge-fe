@@ -11,7 +11,7 @@ import torch
 
 from forge.forgeglobal import TILE_DIM
 from ..common import to_torch_operands, cast_for_cpu_eval
-from ..sparse_utils import transpose_sparse_picker_matrix, create_sparse_buda, shapeify_sparse_tiles_and_encodings, is_kernel_fracturing_candidate
+from ..sparse_utils import transpose_sparse_picker_matrix, create_sparse_forge, shapeify_sparse_tiles_and_encodings, is_kernel_fracturing_candidate
 from forge.utils import round_up_div
 from forge.op.eval.common import calculate_tile_size
 from .transpose import TransposeTM
@@ -149,27 +149,27 @@ def shape(type, attr, ops):
 
     return output_dim, broadcast
 
-def lower(type, attr, buda_attr, lc, ops, outputs):
+def lower(type, attr, forge_attr, lc, ops, outputs):
     assert len(ops) in [2, 3, 4], "Matrix multiply should have two or three inputs"
     assert len(attr) <= 2, "Matrix multiply should have zero to two attributes (accumulate, z_bcast_factor, zero_point)"
-    has_requant = "requant" in buda_attr and buda_attr['requant']
+    has_requant = "requant" in forge_attr and forge_attr['requant']
 
     accumulate = (len(attr) >= 2) and bool(attr[0]) if has_requant else (len(attr) >= 1) and bool(attr[0])
 
-    buda_attrs = {}
-    if 'sfpu_op' in buda_attr and os.environ.get("FORGE_FUSE_MATMUL_GELU", "0") != "0":
-        buda_attrs["sfpu_op"] = "gelu"
+    forge_attrs = {}
+    if 'sfpu_op' in forge_attr and os.environ.get("FORGE_FUSE_MATMUL_GELU", "0") != "0":
+        forge_attrs["sfpu_op"] = "gelu"
     if accumulate:
-        buda_attrs["accumulate"] = True
+        forge_attrs["accumulate"] = True
 
     if has_requant:
-        buda_attrs["requant"] = True
-        buda_attrs["zero_point"] = attr[-1]
+        forge_attrs["requant"] = True
+        forge_attrs["zero_point"] = attr[-1]
         if len(ops) == 4:
-            buda_attrs["bias"] = True
+            forge_attrs["bias"] = True
     else:
         if len(ops) == 3:
-            buda_attrs["bias"] = True
+            forge_attrs["bias"] = True
 
     if type == "sparse_matmul":
         in0 = ops[0]
@@ -186,7 +186,7 @@ def lower(type, attr, buda_attr, lc, ops, outputs):
         # # TODO: this shouldn't be a sqrt but kW, though we don't have that info here currently
         # fracture_factor = int(sqrt(z_bcast_factor)) if is_kernel_fracturing_candidate(ops, z_bcast_factor) else 1
 
-        sparse_buda = create_sparse_buda(picker, z_bcast_factor, max_fracture_factor)
+        sparse_forge = create_sparse_forge(picker, z_bcast_factor, max_fracture_factor)
 
         # Set grid_r to smallest valid solution (MaxUblocksR)
         # Hardcode most of the values to 1, potentially add some solvers to choose valid combos if some limitations hit
@@ -197,11 +197,11 @@ def lower(type, attr, buda_attr, lc, ops, outputs):
         t_factor_c = 1
         fracture_factor = 1
         grid_r = round_up_div(picker.shape[-2], TILE_DIM)
-        grid_c = 1  # this is always 1 by default, before balancing, needed for buda eval
+        grid_c = 1  # this is always 1 by default, before balancing, needed for forge eval
 
-        sparse_tile_ptr_bits = sparse_buda.get_sparse_tile_ptr_bits(grid_r, t_factor_r, u_rt)
-        sparse_ublock_idx_bits = sparse_buda.get_sparse_ublock_idx_bits(grid_r, t_factor_r, u_rt)
-        sparse, encodings, _s_shape, _e_shape, _num_strips = sparse_buda.get_sparse_tiles_and_encodings(grid_r)
+        sparse_tile_ptr_bits = sparse_forge.get_sparse_tile_ptr_bits(grid_r, t_factor_r, u_rt)
+        sparse_ublock_idx_bits = sparse_forge.get_sparse_ublock_idx_bits(grid_r, t_factor_r, u_rt)
+        sparse, encodings, _s_shape, _e_shape, _num_strips = sparse_forge.get_sparse_tiles_and_encodings(grid_r)
         sparse, encodings = shapeify_sparse_tiles_and_encodings(
             sparse=sparse,
             encodings=encodings,
@@ -219,18 +219,18 @@ def lower(type, attr, buda_attr, lc, ops, outputs):
         else:
             target_df = DataFormat.Float16_b
 
-        in0 = lc.tensor_with_sparse_buda(sparse, sparse_buda, target_df)
+        in0 = lc.tensor_with_sparse_forge(sparse, sparse_forge, target_df)
         in2 = lc.tensor(encodings, DataFormat.RawUInt32)
 
         is_sparse = True
-        buda_attrs["identity"] = True
-        buda_attrs["num_sparse_tiles"] = sparse.shape[-1] // TILE_DIM
-        buda_attrs["num_index_tiles"] = encodings.shape[-1] // TILE_DIM
-        buda_attrs["sparse_tile_ptr_bits"] = sparse_tile_ptr_bits
-        buda_attrs["sparse_ublock_idx_bits"] = sparse_ublock_idx_bits
-        buda_attrs["fracture_factor"] = fracture_factor
-        # We need fracture_factor in attributes as well, since shape() function doesn't get buda attrs
-        lc.op("matmul", [in0, in1, in2], (accumulate, is_sparse, sparse_tile_ptr_bits, 1, zdim, picker.shape[-2], in1.shape[-1], fracture_factor, u_rt, u_kt, u_ct, grid_c, t_factor_r, t_factor_c, sparse_ublock_idx_bits), buda_attrs)
+        forge_attrs["identity"] = True
+        forge_attrs["num_sparse_tiles"] = sparse.shape[-1] // TILE_DIM
+        forge_attrs["num_index_tiles"] = encodings.shape[-1] // TILE_DIM
+        forge_attrs["sparse_tile_ptr_bits"] = sparse_tile_ptr_bits
+        forge_attrs["sparse_ublock_idx_bits"] = sparse_ublock_idx_bits
+        forge_attrs["fracture_factor"] = fracture_factor
+        # We need fracture_factor in attributes as well, since shape() function doesn't get forge attrs
+        lc.op("matmul", [in0, in1, in2], (accumulate, is_sparse, sparse_tile_ptr_bits, 1, zdim, picker.shape[-2], in1.shape[-1], fracture_factor, u_rt, u_kt, u_ct, grid_c, t_factor_r, t_factor_c, sparse_ublock_idx_bits), forge_attrs)
     else:
         # Find proper tile sizes
         if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
@@ -239,7 +239,7 @@ def lower(type, attr, buda_attr, lc, ops, outputs):
             tile_width = TILE_DIM
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
-        lc.op(type, ops, attr, buda_attrs, "", tile_height, tile_width) # straight 1-1 for matmul
+        lc.op(type, ops, attr, forge_attrs, "", tile_height, tile_width) # straight 1-1 for matmul
 
 
 def decompose(type, attr, dc, inputs):

@@ -21,7 +21,7 @@ template <graphlib::IRLevel ir_level>
 class GraphTest : public ::testing::Test
 {
    public:
-    using OpType = std::conditional_t<ir_level == graphlib::IRLevel::IR_BUDA, graphlib::BudaOpNode, graphlib::PyOpNode>;
+    using OpType = std::conditional_t<ir_level == graphlib::IRLevel::IR_FORGE, graphlib::ForgeOpNode, graphlib::PyOpNode>;
 
     virtual std::vector<OpType*> create_graph() = 0;
 
@@ -55,9 +55,9 @@ class GraphTest : public ::testing::Test
     template <typename... Dims>
     static graphlib::Shape shape(Dims... dims)
     {
-        if constexpr (ir_level == graphlib::IRLevel::IR_BUDA)
+        if constexpr (ir_level == graphlib::IRLevel::IR_FORGE)
         {
-            return graphlib::Shape::create_buda({static_cast<std::uint32_t>(dims)...});
+            return graphlib::Shape::create_forge({static_cast<std::uint32_t>(dims)...});
         }
         else
         {
@@ -114,7 +114,7 @@ class GraphTest : public ::testing::Test
         std::string const& name, graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)
     {
         return tt::add_node<OpType>(
-            *graph, name, op_type.op, op_type.attr, operands, {}, op_type.buda_attrs, op_type.named_attrs);
+            *graph, name, op_type.op, op_type.attr, operands, {}, op_type.forge_attrs, op_type.named_attrs);
     }
 
     OpType* create_op(graphlib::OpType const& op_type, std::vector<graphlib::Node*> const& operands)
@@ -144,10 +144,10 @@ class GraphTest : public ::testing::Test
     OpType* create_op(
         std::string const& type,
         std::vector<graphlib::Node*> const& operands,
-        const tt::BudaOpAttrs& buda_attrs,
+        const tt::ForgeOpAttrs& forge_attrs,
         Attrs... attrs)
     {
-        return create_op(graphlib::OpType(type, {attrs...}, buda_attrs), operands);
+        return create_op(graphlib::OpType(type, {attrs...}, forge_attrs), operands);
     }
 
     template <typename... Attrs>
@@ -155,10 +155,10 @@ class GraphTest : public ::testing::Test
         std::string const& name,
         std::string const& type,
         std::vector<graphlib::Node*> const& operands,
-        const tt::BudaOpAttrs& buda_attrs,
+        const tt::ForgeOpAttrs& forge_attrs,
         Attrs... attrs)
     {
-        return create_op(name, graphlib::OpType(type, {attrs...}, buda_attrs), operands);
+        return create_op(name, graphlib::OpType(type, {attrs...}, forge_attrs), operands);
     }
 
     OpType* create_op(
@@ -219,7 +219,7 @@ class GraphTest : public ::testing::Test
 
     void append_tm(graphlib::OpType const& op_type, std::shared_ptr<graphlib::EdgeAttributes> attr)
     {
-        TT_ASSERT(ir_level == graphlib::IRLevel::IR_BUDA);
+        TT_ASSERT(ir_level == graphlib::IRLevel::IR_FORGE);
         attr->append_tm(op_type);
     }
 
@@ -253,7 +253,7 @@ class GraphTest : public ::testing::Test
 
     std::vector<graphlib::OpType>& get_tms(std::shared_ptr<graphlib::EdgeAttributes> attr)
     {
-        TT_ASSERT(ir_level == graphlib::IRLevel::IR_BUDA);
+        TT_ASSERT(ir_level == graphlib::IRLevel::IR_FORGE);
         return attr->get_tms();
     }
 
@@ -278,7 +278,7 @@ class GraphTest : public ::testing::Test
 };
 
 using ForgeGraphTest = GraphTest<graphlib::IRLevel::IR_TT_FORGE>;
-using BudaGraphTest = GraphTest<graphlib::IRLevel::IR_BUDA>;
+using ForgeGraphTest = GraphTest<graphlib::IRLevel::IR_FORGE>;
 
 inline DeviceConfig create_device_config(
     tt::ARCH arch = tt::ARCH::GRAYSKULL,

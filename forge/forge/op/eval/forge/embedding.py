@@ -34,11 +34,11 @@ def lower(type, attr, lc, ops, outputs):
     while len(embedding_dim) < 4:
         embedding_dim = [1] + embedding_dim
 
-    buda_attrs = {
+    forge_attrs = {
         "num_indices": ops[1].shape[-1],
     }
 
-    lc.op(type, ops, (ops[1].shape[-1],), buda_attrs, "", TILE_DIM, TILE_DIM)
+    lc.op(type, ops, (ops[1].shape[-1],), forge_attrs, "", TILE_DIM, TILE_DIM)
 
 
 def decompose(type, attr, dc, inputs):

@@ -12,7 +12,7 @@
 #include "backend_api/device_config.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "passes/dataformat.hpp"
 #include "reportify/paths.hpp"
 #include "reportify/to_json.hpp"
@@ -138,9 +138,9 @@ bool feeds_sparse_matmul(const graphlib::Graph* graph, const graphlib::Node* nod
 {
     for (auto user: graph->data_users(node))
     {
-        if (user->node_type() == graphlib::NodeType::kBudaOp)
+        if (user->node_type() == graphlib::NodeType::kForgeOp)
         {
-            auto op = user->as<graphlib::BudaOpNode>();
+            auto op = user->as<graphlib::ForgeOpNode>();
             if (op->is_sparse_matmul())
             {
                 return true;
@@ -170,7 +170,7 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
         }
     }
 
-    if (auto math_op = dynamic_cast<graphlib::BudaOpNode*>(node); math_op != nullptr)
+    if (auto math_op = dynamic_cast<graphlib::ForgeOpNode*>(node); math_op != nullptr)
     {
         if (properties.intermediate_df.has_value())
         {
@@ -272,9 +272,9 @@ std::unordered_map<std::string, AMPNodeProperties> get_node_to_amp_properties(Gr
 
     for (Node* node : graph->nodes())
     {
-        if (node->node_type() == graphlib::NodeType::kBudaOp)
+        if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::BudaOpNode *op = node->as<graphlib::BudaOpNode>();
+            graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
             node_to_amp_properties[node->name()] = AMPNodeProperties(
                 op->op_name(),
                 node->get_epoch_type(),

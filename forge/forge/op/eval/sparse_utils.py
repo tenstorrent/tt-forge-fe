@@ -9,8 +9,8 @@ from loguru import logger
 import forge
 from forge.utils import align_up_tile, align_up, round_up_div, clamp
 from ...forgeglobal import TILE_DIM
-from ...tensor import narrow_buda_tensor_to_pytorch, pad_pytorch_tensor_to_buda
-from forge._C import DataFormat, compress_sparse_tensor_and_strip_info, SparseCOO, SparseBUDA, MathFidelity
+from ...tensor import narrow_forge_tensor_to_pytorch, pad_pytorch_tensor_to_forge
+from forge._C import DataFormat, compress_sparse_tensor_and_strip_info, SparseCOO, SparseFORGE, MathFidelity
 from math import gcd
 
 
@@ -1066,7 +1066,7 @@ def interleave_tiles(pickers: "list[torch.Tensor]"):
     ).coalesce()
 
 
-def create_sparse_buda(sparse, bcast_factor=1, fracture_factor=1, tile_align=True) -> SparseBUDA:
+def create_sparse_forge(sparse, bcast_factor=1, fracture_factor=1, tile_align=True) -> SparseFORGE:
     while len(sparse.shape) < 4:
         sparse = sparse.unsqueeze(0)
     w, zdim, y, x = sparse.shape
@@ -1119,7 +1119,7 @@ def shapeify_sparse_tiles_and_encodings(sparse, encodings, grid_r, fracture_fact
     return sparse_tensor, encodings_tensor
 
 
-def compress_buda_picker(sparse, strip_info=True, tile_align=True):
+def compress_forge_picker(sparse, strip_info=True, tile_align=True):
     while len(sparse.shape) < 4:
         sparse = sparse.unsqueeze(0)
     w, zdim, y, x = sparse.shape
@@ -1136,28 +1136,28 @@ def compress_buda_picker(sparse, strip_info=True, tile_align=True):
         )
 
     assert strip_info == True, "removed compress_sparse_tensor, oops, ping svuckovic"  # TODO: Check with Nick if we can remove this code
-    sparse_buda = (
+    sparse_forge = (
         compress_sparse_tensor_and_strip_info(sparse_zs, 1)
         if strip_info
         else compress_sparse_tensor(sparse_zs)
     )
 
     # TODO: Code below needs fixing to account for grid_r > 1
-    unique_tiles = torch.tensor(sparse_buda.tiles).view(1, 1, -1, TILE_DIM)
+    unique_tiles = torch.tensor(sparse_forge.tiles).view(1, 1, -1, TILE_DIM)
     unique_tiles = unique_tiles.reshape(-1, TILE_DIM, TILE_DIM).transpose(0, 1).reshape(1, 1, TILE_DIM, -1)
-    indices_len = len(sparse_buda.indices)
+    indices_len = len(sparse_forge.indices)
     pad_right = align_up(indices_len, TILE_DIM * TILE_DIM) - indices_len
-    indices = torch.tensor(sparse_buda.indices, dtype=torch.int32)
+    indices = torch.tensor(sparse_forge.indices, dtype=torch.int32)
     indices = torch.nn.functional.pad(indices, (0, pad_right))
     indices = indices.view(1, 1, TILE_DIM, -1)
     assert indices.shape[-2] % TILE_DIM == 0
 
-    logger.trace("Sparse BUDA Tensor:")
+    logger.trace("Sparse FORGE Tensor:")
     logger.trace("  Unique Tiles: {}", unique_tiles.shape[-1] // TILE_DIM)
     logger.trace("  Index Tiles: {}", indices.shape[-1] // TILE_DIM)
 
-    # return unique_tiles, indices, indices_len, sparse_buda.sparse_tile_ptr_bits
-    return unique_tiles, indices, indices_len, sparse_buda
+    # return unique_tiles, indices, indices_len, sparse_forge.sparse_tile_ptr_bits
+    return unique_tiles, indices, indices_len, sparse_forge
 
 
 def num_sparse_tiles_in_strip(sparse, verbose=False):
@@ -1246,7 +1246,7 @@ def can_conv2d_prestride(act_shape, weight_shape, stride, dilation, groups, padd
 
     # Only support square stride
     # Non-square strides do work in terms of math, but backend would need to add support as well
-    # tenstorrent/budabackend#1519
+    # tenstorrent/forgebackend#1519
     if stride_height != stride_width:
         return False
 

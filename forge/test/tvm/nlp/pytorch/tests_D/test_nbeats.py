@@ -30,7 +30,7 @@ def test_tvm_nbeats_block(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     input_shape = (1, 64, 64, 64)
     model = NBEATSBlock(100, 100, backcast_length=input_shape[-1])
@@ -55,7 +55,7 @@ def test_tvm_nbeats_generic_block(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
 
     input_shape = (1, 64, 64, 64)
@@ -80,7 +80,7 @@ def test_tvm_nbeats_seasonal_block(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     
     input_shape = (1, 64, 64, 64)
 
@@ -127,7 +127,7 @@ def test_tvm_nbeats_trend_block(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     input_shape = (1, 64, 64, 64)
 

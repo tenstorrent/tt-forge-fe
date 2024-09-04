@@ -18,9 +18,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaSoftmaxTest(ForgeModule):
+class ForgeSoftmaxTest(ForgeModule):
     """
-        Buda Test 2
+        Forge Test 2
 
     """
 
@@ -37,7 +37,7 @@ class BudaSoftmaxTest(ForgeModule):
         shape,
         dim,
         stable):
-        super().__init__("Buda Test 2")
+        super().__init__("Forge Test 2")
 
         assert hasattr(shape, '__iter__'), "Shape must be iterable"
         assert dim < len(shape), "Dimension out of the shape"
@@ -53,15 +53,15 @@ class BudaSoftmaxTest(ForgeModule):
 
         self.inputs = []
         for i in range(2):
-            input = BudaSoftmaxTest.INPUTS_DISTRIBUTION(
-                BudaSoftmaxTest.INPUTS_RANGE_MIN, 
-                BudaSoftmaxTest.INPUTS_RANGE_MAX).sample(self.shape)
+            input = ForgeSoftmaxTest.INPUTS_DISTRIBUTION(
+                ForgeSoftmaxTest.INPUTS_RANGE_MIN, 
+                ForgeSoftmaxTest.INPUTS_RANGE_MAX).sample(self.shape)
             self.inputs.append(Tensor.create_from_torch(input))
 
         for i in range(1, 3):
-            weights = BudaSoftmaxTest.WEIGHTS_DISTRIBUTION(
-                BudaSoftmaxTest.WEIGHTS_RANGE_MIN, 
-                BudaSoftmaxTest.WEIGHTS_RANGE_MAX).sample(self.shape)
+            weights = ForgeSoftmaxTest.WEIGHTS_DISTRIBUTION(
+                ForgeSoftmaxTest.WEIGHTS_RANGE_MIN, 
+                ForgeSoftmaxTest.WEIGHTS_RANGE_MAX).sample(self.shape)
             weights.requires_grad = True
             self.set_parameter("train_param" + str(i), weights)
 

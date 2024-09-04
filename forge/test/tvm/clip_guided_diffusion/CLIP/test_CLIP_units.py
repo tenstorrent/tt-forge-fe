@@ -157,7 +157,7 @@ def test_tvm_clip_gelu(test_kind, test_device):
 
 
 def test_tvm_clip_arange(training=False, recompute=False):
-    pytest.xfail() # generating tensors is not supported in forge/buda
+    pytest.xfail() # generating tensors is not supported in forge/forge
     if not training and recompute:
         pytest.skip()
 
@@ -212,7 +212,7 @@ def test_tvm_clip_multi_resblocks(test_kind, test_device, num_blocks):
     
 
 def test_tvm_clip_rand(training=False, recompute=False):
-    pytest.xfail() # we do not support generating tensors in forge/buda
+    pytest.xfail() # we do not support generating tensors in forge/forge
     if not training and recompute:
         pytest.skip()
     class Rand(nn.Module):

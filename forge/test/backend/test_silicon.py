@@ -14,9 +14,9 @@ from forge.config import _get_global_compiler_config
 from forge.forgeglobal import forge_reset
 import torch
 
-class BudaTrain(forge.ForgeModule):
+class ForgeTrain(forge.ForgeModule):
     """
-    Simple buda module for basic testing, with parameters
+    Simple forge module for basic testing, with parameters
     """
 
     shape = (64, 64)
@@ -33,9 +33,9 @@ class BudaTrain(forge.ForgeModule):
         sum = forge.op.Add("add", sum_sqrt, in2)
         return sum
 
-class BudaTest(forge.ForgeModule):
+class ForgeTest(forge.ForgeModule):
     """
-    Simple buda module for basic testing
+    Simple forge module for basic testing
     No parameters for now, to avoid using rams
     """
 
@@ -51,7 +51,7 @@ class BudaTest(forge.ForgeModule):
 
 @pytest.mark.parametrize("microbatch_size", (1, 64), ids=("microbatch1", "microbatch64"))
 def test_basic_inference(test_device, microbatch_size):
-    verify_module(BudaTest("verify_module"), [(microbatch_size, *BudaTest.shape), (microbatch_size, *BudaTest.shape)],
+    verify_module(ForgeTest("verify_module"), [(microbatch_size, *ForgeTest.shape), (microbatch_size, *ForgeTest.shape)],
             VerifyConfig(test_kind=TestKind.INFERENCE, devtype=test_device.devtype, arch=test_device.arch))
 
 def get_relaxed_atol_pcc(is_training, test_device, size = 1):
@@ -80,7 +80,7 @@ def get_relaxed_atol_pcc(is_training, test_device, size = 1):
 def test_basic_training(test_device, steps, microbatch_size, microbatch_count, accumulation_steps):
 
     relative_atol, pcc = get_relaxed_atol_pcc(True, test_device)
-    verify_module(BudaTrain("verify_module"), [(microbatch_size, *BudaTrain.shape), (microbatch_size, *BudaTrain.shape)],
+    verify_module(ForgeTrain("verify_module"), [(microbatch_size, *ForgeTrain.shape), (microbatch_size, *ForgeTrain.shape)],
             VerifyConfig(test_kind=TestKind.TRAINING, devtype=test_device.devtype, arch=test_device.arch, 
                 steps=steps,
                 microbatch_count=microbatch_count, 
@@ -92,12 +92,12 @@ def test_multi_input(test_kind, test_device):
     if test_kind.is_training():
         pytest.skip() # input gradient data mismatch
 
-    verify_module(BudaTest("verify_module"), [(1, *BudaTest.shape), (1, *BudaTest.shape)],
+    verify_module(ForgeTest("verify_module"), [(1, *ForgeTest.shape), (1, *ForgeTest.shape)],
             VerifyConfig(test_kind=test_kind, microbatch_count=2, devtype=test_device.devtype, arch=test_device.arch))
 
 @pytest.mark.parametrize("microbatch_size", (2, 64), ids=("microbatch2", "microbatch64"))
 def test_microbatch(microbatch_size, test_device):
-    verify_module(BudaTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
+    verify_module(ForgeTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
             VerifyConfig(test_kind=TestKind.INFERENCE, devtype=test_device.devtype, arch=test_device.arch))
 
 @pytest.mark.parametrize("microbatch_size", (1, 16), ids=("microbatch1", "microbatch16"))
@@ -105,7 +105,7 @@ def test_microbatch(microbatch_size, test_device):
 def test_concurrent(test_kind, test_device, microbatch_size, microbatch_count):
     if test_kind.is_training():
         pytest.skip() # Runs, but there's a small input gradient error
-    verify_module(BudaTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
+    verify_module(ForgeTest("verify_module"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
             VerifyConfig(
                 test_kind=test_kind, 
                 devtype=test_device.devtype, 
@@ -181,7 +181,7 @@ def test_chip_id(test_kind, test_device):
     # Run on last device
     microbatch_size = 4
     relative_atol, pcc = get_relaxed_atol_pcc(test_kind.is_training(), test_device)
-    verify_module(BudaTrain("last_device"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
+    verify_module(ForgeTrain("last_device"), [(microbatch_size, 64, 64), (microbatch_size, 64, 64)],
             VerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch, chip_ids=[num_devices-1],
                 relative_atol=relative_atol, pcc=pcc),
             params_centered_on_zero=False, inputs_centered_on_zero=False)

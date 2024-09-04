@@ -17,9 +17,9 @@ import forge.op.nn as nn
 from forge import ForgeModule, Tensor
 
 
-class BudaComparisonTest(ForgeModule):
+class ForgeComparisonTest(ForgeModule):
     """
-        Buda Test 6
+        Forge Test 6
 
     """
 
@@ -32,7 +32,7 @@ class BudaComparisonTest(ForgeModule):
         rng_min,
         rng_max
     ):
-        super().__init__("Buda Test 6")
+        super().__init__("Forge Test 6")
 
         self.testname = "Comparison Operator, Test 6"
         self.shape = shape

@@ -4,7 +4,7 @@
 #
 # Tests for testing of matmul operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -71,7 +71,7 @@ def test_matmul_generic(
     if test_kind.is_training() and len(shape) >= 3 and shape[-3] > 1:
         pytest.skip("Matmul with gradient accumulate must have t=1")
 
-    architecture = f'generic.{model}.BudaMatmulTest(shape={shape})'
+    architecture = f'generic.{model}.ForgeMatmulTest(shape={shape})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
@@ -102,7 +102,7 @@ def test_matmul_custom(
     if model == "model_4":
         pytest.xfail() # balancer failure
 
-    architecture = f'custom.{model}.BudaMatmulTest()'
+    architecture = f'custom.{model}.ForgeMatmulTest()'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

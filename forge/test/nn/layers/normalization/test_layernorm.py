@@ -4,7 +4,7 @@
 #
 # Tests for testing of layernorm layer
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os

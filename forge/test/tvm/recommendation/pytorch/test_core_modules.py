@@ -86,7 +86,7 @@ activations = ['relu', 'sigmoid', 'linear', 'dice', 'prelu']
 #     )
 
 #     pytorch_out = model(act1, act2)
-#     assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_buda=True, verify_cfg=VerifyConfig())
+#     assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_forge=True, verify_cfg=VerifyConfig())
 
 
 # TODO: When microbatch > 1 is supported in backend convert this to a verify_module test

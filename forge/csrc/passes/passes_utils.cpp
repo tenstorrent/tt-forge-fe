@@ -169,9 +169,9 @@ void optimize_tms(std::vector<graphlib::OpType> &tms) {
              std::get<int>(a.attr[1]) *= std::get<int>(b.attr[0]);
              std::get<int>(a.attr[2]) *= std::get<int>(b.attr[0]);
              std::get<int>(a.attr[3]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.buda_attrs["index"]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.buda_attrs["length"]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.buda_attrs["stride"]) *= std::get<int>(b.attr[0]);
+             std::get<int>(a.forge_attrs["index"]) *= std::get<int>(b.attr[0]);
+             std::get<int>(a.forge_attrs["length"]) *= std::get<int>(b.attr[0]);
+             std::get<int>(a.forge_attrs["stride"]) *= std::get<int>(b.attr[0]);
              std::swap(a, b);
              return Erase::None;
          }},
@@ -243,7 +243,7 @@ void optimize_tms(std::vector<graphlib::OpType> &tms) {
 
 void optimize_tms(Graph *graph) {
     for (Node *node : graph->nodes()) {
-        if (node->node_type() == NodeType::kBudaOp) {
+        if (node->node_type() == NodeType::kForgeOp) {
             for (auto const &edge : graph->operand_data_edges(node)) {
                 auto edge_attributes = graph->get_edge_attributes(edge);
                 std::vector<graphlib::OpType> &tms = edge_attributes->get_tms();
@@ -297,21 +297,21 @@ std::vector<int> get_factors(int num)
 bool check_unsupported_hw_ops(Graph *graph, bool should_throw)
 {
     bool unsupported_hw_ops = false;
-    py::object eval_module = py::module_::import("forge.op.eval.buda");
+    py::object eval_module = py::module_::import("forge.op.eval.lforge");
     std::string message;
 
     for (Node *node : graph->nodes())
     {
         // TODO: Remove this block once backend supports hconcat / vconcat
-        if (node->node_type() == NodeType::kBudaNaryTM)
+        if (node->node_type() == NodeType::kForgeNaryTM)
         {
-            graphlib::BudaNaryTMNode *tm = node->as<graphlib::BudaNaryTMNode>();
+            graphlib::ForgeNaryTMNode *tm = node->as<graphlib::ForgeNaryTMNode>();
             unsupported_hw_ops = true;
             message += fmt::format("{} {}\n", tm->name(), tm->op_type().op);
             continue;
         }
 
-        if (node->node_type() != NodeType::kBudaOp)
+        if (node->node_type() != NodeType::kForgeOp)
             continue;
     }
 

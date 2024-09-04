@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.sqrt import Sqrt as BudaSqrt
+from ..lforge.sqrt import Sqrt as ForgeSqrt
 from .reciprocal import Reciprocal
 
 
@@ -57,7 +57,7 @@ class Sqrt(PyEltwiseUnaryOp):
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
 
-        lc.op(BudaSqrt.create(), tensors, tile_height=tile_height, tile_width=tile_width)
+        lc.op(ForgeSqrt.create(), tensors, tile_height=tile_height, tile_width=tile_width)
 
     def initial_flops_estimate(self, tensor_shapes):
         flops = 0

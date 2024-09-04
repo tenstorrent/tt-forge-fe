@@ -98,7 +98,7 @@ def test_pt_encoder(test_kind, test_device, size, encoder_count, num_chips):
             )
             forge.config.override_op_size(
                 "bw_in0_matmul_128_matmul_1", (1, 2)
-            )  # tenstorrent/budabackend#667
+            )  # tenstorrent/forgebackend#667
             pytest.skip(
                 "Issue 667"
             )  # unsure why, but CI fails even with the workaround above, while it passes in interactive runs

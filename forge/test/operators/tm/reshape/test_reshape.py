@@ -4,7 +4,7 @@
 #
 # Tests for testing of reshape operator
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 
@@ -62,7 +62,7 @@ def test_reshape(
         pytest.skip("These models return intermediate nodes. That's not supported today." 
                     "Autograd is trying to do backward pass twice for the same subpath in the graph and that's not correct. ")
 
-    architecture = f'models.{model}.BudaReshapeTest(old_shape={old_shape}, new_shape={new_shape})'
+    architecture = f'models.{model}.ForgeReshapeTest(old_shape={old_shape}, new_shape={new_shape})'
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)

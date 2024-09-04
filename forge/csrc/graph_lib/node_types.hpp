@@ -14,7 +14,7 @@
 #include "graph_lib/node.hpp"
 #include "graph_lib/shape.hpp"
 #include "graph_lib/utils.hpp"
-#include "lower_to_buda/common.hpp"
+#include "lower_to_forge/common.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 
 namespace tt
@@ -159,7 +159,7 @@ private:
     bool prologue_ = false;
     std::string fractured_parameter_mapping_;
     RuntimeTensorTransform runtime_tensor_transform;
-    BudaQueueLayout layout = BudaQueueLayout::Tilized;
+    ForgeQueueLayout layout = ForgeQueueLayout::Tilized;
 
    protected:
     std::unique_ptr<ConstEvalGraph> consteval_graph_;
@@ -176,8 +176,8 @@ public:
     void clear_consteval_graph();
     virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
 
-    void set_layout(BudaQueueLayout new_layout) { layout = new_layout; }
-    BudaQueueLayout get_layout() const { return layout; }
+    void set_layout(ForgeQueueLayout new_layout) { layout = new_layout; }
+    ForgeQueueLayout get_layout() const { return layout; }
 
     void set_tile_broadcast_dim(int dim) { tile_broadcast_dims_.push_back(dim); }
     std::vector<int> get_tile_broadcast_dims() const { return tile_broadcast_dims_; }
@@ -219,7 +219,7 @@ private:
     std::vector<float> tile_value_;
     std::shared_ptr<void> tensor_handle_;
     Shape tensor_shape_;
-    sparse::SparseBUDA sparse_buda {};  // TODO: This should be a void pointer
+    sparse::SparseFORGE sparse_forge {};  // TODO: This should be a void pointer
 
     int dim_r_;
     int dim_c_;
@@ -250,8 +250,8 @@ public:
     std::shared_ptr<void> tensor() const { TT_ASSERT(is_tensor()); return tensor_handle_; }
     void set_tensor_handle(std::shared_ptr<void> t_h) { TT_ASSERT(is_tensor()); this->tensor_handle_ = t_h; }
     const Shape &tensor_shape() const { TT_ASSERT(is_tensor()); return tensor_shape_; }
-    void set_sparse_buda(sparse::SparseBUDA sparse_buda) { this->sparse_buda = sparse_buda; }
-    sparse::SparseBUDA& get_sparse_buda() { return sparse_buda; }
+    void set_sparse_forge(sparse::SparseFORGE sparse_forge) { this->sparse_forge = sparse_forge; }
+    sparse::SparseFORGE& get_sparse_forge() { return sparse_forge; }
 
     bool equivalent(const ConstantInputNode *other) const;
 };
@@ -306,20 +306,20 @@ protected:
 
 struct OpType
 {
-    using Attr = BudaOpAttr;
-    using Attrs = BudaOpAttrs;
+    using Attr = ForgeOpAttr;
+    using Attrs = ForgeOpAttrs;
 
     std::string op;
     std::vector<Attr> attr;  // legacy path
     Attrs named_attrs;      // new path
-    BudaOpAttrs buda_attrs; // attrs that will lower directly into the netlist
+    ForgeOpAttrs forge_attrs; // attrs that will lower directly into the netlist
 
     OpType(
         std::string const &op,
         std::vector<Attr> const &attr = {},
-        BudaOpAttrs const &buda_attrs = {},
+        ForgeOpAttrs const &forge_attrs = {},
         Attrs named_attrs = {}) :
-        op(op), attr(attr), named_attrs(named_attrs), buda_attrs(buda_attrs)
+        op(op), attr(attr), named_attrs(named_attrs), forge_attrs(forge_attrs)
     {
     }
 
@@ -328,7 +328,7 @@ struct OpType
     bool operator==(const OpType &other) const
     {
         return op == other.op and attr == other.attr and named_attrs == other.named_attrs and
-               buda_attrs == other.buda_attrs;
+               forge_attrs == other.forge_attrs;
     }
     bool operator!=(const OpType &other) const { return not(*this == other); }
 
@@ -438,12 +438,12 @@ public:
     {
         return py_attr(attr_name)(args...).template cast<T>();
     }
-    IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_TT_FORGE : IRLevel::IR_BUDA; }
+    IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_TT_FORGE : IRLevel::IR_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
     void overwrite_op_attrs(std::vector<OpType::Attr> op_attrs) { op_type_.attr = op_attrs; }
-    const BudaOpAttrs &buda_attrs() const { return op_type_.buda_attrs; }
-    void overwrite_buda_attrs(BudaOpAttrs buda_attrs) { op_type_.buda_attrs = buda_attrs; }
+    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
+    void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
     void set_gradient_op(bool value = true) { gradient_op_ = value; }
     bool is_op_type(std::string const &type) const { return type == op_name(); }
     bool is_gradient_op() const { return gradient_op_; }
@@ -459,9 +459,9 @@ public:
     bool is_requantization() const { return op_name() == "requantization"; }
     bool is_quantization_related_op() const { return is_quantization() or is_dequantization() or is_requantization(); }
     bool is_dense_matmul() const { return is_matmul() and not is_sparse_matmul() and not is_depthwise_matmul(); }
-    bool is_sparse_matmul() const { return is_matmul() and (buda_attrs().find("identity") != buda_attrs().end()); }
+    bool is_sparse_matmul() const { return is_matmul() and (forge_attrs().find("identity") != forge_attrs().end()); }
     bool is_depthwise_matmul() const { return op_name().compare("depthwise") == 0; }
-    bool is_matmul_not_sparse() const { return is_matmul() and (buda_attrs().find("identity") == buda_attrs().end()); }
+    bool is_matmul_not_sparse() const { return is_matmul() and (forge_attrs().find("identity") == forge_attrs().end()); }
     bool should_pair_with_sparse(const OpNode* sparse_op_node, const Graph* graph) const;
     bool is_tm() const;
     void set_output_df_from_operands(const Graph * graph);
@@ -486,7 +486,7 @@ public:
     void copy_parent_op_attributes(PyOpNode *node);
 };
 
-class BudaOpNode : public OpNode {
+class ForgeOpNode : public OpNode {
 
 private:
     tt::DataFormat accumulate_df_  = tt::DataFormat::Float16_b;
@@ -496,8 +496,8 @@ private:
     bool buffering_op_ = false;
 
 public:
-    BudaOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kBudaOp) {}
-    BudaOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kBudaOp) {}
+    ForgeOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kForgeOp) {}
+    ForgeOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kForgeOp) {}
 
     tt::DataFormat intermediate_df() const { return intermediate_df_; }
     void set_intermediate_df(tt::DataFormat df) { intermediate_df_ = df; }
@@ -509,7 +509,7 @@ public:
     void set_math_fidelity(tt::MathFidelity mf) { math_fidelity_ = mf; }
 
     void copy_lowered_op_attributes(PyOpNode *node);
-    void copy_parent_op_attributes(BudaOpNode *node);
+    void copy_parent_op_attributes(ForgeOpNode *node);
 
     virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
 
@@ -517,21 +517,21 @@ public:
     bool is_buffering_op() const { return buffering_op_; }
 };
 
-class BudaNaryTMNode : public Node
+class ForgeNaryTMNode : public Node
 {
    private:
     OpType op_type_;
 
    public:
-    BudaNaryTMNode(const std::string &name, OpType const &op_type) :
-        Node(name, NodeType::kBudaNaryTM), op_type_(op_type)
+    ForgeNaryTMNode(const std::string &name, OpType const &op_type) :
+        Node(name, NodeType::kForgeNaryTM), op_type_(op_type)
     {
     }
     OpType const &op_type() const { return op_type_; }
     void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
     const std::string &tm_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &tm_attrs() const { return op_type_.attr; }
-    const BudaOpAttrs &buda_attrs() const { return op_type_.buda_attrs; }
+    const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
     void copy_lowered_op_attributes(PyOpNode *node);
 };
 

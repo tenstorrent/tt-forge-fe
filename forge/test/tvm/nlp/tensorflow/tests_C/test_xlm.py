@@ -64,7 +64,7 @@ def test_tvm_xlm_FFN_tf(test_kind, test_device):
         pytest.skip()
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     class TFXLM_FFN(tf.keras.Model):
         def __init__(self):

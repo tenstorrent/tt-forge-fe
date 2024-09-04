@@ -163,9 +163,9 @@ def test_detr_50_backbone_layer(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     model = download_model(DetrModel.from_pretrained, "facebook/detr-resnet-50", torchscript=True)
 
@@ -212,7 +212,7 @@ def test_detr_50_encoder_layer(test_kind, test_device):
         compiler_cfg.compile_depth = CompileDepth.FULL
     else:
         # Unsupported HW op: heaviside
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     # Configure PyTorch module
     pytorch_module = download_model(
@@ -264,7 +264,7 @@ def test_detr_50_decoder_layer(test_kind, test_device):
         compiler_cfg.compile_depth = CompileDepth.FULL
     else:
         # Unsupported HW op: heaviside
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     # Configure PyTorch module
     pytorch_module = download_model(

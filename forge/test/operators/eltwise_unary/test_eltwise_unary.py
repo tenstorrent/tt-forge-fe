@@ -4,7 +4,7 @@
 #
 # Tests for testing of element-wise unary operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 
 import os
@@ -74,7 +74,7 @@ def test_eltwise_unary(
         kwargs['min'] = np.random.rand()
         kwargs['max'] = np.random.rand()
         
-    architecture = f'models.{model}.BudaElementWiseUnaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}'
+    architecture = f'models.{model}.ForgeElementWiseUnaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}'
     for k, v in kwargs.items():
         architecture = f'{architecture}, {k}={v}'
     architecture = f'{architecture})'

@@ -390,12 +390,12 @@ def test_bert_encoder(test_kind, test_device):
     compiler_config = _get_global_compiler_config()
     if not test_kind.is_training():
         # compiler_config.compile_depth = CompileDepth.FULL
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER # Remove when maximum decomposition is enabled
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER # Remove when maximum decomposition is enabled
     else:
         # Fails on backend with following error:
         # "Backward error: element 0 of tensors does not require grad and does not have a grad_fn"
         # compiler_config.compile_depth = CompileDepth.BACKEND_GOLDEN_VERIFY
-        compiler_config.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER # Remove when maximum decomposition is enabled
+        compiler_config.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER # Remove when maximum decomposition is enabled
     compiler_config.retain_tvm_python_files = True
 
     # Initialize module

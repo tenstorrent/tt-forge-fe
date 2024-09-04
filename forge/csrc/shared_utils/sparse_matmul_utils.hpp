@@ -347,7 +347,7 @@ struct SparseIndex
 
 using SparseTiles = std::vector<std::vector<float>>;
 using EncodingTiles = std::vector<std::vector<std::int32_t>>;
-struct SparseBUDA
+struct SparseFORGE
 {
    public:
     enum class Layout
@@ -502,8 +502,8 @@ struct SparseBUDA
     int bcast_factor = 0;
     int fracture_factor = 1;
 
-    SparseBUDA() = default;
-    SparseBUDA(
+    SparseFORGE() = default;
+    SparseFORGE(
         std::vector<SparseCOO> sparse_zs,
         std::vector<SparseIndex> sparse_indices,
         std::vector<std::int64_t> sparse_shape,
@@ -547,14 +547,14 @@ struct SparseBUDA
     static constexpr std::uint32_t kMaxNZUblocks = 1 << 16;
 };
 
-// SparseBUDA compress_sparse_tensor(std::vector<SparseCOO> const& sparse_zs);
-SparseBUDA compress_sparse_tensor_and_strip_info(
+// SparseFORGE compress_sparse_tensor(std::vector<SparseCOO> const& sparse_zs);
+SparseFORGE compress_sparse_tensor_and_strip_info(
     std::vector<SparseCOO> const& sparse_zs, int bcast_factor, int fracture_factor);
 
 int get_u_rt_encoding_bits(int u_rt);
 int get_u_kt_encoding_bits(int u_kt);
 
 std::ostream& operator<<(std::ostream& out, const SparseCOO::SortOrder& sort_order);
-std::ostream& operator<<(std::ostream& out, SparseBUDA::Layout layout);
+std::ostream& operator<<(std::ostream& out, SparseFORGE::Layout layout);
 
 }  // namespace tt::sparse

@@ -14,7 +14,7 @@ import torch
 from loguru import logger
 
 from forge._C.graph import OpType
-from forge.tensor import pytorch_dtype_to_buda_dataformat
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 from forge.config import CompilerConfig, _get_global_compiler_config
 
 class ForgeNode:
@@ -200,7 +200,7 @@ def process_maxpool2d(node, forge_op_name):
 
     forge_node = ForgeNode(OpType(forge_op_name, attrs), inputs)
     forge_node.shape = node.meta['tensor_meta'][0].shape
-    forge_node.dtype = pytorch_dtype_to_buda_dataformat(node.meta['tensor_meta'][0].dtype)
+    forge_node.dtype = pytorch_dtype_to_forge_dataformat(node.meta['tensor_meta'][0].dtype)
     forge_node.wrap_tuple = True
     return forge_node
 
@@ -237,7 +237,7 @@ def process_layernorm(node, forge_op_name):
     args = [node.args[0], node.args[2], node.args[3]]
     forge_node = ForgeNode(OpType(forge_op_name, attrs), args)
     forge_node.shape = node.meta['tensor_meta'][0].shape
-    forge_node.dtype = pytorch_dtype_to_buda_dataformat(node.meta['tensor_meta'][0].dtype)
+    forge_node.dtype = pytorch_dtype_to_forge_dataformat(node.meta['tensor_meta'][0].dtype)
     forge_node.wrap_tuple = True
     return forge_node
 
@@ -249,7 +249,7 @@ def process_batchnorm(node, forge_op_name):
     forge_node = ForgeNode(OpType(forge_op_name, attrs), args)
 
     forge_node.shape = node.meta['tensor_meta'][0].shape
-    forge_node.dtype = pytorch_dtype_to_buda_dataformat(node.meta['tensor_meta'][0].dtype)
+    forge_node.dtype = pytorch_dtype_to_forge_dataformat(node.meta['tensor_meta'][0].dtype)
     forge_node.wrap_tuple = True
     return forge_node
 
@@ -335,7 +335,7 @@ def process_constant_pad_nd(node, forge_op_name):
     padding = node.args[1]
     value = node.args[2]
     if value != 0.0:
-        raise ValueError("Buda only supports zero padding") # TODO: add to cpu fallback if padding is not 0
+        raise ValueError("Forge only supports zero padding") # TODO: add to cpu fallback if padding is not 0
     forge_node = ForgeNode(OpType(forge_op_name, [*padding, 0, False]), [node.args[0], ]) # mode index 0 = constant
     return forge_node
 
@@ -436,7 +436,7 @@ def remove_subgraph(subgraph_idx: int):
 def add_op(graph, node, name, forge_node, subgraph_idx):
     global node_to_id
     shape = node.meta['tensor_meta'].shape if forge_node.shape is None else forge_node.shape
-    dtype = pytorch_dtype_to_buda_dataformat(node.meta['tensor_meta'].dtype) if forge_node.dtype is None else forge_node.dtype
+    dtype = pytorch_dtype_to_forge_dataformat(node.meta['tensor_meta'].dtype) if forge_node.dtype is None else forge_node.dtype
 
     add_constants_if_necessary(graph, forge_node.args, subgraph_idx)
     if "nn_module_stack" in node.meta:
@@ -453,7 +453,7 @@ def add_op(graph, node, name, forge_node, subgraph_idx):
             f"{name}_{subgraph_idx}",
             forge_node.op,
             [int(dim) for dim in shape],
-            pytorch_dtype_to_buda_dataformat(dtype),
+            pytorch_dtype_to_forge_dataformat(dtype),
             subgraph_idx,
             tags)
     
@@ -480,7 +480,7 @@ def add_input(graph, node, subgraph_idx, module_inputs):
             f"{node.name}_{subgraph_idx}",
             [int(dim) for dim in node.meta['tensor_meta'].shape],
             node.meta["tensor_meta"].requires_grad,
-            pytorch_dtype_to_buda_dataformat(node.meta["tensor_meta"].dtype),
+            pytorch_dtype_to_forge_dataformat(node.meta["tensor_meta"].dtype),
             subgraph_idx)
     module_inputs.append(nid)
     return nid
@@ -494,7 +494,7 @@ def add_constant(graph, name, tensor, subgraph_idx):
             f"{name}_{subgraph_idx}",
             tensor,
             [int(dim) for dim in tensor.shape],
-            pytorch_dtype_to_buda_dataformat(tensor.dtype),
+            pytorch_dtype_to_forge_dataformat(tensor.dtype),
             subgraph_idx)
     const_to_id[tensor] = nid
     return nid
@@ -507,7 +507,7 @@ def add_param(graph, name, torch_param, subgraph_idx):
             name,
             [int(dim) for dim in torch_param.shape],
             torch_param.requires_grad,
-            pytorch_dtype_to_buda_dataformat(torch_param.dtype),
+            pytorch_dtype_to_forge_dataformat(torch_param.dtype),
             subgraph_idx)
     param_to_id[name] = nid
     return nid
@@ -520,7 +520,7 @@ def add_outputs(graph, node, subgraph_idx, output_nids, output_requires_grad, ou
                 graph, 
                 node.name + "_" + arg.name + "_" + str(subgraph_idx),
                 [int(dim) for dim in meta.shape],
-                pytorch_dtype_to_buda_dataformat(meta.dtype),
+                pytorch_dtype_to_forge_dataformat(meta.dtype),
                 False,  #TODO Loss output
                 subgraph_idx)
         create_data_edge(graph, node_to_id[arg], 0, nid, index, [])

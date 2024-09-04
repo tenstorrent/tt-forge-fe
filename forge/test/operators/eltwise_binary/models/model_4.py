@@ -15,9 +15,9 @@ import forge
 from forge import ForgeModule, Tensor
 
 
-class BudaElementWiseBinaryTest(ForgeModule):
+class ForgeElementWiseBinaryTest(ForgeModule):
     """
-        Buda Test 4
+        Forge Test 4
 
         In this test we have six operators with three input operands and three trainable operands.
 
@@ -28,7 +28,7 @@ class BudaElementWiseBinaryTest(ForgeModule):
     """
 
     def __init__(self, operator, opname, shape):
-        super().__init__("Buda Test 4")
+        super().__init__("Forge Test 4")
         self.operator = operator
         self.opname = opname
         self.testname = "Operator " + opname + " Test 4"

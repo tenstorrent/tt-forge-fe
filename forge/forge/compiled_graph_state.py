@@ -175,10 +175,10 @@ class CompiledGraphState:
 
         if isinstance(module, Module):
             for p in module.get_parameters():
-                value = p.value(is_buda=False)
+                value = p.value(is_forge=False)
                 if value == None:
                     raise ValueError(f"Parameter {p.get_name()} has no value")
-                constant_to_tensor[p.get_name()] = p.value(is_buda=False)
+                constant_to_tensor[p.get_name()] = p.value(is_forge=False)
         elif isinstance(module, torch.fx.GraphModule):
             for name, value in module.named_parameters():
                 constant_to_tensor[name] = value
@@ -199,7 +199,7 @@ class CompiledGraphState:
             consteval_trace,
             parameter_to_tile_dims,
             ordered_parameter_node_names,
-            is_buda=False
+            is_forge=False
         )
 
         return CompiledGraphState(

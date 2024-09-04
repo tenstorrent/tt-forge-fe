@@ -49,7 +49,7 @@ ONE_SHELF_ETH_CONNECTIONS = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "one_shelf_eth_connections.yaml"
 )
 
-BACKEND_CLUSTER_DESC = os.path.join(os.getenv("BUDA_HOME"), "cluster_desc.yaml")
+BACKEND_CLUSTER_DESC = os.path.join(os.getenv("FORGE_HOME"), "cluster_desc.yaml")
 
 
 ############################################################################################

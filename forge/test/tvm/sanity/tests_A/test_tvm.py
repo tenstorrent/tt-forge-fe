@@ -1210,7 +1210,7 @@ def test_invalid_reshape_transpose_into_hslice(test_kind, test_device):
             return x
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     framework_module = Module()
     forge_module = PyTorchModule("pt_invalid_reshape_transpose_into_hslice", framework_module)
@@ -1451,7 +1451,7 @@ def test_tvm_scatter_nd(test_kind, test_device):
             devtype=test_device.devtype,
             test_kind=test_kind,
             verify_all=True,
-            # verify_each_buda_pass=True,
+            # verify_each_forge_pass=True,
         ),
     )
 
@@ -1541,7 +1541,7 @@ def test_tvm_invalid_dtype(test_kind, test_device):
             devtype=test_device.devtype,
             test_kind=test_kind,
             verify_all=True,
-            # verify_each_buda_pass=True,
+            # verify_each_forge_pass=True,
         ),
     )
 
@@ -1562,7 +1562,7 @@ def test_conv2d_with_merged_bias(test_kind, test_device):
             return x
 
     compiler_cfg = _get_global_compiler_config()
-    # compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    # compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     framework_model = Model()
     module = PyTorchModule("pt_conv_with_merged_bias", framework_model)

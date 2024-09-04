@@ -39,7 +39,7 @@ namespace graphlib
 struct OpType;
 class QueueNode;
 class InputNode;
-class BudaOpNode;
+class ForgeOpNode;
 
 // pass through
 bool default_node_filter(Node *);
@@ -90,7 +90,7 @@ QueueNode *create_buffering_queue(
 
 // Creates and inserts a nop node on the given edge.
 // Returns newly created node and edges.
-std::tuple<BudaOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering = false, bool hoist_tms = false, bool remove_edge = true);
+std::tuple<ForgeOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering = false, bool hoist_tms = false, bool remove_edge = true);
 
 // Bypass queue, connecting its source to its destination. There has to be only one source for queue, and user is
 // defined by user_edge. Diference from bypassing node (bypass_node) is that here we can bypass some users of queue and
@@ -211,7 +211,7 @@ graphlib::Shape post_tms_shape(
     std::vector<OpType> const &tms,
     std::function<graphlib::Shape(graphlib::OpType const &, graphlib::Shape, graphlib::IRLevel)> tm_evaluator =
         default_tm_evaluator,
-    graphlib::IRLevel ir_level = IRLevel::IR_BUDA);
+    graphlib::IRLevel ir_level = IRLevel::IR_FORGE);
 
 graphlib::Shape post_tms_shape(
     Graph const *graph,
@@ -222,7 +222,7 @@ graphlib::Shape post_tms_shape(
 std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node);
 
 bool tms_support_kernel_broadcast(
-    Shape producer_shape, std::vector<OpType> const &tms, UBlockOrder ublock_order, int ublock_ct, bool is_buda = true);
+    Shape producer_shape, std::vector<OpType> const &tms, UBlockOrder ublock_order, int ublock_ct, bool is_forge = true);
 
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);
@@ -278,7 +278,7 @@ class ConstEvalGraph
     std::unique_ptr<Node> promote_node(std::unique_ptr<Node> &&consteval_node);
     std::unique_ptr<Node> promote_node(Graph *runtime_graph, Node *runtime_node);
     std::unique_ptr<ConstEvalGraph> clone(Node *runtime_input, std::string const &new_input_node_name = "");
-    void pad_output_to_buda_dims(std::string const &name_prefix);
+    void pad_output_to_forge_dims(std::string const &name_prefix);
     void set_needs_autograd(bool new_needs_autograd) { needs_autograd = new_needs_autograd; }
     void autograd();
 

@@ -330,7 +330,7 @@ def test_sqrt(x_shape, y_shape):
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 def test_embedding(vocab_size, token_num, embedding_dim):
-    compiler_cfg = pybuda.config._get_global_compiler_config()
+    compiler_cfg = pyforge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
 
     class Embedding(nn.Module):
@@ -348,7 +348,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     framework_model = Embedding()
     fw_out = framework_model(*inputs)
 
-    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    compiled_model = pyforge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -381,7 +381,7 @@ def test_reciprocal(shape):
     framework_model = Reciprocal()
     fw_out = framework_model(*inputs)
     
-    compiled_model = pybuda.compile(framework_model, sample_inputs=inputs)
+    compiled_model = pyforge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]

@@ -139,7 +139,7 @@ def test_tvm_transpose(test_kind, test_device, input_shape, tensor_permutation):
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class MultiAxisTranspose(nn.Module):
         def __init__(self):
             super().__init__()
@@ -181,7 +181,7 @@ def test_tvm_concat(test_kind, test_device, input_shape_first, input_shape_secon
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     class Concat(nn.Module):
         def __init__(self):
@@ -308,7 +308,7 @@ def test_tvm_einsum(test_kind, test_device, einsum_inputs):
         )
 
         pytorch_out = model(*acts)
-        assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_buda=True, verify_cfg=VerifyConfig())
+        assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_forge=True, verify_cfg=VerifyConfig())
 
 
 input_shapes = [(1, 32, 32, 32)]
@@ -403,7 +403,7 @@ def test_tvm_conv(
         compiler_cfg=CompilerConfig(
             enable_training=training,
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
         ),
         verify_cfg=VerifyConfig(
             intermediates=True,
@@ -411,7 +411,7 @@ def test_tvm_conv(
     )
 
     pytorch_out = model(act1)
-    assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_buda=True, verify_cfg=VerifyConfig())
+    assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_forge=True, verify_cfg=VerifyConfig())
 
 
 input_shapes = [(1, 512, 10, 10), (1, 512, 20, 10), (1, 512, 10, 30)]
@@ -428,7 +428,7 @@ def test_tvm_avg_pool(test_kind, test_device, input_shape, pool_out_size):
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class AdaptiveAvgPool(nn.Module):
         def __init__(self):
             super().__init__()
@@ -507,7 +507,7 @@ def test_tvm_upsample3d(test_kind, test_device, input_shape, scale_factors, upsa
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     class Upsample3d(nn.Module):
         def __init__(self, scale_factors, upsample_mode):
@@ -551,7 +551,7 @@ def test_tvm_upsample2d_channel_last(test_kind, test_device, input_shapes, scale
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     
     if scale_factors[0] % input_shapes[-3] != 0 or scale_factors[1] % input_shapes[-2] != 0:
         pytest.skip()
@@ -600,7 +600,7 @@ def test_tvm_upsample2d(test_kind, test_device, input_shape, scale_factors, upsa
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     if align_corners and upsample_mode != "bilinear":
         pytest.skip()
@@ -656,7 +656,7 @@ def test_tvm_lift_linear_split(test_kind, test_device, input_shape, lin_in, lin_
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class LinearLift(nn.Module):
         def __init__(self):
             super().__init__()
@@ -765,7 +765,7 @@ def test_tvm_transpose_conv(
     )
 
     pytorch_out = model(act1)
-    assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_buda=True, verify_cfg=VerifyConfig())
+    assert compare_tensor_to_golden("output", ret.golden_outputs[0], pytorch_out, is_forge=True, verify_cfg=VerifyConfig())
 
 channels = [9]
 input_shapes = [9, 32]
@@ -820,7 +820,7 @@ def test_tvm_adaptive_avg_pool(
         compiler_cfg=CompilerConfig(
             enable_training=training, 
             enable_recompute=recompute,
-            compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER,
+            compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,
         ),
         verify_cfg=VerifyConfig(
             intermediates=True,
@@ -828,7 +828,7 @@ def test_tvm_adaptive_avg_pool(
     )
 
     pytorch_golden_out = pytorch_model(hidden_states)
-    assert compare_tensor_to_golden("output", res.golden_outputs[0], pytorch_golden_out, is_buda=True, verify_cfg=VerifyConfig())
+    assert compare_tensor_to_golden("output", res.golden_outputs[0], pytorch_golden_out, is_forge=True, verify_cfg=VerifyConfig())
 
 @pytest.mark.parametrize("recompute", (True, False), ids=["recompute", "no_recompute"])
 @pytest.mark.parametrize(
@@ -885,7 +885,7 @@ def test_tvm_adaptive_max_pool(
     )
 
     pytorch_golden_out = pytorch_model(hidden_states)
-    assert compare_tensor_to_golden("output", res.golden_outputs[0], pytorch_golden_out[0], is_buda=True, verify_cfg=VerifyConfig())
+    assert compare_tensor_to_golden("output", res.golden_outputs[0], pytorch_golden_out[0], is_forge=True, verify_cfg=VerifyConfig())
 
 
 @pytest.mark.parametrize("recompute", (True, False), ids=["recompute", "no_recompute"])
@@ -1000,7 +1000,7 @@ def test_tvm_avgpool2d(training, ceil_mode, recompute):
         "avgpool2d",
         hidden_states,
         compiler_cfg=CompilerConfig(
-            enable_training=training, enable_recompute=recompute, compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER
+            enable_training=training, enable_recompute=recompute, compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER
         ),
         verify_cfg=VerifyConfig(
             intermediates=True,
@@ -1008,7 +1008,7 @@ def test_tvm_avgpool2d(training, ceil_mode, recompute):
     )
 
     pytorch_golden_out = pytorch_model(hidden_states)
-    assert compare_tensor_to_golden("output", pytorch_golden_out[0], res.golden_outputs[0], is_buda=True, verify_cfg=VerifyConfig())
+    assert compare_tensor_to_golden("output", pytorch_golden_out[0], res.golden_outputs[0], is_forge=True, verify_cfg=VerifyConfig())
 
 
 @pytest.mark.parametrize("ceil_mode", (True, False), ids=["ceil_mode_true", "ceil_mode_false"])
@@ -1043,7 +1043,7 @@ def test_tvm_maxpool2d(training, ceil_mode, recompute):
         "MaxPool2d",
         hidden_states,
         compiler_cfg=CompilerConfig(
-            enable_training=training, enable_recompute=recompute, compile_depth=CompileDepth.BUDA_GRAPH_PRE_PLACER
+            enable_training=training, enable_recompute=recompute, compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER
         ),
         verify_cfg=VerifyConfig(
             intermediates=True,
@@ -1051,7 +1051,7 @@ def test_tvm_maxpool2d(training, ceil_mode, recompute):
     )
 
     pytorch_golden_out = pytorch_model(hidden_states)
-    assert compare_tensor_to_golden("output", pytorch_golden_out[0], res.golden_outputs[0], is_buda=True, verify_cfg=VerifyConfig())
+    assert compare_tensor_to_golden("output", pytorch_golden_out[0], res.golden_outputs[0], is_forge=True, verify_cfg=VerifyConfig())
 
 def test_tvm_abs(test_kind, test_device):
 
@@ -1146,7 +1146,7 @@ def test_tvm_pad(test_kind, test_device, input_shape_to_pad, padding):
     if test_kind.is_training():
         pytest.xfail()  # Backward is currently unsupported
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class PAD(nn.Module):
         def __init__(self):
             super().__init__()
@@ -1209,7 +1209,7 @@ def test_tvm_argmax(test_kind, test_device, dim):
         pytest.skip()
 
     if dim == 0 or dim == 1:
-        _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class Argmax(nn.Module):
         def __init__(self):
             super().__init__()
@@ -1239,7 +1239,7 @@ def test_tvm_sum(test_kind, test_device, dim):
     # Sum across batch dim does not work
     # dim = 1 Creates unsupported HW op: matmul(accumulate: 1)
     if dim == 1:
-        _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     class Sum(nn.Module):
         def __init__(self):
@@ -1742,7 +1742,7 @@ def test_tvm_vstack(test_kind, test_device, shapes):
     if test_kind == TestKind.TRAINING:
         pytest.skip()
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     class Vstack(nn.Module):
         def __init__(self):
             super().__init__()
@@ -1774,7 +1774,7 @@ def test_tvm_vslice(test_kind, test_device, shapes):
     if test_kind == TestKind.TRAINING:
         pytest.skip()
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     class Vslice(nn.Module):
         def __init__(self):
@@ -1801,7 +1801,7 @@ def test_tvm_vslice(test_kind, test_device, shapes):
 
 def test_tvm_leaky_relu(test_kind, test_device):
 
-    _get_global_compiler_config().compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER  # Unsupported HW ops
+    _get_global_compiler_config().compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER  # Unsupported HW ops
         
     class LeakyRelu(nn.Module):
         def __init__(self):
@@ -2126,9 +2126,9 @@ def test_tvm_layernorm(test_kind, test_device, layer_norm_shape, input_shape):
 
     compiler_cfg = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER  # Unsupported HW ops
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER  # Unsupported HW ops
     else:
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER  # Unsupported HW ops
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER  # Unsupported HW ops
 
     framework_model = LayerNormModule()
     module = PyTorchModule("LayerNormModule", framework_model)
@@ -2287,7 +2287,7 @@ def test_tvm_dropout(test_kind, test_device):
             return b
 
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_cfg.enable_tvm_dropout = True
 
 

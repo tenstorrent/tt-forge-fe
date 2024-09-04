@@ -449,7 +449,7 @@ def test_dlrm_mlp_bot(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.compile_depth = CompileDepth.POST_PATTERN_MATCHER
     if test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     dlrm = DLRM_Net(**default_params_toy)
     mod = PyTorchModule("dlrm_mlp_bot", dlrm.bot_l)
@@ -471,7 +471,7 @@ def test_dlrm_interact(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     if not test_kind.is_training():
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     else:
         compiler_cfg.compile_depth = CompileDepth.GENERATE_INITIAL_GRAPH
 

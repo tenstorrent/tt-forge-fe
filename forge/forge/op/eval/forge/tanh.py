@@ -10,10 +10,10 @@ from ..interface import PyEltwiseUnaryOp
 from loguru import logger
 from ..common import to_torch_operands
 from ....forgeglobal import TILE_DIM
-from ....tensor import buda_dataformat_to_pytorch_dtype
+from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
 from forge.op.eval.common import calculate_tile_size
-from ..buda.tanh import Tanh as BudaTanh
+from ..lforge.tanh import Tanh as ForgeTanh
 
 
 class Tanh(PyEltwiseUnaryOp):
@@ -57,7 +57,7 @@ class Tanh(PyEltwiseUnaryOp):
             tile_height, tile_width = TILE_DIM, TILE_DIM
 
         lc.op(
-            BudaTanh.create(vector=vector),
+            ForgeTanh.create(vector=vector),
             tensors,
             tile_height=tile_height,
             tile_width=tile_width,

@@ -70,21 +70,21 @@ def test_linear():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module((writer.import_module_path())), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(model)
+    forge_mod.process_framework_parameters(model)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    act1_buda = Tensor.create_from_torch(act1)
+    act1_forge = Tensor.create_from_torch(act1)
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, act1_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, act1_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(model, res, act1)
 
@@ -122,21 +122,21 @@ def test_linear_tf():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module(writer.import_module_path()), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(model)
+    forge_mod.process_framework_parameters(model)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    act1_buda = Tensor.create_from_torch(torch.tensor(act1.numpy()))
+    act1_forge = Tensor.create_from_torch(torch.tensor(act1.numpy()))
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, act1_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, act1_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(model, res, act1)
 
@@ -170,21 +170,21 @@ def test_bert():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module(writer.import_module_path()), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(submodel)
+    forge_mod.process_framework_parameters(submodel)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    hidden_states_buda = Tensor.create_from_torch(hidden_states)
+    hidden_states_forge = Tensor.create_from_torch(hidden_states)
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, hidden_states_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, hidden_states_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(submodel, res, hidden_states)
 
@@ -216,21 +216,21 @@ def test_gpt2():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module(writer.import_module_path()), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(submodel)
+    forge_mod.process_framework_parameters(submodel)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    hidden_states_buda = Tensor.create_from_torch(hidden_states)
+    hidden_states_forge = Tensor.create_from_torch(hidden_states)
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, hidden_states_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, hidden_states_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(submodel, res, hidden_states)
 
@@ -273,21 +273,21 @@ def test_gpt2_multiple_layers():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module(writer.import_module_path()), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(model)
+    forge_mod.process_framework_parameters(model)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    hidden_states_buda = Tensor.create_from_torch(hidden_states)
+    hidden_states_forge = Tensor.create_from_torch(hidden_states)
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, hidden_states_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, hidden_states_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(model, res, hidden_states)
 
@@ -298,7 +298,7 @@ def test_resnet():
     shape = (1, 3, 320, 320)
     act1 = torch.rand(shape)
     compiler_cfg = CompilerConfig(enable_training=False,)
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     test_name = "resnet"
 
     writers, _ = compile_tvm_to_python(mod, test_name, (act1,), compiler_cfg=compiler_cfg)
@@ -307,21 +307,21 @@ def test_resnet():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module(writer.import_module_path()), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(model)
+    forge_mod.process_framework_parameters(model)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    act1_buda = Tensor.create_from_torch(act1)
+    act1_forge = Tensor.create_from_torch(act1)
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, act1_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, act1_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(model, res, act1)
 
@@ -383,22 +383,22 @@ def test_bert_base():
     sys.path.append(".")
     TestClass = getattr(importlib.import_module(writer.import_module_path()), writer.class_name)
 
-    buda_mod = TestClass("test_module")
+    forge_mod = TestClass("test_module")
 
-    buda_mod.process_framework_parameters(submodel)
+    forge_mod.process_framework_parameters(submodel)
 
     sgd_optimizer = forge.optimizers.SGD(
-        learning_rate=0.5, parameters=buda_mod.get_parameters()
+        learning_rate=0.5, parameters=forge_mod.get_parameters()
     )
     tt0 = TTDevice("tt0", devtype=BackendType.Golden, optimizer=sgd_optimizer)
-    tt0.place_module(buda_mod)
+    tt0.place_module(forge_mod)
 
-    hidden_states_buda = Tensor.create_from_torch(hidden_states)
-    attention_mask_buda = Tensor.create_from_torch(attention_mask)
+    hidden_states_forge = Tensor.create_from_torch(hidden_states)
+    attention_mask_forge = Tensor.create_from_torch(attention_mask)
 
     sgd_optimizer.set_optimizer_parameters()
 
-    res = forge_compile(tt0, test_name, hidden_states_buda, attention_mask_buda, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
+    res = forge_compile(tt0, test_name, hidden_states_forge, attention_mask_forge, compiler_cfg=compiler_cfg, verify_cfg=VerifyConfig())
 
     evaluate_framework_vs_forge(submodel, res, hidden_states)
 

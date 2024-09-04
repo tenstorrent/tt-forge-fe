@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from ..interface import BudaEltwiseNaryOp
+from ..interface import ForgeEltwiseNaryOp
 
 import torch
 import forge
@@ -70,7 +70,7 @@ def as_physical_offset(
     return physical_offset
 
 
-def snap_to_buda(shape):
+def snap_to_forge(shape):
     shape = list(shape)
     while len(shape) < 4:
         shape.insert(0, 1)
@@ -80,7 +80,7 @@ def snap_to_buda(shape):
     return shape
 
 
-class Splice(BudaEltwiseNaryOp):
+class Splice(ForgeEltwiseNaryOp):
     supported_splice_types = ["concatenate", "select", "interleave"]
 
     @classmethod
@@ -106,7 +106,7 @@ class Splice(BudaEltwiseNaryOp):
         self.update_ranges()
 
         if dim == 1:
-            self.set_buda_attr("granularity", "t")
+            self.set_forge_attr("granularity", "t")
 
         return self
 
@@ -120,7 +120,7 @@ class Splice(BudaEltwiseNaryOp):
             dim += 4
         if not (dim >= 1 and dim <= 3):
             raise UnsupportedHWOpsError("Splice op can only operate on dims 1, 2, or 3")
-        input_shapes = [snap_to_buda(shape) for shape in input_shapes]
+        input_shapes = [snap_to_forge(shape) for shape in input_shapes]
         ranges = []
         for input_shape in input_shapes:
             length = input_shape[dim] // (TILE_DIM if dim > 1 else 1)
@@ -144,7 +144,7 @@ class Splice(BudaEltwiseNaryOp):
         tilize = TILE_DIM if dim > 1 else 1
         index, length, stride = index // tilize, length // tilize, stride // tilize
         ranges = [(index, length, stride - index)]
-        input_shapes = [snap_to_buda(input_shape)]
+        input_shapes = [snap_to_forge(input_shape)]
         return cls.create("select", dim, ranges, input_shapes)
 
     @classmethod
@@ -158,7 +158,7 @@ class Splice(BudaEltwiseNaryOp):
             dim += 4
         if not (dim >= 1 and dim <= 3):
             raise UnsupportedHWOpsError("Splice op can only operate on dims 1, 2, or 3")
-        input_shapes = [snap_to_buda(shape) for shape in input_shapes]
+        input_shapes = [snap_to_forge(shape) for shape in input_shapes]
         ranges = [(0, stride, stride)] * len(input_shapes)
         return cls.create("interleave", dim, ranges, input_shapes)
 
@@ -364,7 +364,7 @@ class Splice(BudaEltwiseNaryOp):
         self.dim = 1
         self.canonical_ranges = canonical_ranges
         self.input_shapes = input_shapes
-        self.set_buda_attr("granularity", "t")
+        self.set_forge_attr("granularity", "t")
 
         new_z = self.shape(self.input_shapes, TILE_DIM, TILE_DIM)[0][1]
         assert new_z % orig_z == 0
@@ -412,4 +412,4 @@ class Splice(BudaEltwiseNaryOp):
         self.ranges = ranges
 
         for i, rng in enumerate(self.ranges):
-            self.set_buda_attr(f"input{i}", rng)
+            self.set_forge_attr(f"input{i}", rng)

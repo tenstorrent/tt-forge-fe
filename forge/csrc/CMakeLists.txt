@@ -46,9 +46,9 @@ add_subdirectory(tt_torch_device)
 
 file(GLOB CPP_FILES 
     "forge_bindings.cpp"
-    "buda_passes.cpp"
+    "forge_passes.cpp"
     "passes/*.cpp"
-    "lower_to_buda/common.cpp"
+    "lower_to_forge/common.cpp"
 )
 
 add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})

@@ -4,7 +4,7 @@
 #
 # Tests for testing of reduce operators
 #
-# In this test we use pytorch tensors and operators to verify buda operators
+# In this test we use pytorch tensors and operators to verify forge operators
 #
 # In these tests we suppose that all shapes are 4-dimensional and keepdim is always True
 # (e.g, before reduce shape=(64, 32, 256, 128), after reduce over dimension 2 shape=(64, 32, 1, 128))
@@ -73,7 +73,7 @@ def test_grouped_reduce(
     groups_to_try = [np.random.choice(facs) for _ in range(min(len(facs), 3))]
     # groups_to_try = [8]
     for groups in groups_to_try:
-        architecture = f'models.{model}.BudaReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}, dim={dim}, groups={groups}, keep_dims={keep_dims})'
+        architecture = f'models.{model}.ForgeReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}, dim={dim}, groups={groups}, keep_dims={keep_dims})'
         tt_model = eval(architecture)
         tt0 = TTDevice("tt0", devtype=BackendType.Golden)
         tt0.place_module(tt_model)

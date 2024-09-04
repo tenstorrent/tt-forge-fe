@@ -35,7 +35,7 @@ def test_convnext_tiny(test_kind, test_device):
         compiler_cfg.compile_depth = CompileDepth.FULL
     else:
         # tenstorrent/forge#365
-        compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+        compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.retain_tvm_python_files = True
 
@@ -64,7 +64,7 @@ def test_convnext_embeddings(test_kind, test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.compile_depth = (
-        CompileDepth.BUDA_GRAPH_PRE_PLACER
+        CompileDepth.FORGE_GRAPH_PRE_PLACER
     )  # Unsupported HW ops
 
     framework_model = download_model(ConvNextModel.from_pretrained, "facebook/convnext-tiny-224", torchscript=True)
@@ -93,7 +93,7 @@ def test_convnext_layer(test_kind, test_device):
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.enable_tvm_constant_prop = True
     compiler_cfg.compile_depth = (
-        CompileDepth.BUDA_GRAPH_PRE_PLACER
+        CompileDepth.FORGE_GRAPH_PRE_PLACER
     )  # Unsupported HW ops
 
     framework_model = download_model(ConvNextModel.from_pretrained, "facebook/convnext-tiny-224", torchscript=True)

@@ -119,7 +119,7 @@ def test_spatial_pyramid_pooling_torch(test_kind, test_device):
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.compile_depth = CompileDepth.BUDA_GRAPH_PRE_PLACER
+    compiler_cfg.compile_depth = CompileDepth.FORGE_GRAPH_PRE_PLACER
 
     module = PyTorchModule("spatial_pyramid_pooling_torch", model)
 

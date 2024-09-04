@@ -34,7 +34,7 @@ def unet(training: bool, config: str, microbatch: int, devtype: str, arch: str, 
     # Set model parameters based on chosen task and model configuration
     if config == "256":
         model = torch.hub.load(
-            "mateuszbuda/brain-segmentation-pytorch",
+            "mateuszforge/brain-segmentation-pytorch",
             "unet",
             in_channels=3,
             out_channels=1,
