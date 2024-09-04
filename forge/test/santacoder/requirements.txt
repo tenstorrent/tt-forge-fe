@@ -1,2 +1,2 @@
-transformers == 4.20.1
+transformers == 4.38.0
 torch == 1.11.0+cpu
