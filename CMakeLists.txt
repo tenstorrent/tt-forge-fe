@@ -58,6 +58,7 @@ add_subdirectory(docs)
 add_custom_target(make_stubs
     COMMAND pip install mypy==1.10
     COMMAND stubgen -m forge._C -m forge._C.autograd -m forge._C.graph -m forge._C.torch_device -m forge._C.runtime -o forge -v
+    COMMAND python scripts/update_spdx_pyi.py
     COMMENT "Generating stubs for ttforge"
     USES_TERMINAL
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

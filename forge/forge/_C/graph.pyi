@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
+# SPDX-License-Identifier: Apache-2.0
+
 import forge._C
 from typing import ClassVar, Iterator, overload
 
