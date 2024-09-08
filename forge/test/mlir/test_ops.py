@@ -89,6 +89,66 @@ def test_reshape(source_and_target_shape):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
+@pytest.mark.parametrize("input_shape_and_dim",
+    [
+        ((1, 8, 16, 32, 32), 0),
+        ((8, 1, 16, 32, 32), 1),
+        ((8, 16, 1, 32, 32), 2),
+        ((1, 8, 16, 32, 32), -5),
+        ((8, 1, 16, 32, 32), -4),
+        ((8, 16, 1, 32, 32), -3),
+    ],
+    ids=["1", "2", "3", "4", "5", "6"])
+def test_squeeze(input_shape_and_dim):
+    input_shape, dim = input_shape_and_dim
+    class Squeeze(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.squeeze(a, dim)
+
+    inputs = [torch.rand(*input_shape)]
+
+    framework_model = Squeeze()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+@pytest.mark.parametrize("input_shape_and_dim",
+    [
+        ((8, 16, 32, 32), 0),
+        ((8, 16, 32, 32), 1),
+        ((8, 16, 32, 32), 2),
+        ((8, 16, 32, 32), -5),
+        ((8, 16, 32, 32), -4),
+        ((8, 16, 32, 32), -3),
+    ],
+    ids=["1", "2", "3", "4", "5", "6"])
+def test_unsqueeze(input_shape_and_dim):
+    input_shape, dim = input_shape_and_dim
+    class Unsqueeze(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.unsqueeze(a, dim)
+
+    inputs = [torch.rand(*input_shape)]
+
+    framework_model = Unsqueeze()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
 @pytest.mark.parametrize("dims", [
     (1, 32, 64), (6, 33), (4, 16, 17)
 ])
