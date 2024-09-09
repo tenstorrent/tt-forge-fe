@@ -28,7 +28,6 @@ class MNISTLinear(nn.Module):
         return nn.functional.softmax(x)
 
 
-
 def load_tb_writer():
     """
     Load TensorBoard writer for logging
@@ -60,6 +59,6 @@ def load_dataset(batch_size):
     )
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     return test_loader, train_loader

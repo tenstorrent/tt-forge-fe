@@ -274,7 +274,6 @@ class CaptureFX:
     
         module_inputs = []
         output_nids = []
-        output_requires_grad = []
         output_tensors = []
 
         device_graph = copy.deepcopy(aten_module.graph)
@@ -347,14 +346,13 @@ class CaptureFX:
                     o_nids, o_tensors, o_requires_grad = self.add_outputs(node, graph_idx)
                     output_nids.extend(o_nids)
                     output_tensors.extend(o_tensors)
-                    output_requires_grad.extend(o_requires_grad)
                 else:
                     assert False, f"Unsupported op {node.op}"
         
             self.output_nodes_per_subgraph[graph_idx].append(output_nids)
 
         self.get_forge_graph().register_module_inputs(module_inputs, append=True)
-        self.get_forge_graph().register_module_outputs(output_nids, output_requires_grad, append=True)
+        self.get_forge_graph().register_module_outputs(output_nids, append=True)
         return True, graph_inputs, self.id_to_intermed, output_tensors, schedule
     
 def generate_device_inputs_from_sample_inputs(inputs: List[torch.Tensor], schedule: Schedule) -> List[List[torch.Tensor]]:

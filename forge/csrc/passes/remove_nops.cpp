@@ -17,7 +17,6 @@ void remove_nops(graphlib::Graph *graph) {
             continue;
 
         if (op->op_name() == "nop") {
-            log_warning("Removing nop: {}", op->name());
             graphlib::bypass_node(graph, node, true);
         }
     }

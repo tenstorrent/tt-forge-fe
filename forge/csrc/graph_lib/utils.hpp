@@ -446,36 +446,6 @@ bool is_input_host_queue(bool input_queues_on_host, const Graph *graph, const No
 
 bool is_output_host_queue(bool output_queues_on_host, const Graph *graph, const Node *node);
 
-// This method is used as a workaround when generating mlir for models in training.
-// Remove once we modify autograd to create separate graphs for backward and forward.
-template<SubgraphType subgraph_type>
-GraphTraversalContext get_subgraph_traversal_context(Graph *graph)
-{
-    static_assert(subgraph_type == SubgraphType::Forward || subgraph_type == SubgraphType::Backward,
-                  "Subgraph traversal context is implemented only for forward and backward subgraphs.");
-
-    if constexpr (subgraph_type == SubgraphType::Forward)
-    {
-        auto fwd_nodes = graph->nodes([](graphlib::Node *node){
-            return node->get_epoch_type() == graphlib::NodeEpochType::Forward;
-        });
-
-        auto fwd_nodes_set = std::make_unique<const std::unordered_set<const graphlib::Node *>>(fwd_nodes.begin(), fwd_nodes.end());
-        return GraphTraversalContext(graph, std::move(fwd_nodes_set));
-    }
-    else if constexpr (subgraph_type == SubgraphType::Backward)
-    {
-        auto bwd_nodes = graph->nodes([](graphlib::Node *node){
-            return node->get_epoch_type() == graphlib::NodeEpochType::Backward
-            || (node->node_type() == graphlib::NodeType::kInput);
-        });
-
-        auto bwd_nodes_set = std::make_unique<const std::unordered_set<const graphlib::Node *>>(bwd_nodes.begin(), bwd_nodes.end());
-
-        return GraphTraversalContext(graph, std::move(bwd_nodes_set));
-    }
-}
-
 // Wrapper graph management utility class for Node.
 // If remove_from_graph is set to true on destruction of NodeGraphContainer
 // graph->remove_node(node) will be invoked.

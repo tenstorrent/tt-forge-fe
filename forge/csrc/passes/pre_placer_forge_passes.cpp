@@ -371,7 +371,7 @@ void insert_queues_for_op_intermediates(graphlib::Graph *graph, const std::vecto
         graph->add_edge(node, intermediate_output);
         intermediate_output->set_shape(Shape::create(node->shape().as_vector()));
         intermediate_output->set_output_df(node->output_df());
-        intermediate_output->set_saved_intermediate(true);
+        intermediate_output->set_intermediate(true);
         intermediate_output->set_epoch_type(node->get_epoch_type());
     }
 }

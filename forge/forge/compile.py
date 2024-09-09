@@ -27,7 +27,7 @@ from forge._C import (
     run_pre_lowering_passes,
     dump_graph,
 )
-from forge._C import ForgeGraphModule
+from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
@@ -263,6 +263,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         CompileDepth.AUTOGRAD: run_autograd_pass,
         CompileDepth.POST_AUTOGRAD_PASS: run_post_autograd_pass,
         CompileDepth.PRE_LOWERING_PASS: run_pre_lowering_pass,
+        CompileDepth.SPLIT_GRAPH: split_graph,
         CompileDepth.RUN_MLIR_COMPILER: run_mlir_compiler,
         CompileDepth.FINISH_COMPILE: finish_compile,
     }
@@ -302,14 +303,19 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         pass_specific_output_kwargs = context.output_kwargs
     )
 
-    compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], compile_results)
-
+    assert context.forge_module is not None
+    fwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], context.forge_module.get_graph(GraphType.Forward))
+    bwd_compiled_graph_state = None
+    if context.training:
+        bwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], context.forge_module.get_graph(GraphType.Backward))
 
     assert context.compiled_binary is not None
 
     compiled_module = CompiledModel(
-        compiled_graph_state,
+        fwd_compiled_graph_state,
+        bwd_compiled_graph_state,
         context.compiled_binary,
+        context.modules[0],
         loss_module=context.loss_module,
         optimizer=context.optimizer,
     )
@@ -611,9 +617,6 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
             for name, value in module.named_parameters():
                 context.parameter_dict[name] = value
 
-    forge_module = ForgeGraphModule(context.graph_name, context.graph)
-    context.forge_module = forge_module
-
     return CompileDepth.POST_INITIAL_GRAPH_PASS
 
 def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
@@ -829,6 +832,25 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     dump_graph(graph, graph_name, "pre_lowering")
 
     context.final_graph = graph
+    return CompileDepth.SPLIT_GRAPH
+
+def split_graph(context: CompileContext) -> CompileDepth:
+    """
+    Splits graph into multiple graphs which will lower to different MLIR functions,
+    i.e. forward, backward, etc.
+
+    Parameters
+    ----------
+    context: CompileContext
+        Compile context
+
+    Returns
+    -------
+    CompileDepth - next compile stage
+    """
+    assert context.graph is not None
+    context.forge_module = forge._C.split_graph(context.graph)
+
     return CompileDepth.RUN_MLIR_COMPILER
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
@@ -841,7 +863,7 @@ def run_mlir_compiler(context: CompileContext) -> CompileDepth:
 
 def finish_compile(context: CompileContext) -> CompileDepth:
     """
-    Runs backend golden verify.
+    Doesn't do anything (for now)
 
     Parameters
     ----------
@@ -853,8 +875,6 @@ def finish_compile(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     verify_cfg = context.verify_cfg
-
-    context.output_kwargs["consteval_trace"] = pygraph.record_consteval_operations(context.final_graph)
 
     return CompileDepth.FULL
 
@@ -1202,7 +1222,7 @@ def generate_graph(
 
     graph.register_module_inputs(module_inputs)
     graph.register_module_targets(module_targets)
-    graph.register_module_outputs(module_outputs, out_requires_grad)
+    graph.register_module_outputs(module_outputs)
 
     if return_intermediate:
         return graph, outputs, intermediate, inputs, target_tensors
