@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
-namespace tt::graphlib
+
+namespace tt
 {
-class Graph;
+class ForgeGraphModule;
 }
 
 namespace mlir {
@@ -15,7 +16,7 @@ namespace mlir {
 
 namespace tt::passes 
 {
-    // Public API for generating MLIR from the TT-Forge graph.
-    mlir::OwningOpRef<mlir::ModuleOp> lower_to_mlir(tt::graphlib::Graph * graph, mlir::MLIRContext& context);
+    // Public API for generating MLIR from a Forge module (set of graphs).
+    mlir::OwningOpRef<mlir::ModuleOp> lower_to_mlir(tt::ForgeGraphModule& module, mlir::MLIRContext& context);
 } // namespace tt:passes
 
