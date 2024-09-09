@@ -12,7 +12,7 @@
 // TTMLIR headers
 #include "ttmlir/Dialect/TTIR/Transforms/Passes.h"
 #include "ttmlir/Dialect/TTNN/Transforms/Passes.h"
-#include "ttmlir/Dialect/TTNN/Pipelines/Passes.h"
+#include "ttmlir/Dialect/TTNN/Pipelines/TTNNPipelines.h"
 #include "utils/logger.hpp"
 
 namespace tt::passes

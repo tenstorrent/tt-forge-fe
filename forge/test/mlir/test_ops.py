@@ -89,6 +89,28 @@ def test_reshape(source_and_target_shape):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
+def test_concat():
+    class Concat(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return torch.cat((a, b), dim=0)
+
+    inputs = [
+        torch.rand(1, 32, 32),
+        torch.rand(1, 32, 32)
+    ]
+
+    framework_model = Concat()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
 @pytest.mark.parametrize("dims", [
     (1, 32, 64), (6, 33), (4, 16, 17)
 ])
