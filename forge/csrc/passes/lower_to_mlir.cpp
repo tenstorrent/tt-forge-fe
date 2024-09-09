@@ -9,6 +9,7 @@
 #include <string>
 
 // TTForge headers
+#include "forge_graph_module.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/utils.hpp"
@@ -43,7 +44,7 @@ namespace
 {
 using namespace tt;
 /**
- * @brief Implementation of TT-MLIR emission from the TTForge graph.
+ * @brief Implementation of TT-MLIR emission from the Forge module (set of graphs).
  */
 
 class MLIRGenerator
@@ -55,27 +56,32 @@ class MLIRGenerator
             init_lowering_handler_map();
         }
 
-        /// Public API: Convert the TTForge graph into an MLIR module operation for TTIR.
-        mlir::ModuleOp emit_mlir(graphlib::Graph *graph)
+        /// Public API: Convert the ForgeGraphModule into an MLIR module operation for TTIR.
+        mlir::ModuleOp emit_mlir(tt::ForgeGraphModule& module)
         {
-            graphModule_ = mlir::ModuleOp::create(get_module_location(graph), "tt-forge-graph");
+            graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
             graphModule_->setAttr(mlir::tt::SystemDescAttr::name,
                       mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
             builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
+            // Emit MLIR functions for each graph in the module.
+            for (auto graph : module.graphs())
             {
-                auto traversal_context = graphlib::get_subgraph_traversal_context<graphlib::SubgraphType::Forward>(graph);
-                emit_mlir_function(graph);
-            }
+                // Currently there is only one graph in the ForgeGraphModule. This will change after completion of issue #100.
+                // For now, we keep the hack for splitting the single graph into forward and backward subgraphs.
+                TT_ASSERT(module.graphs().size() == 1, "Expected only one graph in ForgeGraphModule");
 
-            if (graph->training())
-            {
-                auto traversal_context = graphlib::get_subgraph_traversal_context<graphlib::SubgraphType::Backward>(graph);
-                emit_mlir_function(graph, "backward");
-            }
+                {
+                    auto traversal_context = graphlib::get_subgraph_traversal_context<graphlib::SubgraphType::Forward>(graph);
+                    emit_mlir_function(graph);
+                }
 
-            log_info(LogMLIRCompiler, "MLIR module generated successfully.");
-            graphModule_.dump();
+                if (graph->training())
+                {
+                    auto traversal_context = graphlib::get_subgraph_traversal_context<graphlib::SubgraphType::Backward>(graph);
+                    emit_mlir_function(graph, "backward");
+                }
+            }
 
             /// Verify the module after we have finished constructing it, this will check
             /// the structural properties of the IR and invoke any specific verifiers we
@@ -85,6 +91,9 @@ class MLIRGenerator
                 graphModule_.emitError("module verification failed.");
                 throw std::runtime_error("Generated MLIR module failed verification.");
             }
+
+            log_info(LogMLIRCompiler, "MLIR module generated successfully.");
+            graphModule_.dump();
 
 #ifdef DEBUG
             // Create a string to store the output
@@ -98,14 +107,15 @@ class MLIRGenerator
 
             rso.flush();
 
-            log_trace(LogMLIRCompiler, "MLIR module after lowering TT-Forge graph:\n{}", moduleStr);
+            log_trace(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
 #endif
 
             return graphModule_;
         }
 
     private:
-        /// A "module" matches a TTForge graph: containing a single function to exectue.
+        /// A "module" matches the set of graphs contained in ForgeGraphModule.
+        /// Where each graph will lower into a separate MLIR function inside the module.
         mlir::ModuleOp graphModule_;
 
         /// The builder is a helper class to create IR. The builder
@@ -166,6 +176,8 @@ class MLIRGenerator
         /// A function represents a set of TTForge operations that are executed to produce output results.
         /// This function will generate the MLIR code for each TTForge operation in the graph and emit the return operation for the function.
         mlir::func::FuncOp emit_mlir_function(tt::graphlib::Graph *graph, std::string fn_name = "forward") {
+
+            log_info("Emmiting mlir for function {}", fn_name);
             // Assemble the function arguments (inputs and parameters)
             llvm::SmallVector<mlir::Type> argument_types;
             llvm::SmallVector<graphlib::Node *> argument_nodes;
@@ -489,10 +501,10 @@ class MLIRGenerator
         }
 
         /// Get the location for a module.
-        mlir::Location get_module_location(tt::graphlib::Graph *graph)
+        mlir::Location get_module_location(tt::ForgeGraphModule& module)
         {
             return mlir::FileLineColLoc::get(
-                builder_.getContext(), graph->name(), graph->id(), 0);
+                builder_.getContext(), module.name(), 0, 0);
         }
 
         /// Get the simple location for a node in a format "graph_name", (graph_id), (node_id)
@@ -545,9 +557,9 @@ class MLIRGenerator
 }
 namespace tt::passes
 {
-    /// Public API for generating MLIR from the TTForge graph.
-     mlir::OwningOpRef<mlir::ModuleOp> lower_to_mlir(graphlib::Graph * graph, mlir::MLIRContext& context)
+    /// Public API for generating MLIR from the Forge module (set of graphs).
+    mlir::OwningOpRef<mlir::ModuleOp> lower_to_mlir(tt::ForgeGraphModule& module, mlir::MLIRContext& context)
     {
-        return MLIRGenerator(context).emit_mlir(graph);
+        return MLIRGenerator(context).emit_mlir(module);
     }
 }
