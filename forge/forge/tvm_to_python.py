@@ -811,40 +811,12 @@ def populate_vstack_args(graph, nid, compiler_cfg):
     return args
 
 def populate_unsqueeze_args(graph, nid, compiler_cfg):
-    node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["attrs"]["shape"][0][0]
-    output_shape = node["attrs"]["shape"][0][0]
-    
-    assert len(input_shape) + 1 == len(output_shape), "Unsqueeze only supports adding 1 dimension"
-
-    dim = -1
-    for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
-        if inp_dim != out_dim:
-            dim = i
-            break
-
-    assert dim != -1
-    assert output_shape[dim] == 1, "Unsqueeze only supports adding dimension of size 1"
-
+    dim = graph["nodes"][nid]['attrs']['axis'][0][0]
     args = [("dim", f"{dim}")]
     return args
 
 def populate_squeeze_args(graph, nid, compiler_cfg):
-    node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["attrs"]["shape"][0][0]
-    output_shape = node["attrs"]["shape"][0][0]
-    
-    assert len(input_shape) - 1 == len(output_shape), "Squeeze only supports removing 1 dimension"
-
-    dim = -1
-    for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
-        if inp_dim != out_dim:
-            dim = i
-            break
-
-    assert dim != -1
-    assert input_shape[dim] == 1, "Squeeze only supports removing dimension of size 1"
-
+    dim = graph["nodes"][nid]['attrs']['axis'][0][0]
     args = [("dim", f"{dim}")]
     return args
 

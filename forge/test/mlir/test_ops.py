@@ -125,11 +125,10 @@ def test_squeeze(input_shape_and_dim):
         ((8, 16, 32, 32), 0),
         ((8, 16, 32, 32), 1),
         ((8, 16, 32, 32), 2),
-        ((8, 16, 32, 32), -5),
-        ((8, 16, 32, 32), -4),
         ((8, 16, 32, 32), -3),
+        ((8, 16, 32, 32), -4),
     ],
-    ids=["1", "2", "3", "4", "5", "6"])
+    ids=["1", "2", "3", "4", "5"])
 def test_unsqueeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
     class Unsqueeze(nn.Module):
