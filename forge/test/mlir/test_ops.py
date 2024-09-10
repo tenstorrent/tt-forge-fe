@@ -89,17 +89,30 @@ def test_reshape(source_and_target_shape):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
-def test_concat():
+@pytest.mark.parametrize("in_out_dim",
+    [((2, 2, 32, 32), (2, 2, 32, 32), 0),
+     ((2, 2, 32, 32), (2, 2, 32, 32), 1),
+     ((2, 2, 32, 32), (2, 2, 32, 32), 2),
+     ((2, 2, 32, 32), (2, 2, 32, 32), 3),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -1),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -2),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -3),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -4)
+     ],
+    ids=["0", "1", "2", "3", "-1", "-2", "-3", "-4"])
+def test_concat(in_out_dim):
+    in_shape, out_shape, dim = in_out_dim
+    print("Dim is ", dim)
     class Concat(nn.Module):
         def __init__(self):
             super().__init__()
 
         def forward(self, a, b):
-            return torch.cat((a, b), dim=0)
+            return torch.cat((a, b), dim)
 
     inputs = [
-        torch.rand(1, 32, 32),
-        torch.rand(1, 32, 32)
+        torch.rand(in_shape),
+        torch.rand(out_shape)
     ]
 
     framework_model = Concat()
