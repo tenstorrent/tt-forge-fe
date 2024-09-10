@@ -117,6 +117,7 @@ def test_squeeze(input_shape_and_dim):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 @pytest.mark.parametrize("input_shape_and_dim",
@@ -147,6 +148,7 @@ def test_unsqueeze(input_shape_and_dim):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 @pytest.mark.parametrize("dims", [

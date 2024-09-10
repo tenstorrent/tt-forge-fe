@@ -810,6 +810,44 @@ def populate_vstack_args(graph, nid, compiler_cfg):
     args = [("slices", f"{slice_size}")]
     return args
 
+def populate_unsqueeze_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    input_shape = graph["nodes"][node["inputs"][0][0]]["attrs"]["shape"][0][0]
+    output_shape = node["attrs"]["shape"][0][0]
+    
+    assert len(input_shape) + 1 == len(output_shape), "Unsqueeze only supports adding 1 dimension"
+
+    dim = -1
+    for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
+        if inp_dim != out_dim:
+            dim = i
+            break
+
+    assert dim != -1
+    assert output_shape[dim] == 1, "Unsqueeze only supports adding dimension of size 1"
+
+    args = [("dim", f"{dim}")]
+    return args
+
+def populate_squeeze_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    input_shape = graph["nodes"][node["inputs"][0][0]]["attrs"]["shape"][0][0]
+    output_shape = node["attrs"]["shape"][0][0]
+    
+    assert len(input_shape) - 1 == len(output_shape), "Squeeze only supports removing 1 dimension"
+
+    dim = -1
+    for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
+        if inp_dim != out_dim:
+            dim = i
+            break
+
+    assert dim != -1
+    assert input_shape[dim] == 1, "Squeeze only supports removing dimension of size 1"
+
+    args = [("dim", f"{dim}")]
+    return args
+
 def populate_vslice_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     output_shape = node['attrs']['shape'][0][0]
@@ -1320,6 +1358,8 @@ tvm_to_forge_op_map = {
     "tile"                          : "repeat",
     "transpose"                     : "transpose",
     "where"                         : "where",
+    "expand_dims"                   : "unsqueeze",
+    "squeeze"                       : "squeeze",
 
     # Quantization ops
     "qnn.quantize"                  : "quantize",
@@ -1401,6 +1441,8 @@ forge_op_to_function_name = {
     "vslice"                        : "forge.op.VSlice",
     "vstack"                        : "forge.op.VStack",
     "where"                         : "forge.op.Where",
+    "unsqueeze"                     : "forge.op.Unsqueeze",
+    "squeeze"                       : "forge.op.Squeeze",
 
     # Quantization ops
     "quantize"                      : "forge.op.Quantize",
@@ -1447,6 +1489,8 @@ forge_ops_needing_arguments = {
     "unsupported"                    : populate_unsupported_args,
     "vslice"                         : populate_vslice_args,
     "vstack"                         : populate_vstack_args,
+    "unsqueeze"                      : populate_unsqueeze_args,
+    "squeeze"                        : populate_squeeze_args,
     # "dropout"                      : populate_dropout_args,
 
 

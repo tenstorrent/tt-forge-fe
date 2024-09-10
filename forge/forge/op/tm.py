@@ -493,7 +493,7 @@ def Unsqueeze(
         Forge tensor
     """
   
-    return op("unsqueeze", name, operandA, attrs=(dim, len(operandA.shape))).get_tensor()
+    return op("unsqueeze", name, operandA, attrs=(dim, len(operandA.shape)), dim=dim).get_tensor()
 
 def Squeeze(
         name: str,
@@ -519,7 +519,7 @@ def Squeeze(
         Forge tensor
     """
   
-    return op("squeeze", name, operandA, attrs=(dim,)).get_tensor()
+    return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
 
 
 def Narrow(
