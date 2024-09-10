@@ -102,7 +102,6 @@ def test_reshape(source_and_target_shape):
     ids=["0", "1", "2", "3", "-1", "-2", "-3", "-4"])
 def test_concat(in_out_dim):
     in_shape, out_shape, dim = in_out_dim
-    print("Dim is ", dim)
     class Concat(nn.Module):
         def __init__(self):
             super().__init__()
