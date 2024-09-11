@@ -418,10 +418,13 @@ class OpNode : public TaggedNode
 public:
     OpNode(const std::string &name, const std::string &op_type, NodeType node_type) : TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false) {}
     OpNode(const std::string &name, OpType op_type, NodeType node_type) : TaggedNode(name, node_type), op_type_(op_type), gradient_op_(false) {}
+    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
     void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs = {}) {
         op_type_ = OpType(new_op_type, attrs);
     }
-    void change_op_type(OpType const &new_op_type) { op_type_ = new_op_type; }
+    void change_op_type(const std::string &new_op_type, std::vector<OpType::Attr> attrs, OpType::Attrs named_attrs) {
+        op_type_ = OpType(new_op_type, attrs, {}, named_attrs);
+    }
     OpType const& op_type() const { return op_type_; }
     OpType &op_type() { return op_type_; }
     OpType const* op_type_ptr() const { return &op_type_; }
