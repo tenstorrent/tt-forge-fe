@@ -9,7 +9,12 @@ import forge
 def load_model(model_path="openlm-research/open_llama_3b", use_cache=False):
     # Compiler configurations
     compiler_cfg = forge.config._get_global_compiler_config()
+    
+    # Disable CPU fallback, we want to run whole model on device
     compiler_cfg.enable_tvm_cpu_fallback = False
+    # Reduce compile memory usage, but disables TVM verification
+    # and TVM constant evaluation (Forge const eval is enabled)
+    compiler_cfg.convert_framework_params_to_tvm = False
 
     # Load Llama 3B model
     config = LlamaConfig()
@@ -23,5 +28,5 @@ def load_model(model_path="openlm-research/open_llama_3b", use_cache=False):
         model_path, device_map="auto", config=config
     )
     framework_model.eval()
-    
+
     return framework_model
