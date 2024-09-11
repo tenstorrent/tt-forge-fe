@@ -19,14 +19,6 @@ using Node = graphlib::Node;
 
 void convert_broadcast_ops_to_tms(Graph *graph);
 
-void insert_tile_broadcast_ops(Graph *graph);
-
-void fold_tile_broadcast_ops_into_inputs(Graph *graph);
-
-// Fold explicit broadcast ops into reduce ops, where possible... Reduce can broadcast immediately
-// through a different constatnt
-void fold_tile_broadcast_ops_into_reduce(Graph *graph);
-
 void bypass_embedding_input_nops(Graph *graph);
 void duplicate_embedding_table_if_needed(Graph *graph);
 

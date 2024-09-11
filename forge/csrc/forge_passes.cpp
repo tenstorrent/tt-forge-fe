@@ -211,18 +211,11 @@ graphlib::Graph* run_pre_lowering_passes(
     // Note this is not lowering, these are still forge tms
     convert_broadcast_ops_to_tms(graph);
 
-    // Insert tile broadcast ops
-    insert_tile_broadcast_ops(graph);
-
     // Bypass embedding input nops
     bypass_embedding_input_nops(graph);
 
     // If there are any non-embedding users of the emdebbing table, it needs to be duplicated
     duplicate_embedding_table_if_needed(graph);
-
-    // Fold tile broadcasts into reduce and inputs
-    fold_tile_broadcast_ops_into_inputs(graph);
-    fold_tile_broadcast_ops_into_reduce(graph);
 
     //
     // Data formats
