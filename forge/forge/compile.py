@@ -27,6 +27,7 @@ from forge._C import (
     run_pre_lowering_passes,
     dump_graph,
 )
+from forge._C import ForgeGraphModule
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
@@ -129,6 +130,7 @@ class CompileContext:
     in_recompile: bool = False
     recompile_count: int = 0
     target_cycles_offset: int = 0
+    forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
 
 def calculate_grads(
@@ -609,6 +611,9 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
             for name, value in module.named_parameters():
                 context.parameter_dict[name] = value
 
+    forge_module = ForgeGraphModule(context.graph_name, context.graph)
+    context.forge_module = forge_module
+
     return CompileDepth.POST_INITIAL_GRAPH_PASS
 
 def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
@@ -821,9 +826,9 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     return CompileDepth.RUN_MLIR_COMPILER
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
-    graph = context.graph
+    assert context.forge_module is not None
 
-    context.compiled_binary = forge._C.run_mlir_compiler(graph)
+    context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
 
     return CompileDepth.FINISH_COMPILE
 

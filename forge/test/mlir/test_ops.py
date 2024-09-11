@@ -388,7 +388,7 @@ def test_sqrt(x_shape, y_shape):
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 def test_embedding(vocab_size, token_num, embedding_dim):
-    compiler_cfg = pyforge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
 
     class Embedding(nn.Module):
@@ -406,14 +406,13 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     framework_model = Embedding()
     fw_out = framework_model(*inputs)
 
-    compiled_model = pyforge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
-@pytest.mark.xfail(reason="Program expects 2 inputs, found 1 in input tensors vector")
 @pytest.mark.parametrize("shape", [
     (7,),           # 1D tensor
     (32,),          # 1D tensor
@@ -439,7 +438,37 @@ def test_reciprocal(shape):
     framework_model = Reciprocal()
     fw_out = framework_model(*inputs)
     
-    compiled_model = pyforge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+    
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+
+@pytest.mark.parametrize("shape", [
+    (7,),           # 1D tensor
+    (32,),          # 1D tensor
+    (7, 32),        # 2D tensor
+    (32, 41),       # 2D tensor
+    (1, 7, 32),     # 3D tensor
+    (1, 32, 41),    # 3D tensor
+    (1, 7, 32, 41), # 4D tensor
+    (2, 7, 32, 41)  # 4D tensor
+])
+def test_sigmoid(shape):
+    class Sigmoid(nn.Module):
+        def __init__(self):
+            super().__init__()
+        def forward(self, x):
+            return torch.sigmoid(x)
+        
+    inputs = [
+        torch.rand(*shape),
+    ]
+    framework_model = Sigmoid()
+    fw_out = framework_model(*inputs)
+    
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
     
     co_out = [co.to("cpu") for co in co_out]

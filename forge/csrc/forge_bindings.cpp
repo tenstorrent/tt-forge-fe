@@ -17,6 +17,7 @@ namespace py = pybind11;
 #include "autograd/python_bindings.hpp"
 #include "backend_api/device_config.hpp"
 #include "forge_passes.hpp"
+#include "forge_graph_module.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/python_bindings.hpp"
 #include "lower_to_forge/common.hpp"
@@ -110,6 +111,16 @@ PYBIND11_MODULE(_C, m) {
 
     py::module_ m_graph = m.def_submodule("graph", "Submodule defining forge graph functions");
     GraphModule(m_graph);
+
+    py::enum_<tt::GraphType>(m, "GraphType")
+        .value("Forward", tt::GraphType::Forward)
+        .value("Backward", tt::GraphType::Backward)
+        .value("Optimizer", tt::GraphType::Optimizer)
+        .export_values();
+
+    py::class_<tt::ForgeGraphModule>(m, "ForgeGraphModule")
+        .def(py::init<std::string, tt::graphlib::Graph *>(), py::arg("name"), py::arg("forward_graph"))
+        .def("set_graph", &tt::ForgeGraphModule::set_graph);
 
     py::module_ m_autograd = m.def_submodule("autograd", "Submodule defining autograd_engine.");
     AutogradModule(m_autograd);
