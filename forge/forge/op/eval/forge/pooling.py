@@ -26,8 +26,6 @@ class MaxPool2d(PyOp):
     @classmethod
     def create(
             cls,
-            input_height: int,
-            input_width: int,
             kernel_height: int,
             kernel_width: int,
             stride_height: int,
@@ -42,8 +40,6 @@ class MaxPool2d(PyOp):
             channel_last: bool):
     
         self = cls("max_pool2d")
-        self.input_height = input_height
-        self.input_width = input_width
         self.kernel_height = kernel_height
         self.kernel_width = kernel_width
         self.stride_height = stride_height

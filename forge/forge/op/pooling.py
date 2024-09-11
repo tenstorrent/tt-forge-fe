@@ -92,8 +92,6 @@ def MaxPool2d(
         "max_pool2d",
         name,
         activations,
-        input_height=activations.shape[-3] if channel_last else activations.shape[-2],
-        input_width=activations.shape[-2] if channel_last else activations.shape[-1],
         kernel_height=kernel_size[0],
         kernel_width=kernel_size[1],
         stride_height=stride[0],
