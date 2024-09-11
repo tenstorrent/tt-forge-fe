@@ -10,7 +10,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 
 
-@pytest.mark.xfail(reason="Tile broadcast op is not supported on MLIR.")
+@pytest.mark.xfail()
 def test_llama_inference():
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
@@ -26,6 +26,7 @@ def test_llama_inference():
 
     # Compile the model
     compiled_model = forge.compile(framework_model, input_ids)
+
 
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
 def test_llama_inference_no_cache_cpu():
