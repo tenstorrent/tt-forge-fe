@@ -150,6 +150,40 @@ def test_unsqueeze(input_shape_and_dim):
     assert co_out[0].shape == fw_out.shape
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
+@pytest.mark.parametrize("inputs_and_dim",
+    [((2, 2, 32, 32), (2, 2, 32, 32), 0),
+     ((2, 2, 32, 32), (2, 2, 32, 32), 1),
+     ((2, 2, 32, 32), (2, 2, 32, 32), 2),
+     ((2, 2, 32, 32), (2, 2, 32, 32), 3),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -1),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -2),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -3),
+     ((2, 2, 32, 32), (2, 2, 32, 32), -4)
+     ],
+    ids=["0", "1", "2", "3", "-1", "-2", "-3", "-4"])
+def test_concat(inputs_and_dim):
+    in_shape1, in_shape2, dim = inputs_and_dim
+    class Concat(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return torch.cat((a, b), dim)
+
+    inputs = [
+        torch.rand(in_shape1),
+        torch.rand(in_shape2)
+    ]
+
+    framework_model = Concat()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
 @pytest.mark.parametrize("dims", [
     (1, 32, 64), (6, 33), (4, 16, 17)
 ])
