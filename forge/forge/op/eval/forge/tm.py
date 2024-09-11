@@ -665,6 +665,10 @@ def shape(type, attr, ops):
         shape = list(ops[0])
         dim = attr[0]
         input_ndim = attr[1]
+        # Handle negative dimension
+        if dim < 0:
+            # Adjust dim to be within the correct range
+            dim += input_ndim + 1
         shape.insert(dim, 1)
         return tuple(shape), []
 
