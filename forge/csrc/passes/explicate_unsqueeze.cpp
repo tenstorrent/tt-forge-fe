@@ -47,7 +47,10 @@ void explicate_unsqueeze(graphlib::Graph *graph)
                     auto rank = current_node->shape().size();
                     std::string name = to_be_unsqueeze->name() + "_" + eltwise->name() + "_unsqueeze_" + std::to_string(rank) + "_operand_0";
                     auto attr = std::vector<graphlib::OpType::Attr>{0, ((int)rank)};
-                    auto op_type = graphlib::OpType("unsqueeze", attr);
+                    auto named_attr = graphlib::OpType::Attrs{
+                        {"dim", ((int)rank)}
+                    };
+                    auto op_type = graphlib::OpType("unsqueeze", attr, {}, named_attr);
                     auto change_rank = graph->add_node(
                         std::make_unique<graphlib::PyOpNode>(name, op_type), graph->get_subgraph_id_for_node(current_node->id()));
 

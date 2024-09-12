@@ -1372,7 +1372,9 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         TT_ASSERT(change_rank);
         auto attr = (op == "squeeze") ? std::vector<graphlib::OpType::Attr>{0}
                                       : std::vector<graphlib::OpType::Attr>{0, ((int)rank - 1)};
-        change_rank->change_op_type(graphlib::OpType(op, attr));
+        change_rank->change_op_type(op, attr, graphlib::OpType::Attrs{
+            {"dim", attr[0]}
+        });
         change_rank->set_shape(producer->shape().as_rank(rank));
         change_rank->tag("dont_erase", true);
         auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, edge, change_rank);
