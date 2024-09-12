@@ -39,6 +39,7 @@
 #include "passes/pre_lowering_passes.hpp"
 #include "passes/pre_placer_forge_passes.hpp"
 #include "passes/print_graph.hpp"
+#include "passes/remove_nops.hpp"
 #include "passes/replace_incommutable_patterns.hpp"
 #include "passes/set_tile_dim.hpp"
 #include "passes/squeeze_to_reshape.hpp"
@@ -229,6 +230,8 @@ graphlib::Graph* run_pre_lowering_passes(
     //
     // Apply user overrides
     passes::configure_output_data_formats(graph, default_df_override);
+
+    passes::remove_nops(graph);
 
     // Recalculate shapes before lowering to MLIR
     recalculate_shapes(graph);
