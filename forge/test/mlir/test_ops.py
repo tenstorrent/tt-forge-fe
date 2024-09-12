@@ -346,18 +346,32 @@ def test_reduce_sum(input_shape, dim):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
-@pytest.mark.parametrize("input_shape", [(1,32,32), (1,64,64), (1,128,128,128)], ids=["32","64","128"])
-@pytest.mark.parametrize("dim", [-1,-2], ids=["-1","-2"])
+@pytest.mark.parametrize("input_shape", [
+    (1, 32, 12),
+    (1, 12, 32),
+    (1, 12, 3200),
+    (1, 32, 32), 
+    (1, 64, 64), 
+    (1, 128, 128, 128),
+])
+@pytest.mark.parametrize("dim", [
+    -1, 
+    -2,
+])
 def test_reduce_mean(input_shape, dim):
+    # Check if certain any dim in input_shape isn't divisible by 32
+    if any(i % 32 != 0 for i in input_shape[1:]): 
+        pytest.xfail("TTNN: Issues with ttnn implicit reshape") 
+    
     class ReduceMean(nn.Module):
         def __init__(self):
             super().__init__()
 
         def forward(self, a):
             # reduce is supported on tt-metal only with keepdim=True
-            return torch.mean(a, dim=1, keepdim=True)
+            return torch.mean(a, dim=dim, keepdim=True)
         
-    inputs = [torch.rand(1, 32, 32)]
+    inputs = [torch.rand(input_shape)]
     
     framework_model = ReduceMean()
     fw_out = framework_model(*inputs)
