@@ -89,18 +89,21 @@ def test_reshape(source_and_target_shape):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
-@pytest.mark.parametrize("input_shape_and_dim",
-    [
-        ((1, 8, 16, 32, 32), 0),
-        ((8, 1, 16, 32, 32), 1),
-        ((8, 16, 1, 32, 32), 2),
-        ((1, 8, 16, 32, 32), -5),
-        ((8, 1, 16, 32, 32), -4),
-        ((8, 16, 1, 32, 32), -3),
-    ],
-    ids=["1", "2", "3", "4", "5", "6"])
+@pytest.mark.parametrize("input_shape_and_dim",[
+    ((1, 8, 16, 32, 32), 0),
+    ((8, 1, 16, 32, 32), 1),
+    ((8, 16, 1, 32, 32), 2),
+    ((1, 8, 16, 32, 32), -5),
+    ((8, 1, 16, 32, 32), -4),
+    ((8, 16, 1, 32, 32), -3),
+    ([1, 12, 3200], 0),
+])
 def test_squeeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
+    
+    if input_shape == [1, 12, 3200]:
+        pytest.xfail("TTNN: Tensor layout issues with non tile dim aligned shapes")
+    
     class Squeeze(nn.Module):
         def __init__(self):
             super().__init__()
@@ -120,17 +123,20 @@ def test_squeeze(input_shape_and_dim):
     assert co_out[0].shape == fw_out.shape
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
-@pytest.mark.parametrize("input_shape_and_dim",
-    [
-        ((8, 16, 32, 32), 0),
-        ((8, 16, 32, 32), 1),
-        ((8, 16, 32, 32), 2),
-        ((8, 16, 32, 32), -3),
-        ((8, 16, 32, 32), -4),
-    ],
-    ids=["1", "2", "3", "4", "5"])
+@pytest.mark.parametrize("input_shape_and_dim", [
+    ((8, 16, 32, 32), 0),
+    ((8, 16, 32, 32), 1),
+    ((8, 16, 32, 32), 2),
+    ((8, 16, 32, 32), -3),
+    ((8, 16, 32, 32), -4),
+    ([12, 8640], 0),
+])
 def test_unsqueeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
+    
+    if input_shape == [12, 8640]:
+        pytest.xfail("TTNN: Tensor layout issues with non tile dim aligned shapes")
+
     class Unsqueeze(nn.Module):
         def __init__(self):
             super().__init__()
@@ -228,7 +234,11 @@ def test_subtract():
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
 
-def test_multiply():
+@pytest.mark.parametrize("shape", [
+    (1, 32, 32),
+    (12, 8640),
+])
+def test_multiply(shape):
     class Multiply(nn.Module):
         def __init__(self):
             super().__init__()
@@ -236,7 +246,7 @@ def test_multiply():
         def forward(self, a, b):
             return a * b
         
-    inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
+    inputs = [torch.rand(shape), torch.rand(shape)]
     
     framework_model = Multiply()
     fw_out = framework_model(*inputs)
