@@ -9,7 +9,7 @@ from test.mlir.llama.utils.utils import load_model
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.xfail(reason="Dynamic shapes..")
+@pytest.mark.xfail()
 def test_llama_rotary_emb():
     # Load Llama 3B model and tokenizer
     framework_model = load_model()

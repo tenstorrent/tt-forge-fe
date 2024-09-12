@@ -121,7 +121,7 @@ class CompilerConfig:
 
     compile_depth: int = field(default=CompileDepth.FULL, metadata=as_json(CompileDepth))  # Defines compilation depth. Used to limit scope of some unit tests
 
-    enable_tvm_cpu_fallback: bool = True    # Create cpu device for unsupported forge ops
+    enable_tvm_cpu_fallback: bool = False    # Create cpu device for unsupported forge ops
     cpu_fallback_ops: Set[str] = field(default_factory=lambda: set(["embedding"])) # Types of ops to fall back to CPU for
     enable_tm_cpu_fallback: bool = False    # Extend CPU fallback for TM ops
     tm_cpu_fallback_max_depth: int = 10     # Max search depth for extended CPU fallback
@@ -130,7 +130,7 @@ class CompilerConfig:
     enable_tvm_unsupported_ops: bool = False# Create "unsupported" forge ops in python file, allowing user to modify later
     enable_op_level_comparision: bool = False # Should we need to compare every op with framework output at each compilation stage.
     enable_tvm_constant_prop: bool = False  # Should we constant prop in tvm
-    convert_framework_params_to_tvm: bool = True # Convert framework params to relay params
+    convert_framework_params_to_tvm: bool = False # Convert framework params to relay params
     enable_xla_jax_convert: bool = False    # Convert JAX model to TF through XLA
     enable_tvm_jax_freeze_large_model: bool = True # When model param is larger than 2GB, Protobuf will error out. This flag will enable large model tracing
     framework_model_output_names: List[str] = field(default_factory=lambda: list())   # List of output names specified by framework
