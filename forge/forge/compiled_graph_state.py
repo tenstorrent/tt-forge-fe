@@ -190,7 +190,8 @@ class CompiledGraphState:
             constant_to_tensor,
             consteval_trace,
             constant_to_tile_dims,
-            ordered_constant_node_names
+            ordered_constant_node_names,
+            is_forge=False
         )
 
         post_const_eval_parameters = {}
