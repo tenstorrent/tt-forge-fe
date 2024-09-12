@@ -20,6 +20,7 @@ from .clip import Clip
 from .cumulativesum import CumulativeSum
 from .argmax import Argmax
 from .convolution import Conv2d
+from .pooling import MaxPool2d
 
 op_to_module_map = {
         "add":           "eltwise_binary",
@@ -117,7 +118,7 @@ op_to_module_map = {
         "conv3d"            :        "convolution",
 
         "max_pool1d":    "pooling",
-        "max_pool2d":    "pooling",
+        "max_pool2d":    MaxPool2d,
         "max_pool3d":    "pooling",
         "avg_pool1d":    "pooling",
         "avg_pool2d":    "pooling",

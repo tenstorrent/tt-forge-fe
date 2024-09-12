@@ -92,7 +92,18 @@ def MaxPool2d(
         "max_pool2d",
         name,
         activations,
-        attrs=attrs,
+        kernel_height=kernel_size[0],
+        kernel_width=kernel_size[1],
+        stride_height=stride[0],
+        stride_width=stride[1],
+        dilation_height=dilation,
+        dilation_width=dilation,
+        ceil_mode=ceil_mode,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        channel_last=channel_last
     ).get_tensor()
 
 

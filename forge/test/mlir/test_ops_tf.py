@@ -10,6 +10,7 @@ import tensorflow as tf
 import forge
 from forge.tensor import to_pt_tensors
 from forge.op.eval import compare_tensor_to_golden
+from forge.config import _get_global_compiler_config
 
 @pytest.mark.parametrize(
     "batch_size, output_channels, input_channels, input_height, input_width, filter_height, filter_width, stride_h, stride_w",
@@ -97,3 +98,63 @@ def test_dual_conv2d():
     co_out = compiled_model(*inputs)
     co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
     assert compare_tensor_to_golden("dual_conv2d", fw_out[0], co_out[0].reshape(fw_out[0].shape))
+
+@pytest.mark.parametrize(
+    "act_shape",  ## NHWC
+    [
+        # (1, 32, 32, 32),
+        # (1, 32, 32, 64),
+        # (1, 32, 32, 128),
+        (1, 32, 64, 32),
+        (1, 32, 64, 64),
+        (1, 32, 64, 128),
+        (1, 32, 128, 32),
+        (1, 32, 128, 64),
+        (1, 32, 128, 128),
+        # (1, 64, 32, 32),
+        # (1, 64, 32, 64),
+        # (1, 64, 32, 128),
+        (1, 64, 64, 32),
+        (1, 64, 64, 64),
+        (1, 64, 64, 128),
+        (1, 64, 128, 32),
+        (1, 64, 128, 64),
+        (1, 64, 128, 128),
+        # (1, 128, 32, 32),
+        # (1, 128, 32, 64),
+        # (1, 128, 32, 128),
+        (1, 128, 64, 32),
+        (1, 128, 64, 64),
+        (1, 128, 64, 128),
+        (1, 128, 128, 32),
+        (1, 128, 128, 64),
+        (1, 128, 128, 128),
+    ],
+)
+def test_maxpool2d(
+    act_shape,
+):
+    # NOTE: Only shapes that are tile-dim aligned before and after 
+    # the maxpool operation work through the forge-mlir flow. This,
+    # limits the variablity that is supported for padding, pool size,
+    # strides, and dilation.
+    tf.random.set_seed(0)
+
+    class MaxPool(tf.keras.Model):
+        def __init__(self):
+            super().__init__() 
+            self.pool = tf.keras.layers.MaxPool2D(pool_size=(2, 2), padding="valid", dtype=tf.bfloat16)
+
+        def call(self, x):
+            return self.pool(x)
+
+    _get_global_compiler_config().retain_tvm_python_files = True
+    inputs = [tf.random.uniform(act_shape, dtype=tf.bfloat16)]
+    framework_model = MaxPool()   
+    fw_out = to_pt_tensors(framework_model(*inputs) )
+    
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+    co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
+
+    assert compare_tensor_to_golden("max_pool", fw_out[0], co_out[0])
