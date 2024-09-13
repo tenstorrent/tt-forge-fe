@@ -9,7 +9,7 @@ from test.mlir.llama.utils.utils import load_model
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.xfail(reason="Squeeze op is not supported on MLIR.")
+@pytest.mark.xfail()
 def test_llama_self_attn():
     # Define wrapper function
     class SelfAttention(torch.nn.Module):
