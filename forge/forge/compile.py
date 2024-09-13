@@ -633,8 +633,11 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
-    if compiler_cfg.enable_consteval:
+    # Issue #293 - check why we are running consteval here and also later as a separate pass.
+    # This should ideally be removed.
+    if should_run_consteval(context):
         run_consteval_graph_pass(graph)
+
     inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(graph, compiler_cfg, compiler_cfg.fracture_groups)
 
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
@@ -646,12 +649,15 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     dump_graph(graph, graph_name, "decomposed_graph")
 
     next_stage = CompileDepth.OPTIMIZED_GRAPH
-    if compiler_cfg.enable_consteval:
+    if should_run_consteval(context):
         next_stage = CompileDepth.CONSTEVAL_GRAPH
     elif compiler_cfg.match_subgraph_patterns:
         next_stage = CompileDepth.POST_PATTERN_MATCHER
 
     return next_stage
+
+def should_run_consteval(context: CompileContext) -> bool:
+    return context.compiler_cfg.enable_consteval and not context.training
 
 def run_consteval_pass(context: CompileContext) -> CompileDepth:
     """
