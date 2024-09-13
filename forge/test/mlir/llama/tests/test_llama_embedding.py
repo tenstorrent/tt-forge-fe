@@ -9,7 +9,7 @@ from test.mlir.llama.utils.utils import load_model
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.xfail(reason="L1 allocation issue on Metal")
+@pytest.mark.xfail()
 def test_llama_embedding():    
     # Load Llama 3B model and tokenizer
     framework_model = load_model()
