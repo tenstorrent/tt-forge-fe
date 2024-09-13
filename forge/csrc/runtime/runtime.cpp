@@ -93,6 +93,41 @@ std::vector<torch::Tensor> run_binary_from_file(std::string const& filename, int
     return run_binary(binary, program_idx, inputs);
 }
 
+void verify_input_tensors(const std::vector<torch::Tensor>& input_tensors, const std::vector<runtime::TensorDesc>& input_descs)
+{
+    if (input_tensors.size() != input_descs.size())
+    {
+        log_fatal(LogTTDevice, "Input count mismatch: expected {}, got {}", input_descs.size(), input_tensors.size());
+    }
+
+    for (size_t i = 0; i < input_descs.size(); ++i)
+    {
+        const auto& input_tensor = input_tensors[i];
+        const auto& desc = input_descs[i];
+
+        auto shape = as_vec_int64(desc.shape);
+        auto stride = as_vec_int64(desc.stride);
+
+        if (input_tensor.sizes().vec() != shape)
+        {
+            log_fatal(LogTTDevice, "Tensor {} - shape mismatch: expected {}, got {}", i, shape, input_tensor.sizes().vec());
+        }
+
+        if (input_tensor.strides().vec() != stride)
+        {
+            log_fatal(LogTTDevice, "Tensor {} - stride mismatch: expected {}, got {}", i, stride, input_tensor.strides().vec());
+        }
+
+        if (torch_scalar_type_to_dt(input_tensor.scalar_type()) != desc.dataType)
+        {
+            auto expected = target::EnumNameDataType(desc.dataType);
+            auto got = target::EnumNameDataType(torch_scalar_type_to_dt(input_tensor.scalar_type()));
+            log_fatal(LogTTDevice, "Tensor {} - data type mismatch: expected {}, got {}", i, expected, got);
+        }
+
+    }
+}
+
 std::vector<torch::Tensor> run_binary(runtime::Binary &binary, int program_idx, std::vector<torch::Tensor> const& inputs)
 {
     auto& system = TTSystem::get_system();
@@ -113,6 +148,9 @@ std::vector<torch::Tensor> run_binary(runtime::Binary &binary, int program_idx, 
     }
 
     auto& device = *tt_device->rt_device;
+
+    auto input_descs = binary.getProgramInputs(program_idx);
+    verify_input_tensors(inputs, input_descs);
 
     std::vector<runtime::Tensor> rt_inputs;
     for (auto const& input : inputs)
