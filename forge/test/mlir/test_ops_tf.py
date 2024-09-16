@@ -11,6 +11,7 @@ import forge
 from forge.tensor import to_pt_tensors
 from forge.op.eval import compare_tensor_to_golden
 from forge.config import _get_global_compiler_config
+from forge._C import DataFormat
 
 @pytest.mark.parametrize(
     "batch_size, output_channels, input_channels, input_height, input_width, filter_height, filter_width, stride_h, stride_w",
@@ -107,27 +108,27 @@ def test_dual_conv2d():
 @pytest.mark.parametrize(
     "act_shape",  ## NHWC
     [
-        # (1, 32, 32, 32),
-        # (1, 32, 32, 64),
-        # (1, 32, 32, 128),
+        (1, 32, 32, 32),
+        (1, 32, 32, 64),
+        (1, 32, 32, 128),
         (1, 32, 64, 32),
         (1, 32, 64, 64),
         (1, 32, 64, 128),
         (1, 32, 128, 32),
         (1, 32, 128, 64),
         (1, 32, 128, 128),
-        # (1, 64, 32, 32),
-        # (1, 64, 32, 64),
-        # (1, 64, 32, 128),
+        (1, 64, 32, 32),
+        (1, 64, 32, 64),
+        (1, 64, 32, 128),
         (1, 64, 64, 32),
         (1, 64, 64, 64),
         (1, 64, 64, 128),
         (1, 64, 128, 32),
         (1, 64, 128, 64),
         (1, 64, 128, 128),
-        # (1, 128, 32, 32),
-        # (1, 128, 32, 64),
-        # (1, 128, 32, 128),
+        (1, 128, 32, 32),
+        (1, 128, 32, 64),
+        (1, 128, 32, 128),
         (1, 128, 64, 32),
         (1, 128, 64, 64),
         (1, 128, 64, 128),
@@ -149,11 +150,14 @@ def test_maxpool2d(
         def __init__(self):
             super().__init__() 
             self.pool = tf.keras.layers.MaxPool2D(pool_size=(2, 2), padding="valid", dtype=tf.bfloat16)
+            self.conv = tf.keras.layers.Conv2D(act_shape[-1], (3, 3), padding="same", dtype=tf.bfloat16)
 
         def call(self, x):
-            return self.pool(x)
+            x = self.pool(x)
+            x = self.conv(x)
+            return x
 
-    _get_global_compiler_config().retain_tvm_python_files = True
+    _get_global_compiler_config().default_df_override = DataFormat.Float16_b
     inputs = [tf.random.uniform(act_shape, dtype=tf.bfloat16)]
     framework_model = MaxPool()   
     fw_out = to_pt_tensors(framework_model(*inputs) )
