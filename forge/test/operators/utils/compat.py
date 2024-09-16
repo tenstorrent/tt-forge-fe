@@ -8,6 +8,7 @@ import forge
 import torch
 
 from loguru import logger
+from loguru import logger
 from typing import Optional, List
 
 from forge import ForgeModule, Module, VerifyConfig
