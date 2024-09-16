@@ -55,6 +55,8 @@ class FailingReasons:
 
     UNSUPPORTED_INPUT_SOURCE = "Unsupported input source"
 
+    INCONSISTENT_BEHAVIOR = "Inconsistent behavior"
+
 
 class FailingReasonsValidation:
 
