@@ -73,7 +73,7 @@ void Node::set_shape(const Shape& shape) {
 tt::DataFormat Node::output_df() const { return output_df_; }
 void Node::set_output_df(tt::DataFormat df) { output_df_ = df; }
 
-std::unique_ptr<Node> Node::clone(std::string const&)
+std::unique_ptr<Node> Node::clone(std::string const&) const
 {
     TT_ASSERT(false, "a derived type node does not have clone() defined");
     return nullptr;
