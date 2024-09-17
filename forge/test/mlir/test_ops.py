@@ -31,7 +31,7 @@ def test_add():
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.parametrize("params", [
@@ -62,7 +62,7 @@ def test_transpose(params):
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 @pytest.mark.parametrize("source_and_target_shape",
     [((8, 32, 256), (2, 4, 32, 256)),
@@ -231,7 +231,7 @@ def test_subtract():
     
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.parametrize("shape", [
@@ -256,7 +256,7 @@ def test_multiply(shape):
     
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def test_relu():
@@ -278,7 +278,7 @@ def test_relu():
     
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 @pytest.mark.skip(reason="This is not ready yet")
 def test_linear():
@@ -300,7 +300,7 @@ def test_linear():
     
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def test_softmax():
@@ -322,7 +322,7 @@ def test_softmax():
     
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 @pytest.mark.parametrize("input_shape", [(1,32,32), (1,64,64), (1,128,128,128)], ids=["32","64","128"])
 @pytest.mark.parametrize("dim", [-1,-2], ids=["-1","-2"])
