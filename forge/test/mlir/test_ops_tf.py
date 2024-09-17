@@ -105,6 +105,8 @@ def test_dual_conv2d():
     co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
     assert compare_tensor_to_golden("dual_conv2d", fw_out[0], co_out[0].reshape(fw_out[0].shape))
 
+@pytest.mark.parametrize("pre_conv", [True, False])
+@pytest.mark.parametrize("post_conv", [True, False])
 @pytest.mark.parametrize(
     "act_shape",  ## NHWC
     [
@@ -139,6 +141,8 @@ def test_dual_conv2d():
 )
 def test_maxpool2d(
     act_shape,
+    pre_conv,
+    post_conv
 ):
     # NOTE: Only shapes that are tile-dim aligned before and after 
     # the maxpool operation work through the forge-mlir flow. This,
@@ -149,12 +153,18 @@ def test_maxpool2d(
     class MaxPool(tf.keras.Model):
         def __init__(self):
             super().__init__() 
+            if pre_conv:
+                self.pre_conv = tf.keras.layers.Conv2D(act_shape[-1], (3, 3), padding="same", dtype=tf.bfloat16)
             self.pool = tf.keras.layers.MaxPool2D(pool_size=(2, 2), padding="valid", dtype=tf.bfloat16)
-            self.conv = tf.keras.layers.Conv2D(act_shape[-1], (3, 3), padding="same", dtype=tf.bfloat16)
+            if post_conv:
+                self.post_conv = tf.keras.layers.Conv2D(act_shape[-1], (3, 3), padding="same", dtype=tf.bfloat16)
 
         def call(self, x):
+            if pre_conv:
+                x = self.pre_conv(x)
             x = self.pool(x)
-            x = self.conv(x)
+            if post_conv:
+                x = self.post_conv(x)
             return x
 
     _get_global_compiler_config().default_df_override = DataFormat.Float16_b
