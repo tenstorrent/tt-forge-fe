@@ -96,7 +96,7 @@ protected:
         : TaggedNode(name, node_type), queue_type_(queue_type), memory_access_type_(MemoryAccessType::FIFO), entries_(0) { }
     std::string queue_type_string() const;
 
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 
     void set_num_entries(int entries) { entries_ = entries; }
     int get_num_entries() const { return entries_; }
@@ -124,7 +124,7 @@ protected:
 public:
     EpochToEpochQueueNode(const std::string &name, bool cross_epoch_type, bool cross_chip_type) :
         QueueNode(name, QueueNodeType::EpochToEpoch), cross_epoch_type_(cross_epoch_type), cross_chip_type_(cross_chip_type) {}
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 
     bool is_cross_epoch_type() const { return cross_epoch_type_; }
     bool is_cross_chip_type() const { return cross_chip_type_; }
@@ -138,7 +138,7 @@ public:
     {
         this->set_num_entries(num_entries);
     }
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 };
 
 enum InputNodeType {
@@ -174,7 +174,7 @@ public:
     void clone_consteval_graph_from(Node* original);
     ConstEvalGraph *get_consteval_graph(Graph* graph = nullptr, bool create = false, bool promote_input = false);
     void clear_consteval_graph();
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 
     void set_layout(ForgeQueueLayout new_layout) { layout = new_layout; }
     ForgeQueueLayout get_layout() const { return layout; }
@@ -240,7 +240,7 @@ public:
             set_shape(tensor_shape);
         }
 
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
     bool is_single_value() const { return this->node_type_ == ConstantInputNodeType::SingleValue; }
     bool is_single_tile() const { return this->node_type_ == ConstantInputNodeType::SingleTile; }
     bool is_tensor() const { return this->node_type_ == ConstantInputNodeType::Tensor; }
@@ -284,7 +284,7 @@ protected:
     void set_loss_output() { is_loss_output_ = true; }
     void set_saved_intermediate(bool saved_intermediate) { is_saved_intermediate_ = saved_intermediate; }
     void set_untilize(bool should_untilize) { untilize_ = should_untilize; }
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 
     void set_runtime_tensor_transform(RuntimeTensorTransform transform)
     {
@@ -484,7 +484,7 @@ class PyOpNode : public OpNode {
 public:
     PyOpNode(const std::string &name, const std::string &op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
     PyOpNode(const std::string &name, OpType op_type) : OpNode(name, op_type, NodeType::kPyOp) {}
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 
     void copy_parent_op_attributes(PyOpNode *node);
 };
@@ -514,7 +514,7 @@ public:
     void copy_lowered_op_attributes(PyOpNode *node);
     void copy_parent_op_attributes(ForgeOpNode *node);
 
-    virtual std::unique_ptr<Node> clone(std::string const& name = "") override;
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 
     void set_buffering_op(bool buffering_op) { buffering_op_ = buffering_op; }
     bool is_buffering_op() const { return buffering_op_; }

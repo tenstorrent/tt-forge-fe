@@ -191,7 +191,7 @@ std::vector<int> create_permute_xy_order(const int rank) {
     return order;
 }
 
-std::unique_ptr<Node> ForgeOpNode::clone(std::string const& name) {
+std::unique_ptr<Node> ForgeOpNode::clone(std::string const& name) const {
     std::unique_ptr<ForgeOpNode> node = create_node<ForgeOpNode>(this->name(), this->op_type());
     node->Node::clone(this, name);
     node->set_gradient_op(this->is_gradient_op());
@@ -243,7 +243,7 @@ void ForgeNaryTMNode::copy_lowered_op_attributes(PyOpNode *node)
     this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
 }
 
-std::unique_ptr<Node> PyOpNode::clone(std::string const& name) {
+std::unique_ptr<Node> PyOpNode::clone(std::string const& name) const {
     std::unique_ptr<PyOpNode> node = create_node<PyOpNode>(this->name(), this->op_type());
     node->Node::clone(this, name);
     node->set_gradient_op(this->is_gradient_op());
@@ -326,7 +326,7 @@ InputNode::InputNode(const std::string &name, InputNodeType input_type, bool req
 
 InputNode::~InputNode() = default;
 
-std::unique_ptr<Node> InputNode::clone(std::string const& name) {
+std::unique_ptr<Node> InputNode::clone(std::string const& name) const {
     std::unique_ptr<InputNode> node = create_node<InputNode>(this->name(), this->input_type(), this->requires_grad());
     node->Node::clone(this, name);
     if (consteval_graph_)
@@ -346,7 +346,7 @@ void InputNode::clone_consteval_graph_from(Node* original)
     }
 }
 
-std::unique_ptr<Node> QueueNode::clone(std::string const& name) {
+std::unique_ptr<Node> QueueNode::clone(std::string const& name) const {
     std::unique_ptr<QueueNode> node = create_node<QueueNode>(this->name(), queue_type_);
     node->Node::clone(this, name);
     node->entries_ = entries_;
@@ -354,7 +354,7 @@ std::unique_ptr<Node> QueueNode::clone(std::string const& name) {
     return node;
 }
 
-std::unique_ptr<Node> EpochToEpochQueueNode::clone(std::string const& name) {
+std::unique_ptr<Node> EpochToEpochQueueNode::clone(std::string const& name) const {
     std::unique_ptr<EpochToEpochQueueNode> node = create_node<EpochToEpochQueueNode>(this->name(), cross_epoch_type_, cross_chip_type_);
     node->Node::clone(this, name);
     node->entries_ = entries_;
@@ -363,14 +363,14 @@ std::unique_ptr<Node> EpochToEpochQueueNode::clone(std::string const& name) {
 }
 
 
-std::unique_ptr<Node> BufferingQueueNode::clone(std::string const& name) {
+std::unique_ptr<Node> BufferingQueueNode::clone(std::string const& name) const {
     std::unique_ptr<BufferingQueueNode> node = create_node<BufferingQueueNode>(this->name(), this->get_num_entries());
     node->Node::clone(this, name);
     node->add_tags(this->as<TaggedNode>()->get_tags());
     return node;
 }
 
-std::unique_ptr<Node> OutputNode::clone(std::string const& name) {
+std::unique_ptr<Node> OutputNode::clone(std::string const& name) const {
     std::unique_ptr<OutputNode> node = create_node<OutputNode>(this->name());
     node->Node::clone(this, name);
     node->requires_grad_ = requires_grad_;
@@ -399,7 +399,7 @@ py::function OpType::py_attr(char const *name, IRLevel ir_level)
     return instance.attr(name);
 }
 
-std::unique_ptr<Node> ConstantInputNode::clone(std::string const& name) {
+std::unique_ptr<Node> ConstantInputNode::clone(std::string const& name) const {
     std::unique_ptr<ConstantInputNode> node;
     switch (this->node_type_) {
         case ConstantInputNodeType::SingleValue:
