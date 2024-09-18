@@ -9,8 +9,8 @@ from .common import ForgeOp as op
 
 def Embedding(
         name: str, 
-        embedding_table: Union[Tensor, Parameter],
-        indices: Tensor) -> Tensor:
+        indices: Tensor,
+        embedding_table: Union[Tensor, Parameter]) -> Tensor:
     """
     Embedding lookup
 
@@ -26,4 +26,4 @@ def Embedding(
         Dictionary of embeddings
     """
 
-    return op("embedding", name, embedding_table, indices).get_tensor()
+    return op("embedding", name, indices, embedding_table).get_tensor()

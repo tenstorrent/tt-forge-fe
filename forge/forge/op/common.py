@@ -66,7 +66,7 @@ class ForgeOp:
             else:
                 data_format = self.operands[0].data_format
         elif len(self.operands) > 0:
-            if self.op_type == "where":
+            if self.op_type in ["where", "embedding"]:
                 data_format = self.operands[1].data_format
             else:
                 data_format = self.operands[0].data_format

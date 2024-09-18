@@ -1964,6 +1964,9 @@ def compile_tvm_to_python(framework_mod, graph_name, inputs, module_name=None, c
                     if inp_shape[:2] == out_shape[:2] and inp_shape[2] * 2 == out_shape[2]:
                         input_names = [input_names[0], input_names[0]]
 
+                if json_graph["device"] == "tt" and node["name"] == "embedding":
+                    input_names = [input_names[1], input_names[0]]
+
                 ops[node["nid"]] = Operation(
                     function_name=function_name,
                     # node_name=node["forge_name"],

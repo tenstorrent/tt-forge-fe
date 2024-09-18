@@ -486,6 +486,8 @@ class MLIRGenerator
                     return builder_.getBF16Type();
                 case tt::DataFormat::Float16:
                     return builder_.getF16Type();
+                case tt::DataFormat::Int32:
+                    return builder_.getI32Type();
                 case tt::DataFormat::Int8:
                     return builder_.getI8Type();
                 default:
