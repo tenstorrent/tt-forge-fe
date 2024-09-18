@@ -129,7 +129,7 @@ class Logger
         fmt::color::cornflower_blue,
         fmt::color::cornflower_blue,
         fmt::color::black,
-        fmt::color::orange_red,
+        fmt::color::gray,
         fmt::color::orange,
         fmt::color::red,
         fmt::color::red,

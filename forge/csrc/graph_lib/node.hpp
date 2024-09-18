@@ -85,7 +85,7 @@ class Node {
     bool is_backward() const;
     bool is_optimizer() const;
 
-    virtual std::unique_ptr<Node> clone(std::string const& name = "");
+    virtual std::unique_ptr<Node> clone(std::string const& name = "") const;
 
     std::string get_type() const;
     void set_epoch_type(NodeEpochType epoch_type);
