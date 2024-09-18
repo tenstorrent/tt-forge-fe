@@ -184,8 +184,8 @@ class MLIRGenerator
             
             symbolTable_.clear();
 
-            // Add the graph inputs to the argument list
-            for (auto *input: graph->ordered_module_inputs()) //for (auto *input : graph->nodes_by_type(tt::graphlib::kInput))
+            // Add the graph inputs to the argument list.
+            for (auto *input: graph->ordered_module_inputs())
             {
                 log_trace(LogMLIRCompiler, "Adding input {} to the argument list.", input->name());
 
@@ -193,7 +193,7 @@ class MLIRGenerator
                 argument_types.push_back(get_node_type(input));
             }
 
-            // Add the graph constants to the argument list
+            // Add the graph constants to the argument list.
             for (auto *constant : graph->get_constant_nodes())
             {
                 log_trace(LogMLIRCompiler, "Adding constant {} to the argument list.", constant->name());
@@ -202,7 +202,7 @@ class MLIRGenerator
                 argument_types.push_back(get_node_type(constant));
             }
 
-            // Add the graph parameters to the argument list
+            // Add the graph parameters to the argument list.
             for(auto *parameter: graph->get_parameter_nodes())
             {
                 // Check whether the parameter is actually used in the current graph context,
@@ -236,7 +236,7 @@ class MLIRGenerator
             auto funcType = builder_.getType<mlir::FunctionType>(mlir::TypeRange(argument_types), mlir::TypeRange(returns));
             auto func = builder_.create<mlir::func::FuncOp>(graphModule_.getLoc(), fn_name, funcType);
             
-            // Set the function argument names
+            // Set the function argument names.
             for(size_t i = 0; i < argument_nodes.size(); i++)
             {
                 graphlib::Node* argument_node = argument_nodes[i];
@@ -244,6 +244,16 @@ class MLIRGenerator
                 named_attributes.push_back(builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
                 func.setArgAttrs(i, named_attributes);
                 log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
+            }
+
+            // Set the return value names.
+            for (size_t i = 0; i < output_nodes.size(); i++)
+            {
+                graphlib::Node* output_node = output_nodes[i];
+                llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
+                named_attributes.push_back(builder_.getNamedAttr("ttir.name", builder_.getStringAttr(output_node->name())));
+                func.setResultAttrs(i, named_attributes);
+                log_trace(LogMLIRCompiler, "Set name {} for return value {}.", output_node->name(), i);
             }
 
             // Start the body of the function by creating an entry block.
