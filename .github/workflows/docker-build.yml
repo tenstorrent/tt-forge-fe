@@ -3,6 +3,12 @@ name: Build in Docker
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      tt-mlir-version:
+        type: string
+        description: 'Version of tt-mlir to use'
+        required: false
+        default: ''
 
 jobs:
 
@@ -26,6 +32,7 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
+
     - name: Set reusable strings
       id: strings
       shell: bash
@@ -40,6 +47,16 @@ jobs:
       with:
           submodules: recursive
           fetch-depth: 0 # Fetch all history and tags
+
+    - name: Checkout specific tt-mlir version
+      if: ${{ inputs.tt-mlir-version != '' }}
+      run: |
+        echo "Checkout tt-mlir version: ${{ inputs.tt-mlir-version }}"
+        cd third_party/tt-mlir
+        git fetch
+        git checkout ${{ inputs.tt-mlir-version }}
+        git log -1
+        cd ../..
 
     # Clean everything from submodules (needed to avoid issues
     # with cmake generated files leftover from previous builds)

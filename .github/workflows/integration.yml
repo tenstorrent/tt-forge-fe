@@ -1,0 +1,16 @@
+# This workflow runs a schedule and uses the latest version of tt-mlir (origin/main branch)
+# to check if the latest version of tt-mlir is compatible with the current codebase.
+
+name: Integration
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  docker-build:
+    uses: ./.github/workflows/docker-build.yml
+    secrets: inherit
+    with: 
+      tt-mlir-version: 'origin/main'
