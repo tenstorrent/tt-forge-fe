@@ -20,6 +20,8 @@ jobs:
     needs: docker-build
     if: ${{ always() && needs.docker-build.result == 'failure' }}
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Create Issue
         run: |
