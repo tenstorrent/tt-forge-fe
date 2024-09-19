@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
+  push:
 
 jobs:
   docker-build:
@@ -14,3 +15,16 @@ jobs:
     secrets: inherit
     with: 
       tt-mlir-version: 'origin/main'
+
+  notify-failure:
+    needs: docker-build
+    if: ${{ needs.docker-build.result == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Issue
+        run: |
+            gh issue create \
+            --title "Integration run failed - $(date +'%Y-%m-%d')" \
+            --body "The Docker build job failed in the Integration workflow.\nWorkflow: ${{ github.workflow }}\nWorkflow Run: ${{ github.run_id }}\nWorkflow Run URL: ${{ github.run_url }}" \
+            --assignee ${{ vars.INTEGRATION_OWNER }}
+            

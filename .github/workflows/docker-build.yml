@@ -6,7 +6,7 @@ on:
     inputs:
       tt-mlir-version:
         type: string
-        description: 'Version of tt-mlir to use'
+        description: 'Version of tt-mlir to use. It can be a branch, tag, or commit hash.'
         required: false
         default: ''
 
@@ -37,7 +37,7 @@ jobs:
       id: strings
       shell: bash
       run: |
-        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        xecho "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
