@@ -19,14 +19,19 @@ jobs:
   notify-failure:
     needs: docker-build
     if: ${{ always() && needs.docker-build.result == 'failure' }}
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
+    runs-on: ubuntu-latest    
     steps:
+      - uses: actions/checkout@v4
       - name: Create Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WORKFLOW: ${{ github.workflow }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: ${{ github.run_url }}
+          TODAY: $(date +'%Y-%m-%d')
         run: |
             gh issue create \
-            --title "Integration run failed - $(date +'%Y-%m-%d')" \
-            --body "The Docker build job failed in the Integration workflow.\nWorkflow: ${{ github.workflow }}\nWorkflow Run: ${{ github.run_id }}\nWorkflow Run URL: ${{ github.run_url }}" \
+            --title "Integration run failed - $TODAY \
+            --body "The Docker build job failed in the Integration workflow.\nWorkflow: $WORKFLOW \nWorkflow Run: $RUN_ID \nWorkflow Run URL: $RUN_URL" \
             --assignee ${{ vars.INTEGRATION_OWNER }}
             
