@@ -187,7 +187,7 @@ void bypass_embedding_input_nops(Graph *graph)
 
         graphlib::PyOpNode *embedding = node->as<graphlib::PyOpNode>();
 
-        Node *input_ids = graph->data_operands(embedding)[1];
+        Node *input_ids = graph->data_operands(embedding)[0];
         if (input_ids->node_type() == NodeType::kInput)
             continue;
 

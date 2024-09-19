@@ -468,7 +468,7 @@ def test_sqrt(x_shape, y_shape):
 # @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
 # @pytest.mark.parametrize("token_num", [1, 7, 32])
 # @pytest.mark.parametrize("embedding_dim", [128, 512, 3200])
-@pytest.mark.xfail(reason="L1 allocation issue on Metal")
+@pytest.mark.xfail(reason="ttnn.embedding op fails while reshaping the input_tensor in TILE_LAYOUT")
 @pytest.mark.parametrize("vocab_size", [32000])
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
@@ -485,7 +485,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
             return self.embedding(x)
 
     inputs = [
-        torch.randint(0, vocab_size, (1, token_num)),
+        torch.randint(0, vocab_size, (1, token_num)).to(torch.int32),
     ]
 
     framework_model = Embedding()
