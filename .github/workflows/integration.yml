@@ -31,7 +31,7 @@ jobs:
           TODAY: $(date +'%Y-%m-%d')
         run: |
             gh issue create \
-            --title "Integration run failed - $TODAY \
+            --title "Integration run failed - $TODAY" \
             --body "The Docker build job failed in the Integration workflow.\nWorkflow: $WORKFLOW \nWorkflow Run: $RUN_ID \nWorkflow Run URL: $RUN_URL" \
             --assignee ${{ vars.INTEGRATION_OWNER }}
             
