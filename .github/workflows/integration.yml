@@ -25,13 +25,11 @@ jobs:
       - name: Create Issue
         env:
           GH_TOKEN: ${{ github.token }}
-          WORKFLOW: ${{ github.workflow }}
-          RUN_ID: ${{ github.run_id }}
-          RUN_URL: ${{ github.run_url }}
-          TODAY: $(date +'%Y-%m-%d')
+          RUN_URL: ${{ github.repositoryUrl }}/actions/runs/${{ github.run_id }}
         run: |
             gh issue create \
-            --title "Integration run failed - $TODAY" \
-            --body "The Docker build job failed in the Integration workflow.\nWorkflow: $WORKFLOW \nWorkflow Run: $RUN_ID \nWorkflow Run URL: $RUN_URL" \
+            --title "Integration run failed" \
+            --body "The integration workflow failed in $RUN_URL" \
+            --label bug \
             --assignee ${{ vars.INTEGRATION_OWNER }}
             
