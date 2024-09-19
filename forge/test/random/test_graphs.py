@@ -91,6 +91,15 @@ class FrameworkBuilder:
 
         framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Healthy Forge", SKIP_OPERATORS)
 
+        ALLOW_OPERATORS = (
+            "relu",
+            "tanh",
+            "add",
+            "matmul",
+        )
+
+        FrameworkTestUtils.allow_operators(framework, ALLOW_OPERATORS)
+
         pow_operator = FrameworkTestUtils.copy_operator(framework, "pow")
         if pow_operator:
             pow_operator.forward_params = [
@@ -105,12 +114,26 @@ class FrameworkBuilder:
     @staticmethod
     def healty_pytorch():
         SKIP_OPERATORS = (
+            # "relu",
             "sqrt",  # skip because it's failing for negative values
-            # "linear",
+            "tanh",
+            "linear",
             "conv2d",  # skip until calc_input_shapes is properly implemented
         )
 
         framework = FrameworkTestUtils.copy_framework(Frameworks.PYTORCH.value, "Healthy PyTorch", SKIP_OPERATORS)
+
+        # ALLOW_OPERATORS = (
+        #     # "relu",
+        #     # "tanh",
+        #     "add",
+        #     "sub",
+        #     "mul",
+        #     "div",
+        #     "matmul",
+        # )
+
+        # FrameworkTestUtils.allow_operators(framework, ALLOW_OPERATORS)
 
         return framework
 
