@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.build.runs-on }}
 
     container:
-      image: ghcr.io/${{ github.repository }}/tt-forge-fe-ubuntu-22-04:latest
+      image: xx-ghcr.io/${{ github.repository }}/tt-forge-fe-ubuntu-22-04:latest
       options: --user root --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -37,7 +37,7 @@ jobs:
       id: strings
       shell: bash
       run: |
-        xecho "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir

@@ -18,7 +18,7 @@ jobs:
 
   notify-failure:
     needs: docker-build
-    if: ${{ needs.docker-build.result == 'failure' }}
+    if: ${{ always() && needs.docker-build.result == 'failure' }}
     runs-on: ubuntu-latest
     steps:
       - name: Create Issue
