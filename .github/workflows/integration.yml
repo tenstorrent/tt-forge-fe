@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-  push:
 
 jobs:
   docker-build:
@@ -32,4 +31,3 @@ jobs:
             --body "The integration workflow failed in $RUN_URL" \
             --label bug \
             --assignee ${{ vars.INTEGRATION_OWNER }}
-            
