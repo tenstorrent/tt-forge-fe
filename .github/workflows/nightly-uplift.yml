@@ -29,14 +29,19 @@ jobs:
         run: |
             git config --global user.email ${{ vars.INTEGRATION_OWNER }}
             git config --global user.name "Tenstorrent CI"
+            if git branch -a | grep -q "remotes/origin/$UPLIFT_BRANCH"; then
+              echo "### Branch already exists on remote ###"
+              exit 0
+            fi
+
             git checkout -b $UPLIFT_BRANCH
-            git pull
             cd $SUBMODULE_PATH
             git fetch origin
             git checkout $SUBMODULE_VERSION
             echo "### Latest commit in $SUBMODULE_PATH ###"
             git log -1
             cd ../..
+            
             if [ -z "$(git status --porcelain)" ]; then
               echo "### No changes in $SUBMODULE_PATH ###"
               exit 0
@@ -44,7 +49,8 @@ jobs:
             echo "### Commit change and create PR ###"
             git add $SUBMODULE_PATH
             git commit -m "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY"
-            git push origin $UPLIFT_BRANCH
+            git push origin $UPLIFT_BRANCH --force
+
             gh pr create \
             --title "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY" \
             --body "This PR uplifts the $SUBMODULE_PATH submodule to the $SUBMODULE_VERSION." \
