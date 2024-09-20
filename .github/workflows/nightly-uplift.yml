@@ -49,5 +49,4 @@ jobs:
             --body "This PR uplifts the $SUBMODULE_PATH submodule to the $SUBMODULE_VERSION." \
             --base main \
             --head $UPLIFT_BRANCH
-            --label uplift
             --reviewer ${{ vars.INTEGRATION_OWNER }}
