@@ -23,14 +23,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          UPLIFT_BRANCH: uplift-$TODAY
+          UPLIFT_BRANCH: uplift-${{ env.TODAY }}
           SUBMODULE_PATH: third_party/tt-mlir
           SUBMODULE_VERSION: origin/main
         run: |
             git config --global user.email ${{ vars.INTEGRATION_OWNER }}
             git config --global user.name "Tenstorrent CI"
+            if git rev-parse --verify $UPLIFT_BRANCH >/dev/null 2>&1; then
+              echo "Branch $UPLIFT_BRANCH already exists"
+              exit 0
+            fi
             git checkout -b $UPLIFT_BRANCH
-            git pull
             cd $SUBMODULE_PATH
             git fetch origin
             git checkout $SUBMODULE_VERSION
