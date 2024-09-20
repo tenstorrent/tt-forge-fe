@@ -19,11 +19,11 @@ jobs:
       - name: Set env variable
         run: |
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "UPLIFT_BRANCH=uplift-$TODAY" >> $GITHUB_ENV
       - name: Create uplift PR
         env:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          UPLIFT_BRANCH: uplift-$TODAY
           SUBMODULE_PATH: third_party/tt-mlir
           SUBMODULE_VERSION: origin/main
         run: |
@@ -33,7 +33,14 @@ jobs:
             cd $SUBMODULE_PATH
             git fetch origin
             git checkout $SUBMODULE_VERSION
+            echo "### Latest commit in $SUBMODULE_PATH ###"
+            git log -1
             cd ../..
+            if [ -z "$(git status --porcelain)" ]; then
+              echo "No changes in $SUBMODULE_PATH"
+              exit 0
+            fi
+            echo "### Commit change and create PR ###"
             git add $SUBMODULE_PATH
             git commit -m "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY"
             git push origin $UPLIFT_BRANCH
@@ -42,4 +49,5 @@ jobs:
             --body "This PR uplifts the $SUBMODULE_PATH submodule to the $SUBMODULE_VERSION." \
             --base main \
             --head $UPLIFT_BRANCH
-            --assignee ${{ vars.INTEGRATION_OWNER }}
+            --label uplift
+            --reviewer ${{ vars.INTEGRATION_OWNER }}
