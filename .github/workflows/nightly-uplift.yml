@@ -1,13 +1,11 @@
-# This workflow runs a schedule and uses the latest version of tt-mlir (origin/main branch)
-# to check if the latest version of tt-mlir is compatible with the current codebase.
+# This workflow automates creation of uplift pull requests.
+# Uplift PR is created daily to uplift the submodule to the latest version.
 
 name: Nighty Uplift PR
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-  push:
 
 jobs:    
   uplift-pr:    
