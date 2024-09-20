@@ -30,6 +30,7 @@ jobs:
             git config --global user.email ${{ vars.INTEGRATION_OWNER }}
             git config --global user.name "Tenstorrent CI"
             git checkout -b $UPLIFT_BRANCH
+            git pull
             cd $SUBMODULE_PATH
             git fetch origin
             git checkout $SUBMODULE_VERSION

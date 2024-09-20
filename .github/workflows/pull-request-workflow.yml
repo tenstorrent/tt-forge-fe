@@ -3,9 +3,9 @@ name: Pull request workflow
 on:
   workflow_dispatch:
   workflow_call:
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
 
 jobs:
   spdx:
