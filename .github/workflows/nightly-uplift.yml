@@ -30,7 +30,7 @@ jobs:
             git config --global user.email ci@tenstorrent.com
             git config --global user.name "Tenstorrent CI"
             
-            if git branch -a | grep -q "remotes/origin/$UPLIFT_BRANCH"; then
+            if git branch -a | grep -q "remotes/origin/uplift-"; then
               echo "### Branch already exists on remote ###"
               exit 0
             fi
