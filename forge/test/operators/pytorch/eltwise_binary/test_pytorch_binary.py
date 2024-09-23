@@ -55,7 +55,7 @@
 
 import pytest
 
-from typing import List, Dict, Type, Optional
+from typing import List, Dict, Type, Optional, Any
 from loguru import logger
 
 import random
@@ -67,6 +67,12 @@ from forge.op_repo import TensorShape
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import ShapeUtils
+from test.operators.utils import InputSource
+from test.operators.utils import TestVectors
+from test.operators.utils import TestResultFailing
+from test.operators.utils import TestPlan
+from test.operators.utils import TestParameterGenerator
+from test.operators.utils import TestData
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import RateLimiter
@@ -92,30 +98,13 @@ class ModelFromAnotherOp(torch.nn.Module):
         return output
 
 
-class ModelFromHost(torch.nn.Module):
+class ModelDirect(torch.nn.Module):
 
     model_name = "model_op_src_from_host"
 
     def __init__(self, operator, opname, shape, kwargs):
-        super(ModelFromHost, self).__init__()
+        super(ModelDirect, self).__init__()
         self.testname = "Element_wise_pytorch_binary_operator_" + opname + "_test_op_src_from_host"
-        self.operator = operator
-        self.opname = opname
-        self.shape = shape
-        self.kwargs = kwargs
-
-    def forward(self, x: torch.Tensor, y: torch.Tensor):
-        output = self.operator(x, y, **self.kwargs)
-        return output
-
-
-class ModelFromDramQueue(torch.nn.Module):
-
-    model_name = "model_op_src_from_dram_queue"
-
-    def __init__(self, operator, opname, shape, kwargs):
-        super(ModelFromDramQueue, self).__init__()
-        self.testname = "Element_wise_pytorch_binary_operator_" + opname + "_test_op_src_from_dram_queue"
         self.operator = operator
         self.opname = opname
         self.shape = shape
@@ -151,27 +140,36 @@ class ModelConstEvalPass(torch.nn.Module):
         return v3
 
 
+MODEL_TYPES = {
+    InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
+    InputSource.FROM_HOST: ModelDirect,
+    InputSource.FROM_DRAM_QUEUE: ModelDirect,
+    InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
+}
+
+
 
 def verify(
     test_device: TestDevice,
-    model_type: Type[torch.nn.Module],
+    input_source: InputSource,
     input_operator: str,
     input_shape: TensorShape,
-    number_of_operands: int,
+    number_of_operands: int = 2,
     kwargs: Dict = {},
     input_params: List[Dict] = [],
-    input_source_flag: InputSourceFlags = None,
     dev_data_format: forge.DataFormat = None,
     math_fidelity: forge.MathFidelity = None,
-    check_pcc: Optional[bool] = True, 
     pcc: Optional[float] = None,
 ):
     '''Common verification function for all tests'''
 
-    xfail_test(input_operator, input_shape, model_type)
+    input_source_flag: InputSourceFlags = None
+    if input_source in (InputSource.FROM_DRAM_QUEUE,):
+        input_source_flag = InputSourceFlags.FROM_DRAM
 
     operator = getattr(torch, input_operator)
 
+    model_type = MODEL_TYPES[input_source]
     pytorch_model = model_type(operator=operator, opname=input_operator, shape=input_shape, kwargs=kwargs)
     # forge_model = forge.PyTorchModule(pytorch_model.model_name, pytorch_model)
 
@@ -186,31 +184,8 @@ def verify(
         input_source_flag=input_source_flag,
         dev_data_format=dev_data_format,
         math_fidelity=math_fidelity,
-        check_pcc=check_pcc,
         pcc=pcc,
     )
-
-
-MODEL_TYPES = [
-    ModelFromAnotherOp,
-    ModelFromHost,
-    ModelFromDramQueue,
-    ModelConstEvalPass
-]
-
-def xfail_test(
-    input_operator: str,
-    input_shape: TensorShape,
-    model_type: Type[torch.nn.Module],
-):
-    s = get_input_shapes()
-
-    match input_operator:
-        case "add" | "div" | "divide" | "mul" | "multiply" | "true_divide" | "ge" | "greater_equal" | "sub":
-            if(input_shape == s[3][0][0]): 
-                # E         AssertionError: PCC for single values doesn't work
-                pytest.xfail(reason=FailingReasons.BUGGY_SHAPE)
-
 
 
 def get_eltwise_binary_ops():
@@ -226,6 +201,38 @@ def get_eltwise_binary_ops():
         "ge",                       #08                                                  
         # "greater_equal",          #09    - Alias for ge.  
     ]
+
+def get_not_implemented_pytorch_binary_ops():
+    return [
+        "atan2",                    #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
+        "arctan2",                  #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
+        "bitwise_and",              #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
+        "bitwise_or",               #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
+        "bitwise_xor",              #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
+        "bitwise_left_shift",       #05                         - RuntimeError: "lshift_cpu" not implemented for 'Float'
+        "bitwise_right_shift",      #06                         - RuntimeError: "rshift_cpu" not implemented for 'Float'
+        "floor_divide",             #07                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
+        "fmod",                     #08                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
+        "logaddexp",                #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
+        "logaddexp2",               #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
+        "nextafter",                #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
+        "remainder",                #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
+        "fmax",                     #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
+        "fmin",                     #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
+        
+        "eq",                       #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
+        "ne",                       #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
+        "le",                       #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
+        # "greater",                #18    - Alias for gt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater
+        "gt",                       #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
+        # "less_equal",             #20    - Alias for le.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal
+        "lt",                       #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
+        # "less",                   #22    - Alias for lt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less
+        "maximum",                  #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
+        "minimum",                  #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
+        # "not_equal",              #25    - Alias for ne.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal
+    ]
+
 
 def get_input_shapes():
     return [
@@ -317,186 +324,241 @@ def get_input_shapes():
             pytest.param((14, 13, 89, 3),     marks=pytest.mark.slow),       #74     # 4.2 Prime numbers
     ]
 
-@pytest.mark.parametrize("input_operator", get_eltwise_binary_ops())
-@pytest.mark.parametrize("model_type", MODEL_TYPES)
-@pytest.mark.parametrize("input_shape", ShapeUtils.extend_shapes_with_id(get_input_shapes()))
+
+def get_input_shapes_test_plan():
+    return get_input_shapes()
+    # return [shape for shape in get_input_shapes() if len(shape[0][0]) in (2, 3, 4,)]
+
+
+def get_input_shapes_df_mf():
+    return TestData.input_shapes_single
+    # return [shape for shape in get_input_shapes() if len(shape[0][0]) in (4,)][:1]
+
+
+test_plan = TestPlan(
+    tests = [
+        # Test plan: 
+        # 2. Operand source(s):
+        # 3. Operand shapes type(s):
+        # 4. Operand / output size of dimensions
+        TestVectors(
+            operators=get_eltwise_binary_ops(),
+            input_sources=TestData.INPUT_SOURCES,
+            input_shapes=get_input_shapes_test_plan(),
+        ),
+        # Test plan: 
+        # 5. Data format
+        TestVectors(
+            operators=get_eltwise_binary_ops(),
+            input_sources=TestData.INPUT_SOURCES_SINGLE,
+            input_shapes=get_input_shapes_df_mf(),
+            dev_data_formats=TestData.dev_data_formats,
+            math_fidelities=TestData.math_fidelities_defaults,
+        ),
+        # Test plan: 
+        # 6. Math fidelity
+        TestVectors(
+            operators=get_eltwise_binary_ops(),
+            input_sources=TestData.INPUT_SOURCES_SINGLE,
+            input_shapes=get_input_shapes_df_mf(),
+            dev_data_formats=TestData.dev_data_formats_defaults,
+            math_fidelities=TestData.math_fidelities,
+        ),
+        # Unimplemented operators
+        TestVectors(
+            operators=get_not_implemented_pytorch_binary_ops(),
+            input_sources=TestData.INPUT_SOURCES,
+            input_shapes=TestData.input_shapes_single,
+        ),
+    ],
+    failing_tests = [
+        # PCC check fails for buggy shapes for all models
+        TestVectors(
+            operators=None,
+            input_sources=None,
+            input_shapes=[
+                (1, 1),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes for model ModelConstEvalPass
+        TestVectors(
+            operators=None,
+            input_sources=[InputSource.CONST_EVAL_PASS, ],
+            input_shapes=[
+                (11, 45, 17),
+                (10, 1000, 100),
+                (10, 10000, 1),
+                (32, 32, 64),
+                # fail only for const eval pass not for other models
+                (2, 3, 4),
+                (11, 1, 23),
+                (11, 64, 1),
+                (100, 100, 100),
+                (64, 160, 96),
+                (11, 17, 41),
+                (13, 89, 3),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes for div
+        TestVectors(
+            operators=["div", "divide", "true_divide", ],
+            input_sources=[InputSource.FROM_HOST, InputSource.FROM_DRAM_QUEUE, ],
+            input_shapes=[
+                (1, 4),
+                (1, 3),
+                (3, 4),
+                (1, 3, 4),
+                (12, 64, 160, 96),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes for div
+        TestVectors(
+            operators=["div", "divide", "true_divide", ],
+            input_sources=[InputSource.CONST_EVAL_PASS, ],
+            input_shapes=[
+                (1, 17),
+                (45, 17),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes for ge
+        TestVectors(
+            operators=["ge", "greater_equal", ],
+            input_sources=[InputSource.FROM_HOST, InputSource.FROM_DRAM_QUEUE, ],
+            input_shapes=[
+                (1, 1000),
+                (5, 11, 64, 1),
+
+                # fail when dtype=float32 or generator
+                # (17, 41),
+                # (89, 3),
+                # (1, 17, 41),
+                # (1, 89, 3),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # Not implemented operators
+        TestVectors(
+            operators=get_not_implemented_pytorch_binary_ops(),
+            input_sources=TestData.INPUT_SOURCES,
+            input_shapes=TestData.input_shapes_single,
+            failing_reason=FailingReasons.NOT_IMPLEMENTED,
+        ),
+    ]
+)
+
+
+class BinaryTestParameterGenerator (TestParameterGenerator):
+
+    def __init__(self):
+        super(BinaryTestParameterGenerator, self).__init__()
+
+        rng_limiter = random.Random(0)
+        self.alpha_limiter = RateLimiter(rng_limiter, 100, 20)
+        self.alpha_small_limiter = RateLimiter(rng_limiter, 100, 50)
+
+    def produce(self, input_operator, input_source, input_shape, dev_data_format, math_fidelity, failing_result: Optional[TestResultFailing]):
+            
+        def get_failing_result(kwargs: Dict[str, Any]) -> Optional[FailingReasons]:
+
+            # TODO check kwargs via test plan
+            if "rounding_mode" in kwargs and kwargs["rounding_mode"] == "trunc" and input_source in (InputSource.CONST_EVAL_PASS,) and dev_data_format in (
+                forge.DataFormat.Bfp2,  # PCC check failed for some shapes
+                forge.DataFormat.Bfp2_b,
+                forge.DataFormat.Bfp8,
+                forge.DataFormat.Bfp8_b,  # PCC check failed for some shapes
+                forge.DataFormat.Float32,
+                forge.DataFormat.Int8,
+                forge.DataFormat.Lf8,
+                forge.DataFormat.RawUInt16,
+            ):
+                return TestResultFailing(FailingReasons.DATA_MISMATCH)
+
+            if "alpha" in kwargs:
+                if input_operator in ["add",]:
+                    if not input_source in (InputSource.FROM_ANOTHER_OP,):
+                        if len(input_shape) == 2 and input_shape[-1] == 1:
+                            return None
+                        # TODO check kwargs range via test plan
+                        if 0.9 <= kwargs['alpha'] <= 1.1:
+                            return None
+                        # It looks like Forge is not supporting alpha parameter so PCC is always different
+                        return TestResultFailing(FailingReasons.UNSUPPORTED_SPECIAL_CASE)
+
+                return None
+
+        # TODO generate kwargs via test plan
+        if input_operator in ["add", "sub", "substract"] and self.alpha_limiter.is_allowed():
+            if self.alpha_small_limiter.is_allowed():
+                # small numbers
+                alpha_value = self.rng_params.uniform(-1.0, 1.0)
+            else:
+                # regular number range
+                alpha_value = self.rng_params.uniform(5, 10000)
+                # support negative numbers
+                alpha_value *= self.rng_params.choice([-1, 1])
+            kwargs = {
+                'alpha': alpha_value
+            }
+        elif input_operator in ["div", "divide"]:
+            rounding_modes = ['trunc', 'floor', None]
+            kwargs = {
+                'rounding_mode': rounding_modes[self.rng_params.randint(0, 2)]
+            }
+        else:
+            kwargs = {}
+
+        # Check additional custom conditions for failing result
+        if failing_result is None and kwargs is not None:
+            failing_result = get_failing_result(kwargs)
+
+        # These 10 operators are supported for CONST_EVAL_PASS
+        if failing_result is not None and input_source in (InputSource.CONST_EVAL_PASS, ) and input_operator in (
+            'floor_divide',
+            'fmod',
+            'remainder',
+            'eq',
+            'ne',
+            'le',
+            'gt',
+            'lt',
+            'maximum',
+            'minimum',
+        ):
+            failing_result = None
+
+        marks = self.get_marks(failing_result)
+
+        return pytest.param(input_operator, input_source, kwargs, input_shape, dev_data_format, math_fidelity, marks=marks, id=f"{input_operator}-{input_source.name}-{kwargs}-{input_shape}-{dev_data_format.name if dev_data_format else None}-{math_fidelity.name if math_fidelity else None}")
+
+
+test_plan_generator = BinaryTestParameterGenerator()
+
+
+@pytest.mark.parametrize("input_operator, input_source, kwargs, input_shape, dev_data_format, math_fidelity", test_plan_generator.generate(test_plan))
 def test_pytorch_eltwise_binary_ops_per_test_plan(
     input_operator,
-    model_type,
+    input_source,
+    kwargs,
     input_shape,
     test_device,
-    dev_data_format=None, 
-    input_math_fidelity=None
+    dev_data_format,
+    math_fidelity
 ):
-    
-    input_source_flag = None
-    if model_type == ModelFromDramQueue:
-        input_source_flag = InputSourceFlags.FROM_DRAM
-
-    kwargs = {}
-    if input_operator in ["add", "sub", "substract"] and kwargs_limiter.is_allowed():
-        kwargs['alpha'] = random.uniform(0.5, 1000)
-        # It looks like Forge is not supporting alpha parameter so PCC is always different
-        pytest.xfail(reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE)
-    elif input_operator in ["div", "divide"]:
-        rounding_modes = ['trunc', 'floor', None]
-        kwargs['rounding_mode'] = rounding_modes[random.randint(0, 2)]
-
 
     verify(
         test_device=test_device,
-        model_type=model_type,
+        input_source=input_source,
         input_operator=input_operator,
         input_shape=input_shape,
-        number_of_operands=2,
         kwargs=kwargs,
-        input_source_flag=input_source_flag,
         dev_data_format=dev_data_format,
-        math_fidelity=input_math_fidelity,
+        math_fidelity=math_fidelity,
     )
 # 1480 passed, 20 xfailed, 2 warnings in 529.46s (0:08:49) 
-
-rng_limiter = random.Random(0)
-kwargs_limiter = RateLimiter(rng_limiter, 100, 50)
-
-
-def get_not_implemented_pytorch_binary_ops():
-    return [
-        "atan2",                    #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-        "arctan2",                  #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-        "bitwise_and",              #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
-        "bitwise_or",               #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
-        "bitwise_xor",              #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
-        "bitwise_left_shift",       #05                         - RuntimeError: "lshift_cpu" not implemented for 'Float'
-        "bitwise_right_shift",      #06                         - RuntimeError: "rshift_cpu" not implemented for 'Float'
-        "floor_divide",             #07                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
-        "fmod",                     #08                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
-        "logaddexp",                #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
-        "logaddexp2",               #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
-        "nextafter",                #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
-        "remainder",                #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
-        "fmax",                     #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
-        "fmin",                     #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
-        
-        "eq",                       #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
-        "ne",                       #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
-        "le",                       #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
-        # "greater",                #18    - Alias for gt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater
-        "gt",                       #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
-        # "less_equal",             #20    - Alias for le.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal
-        "lt",                       #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
-        # "less",                   #22    - Alias for lt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less
-        "maximum",                  #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
-        "minimum",                  #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
-        # "not_equal",              #25    - Alias for ne.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal
-    ]
-
-input_shapes=[
-    (1, 2, 3, 4),
-]
-
-
-@pytest.mark.parametrize("input_operator", get_not_implemented_pytorch_binary_ops())
-@pytest.mark.parametrize("model_type", MODEL_TYPES)
-@pytest.mark.parametrize("input_shape", input_shapes)
-@pytest.mark.xfail(reason=FailingReasons.NOT_IMPLEMENTED)
-def test_not_implemented_pytorch_eltwise_binary_ops_per_test_plan(
-    input_operator,
-    model_type,
-    input_shape,
-    test_device,
-    dev_data_format=None, 
-    input_math_fidelity=None
-):
-
-    verify(
-        test_device=test_device,
-        model_type=model_type,
-        input_operator=input_operator,
-        input_shape=input_shape,
-        number_of_operands=2,
-        dev_data_format=dev_data_format,
-        math_fidelity=input_math_fidelity,
-    )
-# 78 xfailed, 10 xpassed, 2 warnings in 30.13s
-# Those 10 tests that are xpassed are for operators: floor_divide, fmod, remainder, eq, ne, le, gt, lt, maximum, minimum which are working only with model ModelConstEvalPass. 
-# They are not working with other models, as they are not implemented so we can't test them yet.
-
-
-
-########## TEST DATA FORMAT AND MATH FIDELITY FOR ALL IMPLEMENTED BINARY OPS
-
-# We will not test all combinations of Data Format and Math Fidelity because it would be too much tests. 
-#   1. First we will choose Data Format to be Float16_b and test all Math Fidelity values
-#   2. Then we will set Math Fidelity to HiFi4 and test all Data Formats. 
-
-def get_input_shape():
-    return  (1, 45, 17)     #0     # 3.1 Full tensor (i.e. full expected shape)
-
-dev_data_formats = [
-    forge.DataFormat.Float16_b,
-]
-
-compiler_math_fidelity = [
-    forge.MathFidelity.LoFi,
-    forge.MathFidelity.HiFi2,
-    forge.MathFidelity.HiFi3,
-    forge.MathFidelity.HiFi4,
-]
-
-@pytest.mark.parametrize("input_operator", get_eltwise_binary_ops())
-@pytest.mark.parametrize("dev_data_format", dev_data_formats)
-@pytest.mark.parametrize("math_fidelity", compiler_math_fidelity)
-def test_pytorch_eltwise_binary_ops_mf_inputs(input_operator, test_device, dev_data_format, math_fidelity):
-    test_pytorch_eltwise_binary_ops_per_test_plan(
-        input_operator,
-        ModelFromHost,
-        get_input_shape(),
-        test_device,
-        dev_data_format, 
-        math_fidelity
-    )
-
-
-        
-dev_data_formats=[
-    pytest.param(forge.DataFormat.Bfp2, id="Bfp2"),
-    pytest.param(forge.DataFormat.Bfp2_b, id="Bfp2_b"),
-    pytest.param(forge.DataFormat.Bfp4, id="Bfp4"),
-    pytest.param(forge.DataFormat.Bfp4_b, id="Bfp4_b"),
-    pytest.param(forge.DataFormat.Bfp8, id="Bfp8"),
-    pytest.param(forge.DataFormat.Bfp8_b, id="Bfp8_b"),
-
-    pytest.param(forge.DataFormat.Float16, id="Float16"),
-    pytest.param(forge.DataFormat.Float16_b, id="Float16_b"),
-    pytest.param(forge.DataFormat.Float32, id="Float32"),
-    pytest.param(forge.DataFormat.Int8, id="Int8"),
-
-    pytest.param(forge.DataFormat.Lf8, id="Lf8"),
-    pytest.param(forge.DataFormat.RawUInt16, id="RawUInt16"),
-    pytest.param(forge.DataFormat.RawUInt32, id="RawUInt32"),
-    pytest.param(forge.DataFormat.RawUInt8, id="RawUInt8"),
-    pytest.param(forge.DataFormat.UInt16, id="UInt16"),
-]
-
-compiler_math_fidelity = [
-    forge.MathFidelity.HiFi4,
-]
-
-@pytest.mark.parametrize("input_operator", get_eltwise_binary_ops())
-@pytest.mark.parametrize("model_type", [ModelFromHost])
-@pytest.mark.parametrize("input_shape", [get_input_shape()])
-@pytest.mark.parametrize("dev_data_format", dev_data_formats)
-@pytest.mark.parametrize("math_fidelity", compiler_math_fidelity)
-def test_pytorch_eltwise_binary_ops_df_inputs(input_operator, model_type, input_shape, test_device, dev_data_format, math_fidelity):
-    test_pytorch_eltwise_binary_ops_per_test_plan(
-        input_operator,
-        model_type,
-        input_shape,
-        test_device,
-        dev_data_format, 
-        math_fidelity
-    )
-
+# 4 failed, 1352 passed, 212 xfailed, 115 xpassed, 2 warnings in 590.56s (0:09:50)
 
 
