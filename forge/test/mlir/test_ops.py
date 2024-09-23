@@ -11,7 +11,7 @@ from torch import nn
 
 import forge
 from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
-
+from forge.tensor import to_forge_tensors, to_pt_tensors
 
 def test_add():
     class Add(nn.Module):
@@ -558,3 +558,32 @@ def test_sigmoid(shape):
     
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+@pytest.mark.parametrize("dim", [-1, -2, -3], ids=["-1", "-2", "-3"])
+@pytest.mark.parametrize("start", [0],  ids=["0"])
+@pytest.mark.parametrize("stop", [2,32,64], ids=["2", "32", "64"])
+@pytest.mark.parametrize("stride", [1, 2, 4, 8], ids=["1", "2", "4", "8"])
+@pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
+def test_indexing(dim, start, stop, stride, shape):
+    if len(shape) == 2 and dim == -3:
+        pytest.skip("Skipping since indexing on dim=-3, 2D tensor doesn't make sense")
+    if stop > shape[dim]:
+        pytest.skip("Skipping since stop > shape[dim]")
+    class ForgeIndexing(forge.ForgeModule):
+        def __init__(self, dim, start, stop, stride):
+            super().__init__("ForgeTest")
+
+        def forward(self, x):
+            return forge.op.Index("indexing_op_1", x, dim, start, stop, stride)
+
+    inputs = to_forge_tensors([torch.rand(*shape)])
+    model = ForgeIndexing(dim, start, stop, stride)
+    golden_out = model(*inputs)
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+
+    inputs = to_pt_tensors(inputs)
+    compiled_output = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in compiled_output]
+    assert compare_with_golden_pcc(golden=golden_out.value(), calculated=co_out[0], pcc=0.99)
