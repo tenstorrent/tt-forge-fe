@@ -192,11 +192,11 @@ def calculate_pcc(a, b):
     return pcc
 
 #Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
-def compare_with_golden(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor):
+def compare_with_golden(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc: float = 0.99):
     if golden.dtype == torch.bool:
         return compare_with_golden_bool(golden, calculated)
     if golden.flatten().size() != (1,): # PCC for single values doesn't work
-        return compare_with_golden_pcc(golden, calculated)
+        return compare_with_golden_pcc(golden, calculated, pcc)
     else:
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
