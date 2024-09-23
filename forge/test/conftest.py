@@ -272,6 +272,12 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("training", (False, True), ids=["inference", "training"])
 
     if "test_device" in metafunc.fixturenames:
+        # Temporary work arround to provide dummy test_device
+        # TODO remove workarround https://github.com/tenstorrent/tt-forge-fe/issues/342
+        metafunc.parametrize("test_device", (None, ), ids=["no_device"])
+
+    if "_test_device_not_implemented" in metafunc.fixturenames:
+    # if "test_device" in metafunc.fixturenames:
         names = ["Golden", "Model", "Versim", "Emulation", "Grayskull", "Wormhole_B0", "Blackhole"]
 
         # Set device-mode for the test
