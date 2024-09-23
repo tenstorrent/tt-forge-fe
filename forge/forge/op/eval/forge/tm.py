@@ -1071,87 +1071,52 @@ def decompose(type, attr, dc, inputs):
     if type == "index":
         assert len(attr) == 4, "Index should have 4 attributes"
         dim, start, stop, stride = attr
-        
+
         if start < 0:
+            # If start is less than zero (Python-style indexing), convert it to positive index
+            # by adding the size on that dimension
             start = act.shape[dim] + start
+
+        if stop < 0:
+            # If start is less than zero (Python-style indexing), convert it to positive index
+            # by adding the size on that dimension
+            stop = act.shape[dim] + stop
+
+        assert dim != -4, "No support for indexing on dimension -4 (w)"
         
-        length = stop - start
-        assert dim != -4, "No support for indexing on w"
-        is_z_dim = dim == -3
-        is_c_dim = dim == -1
         is_one_dim = len(act.shape) == 1
-
-        if is_z_dim and stride == 1:
-            result = dc.op("select", [act], (dim, start, length, act.shape[dim]))
-            dc.fuse(result)
-            return
-        elif is_z_dim and stride > 1:
-            result = dc.op("select", [act], (dim, start, 1, stride))
-            if result.shape[dim] >= length:
-                result = dc.op(
-                    "select",
-                    [result],
-                    (dim, 0, round_up_div(length, stride), result.shape[dim]),
-                )
-            dc.fuse(result)
-            return
-        elif start % TILE_DIM == 0 and stop % TILE_DIM == 0 and stride == 1 and act.shape[dim] % TILE_DIM == 0:
-            result = dc.op("select", [act], (dim, start, length, act.shape[dim]))
-            result = dc.op(Buffer.create(), [result]) # Workaround to enable T-streaming for Splice
-            dc.fuse(result)
-            return
-        elif act.shape[dim] == 1 and length == 1 and stride == 1:
-            result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)
-            return
-        elif dim == -2 and stride == 1 and length == stop and "FORGE_PAD_MM" in os.environ:
-            sparse_r_padding = ast.literal_eval(os.environ.get('FORGE_PAD_MM', "{}"))
-            sparse_r = align_up_tile(attr[-2]) // 32
-            if sparse_r in sparse_r_padding:
-                padded_r = sparse_r_padding[sparse_r] - sparse_r
-                result = dc.op("forge_unpad", [act], (padded_r, 0, attr[-2], act.shape[-1]))
-                dc.fuse(result)
-                return            
-
-        result = act
-
-        # if the non-indexed dimension is very large, stack so it can be streamed easier
-        slice_amount = None
-        if is_c_dim and len(inputs[0].shape) > 2 and inputs[0].shape[-2] > 4096 and inputs[0].shape[-2] % TILE_DIM == 0:
-            slice_amount = (inputs[0].shape[-2] // TILE_DIM)
-            result = dc.op("vslice", [result], (slice_amount, ))
-
         if is_one_dim:
-            result = dc.op("reshape", [result], (1, result.shape[0]))
-        if is_c_dim:
-            result = dc.op(TransposeTM.create(-2, -1), [result])
+            # If input is a one-dimensional tensor, reshape it to a 2D tensor with one dimension equal to 1
+            # and the other equal to the length. Use unsqueeze to add a dimension to the tensor.
+            act = dc.op("unsqueeze", [act], (0, len(act.shape)))
 
-        result_shape = result.shape
-        # Fold W dim into Z
-        if len(result_shape) == 4 and result_shape[0] != 1:
-            result = dc.op("reshape", [result], (1, result_shape[0] * result_shape[1], result_shape[2], result_shape[3]))
-
-        spm = create_index_sparse_picker_matrix(result.shape[-2], start, stop, stride)
-        if len(result.shape) >= 3:
-            spm = torch.unsqueeze(spm, 0)
-            spm = torch.stack([spm] * result.shape[-3], -3)
-        lhs = dc.tensor(spm)
-        result = dc.op("sparse_matmul", [lhs, result])
+        row_indices = list(range(start, stop, stride))
         
-        # Fold back W dim
-        if len(result_shape) == 4 and result_shape[0] != 1:
-            new_shape = result_shape.as_list()
-            new_shape[-2] = (stop - start) // stride
-            result = dc.op("reshape", [result], new_shape)
+        lhs_num_cols = act.shape[-2] if dim == -2 else act.shape[dim]
+        lhs_num_channels = None
+        lhs_batch_size = None
 
-        if is_c_dim:
-            result = dc.op(TransposeTM.create(-2, -1), [result])
+        if len(act.shape) == 4:
+            # If len(act.shape) == 4, we have a batch dimension
+            lhs_batch_size = act.shape[-4]
+        
+        if len(act.shape) >= 3:
+            # If len(act.shape) >= 3, we have a channel dimension
+            # channel dimension of the left hand side of the picker matmul is act.shape[-3] unless we index on -3 (dim != -3)
+            # in that case we will do transpose with axis -2 to get the channel dimension at -2 position and then index on -2.
+            lhs_num_channels = act.shape[-3] if dim != -3 else act.shape[-2]
 
-        if slice_amount is not None:
-            result = dc.op("vstack", [result], (slice_amount, ))
+        if dim != -2:
+            # We need to transpose to get the dimension we want to index by at the -2 position
+            act = dc.op(TransposeTM.create(-2, dim), [act])
 
-        if is_one_dim:
-            result = dc.op("reshape", [result], (result.shape[-1],))
+        lhs = create_row_picker_matrix(row_indices, lhs_num_cols, lhs_num_channels, lhs_batch_size)
+        result = picker_matmul(False, dc, lhs, act)
+
+        if dim != -2:
+            # We need to transpose again to return to the original order of dimensions
+            result = dc.op(TransposeTM.create(-2, dim), [result])
+
         dc.fuse(result)
         return
 
@@ -1413,6 +1378,52 @@ def decompose(type, attr, dc, inputs):
                 rank -= 1
             dc.fuse(result)
             return
+def create_row_picker_matrix(col_indices,  lhs_num_cols, lhs_num_channels=None, lhs_batch_size=None):
+    """
+    Create a sparse matrix that picks rows from a matrix.
+    col_indices: indices of columns from the matrix to pick. Create picker matrix based on this.
+    lhs_num_cols: number of columns in the picker matrix (which is on the left hand side of the matmul)
+    lhs_num_channels: number of channels in the picker matrix
+    lhs_batch_size: batch size of the picker matrix
+
+
+    Example:
+    col_indices = [1, 3, 5]
+    lhs_num_cols = 6
+    lhs_num_channels = 1
+    lhs_batch_size = 1
+    Picker matrix:
+    [
+    [
+        [0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 1]
+    ],
+    ]
+    """
+    # assert that col_indices is not empty
+    assert len(col_indices) > 0
+
+    new_num_rows = len(col_indices)
+    # this picker matrix has to have the same number of dimensions as the input matrix. 
+    # depending on the input matrix, we need to create a 2D, 3D and 4D picker matrix
+    if lhs_batch_size is not None:
+        # if lhs_batch_size is not none - we have a 4D input matrix
+        B_left = torch.zeros((lhs_batch_size, lhs_num_channels, new_num_rows, lhs_num_cols))
+        for i, index in enumerate(col_indices):
+            B_left[:,:,i, index] = 1.0
+    elif lhs_num_channels is not None:
+        # if lhs_batch_size is none but lhs_num_channels is not none - we have a 3D input matrix
+        B_left = torch.zeros((lhs_num_channels, new_num_rows, lhs_num_cols))
+        for i, index in enumerate(col_indices):
+            B_left[:,i, index] = 1.0
+    else:
+        # if lhs_batch_size and lhs_num_channels are none - we have a 2D input matrix
+        B_left = torch.zeros((new_num_rows, lhs_num_cols))
+        for i, index in enumerate(col_indices):
+            B_left[i, index] = 1.0
+
+    return B_left
 
 def picker_matmul(use_sparse_mm, dc, s, result):
     if use_sparse_mm:                     
