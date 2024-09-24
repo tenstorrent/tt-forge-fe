@@ -559,6 +559,7 @@ def test_sigmoid(shape):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
+
 @pytest.mark.parametrize("dim", [-1, -2, -3], ids=["-1", "-2", "-3"])
 @pytest.mark.parametrize("start", [0],  ids=["0"])
 @pytest.mark.parametrize("stop", [2,32,64], ids=["2", "32", "64"])
@@ -587,3 +588,48 @@ def test_indexing(dim, start, stop, stride, shape):
 
     co_out = [co.to("cpu") for co in compiled_output]
     assert compare_with_golden_pcc(golden=golden_out.value(), calculated=co_out[0], pcc=0.99)
+
+
+@pytest.mark.xfail(reason="ttnn.embedding op fails while reshaping the input_tensor in TILE_LAYOUT")
+@pytest.mark.parametrize("indices_shape", [
+    (12,),
+    (32,),
+    (1, 7),
+    (1, 28),
+])
+@pytest.mark.parametrize("input_tensor_shape", [
+    (12, 100),
+    (3200, 512),
+    (2048, 128),
+    (4127, 256),
+])
+def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
+
+    class ForgeAdvIndex(forge.ForgeModule):
+        def __init__(self, name):
+            super().__init__(name)
+
+        def forward(self, input_tensor, indices):
+            return forge.op.AdvIndex("adv_index_op_1", input_tensor, indices)
+
+    model = ForgeAdvIndex("ForgeAdvIndex")
+
+    # Sample Inputs
+    pt_input_tensor = torch.rand(input_tensor_shape).to(torch.float32)
+    pt_indices = torch.randint(input_tensor_shape[0], indices_shape).to(torch.int32)
+    inputs = to_forge_tensors([pt_input_tensor, pt_indices])
+
+    # Sanity run
+    golden_out = model(*inputs)
+
+    # Compile the model
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+
+    # Run on TT device
+    inputs = to_pt_tensors(inputs)
+    compiled_output = compiled_model(*inputs)
+    co_out = [co.to("cpu") for co in compiled_output]
+
+    # Validate results
+    assert compare_with_golden_pcc(golden=golden_out.value(), calculated=co_out[0], pcc=0.99)
+
