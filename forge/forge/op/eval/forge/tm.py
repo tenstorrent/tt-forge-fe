@@ -1132,7 +1132,10 @@ def decompose(type, attr, dc, inputs):
             # Consider the case adv_index(X,Y) where
             #    X: (A, B), Y: (1, C) or (C,) and A != 1
             if len(in0_shape) == 2:
-                result = dc.op("embedding", inputs,)
+                # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
+                # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
+                # so swaping the operands.
+                result = dc.op("embedding", (inputs[1], inputs[0]),)
                 dc.fuse(result)
                 return
 
