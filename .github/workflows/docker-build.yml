@@ -54,28 +54,33 @@ jobs:
         create-symlink: true
         key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
 
-    - name: Build
-      shell: bash
-      run: |
-        source env/activate
-        cmake -G Ninja \
-        -B ${{ steps.strings.outputs.build-output-dir }} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+    # - name: Build
+    #   shell: bash
+    #   run: |
+    #     source env/activate
+    #     cmake -G Ninja \
+    #     -B ${{ steps.strings.outputs.build-output-dir }} \
+    #     -DCMAKE_BUILD_TYPE=Release \
+    #     -DCMAKE_C_COMPILER=clang \
+    #     -DCMAKE_CXX_COMPILER=clang++ \
+    #     -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+    #     -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+    #     cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
-    - name: Run Test
+    - name: Update pytest
       shell: bash
       run: |
         source env/activate
         pytest --version
         pip install --upgrade pytest
         pytest --version
+        pytest --help
+
+    - name: Run Test
+      shell: bash
+      run: |
+        source env/activate
         pytest \
-        --log_cli_level=WARNING \
         --log_file_level=DEBUG \
         --log_file=pytest.log
 
