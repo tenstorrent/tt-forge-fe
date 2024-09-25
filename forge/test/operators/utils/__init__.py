@@ -10,6 +10,8 @@ from .utils import LoggerUtils
 from .utils import RateLimiter
 from .utils import FrameworkModelType
 from .failing_reasons import FailingReasons
+from .failing_reasons import FailingReasonsValidation
+from .pytest import PyTestUtils
 
 __all__ = [
     'ShapeUtils',
@@ -21,4 +23,6 @@ __all__ = [
     'RateLimiter',
     'FrameworkModelType',
     "FailingReasons",
+    "FailingReasonsValidation",
+    "PyTestUtils",
 ]
