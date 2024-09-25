@@ -60,3 +60,28 @@ def test_input_order(a_shape, b_shape, c_shape):
     co_out = compiled_model(a, b, c)
 
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0][0], pcc=0.99)
+
+
+def test_differently_ranked_matmul():
+
+    class DifferentRankMatmul(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return a @ b
+
+    a = torch.randn(1, 1, 64, 128)
+    b = torch.randn(128, 256)
+
+    framework_model = DifferentRankMatmul()
+    fw_out = framework_model(a, b)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=[a, b])
+    co_out = compiled_model(a, b)[0]
+    
+    assert co_out.shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out, pcc=0.99)
+
+
+
