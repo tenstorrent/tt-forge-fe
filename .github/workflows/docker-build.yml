@@ -71,7 +71,16 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        pytest
+        pytest \
+        --log_cli_level=WARNING \
+        --log_file_level=DEBUG \
+        --log_file=pytest.log
+
+    - name: Upload Test Log
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-log-${{ matrix.build.runs-on }}
+        path: pytest.log
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
