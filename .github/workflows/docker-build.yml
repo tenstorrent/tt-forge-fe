@@ -71,6 +71,9 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        pytest --version
+        pip install --upgrade pytest
+        pytest --version
         pytest \
         --log_cli_level=WARNING \
         --log_file_level=DEBUG \
