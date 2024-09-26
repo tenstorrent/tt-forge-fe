@@ -53,6 +53,9 @@ class FailingReasons:
     # RuntimeError: Fatal Python error: Segmentation fault
     SEG_FAULT = "Inference failed due to seg fault"
 
+    # RuntimeError: Fatal Python error: Aborted
+    FATAL_ERROR = "Fatal error occured"
+
     UNSUPPORTED_INPUT_SOURCE = "Unsupported input source"
 
 
@@ -82,10 +85,10 @@ class FailingReasonsValidation:
             [
                 # lambda ex: FailingReasonsValidation.validate_exception_message(ex, RuntimeError, "Unsupported data type"),
                 lambda ex: isinstance(ex, RuntimeError) and f"{ex}" == "Unsupported data type",
+                lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:466: false" in f"{ex}",
             ],
         FailingReasons.DATA_MISMATCH:
             [
-                lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "AssertionError: PCC check failed",
                 lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE:
@@ -96,6 +99,7 @@ class FailingReasonsValidation:
             [
                 lambda ex: isinstance(ex, NotImplementedError) and f"{ex}".startswith("The following operators are not implemented:"),
                 lambda ex: isinstance(ex, RuntimeError) and f"{ex}".startswith("Unsupported operation for lowering from TTForge to TTIR:"),
+                lambda ex: isinstance(ex, RuntimeError) and " not implemented for " in f"{ex}",
                 lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "Encountered unsupported op types. Check error logs for more details",
             ],
     }
