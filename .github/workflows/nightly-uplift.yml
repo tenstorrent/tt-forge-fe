@@ -46,9 +46,9 @@ jobs:
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           base: main
-          commit-message: "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY"
-          title: "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY"
-          body: "This PR uplifts the $SUBMODULE_PATH submodule to the $SUBMODULE_VERSION."          
+          commit-message: "Uplift ${{ env.SUBMODULE_PATH }} to ${{ env.SUBMODULE_VERSION }} ${{ env.TODAY }}"
+          title: "Uplift ${{ env.SUBMODULE_PATH }} to ${{ env.SUBMODULE_VERSION }} ${{ env.TODAY }}"
+          body: "This PR uplifts the ${{ env.SUBMODULE_PATH }} submodule to the ${{ env.SUBMODULE_VERSION }}"          
           labels: uplift
           delete-branch: true
           token: ${{ secrets.GH_TOKEN }}
