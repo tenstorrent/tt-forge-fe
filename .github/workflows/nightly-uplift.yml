@@ -1,0 +1,62 @@
+# This workflow automates creation of uplift pull requests.
+# Uplift PR is created daily to uplift the submodule to the latest version.
+
+name: Nighty Uplift PR
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:    
+  uplift-pr:    
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0 # Fetch all history and tags
+
+      - name: Set env variable
+        run: |
+          echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Create uplift PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          UPLIFT_BRANCH: uplift-${{ env.TODAY }}
+          SUBMODULE_PATH: third_party/tt-mlir
+          SUBMODULE_VERSION: origin/main
+        run: |
+            git config --global user.email ci@tenstorrent.com
+            git config --global user.name "Tenstorrent CI"
+            
+            if git branch -a | grep -q "remotes/origin/uplift-"; then
+              echo "### Branch already exists on remote ###"
+              exit 0
+            fi
+
+            git checkout main
+            git checkout -b $UPLIFT_BRANCH
+            cd $SUBMODULE_PATH
+            git fetch origin
+            git checkout $SUBMODULE_VERSION
+            echo "### Latest commit in $SUBMODULE_PATH ###"
+            git log -1
+            cd ../..
+
+            if [ -z "$(git status --porcelain)" ]; then
+              echo "### No changes in $SUBMODULE_PATH ###"
+              exit 0
+            fi
+            echo "### Commit change and create PR ###"
+            git add $SUBMODULE_PATH
+            git commit -m "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY"
+            git push origin $UPLIFT_BRANCH --force
+
+            gh pr create \
+            --title "Uplift $SUBMODULE_PATH to $SUBMODULE_VERSION $TODAY" \
+            --body "This PR uplifts the $SUBMODULE_PATH submodule to the $SUBMODULE_VERSION." \
+            --base main \
+            --head $UPLIFT_BRANCH \
+            --label uplift \
+            --reviewer ${{ vars.INTEGRATION_OWNER }}
