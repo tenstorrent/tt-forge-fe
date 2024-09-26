@@ -29,9 +29,10 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
 
             exception_value = call.excinfo.value
             xfail_reason = PyTestUtils.get_xfail_reason(item)
-            check = FailingReasonsValidation.validate_exception(exception_value, xfail_reason)
+            if xfail_reason is not None:  # an xfail reason is defined for the test
+                valid_reason = FailingReasonsValidation.validate_exception(exception_value, xfail_reason)
 
-            # if check fails change report outcome from xfail to failed
-            if check == False:
-                report.outcome = 'failed'
+                # if reason is not valid, mark the test as failed
+                if valid_reason == False:
+                    report.outcome = 'failed'
 
