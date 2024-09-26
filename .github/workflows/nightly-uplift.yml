@@ -7,7 +7,6 @@ on:
   schedule:
     - cron: '0 8 * * *'  # Runs at 08:00 UTC every day
   workflow_dispatch:  # Manual trigger
-  push:
 
 jobs:    
   uplift-pr:    
@@ -29,7 +28,7 @@ jobs:
         run: |
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-      - name: Create uplift PR
+      - name: Update submodule
         run: |
             cd $SUBMODULE_PATH
             git fetch origin
