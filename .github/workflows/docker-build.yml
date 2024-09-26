@@ -71,10 +71,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        pytest \
-        --log-cli-level=WARNING \
-        --log-file-level=DEBUG \
-        --log-file=pytest.log
+        pytest 2>&1 | tee pytest.log
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
