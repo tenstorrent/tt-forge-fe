@@ -165,133 +165,218 @@ def verify(
 
 # PREPARE TEST PARAMETERS LIST:
 
-shape2_params = ShapeUtils.get_shape_params(2)
-# shape that throws AssertionError:
-shape2_params = ShapeUtils.alter_shape_params(shape2_params,
-                    (((1, 1), ), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-)
-dim2_params = ShapeUtils.create_pytest_params([0, 1], "dim")
-shape2_dim_params = ShapeUtils.combine_two_params_lists(shape2_params, dim2_params)
+utils = ShapeUtils()
 
+utils.generate_test_params_list(
+    [
+        *ShapeUtils.join_two_params_lists(ShapeUtils.get_shape_params(2), ShapeUtils.create_pytest_params([0, 1], id_name="dim")),
+        *ShapeUtils.join_two_params_lists(ShapeUtils.get_shape_params(3), ShapeUtils.create_pytest_params([0, 1, 2], id_name="dim")),
+        *ShapeUtils.join_two_params_lists(ShapeUtils.get_shape_params(4), ShapeUtils.create_pytest_params([0, 1, 2, 3], id_name="dim")),
+    ],
+    utils.create_pytest_params([ModelFromAnotherOp, ModelFromDramQueue, ModelFromHost, ModelConstEvalPass, ], "model_type"),
+    ShapeUtils.get_default_df_param(),
+    ShapeUtils.get_default_mf_param(),                                                             
 
-shape3_params = ShapeUtils.get_shape_params(3)
-dim3_params = ShapeUtils.create_pytest_params([0, 1, 2], "dim")
-shape3_dim_params = ShapeUtils.combine_two_params_lists(shape3_params, dim3_params)
+).add_df_mf_params(values=((1, 3, 3), 1, ModelFromAnotherOp), id='shape=(1, 3, 3)-dim=1-model_type=ModelFromAnotherOp'
 
+).extend_shape_params_with_marks(
+    # (shape, dim, model_type, df, mf)
+    (((1, 17),                 1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 1),               None,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 100),                1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 1920),               1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 96),                 1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((3, 4),                  0, [ModelFromAnotherOp, 
+                                   ModelFromDramQueue, 
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((3, 4),                  1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((45, 17),                0, [ModelFromAnotherOp, 
+                                   ModelFromDramQueue, 
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((100, 100),              0, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((100, 100),              1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1000, 100),             0, [ModelFromHost, ],      None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 1000),              0, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((9920, 1),               0, [ModelFromHost,      ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((9920, 1),               1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10000, 1),              1, [ModelFromHost,      ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((32, 64),                0, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((160, 96),               0, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((17, 41),                0, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((89, 3),                 0, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((89, 3),                 1, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 3, 4),               1, [ModelFromDramQueue, 
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 3, 4),               2, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 45, 17),             1, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 100, 100),           1, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 1000, 100),          1, [ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 10, 1000),           1, [ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 10, 1000),           2, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 10000, 1),           1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 32, 64),             2, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 17, 41),             1, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 89, 3),              1, [ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 89, 3),              2, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((2, 3, 4),            None, [ModelConstEvalPass, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((2, 3, 4),               1, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 45, 17),            0, [ModelFromHost, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 45, 17),            1,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 45, 17),            2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 1, 23),             0, [ModelFromHost, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 1, 23),             1, [ModelConstEvalPass, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 1, 23),             2, [ModelFromDramQueue,
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 64, 1),             0, [ModelFromHost,
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 64, 1),             1,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 64, 1),             2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((100, 100, 100),         0, [ModelFromHost,
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((100, 100, 100),         1,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((100, 100, 100),         2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 1000, 100),         0, [ModelFromHost, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 1000, 100),         1, [ModelFromDramQueue, 
+                                   ModelFromHost,
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 1000, 100),         2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 10000, 1),          0, [ModelFromHost, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 10000, 1),          1, [ModelFromAnotherOp, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((10, 10000, 1),          2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((32, 32, 64),            0, [ModelFromHost, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((32, 32, 64),            1,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((32, 32, 64),            2, [ModelFromDramQueue,
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((64, 160, 96),           0, [ModelFromHost,      ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((64, 160, 96),           1, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((64, 160, 96),           2, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 17, 41),            0, [ModelFromHost,
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 17, 41),            1,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 17, 41),            2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((13, 89, 3),             0, [ModelFromHost, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((13, 89, 3),             1,                   None, None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((13, 89, 3),             2, [ModelFromDramQueue, 
+                                   ModelConstEvalPass  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 2, 3, 4),            1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 2, 3, 4),            2, [ModelFromAnotherOp, 
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 2, 3, 4),            3, [ModelFromHost,      ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 11, 45, 17),         1, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 11, 45, 17),         2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 11, 45, 17),         3, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 11, 64, 1),          1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 11, 64, 1),          2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost ],       None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 100, 100, 100),      1, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 100, 100, 100),      2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue  ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 100, 100, 100),      3, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 10, 1000, 100),      2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost ],       None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 1, 10, 1000),        2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost ],       None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 32, 32, 64),         1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 32, 32, 64),         2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost ],       None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 32, 32, 64),         3, [ModelFromHost,      ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 64, 160, 96),        1, [ModelFromDramQueue, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 64, 160, 96),        2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost ],       None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 64, 160, 96),        3, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 11, 17, 41),         2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 13, 89, 3),          2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((1, 13, 89, 3),          3, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((3, 11, 45, 17),         0, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((3, 11, 45, 17),         2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((3, 11, 45, 17),         3, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((2, 2, 3, 4),            0, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((2, 2, 3, 4),            2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((5, 11, 64, 1),          2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((6, 100, 100, 100),      2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((7, 10, 1000, 100),      2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((8, 1, 10, 1000),        2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((11, 32, 32, 64),        2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((12, 64, 160, 96),       2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((13, 11, 17, 41),        2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
+    (((14, 13, 89, 3),         2, [ModelFromAnotherOp,
+                                   ModelFromDramQueue,
+                                   ModelFromHost       ], None, None), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)), # AssertionError: PCC check failed
 
-shape4_params = ShapeUtils.get_shape_params(4)
-dim4_params = ShapeUtils.create_pytest_params([0, 1, 2, 3], "dim")
-shape4_dim_params = ShapeUtils.combine_two_params_lists(shape4_params, dim4_params)
-
-
-shape_dim_params_base = [*shape2_dim_params, *shape3_dim_params, *shape4_dim_params]
-
-# shape_dim that throws AssertionError with all models except ModelConstEvalPass:
-shape_dim_params_temp = ShapeUtils.alter_shape_params(shape_dim_params_base,                                                 
-    (((45, 17),                 0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((10, 100),                0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((32, 64),                 0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((160, 96),                0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((17, 41),                 0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((3, 4),                   0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((100, 100),               0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 45, 17),              1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 100, 100),            1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 17, 41),              1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((2, 3, 4),                1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 45, 17),             1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 64, 1),              1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((100, 100, 100),          1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((32, 32, 64),             1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((64, 160, 96),            1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 17, 41),             1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((13, 89, 3),              1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 2, 3, 4),             2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 11, 45, 17),          2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 11, 64, 1),           2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 100, 100, 100),       2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 10, 1000, 100),       2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 1, 10, 1000),         2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 32, 32, 64),          2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 64, 160, 96),         2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 11, 17, 41),          2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 13, 89, 3),           2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((3, 11, 45, 17),          2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((2, 2, 3, 4),             2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((5, 11, 64, 1),           2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((6, 100, 100, 100),       2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((7, 10, 1000, 100),       2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((8, 1, 10, 1000),         2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 32, 32, 64),         2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((12, 64, 160, 96),        2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((13, 11, 17, 41),         2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((14, 13, 89, 3),          2), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((10, 1000),               0), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 3, 4),                1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 10, 1000),            1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 32, 64),              1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 89, 3),               1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((10, 1000, 100),          1), pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-
-)
-shape_dim_model3_params = ShapeUtils.combine_two_params_lists(
-    shape_dim_params_temp,
-    ShapeUtils.create_pytest_params([ModelFromAnotherOp, ModelFromDramQueue, ModelFromHost, ], "model-type")
-)
-# shape_dim_model that throws AssertionError:
-shape_dim_model3_params = ShapeUtils.alter_shape_params(shape_dim_model3_params,
-    (((1000, 100),              0, ModelFromHost),       pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1000, 100),              0, ModelFromDramQueue),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 1000, 100),           1, ModelFromDramQueue),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((1, 1000, 100),           1, ModelFromHost),       pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-)
-
-
-# shape_dim that throws AssertionError with just ModelConstEvalPass:
-shape_dim_params_temp = ShapeUtils.alter_shape_params(shape_dim_params_base,
-                                                      
-    # all 3 dims (0, 1, 2):
-    (((2, 3, 4),           ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 45, 17),        ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 1, 23),         ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 64, 1),         ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((100, 100, 100),     ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((10, 100, 100),      ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((10, 10000, 1),      ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((11, 17, 41),        ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((13, 89, 3),         ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((10, 1000, 100),     ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-
-
-    (((32, 32, 64),        ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-    (((64, 160, 96),       ),  pytest.mark.xfail(reason=FailingReasons.BUGGY_SHAPE)),  # AssertionError: PCC check failed
-)
-shape_dim_model1_params = ShapeUtils.combine_two_params_lists(
-    shape_dim_params_temp,
-    ShapeUtils.create_pytest_params([ModelConstEvalPass, ], "model-type")
-)
-
-
-shape_dim_model_params = [*shape_dim_model3_params, *shape_dim_model1_params]
-
-
-shape_dim_model_df_params = ShapeUtils.combine_two_params_lists(shape_dim_model_params, [ShapeUtils.get_default_df_param(), ])
-shape_dim_model_df_mf_params = ShapeUtils.combine_two_params_lists(shape_dim_model_df_params, [ShapeUtils.get_default_mf_param(), ])
-
-
-shape_dim_model_df_mf_params = ShapeUtils.add_df_mf_params(shape_dim_model_df_mf_params,
-                                   values=((1, 3, 3), 1, ModelFromAnotherOp), id='shape=(1, 3, 3)_dim=1_model-type=ModelFromAnotherOp'
-)
-
-
-shape_dim_model_df_mf_params = ShapeUtils.alter_shape_params(shape_dim_model_df_mf_params,
-    # all params for testing dev_data_format and math_fidelity failures:
-    (((1, 3, 3), 1, ModelFromAnotherOp, ),  pytest.mark.xfail(reason=FailingReasons.DATA_MISMATCH)), # AssertionError: PCC check failed
+    (((1, 3, 3),               1, [ModelFromAnotherOp, ], None, None), pytest.mark.xfail(reason=FailingReasons.DATA_MISMATCH)),
 )
 
 
 # TEST(S):
-@pytest.mark.parametrize("input_shape, dim, model_type, dev_data_format, math_fidelity", shape_dim_model_df_mf_params)
+@pytest.mark.parametrize("input_shape, dim, model_type, dev_data_format, math_fidelity", utils.test_list)
 def test_softmax(
     test_device,
     model_type,
@@ -320,14 +405,17 @@ def test_softmax(
 
 def get_test_params_sortmax_inconsistency():
     params = [
-        pytest.param((32, 64),   1, ModelFromAnotherOp, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(32, 64)_dim=1_model-type=ModelFromAnotherOp_df=Float16_b_mf=HiFi4"),
-        pytest.param((15, 4, 3), 0, ModelFromAnotherOp, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(15, 4 ,3)_dim=0_model-type=ModelFromAnotherOp_df=Float16_b_mf=HiFi4"),
+        # pytest.param((32, 64),   1, ModelFromAnotherOp, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(32, 64)-dim=1-model_type=ModelFromAnotherOp-df=Float16_b-mf=HiFi4"),
+        # pytest.param((15, 4, 3), 0, ModelFromAnotherOp, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(15, 4 ,3)-dim=0-model_type=ModelFromAnotherOp-df=Float16_b-mf=HiFi4"),
+        pytest.param((1, 160, 96), 0, ModelFromDramQueue, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(1, 160, 96)-dim=0-model_type=ModelFromDramQueue-df=Float16_b-mf=HiFi4"),
+        pytest.param((1, 160, 96), 1, ModelFromDramQueue, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(1, 160, 96)-dim=1-model_type=ModelFromDramQueue-df=Float16_b-mf=HiFi4"),
+        pytest.param((1, 160, 96), 2, ModelFromDramQueue, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(1, 160, 96)-dim=2-model_type=ModelFromDramQueue-df=Float16_b-mf=HiFi4"),
     ]
+    params.reverse()      # COMMENT/UNCOMMENT THIS LINE TO CHANGE ORDER OF TESTS - test results inconsistency issue
     print("\n\n\nPARAMETERS:\n\n")
     for item in params:
-        print(item)
+        print(item.id)
     print("\n")
-    # params.reverse()      # COMMENT/UNCOMMENT THIS LINE TO CHANGE ORDER OF TESTS - test results inconsistency issue
     return params
 
 
