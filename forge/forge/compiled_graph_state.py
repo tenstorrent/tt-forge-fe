@@ -306,7 +306,7 @@ class CompiledModel:
         self.loss_module = loss_module
         self.optimizer = optimizer
 
-    def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
+    def __call__(self, *inputs: AnyTensor, force_dtype=None) -> List[torch.Tensor]:
         """
         Run inference on the compiled model.
 
@@ -326,6 +326,15 @@ class CompiledModel:
         if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
             logger.info("Converting inputs and parameters to PyTorch tensors...")
             inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
+
+        # WORKAROUND: Forcing inputs to bfloat16 for resnet because tensorflow dataformats
+        # do not get propagated properly.
+        if force_dtype:
+            inputs_and_parameters = list(inputs_and_parameters)
+            assert isinstance(force_dtype, torch.dtype), "Can only force to a pytorch dtype"
+            for i in range(len(inputs_and_parameters)):
+                inputs_and_parameters[i] = inputs_and_parameters[i].to(force_dtype)
+            inputs_and_parameters = tuple(inputs_and_parameters)
 
         logger.info(f"Running model {self.compiled_graph_state.graph.get_name()} on device...")
         outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
