@@ -1,0 +1,28 @@
+E       RuntimeError: TT_THROW @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:60: tt::exception
+E       info:
+E       Unable to reshape given tensor!
+
+sum-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 3, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 3, 'keepdim': False}-(12, 64, 160, 96)-None-None

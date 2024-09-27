@@ -1,0 +1,14 @@
+E       AssertionError: PCC check failed
+
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-Int32-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Int32-HiFi4

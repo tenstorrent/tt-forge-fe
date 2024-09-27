@@ -59,6 +59,9 @@ class FailingReasons:
     UNSUPPORTED_INPUT_SOURCE = "Unsupported input source"
 
 
+# 2024-10-16 09:00:57.038 | DEBUG    | test.operators.utils.failing_reasons:validate_exception:121 - Validating xfail reason: 'None' for exception: <class 'AttributeError'> ''TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)'
+
+
 class FailingReasonsValidation:
     @classmethod
     def validate_exception_message(
@@ -101,6 +104,24 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and " not implemented for " in f"{ex}",
             lambda ex: isinstance(ex, AssertionError)
             and f"{ex}" == "Encountered unsupported op types. Check error logs for more details",
+        ],
+        FailingReasons.COMPILATION_FAILED: [
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:49: tt::exception"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp:140: tt::exception"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:60: tt::exception"
+            in f"{ex}",
+        ],
+        FailingReasons.INFERENCE_FAILED: [
+            lambda ex: isinstance(ex, AttributeError)
+            and f"{ex}" == "'TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Int"
+            in f"{ex}",
         ],
     }
 
