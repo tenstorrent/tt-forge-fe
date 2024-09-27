@@ -1,0 +1,8 @@
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp2-HiFi4

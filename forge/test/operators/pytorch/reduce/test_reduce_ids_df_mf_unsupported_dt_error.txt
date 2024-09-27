@@ -1,0 +1,45 @@
+E       RuntimeError: Unsupported data type
+
+forge/forge/compiled_graph_state.py:331: RuntimeError
+
+
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-UInt16-HiFi4

@@ -1,0 +1,37 @@
+E       RuntimeError: TT_FATAL @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/buffers/buffer.cpp:41: page_size % sizeof(uint32_t) == 0
+E       info:
+E       Page size must be divisible by sizeof(uint32_t) because buffers hold uint32_t values
+
+
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi40
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi40
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi40
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi40
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-LoFi
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-LoFi
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi2
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi2
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi3
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi3
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi41
+sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi41
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-LoFi
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-LoFi
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi2
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi2
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi3
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi3
+mean-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi41
+mean-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi41

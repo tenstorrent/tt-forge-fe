@@ -55,6 +55,9 @@ class FailingReasons:
 
     UNSUPPORTED_INPUT_SOURCE = "Unsupported input source"
 
+    FATAL_ERROR = "Fatal error"
+
+# 2024-10-16 09:00:57.038 | DEBUG    | test.operators.utils.failing_reasons:validate_exception:121 - Validating xfail reason: 'None' for exception: <class 'AttributeError'> ''TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)'
 
 class FailingReasonsValidation:
 
@@ -97,6 +100,23 @@ class FailingReasonsValidation:
                 lambda ex: isinstance(ex, NotImplementedError) and f"{ex}".startswith("The following operators are not implemented:"),
                 lambda ex: isinstance(ex, RuntimeError) and f"{ex}".startswith("Unsupported operation for lowering from TTForge to TTIR:"),
                 lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "Encountered unsupported op types. Check error logs for more details",
+            ],
+        FailingReasons.COMPILATION_FAILED:
+            [
+                lambda ex: isinstance(ex, RuntimeError) and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:49: tt::exception" in f"{ex}",
+                lambda ex: isinstance(ex, RuntimeError) and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp:140: tt::exception" in f"{ex}",
+                lambda ex: isinstance(ex, RuntimeError) and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:60: tt::exception" in f"{ex}",
+
+                lambda ex: isinstance(ex, RuntimeError) and "tt-forge-fe/forge/csrc/passes/lower_to_mlir.cpp:495: false" in f"{ex}",
+                # lambda ex: isinstance(ex, RuntimeError) and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:49: tt::exception" in f"{ex}",
+                lambda ex: isinstance(ex, RuntimeError) and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/buffers/buffer.cpp:41:" in f"{ex}",
+                lambda ex: isinstance(ex, RuntimeError) and "Unsupported data type" in f"{ex}",
+                lambda ex: isinstance(ex, RuntimeError) and "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Char" in f"{ex}",
+
+            ],
+        FailingReasons.INFERENCE_FAILED:
+            [
+                lambda ex: isinstance(ex, AttributeError) and f"{ex}" == "'TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)",
             ],
     }
 
