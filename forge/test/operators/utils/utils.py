@@ -46,7 +46,7 @@ class ShapeUtils:
         '''
         Extend shapes with an id
         '''
-        shapes_with_ids = list()
+        shapes_with_ids = []
         for shape in shapes:
             if type(shape) is tuple:
                 shapes_with_ids.append(pytest.param(shape, marks=tuple(), id=f"shape={shape}"))
