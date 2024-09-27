@@ -1,0 +1,76 @@
+E       RuntimeError: TT_FATAL @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/tilize_with_val_padding/device/tilize_with_val_padding_op.cpp:19: input_tensor_a.get_dtype() == DataType::BFLOAT16 or input_tensor_a.get_dtype() == DataType::UINT32
+E       info:
+E       Can only tilize bfloat16 or uint32 tensors
+
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+sum-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-FROM_HOST-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
+mean-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None

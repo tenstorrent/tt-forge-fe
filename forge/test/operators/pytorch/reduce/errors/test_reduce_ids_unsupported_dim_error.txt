@@ -1,0 +1,596 @@
+E       RuntimeError: TT_THROW @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp:140: tt::exception
+E       info:
+E       Unsupported dim
+
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+sum-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+mean-FROM_ANOTHER_OP-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+mean-FROM_HOST-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(2, 3, 4)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(2, 3, 4)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 45, 17)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 45, 17)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 1, 23)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 1, 23)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 64, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 64, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(100, 100, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(100, 100, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(10, 1000, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(10, 1000, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(10, 10000, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(10, 10000, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(32, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(32, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(11, 17, 41)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(11, 17, 41)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': True}-(13, 89, 3)-None-None
+mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(13, 89, 3)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 45, 17)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 45, 17)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 1, 23)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 1, 23)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 64, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 64, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 100, 100, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 100, 100, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 10, 1000, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 1000, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 10, 10000, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 10000, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 32, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 32, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 11, 17, 41)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 11, 17, 41)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(1, 13, 89, 3)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 13, 89, 3)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(3, 11, 45, 17)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(3, 11, 45, 17)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(2, 2, 3, 4)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(2, 2, 3, 4)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(4, 11, 1, 23)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(4, 11, 1, 23)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(5, 11, 64, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(5, 11, 64, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(6, 100, 100, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(6, 100, 100, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(7, 10, 1000, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(7, 10, 1000, 100)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(10, 10, 10000, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(10, 10, 10000, 1)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(11, 32, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(11, 32, 32, 64)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(12, 64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(12, 64, 160, 96)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(13, 11, 17, 41)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(13, 11, 17, 41)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': True}-(14, 13, 89, 3)-None-None
+mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(14, 13, 89, 3)-None-None
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp2-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp4-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp4-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Lf8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Lf8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-RawUInt8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-RawUInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Int8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-UInt16-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Int32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Int32-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp2-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp2-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp2_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp4-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp4-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp4_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp8-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp8-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Bfp8_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float32-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float32-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Lf8-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Lf8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-LoFi
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-LoFi
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi2
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi2
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi3
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi3
+sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-LoFi
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-LoFi
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi2
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi2
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi3
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi3
+mean-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-Float16_b-HiFi4
+mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-Float16_b-HiFi4
