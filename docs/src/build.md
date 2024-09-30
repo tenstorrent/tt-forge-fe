@@ -95,3 +95,16 @@ _Note: `clean_all.sh` script will not clean toolchain (LLVM) build artifacts and
 3. `TTFORGE_TOOLCHAIN_DIR` - Specifies the directory where tt-forge dependencies will be installed. Defaults to `/opt/ttforge-toolchain` if not defined.
 4. `TTFORGE_VENV_DIR` - Specifies the virtual environment directory for tt-forge. Defaults to `/opt/ttforge-toolchain/venv` if not defined.
 5. `TTFORGE_PYTHON_VERSION` - Specifies the Python version to use. Defaults to `python3.10` if not defined.
+
+## Run tt-forge-fe using Docker image
+
+We provide two Docker images for tt-forge-fe:
+
+1. **Base Image**: This image includes all the necessary preinstalled dependencies.
+2. **Prebuilt Environment Image**: This image also comes with a prebuilt environment, allowing you to skip the environment build step.
+
+
+```
+ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ird-ubuntu-22-04
+ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
+```
