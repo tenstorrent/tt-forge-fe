@@ -633,3 +633,54 @@ def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
     # Validate results
     assert compare_with_golden_pcc(golden=golden_out.value(), calculated=co_out[0], pcc=0.99)
 
+
+@pytest.mark.parametrize("input_shape", [
+    (2, 32, 64, 64), 
+    (3, 22, 37, 41),
+    (2, 32, 64),
+    (3, 22, 37),
+])
+@pytest.mark.parametrize("dim", [
+    0,
+    1,
+    2,
+    3,
+    -1, 
+    -2,
+    -3,
+    -4,
+])
+def test_reduce_max(input_shape, dim):
+    
+    reduce_max_dim = dim
+    if reduce_max_dim < 0:
+        reduce_max_dim = reduce_max_dim + len(input_shape)
+    if (reduce_max_dim < 0) or (reduce_max_dim >= len(input_shape)):
+        pytest.skip()
+        
+    if (input_shape in [(2, 32, 64, 64), (3, 22, 37, 41)] and dim in [0, -4, 1, -3]) or (input_shape in [(2, 32, 64), (3, 22, 37)] and dim in [0, -3]):
+        pytest.xfail("TTNN Issue: Unsupported dim")
+    
+    # TTNN Max issues:
+    #   Unsupported dim - https://github.com/tenstorrent/tt-metal/issues/13186
+    #   Shape mismatch along the H and W dimension - https://github.com/tenstorrent/tt-metal/issues/13189
+    #   Tensor rank is not 4 - https://github.com/tenstorrent/tt-metal/issues/13190
+
+    class ReduceMax(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.max(a, dim=dim, keepdim=True)[0]
+
+    inputs = [torch.rand(input_shape)]
+    
+    framework_model = ReduceMax()
+    framework_model.eval()
+    fw_out = framework_model(*inputs)
+    
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+    
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)

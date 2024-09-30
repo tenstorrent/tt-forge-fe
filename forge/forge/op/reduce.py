@@ -109,9 +109,10 @@ def ReduceMax(
         name: str,
         operandA: Tensor,
         dim: int,
-        stride: int = -1) -> Tensor:
+        stride: int = -1,
+        keep_dim: bool = True) -> Tensor:
     """
-    Reduce by averaging along the given dimension
+    Reduce by taking maximum along the given dimension
 
     Parameters
     ----------
@@ -135,4 +136,4 @@ def ReduceMax(
     # if dim < 0:
     #     dim += 4
 
-    return op("reduce_max", name, operandA, attrs=(dim,stride)).get_tensor()
+    return op("reduce_max", name, operandA, attrs=(dim,stride), dim_arg=[dim], keep_dim=keep_dim).get_tensor()
