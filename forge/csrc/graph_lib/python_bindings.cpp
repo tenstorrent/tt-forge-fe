@@ -86,6 +86,7 @@ void GraphModule(py::module &m_graph)
         .def("get_ordered_intermediate_names", &Graph::get_ordered_intermediate_names)
         .def("get_ordered_output_names", &Graph::get_ordered_output_names)
         .def("get_ordered_target_names", &Graph::get_ordered_target_names)
+        .def("get_ordered_intermediate_names", &Graph::get_ordered_intermediate_names)
         .def("get_ordered_input_gradient_names", &Graph::get_ordered_input_gradient_names)
         .def("get_ordered_output_gradient_names", &Graph::get_ordered_output_gradient_names)
         .def("get_ordered_input_requires_grad", &Graph::get_ordered_input_requires_grad)
@@ -110,7 +111,6 @@ void GraphModule(py::module &m_graph)
             "register_module_outputs",
             &Graph::register_module_outputs,
             py::arg("module_outputs"),
-            py::arg("requires_grad"),
             py::arg("append") = false)
         .def("register_module_targets", &Graph::register_module_targets)
         .def("get_ordered_input_shapes", &Graph::get_ordered_input_shapes)

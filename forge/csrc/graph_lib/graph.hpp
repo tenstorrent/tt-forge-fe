@@ -226,7 +226,7 @@ class Graph
     void update_node_name(Node *node, const std::string &new_name);
 
     void register_module_inputs(const std::vector<NodeId> &module_inputs, bool append = false);
-    void register_module_outputs(const std::vector<NodeId> &module_outputs, std::vector<bool> requires_grad, bool append = false);
+    void register_module_outputs(const std::vector<NodeId> &module_outputs, bool append = false);
     void register_module_targets(const std::vector<NodeId> &module_targets);
     void copy_module_inputs(Graph *old_graph, const std::unordered_map<Node *, Node *> &old_to_new);
     void copy_module_outputs(Graph *old_graph, const std::unordered_map<Node *, Node *> &old_to_new);
@@ -248,6 +248,7 @@ class Graph
     std::vector<Node *> ordered_module_inputs() const;
     std::vector<Node *> ordered_module_outputs() const;
     std::vector<Node *> ordered_partial_datacopy_outputs() const;
+    std::vector<Node *> ordered_intermediates() const;
     std::vector<Node *> get_constant_nodes(bool recurse = false) const;
     std::vector<Node *> get_parameter_nodes() const;
     std::vector<std::string> get_constant_names() const;
@@ -314,6 +315,7 @@ class Graph
     std::vector<NodeId> ordered_module_input_node_ids_;
     std::vector<NodeId> ordered_module_output_node_ids_;
     std::vector<NodeId> ordered_module_target_node_ids_;
+    std::vector<NodeId> ordered_module_intermediate_node_ids_;
 
     // ordered by insertion order
     std::vector<Node *> nodes_;
@@ -343,7 +345,7 @@ NodeClassType *Graph::add_node(std::unique_ptr<NodeClassType> node, unsigned int
     if (this->has_node_with_name(node->name()))
     {
         throw std::runtime_error(
-            "In graph " + std::to_string(this->id()) +
+            "In graph " + this->name() +
             ": trying to add a node with a name that already exists: " + node->name() + "\n");
     }
 

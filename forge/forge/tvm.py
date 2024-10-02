@@ -845,7 +845,7 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
 
     # TODO: figure out how to get requires_grad for output nodes?
     forge_graph.register_module_inputs(ordered_input_bids)
-    forge_graph.register_module_outputs(ordered_output_bids, [True] * len(ordered_output_bids))
+    forge_graph.register_module_outputs(ordered_output_bids)
 
     forge_inputs = []
     for forge_input in input_nodes:
