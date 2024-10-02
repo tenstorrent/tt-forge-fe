@@ -260,7 +260,7 @@ class OutputNode : public QueueNode {
 protected:
     bool requires_grad_;
     bool is_loss_output_;
-    bool is_saved_intermediate_;
+    bool is_intermediate_;
     bool untilize_;
     RuntimeTensorTransform runtime_tensor_transform;
     // The golden info is needed if we fractured the output and need to reconstruct it for golden comparison
@@ -272,17 +272,17 @@ protected:
         QueueNode(name, QueueNodeType::Output, NodeType::kOutput),
         requires_grad_(false),
         is_loss_output_(false),
-        is_saved_intermediate_(false),
+        is_intermediate_(false),
         untilize_(true)
     {
     }
     bool requires_grad() const { return requires_grad_; }
     bool is_loss_output() const { return is_loss_output_; }
-    bool is_saved_intermediate() const { return is_saved_intermediate_; }
+    bool is_intermediate() const { return is_intermediate_; }
     bool untilize() const { return untilize_; }
     void set_requires_grad(bool requires_grad) { requires_grad_ = requires_grad; }
     void set_loss_output() { is_loss_output_ = true; }
-    void set_saved_intermediate(bool saved_intermediate) { is_saved_intermediate_ = saved_intermediate; }
+    void set_intermediate(bool intermediate) { is_intermediate_ = intermediate; }
     void set_untilize(bool should_untilize) { untilize_ = should_untilize; }
     virtual std::unique_ptr<Node> clone(std::string const& name = "") const override;
 

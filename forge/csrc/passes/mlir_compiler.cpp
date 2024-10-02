@@ -64,6 +64,8 @@ namespace tt::passes
         run_mlir_passes(mlir_module);
         tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
+        mlir_module->dump();
+
         // Generate binary from the MLIR module.
         auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
         tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");

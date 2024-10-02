@@ -17,4 +17,4 @@ def test_mnist_inference():
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)

@@ -1199,7 +1199,6 @@ def get_constant_inputs(
 
 def consteval_tensor(
     consteval_trace,
-    tensor_to_tile_dims,
     name: str,
     inputs: Dict[str, torch.Tensor],
     is_forge: bool,
@@ -1226,7 +1225,7 @@ def consteval_tensor(
     logger.debug("ConstEval graph: {}", name)
     node_to_tensor: Dict[str, torch.Tensor] = {}
     output: Optional[torch.Tensor] = None 
-    tile_r, tile_c = tensor_to_tile_dims.get(name, (TILE_DIM, TILE_DIM))
+    tile_r, tile_c = (TILE_DIM, TILE_DIM)
 
     if epoch_type == "Backward":
         loss_name = get_loss_node()
@@ -1264,12 +1263,11 @@ def consteval_tensor(
 
 def consteval_input(
     consteval_trace,
-    tensor_to_tile_dims,
     name: str,
     inputs: Dict[str, torch.Tensor],
     is_forge: bool
 ) -> torch.Tensor:
-    return consteval_tensor(consteval_trace, tensor_to_tile_dims, name, inputs, is_forge, "Forward")
+    return consteval_tensor(consteval_trace, name, inputs, is_forge, "Forward")
 
 def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
     consteval_graph = compiled_graph_state.consteval_trace.get(name, None)
@@ -1285,7 +1283,7 @@ def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_fo
 
 def consteval_input_bw(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool) -> torch.Tensor:
     inputs = {name: tensor}
-    return consteval_tensor(compiled_graph_state.consteval_trace, compiled_graph_state.parameter_to_tile_dims, name, inputs, is_forge, "Backward")
+    return consteval_tensor(compiled_graph_state.consteval_trace, name, inputs, is_forge, "Backward")
 
 def compare_tensors(t0, t1):
     return torch.equal(t0, t1)
@@ -1294,7 +1292,6 @@ def compare_tensors(t0, t1):
 def const_eval_tensor(
     inputs,
     consteval_trace,
-    tensor_to_tile_dims,
     input_name,
     is_forge = True
 ):
@@ -1302,14 +1299,12 @@ def const_eval_tensor(
     if contains_recorded_operations:
         value = consteval_input(
             consteval_trace,
-            tensor_to_tile_dims,
             input_name,
             inputs,
             is_forge,
         )
     else:
-        tile_r, tile_c = tensor_to_tile_dims.get(input_name, (TILE_DIM, TILE_DIM))
-        value = pad_pytorch_tensor_to_forge(inputs[input_name], [], tile_r=tile_r, tile_c=tile_c) if is_forge else inputs[input_name]
+        value = pad_pytorch_tensor_to_forge(inputs[input_name], []) if is_forge else inputs[input_name]
     # cast if necessary
     forge_dtype = pytorch_dtype_to_forge_dataformat(value.dtype)
     if value.dtype != forge_dataformat_to_pytorch_dtype(forge_dtype):
@@ -1335,7 +1330,7 @@ def get_device_constant_and_parameters(device, *, constant_to_tensor=None, updat
     return inputs
 
 
-def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval_trace, input_to_tile_dims, ordered_input_names, is_forge=True) -> Dict[str, torch.Tensor]:
+def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval_trace, ordered_input_names, is_forge=True) -> Dict[str, torch.Tensor]:
     post_const_eval_constants: Dict[str, torch.Tensor] = {}
 
     constant_nodes = {
@@ -1359,7 +1354,6 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
                 const_eval_tensor(
                     inputs,
                     consteval_trace,
-                    input_to_tile_dims,
                     input_name,
                     is_forge,
                 )

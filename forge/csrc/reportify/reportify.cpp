@@ -183,7 +183,7 @@ json node_to_json(const graphlib::Node* node, const graphlib::Graph* graph)
         ret_json["is_cross_epoch_type"] = node->as<graphlib::QueueNode>()->is_epoch_to_epoch() and
                                           node->as<graphlib::EpochToEpochQueueNode>()->is_cross_epoch_type();
         ret_json["memory_access"] = node->as<graphlib::QueueNode>()->memory_access_type_string();
-        ret_json["is_saved_intermediate"] = node->as<graphlib::OutputNode>()->is_saved_intermediate();
+        ret_json["is_intermediate"] = node->as<graphlib::OutputNode>()->is_intermediate();
     }
     else if (node->node_type() == graphlib::NodeType::kPyOp)
     {

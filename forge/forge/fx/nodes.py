@@ -673,7 +673,7 @@ def append_to_graph(graph, module, aten_module, activations, subgraph_idx, input
             assert False, f"Unsupported op {node.op}"
 
     graph.register_module_inputs(module_inputs, append=True)
-    graph.register_module_outputs(output_nids, output_requires_grad, append=True)
+    graph.register_module_outputs(output_nids, append=True)
 
     output_nodes_per_subgraph[subgraph_idx] = output_nids
     return graph, id_to_intermed, output_tensors

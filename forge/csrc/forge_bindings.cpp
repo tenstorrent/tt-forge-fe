@@ -29,6 +29,7 @@ namespace py = pybind11;
 #include "passes/passes_utils.hpp"
 #include "passes/python_bindings.hpp"
 #include "passes/mlir_compiler.hpp"
+#include "passes/split_graph.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
@@ -120,7 +121,8 @@ PYBIND11_MODULE(_C, m) {
 
     py::class_<tt::ForgeGraphModule>(m, "ForgeGraphModule")
         .def(py::init<std::string, tt::graphlib::Graph *>(), py::arg("name"), py::arg("forward_graph"))
-        .def("set_graph", &tt::ForgeGraphModule::set_graph);
+        .def("set_graph", &tt::ForgeGraphModule::set_graph)
+        .def("get_graph", &tt::ForgeGraphModule::get_graph);
 
     py::module_ m_autograd = m.def_submodule("autograd", "Submodule defining autograd_engine.");
     AutogradModule(m_autograd);
@@ -202,6 +204,7 @@ PYBIND11_MODULE(_C, m) {
         py::arg("graph"),
         py::arg("default_df_override") = std::optional<DataFormat>{});
     m.def("run_mlir_compiler", &passes::run_mlir_compiler);
+    m.def("split_graph", &passes::split_graph);
 
     m.def(
         "dump_graph",
