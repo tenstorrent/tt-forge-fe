@@ -588,8 +588,8 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
         return DataFormat.Int32
 
     if dtype == torch.int64:
-        logger.warning("Parameter is int64. Setting to int8 for now.")
-        return DataFormat.Int8
+        logger.warning("Parameter is int64. Setting to int32, since int64 is not supported .")
+        return DataFormat.Int32
     
 
     raise RuntimeError("Unsupported torch dtype " + str(dtype))
