@@ -16,7 +16,7 @@ namespace tt
 
 namespace graphlib
 {
-    class Graph;
+class Graph;
 }
 
 enum class GraphType : std::uint8_t
@@ -45,7 +45,7 @@ using StaticGraphArray = std::array<graphlib::Graph*, GRAPH_TYPE_COUNT>;
  */
 class ForgeGraphModule
 {
-public:
+   public:
     ForgeGraphModule(std::string name, graphlib::Graph* forward_graph) : name_(name), graphs_{nullptr}
     {
         TT_ASSERT(forward_graph != nullptr);
@@ -58,10 +58,7 @@ public:
         graphs_[to_underlying(type)] = graph;
     }
 
-    graphlib::Graph* get_graph(GraphType type) const
-    {
-        return graphs_[to_underlying(type)];
-    }
+    graphlib::Graph* get_graph(GraphType type) const { return graphs_[to_underlying(type)]; }
 
     /**
      * @brief Get all existing graphs in the module.
@@ -71,8 +68,10 @@ public:
     {
         std::vector<graphlib::Graph*> res;
         res.reserve(graphs_.size());
-        for (auto graph : graphs_) {
-            if (graph != nullptr) {
+        for (auto graph : graphs_)
+        {
+            if (graph != nullptr)
+            {
                 res.push_back(graph);
             }
         }
@@ -81,11 +80,11 @@ public:
 
     std::string name() const { return name_; }
 
-private:
+   private:
     std::string name_;
-    
+
     // Static array of graphs, indexed by GraphType.
     StaticGraphArray graphs_;
 };
 
-} // namespace tt
+}  // namespace tt
