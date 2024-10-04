@@ -278,56 +278,5 @@ class GraphTest : public ::testing::Test
 };
 
 using ForgeGraphTest = GraphTest<graphlib::IRLevel::IR_TT_FORGE>;
-using ForgeGraphTest = GraphTest<graphlib::IRLevel::IR_FORGE>;
-
-inline DeviceConfig create_device_config(
-    tt::ARCH arch = tt::ARCH::GRAYSKULL,
-    std::optional< std::vector<std::uint32_t> > device_chip_ids =  std::nullopt,
-    std::string cluster_config_yaml = "",
-    std::string runtime_params_yaml = "");
-
-DeviceConfig create_device_config(
-    tt::ARCH arch,
-    std::optional< std::vector<std::uint32_t> > device_chip_ids,
-    std::string cluster_config_yaml,
-    std::string runtime_params_yaml)
-{
-    std::vector<std::uint32_t> chip_ids = {0};
-    if(device_chip_ids.has_value()) {
-        chip_ids = device_chip_ids.value();
-    }
-
-    switch (arch)
-    {
-        case tt::ARCH::GRAYSKULL:
-            return DeviceConfig(
-                "grayskull" /*arch_name*/,
-                home + "/device/grayskull_120_arch.yaml" /*device_yaml*/,
-                cluster_config_yaml /*cluster_config_yaml*/,
-                runtime_params_yaml /*runtime_params_yaml*/,
-                "golden" /*backend_type*/,
-                false /*store_backend_db_to_yaml*/,
-                chip_ids);
-        case tt::ARCH::WORMHOLE_B0:
-            return DeviceConfig(
-                "wormhole_b0" /*arch_name*/,
-                home + "/device/wormhole_b0_80_arch.yaml" /*device_yaml*/,
-                cluster_config_yaml /*cluster_config_yaml*/,
-                runtime_params_yaml /*runtime_params_yaml*/,
-                "golden" /*backend_type*/,
-                false /*store_backend_db_to_yaml*/,
-                chip_ids);
-        case tt::ARCH::BLACKHOLE:
-            return DeviceConfig(
-                "blackhole" /*arch_name*/,
-                home + "/device/blackhole_80_arch.yaml" /*device_yaml*/,
-                cluster_config_yaml /*cluster_config_yaml*/,
-                runtime_params_yaml /*runtime_params_yaml*/,
-                "golden" /*backend_type*/,
-                false /*store_backend_db_to_yaml*/,
-                chip_ids);
-        default: log_fatal("Unsupported arch passed to create_device_config");
-    }
-}
 
 }  // namespace tt::test

@@ -41,6 +41,7 @@ add_subdirectory(backend_api)
 add_subdirectory(reportify)
 add_subdirectory(runtime)
 add_subdirectory(tt_torch_device)
+add_subdirectory(test)
 
 ### ttforge_csrc_objs ###
 
