@@ -67,6 +67,12 @@ jobs:
         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
+    - name: Run Unit Tests
+      shell: bash
+      run: |
+        source env/activate
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+
     - name: Run Test
       shell: bash
       run: |
