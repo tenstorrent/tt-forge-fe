@@ -372,6 +372,25 @@ test_plan = TestPlan(
         ),
     ],
     failing_tests = [
+        # Unsupported datatypes
+        TestVectors(
+            operators=None,
+            input_sources=None,
+            input_shapes=None,
+            dev_data_formats=[
+                forge.DataFormat.Bfp2,
+                forge.DataFormat.Bfp4,
+                forge.DataFormat.Bfp8,
+                forge.DataFormat.Float16,
+                forge.DataFormat.Int8,
+                forge.DataFormat.Lf8,
+                forge.DataFormat.RawUInt16,
+                forge.DataFormat.RawUInt32,
+                forge.DataFormat.RawUInt8,
+                forge.DataFormat.UInt16,
+            ],
+            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        ),
         # PCC check fails for buggy shapes for all models
         TestVectors(
             operators=None,
@@ -479,60 +498,79 @@ class BinaryTestParameterGenerator (TestParameterGenerator):
 
             if "alpha" in kwargs:
                 if input_operator in ["add",]:
-                    if not input_source in (InputSource.FROM_ANOTHER_OP,):
-                        if len(input_shape) == 2 and input_shape[-1] == 1:
-                            return None
-                        # TODO check kwargs range via test plan
-                        if 0.9 <= kwargs['alpha'] <= 1.1:
-                            return None
+                    # 2D shapes that reduce to 1D are passing
+                    if len(input_shape) == 2 and input_shape[-1] == 1:
+                        return None
+                    # TODO check kwargs range via test plan
+                    if not 0.8 <= abs(kwargs['alpha']) <= 1.2:
                         # It looks like Forge is not supporting alpha parameter so PCC is always different
                         return TestResultFailing(FailingReasons.UNSUPPORTED_SPECIAL_CASE)
 
                 return None
 
+        kwargs_list = []  # collect list of kwargs to produce multiple test cases with different kwargs
+
         # TODO generate kwargs via test plan
-        if input_operator in ["add", "sub", "substract"] and self.alpha_limiter.is_allowed():
-            if self.alpha_small_limiter.is_allowed():
-                # small numbers
-                alpha_value = self.rng_params.uniform(-1.0, 1.0)
-            else:
-                # regular number range
-                alpha_value = self.rng_params.uniform(5, 10000)
-                # support negative numbers
-                alpha_value *= self.rng_params.choice([-1, 1])
-            kwargs = {
-                'alpha': alpha_value
-            }
+        if input_operator in ["add", "sub", "substract"]:
+            if self.alpha_limiter.is_allowed():
+                if dev_data_format in TestData.dev_data_formats_int:
+                    alpha_value = self.rng_params.randint(0, 100)
+                elif self.alpha_small_limiter.is_allowed():
+                    # small numbers
+                    alpha_value = self.rng_params.uniform(-1.0, 1.0)
+                else:
+                    # regular number range
+                    alpha_value = self.rng_params.uniform(5, 10000)
+                    # support negative numbers
+                    alpha_value *= self.rng_params.choice([-1, 1])
+                kwargs = {
+                    'alpha': alpha_value
+                }
+                kwargs_list.append(kwargs)
+            kwargs_list.append({})
         elif input_operator in ["div", "divide"]:
             rounding_modes = ['trunc', 'floor', None]
             kwargs = {
                 'rounding_mode': rounding_modes[self.rng_params.randint(0, 2)]
             }
+            kwargs_list.append(kwargs)
         else:
             kwargs = {}
+            kwargs_list.append(kwargs)
 
-        # Check additional custom conditions for failing result
-        if failing_result is None and kwargs is not None:
-            failing_result = get_failing_result(kwargs)
+        params = []
 
-        # These 10 operators are supported for CONST_EVAL_PASS
-        if failing_result is not None and input_source in (InputSource.CONST_EVAL_PASS, ) and input_operator in (
-            'floor_divide',
-            'fmod',
-            'remainder',
-            'eq',
-            'ne',
-            'le',
-            'gt',
-            'lt',
-            'maximum',
-            'minimum',
-        ):
-            failing_result = None
+        failing_result_original = failing_result
 
-        marks = self.get_marks(failing_result)
+        for kwargs in kwargs_list:
 
-        return pytest.param(input_operator, input_source, kwargs, input_shape, dev_data_format, math_fidelity, marks=marks, id=f"{input_operator}-{input_source.name}-{kwargs}-{input_shape}-{dev_data_format.name if dev_data_format else None}-{math_fidelity.name if math_fidelity else None}")
+            failing_result = failing_result_original
+
+            # Check additional custom conditions for failing result
+            if failing_result is None and kwargs is not None:
+                failing_result = get_failing_result(kwargs)
+
+            # These 10 operators are supported for CONST_EVAL_PASS
+            if failing_result is not None and failing_result.failing_reason == FailingReasons.NOT_IMPLEMENTED and input_source in (InputSource.CONST_EVAL_PASS, ) and input_operator in (
+                'floor_divide',
+                'fmod',
+                'remainder',
+                'eq',
+                'ne',
+                'le',
+                'gt',
+                'lt',
+                'maximum',
+                'minimum',
+            ):
+                failing_result = None
+
+            marks = self.get_marks(failing_result)
+
+            param = pytest.param(input_operator, input_source, kwargs, input_shape, dev_data_format, math_fidelity, marks=marks, id=f"{input_operator}-{input_source.name}-{kwargs}-{input_shape}-{dev_data_format.name if dev_data_format else None}-{math_fidelity.name if math_fidelity else None}")
+            params.append(param)
+        
+        return params
 
 
 test_plan_generator = BinaryTestParameterGenerator()
