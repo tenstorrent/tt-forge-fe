@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-#
+
 # Tests for testing of element-wise binary operators
 #
 # In this test we test pytorch binary operators
@@ -52,10 +52,53 @@
 # (/) Reuse inputs for selected operators
 
 
+# Run single test
+# 
+# To run single test use following parameters
+# id         --test_id       --> None
+
+# Examples
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'
+
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_plan
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_skipped
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_failed
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_not_implemented
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_data_mismatch
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_fatal
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_inconsistency_order1
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_inconsistency_order2
+
+# Collect fatal test ids
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_fatal --collect-only
+
+# Run fatal tests
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
+
 
 import pytest
 
-from typing import List, Dict, Type, Optional, Any
+from typing import List, Dict, Type, Optional, Any, Generator
 from loguru import logger
 
 import random
@@ -68,11 +111,13 @@ from forge.op_repo import TensorShape
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import ShapeUtils
 from test.operators.utils import InputSource
-from test.operators.utils import TestVectors
+from test.operators.utils import TestVector
+from test.operators.utils import TestCollection
+from test.operators.utils import TestPlanUtils
+from test.operators.utils import TestParamsFilter
 from test.operators.utils import TestResultFailing
 from test.operators.utils import TestPlan
-from test.operators.utils import TestParameterGenerator
-from test.operators.utils import TestData
+from test.operators.utils import TestCollectionCommon
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import RateLimiter
@@ -140,243 +185,290 @@ class ModelConstEvalPass(torch.nn.Module):
         return v3
 
 
-MODEL_TYPES = {
-    InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
-    InputSource.FROM_HOST: ModelDirect,
-    InputSource.FROM_DRAM_QUEUE: ModelDirect,
-    InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
-}
+class TestVerification:
+
+    MODEL_TYPES = {
+        InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
+        InputSource.FROM_HOST: ModelDirect,
+        InputSource.FROM_DRAM_QUEUE: ModelDirect,
+        InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
+    }
+
+    @classmethod
+    def verify(
+        cls,
+        test_device: TestDevice,
+        test_vector: TestVector,
+        number_of_operands: int = 2,
+        input_params: List[Dict] = [],
+        dry_run: bool = False,
+    ):
+        '''Common verification function for all tests'''
+
+        if dry_run:
+            return
+
+        input_source_flag: InputSourceFlags = None
+        if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
+            input_source_flag = InputSourceFlags.FROM_DRAM
+
+        operator = getattr(torch, test_vector.operator)
+
+        kwargs = test_vector.kwargs if test_vector.kwargs else {}
+
+        model_type = cls.MODEL_TYPES[test_vector.input_source]
+        pytorch_model = model_type(operator=operator, opname=test_vector.operator, shape=test_vector.input_shape, kwargs=kwargs)
+        # forge_model = forge.PyTorchModule(pytorch_model.model_name, pytorch_model)
+
+        input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
+        logger.trace(f"***input_shapes: {input_shapes}")
+
+        VerifyUtils.verify(
+            model=pytorch_model,
+            test_device=test_device,
+            input_shapes=input_shapes,
+            input_params=input_params,
+            input_source_flag=input_source_flag,
+            dev_data_format=test_vector.dev_data_format,
+            math_fidelity=test_vector.math_fidelity,
+            pcc=test_vector.pcc,
+        )
 
 
+class TestParamsData:
 
-def verify(
-    test_device: TestDevice,
-    input_source: InputSource,
-    input_operator: str,
-    input_shape: TensorShape,
-    number_of_operands: int = 2,
-    kwargs: Dict = {},
-    input_params: List[Dict] = [],
-    dev_data_format: forge.DataFormat = None,
-    math_fidelity: forge.MathFidelity = None,
-    pcc: Optional[float] = None,
-):
-    '''Common verification function for all tests'''
+    __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
-    input_source_flag: InputSourceFlags = None
-    if input_source in (InputSource.FROM_DRAM_QUEUE,):
-        input_source_flag = InputSourceFlags.FROM_DRAM
+    test_plan: TestPlan = None
 
-    operator = getattr(torch, input_operator)
+    @classmethod
+    def get_params_test_plan(cls, filter: Optional[TestParamsFilter] = None):
+        return TestPlanUtils.generate_params(cls.test_plan, filter)
 
-    model_type = MODEL_TYPES[input_source]
-    pytorch_model = model_type(operator=operator, opname=input_operator, shape=input_shape, kwargs=kwargs)
-    # forge_model = forge.PyTorchModule(pytorch_model.model_name, pytorch_model)
+    @classmethod
+    def get_params_from_id_file(cls, test_ids_file: str, filter: Optional[TestParamsFilter] = None):
+        test_plan_ids = TestPlanUtils.build_test_plan_from_id_file(test_ids_file, cls.test_plan)
+        return TestPlanUtils.generate_params(test_plan_ids, filter)
 
-    input_shapes = tuple([input_shape for _ in range(number_of_operands)])
-    logger.trace(f"***input_shapes: {input_shapes}")
+    @classmethod
+    def get_params_from_id_list(cls, test_ids: List[str], filter: Optional[TestParamsFilter] = None):
+        test_plan_ids = TestPlanUtils.build_test_plan_from_id_list(test_ids, cls.test_plan)
+        return TestPlanUtils.generate_params(test_plan_ids, filter)
 
-    VerifyUtils.verify(
-        model=pytorch_model,
-        test_device=test_device,
-        input_shapes=input_shapes,
-        input_params=input_params,
-        input_source_flag=input_source_flag,
-        dev_data_format=dev_data_format,
-        math_fidelity=math_fidelity,
-        pcc=pcc,
+    @classmethod
+    def generate_kwargs(cls, test_vector: TestVector):
+        if test_vector.operator in TestCollectionData.alpha.operators:
+            if test_vector.dev_data_format in TestCollectionData.int.dev_data_formats:
+                return [
+                    { "alpha": 1 },
+                    { "alpha": 37 },
+                    {},
+                ]
+            else:
+                return [
+                    { "alpha": 37 },
+                    { "alpha": 0.17234435 },
+                    { "alpha": 589.34546459345 },
+                    # { "alpha": None },
+                    {},
+                ]
+        elif test_vector.operator in TestCollectionData.rounding_mode.operators: 
+            if not (test_vector.operator == 'div' and test_vector.dev_data_format == forge.DataFormat.Bfp2):
+                return [
+                    { "rounding_mode": 'trunc' },
+                    { "rounding_mode": 'floor' },
+                    { "rounding_mode": None },
+                    {},
+                ]
+            else:
+                return [
+                    {},
+                ]
+        else:
+            return [
+                None,
+            ]
+
+
+class TestCollectionData:
+
+    __test__ = False  # Avoid collecting TestCollectionData as a pytest test
+
+    implemented = TestCollection(
+        operators=[
+            "add",                      #00                                                   
+            "div",                      #01                                                   
+            # "divide",                 #02     - Alias for div.                              
+            "mul",                      #03                                                   
+            # "multiply",               #04     - Alias for mul.    
+            "sub",                      #05    
+            # "subtract",               #06     - Alias for sub.                                                   
+            # "true_divide",            #07     - Alias for div with rounding_mode=None.      
+            "ge",                       #08                                                  
+            # "greater_equal",          #09    - Alias for ge.  
+        ],
+    )
+
+    not_implemented = TestCollection(
+        operators=[
+            "atan2",                    #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
+            "arctan2",                  #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
+            "bitwise_and",              #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
+            "bitwise_or",               #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
+            "bitwise_xor",              #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
+            "bitwise_left_shift",       #05                         - RuntimeError: "lshift_cpu" not implemented for 'Float'
+            "bitwise_right_shift",      #06                         - RuntimeError: "rshift_cpu" not implemented for 'Float'
+            "floor_divide",             #07                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
+            "fmod",                     #08                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
+            "logaddexp",                #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
+            "logaddexp2",               #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
+            "nextafter",                #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
+            "remainder",                #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
+            "fmax",                     #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
+            "fmin",                     #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
+            
+            "eq",                       #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
+            "ne",                       #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
+            "le",                       #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
+            # "greater",                #18    - Alias for gt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater
+            "gt",                       #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
+            # "less_equal",             #20    - Alias for le.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal
+            "lt",                       #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
+            # "less",                   #22    - Alias for lt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less
+            "maximum",                  #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
+            "minimum",                  #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
+            # "not_equal",              #25    - Alias for ne.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal
+        ],
+    )
+
+    implemented_const_eval = TestCollection(
+        operators=[
+            'floor_divide',
+            'fmod',
+            'remainder',
+            'eq',
+            'ne',
+            'le',
+            'gt',
+            'lt',
+            'maximum',
+            'minimum',
+        ],
+    )
+
+    alpha = TestCollection(
+        operators=[
+            "add",                      #00                                                   
+            "sub",                      #05    
+        ],
+    )
+
+    rounding_mode = TestCollection(
+        operators=[
+            "div",                      #01                                                   
+            # "divide",                 #02     - Alias for div.                              
+        ],
+    )
+
+    no_params = TestCollection(
+        operators=[
+            # "add",                      #00                                                   
+            # "div",                      #01                                                   
+            # # "divide",                 #02     - Alias for div.                              
+            "mul",                      #03                                                   
+            # "multiply",               #04     - Alias for mul.    
+            # "sub",                      #05    
+            # # "subtract",               #06     - Alias for sub.                                                   
+            # "true_divide",            #07     - Alias for div with rounding_mode=None.      
+            "ge",                       #08                                                  
+            # "greater_equal",          #09    - Alias for ge.  
+        ],
+    )
+
+    bitwise = TestCollection(
+        operators=[
+            "bitwise_and",
+            "bitwise_or",
+            "bitwise_xor",
+            "bitwise_left_shift",
+            "bitwise_right_shift",
+        ],
+    )
+
+    all = TestCollection(
+        operators=implemented.operators,
+        input_sources=TestCollectionCommon.all.input_sources,
+        input_shapes=TestCollectionCommon.all.input_shapes,
+        dev_data_formats=TestCollectionCommon.all.dev_data_formats,
+        math_fidelities=TestCollectionCommon.all.math_fidelities,
+    )
+
+    single = TestCollection(
+        input_sources=TestCollectionCommon.single.input_sources,
+        input_shapes=TestCollectionCommon.single.input_shapes,
+        dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+        math_fidelities=TestCollectionCommon.single.math_fidelities,
+    )
+
+    bool = TestCollection(
+        dev_data_formats=[
+            forge.DataFormat.Bfp2,  # TODO div process as bool but add as float
+        ],
+    )
+
+    int = TestCollection(
+        dev_data_formats=[
+            forge.DataFormat.Int8,
+            forge.DataFormat.RawUInt16,
+            forge.DataFormat.RawUInt32,
+            forge.DataFormat.RawUInt8,
+            forge.DataFormat.UInt16,
+        ],
     )
 
 
-def get_eltwise_binary_ops():
-    return [
-        "add",                      #00                                                   
-        "div",                      #01                                                   
-        # "divide",                 #02     - Alias for div.                              
-        "mul",                      #03                                                   
-        # "multiply",               #04     - Alias for mul.    
-        "sub",                      #05    
-        # "subtract",               #06     - Alias for sub.                                                   
-        # "true_divide",            #07     - Alias for div with rounding_mode=None.      
-        "ge",                       #08                                                  
-        # "greater_equal",          #09    - Alias for ge.  
-    ]
-
-def get_not_implemented_pytorch_binary_ops():
-    return [
-        "atan2",                    #00                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-        "arctan2",                  #01                         - NotImplementedError: The following operators are not implemented: ['aten::atan2']
-        "bitwise_and",              #02                         - RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
-        "bitwise_or",               #03                         - RuntimeError: "bitwise_or_cpu" not implemented for 'Float'
-        "bitwise_xor",              #04                         - RuntimeError: "bitwise_xor_cpu" not implemented for 'Float'
-        "bitwise_left_shift",       #05                         - RuntimeError: "lshift_cpu" not implemented for 'Float'
-        "bitwise_right_shift",      #06                         - RuntimeError: "rshift_cpu" not implemented for 'Float'
-        "floor_divide",             #07                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
-        "fmod",                     #08                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
-        "logaddexp",                #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
-        "logaddexp2",               #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
-        "nextafter",                #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
-        "remainder",                #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const 
-        "fmax",                     #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
-        "fmin",                     #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
-        
-        "eq",                       #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
-        "ne",                       #16                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal      # working with model const
-        "le",                       #17                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal     # working with model const
-        # "greater",                #18    - Alias for gt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater
-        "gt",                       #19                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: greater        # working with model const
-        # "less_equal",             #20    - Alias for le.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less_equal
-        "lt",                       #21                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less           # working with model const
-        # "less",                   #22    - Alias for lt.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: less
-        "maximum",                  #23                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: maximum        # working with model const
-        "minimum",                  #24                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: minimum        # working with model const
-        # "not_equal",              #25    - Alias for ne.      E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: not_equal
-    ]
-
-
-def get_input_shapes():
-    return [
-            # 2-dimensional shape, microbatch_size = 1:
-            pytest.param((1, 4),              marks=pytest.mark.run_in_pp),  #00      # 3.1 Full tensor (i.e. full expected shape) 
-            pytest.param((1, 17),             marks=pytest.mark.slow),       #01      # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((1, 23),             marks=pytest.mark.slow),       #02      # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((1, 1),              marks=pytest.mark.slow),       #03      # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((1, 100),            marks=pytest.mark.slow),       #04      # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1, 500),            marks=pytest.mark.slow),       #05      # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1, 1000),           marks=pytest.mark.slow),       #06      # 4.4 Extreme ratios between height/width
-            pytest.param((1, 1920),           marks=pytest.mark.slow),       #07      # 4.4 Extreme ratios between height/width
-            pytest.param((1, 10000),          marks=pytest.mark.slow),       #08      # 4.4 Extreme ratios between height/width
-            pytest.param((1, 64),             marks=pytest.mark.run_in_pp),  #09      # 4.1 Divisible by 32
-            pytest.param((1, 96),             marks=pytest.mark.slow),       #10      # 4.1 Divisible by 32
-            pytest.param((1, 41),             marks=pytest.mark.slow),       #11      # 4.2 Prime numbers
-            pytest.param((1, 3),              marks=pytest.mark.slow),       #12      # 4.2 Prime numbers
-
-            # 2-dimensional shape, microbatch_size > 1:
-            pytest.param((3, 4),              marks=pytest.mark.run_in_pp),  #13      # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((45, 17),            marks=pytest.mark.slow),       #14      # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((64, 1),             marks=pytest.mark.slow),       #15      # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((100, 100),          marks=pytest.mark.slow),       #16      # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1000, 100),         marks=pytest.mark.slow),       #17      # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((10, 1000),          marks=pytest.mark.slow),       #18      # 4.4 Extreme ratios between height/width
-            pytest.param((9920, 1),           marks=pytest.mark.slow),       #19      # 4.4 Extreme ratios between height/width  
-            pytest.param((10000, 1),          marks=pytest.mark.slow),       #20      # 4.4 Extreme ratios between height/width 
-            pytest.param((32, 64),            marks=pytest.mark.slow),       #21      # 4.1 Divisible by 32
-            pytest.param((160, 96),           marks=pytest.mark.slow),       #22      # 4.1 Divisible by 32
-            pytest.param((17, 41),            marks=pytest.mark.run_in_pp),  #23      # 4.2 Prime numbers
-            pytest.param((89, 3),             marks=pytest.mark.slow),       #24      # 4.2 Prime numbers
-
-            # 3-dimensional shape, microbatch_size = 1:
-            pytest.param((1, 3, 4),           marks=pytest.mark.run_in_pp),  #25     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((1, 45, 17),         marks=pytest.mark.slow),       #26     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((1, 1, 23),          marks=pytest.mark.slow),       #27     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((1, 64, 1),          marks=pytest.mark.slow),       #28     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((1, 100, 100),       marks=pytest.mark.slow),       #29     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1, 1000, 100),      marks=pytest.mark.slow),       #30     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1, 10, 1000),       marks=pytest.mark.slow),       #31     # 4.4 Extreme ratios between height/width
-            pytest.param((1, 9920, 1),        marks=pytest.mark.slow),       #32     # 4.4 Extreme ratios between height/width
-            pytest.param((1, 10000, 1),       marks=pytest.mark.slow),       #33     # 4.4 Extreme ratios between height/width 
-            pytest.param((1, 32, 64),         marks=pytest.mark.run_in_pp),  #34     # 4.1 Divisible by 32
-            pytest.param((1, 160, 96),        marks=pytest.mark.slow),       #35     # 4.1 Divisible by 32
-            pytest.param((1, 17, 41),         marks=pytest.mark.slow),       #36     # 4.2 Prime numbers
-            pytest.param((1, 89, 3),          marks=pytest.mark.slow),       #37     # 4.2 Prime numbers
-
-             # 3-dimensional shape, microbatch_size > 1:
-            pytest.param((2, 3, 4),           marks=pytest.mark.run_in_pp),  #38     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((11, 45, 17),        marks=pytest.mark.slow),       #39     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((11, 1, 23),         marks=pytest.mark.slow),       #40     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((11, 64, 1),         marks=pytest.mark.slow),       #41     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((100, 100, 100),     marks=pytest.mark.slow),       #42     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((10, 1000, 100),     marks=pytest.mark.slow),       #43     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((10, 10000, 1),      marks=pytest.mark.slow),       #44     # 4.4 Extreme ratios between height/width
-            pytest.param((32, 32, 64),        marks=pytest.mark.slow),       #45     # 4.1 Divisible by 32
-            pytest.param((64, 160, 96),       marks=pytest.mark.slow),       #46     # 4.1 Divisible by 32
-            pytest.param((11, 17, 41),        marks=pytest.mark.run_in_pp),  #47     # 4.2 Prime numbers
-            pytest.param((13, 89, 3),         marks=pytest.mark.slow),       #48     # 4.2 Prime numbers
-
-            # 4-dimensional shape, microbatch_size = 1:
-            pytest.param((1, 2, 3, 4),        marks=pytest.mark.run_in_pp),  #49     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((1, 11, 45, 17),     marks=pytest.mark.slow),       #50     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((1, 11, 1, 23),      marks=pytest.mark.slow),       #51     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((1, 11, 64, 1),      marks=pytest.mark.slow),       #52     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((1, 100, 100, 100),  marks=pytest.mark.slow),       #53     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1, 10, 1000, 100),  marks=pytest.mark.slow),       #54     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((1, 1, 10, 1000),    marks=pytest.mark.slow),       #55     # 4.4 Extreme ratios between height/width
-            pytest.param((1, 1, 9920, 1),     marks=pytest.mark.slow),       #56     # 4.4 Extreme ratios between height/width
-            pytest.param((1, 10, 10000, 1),   marks=pytest.mark.slow),       #57     # 4.4 Extreme ratios between height/width
-            pytest.param((1, 32, 32, 64),     marks=pytest.mark.run_in_pp),  #58     # 4.1 Divisible by 32
-            pytest.param((1, 64, 160, 96),    marks=pytest.mark.slow),       #59     # 4.1 Divisible by 32
-            pytest.param((1, 11, 17, 41),     marks=pytest.mark.slow),       #60     # 4.2 Prime numbers
-            pytest.param((1, 13, 89, 3),      marks=pytest.mark.slow),       #61     # 4.2 Prime numbers
-
-            # 4-dimensional shape, microbatch_size > 1:
-            pytest.param((3, 11, 45, 17),     marks=pytest.mark.run_in_pp),  #62     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((2, 2, 3, 4),        marks=pytest.mark.slow),       #63     # 3.1 Full tensor (i.e. full expected shape)
-            pytest.param((4, 11, 1, 23),      marks=pytest.mark.slow),       #64     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((5, 11, 64, 1),      marks=pytest.mark.slow),       #65     # 3.2 Tensor reduce on one or more dims to 1
-            pytest.param((6, 100, 100, 100),  marks=pytest.mark.slow),       #66     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((7, 10, 1000, 100),  marks=pytest.mark.slow),       #67     # 4.3 Very large (thousands, 10s of thousands)
-            pytest.param((8, 1, 10, 1000),    marks=pytest.mark.slow),       #68     # 4.4 Extreme ratios between height/width
-            pytest.param((9, 1, 9920, 1),     marks=pytest.mark.slow),       #69     # 4.4 Extreme ratios between height/width
-            pytest.param((10, 10, 10000, 1),  marks=pytest.mark.slow),       #70     # 4.4 Extreme ratios between height/width
-            pytest.param((11, 32, 32, 64),    marks=pytest.mark.slow),       #71     # 4.1 Divisible by 32
-            pytest.param((12, 64, 160, 96),   marks=pytest.mark.slow),       #72     # 4.1 Divisible by 32
-            pytest.param((13, 11, 17, 41),    marks=pytest.mark.run_in_pp),  #73     # 4.2 Prime numbers
-            pytest.param((14, 13, 89, 3),     marks=pytest.mark.slow),       #74     # 4.2 Prime numbers
-    ]
-
-
-def get_input_shapes_test_plan():
-    return get_input_shapes()
-    # return [shape for shape in get_input_shapes() if len(shape[0][0]) in (2, 3, 4,)]
-
-
-def get_input_shapes_df_mf():
-    return TestData.input_shapes_single
-    # return [shape for shape in get_input_shapes() if len(shape[0][0]) in (4,)][:1]
-
-
-test_plan = TestPlan(
-    tests = [
+TestParamsData.test_plan = TestPlan(
+    collections = [
         # Test plan: 
         # 2. Operand source(s):
         # 3. Operand shapes type(s):
         # 4. Operand / output size of dimensions
-        TestVectors(
-            operators=get_eltwise_binary_ops(),
-            input_sources=TestData.INPUT_SOURCES,
-            input_shapes=get_input_shapes_test_plan(),
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.all.input_sources,
+            input_shapes=TestCollectionData.all.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
         ),
         # Test plan: 
         # 5. Data format
-        TestVectors(
-            operators=get_eltwise_binary_ops(),
-            input_sources=TestData.INPUT_SOURCES_SINGLE,
-            input_shapes=get_input_shapes_df_mf(),
-            dev_data_formats=TestData.dev_data_formats,
-            math_fidelities=TestData.math_fidelities_defaults,
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.single.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+            dev_data_formats=TestCollectionData.all.dev_data_formats,
+            math_fidelities=TestCollectionData.single.math_fidelities,
         ),
         # Test plan: 
         # 6. Math fidelity
-        TestVectors(
-            operators=get_eltwise_binary_ops(),
-            input_sources=TestData.INPUT_SOURCES_SINGLE,
-            input_shapes=get_input_shapes_df_mf(),
-            dev_data_formats=TestData.dev_data_formats_defaults,
-            math_fidelities=TestData.math_fidelities,
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.single.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+            dev_data_formats=TestCollectionData.single.dev_data_formats,
+            math_fidelities=TestCollectionData.all.math_fidelities
         ),
         # Unimplemented operators
-        TestVectors(
-            operators=get_not_implemented_pytorch_binary_ops(),
-            input_sources=TestData.INPUT_SOURCES,
-            input_shapes=TestData.input_shapes_single,
+        TestCollection(
+            operators=TestCollectionData.not_implemented.operators,
+            input_sources=TestCollectionData.all.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
         ),
     ],
-    failing_tests = [
+    failing_rules = [
         # Unsupported datatypes
-        TestVectors(
-            operators=None,
-            input_sources=None,
-            input_shapes=None,
+        TestCollection(
             dev_data_formats=[
                 forge.DataFormat.Bfp2,
                 forge.DataFormat.Bfp4,
@@ -389,19 +481,63 @@ test_plan = TestPlan(
                 forge.DataFormat.RawUInt8,
                 forge.DataFormat.UInt16,
             ],
+
             failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
-        # PCC check fails for buggy shapes for all models
-        TestVectors(
-            operators=None,
+        # Segmentation faults or fatal python errors for Unsupported datatypes
+        TestCollection(
+            operators=TestCollectionData.implemented.operators,
+            # operators=[
+            #     "add",
+            #     "sub",
+            #     "mul",
+            #     "div",
+            #     "ge",
+            # ],
             input_sources=None,
+            input_shapes=None,
+            dev_data_formats=[
+                # forge.DataFormat.Bfp2,
+                forge.DataFormat.Bfp4,
+                forge.DataFormat.Bfp8,
+                forge.DataFormat.Float16,
+                # forge.DataFormat.Int8,
+                forge.DataFormat.Lf8,
+                # forge.DataFormat.RawUInt16,
+                # forge.DataFormat.RawUInt32,
+                # forge.DataFormat.RawUInt8,
+                # forge.DataFormat.UInt16,
+            ],
+
+            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+            skip_reason=FailingReasons.FATAL_ERROR,
+        ),
+        # PCC check fails for buggy shapes for all models
+        TestCollection(
             input_shapes=[
                 (1, 1),
             ],
+
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        # Exception from DATA_MISMATCH
+        TestCollection(
+            operators=['sub'],
+            input_sources=[InputSource.FROM_ANOTHER_OP, ],
+            input_shapes=[(1, 1), ],
+
+            failing_reason=None
+        ),
+        # Exception from DATA_MISMATCH
+        TestCollection(
+            operators=['ge'],
+            input_sources=[InputSource.FROM_ANOTHER_OP, InputSource.FROM_HOST, InputSource.FROM_DRAM_QUEUE, ],
+            input_shapes=[(1, 1), ],
+
+            failing_reason=None
+        ),
         # PCC check fails for buggy shapes for model ModelConstEvalPass
-        TestVectors(
+        TestCollection(
             operators=None,
             input_sources=[InputSource.CONST_EVAL_PASS, ],
             input_shapes=[
@@ -418,33 +554,42 @@ test_plan = TestPlan(
                 (11, 17, 41),
                 (13, 89, 3),
             ],
+
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        # Exception from DATA_MISMATCH
+        TestCollection(
+            operators=['mul'],
+            input_sources=[InputSource.CONST_EVAL_PASS, ],
+            input_shapes=[(2, 3, 4), ],
+
+            failing_reason=None
+        ),
         # PCC check fails for buggy shapes for div
-        TestVectors(
+        TestCollection(
             operators=["div", "divide", "true_divide", ],
             input_sources=[InputSource.FROM_HOST, InputSource.FROM_DRAM_QUEUE, ],
             input_shapes=[
-                (1, 4),
-                (1, 3),
-                (3, 4),
-                (1, 3, 4),
+                # (1, 4),  # TODO remove fixed
+                # (1, 3),  # TODO remove fixed
+                # (3, 4),  # TODO remove fixed
+                # (1, 3, 4),  # TODO remove fixed
                 (12, 64, 160, 96),
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
         # PCC check fails for buggy shapes for div
-        TestVectors(
+        TestCollection(
             operators=["div", "divide", "true_divide", ],
             input_sources=[InputSource.CONST_EVAL_PASS, ],
             input_shapes=[
-                (1, 17),
-                (45, 17),
+                # (1, 17),  # TODO remove fixed
+                # (45, 17),  # TODO remove fixed
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
         # PCC check fails for buggy shapes for ge
-        TestVectors(
+        TestCollection(
             operators=["ge", "greater_equal", ],
             input_sources=[InputSource.FROM_HOST, InputSource.FROM_DRAM_QUEUE, ],
             input_shapes=[
@@ -457,146 +602,136 @@ test_plan = TestPlan(
                 # (1, 17, 41),
                 # (1, 89, 3),
             ],
+
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes for div
+        TestCollection(
+            operators=["div", ],
+            input_sources=[InputSource.CONST_EVAL_PASS, ],
+            kwargs=[
+                {
+                    "rounding_mode": 'trunc',
+                }
+            ],
+            # TODO remove fixed
+            dev_data_formats=[
+                # forge.DataFormat.Bfp2,  # PCC check failed for some shapes
+                # forge.DataFormat.Bfp2_b,
+                # forge.DataFormat.Bfp8,
+                # forge.DataFormat.Bfp8_b,  # PCC check failed for some shapes
+                # forge.DataFormat.Float32,
+                # forge.DataFormat.Int8,
+                # forge.DataFormat.Lf8,
+                # forge.DataFormat.RawUInt16,
+            ],
+
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
         # Not implemented operators
-        TestVectors(
-            operators=get_not_implemented_pytorch_binary_ops(),
-            input_sources=TestData.INPUT_SOURCES,
-            input_shapes=TestData.input_shapes_single,
+        TestCollection(
+            operators=TestCollectionData.not_implemented.operators,
+
             failing_reason=FailingReasons.NOT_IMPLEMENTED,
+        ),
+        # Not implemented operators for CONST_EVAL_PASS
+        # 10 operators are implemented for CONST_EVAL_PASS the are not for other input sources
+        TestCollection(
+            operators=TestCollectionData.implemented_const_eval.operators,
+            input_sources=[InputSource.CONST_EVAL_PASS, ],
+
+            failing_reason=None,
+        ),
+        TestCollection(
+            operators=['sub'],
+            dev_data_formats=[forge.DataFormat.Bfp2, ],
+
+            failing_reason=FailingReasons.NOT_IMPLEMENTED,
+            skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
     ]
 )
 
 
-class BinaryTestParameterGenerator (TestParameterGenerator):
 
-    def __init__(self):
-        super(BinaryTestParameterGenerator, self).__init__()
-
-        rng_limiter = random.Random(0)
-        self.alpha_limiter = RateLimiter(rng_limiter, 100, 20)
-        self.alpha_small_limiter = RateLimiter(rng_limiter, 100, 50)
-
-    def produce(self, input_operator, input_source, input_shape, dev_data_format, math_fidelity, failing_result: Optional[TestResultFailing]):
-            
-        def get_failing_result(kwargs: Dict[str, Any]) -> Optional[FailingReasons]:
-
-            # TODO check kwargs via test plan
-            if "rounding_mode" in kwargs and kwargs["rounding_mode"] == "trunc" and input_source in (InputSource.CONST_EVAL_PASS,) and dev_data_format in (
-                forge.DataFormat.Bfp2,  # PCC check failed for some shapes
-                forge.DataFormat.Bfp2_b,
-                forge.DataFormat.Bfp8,
-                forge.DataFormat.Bfp8_b,  # PCC check failed for some shapes
-                forge.DataFormat.Float32,
-                forge.DataFormat.Int8,
-                forge.DataFormat.Lf8,
-                forge.DataFormat.RawUInt16,
-            ):
-                return TestResultFailing(FailingReasons.DATA_MISMATCH)
-
-            if "alpha" in kwargs:
-                if input_operator in ["add",]:
-                    # 2D shapes that reduce to 1D are passing
-                    if len(input_shape) == 2 and input_shape[-1] == 1:
-                        return None
-                    # TODO check kwargs range via test plan
-                    if not 0.8 <= abs(kwargs['alpha']) <= 1.2:
-                        # It looks like Forge is not supporting alpha parameter so PCC is always different
-                        return TestResultFailing(FailingReasons.UNSUPPORTED_SPECIAL_CASE)
-
-                return None
-
-        kwargs_list = []  # collect list of kwargs to produce multiple test cases with different kwargs
-
-        # TODO generate kwargs via test plan
-        if input_operator in ["add", "sub", "substract"]:
-            if self.alpha_limiter.is_allowed():
-                if dev_data_format in TestData.dev_data_formats_int:
-                    alpha_value = self.rng_params.randint(0, 100)
-                elif self.alpha_small_limiter.is_allowed():
-                    # small numbers
-                    alpha_value = self.rng_params.uniform(-1.0, 1.0)
-                else:
-                    # regular number range
-                    alpha_value = self.rng_params.uniform(5, 10000)
-                    # support negative numbers
-                    alpha_value *= self.rng_params.choice([-1, 1])
-                kwargs = {
-                    'alpha': alpha_value
-                }
-                kwargs_list.append(kwargs)
-            kwargs_list.append({})
-        elif input_operator in ["div", "divide"]:
-            rounding_modes = ['trunc', 'floor', None]
-            kwargs = {
-                'rounding_mode': rounding_modes[self.rng_params.randint(0, 2)]
-            }
-            kwargs_list.append(kwargs)
-        else:
-            kwargs = {}
-            kwargs_list.append(kwargs)
-
-        params = []
-
-        failing_result_original = failing_result
-
-        for kwargs in kwargs_list:
-
-            failing_result = failing_result_original
-
-            # Check additional custom conditions for failing result
-            if failing_result is None and kwargs is not None:
-                failing_result = get_failing_result(kwargs)
-
-            # These 10 operators are supported for CONST_EVAL_PASS
-            if failing_result is not None and failing_result.failing_reason == FailingReasons.NOT_IMPLEMENTED and input_source in (InputSource.CONST_EVAL_PASS, ) and input_operator in (
-                'floor_divide',
-                'fmod',
-                'remainder',
-                'eq',
-                'ne',
-                'le',
-                'gt',
-                'lt',
-                'maximum',
-                'minimum',
-            ):
-                failing_result = None
-
-            marks = self.get_marks(failing_result)
-
-            param = pytest.param(input_operator, input_source, kwargs, input_shape, dev_data_format, math_fidelity, marks=marks, id=f"{input_operator}-{input_source.name}-{kwargs}-{input_shape}-{dev_data_format.name if dev_data_format else None}-{math_fidelity.name if math_fidelity else None}")
-            params.append(param)
-        
-        return params
+DRY_RUN = False
+# DRY_RUN = True
 
 
-test_plan_generator = BinaryTestParameterGenerator()
-
-
-@pytest.mark.parametrize("input_operator, input_source, kwargs, input_shape, dev_data_format, math_fidelity", test_plan_generator.generate(test_plan))
-def test_pytorch_eltwise_binary_ops_per_test_plan(
-    input_operator,
-    input_source,
-    kwargs,
-    input_shape,
-    test_device,
-    dev_data_format,
-    math_fidelity
-):
-
-    verify(
-        test_device=test_device,
-        input_source=input_source,
-        input_operator=input_operator,
-        input_shape=input_shape,
-        kwargs=kwargs,
-        dev_data_format=dev_data_format,
-        math_fidelity=math_fidelity,
-    )
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan())
+def test_plan(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
 # 1480 passed, 20 xfailed, 2 warnings in 529.46s (0:08:49) 
 # 4 failed, 1352 passed, 212 xfailed, 115 xpassed, 2 warnings in 590.56s (0:09:50)
+# 1 failed, 4041 passed, 20 skipped, 321 xfailed, 2 warnings in 1510.10s (0:25:10)
 
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan(filter=TestParamsFilter(
+        allow=lambda test_vector: test_vector.failing_result is not None and test_vector.failing_result.failing_reason is not None and test_vector.failing_result.skip_reason is None,
+)))
+def test_failed(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan(filter=TestParamsFilter(
+        allow=lambda test_vector: test_vector.failing_result is not None and test_vector.failing_result.skip_reason is not None,
+)))
+def test_skipped(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan(filter=TestParamsFilter(
+        allow=lambda test_vector: test_vector.failing_result is not None and test_vector.failing_result.failing_reason == FailingReasons.UNSUPPORTED_DATA_FORMAT and test_vector.failing_result.skip_reason == FailingReasons.FATAL_ERROR,
+        # indices=1,
+)))
+def test_unsupported_fatal(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan(filter=TestParamsFilter(
+        allow=lambda test_vector: test_vector.failing_result is not None and test_vector.failing_result.failing_reason == FailingReasons.UNSUPPORTED_DATA_FORMAT and test_vector.failing_result.skip_reason is None,
+)))
+def test_unsupported(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan(filter=TestParamsFilter(
+        allow=lambda test_vector: test_vector.failing_result is not None and test_vector.failing_result.failing_reason == FailingReasons.NOT_IMPLEMENTED and test_vector.failing_result.skip_reason is None,
+)))
+def test_not_implemented(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_test_plan(filter=TestParamsFilter(
+        allow=lambda test_vector: test_vector.failing_result is not None and test_vector.failing_result.failing_reason == FailingReasons.DATA_MISMATCH and test_vector.failing_result.skip_reason is None,
+)))
+def test_data_mismatch(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+
+
+test_ids_inconsistency = [
+    "no_device-div-CONST_EVAL_PASS-{}-(13, 89, 3)-None-None",
+    "no_device-mul-CONST_EVAL_PASS-{}-(2, 3, 4)-None-None",
+    "no_device-mul-CONST_EVAL_PASS-{}-(11, 45, 17)-None-None",
+]
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_from_id_list(test_ids_inconsistency, filter=TestParamsFilter(
+        # reversed=True,
+        log=True,
+)))
+def test_inconsistency_order1(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device,test_vector=test_vector, dry_run=DRY_RUN)
+
+
+@pytest.mark.parametrize("test_vector", TestParamsData.get_params_from_id_list(test_ids_inconsistency, filter=TestParamsFilter(
+        reversed=True,
+        log=True,
+)))
+def test_inconsistency_order2(test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device,test_vector=test_vector, dry_run=DRY_RUN)
+
+
+def test_single(single_test_vector: TestVector, test_device):
+    TestVerification.verify(test_device=test_device,test_vector=single_test_vector, dry_run=DRY_RUN)
 
