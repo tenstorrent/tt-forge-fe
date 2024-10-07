@@ -32,7 +32,7 @@ jobs:
 
     env:
       MDBOOK_VERSION: 0.4.36
-      
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -55,12 +55,12 @@ jobs:
         create-symlink: true
         key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
 
-    # - name: Build
-    #   shell: bash
-    #   run: |
-    #     source env/activate
-    #     cmake -G Ninja -B build .
-    #     cmake --build build
+    - name: Build
+      shell: bash
+      run: |
+        source env/activate
+        cmake -G Ninja -B build .
+        cmake --build build
 
     - name: Install mdBook
       shell: bash
