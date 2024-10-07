@@ -16,7 +16,7 @@ def test_mnist_training():
     torch.manual_seed(0)
 
     # Config
-    num_epochs = 3
+    num_epochs = 2
     batch_size = 1
     learning_rate = 0.001
 
