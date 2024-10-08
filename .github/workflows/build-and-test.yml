@@ -3,6 +3,7 @@ name: Build and Test
 on:
   workflow_dispatch:
   workflow_call:
+  push:
 
 jobs:
 
@@ -28,12 +29,19 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
+      
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+        
+        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
+        JOB_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
+          jq -r '.jobs[] | select(.name == "${{ github.job }}") | .id')
+        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -91,7 +99,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-reports-${{ matrix.build.runs-on }}
-        path: reports/report.xml
+        path: reports/report_${{ steps.strings.outputs.job-id }}.xml
 
     - name: Show Test Report
       uses: mikepenz/action-junit-report@v4
