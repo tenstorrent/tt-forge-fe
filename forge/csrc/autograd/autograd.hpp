@@ -115,6 +115,10 @@ class autograd_engine
 
     // Create optinstructions, and hook them up accordingly
     void create_optimizer_graph();
+
+    // Inserts ops in the backward graph that recompute the whole forward graph.
+    // This can be used to avoid the need to store all of the intermediate tensors to be able to run the backward pass.
+    void insert_recompute_ops();
 };
 
 // Structure passed to python while generating backward ops. This allows us to register

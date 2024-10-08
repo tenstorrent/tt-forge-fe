@@ -321,11 +321,6 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_forge_passes(
         constant_pre_broadcast(lowered_graph.get());
     }
 
-    if (enable_recompute)
-    {
-        insert_recompute_ops(lowered_graph.get());
-    }
-
     insert_partial_datacopy_tms(lowered_graph.get());
 
     insert_user_defined_queues(lowered_graph.get(), insert_queues);
