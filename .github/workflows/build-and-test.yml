@@ -29,7 +29,12 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
-      
+
+    - name: Install jq and curl
+      run: |
+        apt-get update
+        apt-get install -y jq curl
+
     - name: Set reusable strings
       id: strings
       shell: bash
