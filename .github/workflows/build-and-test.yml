@@ -42,9 +42,10 @@ jobs:
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
         
-        echo $(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" )
+        echo $(curl -s -H "Authorization: token ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" )
+        
         # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
-        JOB_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+        JOB_ID=$(curl -s -H "Authorization: token ${{ github.token }}" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
           jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id')
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
