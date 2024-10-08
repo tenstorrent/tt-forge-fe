@@ -19,7 +19,7 @@ namespace tt {
 
 namespace autograd2 {
 
-struct __attribute__ ((visibility ("hidden"))) autograd_config {
+struct autograd_config {
     bool recompute = false; // Add recompute
     py::object optimizer = py::none();
 };
@@ -30,7 +30,7 @@ using Node = graphlib::Node;
 using Graph = graphlib::Graph;
 using NodeContext = graphlib::NodeContext;
 
-class __attribute__ ((visibility ("hidden"))) autograd2_engine {
+class autograd2_engine {
 
 private:
     tt::graphlib::Graph *graph;

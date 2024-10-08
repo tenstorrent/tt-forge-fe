@@ -171,6 +171,7 @@ public:
     InputNodeType input_type() const { return input_type_; }
     std::string input_type_string() const;
     bool requires_grad() const { return requires_grad_; }
+    void set_requires_grad(bool requires_grad) { requires_grad_ = requires_grad; }
     void clone_consteval_graph_from(Node* original);
     ConstEvalGraph *get_consteval_graph(Graph* graph = nullptr, bool create = false, bool promote_input = false);
     void clear_consteval_graph();

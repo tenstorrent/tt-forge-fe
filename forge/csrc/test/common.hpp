@@ -6,7 +6,6 @@
 #include <type_traits>
 #include <unordered_map>
 
-#include "backend_api/device_config.hpp"
 #include "gtest/gtest.h"
 #include "test/graph_api.hpp"
 
@@ -79,7 +78,9 @@ class GraphTest : public ::testing::Test
 
     graphlib::InputNode* create_activation(graphlib::Shape const& shape)
     {
-        return create_input(shape, tt::graphlib::InputNodeType::Activation);
+        auto node = create_input(shape, tt::graphlib::InputNodeType::Activation);
+        graph->register_module_inputs({node->id()}, true /* append */);
+        return node;
     }
 
     template <typename... Dims>
@@ -88,9 +89,11 @@ class GraphTest : public ::testing::Test
         return create_activation(shape(dims...));
     }
 
-    graphlib::InputNode* create_parameter(graphlib::Shape const& shape)
+    graphlib::InputNode* create_parameter(graphlib::Shape const& shape, bool requires_grad = false)
     {
-        return create_input(shape, tt::graphlib::InputNodeType::Parameter);
+        auto node = create_input(shape, tt::graphlib::InputNodeType::Parameter);
+        node->set_requires_grad(requires_grad);
+        return node;
     }
 
     template <typename... Dims>
