@@ -9,7 +9,8 @@
 #include "graph_lib/node_types.hpp"
 #include "python_bindings_common.hpp"
 
-namespace tt {
+namespace tt
+{
 
 static bool has_newstyle_interface(std::string const &op_name, bool is_forge)
 {
@@ -20,23 +21,20 @@ static bool has_newstyle_interface(std::string const &op_name, bool is_forge)
 
 void AutogradModule(py::module &m_autograd)
 {
-    py::class_<autograd2::autograd_config>(m_autograd, "AutogradConfig")
-        .def(py::init<bool, py::object>(),
-                py::arg("recompute") = false,
-                py::arg("optimizer") = py::none());
+    py::class_<autograd::autograd_config>(m_autograd, "AutogradConfig")
+        .def(py::init<bool, py::object>(), py::arg("recompute") = false, py::arg("optimizer") = py::none());
 
-    py::class_<autograd2::autograd2_engine>(m_autograd, "AutogradEngine")
-      .def(py::init([](graphlib::Graph* graph, const autograd2::autograd_config& cfg) {
-            return std::make_unique<autograd2::autograd2_engine>(graph, cfg);
-        }))
-      .def("run", &autograd2::autograd2_engine::run);
+    py::class_<autograd::autograd_engine>(m_autograd, "AutogradEngine")
+        .def(py::init([](graphlib::Graph *graph, const autograd::autograd_config &cfg)
+                      { return std::make_unique<autograd::autograd_engine>(graph, cfg); }))
+        .def("run", &autograd::autograd_engine::run);
 
-    py::class_<tt::autograd2::autograd_context>(m_autograd, "AutogradContext")
+    py::class_<tt::autograd::autograd_context>(m_autograd, "AutogradContext")
         .def(
             "op",
-            [](tt::autograd2::autograd_context &self,
+            [](tt::autograd::autograd_context &self,
                std::variant<std::string, py::object> const &type,
-               std::vector<tt::autograd2::NodeContext> operands,
+               std::vector<tt::autograd::NodeContext> operands,
                std::vector<graphlib::OpType::Attr> attributes)
             {
                 graphlib::OpType op_type = std::holds_alternative<std::string>(type)
@@ -51,20 +49,12 @@ void AutogradModule(py::module &m_autograd)
                 if (self.epoch_type == graphlib::NodeEpochType::Backward)
                 {
                     return self.autograd->create_op(
-                        op_type,
-                        operands,
-                        self.current_fwd_op,
-                        self.operand,
-                        self.created_op_index++);
+                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
                 else if (self.epoch_type == graphlib::NodeEpochType::Optimizer)
                 {
                     return self.autograd->create_optimizer_op(
-                        op_type,
-                        operands,
-                        self.current_fwd_op,
-                        self.operand,
-                        self.created_op_index++);
+                        op_type, operands, self.current_fwd_op, self.operand, self.created_op_index++);
                 }
 
                 throw std::runtime_error("Expected autograd_context.epoch_type to be Backward or Optimizer");
@@ -74,9 +64,9 @@ void AutogradModule(py::module &m_autograd)
             py::arg("attributes") = std::vector<graphlib::OpType::Attr>())
         .def(
             "create_optimizer_op",
-            [](tt::autograd2::autograd_context &self,
+            [](tt::autograd::autograd_context &self,
                std::string type,
-               std::vector<tt::autograd2::NodeContext> operands,
+               std::vector<tt::autograd::NodeContext> operands,
                std::vector<graphlib::OpType::Attr> attributes)
             {
                 return self.autograd->create_optimizer_op(
@@ -91,21 +81,21 @@ void AutogradModule(py::module &m_autograd)
             py::arg("attributes") = std::vector<graphlib::OpType::Attr>())
         .def(
             "constant",
-            [](tt::autograd2::autograd_context &self, int value)
+            [](tt::autograd::autograd_context &self, int value)
             {
                 return self.autograd->create_constant(
                     self.current_fwd_op, self.operand, value, self.created_op_index++, self.epoch_type);
             })
         .def(
             "constant",
-            [](tt::autograd2::autograd_context &self, float value)
+            [](tt::autograd::autograd_context &self, float value)
             {
                 return self.autograd->create_constant(
                     self.current_fwd_op, self.operand, value, self.created_op_index++, self.epoch_type);
             })
         .def(
             "input",
-            [](tt::autograd2::autograd_context &self,
+            [](tt::autograd::autograd_context &self,
                std::string input_name,
                std::vector<std::uint32_t> tensor_shape,
                bool copy_consteval_operations,
@@ -129,9 +119,9 @@ void AutogradModule(py::module &m_autograd)
             py::arg("disable_consteval") = false)
         .def(
             "loopback",
-            [](tt::autograd2::autograd_context &self,
-               tt::autograd2::NodeContext const &original,
-               tt::autograd2::NodeContext const &update)
+            [](tt::autograd::autograd_context &self,
+               tt::autograd::NodeContext const &original,
+               tt::autograd::NodeContext const &update)
             {
                 graphlib::Graph *graph = self.autograd->get_graph();
                 graph->add_edge(
@@ -143,7 +133,7 @@ void AutogradModule(py::module &m_autograd)
             })
         .def(
             "tensor",
-            [](tt::autograd2::autograd_context &self, py::object tensor)
+            [](tt::autograd::autograd_context &self, py::object tensor)
             {
                 return self.autograd->create_constant(
                     self.current_fwd_op,
@@ -155,7 +145,7 @@ void AutogradModule(py::module &m_autograd)
             })
         .def(
             "get_pytorch_tensor",
-            [](tt::autograd2::autograd_context &self, tt::autograd2::NodeContext const &node)
+            [](tt::autograd::autograd_context &self, tt::autograd::NodeContext const &node)
             {
                 graphlib::ConstantInputNode *cnode =
                     dynamic_cast<graphlib::ConstantInputNode *>(self.autograd->get_graph()->node_by_id(node.id));
@@ -164,22 +154,22 @@ void AutogradModule(py::module &m_autograd)
             })
         .def(
             "get_shape",
-            [](tt::autograd2::autograd_context &self, tt::autograd2::NodeContext &node)
+            [](tt::autograd::autograd_context &self, tt::autograd::NodeContext &node)
             { return self.autograd->get_graph()->node_by_id(node.id)->shape().as_vector(); })
         .def(
             "get_operands",
-            [](tt::autograd2::autograd_context &self, tt::autograd2::NodeContext const &node)
+            [](tt::autograd::autograd_context &self, tt::autograd::NodeContext const &node)
             {
                 graphlib::Graph *graph = self.autograd->get_graph();
-                std::vector<tt::autograd2::Node *> operands = graph->data_operands(graph->node_by_id(node.id));
-                std::vector<tt::autograd2::NodeContext *> operand_contexts;
+                std::vector<tt::autograd::Node *> operands = graph->data_operands(graph->node_by_id(node.id));
+                std::vector<tt::autograd::NodeContext *> operand_contexts;
                 for (auto it = operands.begin(); it != operands.end(); ++it)
                 {
-                    tt::autograd2::NodeContext *op_context = new tt::autograd2::NodeContext(*it);
+                    tt::autograd::NodeContext *op_context = new tt::autograd::NodeContext(*it);
                     operand_contexts.push_back(op_context);
                 }
                 return operand_contexts;
             });
 }
 
-} // namespace tt
+}  // namespace tt

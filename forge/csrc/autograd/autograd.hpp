@@ -7,20 +7,21 @@
 #include <string>
 #include <vector>
 
-#include <pybind11/pybind11.h>
-
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 
 namespace py = pybind11;
 
-namespace tt {
+namespace tt
+{
 
-namespace autograd2 {
+namespace autograd
+{
 
-struct autograd_config {
-    bool recompute = false; // Add recompute
+struct autograd_config
+{
+    bool recompute = false;  // Add recompute
     py::object optimizer = py::none();
 };
 
@@ -30,19 +31,19 @@ using Node = graphlib::Node;
 using Graph = graphlib::Graph;
 using NodeContext = graphlib::NodeContext;
 
-class autograd2_engine {
-
-private:
+class autograd_engine
+{
+   private:
     tt::graphlib::Graph *graph;
     autograd_config config;
-    
+
     // fwd->output gradient producer map
     std::unordered_map<Node *, std::vector<Node *>> fwd_to_out_gradient_map;
 
-public:
-    autograd2_engine(Graph *graph, autograd_config config);
-    ~autograd2_engine() = default;
-    autograd2_engine(const autograd2_engine &other) = delete;
+   public:
+    autograd_engine(Graph *graph, autograd_config config);
+    ~autograd_engine() = default;
+    autograd_engine(const autograd_engine &other) = delete;
 
     // Run and return the modified graph
     Graph *run();
@@ -67,7 +68,8 @@ public:
 
     // Create an integer constant used in backward calculations (typically a negative one)
     template <typename T>
-    NodeContext create_constant(Node *current_fwd_op, int operand_index, T value, int created_op_index, graphlib::NodeEpochType epoch_type);
+    NodeContext create_constant(
+        Node *current_fwd_op, int operand_index, T value, int created_op_index, graphlib::NodeEpochType epoch_type);
 
     NodeContext create_constant(
         Node *current_fwd_op,
@@ -82,21 +84,21 @@ public:
         int operand_index,
         int created_op_index,
         graphlib::NodeEpochType epoch_type,
-        std::string& suffix_identifier,
+        std::string &suffix_identifier,
         std::vector<std::uint32_t> tensor_shape,
         bool copy_consteval_operations,
         bool disable_consteval = false);
 
     bool contains_bwd_nodes() const;
-    const std::map<int, std::vector<Node *>>& get_bwd_nodes(Node *fwd) const;
+    const std::map<int, std::vector<Node *>> &get_bwd_nodes(Node *fwd) const;
 
     // Get pointer to graph being worked on
     Graph *get_graph() const { return graph; }
 
-private:
+   private:
     // Propagate requires_grad from inputs to all edges of the graph, creating an edge->bool map
     grad_map propagate_requires_grad();
- 
+
     // Create backward instructions, and hook them up accordingly
     void create_backward_graph(const grad_map &requires_grad_map);
 
@@ -115,17 +117,16 @@ private:
     void create_optimizer_graph();
 };
 
-// Structure passed to python while generating backward ops. This allows us to register 
+// Structure passed to python while generating backward ops. This allows us to register
 // backward ops in both the graph and autograd engine maps
-struct  __attribute__ ((visibility ("hidden"))) autograd_context {
-
-    autograd2_engine *autograd;
+struct __attribute__((visibility("hidden"))) autograd_context
+{
+    autograd_engine *autograd;
     Node *current_fwd_op;
     int operand;
     graphlib::NodeEpochType epoch_type = graphlib::NodeEpochType::Backward;
-    int created_op_index = 0; // Incremented to ensure unique names when multiple ops are created
-
+    int created_op_index = 0;  // Incremented to ensure unique names when multiple ops are created
 };
 
-}
-}
+}  // namespace autograd
+}  // namespace tt
