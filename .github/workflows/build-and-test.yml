@@ -33,7 +33,7 @@ jobs:
     - name: Install jq and curl
       run: |
         apt-get update
-        apt-get install -y jq
+        apt-get install -y jq curl
 
     - name: Set reusable strings
       id: strings
@@ -46,7 +46,7 @@ jobs:
         # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
         JOB_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
-          jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id'
+          jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id')
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
