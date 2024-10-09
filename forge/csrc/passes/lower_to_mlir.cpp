@@ -523,6 +523,7 @@ class MLIRGenerator
             lowering_handler_map["multiply"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MultiplyOp>;
             lowering_handler_map["reciprocal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReciprocalOp>;
             lowering_handler_map["reduce_avg"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MeanOp>;
+            lowering_handler_map["reduce_max"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MaxOp>;
             lowering_handler_map["reduce_sum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SumOp>;
             lowering_handler_map["relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReluOp>;
             lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;

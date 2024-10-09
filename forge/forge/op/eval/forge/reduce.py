@@ -23,17 +23,7 @@ def eval(type, attr, ops):
         "reduce_max": lambda i: torch.max(t_ops[0], dim=attr[0], keepdim=True)[0],
     }
 
-    if len(attr) == 2 and type == "reduce_max" and attr[0] == -3:
-        z = attr[1]
-        assert t_ops[0].shape[-3] % z == 0
-        ret = t_ops[0].squeeze(0)
-        squeeze_failed = False
-        if len(ret.shape) == len(t_ops[0].shape):
-            squeeze_failed = True
-        ret = t_ops[0].squeeze(0).split(z)
-        ret = [torch.max(s, dim=0)[0] for s in ret]
-        result = torch.stack(ret).unsqueeze(0) if not squeeze_failed else torch.stack(ret)
-    elif type == "grouped_reduce_avg":
+    if type == "grouped_reduce_avg":
         keep_dims = attr[2]
         groups = attr[1]
         dim = attr[0]
