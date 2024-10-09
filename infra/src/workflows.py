@@ -16,9 +16,15 @@ import pydantic_models
 def get_github_job_id_to_test_reports(workflow_outputs_dir, workflow_run_id: int):    
     job_paths_map = {}
     artifacts_dir = f"{workflow_outputs_dir}/{workflow_run_id}/artifacts"
+
+    logger.info(f"Searching for test reports in {artifacts_dir}")
+
     for root, _, files in os.walk(artifacts_dir):
         for file in files:
             if file.endswith(".xml"):
+
+                logger.debug(f"Found test report {file}")
+
                 file_path = pathlib.Path(root) / file
                 filename = file_path.name
                 job_id = int(filename.split(".")[-2].split("_")[-1])
