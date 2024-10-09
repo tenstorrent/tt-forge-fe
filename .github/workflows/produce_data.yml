@@ -83,8 +83,7 @@ jobs:
       - name: Create JSON
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python3 infra/src/generate_data.py \
-          --run_id ${{ steps.get-run-id-and-attempt.outputs.run-id }}
+        run: python3 infra/src/generate_data.py --run_id ${{ steps.get-run-id-and-attempt.outputs.run-id }}
 
       # - name: Upload cicd data
       #   uses: ./.github/actions/upload-data-via-sftp
