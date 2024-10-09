@@ -359,10 +359,11 @@ def test_reduce_sum(input_shape, dim):
     -2,
 ])
 def test_reduce_mean(input_shape, dim):
-    # Check if certain any dim in input_shape isn't divisible by 32
-    if any(i % 32 != 0 for i in input_shape[1:]): 
-        pytest.xfail("TTNN: Issues with ttnn implicit reshape") 
-    
+
+    if input_shape == (1, 12, 3200) and dim == -1:
+        # Tensor mismatch(PCC: 0.72) - https://github.com/tenstorrent/tt-mlir/issues/869
+        pytest.xfail("Tensor mismatch between PyTorch and TTNN (PCC: 0.72)")
+
     class ReduceMean(nn.Module):
         def __init__(self):
             super().__init__()
@@ -409,16 +410,11 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
-
+@pytest.mark.xfail(reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first")
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.parametrize("dim", [1, 2])
 def test_mean(x_shape, y_shape, dim):
-    if dim == 1:
-        pytest.skip("FFE: Unsupported squeeze operation")
-    if dim == 2:
-        # Note: Some tests are passing when run in group, while failing when running individually
-        pytest.skip("TTNN: Tensor layout bugs")
     
     class Mean(nn.Module):
         def __init__(self):
