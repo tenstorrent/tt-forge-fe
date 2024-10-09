@@ -103,5 +103,5 @@ jobs:
             if-no-files-found: warn
             path: |
               pipelinecopy_*.json
-              workflow.json
-              workflow_jobs.json
+              generated/cicd/${{ steps.get-run-id-and-attempt.outputs.run-id }}/workflow.json
+              generated/cicd/${{ steps.get-run-id-and-attempt.outputs.run-id }}/workflow_jobs.json
