@@ -83,7 +83,10 @@ jobs:
       - name: Create JSON
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python3 infra/src/generate_data.py --run_id ${{ steps.get-run-id-and-attempt.outputs.run-id }}
+        run: |
+          python3 infra/src/generate_data.py --run_id ${{ steps.get-run-id-and-attempt.outputs.run-id }}
+          # Workaround: Copy file to avoid GH upload filename limitations
+          cp pipeline_${{ steps.get-run-id-and-attempt.outputs.run-id }}*.json pipeline_${{ steps.get-run-id-and-attempt.outputs.run-id }}.json
 
       # - name: Upload cicd data
       #   uses: ./.github/actions/upload-data-via-sftp
@@ -102,6 +105,6 @@ jobs:
           path: |
             if-no-files-found: warn
             path: |
-              pipeline_${{ steps.get-run-id-and-attempt.outputs.run-id }}*.json
+              pipeline_${{ steps.get-run-id-and-attempt.outputs.run-id }}.json
               generated/cicd/${{ steps.get-run-id-and-attempt.outputs.run-id }}/workflow.json
               generated/cicd/${{ steps.get-run-id-and-attempt.outputs.run-id }}/workflow_jobs.json
