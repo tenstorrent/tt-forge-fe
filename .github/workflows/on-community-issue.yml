@@ -61,7 +61,7 @@ jobs:
           payload: |
             {
               "text": "A new ${{ env.EVENT_TYPE }} has been created by a non-org member `${{ env.USERNAME }}`: ${{ env.EVENT_URL }}",
-              "channel": "C07GH3A6ERF"
+              "channel": "C07R5GYEW8J"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CHANNEL_WEBHOOK_URL }}
