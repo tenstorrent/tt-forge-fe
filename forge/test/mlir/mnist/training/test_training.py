@@ -91,3 +91,46 @@ def test_mnist_training():
             break
 
     print(f"Test (total) loss: {test_loss}")
+
+def test_batch_size():
+    num_epochs = 2
+    batch_size = 2
+    in_features = 128
+    out_features = 10
+
+    class SimpleModel(nn.Module):
+        def __init__(self):
+            super(SimpleModel, self).__init__()
+            self.linear = nn.Linear(in_features, out_features)
+
+        def forward(self, x):
+            return self.linear(x)
+    
+    in_data = torch.rand(batch_size, in_features)
+    out_data = torch.randint(0, out_features, (batch_size,))
+
+    model = SimpleModel()
+    loss_fn = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+
+    tt_model = forge.compile(model, sample_inputs=[in_data], loss=loss_fn, optimizer=optimizer)
+    for epoch_idx in range(num_epochs):
+        optimizer.zero_grad()
+        pred = tt_model(in_data)[0]
+        loss = loss_fn(pred, out_data)
+        loss.backward()
+        tt_model.backward(pred.grad)
+
+        optimizer.step()
+        print(f"epoch: {epoch_idx} loss: {loss.item()}")    
+
+    tt_model = forge.compile(model, sample_inputs=[in_data], loss=loss_fn, optimizer=optimizer)
+    for epoch_idx in range(num_epochs):
+        optimizer.zero_grad()
+        pred = tt_model(in_data)[0]
+        loss = loss_fn(pred, out_data)
+        loss.backward()
+        tt_model.backward(pred.grad)
+
+        optimizer.step()
+        print(f"epoch: {epoch_idx} loss: {loss.item()}")    
