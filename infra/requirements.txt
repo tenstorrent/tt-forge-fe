@@ -1,0 +1,5 @@
+loguru
+pydantic
+defusedxml
+pytest
+pytest-cov
