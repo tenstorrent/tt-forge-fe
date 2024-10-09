@@ -7,5 +7,5 @@ on:
 
 jobs:
   docker-build:
-    uses: ./.github/workflows/docker-build.yml
+    uses: ./.github/workflows/build-and-test.yml
     secrets: inherit

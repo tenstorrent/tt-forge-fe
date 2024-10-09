@@ -22,22 +22,17 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - runs-on: self-hosted        
+          - runs-on: 
+            - ubuntu-latest
 
     runs-on: ${{ matrix.build.runs-on }}
 
     container:
-      image: ghcr.io/${{ github.repository }}/tt-forge-fe-ubuntu-22-04:latest
-      options: --user root --device /dev/tenstorrent/0
-      volumes:
-        - /dev/hugepages:/dev/hugepages
-        - /dev/hugepages-1G:/dev/hugepages-1G 
-        - /etc/udev/rules.d:/etc/udev/rules.d 
-        - /lib/modules:/lib/modules
-        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+      image: ghcr.io/${{ github.repository }}/tt-forge-fe-ci-ubuntu-22-04:latest
 
     env:
       MDBOOK_VERSION: 0.4.36
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -81,6 +76,7 @@ jobs:
     - name: Build Docs
       shell: bash
       run: |
+        source env/activate
         export PATH="/github/home/.cargo/bin:$PATH"
         cmake --build build -- docs
         # cmake --build build -- doxygen
