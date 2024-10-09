@@ -16,6 +16,8 @@ on:
       - "Build and Test"
     types:
       - completed
+  push:
+  pull_request:
 
 jobs:
 
