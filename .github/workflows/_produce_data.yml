@@ -1,6 +1,16 @@
-name: "[internal] Produce data for external analysis"
+name: "[internal] Produce analytic data"
 
 on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      test_workflow_run_id:
+        description: "Unique GitHub workflow run ID to use for data"
+        type: number
+      test_workflow_run_attempt:
+        description: "Run attempt of the workflow run"
+        default: 1
+        type: number
   workflow_run:
     workflows: # List workflow that we want to collect data for
       - "Build and Test"
