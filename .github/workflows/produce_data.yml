@@ -69,7 +69,7 @@ jobs:
       - name: Collect workflow artifact and job logs
         shell: bash
         run: |
-          infra/download_workflow_data.sh ${{ github.repo }} ${{ steps.get-run-id-and-attempt.outputs.run-id }} ${{ steps.get-run-id-and-attempt.outputs.attempt-number }}
+          infra/download_workflow_data.sh ${{ github.repository }} ${{ steps.get-run-id-and-attempt.outputs.run-id }} ${{ steps.get-run-id-and-attempt.outputs.attempt-number }}
 
       - uses: actions/setup-python@v5
         with:
