@@ -1,6 +1,8 @@
 name: "Issue Notification"
 
 on:
+  workflow_dispatch:
+  workflow_call:
   issues:
     types: [opened]
   pull_request:
