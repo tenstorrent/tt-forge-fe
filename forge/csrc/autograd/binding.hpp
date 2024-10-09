@@ -5,17 +5,14 @@
 
 #pragma once
 
-#include "utils/assert.hpp"
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+#include "autograd/autograd.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/shape.hpp"
 
-#include "autograd/autograd.hpp"
-
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-namespace py = pybind11;
-
-using namespace tt::autograd2;
+using namespace tt::autograd;
 using Shape = tt::graphlib::Shape;
 using OpType = tt::graphlib::OpType;
 using DimBroadcast = tt::graphlib::DimBroadcast;
@@ -23,6 +20,7 @@ using TileDim = tt::TileDim;
 
 std::tuple<Shape, std::vector<DimBroadcast>> get_op_shape(
     OpType type, std::vector<Shape> &operands, bool is_forge, TileDim tile_dim = TileDim::Dim32x32);
+
 inline Shape get_tm_shape(OpType type, Shape operand, bool is_forge)
 {
     Shape shape;
@@ -31,11 +29,11 @@ inline Shape get_tm_shape(OpType type, Shape operand, bool is_forge)
     std::tie(shape, bcast) = ::get_op_shape(type, operands, is_forge, operand.get_tile_dim());
     return shape;
 }
+
 NodeContext insert_backward(
     autograd_context context,
     OpType type,
-    int operand, 
+    int operand,
     const std::vector<NodeContext> &inputs,
     NodeContext output,
     NodeContext gradient);
-

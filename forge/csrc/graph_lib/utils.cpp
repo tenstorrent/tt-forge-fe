@@ -2180,7 +2180,7 @@ void ConstEvalGraph::autograd()
         }
     }
 
-    autograd2::autograd2_engine consteval_autograd_engine(&consteval_graph, autograd2::autograd_config{});
+    autograd::autograd_engine consteval_autograd_engine(&consteval_graph, autograd::autograd_config{});
     consteval_autograd_engine.run();
 
     ran_autograd = true;

@@ -64,9 +64,9 @@ TEST_P(SplitGraphTest, test_forward)
     // TODO(#366): Recompute parameter in autograd config is not used.
     // So the variant of the test which uses recompute = true is still not actually testing training with recompute.
     bool recompute = GetParam();
-    autograd2::autograd_config config{.recompute = recompute, .optimizer = py::none()};
+    autograd::autograd_config config{.recompute = recompute, .optimizer = py::none()};
 
-    auto autograd_engine = tt::autograd2::autograd2_engine(graph, config);
+    auto autograd_engine = tt::autograd::autograd_engine(graph, config);
     graph = autograd_engine.run();
 
     EXPECT_TRUE(graph->contains_bwd_nodes());
@@ -103,9 +103,9 @@ TEST_P(SplitGraphTest, test_backward)
     // TODO(#366): Recompute parameter in autograd config is not used.
     // So the variant of the test which uses recompute = true is still not actually testing training with recompute.
     bool recompute = GetParam();
-    autograd2::autograd_config config{.recompute = recompute, .optimizer = py::none()};
+    autograd::autograd_config config{.recompute = recompute, .optimizer = py::none()};
 
-    auto autograd_engine = tt::autograd2::autograd2_engine(graph, config);
+    auto autograd_engine = tt::autograd::autograd_engine(graph, config);
     graph = autograd_engine.run();
 
     EXPECT_TRUE(graph->contains_bwd_nodes());
