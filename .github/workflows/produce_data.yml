@@ -16,8 +16,6 @@ on:
       - "Build and Test"
     types:
       - completed
-  push:
-  pull_request:
 
 jobs:
 
@@ -50,10 +48,19 @@ jobs:
         id: get-run-id-and-attempt
         shell: bash
         run: |
-          run_id="${{ github.event.workflow_run.id }}"
-          attempt_number="${{ github.event.workflow_run.run_attempt }}"
-          [[ -z "$run_id" ]] && { echo "run_id is empty" ; exit 1; }
-          [[ -z "$attempt_number" ]] && { echo "attempt_number is empty" ; exit 1; }
+          event_name="${{ github.event_name }}"
+          if [[ "$event_name" == "workflow_dispatch" ]]; then
+            run_id="${{ inputs.test_workflow_run_id }}"
+            attempt_number="${{ inputs.test_workflow_run_attempt }}"
+          elif [[ "$event_name" == "workflow_run" ]]; then
+            run_id="${{ github.event.workflow_run.id }}"
+            attempt_number="${{ github.event.workflow_run.run_attempt }}"
+            [[ -z "$run_id" ]] && { echo "run_id is empty" ; exit 1; }
+            [[ -z "$attempt_number" ]] && { echo "attempt_number is empty" ; exit 1; }
+          else
+            echo "Unknown event name" && exit 1
+          fi
+
           echo $run_id
           echo $attempt_number
           echo "run-id=$run_id" >> "$GITHUB_OUTPUT"
