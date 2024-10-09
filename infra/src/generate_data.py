@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
  
 import argparse
-import pathlib
 from loguru import logger
 from utils import get_github_runner_environment
 from cicd import create_cicd_json_for_data_analysis, get_cicd_json_filename
@@ -42,5 +41,5 @@ if __name__ == '__main__':
     create_pipeline_json(
         workflow_filename = f"{args.output_dir}/{args.run_id}/workflow.json",
         jobs_filename = f"{args.output_dir}/{args.run_id}/workflow_jobs.json",
-        workflow_outputs_dir = {args.output_dir}
+        workflow_outputs_dir = args.output_dir
     )
