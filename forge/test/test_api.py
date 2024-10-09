@@ -85,4 +85,3 @@ def test_forge():
 
     if not torch.allclose(output[0], golden.to_pytorch(), rtol=1e-1):
         raise ValueError("Output does not match the golden output")
-
