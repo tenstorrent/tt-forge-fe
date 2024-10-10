@@ -15,9 +15,11 @@
 #include "fmt/core.h"
 #include "utils/env.hpp"
 
-namespace tt {
+namespace tt
+{
 template <typename A, typename B>
-struct OStreamJoin {
+struct OStreamJoin
+{
     OStreamJoin(A const& a, B const& b, char const* delim = " ") : a(a), b(b), delim(delim) {}
     A const& a;
     B const& b;
@@ -25,20 +27,25 @@ struct OStreamJoin {
 };
 
 template <typename A, typename B>
-std::ostream& operator<<(std::ostream& os, tt::OStreamJoin<A, B> const& join) {
+std::ostream& operator<<(std::ostream& os, tt::OStreamJoin<A, B> const& join)
+{
     os << join.a << join.delim << join.b;
     return os;
 }
 }  // namespace tt
 
-namespace tt::assert {
-inline std::string demangle(const char* str) {
+namespace tt::assert
+{
+inline std::string demangle(const char* str)
+{
     size_t size = 0;
     int status = 0;
     std::string rt(1025, '\0');
-    if (1 == sscanf(str, "%*[^(]%*[^_]%1024[^)+]", &rt[0])) {
+    if (1 == sscanf(str, "%*[^(]%*[^_]%1024[^)+]", &rt[0]))
+    {
         char* v = abi::__cxa_demangle(&rt[0], nullptr, &size, &status);
-        if (v) {
+        if (v)
+        {
             std::string result(v);
             free(v);
             return result;
@@ -53,17 +60,20 @@ inline std::string demangle(const char* str) {
  * @param[in] size Maximum number of return layers
  * @param[in] skip Skip the number of layers at the top of the stack
  */
-inline std::vector<std::string> backtrace(int size, int skip) {
+inline std::vector<std::string> backtrace(int size, int skip)
+{
     std::vector<std::string> bt;
     void** array = (void**)malloc((sizeof(void*) * size));
     size_t s = ::backtrace(array, size);
     char** strings = backtrace_symbols(array, s);
-    if (strings == NULL) {
+    if (strings == NULL)
+    {
         std::cout << "backtrace_symbols error." << std::endl;
         return bt;
     }
 
-    for (size_t i = skip; i < s; ++i) {
+    for (size_t i = skip; i < s; ++i)
+    {
         bt.push_back(demangle(strings[i]));
     }
     free(strings);
@@ -78,10 +88,12 @@ inline std::vector<std::string> backtrace(int size, int skip) {
  * @param[in] skip Skip the number of layers at the top of the stack
  * @param[in] prefix Output before stack information
  */
-inline std::string backtrace_to_string(int size, int skip, const std::string& prefix) {
+inline std::string backtrace_to_string(int size, int skip, const std::string& prefix)
+{
     std::vector<std::string> bt = backtrace(size, skip);
     std::stringstream ss;
-    for (size_t i = 0; i < bt.size(); ++i) {
+    for (size_t i = 0; i < bt.size(); ++i)
+    {
         ss << prefix << bt[i] << std::endl;
     }
     return ss.str();
@@ -90,7 +102,8 @@ inline std::string backtrace_to_string(int size, int skip, const std::string& pr
 inline void tt_assert_message(std::ostream&) {}
 
 template <typename T, typename... Ts>
-void tt_assert_message(std::ostream& os, T const& t, Ts const&... ts) {
+void tt_assert_message(std::ostream& os, T const& t, Ts const&... ts)
+{
     os << t << std::endl;
     tt_assert_message(os, ts...);
 }
@@ -133,12 +146,15 @@ void tt_assert(
 
 }  // namespace tt::assert
 
-#define TT_ASSERT(condition, ...) \
-    __builtin_expect(not (condition), 0) ? \
-    ::tt::assert::tt_assert<false>(__FILE__, __LINE__, "TT_ASSERT", #condition, std::string_view{}, ##__VA_ARGS__) : void()
-#define TT_LOG_ASSERT(condition, f, ...) \
-    __builtin_expect(not (condition), 0) ? \
-    ::tt::assert::tt_assert<true>(__FILE__, __LINE__, "TT_ASSERT", #condition, f, ##__VA_ARGS__) : void()
+#define TT_ASSERT(condition, ...)                                                             \
+    __builtin_expect(not(condition), 0)                                                       \
+        ? ::tt::assert::tt_assert<false>(                                                     \
+              __FILE__, __LINE__, "TT_ASSERT", #condition, std::string_view{}, ##__VA_ARGS__) \
+        : void()
+#define TT_LOG_ASSERT(condition, f, ...)                                                               \
+    __builtin_expect(not(condition), 0)                                                                \
+        ? ::tt::assert::tt_assert<true>(__FILE__, __LINE__, "TT_ASSERT", #condition, f, ##__VA_ARGS__) \
+        : void()
 #define TT_THROW(...) \
     ::tt::assert::tt_assert<false>(__FILE__, __LINE__, "TT_THROW", "tt::exception", std::string_view{}, ##__VA_ARGS__)
 
@@ -146,7 +162,9 @@ void tt_assert(
 // Do nothing in release mode.
 #define TT_DBG_ASSERT(condition, ...) ((void)0)
 #else
-#define TT_DBG_ASSERT(condition, ...) \
-    __builtin_expect(not (condition), 0) ? \
-    ::tt::assert::tt_assert<false>(__FILE__, __LINE__, "TT_DBG_ASSERT", #condition, std::string_view{}, ##__VA_ARGS__) : void()
+#define TT_DBG_ASSERT(condition, ...)                                                             \
+    __builtin_expect(not(condition), 0)                                                           \
+        ? ::tt::assert::tt_assert<false>(                                                         \
+              __FILE__, __LINE__, "TT_DBG_ASSERT", #condition, std::string_view{}, ##__VA_ARGS__) \
+        : void()
 #endif

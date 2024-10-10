@@ -5,7 +5,8 @@
 
 #include <string>
 
-namespace tt {
+namespace tt
+{
 enum class ARCH
 {
     JAWBRIDGE = 0,
@@ -19,6 +20,4 @@ enum class ARCH
 std::string to_string_arch(ARCH ar);
 std::string to_string_arch_lower(ARCH arch);
 ARCH to_arch_type(const std::string& arch_string);
-}
-
-
+}  // namespace tt

@@ -10,8 +10,8 @@ class Graph;
 class OpNode;
 class Node;
 class Shape;
-}
-namespace tt::passes 
+}  // namespace tt::graphlib
+namespace tt::passes
 {
 void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config);
-} // namespace tt:passes
+}  // namespace tt::passes

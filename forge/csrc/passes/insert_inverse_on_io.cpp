@@ -2,16 +2,17 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/insert_inverse_on_io.hpp"
-#include "passes/commute_utils.hpp"
+
 #include <pybind11/pybind11.h>
+
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "utils/logger.hpp"
+#include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "reportify/reportify.hpp"
+#include "utils/logger.hpp"
 
-
-namespace tt::passes 
+namespace tt::passes
 {
 
 using IOEdgeInfo = std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>;
@@ -19,10 +20,9 @@ using IOEdgeInfo = std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib
 void add_inverse_to_input_edges(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,
-    std::vector<std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>> input_edges_and_shapes
-)
+    std::vector<std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>> input_edges_and_shapes)
 {
-    // two reshapes are needed, one to be eliminated with inverse op, and one to make it an inverse (i.e. shape of 
+    // two reshapes are needed, one to be eliminated with inverse op, and one to make it an inverse (i.e. shape of
     // operand == output shape of inverse). Since the two are inverse of each other, tag first so it's not erased.
     for (auto input_edge_and_shape : input_edges_and_shapes)
     {
@@ -41,7 +41,7 @@ void add_inverse_to_input_edges(
 
         // Set output df to match producer
         clone_0->set_output_df(graph->node_by_id(incoming_edge.producer_node_id)->output_df());
-    
+
         name = initial_op->name() + "_input_commute_clone" + std::to_string(outgoing_edge.edge_creation_id);
         auto *clone_1 = graph->add_node(initial_op->clone(name), graph->get_subgraph_id_for_node(initial_op->id()));
         graphlib::OpNode *clone_1_op = dynamic_cast<graphlib::OpNode *>(clone_1);
@@ -56,7 +56,8 @@ void add_inverse_to_input_edges(
 
         auto *input = dynamic_cast<graphlib::InputNode *>(graph->node_by_id(edge.producer_node_id));
 
-        // TODO: constevaling transposes can cause tensor shape mismatch on parameter gradients for some reason. Should fix
+        // TODO: constevaling transposes can cause tensor shape mismatch on parameter gradients for some reason. Should
+        // fix
         if (input and input->is_constant())
         {
             try_consteval_op(graph, clone_0_op, true);
@@ -71,10 +72,7 @@ void add_inverse_to_input_edges(
     }
 }
 
-void add_inverse_to_output_edge(
-    graphlib::Graph *graph,
-    graphlib::OpNode *initial_op,
-    IOEdgeInfo edge_and_shape)
+void add_inverse_to_output_edge(graphlib::Graph *graph, graphlib::OpNode *initial_op, IOEdgeInfo edge_and_shape)
 {
     auto edge = edge_and_shape.first;
     auto commute_shape = edge_and_shape.second.first;
@@ -109,8 +107,8 @@ void add_inverse_to_output_edge(
 void add_inverse_to_tm_edges(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,
-    std::vector<std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>> input_edges_and_shapes
-) {
+    std::vector<std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>> input_edges_and_shapes)
+{
     for (auto input_edge_and_shape : input_edges_and_shapes)
     {
         auto edge = input_edge_and_shape.first;
@@ -154,7 +152,8 @@ std::vector<IOEdgeInfo> all_edges_to_input_nodes_commutable(
 
         if (previous_op and are_bcasts_between_ops(graph, op, previous_op))
         {
-            log_trace(LogGraphCompiler, "  Bcast between {} and {} prevents input commute", op->name(), previous_op->name());
+            log_trace(
+                LogGraphCompiler, "  Bcast between {} and {} prevents input commute", op->name(), previous_op->name());
             input_edges.clear();
             return input_edges;
         }
@@ -170,10 +169,12 @@ std::vector<IOEdgeInfo> all_edges_to_input_nodes_commutable(
             graphlib::OpNode *operand = dynamic_cast<graphlib::OpNode *>(operands[i]);
             auto commute_shape_copy = commute_shape;
             auto clone_shape_copy = clone_shape;
-            bool can_commute_fork = can_commute_past_op(op, initial_op, graph, &commute_shape_copy, &clone_shape_copy, true, operands[i]);
+            bool can_commute_fork =
+                can_commute_past_op(op, initial_op, graph, &commute_shape_copy, &clone_shape_copy, true, operands[i]);
             if (can_commute_fork and operand)
             {
-                auto new_edges = all_edges_to_input_nodes_commutable(graph, initial_op, commute_shape_copy, clone_shape_copy, operand, op);
+                auto new_edges = all_edges_to_input_nodes_commutable(
+                    graph, initial_op, commute_shape_copy, clone_shape_copy, operand, op);
                 all_forks_commute_to_input &= operand and not new_edges.empty();
                 for (auto &edge : new_edges)
                 {
@@ -194,7 +195,8 @@ std::vector<IOEdgeInfo> all_edges_to_input_nodes_commutable(
         }
         if (can_commute and found_input and all_forks_commute_to_input and op != initial_op)
         {
-            input_edges.push_back(std::make_pair(graph->operand_data_edges(op)[0], std::make_pair(commute_shape, clone_shape)));
+            input_edges.push_back(
+                std::make_pair(graph->operand_data_edges(op)[0], std::make_pair(commute_shape, clone_shape)));
             return input_edges;
         }
         else if (op != initial_op and (not can_commute or not all_forks_commute_to_input))
@@ -224,11 +226,12 @@ std::pair<bool, std::unique_ptr<IOEdgeInfo>> find_commutable_output_edge(
 
     bool found_output = false;
     while (not found_output)
-    {   
+    {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(iter);
         TT_ASSERT(op);
-        
-        if (previous_op) {
+
+        if (previous_op)
+        {
             handle_shape_change_through_bcast(graph, initial_op, previous_op, op, &commute_shape, &clone_shape);
         }
 
@@ -243,36 +246,41 @@ std::pair<bool, std::unique_ptr<IOEdgeInfo>> find_commutable_output_edge(
         for (std::size_t i = 1; (i < users.size()) and all_forks_commute_to_output_or_inverse; ++i)
         {
             graphlib::OpNode *user = dynamic_cast<graphlib::OpNode *>(users[i]);
-            auto [found_output_or_inverse, edge_info] = find_commutable_output_edge(graph, initial_op, commute_shape, user, op);
-            if (edge_info) { // Found an output
-                return std::make_pair<bool, std::unique_ptr<IOEdgeInfo>>((bool)found_output_or_inverse, std::move(edge_info));
-            } 
-            else if (not found_output_or_inverse) {
+            auto [found_output_or_inverse, edge_info] =
+                find_commutable_output_edge(graph, initial_op, commute_shape, user, op);
+            if (edge_info)
+            {  // Found an output
+                return std::make_pair<bool, std::unique_ptr<IOEdgeInfo>>(
+                    (bool)found_output_or_inverse, std::move(edge_info));
+            }
+            else if (not found_output_or_inverse)
+            {
                 // Did not find an output or inverse
                 all_forks_commute_to_output_or_inverse = false;
             }
-            
         }
 
         if ((!can_commute and op != initial_op) or (not all_forks_commute_to_output_or_inverse))
             break;
 
-
-        auto is_partial_datacopy_edge = [](graphlib::Edge e) {
-            return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-        };
+        auto is_partial_datacopy_edge = [](graphlib::Edge e)
+        { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
         std::vector<graphlib::Edge> partial_datacopy_edges = graph->user_edges(users[0], is_partial_datacopy_edge);
 
         graphlib::OutputNode *output = dynamic_cast<graphlib::OutputNode *>(users[0]);
-        // Usually there is no point in inserting an invers on top of an output if the initial op in question is 
+        // Usually there is no point in inserting an invers on top of an output if the initial op in question is
         // Adjacent to the output. Unless, this node forks.
         if (output and (op != initial_op or graph->user_data_edges(op).size() > 1) and partial_datacopy_edges.empty())
-        {   
-            // We do not want to add an inverse reshaep on the output unless it cancels out on all forks coming to that output
+        {
+            // We do not want to add an inverse reshaep on the output unless it cancels out on all forks coming to that
+            // output
             if (not all_producer_forks_have_equivalent(graph, initial_op, commute_shape, op))
                 break;
 
-            return std::make_pair<bool, std::unique_ptr<IOEdgeInfo>>(true, std::unique_ptr<IOEdgeInfo>(new IOEdgeInfo(graph->user_data_edges(op)[0], std::make_pair(commute_shape, clone_shape))));
+            return std::make_pair<bool, std::unique_ptr<IOEdgeInfo>>(
+                true,
+                std::unique_ptr<IOEdgeInfo>(
+                    new IOEdgeInfo(graph->user_data_edges(op)[0], std::make_pair(commute_shape, clone_shape))));
         }
 
         iter = dynamic_cast<graphlib::OpNode *>(users[0]);
@@ -283,7 +291,12 @@ std::pair<bool, std::unique_ptr<IOEdgeInfo>> find_commutable_output_edge(
     return std::make_pair<bool, std::unique_ptr<IOEdgeInfo>>(false, nullptr);
 }
 
-std::pair<std::vector<IOEdgeInfo>, bool> find_incommutable_downsrtream_tm(graphlib::Graph *graph, graphlib::OpNode *initial_op, graphlib::Shape commute_shape, graphlib::OpNode *from = nullptr, graphlib::OpNode *previous_op = nullptr)
+std::pair<std::vector<IOEdgeInfo>, bool> find_incommutable_downsrtream_tm(
+    graphlib::Graph *graph,
+    graphlib::OpNode *initial_op,
+    graphlib::Shape commute_shape,
+    graphlib::OpNode *from = nullptr,
+    graphlib::OpNode *previous_op = nullptr)
 {
     graphlib::OpNode *iter = from ? from : initial_op;
     auto clone_shape = initial_op->shape();
@@ -291,39 +304,47 @@ std::pair<std::vector<IOEdgeInfo>, bool> find_incommutable_downsrtream_tm(graphl
     std::vector<IOEdgeInfo> edges_to_insert;
     bool found_output = false;
     while (not found_output)
-    {   
+    {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(iter);
         TT_ASSERT(op);
-        
-        if (previous_op) {
+
+        if (previous_op)
+        {
             handle_shape_change_through_bcast(graph, initial_op, previous_op, op, &commute_shape, &clone_shape);
         }
 
         bool can_commute = can_commute_past_op(op, initial_op, graph, &commute_shape, &clone_shape);
 
-        bool found_incommutable_tm = initial_op->op_name() == op->op_name() and op->op_name() == "reshape" and not are_compatible_ops(graph, initial_op, op, &commute_shape);
+        bool found_incommutable_tm = initial_op->op_name() == op->op_name() and op->op_name() == "reshape" and
+                                     not are_compatible_ops(graph, initial_op, op, &commute_shape);
         bool found_inverse = are_compatible_ops(graph, initial_op, op, &commute_shape);
         if (op != initial_op and found_incommutable_tm)
-        {   
-            // We do not want to add an inverse reshaep on the output unless it cancels out on all forks coming to that output
+        {
+            // We do not want to add an inverse reshaep on the output unless it cancels out on all forks coming to that
+            // output
             if (not all_producer_forks_have_equivalent(graph, initial_op, commute_shape, previous_op))
                 break;
             bool already_contains_edge = false;
             auto edge_to_add = graph->operand_data_edges(op)[0];
-            for (auto &edge_info : edges_to_insert) {
-                if (edge_info.first.edge_creation_id == edge_to_add.edge_creation_id) {
+            for (auto &edge_info : edges_to_insert)
+            {
+                if (edge_info.first.edge_creation_id == edge_to_add.edge_creation_id)
+                {
                     already_contains_edge = true;
                     break;
                 }
             }
             if (not already_contains_edge)
-                edges_to_insert.push_back(IOEdgeInfo(graph->operand_data_edges(op)[0], std::make_pair(commute_shape, clone_shape)));
+                edges_to_insert.push_back(
+                    IOEdgeInfo(graph->operand_data_edges(op)[0], std::make_pair(commute_shape, clone_shape)));
             return {edges_to_insert, true};
         }
-        else if (op != initial_op and found_inverse) {
+        else if (op != initial_op and found_inverse)
+        {
             return {edges_to_insert, true};
         }
-        else if (op != initial_op and not can_commute and not found_inverse) {
+        else if (op != initial_op and not can_commute and not found_inverse)
+        {
             edges_to_insert.clear();
             return {edges_to_insert, false};
         }
@@ -332,16 +353,21 @@ std::pair<std::vector<IOEdgeInfo>, bool> find_incommutable_downsrtream_tm(graphl
         for (std::size_t i = 1; (i < users.size()); ++i)
         {
             graphlib::OpNode *user = dynamic_cast<graphlib::OpNode *>(users[i]);
-            auto [forked_output_edges, should_continue] = find_incommutable_downsrtream_tm(graph, initial_op, commute_shape, user, op);
-            if (not should_continue) {
+            auto [forked_output_edges, should_continue] =
+                find_incommutable_downsrtream_tm(graph, initial_op, commute_shape, user, op);
+            if (not should_continue)
+            {
                 edges_to_insert.clear();
                 return {edges_to_insert, false};
             }
-            for (auto &new_edge_info : forked_output_edges) {
+            for (auto &new_edge_info : forked_output_edges)
+            {
                 bool already_contains_edge = false;
                 auto edge_to_add = new_edge_info.first;
-                for (auto &edge_info : edges_to_insert) {
-                    if (edge_info.first.edge_creation_id == edge_to_add.edge_creation_id) {
+                for (auto &edge_info : edges_to_insert)
+                {
+                    if (edge_info.first.edge_creation_id == edge_to_add.edge_creation_id)
+                    {
                         already_contains_edge = true;
                         break;
                     }
@@ -359,12 +385,12 @@ std::pair<std::vector<IOEdgeInfo>, bool> find_incommutable_downsrtream_tm(graphl
     return {edges_to_insert, true};
 }
 
-bool insert_inverse_on_inputs(graphlib::Graph *graph) 
-{   
+bool insert_inverse_on_inputs(graphlib::Graph *graph)
+{
     bool attempt_update = true;
     bool updated_anything = false;
 
-    while (attempt_update) 
+    while (attempt_update)
     {
         attempt_update = false;
         for (auto *node : graphlib::topological_sort(*graph))
@@ -379,7 +405,8 @@ bool insert_inverse_on_inputs(graphlib::Graph *graph)
             if (op->op_name() != "reshape" and op->op_name() != "transpose")
                 continue;
 
-            auto input_edges = all_edges_to_input_nodes_commutable(graph, op, op->shape(), shape_of_only_operand(graph, op));
+            auto input_edges =
+                all_edges_to_input_nodes_commutable(graph, op, op->shape(), shape_of_only_operand(graph, op));
             if (input_edges.empty())
                 continue;
 
@@ -425,7 +452,8 @@ bool insert_inverse_on_outputs(graphlib::Graph *graph)
     return updated_anything;
 }
 
-bool insert_inverse_on_downstream_tms(graphlib::Graph *graph) {
+bool insert_inverse_on_downstream_tms(graphlib::Graph *graph)
+{
     bool updated_anything = false;
     for (auto *node : graphlib::topological_sort(*graph))
     {
@@ -445,13 +473,13 @@ bool insert_inverse_on_downstream_tms(graphlib::Graph *graph) {
         auto [output_edges, _] = find_incommutable_downsrtream_tm(graph, op, shape_of_only_operand(graph, op));
         if (output_edges.empty())
             continue;
-        
+
         add_inverse_to_tm_edges(graph, op, output_edges);
         updated_anything = true;
         break;
     }
-    
+
     return updated_anything;
 }
 
-} // namespace tt::passes
+}  // namespace tt::passes

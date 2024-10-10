@@ -5,7 +5,7 @@
 #   Test 4
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 from pickletools import pyunicode
@@ -15,7 +15,6 @@ import torch
 import forge
 
 from forge import ForgeModule, Tensor
-
 
 
 class ForgeReduceTest(ForgeModule):
@@ -28,16 +27,10 @@ class ForgeReduceTest(ForgeModule):
                       This name test uses to generate names of operation nodes in a graph/model.
     """
 
-    def __init__(
-        self, 
-        operator, 
-        opname,
-        shape,
-        dim,
-        keepdim):
+    def __init__(self, operator, opname, shape, dim, keepdim):
         super().__init__("Forge Test 4")
 
-        assert hasattr(shape, '__iter__'), "Shape must be iterable"
+        assert hasattr(shape, "__iter__"), "Shape must be iterable"
         assert dim < len(shape), "Dimension out of the shape"
         assert dim >= 0, "Dimension cant' be negative"
 
@@ -47,7 +40,7 @@ class ForgeReduceTest(ForgeModule):
         self.shape = shape
         self.dim = dim
         self.keepdim = keepdim
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param3 = forge.Parameter(*self.shape, requires_grad=True)
@@ -98,7 +91,7 @@ class ForgeReduceTest(ForgeModule):
             # Layer 8
             lenop = len(operands)
             operands = [add1, reds[3], add2, reds[6], add3, reds[9]]
-            preds= []
+            preds = []
             for i in range(len(operands)):
                 preds.append(self.operator(self.opname + str(i + 1 + lenop), operands[i], self.dim, self.keepdim))
             # Layer 9
@@ -110,7 +103,7 @@ class ForgeReduceTest(ForgeModule):
             mul9 = forge.op.Multiply("mul9", add1, reds[3])
             mul10 = forge.op.Multiply("mul10", add2, reds[6])
             mul11 = forge.op.Multiply("mul11", add3, reds[9])
-        
+
         # Layer 10
         mul12 = forge.op.Multiply("mul12", mul9, mul10)
 
@@ -120,4 +113,4 @@ class ForgeReduceTest(ForgeModule):
         return add4
 
     def values(self):
-        return [item.value() for item in self.inputs] 
+        return [item.value() for item in self.inputs]

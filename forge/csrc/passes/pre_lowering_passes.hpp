@@ -3,16 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-
 #include "graph_lib/defines.hpp"
-#include "graph_lib/node_types.hpp"
 #include "graph_lib/node.hpp"
+#include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "utils/logger.hpp"
 
-
-
-namespace tt {
+namespace tt
+{
 
 using Graph = graphlib::Graph;
 using Node = graphlib::Node;
@@ -30,9 +28,9 @@ void place_inter_subgraph_queues(graphlib::Graph *graph);
 
 void replace_with_broadcasted_const(
     Graph *graph,
-    graphlib::ConstantInputNode* constant,
+    graphlib::ConstantInputNode *constant,
     std::shared_ptr<void> broadcasted_tensor,
     graphlib::Shape target_shape,
-    graphlib::PyOpNode* original_tile_bcast);
+    graphlib::PyOpNode *original_tile_bcast);
 
-}
+}  // namespace tt

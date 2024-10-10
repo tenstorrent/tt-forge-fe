@@ -68,9 +68,7 @@ class RWConfig(PretrainedConfig):
         self.layer_norm_epsilon = layer_norm_epsilon
         self.initializer_range = initializer_range
         self.use_cache = use_cache
-        self.apply_residual_connection_post_layernorm = (
-            apply_residual_connection_post_layernorm
-        )
+        self.apply_residual_connection_post_layernorm = apply_residual_connection_post_layernorm
         self.hidden_dropout = hidden_dropout
         self.attention_dropout = attention_dropout
 
@@ -91,9 +89,7 @@ class RWConfig(PretrainedConfig):
         self.pad_token_id = pad_token_id
         self.ignore_pad_tokens = ignore_pad_tokens
 
-        super().__init__(
-            bos_token_id=bos_token_id, eos_token_id=eos_token_id, **kwargs
-        )
+        super().__init__(bos_token_id=bos_token_id, eos_token_id=eos_token_id, **kwargs)
 
     @property
     def head_dim(self):

@@ -5,7 +5,7 @@
 #   Test 0
 #   Grouped reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -31,7 +31,7 @@ class ForgeReduceTest(ForgeModule):
         self.opname = opname
         self.testname = "Operator " + opname + " Test 0"
         self.shape = shape
-        self.dim = dim 
+        self.dim = dim
         self.groups = groups
         self.keep_dims = keep_dims
         self.train_param = forge.Parameter(torch.randn(*self.shape), requires_grad=True)

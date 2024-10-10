@@ -30,7 +30,9 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
     compiler_cfg.default_df_override = forge._C.Float16_b
 
     model = Yolov3Tiny(num_classes=80, use_wrong_previous_anchors=True)
-    model.load_state_dict(torch.load('third_party/confidential_customer_models/model_2/pytorch/yolo_v3/weights/yolov3_tiny_coco_01.h5'))
+    model.load_state_dict(
+        torch.load("third_party/confidential_customer_models/model_2/pytorch/yolo_v3/weights/yolov3_tiny_coco_01.h5")
+    )
     model.eval()
 
     # STEP 2: Create Forge module from PyTorch model
@@ -38,7 +40,7 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
 
     sz = 512
     imgfile = "third_party/confidential_customer_models/model_2/pytorch/yolo_v3/person.jpg"
-    img_org = Image.open(imgfile).convert('RGB')
+    img_org = Image.open(imgfile).convert("RGB")
     img_resized = img_org.resize((sz, sz))
     img_tensor = utils.image2torch(img_resized)
 
@@ -47,7 +49,8 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
 
 def test_yolov3_tiny_holli_pytorch(test_device):
     model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch(
-        test_device, None,
+        test_device,
+        None,
     )
 
     verify_module(
@@ -59,9 +62,11 @@ def test_yolov3_tiny_holli_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
             pcc=0.97,
-        )
+        ),
     )
 
 
@@ -72,7 +77,12 @@ def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
     compiler_cfg.default_df_override = forge._C.Float16_b
     os.environ["FORGE_RIBBON2"] = "1"
     model = Yolov3(num_classes=80)
-    model.load_state_dict(torch.load('third_party/confidential_customer_models/model_2/pytorch/yolo_v3/weights/yolov3_coco_01.h5', map_location=torch.device('cpu')))
+    model.load_state_dict(
+        torch.load(
+            "third_party/confidential_customer_models/model_2/pytorch/yolo_v3/weights/yolov3_coco_01.h5",
+            map_location=torch.device("cpu"),
+        )
+    )
     model.eval()
 
     # STEP 2: Create Forge module from PyTorch model
@@ -80,7 +90,7 @@ def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
 
     sz = 512
     imgfile = "third_party/confidential_customer_models/model_2/pytorch/yolo_v3/person.jpg"
-    img_org = Image.open(imgfile).convert('RGB')
+    img_org = Image.open(imgfile).convert("RGB")
     img_resized = img_org.resize((sz, sz))
     img_tensor = utils.image2torch(img_resized)
 
@@ -94,7 +104,8 @@ def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
 
 def test_yolov3_holli_pytorch(test_device):
     model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch(
-        test_device, None,
+        test_device,
+        None,
     )
 
     if test_device.arch == BackendDevice.Wormhole_B0:
@@ -109,10 +120,13 @@ def test_yolov3_holli_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
             pcc=other["pcc"],
-        )
+        ),
     )
+
 
 def test_yolov3_holli_pytorch_1x1(test_device):
     if test_device.arch == BackendDevice.Grayskull:
@@ -122,7 +136,8 @@ def test_yolov3_holli_pytorch_1x1(test_device):
     os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
     os.environ["FORGE_RIBBON2"] = "1"
     model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch(
-        test_device, None,
+        test_device,
+        None,
     )
 
     verify_module(
@@ -135,6 +150,5 @@ def test_yolov3_holli_pytorch_1x1(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=other["pcc"],
-        )
+        ),
     )
-

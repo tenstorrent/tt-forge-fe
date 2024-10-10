@@ -9,9 +9,7 @@
 
 namespace tt::test
 {
-struct SplitGraphTest
-    : public ForgeGraphTest,
-      public testing::WithParamInterface<bool>
+struct SplitGraphTest : public ForgeGraphTest, public testing::WithParamInterface<bool>
 {
    protected:
     virtual std::vector<OpType*> create_graph() override
@@ -127,19 +125,17 @@ TEST_P(SplitGraphTest, test_backward)
 
     // Verify that all nodes from the backward graph have the same number
     // of operands as in the original graph (containing both forward and backward subgraphs).
-    auto is_bwd_op_node = [](graphlib::Node* node) { return node->is_backward() && node->node_type() == graphlib::NodeType::kPyOp; };
+    auto is_bwd_op_node = [](graphlib::Node* node)
+    { return node->is_backward() && node->node_type() == graphlib::NodeType::kPyOp; };
     for (auto node : graph->nodes(is_bwd_op_node))
     {
         EXPECT_TRUE(bwd_graph->has_node_with_name(node->name()));
         auto bwd_node = bwd_graph->get_node_by_name(node->name());
-        EXPECT_EQ(graph->data_operands(node).size(), bwd_graph->data_operands(bwd_node).size()) << "Node " << node->name() << " has different number of operands in the backward graph";
+        EXPECT_EQ(graph->data_operands(node).size(), bwd_graph->data_operands(bwd_node).size())
+            << "Node " << node->name() << " has different number of operands in the backward graph";
     }
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    SplitGraphTest,
-    SplitGraphTest,
-    ::testing::Values(true, false)
-);
+INSTANTIATE_TEST_SUITE_P(SplitGraphTest, SplitGraphTest, ::testing::Values(true, false));
 
 }  // namespace tt::test

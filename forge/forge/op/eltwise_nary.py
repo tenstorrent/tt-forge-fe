@@ -7,10 +7,8 @@ from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
 
-def Concatenate(
-        name: str, 
-        *operands: Tensor,
-        axis: int) -> Tensor:
+
+def Concatenate(name: str, *operands: Tensor, axis: int) -> Tensor:
 
     """
     Concatenate tensors along axis
@@ -33,14 +31,11 @@ def Concatenate(
         Forge tensor
     """
 
-    result: Tensor = op("concatenate", name, *operands, attrs=(axis,), dim = axis).get_tensor()
+    result: Tensor = op("concatenate", name, *operands, attrs=(axis,), dim=axis).get_tensor()
     return result
 
-def Where(
-        name: str,
-        condition: Tensor,
-        x: Tensor,
-        y: Tensor) -> Tensor:
+
+def Where(name: str, condition: Tensor, x: Tensor, y: Tensor) -> Tensor:
 
     """
     Returns elements selected from either x or y depending on condition
@@ -69,12 +64,7 @@ def Where(
     return result
 
 
-def IndexCopy(
-        name: str,
-        operandA: Tensor,
-        index: Tensor,
-        value: Tensor,
-        dim: int) -> Tensor:
+def IndexCopy(name: str, operandA: Tensor, index: Tensor, value: Tensor, dim: int) -> Tensor:
     """
     Copies the elements of value into operandA at index along dim
 
@@ -88,7 +78,7 @@ def IndexCopy(
 
     index: Tensor
         Index at which to write into operandA
-    
+
     value: Tensor
         Value to write out
 
@@ -102,13 +92,10 @@ def IndexCopy(
     """
     if dim < 0:
         dim += len(operandA.shape)
-    return op("index_copy", name, operandA, index, value, attrs=(dim, )).get_tensor()
+    return op("index_copy", name, operandA, index, value, attrs=(dim,)).get_tensor()
 
 
-def Stack(
-        name: str, 
-        *operands: Tensor,
-        axis: int) -> Tensor:
+def Stack(name: str, *operands: Tensor, axis: int) -> Tensor:
 
     """
     Stack tensors along new axis
@@ -136,10 +123,11 @@ def Stack(
 
 
 def Interleave(
-        name: str, 
-        *operands: Tensor,
-        axis: int,
-        stride: int,) -> Tensor:
+    name: str,
+    *operands: Tensor,
+    axis: int,
+    stride: int,
+) -> Tensor:
 
     """
     Interleave tensors along an axis with stride

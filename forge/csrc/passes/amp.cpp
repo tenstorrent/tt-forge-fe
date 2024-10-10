@@ -13,37 +13,36 @@
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
 #include "lower_to_forge/common.hpp"
+#include "nlohmann/json.hpp"
 #include "passes/dataformat.hpp"
 #include "reportify/paths.hpp"
 #include "reportify/to_json.hpp"
-#include "nlohmann/json.hpp"
 #include "utils/logger.hpp"
 
 using Graph = tt::graphlib::Graph;
 using Node = tt::graphlib::Node;
 
-namespace impl {
-
-template<typename Predicate>
-auto conjunction(Predicate &&predicate)
+namespace impl
 {
-     return [predicate](auto && arg) {
-         return predicate(std::forward<decltype(arg)>(arg));
-     };
+
+template <typename Predicate>
+auto conjunction(Predicate&& predicate)
+{
+    return [predicate](auto&& arg) { return predicate(std::forward<decltype(arg)>(arg)); };
 }
 
-template<typename Predicate, typename... RemainingPredicates> auto conjunction(
-    Predicate &&predicate, RemainingPredicates &&... remaining_predicates
-)
+template <typename Predicate, typename... RemainingPredicates>
+auto conjunction(Predicate&& predicate, RemainingPredicates&&... remaining_predicates)
 {
-     return [predicate, remaining_predicates...](auto && arg) -> bool {
-         return predicate(std::forward<decltype(arg)>(arg)) and 
-             conjunction(remaining_predicates...)(std::forward<decltype(arg)>(arg));
-     };
+    return [predicate, remaining_predicates...](auto&& arg) -> bool
+    {
+        return predicate(std::forward<decltype(arg)>(arg)) and
+               conjunction(remaining_predicates...)(std::forward<decltype(arg)>(arg));
+    };
 }
 
-template<typename UnaryPredicate>
-std::vector<Node*> get_queried_nodes(const Graph *graph, UnaryPredicate&& unary_predicate)
+template <typename UnaryPredicate>
+std::vector<Node*> get_queried_nodes(const Graph* graph, UnaryPredicate&& unary_predicate)
 {
     const std::vector<Node*>& ops = graph->nodes();
     std::vector<Node*> filtered_ops;
@@ -51,8 +50,7 @@ std::vector<Node*> get_queried_nodes(const Graph *graph, UnaryPredicate&& unary_
     return filtered_ops;
 }
 
-} // namespace impl
-
+}  // namespace impl
 
 namespace tt::passes
 {
@@ -60,34 +58,40 @@ namespace tt::passes
 using impl::conjunction;
 using impl::get_queried_nodes;
 
-bool RegexMatcher::has_matching_string(const std::string& regex_string, const std::string& candidate_string) {
+bool RegexMatcher::has_matching_string(const std::string& regex_string, const std::string& candidate_string)
+{
     // Immediately return true if regex_string is empty
-    if (regex_string.empty()) {
+    if (regex_string.empty())
+    {
         return true;
     }
     std::smatch base_match;
     // Check if the regex is already compiled in the cache
     auto it = regex_cache.find(regex_string);
-    if (it == regex_cache.end()) {
+    if (it == regex_cache.end())
+    {
         // Compile the regex and store it in the cache
         std::regex compiled_regex(regex_string);
         regex_cache[regex_string] = compiled_regex;
         return std::regex_match(candidate_string, base_match, compiled_regex);
-    } else {
+    }
+    else
+    {
         // Use the compiled regex from the cache
         return std::regex_match(candidate_string, base_match, it->second);
     }
 }
 
-
 template <class T>
-std::string get_string(T obj) {
-  std::ostringstream oss;
-  oss << obj;
-  return oss.str();
+std::string get_string(T obj)
+{
+    std::ostringstream oss;
+    oss << obj;
+    return oss.str();
 }
 
-void to_json(nlohmann::json& j, const AMPNodeProperties& p) {
+void to_json(nlohmann::json& j, const AMPNodeProperties& p)
+{
     j = nlohmann::json{
         {"op_type", p.op_type},
         {"epoch_type", p.epoch_type},
@@ -98,11 +102,11 @@ void to_json(nlohmann::json& j, const AMPNodeProperties& p) {
         {"name_regex_match", p.name_regex_match},
         {"input_df", p.input_df},
         {"is_gradient_op", p.is_gradient_op},
-        {"input_parameter_indices_to_optimize", p.input_parameter_indices_to_optimize}
-    };
+        {"input_parameter_indices_to_optimize", p.input_parameter_indices_to_optimize}};
 }
 
-void from_json(const nlohmann::json& j, AMPNodeProperties& p) {
+void from_json(const nlohmann::json& j, AMPNodeProperties& p)
+{
     j.at("op_type").get_to(p.op_type);
     j.at("epoch_type").get_to(p.epoch_type);
     j.at("output_df").get_to(p.output_df);
@@ -136,7 +140,7 @@ DataFormat get_reduced_precision_format(const DataFormat& from_df, std::uint32_t
 
 bool feeds_sparse_matmul(const graphlib::Graph* graph, const graphlib::Node* node)
 {
-    for (auto user: graph->data_users(node))
+    for (auto user : graph->data_users(node))
     {
         if (user->node_type() == graphlib::NodeType::kForgeOp)
         {
@@ -154,18 +158,28 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
 {
     if (properties.output_df.has_value())
     {
-
-        if (node->node_type() == graphlib::kInput and node->as<graphlib::InputNode>()->input_type() == graphlib::InputNodeType::Constant)
+        if (node->node_type() == graphlib::kInput and
+            node->as<graphlib::InputNode>()->input_type() == graphlib::InputNodeType::Constant)
         {
             if (not feeds_sparse_matmul(graph, node))
             {
-                log_debug(LogGraphCompiler, "\t{} setting output_df from {} to {}", node->name(), node->output_df(), properties.output_df.value());
+                log_debug(
+                    LogGraphCompiler,
+                    "\t{} setting output_df from {} to {}",
+                    node->name(),
+                    node->output_df(),
+                    properties.output_df.value());
                 node->set_output_df(properties.output_df.value());
             }
         }
         else
         {
-            log_debug(LogGraphCompiler, "\t{} setting output_df from {} to {}", node->name(), node->output_df(), properties.output_df.value());
+            log_debug(
+                LogGraphCompiler,
+                "\t{} setting output_df from {} to {}",
+                node->name(),
+                node->output_df(),
+                properties.output_df.value());
             node->set_output_df(properties.output_df.value());
         }
     }
@@ -174,17 +188,32 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
     {
         if (properties.intermediate_df.has_value())
         {
-            log_debug(LogGraphCompiler, "\t{} setting intermediate_df from {} to {}", node->name(), math_op->intermediate_df(), properties.intermediate_df.value());
+            log_debug(
+                LogGraphCompiler,
+                "\t{} setting intermediate_df from {} to {}",
+                node->name(),
+                math_op->intermediate_df(),
+                properties.intermediate_df.value());
             math_op->set_intermediate_df(properties.intermediate_df.value());
         }
         if (properties.accumulate_df.has_value())
         {
-            log_debug(LogGraphCompiler, "\t{} setting accumulate_df from {} to {}", node->name(), math_op->accumulate_df(), properties.accumulate_df.value());
+            log_debug(
+                LogGraphCompiler,
+                "\t{} setting accumulate_df from {} to {}",
+                node->name(),
+                math_op->accumulate_df(),
+                properties.accumulate_df.value());
             math_op->set_accumulate_df(properties.accumulate_df.value());
         }
         if (properties.math_fidelity.has_value())
         {
-            log_debug(LogGraphCompiler, "\t{} setting math_fidelity from {} to {}", node->name(), math_op->math_fidelity(), properties.math_fidelity.value());
+            log_debug(
+                LogGraphCompiler,
+                "\t{} setting math_fidelity from {} to {}",
+                node->name(),
+                math_op->math_fidelity(),
+                properties.math_fidelity.value());
             math_op->set_math_fidelity(properties.math_fidelity.value());
         }
         if (properties.input_df.has_value() and not math_op->is_sparse_matmul())
@@ -195,11 +224,18 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
             {
                 for (Node* data_operand : data_operands)
                 {
-                    log_debug(LogGraphCompiler, "\t{}: for input operand {} setting output_df from {} to {}.", node->name(), data_operand->name(), data_operand->output_df(), properties.output_df.value());
+                    log_debug(
+                        LogGraphCompiler,
+                        "\t{}: for input operand {} setting output_df from {} to {}.",
+                        node->name(),
+                        data_operand->name(),
+                        data_operand->output_df(),
+                        properties.output_df.value());
                     data_operand->set_output_df(*input_data_format);
                 }
             }
-            else if (const InputIndexToConfig* input_df_map = std::get_if<InputIndexToConfig>(&input_df_config); input_df_map)
+            else if (const InputIndexToConfig* input_df_map = std::get_if<InputIndexToConfig>(&input_df_config);
+                     input_df_map)
             {
                 for (const auto& [input_index, data_format_and_target_activations] : *input_df_map)
                 {
@@ -208,7 +244,7 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
                     {
                         Node* operand = data_operands[input_index];
                         if (auto input_operand = dynamic_cast<graphlib::InputNode*>(operand);
-                            target_activations or input_operand )
+                            target_activations or input_operand)
                         {
                             log_debug(
                                 LogGraphCompiler,
@@ -241,7 +277,8 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
                     if (auto operand = dynamic_cast<graphlib::InputNode*>(data_operands[input_index]);
                         operand and operand->is_parameter())
                     {
-                        DataFormat lowered_precision = get_reduced_precision_format(reference_operand->output_df(), target_mantissa_bits);
+                        DataFormat lowered_precision =
+                            get_reduced_precision_format(reference_operand->output_df(), target_mantissa_bits);
                         log_debug(
                             LogGraphCompiler,
                             "\t Operand Index: {} is {} and setting from {} to {} ",
@@ -257,7 +294,7 @@ void configure_node_from_properties(const Graph* graph, Node* node, const AMPNod
     }
 }
 
-void apply_optimization(const Graph *graph, const std::vector<Node*>& nodes, const AMPNodeProperties& properties)
+void apply_optimization(const Graph* graph, const std::vector<Node*>& nodes, const AMPNodeProperties& properties)
 {
     for (Node* node : nodes)
     {
@@ -266,7 +303,7 @@ void apply_optimization(const Graph *graph, const std::vector<Node*>& nodes, con
     }
 }
 
-std::unordered_map<std::string, AMPNodeProperties> get_node_to_amp_properties(Graph *graph)
+std::unordered_map<std::string, AMPNodeProperties> get_node_to_amp_properties(Graph* graph)
 {
     std::unordered_map<std::string, AMPNodeProperties> node_to_amp_properties;
 
@@ -274,7 +311,7 @@ std::unordered_map<std::string, AMPNodeProperties> get_node_to_amp_properties(Gr
     {
         if (node->node_type() == graphlib::NodeType::kForgeOp)
         {
-            graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
+            graphlib::ForgeOpNode* op = node->as<graphlib::ForgeOpNode>();
             node_to_amp_properties[node->name()] = AMPNodeProperties(
                 op->op_name(),
                 node->get_epoch_type(),
@@ -284,24 +321,20 @@ std::unordered_map<std::string, AMPNodeProperties> get_node_to_amp_properties(Gr
                 op->math_fidelity(),
                 std::nullopt,
                 std::nullopt,
-                op->is_gradient_op()
-            );
+                op->is_gradient_op());
         }
-        else if (node->node_type() == graphlib::NodeType::kInput or
-                 node->node_type() == graphlib::NodeType::kOutput or
-                 node->node_type() == graphlib::NodeType::kQueue)
+        else if (
+            node->node_type() == graphlib::NodeType::kInput or node->node_type() == graphlib::NodeType::kOutput or
+            node->node_type() == graphlib::NodeType::kQueue)
         {
-            node_to_amp_properties[node->name()] = AMPNodeProperties(
-                "queue",
-                node->get_epoch_type(),
-                node->output_df()
-            );
+            node_to_amp_properties[node->name()] =
+                AMPNodeProperties("queue", node->get_epoch_type(), node->output_df());
         }
     }
     return node_to_amp_properties;
 }
 
-nlohmann::json get_node_to_amp_properties_json(Graph *graph)
+nlohmann::json get_node_to_amp_properties_json(Graph* graph)
 {
     nlohmann::json output_json;
     auto properties = get_node_to_amp_properties(graph);
@@ -317,7 +350,7 @@ nlohmann::json get_node_to_amp_properties_json(Graph *graph)
     return output_json;
 }
 
-void dump_mixed_precision_json_to_file(graphlib::Graph *graph, std::optional<std::string> filepath)
+void dump_mixed_precision_json_to_file(graphlib::Graph* graph, std::optional<std::string> filepath)
 {
     if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
         return;
@@ -345,10 +378,9 @@ void dump_mixed_precision_json_to_file(graphlib::Graph *graph, std::optional<std
     nlohmann::json content = get_node_to_amp_properties_json(graph);
     out << content.dump(4);
     out.close();
-
 }
 
-void apply_O0_optimization(const Graph *graph)
+void apply_O0_optimization(const Graph* graph)
 {
     // Current default for O0 won't explicitly configure any ops.
     (void)graph;
@@ -368,7 +400,8 @@ std::optional<std::string> original_op_type(const graphlib::Node* node)
     return {};
 }
 
-bool is_matched_op(const AMPNodeProperties &amp_properties, RegexMatcher &regex_matcher, const Node* node) {
+bool is_matched_op(const AMPNodeProperties& amp_properties, RegexMatcher& regex_matcher, const Node* node)
+{
     bool is_match = true;
     if (amp_properties.name_regex_match.has_value())
     {
@@ -391,10 +424,9 @@ bool is_matched_op(const AMPNodeProperties &amp_properties, RegexMatcher &regex_
         const graphlib::OpNode* op_node = dynamic_cast<const graphlib::OpNode*>(node);
         if (op_node != nullptr)
         {
-            is_match &= (
-                amp_properties.op_type.value() == op_node->op_name() or
-                amp_properties.op_type.value() == original_op_type(node)
-            );
+            is_match &=
+                (amp_properties.op_type.value() == op_node->op_name() or
+                 amp_properties.op_type.value() == original_op_type(node));
         }
         else if (auto input_node = dynamic_cast<const graphlib::InputNode*>(node); input_node != nullptr)
         {
@@ -415,13 +447,11 @@ void apply_configuration(const Graph* graph, const std::vector<AMPNodeProperties
     {
         auto is_matched_op_ = std::bind(is_matched_op, amp_properties, regex_matcher, std::placeholders::_1);
 
-        apply_optimization(
-            graph, get_queried_nodes(graph, is_matched_op_), amp_properties 
-        );
+        apply_optimization(graph, get_queried_nodes(graph, is_matched_op_), amp_properties);
     }
 }
 
-// TODO(jchu): clean this up, 
+// TODO(jchu): clean this up,
 struct AMPNodePropertiesInternal
 {
     std::optional<std::string> op_type = std::nullopt;
@@ -433,7 +463,8 @@ struct AMPNodePropertiesInternal
     std::optional<std::string> name_regex_match = std::nullopt;
     std::optional<InputDfConfig> input_df = std::nullopt;
     std::optional<bool> is_gradient_op = std::nullopt;
-    std::optional<std::vector<std::pair<std::uint32_t, std::uint32_t>>> input_parameter_indices_to_optimize = std::nullopt;
+    std::optional<std::vector<std::pair<std::uint32_t, std::uint32_t>>> input_parameter_indices_to_optimize =
+        std::nullopt;
 
     AMPNodeProperties create() const
     {
@@ -449,10 +480,9 @@ struct AMPNodePropertiesInternal
             this->is_gradient_op,
             this->input_parameter_indices_to_optimize);
     }
-
 };
 
-void apply_mixed_b_optimization(const Graph *graph)
+void apply_mixed_b_optimization(const Graph* graph)
 {
     log_debug(LogGraphCompiler, "Running with MixedB Precision");
 
@@ -475,90 +505,68 @@ void apply_mixed_b_optimization(const Graph *graph)
         .intermediate_df = DataFormat::Bfp8_b,
         .accumulate_df = DataFormat::Float16_b,
         .math_fidelity = MathFidelity::HiFi2,
-        .input_df = InputIndexToConfig{
-            {1, {DataFormat::Bfp8_b, false}},
-            {2, {DataFormat::Bfp8_b, false}}
-        }
-    };
+        .input_df = InputIndexToConfig{{1, {DataFormat::Bfp8_b, false}}, {2, {DataFormat::Bfp8_b, false}}}};
 
     std::vector<AMPNodeProperties> default_opt_configuration = {
         softmax_config.create(),
         layernorm_config.create(),
         matmul_config.create(),
     };
-    
+
     apply_configuration(graph, default_opt_configuration);
 }
 
-void apply_mixed_a_optimization(const Graph *graph)
+void apply_mixed_a_optimization(const Graph* graph)
 {
     log_debug(LogGraphCompiler, "Running with MixedA Precision");
 
     auto default_matmul_config = AMPNodePropertiesInternal{
-        .op_type="matmul",
-        .output_df=DataFormat::Bfp8,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16,
+        .op_type = "matmul",
+        .output_df = DataFormat::Bfp8,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16,
         .input_df = InputIndexToConfig{
-            {0, {DataFormat::Bfp8, true}},
-            {1, {DataFormat::Bfp8, true}},
-            {2, {DataFormat::Bfp8, true}}
-        }
-    };
-    auto broadcast_matmul_config  = AMPNodePropertiesInternal{
-        .op_type="matmul",
-        .output_df=DataFormat::Float16,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16,
-        .name_regex_match=".*brcst.*",
+            {0, {DataFormat::Bfp8, true}}, {1, {DataFormat::Bfp8, true}}, {2, {DataFormat::Bfp8, true}}}};
+    auto broadcast_matmul_config = AMPNodePropertiesInternal{
+        .op_type = "matmul",
+        .output_df = DataFormat::Float16,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16,
+        .name_regex_match = ".*brcst.*",
         .input_df = InputIndexToConfig{
-            {0, {DataFormat::Float16, true}},
-            {1, {DataFormat::Float16, true}},
-            {2, {DataFormat::Float16, true}}
-        }
-    };
+            {0, {DataFormat::Float16, true}}, {1, {DataFormat::Float16, true}}, {2, {DataFormat::Float16, true}}}};
     auto softmax_matmul_config = AMPNodePropertiesInternal{
-        .op_type="matmul",
-        .output_df=DataFormat::Float16,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16,
-        .name_regex_match=".*softmax.*",
+        .op_type = "matmul",
+        .output_df = DataFormat::Float16,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16,
+        .name_regex_match = ".*softmax.*",
     };
     auto layernorm_matmul_config = AMPNodePropertiesInternal{
-        .op_type="matmul",
-        .output_df=DataFormat::Float16,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16,
-        .name_regex_match=".*layernorm.*"
-    };
+        .op_type = "matmul",
+        .output_df = DataFormat::Float16,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16,
+        .name_regex_match = ".*layernorm.*"};
     auto softmax_multiply_config = AMPNodePropertiesInternal{
-        .op_type="multiply",
-        .output_df=DataFormat::Float16,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16,
-        .name_regex_match=".*softmax.*"
-    };
-    auto gelu_config = AMPNodePropertiesInternal{
-        .op_type="gelu",
-        .intermediate_df=DataFormat::Bfp8
-    };
+        .op_type = "multiply",
+        .output_df = DataFormat::Float16,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16,
+        .name_regex_match = ".*softmax.*"};
+    auto gelu_config = AMPNodePropertiesInternal{.op_type = "gelu", .intermediate_df = DataFormat::Bfp8};
     auto fused_op_config = AMPNodePropertiesInternal{
-        .op_type="fused_op",
-        .output_df=DataFormat::Float16,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16,
+        .op_type = "fused_op",
+        .output_df = DataFormat::Float16,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16,
         .input_df = InputIndexToConfig{
-            {0, {DataFormat::Float16, true}},
-            {1, {DataFormat::Float16, true}},
-            {2, {DataFormat::Float16, true}}
-        }
-    };
+            {0, {DataFormat::Float16, true}}, {1, {DataFormat::Float16, true}}, {2, {DataFormat::Float16, true}}}};
     auto buffer_config = AMPNodePropertiesInternal{
-        .op_type="buffer",
-        .output_df=DataFormat::Float16,
-        .intermediate_df=DataFormat::Float16,
-        .accumulate_df=DataFormat::Float16
-    };
+        .op_type = "buffer",
+        .output_df = DataFormat::Float16,
+        .intermediate_df = DataFormat::Float16,
+        .accumulate_df = DataFormat::Float16};
 
     std::vector<AMPNodeProperties> default_opt_configuration = {
         default_matmul_config.create(),
@@ -570,46 +578,44 @@ void apply_mixed_a_optimization(const Graph *graph)
         fused_op_config.create(),
         buffer_config.create(),
     };
-    
+
     apply_configuration(graph, default_opt_configuration);
 }
 
-enum class MixedPrecisionSetting {
+enum class MixedPrecisionSetting
+{
     None = 0,
     Mixed_B_Formats = 1,
     Mixed_A_Formats = 2,
 };
 using OptToFunctionMapping = std::unordered_map<MixedPrecisionSetting, std::function<void(Graph*)>>;
 const OptToFunctionMapping opt_dispatch_table = {
-    {MixedPrecisionSetting::None, apply_O0_optimization}, // mixed a-formats; bert-large model
-    {MixedPrecisionSetting::Mixed_A_Formats, apply_mixed_a_optimization}, // mixed a-formats; bert-large model
-    {MixedPrecisionSetting::Mixed_B_Formats, apply_mixed_b_optimization}, // mixed b-formats; nlp models
+    {MixedPrecisionSetting::None, apply_O0_optimization},                  // mixed a-formats; bert-large model
+    {MixedPrecisionSetting::Mixed_A_Formats, apply_mixed_a_optimization},  // mixed a-formats; bert-large model
+    {MixedPrecisionSetting::Mixed_B_Formats, apply_mixed_b_optimization},  // mixed b-formats; nlp models
 };
 
-void const_tag_propagation(Graph *graph)
+void const_tag_propagation(Graph* graph)
 {
-    auto is_constant = [](const Node* node) -> bool {
-        return (node->node_type() == graphlib::NodeType::kInput) and
-            (node->as<graphlib::InputNode>()->is_constant());
-    };
+    auto is_constant = [](const Node* node) -> bool
+    { return (node->node_type() == graphlib::NodeType::kInput) and (node->as<graphlib::InputNode>()->is_constant()); };
     for (auto input_node : get_queried_nodes(graph, is_constant))
     {
         auto data_users = graph->data_users(input_node);
         auto ref_node = data_users.at(0);
 
         // user the user node to transfer the tags
-        input_node->as<graphlib::TaggedNode>()->add_tags(
-            ref_node->as<graphlib::TaggedNode>()->get_tags());
+        input_node->as<graphlib::TaggedNode>()->add_tags(ref_node->as<graphlib::TaggedNode>()->get_tags());
     }
 }
 
 static bool is_valid_opt_level(const int opt_level)
 {
-    return opt_level >= static_cast<int>(MixedPrecisionSetting::None) and opt_level <= static_cast<int>(MixedPrecisionSetting::Mixed_A_Formats);
+    return opt_level >= static_cast<int>(MixedPrecisionSetting::None) and
+           opt_level <= static_cast<int>(MixedPrecisionSetting::Mixed_A_Formats);
 }
 
-MixedPrecisionSetting get_mixed_precision_settings(
-    const std::optional<DataFormat> default_df_override, int opt_level)
+MixedPrecisionSetting get_mixed_precision_settings(const std::optional<DataFormat> default_df_override, int opt_level)
 {
     if (not is_valid_opt_level(opt_level))
     {
@@ -629,8 +635,8 @@ MixedPrecisionSetting get_mixed_precision_settings(
 }
 
 void run_automatic_mixed_precision(
-    Graph *graph,
-    const DeviceConfig &device_config,
+    Graph* graph,
+    const DeviceConfig& device_config,
     const std::optional<DataFormat> default_df_override,
     const int opt_level,
     const std::vector<AMPNodeProperties>& user_properties)
@@ -648,7 +654,6 @@ void run_automatic_mixed_precision(
     const_tag_propagation(graph);
 
     dump_mixed_precision_json_to_file(graph);
-
 }
 
 }  // namespace tt::passes

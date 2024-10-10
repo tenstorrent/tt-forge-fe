@@ -6,11 +6,14 @@
 #include <string>
 #include <vector>
 
-namespace tt::utils {
+namespace tt::utils
+{
 
-class PrettyTable {
+class PrettyTable
+{
    public:
-    enum class Format {
+    enum class Format
+    {
         Pretty,
         CSV,
     };

@@ -82,12 +82,9 @@ def net2reportify(netlist_name, netlist, extract_graphs=[], verbose=False):
         reportify_graph["nodes"][node_name]["name"] = node_name
         reportify_graph["nodes"][node_name]["cache"] = {"shape": node_shape(node)}
         reportify_graph["nodes"][node_name]["input_nodes"] = node["inputs"]
-        reportify_graph["nodes"][node_name]["input_node_to_edge_type"] = {
-            k: "Data" for k in node["inputs"]
-        }
+        reportify_graph["nodes"][node_name]["input_node_to_edge_type"] = {k: "Data" for k in node["inputs"]}
         reportify_graph["nodes"][node_name]["incoming_edge_port_info"] = [
-            f"Data: {n} (port_{i}) ublock_order({get_ublock_order(i)})"
-            for i, n in enumerate(node["inputs"])
+            f"Data: {n} (port_{i}) ublock_order({get_ublock_order(i)})" for i, n in enumerate(node["inputs"])
         ]
         reportify_graph["nodes"][node_name]["output_nodes"] = []
         emit_queues(reportify_graph, node_name, node)
@@ -154,9 +151,7 @@ def net2placement(
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Generate reportify graph from netlist"
-    )
+    parser = argparse.ArgumentParser(description="Generate reportify graph from netlist")
     parser.add_argument("netlist_path", help="path to netlist yaml")
     parser.add_argument(
         "--graphs",

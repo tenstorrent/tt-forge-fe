@@ -27,8 +27,8 @@ namespace tt
 constexpr inline c10::DeviceType TT = c10::DeviceType::PrivateUse1;
 constexpr inline int kTileDim = 32;
 
-
-struct TTMetaData : public c10::BackendMeta {
+struct TTMetaData : public c10::BackendMeta
+{
     torch::IntArrayRef original_shape;
     bool runtime_transformed = false;
     bool created_on_device = false;
@@ -43,15 +43,11 @@ struct TTForgeTensorDesc
     std::optional<torch::Tensor> constant;
 
     TTForgeTensorDesc(
-        std::string name,
-        std::vector<std::int64_t> shape,
-        int ptr,
-        std::optional<torch::Tensor> constant) :
+        std::string name, std::vector<std::int64_t> shape, int ptr, std::optional<torch::Tensor> constant) :
         name(name), shape(shape), ptr(ptr), constant(constant)
     {
     }
 };
-
 
 using Program = int;
 
@@ -67,15 +63,11 @@ struct Workload
 
     Workload(
         std::shared_ptr<void> flatbuffer,
-        std::map<int, std::vector<TTForgeTensorDesc>> const& inputs, // a vector per program
+        std::map<int, std::vector<TTForgeTensorDesc>> const& inputs,  // a vector per program
         std::vector<TTForgeTensorDesc> const& constants,
         std::vector<TTForgeTensorDesc> const& parameters,
         std::map<int, std::vector<TTForgeTensorDesc>> const& outputs) :
-        flatbuffer(flatbuffer),
-        inputs(inputs),
-        constants(constants),
-        parameters(parameters),
-        outputs(outputs)
+        flatbuffer(flatbuffer), inputs(inputs), constants(constants), parameters(parameters), outputs(outputs)
     {
     }
 };
@@ -116,7 +108,8 @@ std::string get_device_cluster_yaml(TTDevice const&);
 std::string to_string(TTDevice const& d);
 torch::Device torch_device(TTDevice const& d);
 
-torch::Tensor eval_runtime_transform(const torch::Tensor& tensor, std::string transform, std::vector<int> &tile_bcast_dims);
+torch::Tensor eval_runtime_transform(
+    const torch::Tensor& tensor, std::string transform, std::vector<int>& tile_bcast_dims);
 bool is_created_on_device(const torch::Tensor& tensor);
 int unique_id(const torch::Tensor& tensor);
 torch::Tensor narrow_to_pytorch(const torch::Tensor& tensor, torch::IntArrayRef original_shape);

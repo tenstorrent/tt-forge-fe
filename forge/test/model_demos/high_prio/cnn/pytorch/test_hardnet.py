@@ -31,9 +31,7 @@ def test_hardnet_pytorch(test_device, variant):
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
     # load the weights downloaded from https://github.com/PingoLH/Pytorch-HarDNet
-    checkpoint_path = (
-        f"third_party/confidential_customer_models/generated/files/{variant}.pth"
-    )
+    checkpoint_path = f"third_party/confidential_customer_models/generated/files/{variant}.pth"
 
     # Load weights from the checkpoint file and maps tensors to CPU, ensuring compatibility even without a GPU.
     state_dict = torch.load(checkpoint_path, map_location=torch.device("cpu"))
@@ -70,12 +68,7 @@ def test_hardnet_pytorch(test_device, variant):
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
 
-    pcc = (
-        0.99
-        if variant in ["hardnet68ds", "hardnet39ds"]
-        and test_device.arch == BackendDevice.Wormhole_B0
-        else 0.97
-    )
+    pcc = 0.99 if variant in ["hardnet68ds", "hardnet39ds"] and test_device.arch == BackendDevice.Wormhole_B0 else 0.97
 
     verify_module(
         tt_model,

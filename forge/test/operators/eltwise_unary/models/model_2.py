@@ -5,7 +5,7 @@
 #   Test 2
 #   Unary element-wise operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -35,7 +35,7 @@ class ForgeElementWiseUnaryTest(ForgeModule):
         self.testname = "Operator " + opname + " Test 2"
         self.shape = shape
         self.kwargs = kwargs
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param3 = forge.Parameter(*self.shape, requires_grad=True)

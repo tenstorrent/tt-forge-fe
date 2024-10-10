@@ -21,10 +21,7 @@ def test_xception_timm(variant, test_device):
         os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
         os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-    (
-        model,
-        inputs,
-    ) = generate_model_xception_imgcls_timm(
+    (model, inputs,) = generate_model_xception_imgcls_timm(
         test_device,
         variant,
     )

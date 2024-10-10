@@ -17,11 +17,9 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 def test_squeezebert_sequence_classification_pytorch(test_device):
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
-    model = download_model(AutoModelForSequenceClassification.from_pretrained,
-        "squeezebert/squeezebert-mnli"
-    )
+    model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Example from multi-nli validation set
@@ -45,6 +43,8 @@ def test_squeezebert_sequence_classification_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )

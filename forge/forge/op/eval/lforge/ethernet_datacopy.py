@@ -39,9 +39,7 @@ class EthernetDatacopy(ForgeEltwiseUnaryOp):
         elif tile_height < TILE_DIM:
             shape[-2] = tile_height
         else:
-            raise RuntimeError(
-                f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}"
-            )
+            raise RuntimeError(f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}")
 
         return shape, []
 

@@ -5,7 +5,7 @@
 #   Test 8
 #   Unary element-wise operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch

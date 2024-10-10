@@ -13,14 +13,25 @@ from transformers.models.auto.tokenization_auto import AutoTokenizer
 from forge.forgeglobal import align_up_tile
 from forge.tensor import remove_microbatch
 
+
 class NLPPipelineWrapper(torch.nn.Module):
     """
     Wrapper for transformers nlp pipeline. Provide to pipeline(...) call as model.
     """
-    def __init__(self, model, tokenizer, name="pb_model", use_cache=None, fp32_fallback=forge.DataFormat.Float16_b, forward_fn=None, max_length=None):
+
+    def __init__(
+        self,
+        model,
+        tokenizer,
+        name="pb_model",
+        use_cache=None,
+        fp32_fallback=forge.DataFormat.Float16_b,
+        forward_fn=None,
+        max_length=None,
+    ):
         super().__init__()
 
-        #forge.config._get_global_compiler_config().verify_forge_codegen_vs_framework = False
+        # forge.config._get_global_compiler_config().verify_forge_codegen_vs_framework = False
         self.original_fwd = model.forward
         self.forward_args = list(inspect.signature(model.forward).parameters.keys())
         self.forward_args_dict = list(inspect.signature(model.forward).parameters.items())
@@ -39,17 +50,18 @@ class NLPPipelineWrapper(torch.nn.Module):
         self.idx = 0
         if max_length is None:
             # Ideally this should be determined by model's largest seqlen, but
-            # we will need padding for prime number of tiles. 
+            # we will need padding for prime number of tiles.
             max_length = 256
 
         self.max_length = max_length
+
     def tt_forward(self, *inputs, **kwargs):
         logger.info("Starting TT forward")
 
         for k in self.forward_args:
             if (k in kwargs) and kwargs[k] is not None and not isinstance(kwargs[k], bool):
                 self.tensor_input_names.append(k)
-                if k == 'encoder_outputs':
+                if k == "encoder_outputs":
                     inputs = (*inputs, kwargs[k].last_hidden_state)
                 else:
                     inputs = (*inputs, kwargs[k])
@@ -62,10 +74,9 @@ class NLPPipelineWrapper(torch.nn.Module):
             self.ttdevice.push_to_inputs(inputs)
             output_q = forge.run_inference(_sequential=True)
             logits = output_q.get()[0].value()
-            logits = logits[:, :self.orig_len, :]
+            logits = logits[:, : self.orig_len, :]
 
         return CausalLMOutputWithCrossAttentions(logits=logits)
-
 
     # This compilation forward is only used for torchscript tracing.
     # It is a simple pass-through while grouping the inputs into a dictionary,
@@ -78,25 +89,28 @@ class NLPPipelineWrapper(torch.nn.Module):
 
         # We need to feed dictionary input because some arguments are left as None,
         # If we feed them as a list, there will be a mismatch.
-        if ("encoder_outputs" in self.ordered_kwargs):
-            self.ordered_kwargs["encoder_outputs"] = (self.ordered_kwargs["encoder_outputs"], )
+        if "encoder_outputs" in self.ordered_kwargs:
+            self.ordered_kwargs["encoder_outputs"] = (self.ordered_kwargs["encoder_outputs"],)
 
         if "return_dict" in self.forward_args:
-            self.ordered_kwargs["return_dict"] = False # we don't want dictionaries when tracing
+            self.ordered_kwargs["return_dict"] = False  # we don't want dictionaries when tracing
 
         if "use_cache" in self.forward_args:
             self.ordered_kwargs["use_cache"] = self.use_cache
 
         if len(self.generated_input_names):
             for k in self.generated_input_names:
-                self.ordered_kwargs[k] = remove_microbatch([self.ordered_kwargs[k],])[0].value()
+                self.ordered_kwargs[k] = remove_microbatch(
+                    [
+                        self.ordered_kwargs[k],
+                    ]
+                )[0].value()
 
         return self.original_fwd(**self.ordered_kwargs)
 
-
     def first_forward(self, *inputs, **kwargs):
         if "return_dict" in kwargs:
-            self.ordered_kwargs["return_dict"] = False # we don't want dictionaries when tracing
+            self.ordered_kwargs["return_dict"] = False  # we don't want dictionaries when tracing
 
         if self.forward_fn is not None or self.ttdevice._compiled:
             self.model.forward = self.original_fwd
@@ -116,18 +130,18 @@ class NLPPipelineWrapper(torch.nn.Module):
 
         # Prepare inputs
         orig_len = len(input_ids[0])
-        
+
         total_length = self.max_length
 
         pad_len = total_length - orig_len
 
-        if "cache_position" in kwargs:            
+        if "cache_position" in kwargs:
             # Cache positions indicate the positions of input sequence tokens within the sequence. They're utilized to
             # update cache positions and to deduce the complete sequence length.
             #
             # However, cache_position is presumed to be unpadded (for accurate sequence length calculations). Consequently,
-            # it poses issues during compilation, particularly as we assume tile-aligned dimensions at some point. Therefore, 
-            # cache_position is expected to be arranged from (1, orig_len) and serves as a constant for the model if not defined 
+            # it poses issues during compilation, particularly as we assume tile-aligned dimensions at some point. Therefore,
+            # cache_position is expected to be arranged from (1, orig_len) and serves as a constant for the model if not defined
             # as input. Hence, we're removing it from the kwargs and relying on the model's default.
             #
             # For more details, refer to the following code snippet:
@@ -136,8 +150,10 @@ class NLPPipelineWrapper(torch.nn.Module):
             #
             # This displays that cache_position is generated internally during pipeline setup, and is not expected to be
             # provided as input for the model.
-            
-            logger.warning("Removing cache_position from kwargs. It is not expected to be provided as input for the model.")
+
+            logger.warning(
+                "Removing cache_position from kwargs. It is not expected to be provided as input for the model."
+            )
             kwargs.pop("cache_position", None)
 
         input_ids = torch.nn.functional.pad(input_ids, (0, pad_len), value=self.pad_token_id)
@@ -152,15 +168,22 @@ class NLPPipelineWrapper(torch.nn.Module):
 
         if "encoder_outputs" in kwargs:
             encoder_outputs = kwargs["encoder_outputs"]
-            encoder_pad_len = align_up_tile(encoder_outputs["last_hidden_state"].shape[-2]) - encoder_outputs["last_hidden_state"].shape[-2]
-            encoder_outputs["last_hidden_state"] = torch.nn.functional.pad(encoder_outputs["last_hidden_state"], (0, 0, 0, encoder_pad_len, 0, 0))
+            encoder_pad_len = (
+                align_up_tile(encoder_outputs["last_hidden_state"].shape[-2])
+                - encoder_outputs["last_hidden_state"].shape[-2]
+            )
+            encoder_outputs["last_hidden_state"] = torch.nn.functional.pad(
+                encoder_outputs["last_hidden_state"], (0, 0, 0, encoder_pad_len, 0, 0)
+            )
 
             if "decoder_input_ids" in kwargs:
                 decoder_input_ids = kwargs["decoder_input_ids"]
                 orig_len = kwargs["decoder_input_ids"].shape[-1]
                 decoder_input_ids_pad_len = total_length - orig_len
                 decoder_input_ids = kwargs["decoder_input_ids"]
-                decoder_input_ids = torch.nn.functional.pad(decoder_input_ids, (0, decoder_input_ids_pad_len, 0, 0), value=self.pad_token_id)
+                decoder_input_ids = torch.nn.functional.pad(
+                    decoder_input_ids, (0, decoder_input_ids_pad_len, 0, 0), value=self.pad_token_id
+                )
                 decoder_attention_mask = torch.ones_like(decoder_input_ids)
                 decoder_attention_mask[:, -decoder_input_ids_pad_len:] = 0
                 ordered_kwargs["decoder_input_ids"] = decoder_input_ids.int()
@@ -170,7 +193,9 @@ class NLPPipelineWrapper(torch.nn.Module):
                 decoder_input_ids = inputs[0]
                 org_len = decoder_input_ids.shape[-1]
                 decoder_input_ids_pad_len = total_length - orig_len
-                decoder_input_ids = torch.nn.functional.pad(decoder_input_ids, (0, decoder_input_ids_pad_len, 0, 0), value=self.pad_token_id)
+                decoder_input_ids = torch.nn.functional.pad(
+                    decoder_input_ids, (0, decoder_input_ids_pad_len, 0, 0), value=self.pad_token_id
+                )
                 ordered_kwargs["decoder_input_ids"] = decoder_input_ids.int()
 
             if "attention_mask" in ordered_kwargs:
@@ -178,14 +203,17 @@ class NLPPipelineWrapper(torch.nn.Module):
 
             ordered_kwargs["encoder_outputs"] = encoder_outputs
 
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             if k not in ordered_kwargs:
                 ordered_kwargs[k] = v
 
         for fwd_key, fwd_val in self.forward_args_dict:
             # checking whether there is any required args in model forward function
             # if true updating ordered_kwargs with value set to None
-            if not (fwd_val.kind in [inspect.Parameter.VAR_POSITIONAL,inspect.Parameter.VAR_KEYWORD] or fwd_val.default is not inspect.Parameter.empty):
+            if not (
+                fwd_val.kind in [inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD]
+                or fwd_val.default is not inspect.Parameter.empty
+            ):
                 ordered_kwargs[fwd_key] = None
 
         self.ordered_kwargs = ordered_kwargs
@@ -193,8 +221,7 @@ class NLPPipelineWrapper(torch.nn.Module):
 
         self.model.forward = self.first_forward
 
-        return ordered_kwargs 
-
+        return ordered_kwargs
 
     @classmethod
     def from_pretrained(cls, name, pipeline, use_cache, forward_fn=None, max_length=None):
@@ -209,9 +236,12 @@ class NLPPipelineWrapper(torch.nn.Module):
         model = tasks[lookup_name]["pt"][0].from_pretrained(name)
         tokenizer = AutoTokenizer.from_pretrained(name)
 
-        wrapper = NLPPipelineWrapper(model, tokenizer, name.replace("-", "_"), use_cache=use_cache, forward_fn=forward_fn, max_length=max_length)
+        wrapper = NLPPipelineWrapper(
+            model, tokenizer, name.replace("-", "_"), use_cache=use_cache, forward_fn=forward_fn, max_length=max_length
+        )
         model.prepare_inputs_for_generation = wrapper.prepare_inputs_for_generation
         return model, tokenizer
+
 
 def pipeline(pipeline_type: str, *args, **kwargs):
     m = kwargs["model"]
@@ -225,13 +255,22 @@ def pipeline(pipeline_type: str, *args, **kwargs):
 
     use_cache = None if "use_cache" not in kwargs else kwargs["use_cache"]
     if isinstance(m, str):
-        model, tokenizer = NLPPipelineWrapper.from_pretrained(m, pipeline_type, use_cache=use_cache, forward_fn=forward_fn, max_length=forge_max_length)
+        model, tokenizer = NLPPipelineWrapper.from_pretrained(
+            m, pipeline_type, use_cache=use_cache, forward_fn=forward_fn, max_length=forge_max_length
+        )
         kwargs["model"] = model
         if "tokenizer" not in kwargs:
             kwargs["tokenizer"] = tokenizer
 
     elif isinstance(m, torch.nn.Module):
-        kwargs["model"].prepare_inputs_for_generation = NLPPipelineWrapper(m, kwargs["tokenizer"], m.__class__.__name__, use_cache=use_cache, forward_fn=forward_fn, max_length=forge_max_length).prepare_inputs_for_generation
+        kwargs["model"].prepare_inputs_for_generation = NLPPipelineWrapper(
+            m,
+            kwargs["tokenizer"],
+            m.__class__.__name__,
+            use_cache=use_cache,
+            forward_fn=forward_fn,
+            max_length=forge_max_length,
+        ).prepare_inputs_for_generation
 
     else:
         raise RuntimeError("Unsupported model type")

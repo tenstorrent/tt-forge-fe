@@ -2,11 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/pre_lowering_passes.hpp"
+
+#include "graph_lib/utils.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
-#include "graph_lib/utils.hpp"
 
-namespace tt {
+namespace tt
+{
 
 using NodeType = graphlib::NodeType;
 using Edge = graphlib::Edge;
@@ -38,8 +40,10 @@ void convert_broadcast_ops_to_tms(Graph *graph)
     }
 }
 
-void place_inter_subgraph_queues(graphlib::Graph *graph) {
-    for (Node *n : graph->nodes_by_type(NodeType::kOutput)) {
+void place_inter_subgraph_queues(graphlib::Graph *graph)
+{
+    for (Node *n : graph->nodes_by_type(NodeType::kOutput))
+    {
         std::vector<Node *> consumers = graph->data_users(n);
         if (consumers.size() == 0)
             continue;
@@ -48,7 +52,8 @@ void place_inter_subgraph_queues(graphlib::Graph *graph) {
 
         std::cout << "removing node: " << n->name() << std::endl;
         graph->remove_node(n);
-        for (Node *consumer : consumers) {
+        for (Node *consumer : consumers)
+        {
             std::cout << "adding edge from: " << producers[0]->name() << " to: " << consumer->name() << std::endl;
             graph->add_edge(producers[0], consumer);
         }
@@ -169,7 +174,8 @@ void replace_with_broadcasted_const(
     graphlib::PyOpNode *original_tile_bcast)
 {
     auto broadcasted_const = graph->add_node(
-        graphlib::create_node<graphlib::ConstantInputNode>(constant->name() + "_tile_bcast", broadcasted_tensor, target_shape),
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            constant->name() + "_tile_bcast", broadcasted_tensor, target_shape),
         graph->get_subgraph_id_for_node(constant->id()));
     broadcasted_const->set_shape(target_shape);
     broadcasted_const->set_output_df(original_tile_bcast->output_df());
@@ -180,9 +186,9 @@ void replace_with_broadcasted_const(
 
 void bypass_embedding_input_nops(Graph *graph)
 {
-    for (Node *node : graph->nodes()) {
-
-        if ( (node->node_type() != NodeType::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "embedding") )
+    for (Node *node : graph->nodes())
+    {
+        if ((node->node_type() != NodeType::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "embedding"))
             continue;
 
         graphlib::PyOpNode *embedding = node->as<graphlib::PyOpNode>();
@@ -194,20 +200,18 @@ void bypass_embedding_input_nops(Graph *graph)
         if (input_ids->node_type() == NodeType::kPyOp)
         {
             TT_ASSERT(input_ids->as<graphlib::PyOpNode>()->op_type().op == "nop");
-            graphlib::bypass_node(graph, input_ids, true); 
-
+            graphlib::bypass_node(graph, input_ids, true);
         }
     }
 }
 
-
 bool safe_to_hoist_past(const Graph *graph, const Node *operand)
 {
     if (graph->user_data_edges(operand).size() > 1)
-        return false; // we don't want to deal with this now
+        return false;  // we don't want to deal with this now
 
     if (graph->operand_data_edges(operand).size() > 1)
-        return false; // not a unary op
+        return false;  // not a unary op
 
     if (operand->node_type() != NodeType::kPyOp)
         return false;
@@ -239,15 +243,18 @@ static bool swap_reshape(Graph *graph, graphlib::PyOpNode *add, graphlib::PyOpNo
     if (not commutable_reshape(reshape) and not requant)
         return false;
 
-    if (env_as<bool>("FORGE_FUSE_MATMUL_GELU")) {
-        TT_ASSERT((add->op_type().op == "add") || (add->op_type().op == "gelu") || (add->op_type().op == "forge_requantize"));
+    if (env_as<bool>("FORGE_FUSE_MATMUL_GELU"))
+    {
+        TT_ASSERT(
+            (add->op_type().op == "add") || (add->op_type().op == "gelu") || (add->op_type().op == "forge_requantize"));
     }
-    else {
+    else
+    {
         TT_ASSERT((add->op_type().op == "add") || (add->op_type().op == "forge_requantize"));
     }
 
     if (graph->data_users(reshape).size() > 1)
-        return false; // reshape goes to more than just add
+        return false;  // reshape goes to more than just add
 
     // Check for validity of reshape
     if (reshape->op_type().op == "reshape")
@@ -256,15 +263,15 @@ static bool swap_reshape(Graph *graph, graphlib::PyOpNode *add, graphlib::PyOpNo
         auto output_shape = reshape->shape();
 
         if (input_shape.volume() != output_shape.volume())
-            return false; // can't swap, the reshape actually changes shape
+            return false;  // can't swap, the reshape actually changes shape
 
         std::uint32_t index = 0;
         const std::uint32_t in_size = input_shape.size();
         const std::uint32_t out_size = output_shape.size();
-        while ( (index < in_size) && (index < out_size) )
+        while ((index < in_size) && (index < out_size))
         {
             if (input_shape[in_size - 1 - index] != output_shape[out_size - 1 - index])
-                return false; // change of shape
+                return false;  // change of shape
             index++;
         }
     }
@@ -282,16 +289,18 @@ static bool has_fusable_upstream_matmul(graphlib::Graph *graph, graphlib::PyOpNo
     if (op == nullptr)
         return false;
 
-    while (not (op->is_dense_matmul() || (op->is_depthwise_matmul() and not requant))) // requant can't be fused to depthwise
+    while (not(
+        op->is_dense_matmul() || (op->is_depthwise_matmul() and not requant)))  // requant can't be fused to depthwise
     {
-        if (not (commutable_reshape(op))) {
-            if (not (requant and op->is_tm()))  // requant can be commuted through TM
+        if (not(commutable_reshape(op)))
+        {
+            if (not(requant and op->is_tm()))  // requant can be commuted through TM
                 return false;
         }
 
         auto operands = graph->data_operands(op);
         TT_ASSERT(operands.size() == 1);
-        op = dynamic_cast<graphlib::PyOpNode*>(operands.front());
+        op = dynamic_cast<graphlib::PyOpNode *>(operands.front());
         if (not op)
             return false;
     }
@@ -316,7 +325,7 @@ void fuse_bias(Graph *graph)
     for (Node *node : graphlib::topological_sort(*graph))
     {
         // Look for bias
-        if ( (node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "add") )
+        if ((node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "add"))
             continue;
 
         graphlib::PyOpNode *op = node->as<graphlib::PyOpNode>();
@@ -326,7 +335,7 @@ void fuse_bias(Graph *graph)
 
         auto operands = graph->data_operands(op);
         TT_ASSERT(operands.size() == 2);
-    
+
         // Models coming out TVM frequently have a reshape between matmul and add, which only expands dims
         // Reshape and add need to be swaped in order for the matmul+add to be fused further down.
         if (not has_fusable_upstream_matmul(graph, dynamic_cast<graphlib::PyOpNode *>(operands[0])))
@@ -351,7 +360,8 @@ void fuse_bias(Graph *graph)
         auto shape = operands[1]->shape().as_vector();
         bool correct_shape = (operands[0]->shape()[-1] == operands[1]->shape()[-1]) or tile_broadcasted;
         for (std::size_t i = 0; i < shape.size() - 1; i++)
-            if (shape[i] != 1) correct_shape = false;
+            if (shape[i] != 1)
+                correct_shape = false;
 
         if (!correct_shape)
             continue;
@@ -362,17 +372,17 @@ void fuse_bias(Graph *graph)
         bool broadcast = false;
         for (auto tm : tms)
             // Broadcast must be to tile dim, otherwise in-kernel broadcast will broadcast too far
-            if ( (tm.op == "broadcast") && (std::get<int>(tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM == 0) ) {
+            if ((tm.op == "broadcast") && (std::get<int>(tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM == 0))
+            {
                 broadcast = true;
                 break;
             }
 
-        if (!broadcast) {
-            if (not (operands[1]->shape() == operands[0]->shape() 
-                        and operands[1]->node_type() == graphlib::kInput
-                        and operands[1]->as<graphlib::InputNode>()->is_constant()
-                    )
-                ) {
+        if (!broadcast)
+        {
+            if (not(operands[1]->shape() == operands[0]->shape() and operands[1]->node_type() == graphlib::kInput and
+                    operands[1]->as<graphlib::InputNode>()->is_constant()))
+            {
                 continue;
             }
         }
@@ -382,7 +392,12 @@ void fuse_bias(Graph *graph)
 
         // Create a new bias edge to matmul
         Edge bias_input_edge = graph->operand_data_edges(op)[1];
-        Edge new_bias_input_edge = Edge(bias_input_edge.producer_node_id, bias_input_edge.producer_output_port_id, operands[0]->id(), 2, graphlib::EdgeType::kData);
+        Edge new_bias_input_edge = Edge(
+            bias_input_edge.producer_node_id,
+            bias_input_edge.producer_output_port_id,
+            operands[0]->id(),
+            2,
+            graphlib::EdgeType::kData);
         graph->add_edge(new_bias_input_edge);
         graph->copy_edge_attributes(bias_input_edge, new_bias_input_edge);
 
@@ -395,7 +410,12 @@ void fuse_bias(Graph *graph)
             {
                 producer_output_port_id = 2;
             }
-            Edge new_edge = Edge(operands[0]->id(), producer_output_port_id, edge.consumer_node_id, edge.consumer_input_port_id, edge.edge_type);
+            Edge new_edge = Edge(
+                operands[0]->id(),
+                producer_output_port_id,
+                edge.consumer_node_id,
+                edge.consumer_input_port_id,
+                edge.edge_type);
             graph->add_edge(new_edge);
             graph->copy_edge_attributes(edge, new_edge);
         }
@@ -415,7 +435,8 @@ void fuse_requantize(Graph *graph)
     for (Node *node : graphlib::topological_sort(*graph))
     {
         // Look for bias
-        if ( (node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "forge_requantize") )
+        if ((node->node_type() != graphlib::kPyOp) ||
+            (node->as<graphlib::PyOpNode>()->op_type().op != "forge_requantize"))
             continue;
 
         graphlib::PyOpNode *op = node->as<graphlib::PyOpNode>();
@@ -425,7 +446,7 @@ void fuse_requantize(Graph *graph)
 
         auto operands = graph->data_operands(op);
         TT_ASSERT(operands.size() == 2);
-    
+
         // Models coming out TVM frequently have a reshape between matmul and add, which only expands dims
         // Reshape and add need to be swaped in order for the matmul+add to be fused further down.
         if (not has_fusable_upstream_matmul(graph, dynamic_cast<graphlib::PyOpNode *>(operands[0]), true /* requant */))
@@ -448,12 +469,17 @@ void fuse_requantize(Graph *graph)
         auto matmul_attrs = matmul->op_type().attr;
 
         auto scale_adge = graph->operand_data_edges(op)[1];
-        Edge new_scale_edge = Edge(scale_adge.producer_node_id, scale_adge.producer_output_port_id, operands[0]->id(), 3, graphlib::EdgeType::kData); // Input0, input1, bias, scale
+        Edge new_scale_edge = Edge(
+            scale_adge.producer_node_id,
+            scale_adge.producer_output_port_id,
+            operands[0]->id(),
+            3,
+            graphlib::EdgeType::kData);  // Input0, input1, bias, scale
         graph->add_edge(new_scale_edge);
         graph->copy_edge_attributes(scale_adge, new_scale_edge);
 
         // copy over zp attrs
-        matmul_attrs.push_back(requant_attrs[0]); // Add requant zp to the back of matmul attr
+        matmul_attrs.push_back(requant_attrs[0]);  // Add requant zp to the back of matmul attr
         matmul->overwrite_op_attrs(matmul_attrs);
         auto matmul_forge_attr = matmul->op_type().forge_attrs;
         matmul_forge_attr["requant"] = "true";
@@ -465,7 +491,12 @@ void fuse_requantize(Graph *graph)
         for (Edge edge : user_edges)
         {
             graphlib::PortId producer_output_port_id = 0;
-            Edge new_edge = Edge(operands[0]->id(), producer_output_port_id, edge.consumer_node_id, edge.consumer_input_port_id, edge.edge_type);
+            Edge new_edge = Edge(
+                operands[0]->id(),
+                producer_output_port_id,
+                edge.consumer_node_id,
+                edge.consumer_input_port_id,
+                edge.edge_type);
             graph->add_edge(new_edge);
             graph->copy_edge_attributes(edge, new_edge);
         }
@@ -475,14 +506,13 @@ void fuse_requantize(Graph *graph)
     }
 }
 
-
 void fuse_gelu(Graph *graph)
 {
     // Find matmul + gelu, and merge gelu into the matmul
     for (Node *node : graphlib::topological_sort(*graph))
     {
         // Look for gelu
-        if ( (node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "gelu") )
+        if ((node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "gelu"))
             continue;
 
         graphlib::PyOpNode *op = node->as<graphlib::PyOpNode>();
@@ -493,19 +523,22 @@ void fuse_gelu(Graph *graph)
         auto operands = graph->data_operands(op);
         TT_ASSERT(operands.size() == 1);
 
-        if ( (operands[0]->node_type() == graphlib::kPyOp) && (
-                    (operands[0]->as<graphlib::PyOpNode>()->op_type().op == "reshape") ||
-                    (operands[0]->as<graphlib::PyOpNode>()->op_type().op == "squeeze") ||
-                    (operands[0]->as<graphlib::PyOpNode>()->op_type().op == "unsqueeze") ) )
+        if ((operands[0]->node_type() == graphlib::kPyOp) &&
+            ((operands[0]->as<graphlib::PyOpNode>()->op_type().op == "reshape") ||
+             (operands[0]->as<graphlib::PyOpNode>()->op_type().op == "squeeze") ||
+             (operands[0]->as<graphlib::PyOpNode>()->op_type().op == "unsqueeze")))
         {
             swap_reshape(graph, op, operands[0]->as<graphlib::PyOpNode>());
-            operands = graph->data_operands(op); // "reload" operands
+            operands = graph->data_operands(op);  // "reload" operands
         }
 
-        if (operands[0]->node_type() != graphlib::kPyOp) continue;
+        if (operands[0]->node_type() != graphlib::kPyOp)
+            continue;
         auto opnd = operands[0]->as<graphlib::PyOpNode>();
-        if (!(opnd->is_matmul())) continue;
-        if (opnd->is_sparse_matmul()) continue;
+        if (!(opnd->is_matmul()))
+            continue;
+        if (opnd->is_sparse_matmul())
+            continue;
 
         // If matmul has more outputs than just to gelu, we can't merge
         if (graph->user_data_edges(operands[0]).size() > 1)
@@ -524,14 +557,8 @@ void fuse_gelu(Graph *graph)
         // Get user edges for gelu, and copy over to matmul
         operands[0]->as<graphlib::OpNode>()->set_golden_id(op->id());
         graphlib::bypass_node(
-            graph,
-            node,
-            true,
-            [graph](Edge new_edge, Edge edge)
-            {
-                graph->copy_edge_attributes(edge, new_edge);
-            });
+            graph, node, true, [graph](Edge new_edge, Edge edge) { graph->copy_edge_attributes(edge, new_edge); });
     }
 }
 
-}
+}  // namespace tt

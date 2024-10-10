@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "mlir_compiler.hpp"
+
 #include <memory>
+
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
 #include "mlir_passes.hpp"
@@ -25,56 +27,58 @@
 
 // TTMLIR headers
 #include "tt/runtime/types.h"
+#include "tt_torch_device/tt_device.hpp"
 #include "ttmlir/Dialect/TT/IR/TT.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIR.h"
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
 
-#include "tt_torch_device/tt_device.hpp"
-
 namespace tt::passes
 {
-    /// Public API for lowering to MLIR, running MLIR passes and generate runtime binary.
-    runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
-    {
-        // Register all the required dialects.
-        mlir::DialectRegistry registry;
+/// Public API for lowering to MLIR, running MLIR passes and generate runtime binary.
+runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
+{
+    // Register all the required dialects.
+    mlir::DialectRegistry registry;
 
-        registry.insert<
-            mlir::tt::TTDialect, mlir::tt::ttir::TTIRDialect,
-            mlir::tt::ttnn::TTNNDialect, mlir::arith::ArithDialect,
-            mlir::func::FuncDialect, mlir::ml_program::MLProgramDialect,
-            mlir::tensor::TensorDialect>();
+    registry.insert<
+        mlir::tt::TTDialect,
+        mlir::tt::ttir::TTIRDialect,
+        mlir::tt::ttnn::TTNNDialect,
+        mlir::arith::ArithDialect,
+        mlir::func::FuncDialect,
+        mlir::ml_program::MLProgramDialect,
+        mlir::tensor::TensorDialect>();
 
-        // Create a context with all registered dialects.
-        mlir::MLIRContext context(registry);
+    // Create a context with all registered dialects.
+    mlir::MLIRContext context(registry);
 
 #ifdef DEBUG
-        // Context setting to have mlir print out stacktrace whenever errors occur
-        context.printStackTraceOnDiagnostic(true);
+    // Context setting to have mlir print out stacktrace whenever errors occur
+    context.printStackTraceOnDiagnostic(true);
 #endif
 
-        // Load all available dialects
-        context.loadAllAvailableDialects();
+    // Load all available dialects
+    context.loadAllAvailableDialects();
 
-        // Generate MLIR from the Forge graph.
-        mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
+    // Generate MLIR from the Forge graph.
+    mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
 
-        // Run MLIR registered passes.
-        run_mlir_passes(mlir_module);
-        tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
+    // Run MLIR registered passes.
+    run_mlir_passes(mlir_module);
+    tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
-        mlir_module->dump();
+    mlir_module->dump();
 
-        // Generate binary from the MLIR module.
-        auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
-        tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
+    // Generate binary from the MLIR module.
+    auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
+    tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
 
-        if (binary == nullptr)
-        {
-            throw std::runtime_error("Failed to generate flatbuffer binary.");
-        }
-
-        return binary;
+    if (binary == nullptr)
+    {
+        throw std::runtime_error("Failed to generate flatbuffer binary.");
     }
+
+    return binary;
 }
+}  // namespace tt::passes

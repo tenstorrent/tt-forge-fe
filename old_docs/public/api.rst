@@ -77,7 +77,7 @@ Transformations
 
 .. automodule:: pybuda.op
    :members: HSlice, VSlice, HStack, VStack, Reshape, Index, Select, Pad, Concatenate, BinaryStack, Heaviside
-    
+
 Activations
 ===========
 
@@ -109,7 +109,7 @@ Math
 
 Convolutions
 ============
-    
+
 .. autosummary::
    Conv2d
    Conv2dTranspose
@@ -190,4 +190,3 @@ Miscellaneous
 
 .. autoclass:: pybuda::MathFidelity
    :members:
-

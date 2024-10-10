@@ -21,11 +21,11 @@ MODELS_PATH = "./forge/test/operators/eltwise_unary_attr/clip/models"
 
 SHAPE_NO = 2
 SHAPE_DIM_MIN = 1
-SHAPE_DIM_MAX = 2 ** 10
+SHAPE_DIM_MAX = 2**10
 SHAPE_WDIM_MIN = 1
-SHAPE_WDIM_MAX = 2 ** 6
+SHAPE_WDIM_MAX = 2**6
 SHAPE_ZDIM_MIN = 2
-SHAPE_ZDIM_MAX = 2 ** 6
+SHAPE_ZDIM_MAX = 2**6
 
 WDIM_FIXED = True
 ZDIM_FIXED = True
@@ -51,7 +51,7 @@ for i in range(SHAPE_NO):
     sh = [W, Z, R, C]
     shape.append(sh)
 
-min_value = np.random.rand(MIN_VALUE_NO) * (MIN_VALUE_MAX - MIN_VALUE_MIN) + MIN_VALUE_MIN 
+min_value = np.random.rand(MIN_VALUE_NO) * (MIN_VALUE_MAX - MIN_VALUE_MIN) + MIN_VALUE_MIN
 max_value = np.random.rand(MAX_VALUE_NO) * (MAX_VALUE_MIN - MAX_VALUE_MIN) + MAX_VALUE_MIN
 
 
@@ -61,34 +61,23 @@ max_value = np.random.rand(MAX_VALUE_NO) * (MAX_VALUE_MIN - MAX_VALUE_MIN) + MAX
 @pytest.mark.parametrize("recompute", (True, False), ids=["Recompute", "NoRecompute"])
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_PATH) if "model" in item])
 @pytest.mark.parametrize("mode", ["Inference"])
-def test_clip(
-    mode,
-    recompute,
-    model, 
-    shape,
-    min_value,
-    max_value
-):
+def test_clip(mode, recompute, model, shape, min_value, max_value):
 
-    training = (mode == "Training")
+    training = mode == "Training"
 
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.ForgeClipTest(shape={shape}, min_value={min_value}, max_value={max_value})'
+    architecture = f"models.{model}.ForgeClipTest(shape={shape}, min_value={min_value}, max_value={max_value})"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
 
-    #Fusing disabled due to tenstorrent/forge#784
+    # Fusing disabled due to tenstorrent/forge#784
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute,
-                        enable_auto_fusing=False
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute, enable_auto_fusing=False),
+        verify_cfg=VerifyConfig(),
     )

@@ -5,7 +5,7 @@
 #   Test 2
 #   Cimparison operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -19,19 +19,11 @@ from forge import ForgeModule, Tensor
 
 class ForgeComparisonTest(ForgeModule):
     """
-        Forge Test 2
+    Forge Test 2
 
     """
 
-    def __init__(
-        self,
-        shape,
-        opname,
-        operator,
-        mask,
-        rng_min,
-        rng_max
-    ):
+    def __init__(self, shape, opname, operator, mask, rng_min, rng_max):
         super().__init__("Forge Test 2")
 
         self.testname = "Comparison Operator, Test 2"
@@ -41,7 +33,7 @@ class ForgeComparisonTest(ForgeModule):
         self.mask = mask
         self.rng_min = rng_min
         self.rng_max = rng_max
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
 
@@ -49,7 +41,7 @@ class ForgeComparisonTest(ForgeModule):
         for _ in range(2):
             input_ = torch.rand(*self.shape) * (self.rng_max - self.rng_min) + self.rng_min
             if self.mask:
-                input_ *= (1.0 * torch.randint(0, 2, self.shape))
+                input_ *= 1.0 * torch.randint(0, 2, self.shape)
             self.inputs.append(Tensor.create_from_torch(input_))
         for i in range(1, 3):
             self.set_parameter("train_param" + str(i), torch.rand(*self.shape, requires_grad=True))
@@ -75,4 +67,4 @@ class ForgeComparisonTest(ForgeModule):
         return mul5
 
     def values(self):
-        return [item.value() for item in self.inputs]   
+        return [item.value() for item in self.inputs]

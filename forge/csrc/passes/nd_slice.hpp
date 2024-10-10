@@ -297,7 +297,8 @@ inline std::ostream& operator<<(std::ostream& out, NDSlice::Slice const& c)
 }
 }  // namespace tt::passes
 
-template<> struct fmt::formatter<tt::passes::NDSlice> : fmt::formatter<std::string_view>
+template <>
+struct fmt::formatter<tt::passes::NDSlice> : fmt::formatter<std::string_view>
 {
     inline auto format(const tt::passes::NDSlice& nd_slice, fmt::format_context& ctx) const -> decltype(ctx.out())
     {

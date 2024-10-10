@@ -23,16 +23,16 @@ MODELS_PATH = "./forge/test/operators/tm/vstack_vslice/models"
 
 SHAPE_NO = 5
 SHAPE_DIM_MIN = 1
-SHAPE_DIM_MAX = 2 ** 5
+SHAPE_DIM_MAX = 2**5
 SHAPE_WDIM_MIN = 1
-SHAPE_WDIM_MAX = 2 ** 2
+SHAPE_WDIM_MAX = 2**2
 SHAPE_ZDIM_MIN = 2
-SHAPE_ZDIM_MAX = 2 ** 2
+SHAPE_ZDIM_MAX = 2**2
 
-SLICE_SIZE_MIN = 2 ** 2
-SLICE_SIZE_MAX = 2 ** 5
+SLICE_SIZE_MIN = 2**2
+SLICE_SIZE_MAX = 2**5
 SLICE_MIN = 1
-SLICE_MAX = 2 ** 2
+SLICE_MAX = 2**2
 
 WDIM_FIXED = True
 
@@ -51,37 +51,31 @@ for i in range(SHAPE_NO):
     sh = [W, Z, R, C]
     shape.append(sh)
 
-@pytest.mark.xfail(
-    reason="tenstorrent/forge#133"
+
+@pytest.mark.xfail(reason="tenstorrent/forge#133")
+@pytest.mark.parametrize(
+    "shape, slice",
+    zip(shape, slices),
+    ids=["shape=" + "x".join([str(item) for item in sh]) + "-slice=" + str(sl) for sh, sl in zip(shape, slices)],
 )
-@pytest.mark.parametrize("shape, slice", zip(shape, slices), ids=["shape=" + "x".join([str(item) for item in sh])+ "-slice=" + str(sl) for sh, sl in zip(shape, slices)])
 @pytest.mark.parametrize("recompute", (True, False), ids=["Recompute", "NoRecompute"])
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_PATH) if "model" in item])
 @pytest.mark.parametrize("mode", ["Inference"])
-def test_vstack_vslice(
-    mode,
-    recompute,
-    model, 
-    shape, 
-    slice
-):
+def test_vstack_vslice(mode, recompute, model, shape, slice):
 
-    training = (mode == "Training")
+    training = mode == "Training"
 
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.ForgeVStackVSliceTest(shape={shape}, slice={slice})'
+    architecture = f"models.{model}.ForgeVStackVSliceTest(shape={shape}, slice={slice})"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
+        verify_cfg=VerifyConfig(),
     )

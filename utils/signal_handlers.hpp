@@ -7,29 +7,19 @@
 #include <iostream>
 #include <string>
 
-#include "utils/assert.hpp"
 #include "runtime/tt_device.hpp"
+#include "utils/assert.hpp"
 
 inline void tt_forge_signal_handler(int sig)
 {
     std::string signal_name;
     switch (sig)
     {
-        case SIGSEGV:
-            signal_name = "segmentation fault";
-            break;
-        case SIGILL:
-            signal_name = "illegal instruction";
-            break;
-        case SIGFPE:
-            signal_name = "floating point exception";
-            break;
-        case SIGABRT:
-            signal_name = "abort";
-            break;
-        default:
-            signal_name = std::to_string(sig);
-            break;
+        case SIGSEGV: signal_name = "segmentation fault"; break;
+        case SIGILL: signal_name = "illegal instruction"; break;
+        case SIGFPE: signal_name = "floating point exception"; break;
+        case SIGABRT: signal_name = "abort"; break;
+        default: signal_name = std::to_string(sig); break;
     }
 
     std::cerr << "tt_forge_signal_handler - signal: " << sig << " (" << signal_name << ")" << std::endl;
@@ -71,17 +61,17 @@ inline void tt_forge_signal_handler(int sig)
 
 class SignalHandlers
 {
-    public:
-        SignalHandlers()
+   public:
+    SignalHandlers()
+    {
+        // For SIGSEGV, SIGILL and SIGFPE we register our own signal handlers,
+        // to print the stacktrace before the program crashes.
+        for (auto sig : {SIGSEGV, SIGILL, SIGFPE, SIGABRT})
         {
-            // For SIGSEGV, SIGILL and SIGFPE we register our own signal handlers,
-            // to print the stacktrace before the program crashes.
-            for (auto sig : {SIGSEGV, SIGILL, SIGFPE, SIGABRT})
+            if (std::signal(sig, tt_forge_signal_handler) == SIG_ERR)
             {
-                if (std::signal(sig, tt_forge_signal_handler) == SIG_ERR)
-                {
-                    std::cerr << "Failed to register signal handler for signal " << sig << std::endl;
-                }
+                std::cerr << "Failed to register signal handler for signal " << sig << std::endl;
             }
         }
+    }
 };

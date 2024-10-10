@@ -9,9 +9,8 @@ class Graph;
 class OpNode;
 class Node;
 class Shape;
-}
-namespace tt::passes 
+}  // namespace tt::graphlib
+namespace tt::passes
 {
 void set_tile_dim_for_nodes(graphlib::Graph *graph);
-} // namespace tt:passes
-
+}  // namespace tt::passes

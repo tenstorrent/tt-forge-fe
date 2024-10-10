@@ -5,7 +5,7 @@
 #   Test 3
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import random
@@ -14,7 +14,6 @@ import torch
 import forge
 
 from forge import ForgeModule, Tensor
-
 
 
 class ForgeReduceTest(ForgeModule):
@@ -27,16 +26,10 @@ class ForgeReduceTest(ForgeModule):
                       This name test uses to generate names of operation nodes in a graph/model.
     """
 
-    def __init__(
-        self, 
-        operator, 
-        opname,
-        shape,
-        dim,
-        keepdim):
+    def __init__(self, operator, opname, shape, dim, keepdim):
         super().__init__("Forge Test 3")
 
-        assert hasattr(shape, '__iter__'), "Shape must be iterable"
+        assert hasattr(shape, "__iter__"), "Shape must be iterable"
         assert dim < len(shape), "Dimension out of the shape"
         assert dim >= 0, "Dimension cant' be negative"
 
@@ -46,7 +39,7 @@ class ForgeReduceTest(ForgeModule):
         self.shape = shape
         self.dim = dim
         self.keepdim = keepdim
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param3 = forge.Parameter(*self.shape, requires_grad=True)
@@ -96,4 +89,4 @@ class ForgeReduceTest(ForgeModule):
         return mul9
 
     def values(self):
-        return [item.value() for item in self.inputs] 
+        return [item.value() for item in self.inputs]

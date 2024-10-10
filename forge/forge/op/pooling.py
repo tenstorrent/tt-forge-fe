@@ -74,7 +74,9 @@ def MaxPool2d(
         Size of pooling region
     """
     assert return_indices == False, f"Unsupported arg: return_indices = {return_indices}"
-    assert isinstance(kernel_size, int) or (isinstance(kernel_size, Tuple) and all(isinstance(k_dim, int) for k_dim in kernel_size)), "Unsupported"
+    assert isinstance(kernel_size, int) or (
+        isinstance(kernel_size, Tuple) and all(isinstance(k_dim, int) for k_dim in kernel_size)
+    ), "Unsupported"
     if isinstance(stride, int):
         stride = [stride] * 2
 
@@ -83,11 +85,18 @@ def MaxPool2d(
     elif isinstance(kernel_size, Tuple):
         kernel_size = list(kernel_size)
     if padding == "same":
-        padding = [kernel_size[1]//2] * 2 + [kernel_size[0]//2] * 2
+        padding = [kernel_size[1] // 2] * 2 + [kernel_size[0] // 2] * 2
     if isinstance(padding, int):
-        padding = [padding] * 4 # [left,right,top,bottom]
+        padding = [padding] * 4  # [left,right,top,bottom]
 
-    attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [max_pool_add_sub_surround, max_pool_add_sub_surround_value] + [channel_last]
+    attrs = (
+        kernel_size
+        + stride
+        + [dilation, ceil_mode]
+        + padding
+        + [max_pool_add_sub_surround, max_pool_add_sub_surround_value]
+        + [channel_last]
+    )
     return op(
         "max_pool2d",
         name,
@@ -103,7 +112,7 @@ def MaxPool2d(
         padding_right=padding[1],
         padding_top=padding[2],
         padding_bottom=padding[3],
-        channel_last=channel_last
+        channel_last=channel_last,
     ).get_tensor()
 
 
@@ -136,7 +145,9 @@ def MaxPool3d(
     """
     assert not channel_last, "Decomposition for channel-last MaxPool3d is not added yet"
     assert return_indices == False, f"Unsupported arg: return_indices = {return_indices}"
-    assert isinstance(kernel_size, int) or (isinstance(kernel_size, Tuple) and all(isinstance(k_dim, int) for k_dim in kernel_size)), "Unsupported"
+    assert isinstance(kernel_size, int) or (
+        isinstance(kernel_size, Tuple) and all(isinstance(k_dim, int) for k_dim in kernel_size)
+    ), "Unsupported"
     if isinstance(stride, int):
         stride = [stride] * 3
 
@@ -145,11 +156,18 @@ def MaxPool3d(
     elif isinstance(kernel_size, Tuple):
         kernel_size = list(kernel_size)
     if padding == "same":
-        padding = [kernel_size[2]//2] * 2 + [kernel_size[1]//2] * 2 + [kernel_size[0]//2] * 2
+        padding = [kernel_size[2] // 2] * 2 + [kernel_size[1] // 2] * 2 + [kernel_size[0] // 2] * 2
     if isinstance(padding, int):
-        padding = [padding] * 6 # [left,right,top,bottom, depth_first, depth_last]
+        padding = [padding] * 6  # [left,right,top,bottom, depth_first, depth_last]
 
-    attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [max_pool_add_sub_surround, max_pool_add_sub_surround_value] + [channel_last]
+    attrs = (
+        kernel_size
+        + stride
+        + [dilation, ceil_mode]
+        + padding
+        + [max_pool_add_sub_surround, max_pool_add_sub_surround_value]
+        + [channel_last]
+    )
     return op(
         "max_pool3d",
         name,
@@ -161,7 +179,12 @@ def MaxPool3d(
 def AvgPool1d(
     name: str,
     activations: Tensor,
-    kernel_size: Union[int, Tuple[int,]],
+    kernel_size: Union[
+        int,
+        Tuple[
+            int,
+        ],
+    ],
     stride: int = 1,
     padding: Union[int, str] = "same",
     ceil_mode: bool = False,
@@ -176,12 +199,12 @@ def AvgPool1d(
         Op name, unique to the module, or leave blank to autoset
 
     activations: Tensor
-        Input activations of shape (N, Cin, iW)    
-    
+        Input activations of shape (N, Cin, iW)
+
     kernel_size:
         Size of pooling region
     """
- 
+
     assert isinstance(kernel_size, (int, tuple, list)), "Unsupported"
 
     if isinstance(stride, int):
@@ -193,17 +216,17 @@ def AvgPool1d(
         kernel_size = list(kernel_size)
 
     if padding == "same":
-        padding = [kernel_size[1]//2] + [kernel_size[0]//2]
+        padding = [kernel_size[1] // 2] + [kernel_size[0] // 2]
     if isinstance(padding, int):
-        padding = [padding] * 2 # [left,right]
+        padding = [padding] * 2  # [left,right]
 
-    dilation = 1 # Only as place holder to standardize interface with MaxPool2d
+    dilation = 1  # Only as place holder to standardize interface with MaxPool2d
     attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [count_include_pad]
     return op(
         "avg_pool1d",
         name,
         activations,
-        attrs=attrs, # 1 is placeholder for dilation
+        attrs=attrs,  # 1 is placeholder for dilation
     ).get_tensor()
 
 
@@ -243,15 +266,15 @@ def AvgPool2d(
     elif isinstance(kernel_size, Tuple):
         kernel_size = list(kernel_size)
     if padding == "same":
-        padding = [kernel_size[1]//2] * 2 + [kernel_size[0]//2] * 2 
+        padding = [kernel_size[1] // 2] * 2 + [kernel_size[0] // 2] * 2
     if isinstance(padding, int):
-        padding = [padding] * 4 # [left,right,top,bottom]
+        padding = [padding] * 4  # [left,right,top,bottom]
 
-    dilation = 1 # Only as place holder to standardize interface with MaxPool2d
-    attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [count_include_pad] + [channel_last] 
+    dilation = 1  # Only as place holder to standardize interface with MaxPool2d
+    attrs = kernel_size + stride + [dilation, ceil_mode] + padding + [count_include_pad] + [channel_last]
     return op(
         "avg_pool2d",
         name,
         activations,
-        attrs=attrs, # 1 is placeholder for dilation
+        attrs=attrs,  # 1 is placeholder for dilation
     ).get_tensor()

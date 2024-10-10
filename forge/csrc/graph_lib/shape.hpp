@@ -3,32 +3,38 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <vector>
 #include <ostream>
-#include "utils/assert.hpp"
+#include <vector>
+
 #include "lower_to_forge/common.hpp"
 #include "nlohmann/json.hpp"
+#include "utils/assert.hpp"
 using json = nlohmann::json;
 
-namespace tt {
+namespace tt
+{
 
-namespace graphlib {
+namespace graphlib
+{
 
 using DimBroadcast = std::tuple<int, int, int>;  // operand, dim, size
 
-class Shape {
-public:
-    enum Type {
-        FREE,   // any number of dimensions
-        FORGE    // 4D, snapped to tile sizes
+class Shape
+{
+   public:
+    enum Type
+    {
+        FREE,  // any number of dimensions
+        FORGE  // 4D, snapped to tile sizes
     };
-private:
+
+   private:
     bool valid_ = false;
     Shape::Type type_ = FREE;
     std::vector<std::uint32_t> dims_;
     TileDim tile_dim_ = TileDim::Dim32x32;
 
-public:
+   public:
     constexpr static int FORGE_TILE_DIM = 32;
     constexpr static int FORGE_DIM_COUNT = 4;
     constexpr static int FORGE_MAX_DIM_COUNT = 5;
@@ -37,7 +43,8 @@ public:
     Shape(bool valid, Shape::Type type, std::vector<std::uint32_t> dims);
 
     static Shape create(std::vector<std::uint32_t> dims);
-    static Shape create_forge(std::vector<std::uint32_t> dims, int tile_height = FORGE_TILE_DIM, int tile_width = FORGE_TILE_DIM);
+    static Shape create_forge(
+        std::vector<std::uint32_t> dims, int tile_height = FORGE_TILE_DIM, int tile_width = FORGE_TILE_DIM);
     static Shape create_forge(std::uint32_t w, std::uint32_t z, std::uint32_t r, std::uint32_t c);
     static Shape create_with_type_from_other(const Shape &other, std::vector<std::uint32_t> dims);
     static Shape to_forge(const Shape &other);
@@ -45,7 +52,7 @@ public:
     std::vector<std::uint32_t>::iterator begin() { return dims_.begin(); }
     std::vector<std::uint32_t>::iterator end() { return dims_.end(); }
 
-    std::uint32_t& operator[](int i);
+    std::uint32_t &operator[](int i);
     std::uint32_t const &operator[](int i) const;
 
     TileDim get_tile_dim() const { return tile_dim_; }
@@ -54,7 +61,7 @@ public:
     int get_tile_width() const;
     int get_tile_volume() const { return get_tile_height() * get_tile_width(); }
 
-    bool operator==(const Shape& other) const;
+    bool operator==(const Shape &other) const;
     bool operator!=(const Shape &other) const;
 
     bool is_valid() const { return valid_; }
@@ -96,10 +103,7 @@ public:
     static Shape create_from_pickled(bool valid, int type, std::vector<std::uint32_t> dims);
 
     // Macro used to generate the to_json/from_json methods for each shape type
-    NLOHMANN_JSON_SERIALIZE_ENUM(Shape::Type, {
-        {Shape::Type::FREE, "FREE"},
-        {Shape::Type::FORGE, "FORGE"}
-    });
+    NLOHMANN_JSON_SERIALIZE_ENUM(Shape::Type, {{Shape::Type::FREE, "FREE"}, {Shape::Type::FORGE, "FORGE"}});
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Shape, valid_, type_, dims_)
 };
 
@@ -112,5 +116,5 @@ inline T align_up_tile(T d)
     return static_cast<T>(d - (d % graphlib::Shape::FORGE_TILE_DIM) + graphlib::Shape::FORGE_TILE_DIM);
 }
 
-} // namespace graphlib
-} // namespace tt
+}  // namespace graphlib
+}  // namespace tt

@@ -16,7 +16,7 @@ TensorShape = Tuple[int, ...]
 
 @dataclass
 class OperatorParamNumber:
-    '''
+    """
     Define parameters of numeric type for operators
 
     Attributes:
@@ -25,7 +25,7 @@ class OperatorParamNumber:
         min_value: The minimum value of the parameter
         max_value: The maximum value of the parameter
 
-    '''
+    """
 
     name: str
     type: Type[Union[int, float]]
@@ -44,14 +44,14 @@ OperandNumTuple = Tuple[int, int]
 
 @dataclass
 class OperandNumRange:
-    '''
+    """
     Define the range of number of operands for an operator with variable number of operands
 
     Attributes:
         operands_min: The minimum number of operands
         operands_max: The maximum number of operands
 
-    '''
+    """
 
     operands_min: int
     operands_max: int
@@ -59,7 +59,7 @@ class OperandNumRange:
 
 @dataclass
 class OperatorDefinition:
-    '''
+    """
     Definition of an operator
 
     Attributes:
@@ -73,7 +73,7 @@ class OperatorDefinition:
         operands: Definition of tensor operands. TBD
         calc_input_shapes: The function to calculate input shapes from output shape
 
-    '''
+    """
 
     name: str
     full_name: str
@@ -83,7 +83,9 @@ class OperatorDefinition:
     forward_code: Optional[Callable[[], str]] = None
     forward_params: List[OperatorParam] = field(default_factory=list)
     operands: List[str] = field(default_factory=list)  # TODO describe operand and shapes
-    calc_input_shapes: Optional[Callable[["ShapeCalculationContext", Random], List[TensorShape]]] = None  # calculate input shapes from output shape
+    calc_input_shapes: Optional[
+        Callable[["ShapeCalculationContext", Random], List[TensorShape]]
+    ] = None  # calculate input shapes from output shape
 
     def __post_init__(self):
         if isinstance(self.input_num_range, OperandNumInt):
@@ -103,9 +105,9 @@ class OperatorDefinition:
 
 
 class ShapeCalculationContext:
-    '''
+    """
     Interface of a context object for calculating input shapes
-    '''
+    """
 
     @property
     def operator(self) -> OperatorDefinition:
@@ -133,12 +135,12 @@ class ShapeCalculationContext:
 
 
 class OperatorRepository:
-    '''
+    """
     Define a collection of operators for a specific framework
 
     Attributes:
         operators: The collection of all supported operators
-    '''
+    """
 
     def __init__(self, operators: List[OperatorDefinition]):
         self.operators = operators

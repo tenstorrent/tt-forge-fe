@@ -15,9 +15,9 @@ namespace tt::passes
 {
 using namespace graphlib;
 
-static std::vector<Node*> get_non_constants(const std::vector<Node*>& nodes)
+static std::vector<Node *> get_non_constants(const std::vector<Node *> &nodes)
 {
-    std::vector<Node*> non_constants;
+    std::vector<Node *> non_constants;
     for (const auto node : nodes)
     {
         if (not graphlib::is_constant_input(node))
@@ -28,11 +28,14 @@ static std::vector<Node*> get_non_constants(const std::vector<Node*>& nodes)
     return non_constants;
 }
 
-static std::vector<DataFormat> get_data_formats(const std::vector<Node*>& nodes)
+static std::vector<DataFormat> get_data_formats(const std::vector<Node *> &nodes)
 {
     std::vector<DataFormat> data_formats;
-    std::transform(nodes.cbegin(), nodes.cend(), std::back_inserter(data_formats),
-                [](const Node* node) { return node->output_df(); });
+    std::transform(
+        nodes.cbegin(),
+        nodes.cend(),
+        std::back_inserter(data_formats),
+        [](const Node *node) { return node->output_df(); });
     return data_formats;
 }
 
@@ -99,13 +102,14 @@ static bool contains_data_format(const std::vector<DataFormat> &data_formats, Da
         [&target_data_format](DataFormat data_format) { return data_format == target_data_format; });
 }
 
-static bool is_configured_for_int8(const graphlib::Graph *graph, const Node* node)
+static bool is_configured_for_int8(const graphlib::Graph *graph, const Node *node)
 {
-    return (contains_data_format(get_data_formats(graph->data_operands(node)), DataFormat::Int8)
-            or contains_data_format({node->output_df()}, DataFormat::Int8));
+    return (
+        contains_data_format(get_data_formats(graph->data_operands(node)), DataFormat::Int8) or
+        contains_data_format({node->output_df()}, DataFormat::Int8));
 }
 
-static bool is_configured_for_int32(const graphlib::Graph *graph, const Node* node)
+static bool is_configured_for_int32(const graphlib::Graph *graph, const Node *node)
 {
     return contains_data_format(get_data_formats(graph->data_operands(node)), DataFormat::Int32);
 }
@@ -128,7 +132,6 @@ static DataFormat get_highest_precision_data_format(const std::vector<DataFormat
     }
     return highest_precision_data_format;
 }
-
 
 DataFormat get_inferred_accumulate_df(
     const graphlib::Graph *graph, const graphlib::ForgeOpNode *op, const bool fp32_acc_supported)
@@ -161,8 +164,7 @@ DataFormat get_inferred_accumulate_df(
 }
 
 // Apply math fidelity settings
-void apply_math_fidelity(
-    graphlib::Graph *graph, const MathFidelity default_math_fidelity)
+void apply_math_fidelity(graphlib::Graph *graph, const MathFidelity default_math_fidelity)
 {
     for (Node *node : graph->nodes())
     {
@@ -172,29 +174,30 @@ void apply_math_fidelity(
         auto op = node->as<graphlib::ForgeOpNode>();
 
         op->set_math_fidelity(default_math_fidelity);
-        if (bool enable_integer_mode = is_configured_for_int8(graph, op) or is_configured_for_int32(graph, op); enable_integer_mode)
+        if (bool enable_integer_mode = is_configured_for_int8(graph, op) or is_configured_for_int32(graph, op);
+            enable_integer_mode)
         {
             if (enable_integer_mode and op->math_fidelity() != MathFidelity::HiFi4)
             {
-                log_warning("Node {} is configured for int8, but math fidelity is not HiFi4. "
-                            "Setting math fidelity from {} to HiFi4.",
-                            op->name(),
-                            op->math_fidelity());
+                log_warning(
+                    "Node {} is configured for int8, but math fidelity is not HiFi4. "
+                    "Setting math fidelity from {} to HiFi4.",
+                    op->name(),
+                    op->math_fidelity());
                 op->set_math_fidelity(MathFidelity::HiFi4);
             }
         }
         else if (op and op->is_sparse_matmul())
         {
             std::vector<graphlib::Node *> data_operands = graph->data_operands(op);
-            TT_LOG_ASSERT(data_operands.size() >=2, "Sparse Matmul: {} must have at least two operands.", op->name());
-            graphlib::Node* activations = graph->data_operands(op)[1];
+            TT_LOG_ASSERT(data_operands.size() >= 2, "Sparse Matmul: {} must have at least two operands.", op->name());
+            graphlib::Node *activations = graph->data_operands(op)[1];
 
             // If activations have more than 4 bits on mantissa, bump up the math fidelity
             // ensure we run at least two phases of math fidelity and consume all the bits for bfp8a/b.
-            if (get_precision_bits(activations->output_df()) > 4 and
-                get_num_fidelity_phases(op->math_fidelity()) < 2)
+            if (get_precision_bits(activations->output_df()) > 4 and get_num_fidelity_phases(op->math_fidelity()) < 2)
             {
-                // For sparse matmul, bump up the math fidelity 
+                // For sparse matmul, bump up the math fidelity
                 op->set_math_fidelity(MathFidelity::HiFi2);
             }
         }
@@ -228,10 +231,8 @@ void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallbac
 }
 
 // Apply user overrides
-void configure_output_data_formats(
-    graphlib::Graph *graph, std::optional<DataFormat> default_df_override)
+void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFormat> default_df_override)
 {
-
     for (Node *node : graph->nodes())
     {
         bool disallow_default_override = is_integer_data_format(node->output_df());
@@ -284,8 +285,7 @@ void configure_input_data_formats(graphlib::Graph *graph)
 }
 
 static std::vector<ExpPrecision> get_exponent_conversion_preference(
-    const std::vector<DataFormat> &operand_dfs,
-    const std::optional<DataFormat> default_df_override)
+    const std::vector<DataFormat> &operand_dfs, const std::optional<DataFormat> default_df_override)
 {
     int num_a_formats = std::count_if(operand_dfs.begin(), operand_dfs.end(), is_a_data_format);
     int num_b_formats = std::count_if(operand_dfs.begin(), operand_dfs.end(), is_b_data_format);
@@ -293,9 +293,9 @@ static std::vector<ExpPrecision> get_exponent_conversion_preference(
     // if equal, use the default_df to break the tie.
     if (num_a_formats == num_b_formats)
     {
-        return (default_df_override and is_a_data_format(*default_df_override)) 
-            ? std::vector<ExpPrecision>{ExpPrecision::A, ExpPrecision::B}
-            : std::vector<ExpPrecision>{ExpPrecision::B, ExpPrecision::A};
+        return (default_df_override and is_a_data_format(*default_df_override))
+                   ? std::vector<ExpPrecision>{ExpPrecision::A, ExpPrecision::B}
+                   : std::vector<ExpPrecision>{ExpPrecision::B, ExpPrecision::A};
     }
     else if (num_a_formats > num_b_formats)
     {
@@ -316,9 +316,7 @@ static bool is_match_precision_data_format(DataFormat df, ExpPrecision precision
 void cast_input_data_formats(graphlib::Graph *graph, Node *node, ExpPrecision to_precision)
 {
     const std::unordered_map<ExpPrecision, std::function<DataFormat(DataFormat)>> conversion_function = {
-        {ExpPrecision::B, to_a_data_format},
-        {ExpPrecision::A, to_b_data_format}
-    };
+        {ExpPrecision::B, to_a_data_format}, {ExpPrecision::A, to_b_data_format}};
     ExpPrecision from_precision = to_precision == ExpPrecision::A ? ExpPrecision::B : ExpPrecision::A;
     const std::function<DataFormat(DataFormat)> convert_df_function = conversion_function.at(from_precision);
 
@@ -339,7 +337,7 @@ void cast_and_resolve_input_data_formats(
 {
     std::vector<ExpPrecision> conversion_preference =
         get_exponent_conversion_preference(input_data_formats, default_df_override);
-    
+
     // Try to cast to the preferred exponent size first. We can always fallback to
     // casting to FP32 if we can't cast to the preferred exponent size.
     // For now, let's keep it simple and select first conversion preference.
@@ -451,7 +449,7 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
             {
                 std::vector<graphlib::Node *> data_operands = graph->data_operands(op);
                 TT_ASSERT(not data_operands.empty());
-                graphlib::Node* table = data_operands[0];
+                graphlib::Node *table = data_operands[0];
                 if (get_precision_bits(table->output_df()) < 16)
                 {
                     table->set_output_df(
@@ -476,20 +474,27 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
             }
             if (op->op_type() == "splice")
             {
-                std::vector<DataFormat> non_constants_data_formats = get_data_formats(get_non_constants(graph->data_operands(op)));
+                std::vector<DataFormat> non_constants_data_formats =
+                    get_data_formats(get_non_constants(graph->data_operands(op)));
                 std::vector<DataFormat> input_data_formats = get_data_formats(graph->data_operands(op));
                 if (not are_data_formats_same(input_data_formats))
                 {
                     // we require that all input data formats to a splice are the same.
                     // cast all inputs to the the highest precision input data format
                     DataFormat highest_precision_df = get_highest_precision_data_format(non_constants_data_formats);
-                    log_debug(LogGraphCompiler,
-                              "Splice op {} has inputs with different data formats, casting all inputs to {}",
-                              op->name(),
-                              highest_precision_df);
+                    log_debug(
+                        LogGraphCompiler,
+                        "Splice op {} has inputs with different data formats, casting all inputs to {}",
+                        op->name(),
+                        highest_precision_df);
                     for (auto &operand : graph->data_operands(op))
                     {
-                        log_debug(LogGraphCompiler, "Splice op {} casting input {} to {}", op->name(), operand->name(), highest_precision_df);
+                        log_debug(
+                            LogGraphCompiler,
+                            "Splice op {} casting input {} to {}",
+                            op->name(),
+                            operand->name(),
+                            highest_precision_df);
                         operand->set_output_df(highest_precision_df);
                     }
                 }
@@ -515,25 +520,29 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
                         op->accumulate_df());
                     op->set_accumulate_df(DataFormat::Int32);
                 }
-                if (op->output_df() != DataFormat::Int8 
-                    and op->op_name() != "dequantization"
-                    and op->forge_attrs().find("has_dequant") == op->forge_attrs().end())
+                if (op->output_df() != DataFormat::Int8 and op->op_name() != "dequantization" and
+                    op->forge_attrs().find("has_dequant") == op->forge_attrs().end())
                 {
-                    if (op->forge_attrs().find("has_requant") != op->forge_attrs().end()) {
+                    if (op->forge_attrs().find("has_requant") != op->forge_attrs().end())
+                    {
                         log_warning(
                             "Op {} is configured for Int8, but output_df != Int8. "
                             "Setting output_df from {} to Int8.",
                             op->name(),
                             op->output_df());
                         op->set_output_df(DataFormat::Int8);
-                    } else if (op->is_matmul()){
+                    }
+                    else if (op->is_matmul())
+                    {
                         log_warning(
                             "Op {} is configured for Int8, but output_df != Int8. "
                             "Setting output_df from {} to Int8.",
                             op->name(),
                             op->output_df());
                         op->set_output_df(DataFormat::Int32);
-                    } else {
+                    }
+                    else
+                    {
                         log_warning(
                             "Op {} is configured for Int8, but output_df != Int8. "
                             "Setting output_df from {} to Int8.",
@@ -566,8 +575,9 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
                 if (op->output_df() != DataFormat::Int32)
                 {
                     // Requantization must be applied
-                    if (not (op->forge_attrs().find("has_requant") != op->forge_attrs().end() and
-                             std::get<bool>(op->forge_attrs().at("has_requant")))) {
+                    if (not(op->forge_attrs().find("has_requant") != op->forge_attrs().end() and
+                            std::get<bool>(op->forge_attrs().at("has_requant"))))
+                    {
                         log_warning(
                             "Op {} is configured for Int32, but output_df != Int32. "
                             "Setting output_df from {} to Int32.",
@@ -580,7 +590,7 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
         }
         else if (node->node_type() == graphlib::NodeType::kQueue)
         {
-            // The producer may have had its output_df modified. We need to update the output_df 
+            // The producer may have had its output_df modified. We need to update the output_df
             // of user-defined queues so that queue->output_df() reflects the producer output_df.
             auto producer = graph->data_operands(node)[0];
             node->set_output_df(producer->output_df());
@@ -588,9 +598,8 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
         else if (node->node_type() == graphlib::NodeType::kOutput)
         {
             auto output_op = graph->data_operands(node)[0];
-            auto is_partial_datacopy_edge = [](Edge e) {
-                return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-            };
+            auto is_partial_datacopy_edge = [](Edge e)
+            { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
             if (node->as<graphlib::OutputNode>()->untilize())
             {
                 if ((output_op->output_df() == DataFormat::Bfp8_b) || (output_op->output_df() == DataFormat::Bfp4_b) ||
@@ -631,9 +640,7 @@ void fix_data_formats(graphlib::Graph *graph, bool fp32_acc_supported)
 }
 
 void configure_accumulation_data_formats(
-    graphlib::Graph *graph,
-    const std::optional<DataFormat> default_accumulate_df,
-    bool fp32_acc_supported)
+    graphlib::Graph *graph, const std::optional<DataFormat> default_accumulate_df, bool fp32_acc_supported)
 {
     // apply user-overrides if set, otherwise infer using the input data formats loaded into src registers
     for (Node *node : graph->nodes())
@@ -694,9 +701,8 @@ void configure_intermediate_data_formats(graphlib::Graph *graph)
         graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>();
         op->set_intermediate_df(op->accumulate_df());
 
-        if (op->op_type() == "reduce" 
-            and std::get<std::string>(op->forge_attrs().at("dim")) == "z"
-            and op->output_df() == DataFormat::Int8)
+        if (op->op_type() == "reduce" and std::get<std::string>(op->forge_attrs().at("dim")) == "z" and
+            op->output_df() == DataFormat::Int8)
         {
             op->set_intermediate_df(op->output_df());
         }
@@ -706,7 +712,7 @@ void configure_intermediate_data_formats(graphlib::Graph *graph)
 void fix_math_fidelity(graphlib::Graph *graph)
 {
     bool disable_cap_sparse_mm_fidelity = env_as<bool>("FORGE_DISABLE_CAP_SPARSE_MM_FIDELITY", false);
-    
+
     for (Node *node : graph->nodes())
     {
         if (node->node_type() == graphlib::NodeType::kForgeOp)
@@ -726,9 +732,9 @@ void fix_math_fidelity(graphlib::Graph *graph)
             {
                 std::vector<graphlib::Node *> data_operands = graph->data_operands(op);
                 TT_ASSERT(data_operands.size() >= 2);
-                graphlib::Node* sparse_matrix = data_operands[0];
+                graphlib::Node *sparse_matrix = data_operands[0];
 
-                // data-aware opt -- mantissas should be zeros; we'll additionally check for bfp2a/b 
+                // data-aware opt -- mantissas should be zeros; we'll additionally check for bfp2a/b
                 if (get_precision_bits(sparse_matrix->output_df()) <= 2)
                 {
                     auto capped_math_fidelity = MathFidelity::HiFi2;
@@ -739,7 +745,7 @@ void fix_math_fidelity(graphlib::Graph *graph)
     }
 }
 
-void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& device_config)
+void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config)
 {
     for (Node *node : graph->nodes())
     {
@@ -763,15 +769,16 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
                 TT_ASSERT(data_operands.size() >= 3);
 
                 // assert the sparse matmul encodings are RawUInt* type
-                TT_ASSERT(data_operands[2]->output_df() == DataFormat::RawUInt8 or
-                          data_operands[2]->output_df() == DataFormat::RawUInt16 or
-                          data_operands[2]->output_df() == DataFormat::RawUInt32);
+                TT_ASSERT(
+                    data_operands[2]->output_df() == DataFormat::RawUInt8 or
+                    data_operands[2]->output_df() == DataFormat::RawUInt16 or
+                    data_operands[2]->output_df() == DataFormat::RawUInt32);
             }
             if (op->is_embedding())
             {
                 std::vector<graphlib::Node *> data_operands = graph->data_operands(op);
                 TT_ASSERT(data_operands.size() == 2);
-                graphlib::Node* table = data_operands[0];
+                graphlib::Node *table = data_operands[0];
                 graphlib::Node *indices = data_operands[1];
                 TT_LOG_ASSERT(
                     get_precision_bits(table->output_df()) > 8, "Embedding table must be f16 or f32 precision");
@@ -807,7 +814,8 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
                     op->math_fidelity());
                 TT_LOG_ASSERT(
                     op->accumulate_df() == DataFormat::Int32,
-                    "op: {}, accumulate_df: {}: If op is configured for Int8/Int32, accumulate data format must be Int32.",
+                    "op: {}, accumulate_df: {}: If op is configured for Int8/Int32, accumulate data format must be "
+                    "Int32.",
                     op->name(),
                     op->accumulate_df());
                 TT_LOG_ASSERT(
@@ -816,7 +824,8 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
                     op->name(),
                     device_config.arch_name);
             }
-            if (graphlib::is_eltwise_binary(op) or op->is_splice()) {
+            if (graphlib::is_eltwise_binary(op) or op->is_splice())
+            {
                 TT_LOG_ASSERT(
                     are_data_formats_all_float(all_data_formats) or are_data_formats_all_integer(all_data_formats),
                     "All input data formats should either be all float or all integer. Data formats for {}: {}",
@@ -827,19 +836,21 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
             {
                 // if a/b format is reconfigured, we want to capture grayskull-specific limitations
                 // see BBE#1437. Format conversion using BFP8A/B disallowed.
-                std::vector<DataFormat> valid_target_conversions = {DataFormat::Float32, DataFormat::Float16, DataFormat::Float16_b};
+                std::vector<DataFormat> valid_target_conversions = {
+                    DataFormat::Float32, DataFormat::Float16, DataFormat::Float16_b};
                 TT_LOG_ASSERT(
-                    std::find(valid_target_conversions.begin(), valid_target_conversions.end(), op->output_df()) != valid_target_conversions.end(),
+                    std::find(valid_target_conversions.begin(), valid_target_conversions.end(), op->output_df()) !=
+                        valid_target_conversions.end(),
                     "op: {}, accumulate_df: {}, output_df: {}. For grayskull, we can only do format conversions to {}.",
                     op->name(),
                     op->accumulate_df(),
                     op->output_df(),
-                    valid_target_conversions
-                );
+                    valid_target_conversions);
             }
 
             all_data_formats.push_back(op->intermediate_df());
-            TT_LOG_ASSERT(are_data_formats_same_exponent_widths(all_data_formats),
+            TT_LOG_ASSERT(
+                are_data_formats_same_exponent_widths(all_data_formats),
                 "All input data formats to be of the same type. (a or b type) Data formats for {}: {}",
                 op->name(),
                 all_data_formats);
@@ -860,9 +871,8 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
         else if (node->node_type() == graphlib::NodeType::kOutput)
         {
             auto producer = graph->data_operands(node).at(0);
-            auto is_partial_datacopy_edge = [](Edge e) {
-                return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-            };
+            auto is_partial_datacopy_edge = [](Edge e)
+            { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
             std::vector<graphlib::Edge> partial_datacopy_edges = graph->user_edges(node, is_partial_datacopy_edge);
             if (not partial_datacopy_edges.empty())
             {
@@ -882,7 +892,7 @@ void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& dev
     }
 }
 
-void validate_post_placer_data_formats(const graphlib::Graph *graph, const DeviceConfig& device_config)
+void validate_post_placer_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config)
 {
     if (not device_config.is_grayskull())
     {
@@ -895,16 +905,19 @@ void validate_post_placer_data_formats(const graphlib::Graph *graph, const Devic
         {
             if (graphlib::ForgeOpNode *op = node->as<graphlib::ForgeOpNode>(); op->is_matmul())
             {
-                const auto& forge_attrs = op->forge_attrs();
-                if (auto mk_it = forge_attrs.find("m_k"); mk_it != forge_attrs.end() and std::get<int>(mk_it->second) > 1)
+                const auto &forge_attrs = op->forge_attrs();
+                if (auto mk_it = forge_attrs.find("m_k");
+                    mk_it != forge_attrs.end() and std::get<int>(mk_it->second) > 1)
                 {
                     std::vector<DataFormat> all_data_formats = get_data_formats(graph->data_operands(op));
                     all_data_formats.push_back(op->intermediate_df());
                     all_data_formats.push_back(op->accumulate_df());
                     all_data_formats.push_back(op->output_df());
 
-                    TT_LOG_ASSERT(are_data_formats_same_exponent_widths(all_data_formats),
-                        "All input data formats to be of the same type. (a or b type) Data formats for {}: with m_k > 1. dfs={}",
+                    TT_LOG_ASSERT(
+                        are_data_formats_same_exponent_widths(all_data_formats),
+                        "All input data formats to be of the same type. (a or b type) Data formats for {}: with m_k > "
+                        "1. dfs={}",
                         op->name(),
                         all_data_formats);
                 }
@@ -953,9 +966,7 @@ void configure_stochastic_rounding(graphlib::Graph *graph, const bool is_stochas
     }
 }
 
-void satisfy_data_format_constraints(
-    graphlib::Graph *graph,
-    bool fp32_acc_supported)
+void satisfy_data_format_constraints(graphlib::Graph *graph, bool fp32_acc_supported)
 {
     fix_data_formats(graph, fp32_acc_supported);
     fix_math_fidelity(graph);
@@ -981,8 +992,7 @@ void run_dataformat_passes(
 
     configure_a_b_format_conversion(graph, device_config, default_df_override);
 
-    configure_accumulation_data_formats(
-        graph, default_accumulate_df, device_config.supports_fp32_accumulation());
+    configure_accumulation_data_formats(graph, default_accumulate_df, device_config.supports_fp32_accumulation());
 
     configure_intermediate_data_formats(graph);
 

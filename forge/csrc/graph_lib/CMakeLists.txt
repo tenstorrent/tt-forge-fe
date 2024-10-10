@@ -10,4 +10,3 @@ add_library(graph
     python_bindings.cpp)
 
 target_compile_options(graph PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
-

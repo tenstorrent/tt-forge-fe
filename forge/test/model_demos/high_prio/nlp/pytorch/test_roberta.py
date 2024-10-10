@@ -21,7 +21,7 @@ def test_roberta_masked_lm(test_device):
     tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
     model = download_model(AutoModelForMaskedLM.from_pretrained, "xlm-roberta-base")
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Input processing
@@ -38,28 +38,39 @@ def test_roberta_masked_lm(test_device):
 
     verify_module(
         forge.PyTorchModule("pt_roberta", model),
-        input_shapes=[(input_tokens.shape, attention_mask.shape,)],
-        inputs=[(input_tokens, attention_mask,)],
+        input_shapes=[
+            (
+                input_tokens.shape,
+                attention_mask.shape,
+            )
+        ],
+        inputs=[
+            (
+                input_tokens,
+                attention_mask,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
-    )
-    
-def test_roberta_sentiment_pytorch(test_device):
-    # Load Bart tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained,
-        "cardiffnlp/twitter-roberta-base-sentiment"
-    )
-    model = download_model(AutoModelForSequenceClassification.from_pretrained,
-        "cardiffnlp/twitter-roberta-base-sentiment"
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+
+def test_roberta_sentiment_pytorch(test_device):
+    # Load Bart tokenizer and model from HuggingFace
+    tokenizer = download_model(AutoTokenizer.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment")
+    model = download_model(
+        AutoModelForSequenceClassification.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment"
+    )
+
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Example from multi-nli validation set
@@ -83,6 +94,8 @@ def test_roberta_sentiment_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )

@@ -21,6 +21,7 @@ variants = [
     # "Salesforce/codegen-350M-nl", # Currently not supported
 ]
 
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(test_device, variant):
     # Configurations
@@ -41,9 +42,7 @@ def test_codegen(test_device, variant):
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
-    framework_model = download_model(
-        CodeGenForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False
-    )
+    framework_model = download_model(CodeGenForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
 
     # Input prompt
     input_prompt = "def hello_world():"
@@ -78,14 +77,26 @@ def test_codegen(test_device, variant):
     forge_model = forge.PyTorchModule("pt_codegen", framework_model)
     verify_module(
         forge_model,
-        input_shapes=[(input_ids.shape, attn_mask.shape,)],
-        inputs=[(input_ids, attn_mask,)],
+        input_shapes=[
+            (
+                input_ids.shape,
+                attn_mask.shape,
+            )
+        ],
+        inputs=[
+            (
+                input_ids,
+                attn_mask,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
             pcc=pcc,
         ),
     )

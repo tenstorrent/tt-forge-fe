@@ -23,11 +23,8 @@ from forge.forgeglobal import get_unique_node_id
 
 import os
 
-def Softmax(
-    name: str, 
-    operandA: Tensor, *, 
-    dim: int, 
-    stable: bool = True) -> Tensor:
+
+def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
 
     """
     Softmax operation.
@@ -54,11 +51,7 @@ def Softmax(
     return op("softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
 
 
-def LogSoftmax(
-    name: str, 
-    operandA: Tensor, *, 
-    dim: int, 
-    stable: bool = True) -> Tensor:
+def LogSoftmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:
 
     """
     LogSoftmax operation.
@@ -84,13 +77,15 @@ def LogSoftmax(
     """
     return op("log_softmax", name, operandA, attrs=(dim, stable), dimension=dim).get_tensor()
 
+
 def Layernorm(
-        name: str,
-        operandA: Tensor,
-        weights: Union[Tensor, Parameter],
-        bias: Union[Tensor, Parameter],
-        dim: int = -1,
-        epsilon: float = 1e-5) -> Tensor:
+    name: str,
+    operandA: Tensor,
+    weights: Union[Tensor, Parameter],
+    bias: Union[Tensor, Parameter],
+    dim: int = -1,
+    epsilon: float = 1e-5,
+) -> Tensor:
     """
     Layer normalization.
 
@@ -133,14 +128,16 @@ def Layernorm(
     else:
         return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon)).get_tensor()
 
+
 def Batchnorm(
-        name: str,
-        operandA: Tensor,
-        weights: Union[Tensor, Parameter],
-        bias: Union[Tensor, Parameter],
-        running_mean: Union[Tensor, Parameter],
-        running_var: Union[Tensor, Parameter],
-        epsilon: float = 1e-5) -> Tensor:
+    name: str,
+    operandA: Tensor,
+    weights: Union[Tensor, Parameter],
+    bias: Union[Tensor, Parameter],
+    running_mean: Union[Tensor, Parameter],
+    running_var: Union[Tensor, Parameter],
+    epsilon: float = 1e-5,
+) -> Tensor:
     """
     Batch normalization.
 
@@ -207,13 +204,7 @@ class Linear(ForgeModule):
         Forge tensor
     """
 
-    def __init__(
-        self,
-        name,
-        in_features,
-        out_features,
-        bias=True
-    ):
+    def __init__(self, name, in_features, out_features, bias=True):
         super().__init__(name)
 
         self.in_features = in_features
@@ -234,10 +225,7 @@ class Linear(ForgeModule):
 
     def forward(self, activations):
         return Matmul(
-            name=self.name,
-            operandA=activations,
-            operandB=self.weights,
-            bias=self.bias if self.bias_ else None
+            name=self.name, operandA=activations, operandB=self.weights, bias=self.bias if self.bias_ else None
         )
 
 
@@ -257,7 +245,7 @@ class Conv2dModule(ForgeModule):
         dilation=1,
         groups=1,
         bias=True,
-        t_stream_workaround=False, # add reshape/transpose to allow isolated conv2d to t-stream
+        t_stream_workaround=False,  # add reshape/transpose to allow isolated conv2d to t-stream
     ):
         super().__init__(name)
         assert (in_channels % groups) == 0, f"{in_channels} {groups}"
@@ -295,9 +283,7 @@ class Conv2dModule(ForgeModule):
             self.set_parameter("bias", bias_tensor)
 
     def forward(self, activations):
-        m1 = Conv2d(
-            self.name, activations, self.weights, bias=self.bias, **self.kwargs
-        )
+        m1 = Conv2d(self.name, activations, self.weights, bias=self.bias, **self.kwargs)
         if self.t_stream_workaround:
             m1 = Reshape("", m1, (1, 1, m1.shape[-3], m1.shape[-2] * m1.shape[-1]))
             m1 = Transpose("", m1, -2, -1)
@@ -327,8 +313,10 @@ class ConvTranspose2dModule(ForgeModule):
     ):
         super().__init__(name)
         assert out_channels % groups == 0, f"{in_channels} {groups}"
-        assert padding_mode == "zeros", "Only \"zeros\" supported for padding_mode"
-        assert isinstance(output_padding, int) and output_padding == 0, "output_padding not supported yet, can only be 0"
+        assert padding_mode == "zeros", 'Only "zeros" supported for padding_mode'
+        assert (
+            isinstance(output_padding, int) and output_padding == 0
+        ), "output_padding not supported yet, can only be 0"
 
         self.kwargs = {
             "stride": stride,
@@ -364,9 +352,7 @@ class ConvTranspose2dModule(ForgeModule):
             self.set_parameter("bias", bias_tensor)
 
     def forward(self, activations):
-        m1 = Conv2dTranspose(
-            self.name, activations, self.weights, bias=self.bias, **self.kwargs
-        )
+        m1 = Conv2dTranspose(self.name, activations, self.weights, bias=self.bias, **self.kwargs)
         # if self.t_stream_workaround:
         #     m1 = Reshape("", m1, (1, 1, m1.shape[-3], m1.shape[-2] * m1.shape[-1]))
         #     m1 = Transpose("", m1, -2, -1)
@@ -477,7 +463,5 @@ class SparseMatmulModule(ForgeModule):
         self.set_parameter("sparseA", sparseA.value())
 
     def forward(self, denseB):
-        m1 = SparseMatmul(
-            self.name, self.sparseA, denseB
-        )
+        m1 = SparseMatmul(self.name, self.sparseA, denseB)
         return m1

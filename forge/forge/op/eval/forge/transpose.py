@@ -58,9 +58,7 @@ class TransposeTM(PyTM):
                 self.dim1 -= inputs[0].shape.len()
             dc.fuse(
                 dc.op(
-                    TransposeTM.create(
-                        self.dim0, self.dim1, z_dim_slice=self.z_dim_slice
-                    ),
+                    TransposeTM.create(self.dim0, self.dim1, z_dim_slice=self.z_dim_slice),
                     inputs,
                 )
             )
@@ -93,12 +91,8 @@ class TransposeTM(PyTM):
                 result = dc.op("vslice", [result], (orig_shape[-1],))
             result = dc.op(TransposeTM.create(-2, -1), [result])
 
-            result = dc.op(
-                "narrow", [result], (-2, 0, orig_shape[-2], result.shape[-2])
-            )
-            result = dc.op(
-                "narrow", [result], (-1, 0, orig_shape[-3], result.shape[-1])
-            )
+            result = dc.op("narrow", [result], (-2, 0, orig_shape[-2], result.shape[-2]))
+            result = dc.op("narrow", [result], (-1, 0, orig_shape[-3], result.shape[-1]))
 
             dc.fuse(result)
 
@@ -125,12 +119,8 @@ class TransposeTM(PyTM):
             if orig_shape[-2] > 1:
                 result = dc.op("vslice", [result], (orig_shape[-2],))
 
-            result = dc.op(
-                "narrow", [result], (-2, 0, orig_shape[-3], result.shape[-2])
-            )
-            result = dc.op(
-                "narrow", [result], (-1, 0, orig_shape[-1], result.shape[-1])
-            )
+            result = dc.op("narrow", [result], (-2, 0, orig_shape[-3], result.shape[-2]))
+            result = dc.op("narrow", [result], (-1, 0, orig_shape[-1], result.shape[-1]))
 
             dc.fuse(result)
 

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest 
+import pytest
 
 import os
 import onnx
@@ -11,6 +11,7 @@ from forge.verify.backend import verify_module
 from forge import VerifyConfig
 from forge._C.backend_api import BackendType, BackendDevice
 from forge.verify.config import TestKind
+
 
 def test_lstm_valence_onnx(test_device):
     # Load model checkpoint from HuggingFace
@@ -22,14 +23,14 @@ def test_lstm_valence_onnx(test_device):
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     os.environ["FORGE_RIBBON2"] = "1"
-    
+
     # Required to patch data-mismatch. Here is followup issue
     # to check this out in more details:
     # tenstorrent/forge#1828
     os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
 
     # Run inference on Tenstorrent device
-    inputs = tf.random.uniform(shape=[1, 1, 282])   
+    inputs = tf.random.uniform(shape=[1, 1, 282])
     verify_module(
         forge.OnnxModule("onnx_lstm", model, load_path),
         input_shapes=(inputs.shape,),
@@ -40,5 +41,5 @@ def test_lstm_valence_onnx(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.98,
-        )
+        ),
     )

@@ -11,10 +11,16 @@ import torch
 
 from forge.forgeglobal import TILE_DIM
 from ..common import to_torch_operands, cast_for_cpu_eval
-from ..sparse_utils import transpose_sparse_picker_matrix, create_sparse_forge, shapeify_sparse_tiles_and_encodings, is_kernel_fracturing_candidate
+from ..sparse_utils import (
+    transpose_sparse_picker_matrix,
+    create_sparse_forge,
+    shapeify_sparse_tiles_and_encodings,
+    is_kernel_fracturing_candidate,
+)
 from forge.utils import round_up_div
 from forge.op.eval.common import calculate_tile_size
 from .transpose import TransposeTM
+
 
 def eval(type, attr, ops):
     assert len(ops) in [2, 3], "Matrix multiply should have two or three inputs"
@@ -28,7 +34,7 @@ def eval(type, attr, ops):
         result = torch.matmul(t_ops[0], t_ops[1])
         result = result.to(original_type)
         if len(t_ops) > 2:
-            result += t_ops[2] # bias
+            result += t_ops[2]  # bias
     elif type == "sparse_matmul":
         a = t_ops[0]
         b = t_ops[1]
@@ -62,7 +68,7 @@ def eval(type, attr, ops):
 
             while len(b.shape) < 4:
                 b = b.unsqueeze(0)
-            
+
             if a.shape[-3] == 1:
                 bcast_amount = b.shape[-3]
                 a = torch.cat([a] * bcast_amount, dim=-3)
@@ -116,7 +122,7 @@ def shape(type, attr, ops):
 
     # Z broadcast
     if len(ops[0]) >= 3:
-        if (ops[0][-3] != ops[1][-3]):
+        if ops[0][-3] != ops[1][-3]:
             if ops[0][-3] == 1:
                 broadcast.append((0, len(ops[0]) - 3, ops[1][-3]))
                 output_dim.append(ops[1][-3])
@@ -140,7 +146,9 @@ def shape(type, attr, ops):
             if type == "sparse_matmul":
                 assert ops[0][-1] == ops[1][-2] * ops[1][-3], "Inner dimensions don't match for sparse matmul."
             else:
-                assert False, f"If inner dimension is not the same for matmul, one of operands must have it be 1, shapes are: {ops}"
+                assert (
+                    False
+                ), f"If inner dimension is not the same for matmul, one of operands must have it be 1, shapes are: {ops}"
 
     output_dim.extend([ops[0][-2], ops[1][-1]])
     if accumulate:
@@ -149,15 +157,16 @@ def shape(type, attr, ops):
 
     return output_dim, broadcast
 
+
 def lower(type, attr, forge_attr, lc, ops, outputs):
     assert len(ops) in [2, 3, 4], "Matrix multiply should have two or three inputs"
     assert len(attr) <= 2, "Matrix multiply should have zero to two attributes (accumulate, z_bcast_factor, zero_point)"
-    has_requant = "requant" in forge_attr and forge_attr['requant']
+    has_requant = "requant" in forge_attr and forge_attr["requant"]
 
     accumulate = (len(attr) >= 2) and bool(attr[0]) if has_requant else (len(attr) >= 1) and bool(attr[0])
 
     forge_attrs = {}
-    if 'sfpu_op' in forge_attr and os.environ.get("FORGE_FUSE_MATMUL_GELU", "0") != "0":
+    if "sfpu_op" in forge_attr and os.environ.get("FORGE_FUSE_MATMUL_GELU", "0") != "0":
         forge_attrs["sfpu_op"] = "gelu"
     if accumulate:
         forge_attrs["accumulate"] = True
@@ -203,14 +212,13 @@ def lower(type, attr, forge_attr, lc, ops, outputs):
         sparse_ublock_idx_bits = sparse_forge.get_sparse_ublock_idx_bits(grid_r, t_factor_r, u_rt)
         sparse, encodings, _s_shape, _e_shape, _num_strips = sparse_forge.get_sparse_tiles_and_encodings(grid_r)
         sparse, encodings = shapeify_sparse_tiles_and_encodings(
-            sparse=sparse,
-            encodings=encodings,
-            grid_r=grid_r,
-            fracture_factor=fracture_factor
+            sparse=sparse, encodings=encodings, grid_r=grid_r, fracture_factor=fracture_factor
         )
 
         sparse_is_binary = (sparse.numel() == (torch.sum(sparse == 1) + torch.sum(sparse == 0))).item()
-        sparse_is_int = (sparse.numel() == (torch.sum(sparse == 1) + torch.sum(sparse == 0))).item() and (ops[0].output_df == DataFormat.Int8 or ops[0].output_df == DataFormat.Int32)
+        sparse_is_int = (sparse.numel() == (torch.sum(sparse == 1) + torch.sum(sparse == 0))).item() and (
+            ops[0].output_df == DataFormat.Int8 or ops[0].output_df == DataFormat.Int32
+        )
 
         if sparse_is_int:
             target_df = DataFormat.Int8
@@ -230,7 +238,28 @@ def lower(type, attr, forge_attr, lc, ops, outputs):
         forge_attrs["sparse_ublock_idx_bits"] = sparse_ublock_idx_bits
         forge_attrs["fracture_factor"] = fracture_factor
         # We need fracture_factor in attributes as well, since shape() function doesn't get forge attrs
-        lc.op("matmul", [in0, in1, in2], (accumulate, is_sparse, sparse_tile_ptr_bits, 1, zdim, picker.shape[-2], in1.shape[-1], fracture_factor, u_rt, u_kt, u_ct, grid_c, t_factor_r, t_factor_c, sparse_ublock_idx_bits), forge_attrs)
+        lc.op(
+            "matmul",
+            [in0, in1, in2],
+            (
+                accumulate,
+                is_sparse,
+                sparse_tile_ptr_bits,
+                1,
+                zdim,
+                picker.shape[-2],
+                in1.shape[-1],
+                fracture_factor,
+                u_rt,
+                u_kt,
+                u_ct,
+                grid_c,
+                t_factor_r,
+                t_factor_c,
+                sparse_ublock_idx_bits,
+            ),
+            forge_attrs,
+        )
     else:
         # Find proper tile sizes
         if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
@@ -239,7 +268,7 @@ def lower(type, attr, forge_attr, lc, ops, outputs):
             tile_width = TILE_DIM
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
-        lc.op(type, ops, attr, forge_attrs, "", tile_height, tile_width) # straight 1-1 for matmul
+        lc.op(type, ops, attr, forge_attrs, "", tile_height, tile_width)  # straight 1-1 for matmul
 
 
 def decompose(type, attr, dc, inputs):
@@ -291,6 +320,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         in0t = ac.op(TransposeTM.create(-2, -1), [in0])
         return ac.op("matmul", (in0t, grad))
 
+
 def initial_flops_estimate(type, attr, ops):
     macc = 0
     if type == "matmul":
@@ -301,7 +331,6 @@ def initial_flops_estimate(type, attr, ops):
         if len(output_shape) > 3:
             macc *= output_shape[-4]
         macc *= ops[0][-1]
-        
+
     flops = macc * 2
     return flops
-        

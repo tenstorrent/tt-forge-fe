@@ -776,14 +776,14 @@ std::pair<Edge, Edge> insert_node_on_edge(
     return std::make_pair(new_edge0, new_edge1);
 }
 
-std::tuple<ForgeOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering, bool hoist_tms, bool remove_edge)
+std::tuple<ForgeOpNode *, Edge, Edge> insert_nop_on_edge(
+    Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering, bool hoist_tms, bool remove_edge)
 {
     const Node *src = graph->node_by_id(edge.producer_node_id);
     const Node *dest = graph->node_by_id(edge.consumer_node_id);
 
     ForgeOpNode *nop = graph->add_node(
-        graphlib::create_node<graphlib::ForgeOpNode>(nop_name, "nop"),
-        graph->get_subgraph_id_for_node(src->id()));
+        graphlib::create_node<graphlib::ForgeOpNode>(nop_name, "nop"), graph->get_subgraph_id_for_node(src->id()));
     nop->set_shape(src->shape());
     nop->set_buffering_op(is_buffering);
 
@@ -801,7 +801,8 @@ std::tuple<ForgeOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge
         }
     }
 
-    auto [edge0, edge1] = insert_node_on_edge(graph, edge, nop, false, remove_edge, 0 /* consumer_index */, not hoist_tms);
+    auto [edge0, edge1] =
+        insert_node_on_edge(graph, edge, nop, false, remove_edge, 0 /* consumer_index */, not hoist_tms);
 
     return std::make_tuple(nop, edge0, edge1);
 }
@@ -1372,9 +1373,7 @@ void handle_change_rank(graphlib::Graph *graph, graphlib::Edge edge)
         TT_ASSERT(change_rank);
         auto attr = (op == "squeeze") ? std::vector<graphlib::OpType::Attr>{0}
                                       : std::vector<graphlib::OpType::Attr>{0, ((int)rank - 1)};
-        change_rank->change_op_type(op, attr, graphlib::OpType::Attrs{
-            {"dim", attr[0]}
-        });
+        change_rank->change_op_type(op, attr, graphlib::OpType::Attrs{{"dim", attr[0]}});
         change_rank->set_shape(producer->shape().as_rank(rank));
         change_rank->tag("dont_erase", true);
         auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, edge, change_rank);
@@ -1986,7 +1985,7 @@ std::unique_ptr<Node> ConstEvalGraph::promote_node(
                     dynamic_cast<InputNode *>(runtime_graph->node_by_id(runtime_edge.producer_node_id));
                 TT_ASSERT(runtime_operand, "All operands of promoted nodes must be graph inputs");
                 Node *consteval_operand = nullptr;
-                
+
                 // Only add the node if it doesn't already exist in the consteval graph
                 if (ConstEvalGraph *nested_consteval_graph = runtime_operand->get_consteval_graph())
                     consteval_operand = graft(nested_consteval_graph->get_graph());

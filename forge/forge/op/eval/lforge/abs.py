@@ -19,7 +19,7 @@ class Abs(ForgeEltwiseUnaryOp):
     def create(cls, vector=None):
         self = cls("abs")
         if vector is not None:
-           self.set_forge_attr("vector", vector)
+            self.set_forge_attr("vector", vector)
         return self
 
     def eval(self, tensors):
@@ -40,9 +40,7 @@ class Abs(ForgeEltwiseUnaryOp):
         elif tile_height < TILE_DIM:
             shape[-2] = tile_height
         else:
-            raise RuntimeError(
-                f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}"
-            )
+            raise RuntimeError(f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}")
 
         return shape, []
 
@@ -59,9 +57,7 @@ class Abs(ForgeEltwiseUnaryOp):
         if compiler_cache_cycles is not None:
             return compiler_cache_cycles
 
-        use_legacy_path = bool(
-            int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0"))
-        )
+        use_legacy_path = bool(int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0")))
 
         if use_legacy_path:
             tile_weight = get_op_model_param(op_model_desc, "tile_weight")

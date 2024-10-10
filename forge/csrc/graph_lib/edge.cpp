@@ -5,8 +5,10 @@
 
 std::uint64_t tt::graphlib::Edge::last_assigned_edge_creation_id = 0;
 
-namespace tt {
-namespace graphlib {
+namespace tt
+{
+namespace graphlib
+{
 
 Edge::Edge(
     NodeId _producer_node_id,
@@ -19,7 +21,9 @@ Edge::Edge(
     producer_output_port_id(_producer_output_port_id),
     consumer_node_id(_consumer_node_id),
     consumer_input_port_id(_consumer_input_port_id),
-    edge_type(_edge_type) {}
+    edge_type(_edge_type)
+{
+}
 
 Edge::Edge(
     NodeId _producer_node_id,
@@ -33,6 +37,8 @@ Edge::Edge(
     producer_output_port_id(_producer_output_port_id),
     consumer_node_id(_consumer_node_id),
     consumer_input_port_id(_consumer_input_port_id),
-    edge_type(_edge_type) {}
-} // namespace graphlib
-} // namespace tt
+    edge_type(_edge_type)
+{
+}
+}  // namespace graphlib
+}  // namespace tt

@@ -5,7 +5,7 @@
 #   Test 3
 #   Pad operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -19,27 +19,22 @@ from forge import ForgeModule, Tensor
 
 class ForgePadTest(ForgeModule):
     """
-        Forge Test 3
+    Forge Test 3
 
     """
 
-    def __init__(
-        self,
-        shape,
-        pad
-    ):
+    def __init__(self, shape, pad):
         super().__init__("Forge Test 3")
-
 
         self.testname = "Operator Pad, Test 3"
         self.shape = shape
         self.pad = pad
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
 
         self.inputs = [Tensor.create_from_torch(torch.rand(*self.shape)) for _ in range(2)]
-        
+
         self.set_parameter("train_param1", torch.rand(*self.shape, requires_grad=True))
         self.set_parameter("train_param2", torch.rand(*self.shape, requires_grad=True))
 

@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "placement_printer.hpp"
 
-#include "utils/assert.hpp"
-
 #include <algorithm>
 
+#include "utils/assert.hpp"
 
-namespace tt::utils {
+namespace tt::utils
+{
 
 int getNumDigits(int num)
 {
@@ -23,7 +23,8 @@ int getNumDigits(int num)
     return digits;
 }
 
-std::string spacess(int num) {
+std::string spacess(int num)
+{
     std::string spaces_string;
 
     for (int i = 0; i < num; i++)
@@ -43,14 +44,13 @@ void PlacementPrinter::fillRectangle(uint epoch, uint chip, uint top, uint left,
         for (uint w = left; w < right; w++)
         {
             // TODO: Validate values
-            int idx =
-                epoch * (this->chipCount * this->height * this->width) +
-                chip * (this->height * this->width) +
-                h * this->width +
-                w;
+            int idx = epoch * (this->chipCount * this->height * this->width) + chip * (this->height * this->width) +
+                      h * this->width + w;
 
-            TT_ASSERT(this->linearMap[idx] == 0, "Overwrite happened! Writing " + std::to_string(val) + " over " +
-                std::to_string(this->linearMap[idx] - 1));
+            TT_ASSERT(
+                this->linearMap[idx] == 0,
+                "Overwrite happened! Writing " + std::to_string(val) + " over " +
+                    std::to_string(this->linearMap[idx] - 1));
 
             // Save values + 1, in order to keep 0 as a viable op id, but then print a non-zero char for empty cores
             this->linearMap[idx] = val + 1;
@@ -73,24 +73,19 @@ std::string PlacementPrinter::generatePlacementString()
     {
         out << "Epoch " + std::to_string(e) + ":\n";
         int epochType = 0;
-        while (int(e) - std::accumulate(this->epochsPerEpochType.begin(), this->epochsPerEpochType.begin() + epochType + 1, 0) >= 0)
+        while (int(e) - std::accumulate(
+                            this->epochsPerEpochType.begin(), this->epochsPerEpochType.begin() + epochType + 1, 0) >=
+               0)
         {
             epochType++;
         }
         std::string epochTypeStr;
         switch (epochType)
         {
-            case 0:
-                epochTypeStr = "fwd";
-                break;
-            case 1:
-                epochTypeStr = "bwd";
-                break;
-            case 2:
-                epochTypeStr = "opt";
-                break;
-            default:
-                TT_ASSERT(false, "Invalid epoch type value: " + std::to_string(epochType));
+            case 0: epochTypeStr = "fwd"; break;
+            case 1: epochTypeStr = "bwd"; break;
+            case 2: epochTypeStr = "opt"; break;
+            default: TT_ASSERT(false, "Invalid epoch type value: " + std::to_string(epochType));
         }
         out << "Epoch type: " + epochTypeStr + "\n";
         for (uint h = 0; h < this->height; h++)
@@ -99,11 +94,8 @@ std::string PlacementPrinter::generatePlacementString()
             {
                 for (uint w = 0; w < this->width; w++)
                 {
-                    int idx =
-                        e * (this->chipCount * this->height * this->width) +
-                        c * (this->height * this->width) +
-                        h * this->width +
-                        w;
+                    int idx = e * (this->chipCount * this->height * this->width) + c * (this->height * this->width) +
+                              h * this->width + w;
                     int val = linearMap[idx] - 1;  // Reduce by 1 to get the original value
 
                     // If new chip started, add buffer inbetween chips

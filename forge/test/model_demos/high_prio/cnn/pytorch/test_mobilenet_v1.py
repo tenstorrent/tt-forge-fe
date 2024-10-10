@@ -114,39 +114,17 @@ class MobileNetV1(nn.Module):
             Conv(3, 32, stride=2, use_relu6=use_relu6),
             Conv_dw_Conv(32, 64, kernel_size=3, stride=1, use_relu6=use_relu6),
             Conv_dw_Conv(64, 128, kernel_size=3, stride=2, use_relu6=use_relu6),
-            Conv_dw_Conv(
-                128, 128, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                128, 256, kernel_size=3, stride=2, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                256, 256, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                256, 512, kernel_size=3, stride=2, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                512, 512, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                512, 512, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                512, 512, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                512, 512, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                512, 512, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                512, 1024, kernel_size=3, stride=2, use_relu6=use_relu6
-            ),
-            Conv_dw_Conv(
-                1024, 1024, kernel_size=3, stride=1, use_relu6=use_relu6
-            ),
+            Conv_dw_Conv(128, 128, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(128, 256, kernel_size=3, stride=2, use_relu6=use_relu6),
+            Conv_dw_Conv(256, 256, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(256, 512, kernel_size=3, stride=2, use_relu6=use_relu6),
+            Conv_dw_Conv(512, 512, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(512, 512, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(512, 512, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(512, 512, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(512, 512, kernel_size=3, stride=1, use_relu6=use_relu6),
+            Conv_dw_Conv(512, 1024, kernel_size=3, stride=2, use_relu6=use_relu6),
+            Conv_dw_Conv(1024, 1024, kernel_size=3, stride=1, use_relu6=use_relu6),
         )
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(1024, num_classes)
@@ -158,8 +136,8 @@ class MobileNetV1(nn.Module):
         out = self.fc(x)
 
         return out
-    
-    
+
+
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -171,20 +149,18 @@ def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     tt_model = forge.PyTorchModule("mobilenet_v1", model)
 
     input_shape = (1, 3, 64, 64)
-    
+
     image_tensor = torch.rand(*input_shape)
-    
-    
+
     return tt_model, [image_tensor], {}
-
-
 
 
 def test_mobilenetv1_basic(test_device):
     model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch(
-        test_device, None,
+        test_device,
+        None,
     )
-    
+
     verify_module(
         model,
         input_shapes=[inputs[0].shape],
@@ -194,29 +170,27 @@ def test_mobilenetv1_basic(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
+
 
 import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
+
 def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
-    compiler_cfg = (
-        forge.config._get_global_compiler_config()
-    )  # load global compiler config object
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Create Forge module from PyTorch model
-    preprocessor = download_model(AutoImageProcessor.from_pretrained,
-       variant
-    )
-    model = download_model(AutoModelForImageClassification.from_pretrained,
-       variant
-    )
+    preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
+    model = download_model(AutoModelForImageClassification.from_pretrained, variant)
     tt_model = forge.PyTorchModule("mobilenet_v1__hf_075_192", model)
 
     # Image load and pre-processing into pixel_values
@@ -225,14 +199,14 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
-    
-    return tt_model, [image_tensor], {}
 
+    return tt_model, [image_tensor], {}
 
 
 def test_mobilenetv1_192(test_device):
     model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(
-        test_device, "google/mobilenet_v1_0.75_192",
+        test_device,
+        "google/mobilenet_v1_0.75_192",
     )
 
     # Run inference on Tenstorrent device
@@ -246,10 +220,13 @@ def test_mobilenetv1_192(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
-    
+
+
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -258,12 +235,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     os.environ["FORGE_RIBBON2"] = "1"
 
     # Create Forge module from PyTorch model
-    preprocessor = download_model(AutoImageProcessor.from_pretrained,
-        variant
-    )
-    model = download_model(AutoModelForImageClassification.from_pretrained,
-        variant
-    )
+    preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
+    model = download_model(AutoModelForImageClassification.from_pretrained, variant)
     tt_model = forge.PyTorchModule("mobilenet_v1__hf_1_224", model)
 
     # Image load and pre-processing into pixel_values
@@ -272,13 +245,14 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     inputs = preprocessor(images=image, return_tensors="pt")
 
     image_tensor = inputs.pixel_values
-    
+
     return tt_model, [image_tensor], {}
-    
-    
+
+
 def test_mobilenetv1_224(test_device):
     model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(
-        test_device, "google/mobilenet_v1_1.0_224",
+        test_device,
+        "google/mobilenet_v1_1.0_224",
     )
 
     # Run inference on Tenstorrent device
@@ -292,6 +266,8 @@ def test_mobilenetv1_224(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )

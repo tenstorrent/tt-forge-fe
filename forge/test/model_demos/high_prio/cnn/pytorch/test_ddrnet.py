@@ -16,9 +16,7 @@ from forge._C.backend_api import BackendDevice
 sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock
 
-sys.path.append(
-    "third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/model"
-)
+sys.path.append("third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/model")
 from semseg import DualResNet, BasicBlock_seg
 
 variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
@@ -36,25 +34,17 @@ def test_ddrnet_pytorch(variant, test_device):
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
 
-        model = DualResNet_23(
-            block=BasicBlock, layers=[2, 2, 2, 2], planes=32, last_planes=1024
-        )
+        model = DualResNet_23(block=BasicBlock, layers=[2, 2, 2, 2], planes=32, last_planes=1024)
 
     elif variant == "ddrnet23":
 
-        model = DualResNet_23(
-            block=BasicBlock, layers=[2, 2, 2, 2], planes=64, last_planes=2048
-        )
+        model = DualResNet_23(block=BasicBlock, layers=[2, 2, 2, 2], planes=64, last_planes=2048)
 
     elif variant == "ddrnet39":
 
-        model = DualResNet_39(
-            block=BasicBlock, layers=[3, 4, 6, 3], planes=64, last_planes=2048
-        )
+        model = DualResNet_39(block=BasicBlock, layers=[3, 4, 6, 3], planes=64, last_planes=2048)
 
-    state_dict_path = (
-        f"third_party/confidential_customer_models/generated/files/{variant}.pth"
-    )
+    state_dict_path = f"third_party/confidential_customer_models/generated/files/{variant}.pth"
 
     state_dict = torch.load(state_dict_path, map_location=torch.device("cpu"))
 
@@ -90,12 +80,7 @@ def test_ddrnet_pytorch(variant, test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            pcc=(
-                0.98
-                if test_device.arch == BackendDevice.Grayskull
-                and variant != "ddrnet23s"
-                else 0.99
-            ),
+            pcc=(0.98 if test_device.arch == BackendDevice.Grayskull and variant != "ddrnet23s" else 0.99),
         ),
     )
 
@@ -112,10 +97,7 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
     os.environ["FORGE_RIBBON2"] = "1"
 
-    if (
-        variant == "ddrnet23s_cityscapes"
-        and test_device.arch == BackendDevice.Wormhole_B0
-    ):
+    if variant == "ddrnet23s_cityscapes" and test_device.arch == BackendDevice.Wormhole_B0:
         compiler_cfg.enable_auto_fusing = False
         compiler_cfg.amp_level = 2
 
@@ -142,7 +124,9 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
             augment=True,
         )
 
-    state_dict_path = f"third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/weights/{variant}.pth"
+    state_dict_path = (
+        f"third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/weights/{variant}.pth"
+    )
     state_dict = torch.load(state_dict_path, map_location=torch.device("cpu"))
     model.load_state_dict(state_dict, strict=False)
     model.eval()

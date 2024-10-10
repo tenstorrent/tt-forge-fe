@@ -58,8 +58,7 @@ struct Predicate
     static Predicate<T, U1> anyOf(Iter begin, Iter end, Fn view = nullptr)
     {
         return Predicate<T, U1>(
-            [begin, end](U1 r)
-            { return std::any_of(begin, end, [r](auto const& p) { return Predicate<U1>(p)(r); }); },
+            [begin, end](U1 r) { return std::any_of(begin, end, [r](auto const& p) { return Predicate<U1>(p)(r); }); },
             view);
     }
 
@@ -67,8 +66,7 @@ struct Predicate
     static Predicate<T, U1> allOf(Iter begin, Iter end, Fn view = nullptr)
     {
         return Predicate<T, U1>(
-            [begin, end](U1 r)
-            { return std::all_of(begin, end, [r](auto const& p) { return Predicate<U1>(p)(r); }); },
+            [begin, end](U1 r) { return std::all_of(begin, end, [r](auto const& p) { return Predicate<U1>(p)(r); }); },
             view);
     }
 

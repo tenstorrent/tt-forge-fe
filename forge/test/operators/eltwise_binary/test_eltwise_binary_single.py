@@ -13,13 +13,8 @@ from . import models
 
 MODELS_PATH = "./forge/test/operators/eltwise_binary/models/"
 
-def test_eltwise_binary_single(
-    bin_model,
-    bin_train,
-    bin_recompute,
-    bin_op,
-    bin_shape
-):
+
+def test_eltwise_binary_single(bin_model, bin_train, bin_recompute, bin_op, bin_shape):
 
     print("\n")
     print(f"bin_train --> {bin_train}")
@@ -31,15 +26,15 @@ def test_eltwise_binary_single(
 
     if not bin_train and bin_recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
-    
+
     assert type(bin_train) in [bool, str], "Type of training parameter must be boolean or string"
     if type(bin_train) == str:
-        training = True if bin_train == 'True' else False
+        training = True if bin_train == "True" else False
     else:
         training = bin_train
     assert type(bin_recompute) in [bool, str], "Type of recompute parameter must be boolean or string"
     if type(bin_recompute) == str:
-        recompute = True if bin_recompute == 'True' else False
+        recompute = True if bin_recompute == "True" else False
     else:
         recompute = bin_recompute
     operation = bin_op
@@ -54,17 +49,16 @@ def test_eltwise_binary_single(
     print(f"Shape --> {shape}")
     print("\n")
 
-    architecture = f'models.{model}.ForgeElementWiseBinaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    architecture = (
+        f'models.{model}.ForgeElementWiseBinaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    )
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
+        verify_cfg=VerifyConfig(),
     )

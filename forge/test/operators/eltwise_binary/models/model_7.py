@@ -5,7 +5,7 @@
 #   Test 7
 #   Binary element-wise operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -43,7 +43,7 @@ class ForgeElementWiseBinaryTest(ForgeModule):
             self.set_parameter("train_param" + str(i + 1), torch.rand(*self.shape, requires_grad=True))
 
     def forward(self, x1, x2, x3, x4):
-        
+
         # Layer 2
         op1 = self.operator(self.opname + "1", x1, self.train_param1)
         op2 = self.operator(self.opname + "2", x1, self.train_param2)
@@ -87,5 +87,3 @@ class ForgeElementWiseBinaryTest(ForgeModule):
 
     def values(self):
         return [item.value() for item in self.inputs]
-
-    

@@ -24,7 +24,7 @@ from forge.op.eval.common import calculate_tile_size
 def eval(type, attr, ops):
     assert len(ops) == 2, "Eltwise binary should have two inputs"
     assert type == "binary_stack" or len(attr) == 0, "Eltwise binary should have no attributes"
-    
+
     t_ops = to_torch_operands(*ops)
 
     if t_ops[0].dtype != t_ops[1].dtype:
@@ -32,7 +32,7 @@ def eval(type, attr, ops):
             t_ops = (t_ops[0].type(t_ops[1].dtype), t_ops[1])
         else:
             t_ops = (t_ops[0], t_ops[1].type(t_ops[0].dtype))
-    
+
     f = {
         "add": lambda i: torch.add(t_ops[0], t_ops[1]),
         "divide": lambda i: torch.divide(t_ops[0], t_ops[1]),
@@ -41,7 +41,7 @@ def eval(type, attr, ops):
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
-        "binary_stack": lambda i: torch.stack((t_ops[0], t_ops[1]), axis=attr[0]).flatten(attr[0]-1, attr[0]),
+        "binary_stack": lambda i: torch.stack((t_ops[0], t_ops[1]), axis=attr[0]).flatten(attr[0] - 1, attr[0]),
         "power": lambda i: torch.pow(t_ops[0], t_ops[1]),
         "greater": lambda i: torch.gt(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "greater_equal": lambda i: torch.ge(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
@@ -54,6 +54,7 @@ def eval(type, attr, ops):
     assert type in f, f"{type} not defined in eval map for eltwise binary ops."
 
     return f[type](t_ops)
+
 
 # Return shape, and list of dimensions that were broadcast on operands
 def shape(type, attr, ops) -> Tuple[Tuple, List]:
@@ -82,16 +83,19 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
     for dim in range(len(ops[0])):
         if ops[0][dim] != ops[1][dim]:
             if ops[1][dim] == 1:
-                broadcast.append((1, dim - len(ops[1]), ops[0][dim])) # Convert to negative indexing
+                broadcast.append((1, dim - len(ops[1]), ops[0][dim]))  # Convert to negative indexing
                 output_shape.append(ops[0][dim])
             else:
-                assert ops[0][dim] == 1, f"Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: {ops[0]} vs {ops[1]}"
-                broadcast.append((0, dim - len(ops[0]), ops[1][dim])) # Convert to negative indexing
+                assert (
+                    ops[0][dim] == 1
+                ), f"Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: {ops[0]} vs {ops[1]}"
+                broadcast.append((0, dim - len(ops[0]), ops[1][dim]))  # Convert to negative indexing
                 output_shape.append(ops[1][dim])
         else:
             output_shape.append(ops[0][dim])
 
     return tuple(output_shape), broadcast
+
 
 def lower(type, attr, lc, ops, outputs):
     assert len(ops) == 2, "Eltwise binary should have two inputs"
@@ -121,21 +125,21 @@ def lower(type, attr, lc, ops, outputs):
 
         in_shape[-1] = ((in_shape[-1] - 1) // TILE_DIM + 1) * TILE_DIM
         in_shape[-2] = ((in_shape[-2] - 1) // TILE_DIM + 1) * TILE_DIM
-        
+
         one = lc.tensor(torch.ones(in_shape))
         amplifier = lc.tensor(torch.zeros(in_shape) + amplification)
 
         def ge(A, B):
             diff = lc.op("subtract", (A, B))
-                    # diff = A - B
+            # diff = A - B
             diff = lc.op("multiply", (diff, amplifier))
-                    # diff = (A - B) * amplifier
+            # diff = (A - B) * amplifier
             diff_one = lc.op("add", (diff, one))
-                    # diff + 1.0
-            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="min" ), (diff_one, ))
-                    # res = ReLU(diff + 1.0, 1.0)
-            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="max"), (res, ))
-                    # res = Inv_ReLU(res, 1.0)
+            # diff + 1.0
+            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="min"), (diff_one,))
+            # res = ReLU(diff + 1.0, 1.0)
+            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=1.0, relu_mode="max"), (res,))
+            # res = Inv_ReLU(res, 1.0)
             return res
 
         def le(A, B):
@@ -166,11 +170,11 @@ def lower(type, attr, lc, ops, outputs):
         else:
             ne(A, B)
     elif type == "power":
-        #lc.op("power_binary", ops, attr)  # 'power' backend op is unary
+        # lc.op("power_binary", ops, attr)  # 'power' backend op is unary
         ln_x = lc.op(ForgeLog.create(), [ops[0]])
-        y_ln_x = lc.op("multiply", (ops[1], ln_x)) 
+        y_ln_x = lc.op("multiply", (ops[1], ln_x))
         approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-        lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])            
+        lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])
     else:
         # Find proper tile sizes
         if bool(int(os.environ.get("FORGE_ENABLE_TINY_TILE", "0"))):
@@ -184,15 +188,20 @@ def lower(type, attr, lc, ops, outputs):
         ops1_dims = len(ops[1].shape)
         if ops0_dims == 5 and ops1_dims < 5:
             while ops1_dims < 5:
-                ops[1] = lc.op(ForgeNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=ops1_dims), [ops[1]], tag="dont_remove")
+                ops[1] = lc.op(
+                    ForgeNop.create(unsqueeze="unsqueeze", unsqueeze_dim=ops1_dims), [ops[1]], tag="dont_remove"
+                )
                 ops1_dims += 1
         elif ops1_dims == 5 and ops0_dims < 5:
             while ops0_dims < 5:
-                ops[0] = lc.op(ForgeNop.create(unsqueeze = "unsqueeze", unsqueeze_dim=ops0_dims), [ops[0]], tag="dont_remove")
+                ops[0] = lc.op(
+                    ForgeNop.create(unsqueeze="unsqueeze", unsqueeze_dim=ops0_dims), [ops[0]], tag="dont_remove"
+                )
                 ops0_dims += 1
-        lc.op(type, ops, attr, {}, "", tile_height, TILE_DIM) # straight 1-1 for all other binaries
+        lc.op(type, ops, attr, {}, "", tile_height, TILE_DIM)  # straight 1-1 for all other binaries
 
     assert type != "take", "Take should be constevaled"
+
 
 def backward(op_type, attr, ac, operand, inputs, output, grad):
 
@@ -202,10 +211,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     # Some operands are implicitly broadcasted, so their shapes in backward() need to be unbroadcasted for grad accumulation
 
-    shapes = [
-        inputs[0].shape.as_list(),
-        inputs[1].shape.as_list()
-    ]
+    shapes = [inputs[0].shape.as_list(), inputs[1].shape.as_list()]
 
     # Pad to longer dims
     longer_dims = max(len(s) for s in shapes)
@@ -233,7 +239,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             return ac.op("multiply", (grad, ac.constant(-1)))
 
     elif op_type == "multiply":
-        op_grad = ac.op("multiply", (grad, inputs[1-operand]))
+        op_grad = ac.op("multiply", (grad, inputs[1 - operand]))
         if inputs[operand].shape != grad.shape:
             for i in range(len(shapes[operand])):
                 if shapes[operand][i] < grad_shape[i]:
@@ -242,16 +248,16 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     elif op_type == "maximum":
         # TODO
-        return ac.op(Nop.create(), (grad,)) # pass gradient through
+        return ac.op(Nop.create(), (grad,))  # pass gradient through
 
-    elif op_type == "power": 
-        if operand == 0: # dx = y * (x^y) * recp(x)
+    elif op_type == "power":
+        if operand == 0:  # dx = y * (x^y) * recp(x)
             recip = ac.op(Reciprocal.create(), (inputs[0],))
-            partial_grad = ac.op("multiply", (output, recip))  
+            partial_grad = ac.op("multiply", (output, recip))
             pow_grad = ac.op("multiply", (inputs[1], partial_grad))
-        if operand == 1: # dy = (x^y) * ln(x)
+        if operand == 1:  # dy = (x^y) * ln(x)
             ln_x = ac.op(Log.create(), [inputs[0]])
-            pow_grad = ac.op("multiply", (output, ln_x)) 
+            pow_grad = ac.op("multiply", (output, ln_x))
         return ac.op("multiply", (pow_grad, grad))
 
     assert False, f"{op_type} not defined in eltwise binary backward."
@@ -289,7 +295,6 @@ def decompose(op_type, attr, dc, inputs):
             transpose_back0 = dc.op(TransposeTM.create(-2, -1), [operand0_mm])
             vslice0 = dc.op("vslice", [transpose_back0], (operand0.shape[-3],))
 
-
             # Operand 1
             vstack1 = dc.op("vstack", [operand1], (operand1.shape[-3],))
             transpose1 = dc.op(TransposeTM.create(-2, -1), [vstack1])
@@ -309,7 +314,10 @@ def decompose(op_type, attr, dc, inputs):
             vslice1 = dc.op("vslice", [transpose_back1], (operand1.shape[-3],))
 
             # Add 2 sides together
-            result = dc.op("add", [vslice0, vslice1],)
+            result = dc.op(
+                "add",
+                [vslice0, vslice1],
+            )
             dc.fuse(result)
             return
         elif axis == -2:
@@ -329,7 +337,6 @@ def decompose(op_type, attr, dc, inputs):
             # Convert shape back
             hslice0 = dc.op("hslice", [operand0_mm], (operand0.shape[-3],))
 
-
             # Operand 1
             hstack1 = dc.op("hstack", [operand1], (operand1.shape[-3]))
             # Picker matmul to expand and interleave input size
@@ -347,7 +354,10 @@ def decompose(op_type, attr, dc, inputs):
             hslice1 = dc.op("hslice", [operand1_mm], (operand1.shape[-3],))
 
             # Add 2 sides together
-            result = dc.op("add", [hslice0, hslice1],)
+            result = dc.op(
+                "add",
+                [hslice0, hslice1],
+            )
             dc.fuse(result)
             return
         else:
@@ -358,7 +368,7 @@ def decompose(op_type, attr, dc, inputs):
         result = dc.op("multiply", [inputs[0], recip])
         dc.fuse(result)
         return
-    # Can be used if backend don't implement maximum op in the future. 
+    # Can be used if backend don't implement maximum op in the future.
     #
     # assert len(inputs) == 2, "Eltwise binary should have two inputs"
     # if op_type == "maximum":
@@ -385,6 +395,7 @@ def decompose(op_type, attr, dc, inputs):
         result = dc.op(op_type, [ops0, inputs[1]])
         dc.fuse(result)
 
+
 def decompose_post_autograd(op_type, attr, dc, inputs):
     assert len(inputs) == 2, "Eltwise binary should have two inputs"
     if op_type == "heaviside":
@@ -404,7 +415,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         orig_op1_shape = operand1.shape.as_list()
         vslice_op0, vslice_op1 = False, False
         slice_factor = None
-        
+
         if len(orig_op1_shape) > 2 and orig_op1_shape[-3] != 1:
             slice_factor = orig_op1_shape[-3]
             vslice_op1 = True
@@ -421,17 +432,17 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
         while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0} (0, len(operand0.shape)))
+            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}(0, len(operand0.shape)))
         while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0} (0, len(operand1.shape)))
+            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}(0, len(operand1.shape)))
 
-        if (slice_factor != None):
+        if slice_factor != None:
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
             result = dc.op("reduce_max", [concat_z], (-3, 2))
         else:
             concat_z = dc.op("concatenate", [operand0, operand1], (-3,))
             result = dc.op("reduce_max", [concat_z], (-3,))
-        
+
         while len(result.shape) > max_operand_nd:
             result = dc.op("squeeze", [result], (0,))
 
@@ -449,12 +460,20 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             result = dc.op(op_type, [ops0, inputs[1]])
             dc.fuse(result)
 
+
 def decompose_post_optimize(op_type, attr, dc, inputs):
     operand0, operand1 = inputs[0], inputs[1]
     orig_op0_shape = operand0.shape.as_list()
     orig_op1_shape = operand1.shape.as_list()
     if op_type == "minimum":
-        negative_one = torch.ones([1,]) * -1
+        negative_one = (
+            torch.ones(
+                [
+                    1,
+                ]
+            )
+            * -1
+        )
         negative_one_tensor = dc.tensor(negative_one)
 
         neg_op0 = dc.op("multiply", [operand0, negative_one_tensor])
@@ -465,17 +484,17 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
         result = dc.op("multiply", [binary_max, negative_one_tensor])
         dc.fuse(result)
         return
-    
+
     if op_type == "binary_stack":
         axis = attr[0]
-        
+
         operand0 = dc.op("pad_tile", [operand0], (-2, orig_op0_shape[-2]))
         operand0 = dc.op("pad_tile", [operand0], (-1, orig_op0_shape[-1]))
         padded_op0_shape = operand0.shape
         operand1 = dc.op("pad_tile", [operand1], (-2, orig_op1_shape[-2]))
         operand1 = dc.op("pad_tile", [operand1], (-1, orig_op1_shape[-1]))
         padded_op1_shape = operand1.shape
-        
+
         total_size = operand0.shape[axis] + operand1.shape[axis]
         # import pdb; pdb.set_trace()
         if axis == -1:
@@ -497,7 +516,6 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
             transpose_back0 = dc.op(TransposeTM.create(-2, -1), [operand0_mm])
             vslice0 = dc.op("vslice", [transpose_back0], (operand0.shape[-3],))
 
-
             # Operand 1
             vstack1 = dc.op("vstack", [operand1], (operand1.shape[-3],))
             transpose1 = dc.op(TransposeTM.create(-2, -1), [vstack1])
@@ -517,18 +535,21 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
             vslice1 = dc.op("vslice", [transpose_back1], (operand1.shape[-3],))
 
             # Add 2 sides together
-            result = dc.op("add", [vslice0, vslice1],)
-            
+            result = dc.op(
+                "add",
+                [vslice0, vslice1],
+            )
+
             # Narrow back down to original size
             if result.shape[-1] - (orig_op0_shape[-1] + orig_op1_shape[-1]) >= TILE_DIM:
                 result = dc.op("vstack", [result], (orig_op0_shape[-3],))
                 result = dc.op(TransposeTM.create(-2, -1), [result])
-                
+
                 cols = torch.arange(orig_op0_shape[-1] + orig_op1_shape[-1])
                 rows = cols
-                
+
                 size = align_up_tile(orig_op0_shape[-1] + orig_op1_shape[-1])
-                
+
                 picker = torch.sparse_coo_tensor(
                     [rows.tolist(), cols.tolist()],
                     torch.ones(cols.shape[0]),
@@ -538,13 +559,13 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
                 # import pdb; pdb.set_trace()
                 lhs = dc.tensor(picker)
                 result = dc.op("sparse_matmul", [lhs, result])
-                
+
                 result = dc.op(TransposeTM.create(-2, -1), [result])
                 result = dc.op("vslice", [result], (orig_op0_shape[-3],))
-                
+
             result = dc.op("narrow", [result], (-1, 0, orig_op1_shape[-1] + orig_op0_shape[-1], result.shape[-1]))
             result = dc.op("narrow", [result], (-2, 0, orig_op1_shape[-2], result.shape[-2]))
-            
+
             dc.fuse(result)
             return
         else:
@@ -556,6 +577,5 @@ def initial_flops_estimate(type, attr, ops):
     output_shape = shape(type, attr, ops)[0]
     if type in ["add", "subtract", "power", "maximum", "minumum", "multiply"]:
         flops = np.prod(output_shape)
-    
+
     return flops
-    

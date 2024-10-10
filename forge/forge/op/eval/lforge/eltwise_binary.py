@@ -19,7 +19,7 @@ from ..common import to_torch_operands, math_fidelity_to_multiplier, op_model_to
 def eval(type, attr, ops):
     assert len(ops) == 2, "Eltwise binary should have two inputs"
     assert len(attr) == 0, "Eltwise binary should have no attributes"
-    
+
     t_ops = to_torch_operands(*ops)
 
     # Fix broadcast from 32 to 1
@@ -54,6 +54,7 @@ def eval(type, attr, ops):
 
     return ret
 
+
 # Return shape, and list of dimensions that were broadcast on operands
 def shape(type, attr, ops, tile_height, tile_width) -> Tuple[Tuple, List]:
     assert len(ops) == 2, "Eltwise binary should have two inputs"
@@ -71,17 +72,21 @@ def shape(type, attr, ops, tile_height, tile_width) -> Tuple[Tuple, List]:
     dim_r = len(output_shape) - 2
 
     if len(ops[0]) == 5 and len(ops[1]) == 4:
-        assert ops[0][0] == 1, f"Eltwise binary ops must have same dim counts, or outer-most dim needs to be 1: {ops[0]} vs {ops[1]}"
+        assert (
+            ops[0][0] == 1
+        ), f"Eltwise binary ops must have same dim counts, or outer-most dim needs to be 1: {ops[0]} vs {ops[1]}"
         ops1_shape = [1] + ops1_shape
 
     broadcast = []
-    for dim in range(dim_r, dim_r+2):
+    for dim in range(dim_r, dim_r + 2):
         if ops[0][dim] != ops[1][dim]:
             if ops[1][dim] == TILE_DIM:
                 broadcast.append((1, dim, ops[0][dim]))
                 output_shape[dim] = ops[0][dim]
             else:
-                assert ops[0][dim] == TILE_DIM, f"Eltwise binary ops must have the same shape in both inputs, or one operand must be 1-tile wide to broadcast: {ops[0]} vs {ops[1]}"
+                assert (
+                    ops[0][dim] == TILE_DIM
+                ), f"Eltwise binary ops must have the same shape in both inputs, or one operand must be 1-tile wide to broadcast: {ops[0]} vs {ops[1]}"
                 broadcast.append((0, dim, ops[1][dim]))
                 output_shape[dim] = ops[1][dim]
 

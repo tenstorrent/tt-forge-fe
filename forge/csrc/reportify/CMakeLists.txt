@@ -5,4 +5,3 @@ add_library(reportify
     to_json.cpp)
 
 target_compile_options(reportify PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
-

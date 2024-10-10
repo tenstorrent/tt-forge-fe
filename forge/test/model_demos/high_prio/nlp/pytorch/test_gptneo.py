@@ -35,7 +35,7 @@ def test_gptneo_causal_lm(variant, test_device):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config() 
+    compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     os.environ["FORGE_RIBBON2"] = "1"
@@ -61,7 +61,7 @@ def test_gptneo_causal_lm(variant, test_device):
     # Sample input text
     prompt = "My name is Bert, and I am"
 
-    inputs = tokenizer(prompt, return_tensors="pt",max_length=256, pad_to_max_length=True, truncation=True)
+    inputs = tokenizer(prompt, return_tensors="pt", max_length=256, pad_to_max_length=True, truncation=True)
 
     # Wrapper to get around attention mask
     class Wrapper(torch.nn.Module):
@@ -76,7 +76,41 @@ def test_gptneo_causal_lm(variant, test_device):
     attn_mask = inputs["attention_mask"]
 
     if "FORGE_NEB_GALAXY_CI" in os.environ:
-        chip_ids = [0, 11, 10, 9, 8, 7, 19, 20, 21, 22, 23, 24, 6, 5, 14, 13, 12, 16, 15, 3, 4, 26, 25, 32, 31, 30, 29, 28, 27, 1, 2, 18, 17]
+        chip_ids = [
+            0,
+            11,
+            10,
+            9,
+            8,
+            7,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            6,
+            5,
+            14,
+            13,
+            12,
+            16,
+            15,
+            3,
+            4,
+            26,
+            25,
+            32,
+            31,
+            30,
+            29,
+            28,
+            27,
+            1,
+            2,
+            18,
+            17,
+        ]
     else:
         chip_ids = [0]
 
@@ -101,7 +135,7 @@ def test_gptneo_causal_lm(variant, test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             enabled=False,
-            chip_ids=chip_ids
+            chip_ids=chip_ids,
         ),
     )
 
@@ -118,7 +152,7 @@ def test_gptneo_sequence_classification(variant, test_device):
     # Load tokenizer and model from HuggingFace
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,
     # EleutherAI/gpt-neo-2.7B
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
@@ -128,9 +162,7 @@ def test_gptneo_sequence_classification(variant, test_device):
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
-    model = download_model(
-        GPTNeoForSequenceClassification.from_pretrained, variant, torchscript=True
-    )
+    model = download_model(GPTNeoForSequenceClassification.from_pretrained, variant, torchscript=True)
 
     # Load data sample
     review = "the movie was great!"

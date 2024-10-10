@@ -26,12 +26,13 @@ def eval(type, attr, ops):
     kernel_ratio = in0.shape[3] // in1.shape[2]
 
     for idx in range(cnt_kernels):
-        kernel = in1[:, :, idx * TILE_DIM: (idx + 1) * TILE_DIM, :]
+        kernel = in1[:, :, idx * TILE_DIM : (idx + 1) * TILE_DIM, :]
         section_h = idx * kernel_ratio * TILE_DIM
         for idx_ratio in range(kernel_ratio):
-            result[..., idx_ratio * TILE_DIM: (idx_ratio + 1) * TILE_DIM] += \
-                torch.matmul(in0[..., section_h + idx_ratio * TILE_DIM: section_h + (idx_ratio + 1) * TILE_DIM],
-                             kernel[..., idx_ratio * TILE_DIM: (idx_ratio + 1) * TILE_DIM])
+            result[..., idx_ratio * TILE_DIM : (idx_ratio + 1) * TILE_DIM] += torch.matmul(
+                in0[..., section_h + idx_ratio * TILE_DIM : section_h + (idx_ratio + 1) * TILE_DIM],
+                kernel[..., idx_ratio * TILE_DIM : (idx_ratio + 1) * TILE_DIM],
+            )
 
     assert bias is None, "Unexpected fused bias in depthwise, can be added..."
 
@@ -64,6 +65,7 @@ def lower(type, attr, lc, ops, outputs):
         forge_attrs["bias"] = True
 
     lc.op(type, ops, attr, forge_attrs)
+
 
 def decompose(type, attr, dc, inputs):
     pass

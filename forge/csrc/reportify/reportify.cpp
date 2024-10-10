@@ -319,8 +319,8 @@ void dump_epoch_type_graphs(
     if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
         return;
 
-    std::function<bool(graphlib::Node*, graphlib::NodeEpochType epoch_type, const graphlib::Graph* graph)> epoch_type_filter =
-        [](graphlib::Node* node, graphlib::NodeEpochType epoch_type, const graphlib::Graph* graph)
+    std::function<bool(graphlib::Node*, graphlib::NodeEpochType epoch_type, const graphlib::Graph* graph)>
+        epoch_type_filter = [](graphlib::Node* node, graphlib::NodeEpochType epoch_type, const graphlib::Graph* graph)
     {
         if (node->node_type() == graphlib::NodeType::kInput or node->node_type() == graphlib::NodeType::kQueue)
         {
@@ -368,9 +368,7 @@ void dump_epoch_type_graphs(
 
         auto node_epoch_type_filter = std::bind(epoch_type_filter, std::placeholders::_1, epoch_type, graph);
         JsonNamePairs new_json_pairs = create_jsons_for_graph(
-            graph_prefix + graphlib::node_epoch_type_to_string(epoch_type),
-            graph,
-            node_epoch_type_filter);
+            graph_prefix + graphlib::node_epoch_type_to_string(epoch_type), graph, node_epoch_type_filter);
 
         for (const auto& [json, json_name] : new_json_pairs)
         {
@@ -389,9 +387,7 @@ void dump_epoch_id_graphs(
     return;
 }
 
-json create_json_for_graph(
-    const graphlib::Graph* graph,
-    std::function<bool(graphlib::Node*)> node_filter)
+json create_json_for_graph(const graphlib::Graph* graph, std::function<bool(graphlib::Node*)> node_filter)
 {
     json this_json;
     this_json["topological_sorted_nodes"] = {};
@@ -408,9 +404,7 @@ json create_json_for_graph(
 }
 
 JsonNamePairs create_jsons_for_graph(
-    const std::string& graph_prefix,
-    const graphlib::Graph* graph,
-    std::function<bool(graphlib::Node*)> node_filter)
+    const std::string& graph_prefix, const graphlib::Graph* graph, std::function<bool(graphlib::Node*)> node_filter)
 {
     JsonNamePairs this_json_name_pairs;
 

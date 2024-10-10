@@ -17,8 +17,8 @@ namespace py = pybind11;
 #include "graph_lib/edge.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
-#include "python_bindings_common.hpp"
 #include "nlohmann/json.hpp"
+#include "python_bindings_common.hpp"
 
 template <typename T>
 constexpr auto type_name(const T &) noexcept
@@ -90,7 +90,13 @@ QueueNode *create_buffering_queue(
 
 // Creates and inserts a nop node on the given edge.
 // Returns newly created node and edges.
-std::tuple<ForgeOpNode*, Edge, Edge> insert_nop_on_edge(Graph *graph, Edge &edge, const std::string &nop_name, bool is_buffering = false, bool hoist_tms = false, bool remove_edge = true);
+std::tuple<ForgeOpNode *, Edge, Edge> insert_nop_on_edge(
+    Graph *graph,
+    Edge &edge,
+    const std::string &nop_name,
+    bool is_buffering = false,
+    bool hoist_tms = false,
+    bool remove_edge = true);
 
 // Bypass queue, connecting its source to its destination. There has to be only one source for queue, and user is
 // defined by user_edge. Diference from bypassing node (bypass_node) is that here we can bypass some users of queue and
@@ -222,7 +228,11 @@ graphlib::Shape post_tms_shape(
 std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node);
 
 bool tms_support_kernel_broadcast(
-    Shape producer_shape, std::vector<OpType> const &tms, UBlockOrder ublock_order, int ublock_ct, bool is_forge = true);
+    Shape producer_shape,
+    std::vector<OpType> const &tms,
+    UBlockOrder ublock_order,
+    int ublock_ct,
+    bool is_forge = true);
 
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);
@@ -457,7 +467,7 @@ class NodeGraphContainer
     Graph *graph;
     bool remove_from_graph;
 
-    NodeGraphContainer(Node *node, Graph *graph) : node(node), graph(graph), remove_from_graph(true){};
+    NodeGraphContainer(Node *node, Graph *graph) : node(node), graph(graph), remove_from_graph(true) {};
     ~NodeGraphContainer();
 };
 }  // namespace graphlib

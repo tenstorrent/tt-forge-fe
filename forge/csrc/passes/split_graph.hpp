@@ -7,14 +7,13 @@
 
 namespace tt::graphlib
 {
-    class Graph;
+class Graph;
 }
 
-namespace tt::passes 
+namespace tt::passes
 {
-    // Split the graph into multiple graphs which will lower to different MLIR programs,
-    // i.e. forward, backward, etc.
-    ForgeGraphModule split_graph(tt::graphlib::Graph* graph);
+// Split the graph into multiple graphs which will lower to different MLIR programs,
+// i.e. forward, backward, etc.
+ForgeGraphModule split_graph(tt::graphlib::Graph* graph);
 
-} // namespace tt:passes
-
+}  // namespace tt::passes

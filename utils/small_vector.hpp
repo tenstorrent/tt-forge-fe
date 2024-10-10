@@ -132,9 +132,7 @@ class SmallVector
         for (std::size_t i = 0; i < size; ++i) push_back(v);
     }
 
-    void reserve(std::size_t)
-    { /*nop, here to match the std::vector interface*/
-    }
+    void reserve(std::size_t) { /*nop, here to match the std::vector interface*/ }
 
     void clear()
     {
@@ -193,7 +191,7 @@ class SmallVector
    private:
     static void copy(T* to, T const* from, std::size_t num_elements)
     {
-        if constexpr(std::is_trivially_copyable_v<T>)
+        if constexpr (std::is_trivially_copyable_v<T>)
         {
             std::memcpy(to, from, num_elements * sizeof(T));
         }

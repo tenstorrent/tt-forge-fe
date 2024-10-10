@@ -24,15 +24,16 @@ STRING_TO_LOWER_LIMIT = {
     "torch.int8": -128,
     "torch.uint8": 0,
     "torch.int32": -2147483648,
-    "torch.float32": -3.4028234663852886e+38,
+    "torch.float32": -3.4028234663852886e38,
 }
 
 STRING_TO_UPPER_LIMIT = {
     "torch.int8": 127,
     "torch.uint8": 255,
     "torch.int32": 2147483647,
-    "torch.float32": 3.4028234663852886e+38,
+    "torch.float32": 3.4028234663852886e38,
 }
+
 
 def eval(type, attr, ops):
     if type == "quantize":
@@ -43,7 +44,8 @@ def eval(type, attr, ops):
         output_float = torch.clamp(
             torch.round(input_float / scale) + zero_point,
             STRING_TO_LOWER_LIMIT[out_dtype],
-            STRING_TO_UPPER_LIMIT[out_dtype],)
+            STRING_TO_UPPER_LIMIT[out_dtype],
+        )
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
 
     elif type == "forge_quantize":
@@ -53,7 +55,8 @@ def eval(type, attr, ops):
         output_float = torch.clamp(
             torch.round(input_float * scale) + zero_point,
             STRING_TO_LOWER_LIMIT[out_dtype],
-            STRING_TO_UPPER_LIMIT[out_dtype],)
+            STRING_TO_UPPER_LIMIT[out_dtype],
+        )
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
 
     elif type == "dequantize":
@@ -86,7 +89,10 @@ def eval(type, attr, ops):
     elif type == "requantize":
         out_zp, inp_zp, axis, rounding, out_dtype = attr
         input_int32 = ops[0]
-        inp_scale, out_scale, = ops[1], ops[2]
+        inp_scale, out_scale, = (
+            ops[1],
+            ops[2],
+        )
         output_scale = inp_scale / out_scale
 
         if axis < 0:
@@ -101,13 +107,13 @@ def eval(type, attr, ops):
             output_scale = torch.broadcast_to(output_scale, target_shape)
         output_scale = torch.reshape(output_scale, target_shape)
 
-
         assert inp_zp == 0, "Only support input zero point of 0"
         output_float = torch.round(output_scale * (input_int32 - inp_zp) + out_zp)
         output_float = torch.clamp(
             output_float,
             STRING_TO_LOWER_LIMIT[out_dtype],
-            STRING_TO_UPPER_LIMIT[out_dtype],)
+            STRING_TO_UPPER_LIMIT[out_dtype],
+        )
 
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
 
@@ -119,9 +125,11 @@ def eval(type, attr, ops):
         output_float = torch.clamp(
             output_float,
             STRING_TO_LOWER_LIMIT[out_dtype],
-            STRING_TO_UPPER_LIMIT[out_dtype],)
+            STRING_TO_UPPER_LIMIT[out_dtype],
+        )
 
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
+
 
 def shape(type, attr, ops):
     broadcast = []
@@ -153,17 +161,23 @@ def shape(type, attr, ops):
 
 def lower(type, attr, lc, ops, outputs):
     if type == "forge_quantize":
-        lc.op("quantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM) # straight 1-1 for all other binaries
+        lc.op(
+            "quantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM
+        )  # straight 1-1 for all other binaries
     elif type == "forge_dequantize":
-        lc.op("dequantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM) # straight 1-1 for all other binaries
+        lc.op(
+            "dequantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM
+        )  # straight 1-1 for all other binaries
     elif type == "forge_requantize":
         lc.op("requantization", ops, attr, {"zero_point": attr[0]}, "", TILE_DIM, TILE_DIM)
 
     else:
         raise RuntimeError(f"Unknown quantize type {type}")
-    
+
+
 def backward(type, attr, ac, operand, inputs, output, grad):
     assert False, "Quantize does not support backward"
+
 
 def decompose(type, attr, dc, inputs):
     if type == "quantize":
@@ -178,7 +192,7 @@ def decompose(type, attr, dc, inputs):
 
     if type == "requantize":
         act, inp_scale, out_scale = inputs
-        out_zp,inp_zp, axis, rounding, out_dtype = attr
+        out_zp, inp_zp, axis, rounding, out_dtype = attr
         inp_scale_shape = inp_scale.shape.as_list()
 
         if axis < 0:
@@ -188,34 +202,62 @@ def decompose(type, attr, dc, inputs):
         if len(inp_scale_shape) == 1:
             # Match ndim with actiavtion
             for i in range(0, left_ndim):
-                inp_scale = dc.op("unsqueeze", [inp_scale], attrs=(0, len(inp_scale_shape)), output_df=inp_scale.output_df)
+                inp_scale = dc.op(
+                    "unsqueeze", [inp_scale], attrs=(0, len(inp_scale_shape)), output_df=inp_scale.output_df
+                )
                 inp_scale_shape = [1] + inp_scale_shape
             for i in range(0, right_ndim):
-                inp_scale = dc.op("unsqueeze", [inp_scale], attrs=(len(inp_scale_shape), len(inp_scale_shape)), output_df=inp_scale.output_df)
+                inp_scale = dc.op(
+                    "unsqueeze",
+                    [inp_scale],
+                    attrs=(len(inp_scale_shape), len(inp_scale_shape)),
+                    output_df=inp_scale.output_df,
+                )
                 inp_scale_shape = inp_scale_shape + [1]
 
         out_scale_shape = out_scale.shape.as_list()
         if len(out_scale_shape) == 1:
             # Match ndim with actiavtion
             for i in range(0, left_ndim):
-                out_scale = dc.op("unsqueeze", [out_scale], attrs=(0, len(out_scale_shape)), output_df=out_scale.output_df)
+                out_scale = dc.op(
+                    "unsqueeze", [out_scale], attrs=(0, len(out_scale_shape)), output_df=out_scale.output_df
+                )
                 out_scale_shape = [1] + out_scale_shape
             for i in range(0, right_ndim):
-                out_scale = dc.op("unsqueeze", [out_scale], attrs=(len(out_scale_shape), len(out_scale_shape)), output_df=out_scale.output_df)
+                out_scale = dc.op(
+                    "unsqueeze",
+                    [out_scale],
+                    attrs=(len(out_scale_shape), len(out_scale_shape)),
+                    output_df=out_scale.output_df,
+                )
                 out_scale_shape = out_scale_shape + [1]
-
 
         if out_scale_shape[axis] != act.shape[axis]:
             assert out_scale_shape[axis] == 1
-            out_scale = dc.op("broadcast", [out_scale], attrs=(axis - len(out_scale_shape), act.shape[axis]),output_df=out_scale.output_df)
+            out_scale = dc.op(
+                "broadcast",
+                [out_scale],
+                attrs=(axis - len(out_scale_shape), act.shape[axis]),
+                output_df=out_scale.output_df,
+            )
             out_scale_shape[axis] = act.shape[axis]
 
-        recip_out_scale = dc.op(Reciprocal.create(), [out_scale],output_df=out_scale.output_df,)    
-        new_scale = dc.op("multiply", [inp_scale, recip_out_scale],output_df=out_scale.output_df,)
+        recip_out_scale = dc.op(
+            Reciprocal.create(),
+            [out_scale],
+            output_df=out_scale.output_df,
+        )
+        new_scale = dc.op(
+            "multiply",
+            [inp_scale, recip_out_scale],
+            output_df=out_scale.output_df,
+        )
 
         torch_dtype = STRING_TO_TORCH_DTYPE[out_dtype]
         forge_dtype = pytorch_dtype_to_forge_dataformat(torch_dtype)
-        out = dc.op("forge_requantize", [act, new_scale], attrs=(out_zp, axis, rounding, out_dtype),output_df=forge_dtype)
+        out = dc.op(
+            "forge_requantize", [act, new_scale], attrs=(out_zp, axis, rounding, out_dtype), output_df=forge_dtype
+        )
         dc.fuse(out)
         return
 
@@ -235,10 +277,15 @@ def decompose(type, attr, dc, inputs):
                 scale = dc.op("unsqueeze", [scale], attrs=(0, len(scale_shape)), output_df=scale.output_df)
                 scale_shape = [1] + scale_shape
             for i in range(0, right_ndim):
-                scale = dc.op("unsqueeze", [scale], attrs=(len(scale_shape), len(scale_shape)), output_df=scale.output_df)
+                scale = dc.op(
+                    "unsqueeze", [scale], attrs=(len(scale_shape), len(scale_shape)), output_df=scale.output_df
+                )
                 scale_shape = scale_shape + [1]
 
-
-        out = dc.op("forge_dequantize", [act, scale], attrs=attr,)
+        out = dc.op(
+            "forge_dequantize",
+            [act, scale],
+            attrs=attr,
+        )
         dc.fuse(out)
         return

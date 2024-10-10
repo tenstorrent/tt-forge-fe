@@ -76,9 +76,7 @@ def test_pytorch_ssd300_resnet50(test_device):
         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "45056"
 
     # STEP 2 : prepare model
-    model = torch.hub.load(
-        "NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False
-    )
+    model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
     url = "https://api.ngc.nvidia.com/v2/models/nvidia/ssd_pyt_ckpt_amp/versions/19.09.0/files/nvidia_ssdpyt_fp16_190826.pt"
     checkpoint_path = "nvidia_ssdpyt_fp16_190826.pt"
 

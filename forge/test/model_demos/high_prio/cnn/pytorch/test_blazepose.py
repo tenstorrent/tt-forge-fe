@@ -24,7 +24,9 @@ from mediapipepytorch.visualization import POSE_CONNECTIONS, draw_landmarks
 @pytest.mark.skip(reason="Only test 1x1 grid")
 def test_blazepose_detector_pytorch(test_device):
     if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test failing with TM ERROR (producer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.7, consumer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.12): TM order does't satisfy constraints for stacking with phased pipes, buf_size_mb must be a multiple of the total stack factor or producer t")
+        pytest.skip(
+            "Grayskull test failing with TM ERROR (producer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.7, consumer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.12): TM order does't satisfy constraints for stacking with phased pipes, buf_size_mb must be a multiple of the total stack factor or producer t"
+        )
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -32,8 +34,12 @@ def test_blazepose_detector_pytorch(test_device):
 
     # Load BlazePose Detector
     pose_detector = BlazePose()
-    pose_detector.load_weights("third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose.pth")
-    pose_detector.load_anchors("third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/anchors_pose.npy")
+    pose_detector.load_weights(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose.pth"
+    )
+    pose_detector.load_anchors(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/anchors_pose.npy"
+    )
 
     # Load data sample
     orig_image = cv2.imread("forge/test/model_demos/utils/cnn/pytorch/images/girl.png")
@@ -53,14 +59,15 @@ def test_blazepose_detector_pytorch(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             # pcc=0.9
-        )
+        ),
     )
+
 
 @pytest.mark.skip(reason="Only test 1x1 grid")
 def test_blazepose_regressor_pytorch(test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Grayskull test failing with data mismatch")
-    
+
     # Set PyBDUA environment variable
     os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
 
@@ -68,14 +75,22 @@ def test_blazepose_regressor_pytorch(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "CNN"
 
-
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
-    pose_regressor.load_weights("third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose_landmark.pth")
+    pose_regressor.load_weights(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose_landmark.pth"
+    )
 
     verify_module(
         forge.PyTorchModule("pt_blazepose_regressor", pose_regressor),
-        input_shapes=[(1, 3, 256, 256,)],
+        input_shapes=[
+            (
+                1,
+                3,
+                256,
+                256,
+            )
+        ],
         verify_cfg=forge.VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -83,13 +98,16 @@ def test_blazepose_regressor_pytorch(test_device):
             test_kind=TestKind.INFERENCE,
             atol=0.02,
             # pcc=0.9
-        )
+        ),
     )
+
 
 @pytest.mark.skip(reason="Not supported")
 def test_blazepose_detector_pytorch_1x1(test_device):
     if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test failing with TM ERROR (producer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.7, consumer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.12): TM order does't satisfy constraints for stacking with phased pipes, buf_size_mb must be a multiple of the total stack factor or producer t")
+        pytest.skip(
+            "Grayskull test failing with TM ERROR (producer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.7, consumer = conv2d_163.dc.add.11_fused_tm_op_0.dc.matmul.12): TM order does't satisfy constraints for stacking with phased pipes, buf_size_mb must be a multiple of the total stack factor or producer t"
+        )
 
     # Set PyBDUA environment variable
     os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
@@ -100,8 +118,12 @@ def test_blazepose_detector_pytorch_1x1(test_device):
 
     # Load BlazePose Detector
     pose_detector = BlazePose()
-    pose_detector.load_weights("third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose.pth")
-    pose_detector.load_anchors("third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/anchors_pose.npy")
+    pose_detector.load_weights(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose.pth"
+    )
+    pose_detector.load_anchors(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/anchors_pose.npy"
+    )
 
     # Load data sample
     orig_image = cv2.imread("forge/test/model_demos/utils/cnn/pytorch/images/girl.png")
@@ -121,14 +143,15 @@ def test_blazepose_detector_pytorch_1x1(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             # pcc=0.9
-        )
+        ),
     )
+
 
 @pytest.mark.skip(reason="Not supported")
 def test_blazepose_regressor_pytorch_1x1(test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Grayskull test failing with data mismatch")
-    
+
     # Set PyBDUA environment variable
     os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
     os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
@@ -139,11 +162,20 @@ def test_blazepose_regressor_pytorch_1x1(test_device):
 
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
-    pose_regressor.load_weights("third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose_landmark.pth")
+    pose_regressor.load_weights(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose_landmark.pth"
+    )
 
     verify_module(
         forge.PyTorchModule("pt_blazepose_regressor", pose_regressor),
-        input_shapes=[(1, 3, 256, 256,)],
+        input_shapes=[
+            (
+                1,
+                3,
+                256,
+                256,
+            )
+        ],
         verify_cfg=forge.VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -151,11 +183,12 @@ def test_blazepose_regressor_pytorch_1x1(test_device):
             test_kind=TestKind.INFERENCE,
             atol=0.02,
             # pcc=0.9
-        )
+        ),
     )
 
+
 def test_blaze_palm_pytorch_1x1(test_device):
-    
+
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip()
 
@@ -197,11 +230,12 @@ def test_blaze_palm_pytorch_1x1(test_device):
             test_kind=TestKind.INFERENCE,
             pcc=0.9,
             enabled=False,
-        )
+        ),
     )
 
+
 def test_blaze_hand_pytorch_1x1(test_device):
-    
+
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip()
 
@@ -222,7 +256,14 @@ def test_blaze_hand_pytorch_1x1(test_device):
 
     verify_module(
         forge.PyTorchModule("pt_hand_regressor", hand_regressor),
-        input_shapes=[(1, 3, 256, 256,)],
+        input_shapes=[
+            (
+                1,
+                3,
+                256,
+                256,
+            )
+        ],
         verify_cfg=forge.VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -230,5 +271,5 @@ def test_blaze_hand_pytorch_1x1(test_device):
             test_kind=TestKind.INFERENCE,
             atol=0.01,
             enabled=False,
-        )
+        ),
     )

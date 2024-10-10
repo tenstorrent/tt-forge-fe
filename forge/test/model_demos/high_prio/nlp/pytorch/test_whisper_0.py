@@ -16,7 +16,7 @@ from transformers import (
     WhisperTokenizer,
     WhisperFeatureExtractor,
     WhisperForConditionalGeneration,
-    LogitsProcessorList
+    LogitsProcessorList,
 )
 from datasets import load_dataset
 from typing import Optional
@@ -126,11 +126,12 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
 
     return forge_model, [decoder_input_ids, encoder_outputs], {"pcc": pcc}
 
+
 @pytest.mark.skip(reason="Redundant")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(test_device, variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
-    
+
     model, inputs, other = generate_model_whisper_congen_hf_pytorch(
         test_device,
         variant,
@@ -151,7 +152,9 @@ def test_whisper(test_device, variant):
             test_kind=TestKind.INFERENCE,
             pcc=other["pcc"],
             enabled=False if variant == "openai/whisper-medium" else True,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
         ),
     )
 
@@ -173,9 +176,7 @@ def test_whisper_pipeline(test_device, variant):
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Load model (with tokenizer and feature extractor)
-    framework_model = download_model(
-        WhisperForConditionalGeneration.from_pretrained, variant
-    )
+    framework_model = download_model(WhisperForConditionalGeneration.from_pretrained, variant)
     tokenizer = download_model(WhisperTokenizer.from_pretrained, variant)
     feature_extractor = download_model(WhisperFeatureExtractor.from_pretrained, variant)
 
@@ -217,13 +218,14 @@ def test_whisper_pipeline(test_device, variant):
     # Compare outputs
     assert cpu_out["text"] == tt_out["text"]
 
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_encoder(test_device, variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     if variant == "openai/whisper-medium" or variant == "openai/whisper-large":
-       pytest.skip("Still under development")
+        pytest.skip("Still under development")
 
     # Configurations
     compiler_cfg = _get_global_compiler_config()
@@ -280,7 +282,9 @@ def test_whisper_encoder(test_device, variant):
     )
     if pad_model:
         unpadded_model = WhisperForConditionalGeneration.from_pretrained(variant)
-        padded_param = torch.nn.functional.pad(unpadded_model.model.encoder.embed_positions.weight.data, (0,0,0,pad_amount))
+        padded_param = torch.nn.functional.pad(
+            unpadded_model.model.encoder.embed_positions.weight.data, (0, 0, 0, pad_amount)
+        )
         model.model.encoder.embed_positions.weight.data = padded_param
 
     class Wrapper(torch.nn.Module):
@@ -289,15 +293,13 @@ def test_whisper_encoder(test_device, variant):
             self.model = model
 
         def forward(self, input_features):
-            enc_out = self.model.model.encoder(
-                input_features
-            )
+            enc_out = self.model.model.encoder(input_features)
 
             return enc_out[0]
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)
-    
+
     model = Wrapper(model)
     forge_model = PyTorchModule("pt_whisper", model)
 
@@ -307,12 +309,15 @@ def test_whisper_encoder(test_device, variant):
 
     inputs = processor(sample_audio, return_tensors="pt")
     if pad_model:
-        input_features = torch.nn.functional.pad(inputs.input_features, (0, pad_amount*2, 0, 0))
+        input_features = torch.nn.functional.pad(inputs.input_features, (0, pad_amount * 2, 0, 0))
     else:
         input_features = inputs.input_features
 
     tt0 = forge.TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch, module=forge_model)
-    output_q = forge.initialize_pipeline(training=False,sample_inputs=(input_features, ),)
+    output_q = forge.initialize_pipeline(
+        training=False,
+        sample_inputs=(input_features,),
+    )
 
     start = time.time()
     tokens_to_generate = 10 if test_device.devtype == BackendType.Silicon else 3
@@ -322,4 +327,6 @@ def test_whisper_encoder(test_device, variant):
         ans = output_q.get()
 
     end = time.time()
-    print(f"Ran {tokens_to_generate} iterations. Duration: {(end - start) / tokens_to_generate} seconds, speed: {(tokens_to_generate) / (end - start)} iters/sec")
+    print(
+        f"Ran {tokens_to_generate} iterations. Duration: {(end - start) / tokens_to_generate} seconds, speed: {(tokens_to_generate) / (end - start)} iters/sec"
+    )

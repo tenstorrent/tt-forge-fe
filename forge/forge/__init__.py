@@ -8,9 +8,10 @@ def set_home_paths():
     import sys
     import pathlib
     from loguru import logger
+
     forge_path = pathlib.Path(__file__).parent.parent.resolve()
 
-        # deployment path
+    # deployment path
     base_path = str(forge_path)
     out_path = "."
 
@@ -25,6 +26,7 @@ def set_home_paths():
         logger.remove()
         logger.add(sys.stdout)
 
+
 set_home_paths()
 
 # eliminate tensorflow warnings
@@ -33,8 +35,21 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 from .module import Module, PyTorchModule, ForgeModule, TFGraphDefModule, OnnxModule, JaxModule, TFLiteModule
 from .torch_compile import compile_torch
-from .compiled_graph_state import CompiledGraphState 
-from .config import CompilerConfig, CompileDepth, set_configuration_options, set_epoch_break, set_chip_break, override_op_size, PerfTraceLevel, insert_buffering_nop, insert_nop, _internal_insert_fj_buffering_nop, override_dram_queue_placement, configure_mixed_precision
+from .compiled_graph_state import CompiledGraphState
+from .config import (
+    CompilerConfig,
+    CompileDepth,
+    set_configuration_options,
+    set_epoch_break,
+    set_chip_break,
+    override_op_size,
+    PerfTraceLevel,
+    insert_buffering_nop,
+    insert_nop,
+    _internal_insert_fj_buffering_nop,
+    override_dram_queue_placement,
+    configure_mixed_precision,
+)
 from .verify import VerifyConfig
 from .forgeglobal import forge_reset, set_device_pipeline, is_silicon, get_tenstorrent_device
 from .parameter import Parameter
@@ -60,4 +75,3 @@ from torch._dynamo import register_backend
 if "tt" in _BACKENDS:
     del _BACKENDS["tt"]
 register_backend(compile_torch, "tt")
-

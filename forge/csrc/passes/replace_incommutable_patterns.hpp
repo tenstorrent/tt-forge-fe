@@ -8,10 +8,10 @@ namespace tt::graphlib
 class Graph;
 class OpNode;
 class Shape;
-}
+}  // namespace tt::graphlib
 
 namespace tt::passes
 {
 // Returns true if any patterns were replaced with something commutable
 bool replace_incommutable_patterns(graphlib::Graph *graph);
-}
+}  // namespace tt::passes

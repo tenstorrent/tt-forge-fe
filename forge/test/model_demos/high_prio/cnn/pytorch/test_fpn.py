@@ -12,13 +12,9 @@ from collections import OrderedDict
 
 
 class FPNWrapper(nn.Module):
-    def __init__(
-        self, in_channels_list, out_channels, extra_blocks=None, norm_layer=None
-    ):
+    def __init__(self, in_channels_list, out_channels, extra_blocks=None, norm_layer=None):
         super().__init__()
-        self.fpn = FeaturePyramidNetwork(
-            in_channels_list, out_channels, extra_blocks, norm_layer
-        )
+        self.fpn = FeaturePyramidNetwork(in_channels_list, out_channels, extra_blocks, norm_layer)
 
     def forward(self, feat0, feat1, feat2):
         x = OrderedDict()

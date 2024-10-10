@@ -2,12 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "tt_torch_device/python_bindings.hpp"
-#include "tt_torch_device/tt_device.hpp"
-#include "forge/csrc/python_bindings_common.hpp"
+
 #include "forge/csrc/backend_api/arch_type.hpp"
+#include "forge/csrc/python_bindings_common.hpp"
+#include "tt_torch_device/tt_device.hpp"
 
-
-namespace tt {
+namespace tt
+{
 
 void TorchDeviceModule(py::module &m_torch_device)
 {
@@ -17,18 +18,18 @@ void TorchDeviceModule(py::module &m_torch_device)
     py::class_<tt::TTForgeTensorDesc>(m_torch_device, "TTForgeTensorDesc")
         .def(
             py::init<
-                std::string const&,
-                std::vector<std::int64_t> const&,
+                std::string const &,
+                std::vector<std::int64_t> const &,
                 std::int64_t,
                 std::optional<torch::Tensor>>(),
             py::arg("name"),
             py::arg("shape"),
             py::arg("ptr") = -1,
             py::arg("constant") = std::nullopt)
-            .def_readonly("name", &tt::TTForgeTensorDesc::name)
-            .def_readonly("shape", &tt::TTForgeTensorDesc::shape)
-            .def_readonly("ptr", &tt::TTForgeTensorDesc::ptr)
-            .def_readonly("constant", &tt::TTForgeTensorDesc::constant);
+        .def_readonly("name", &tt::TTForgeTensorDesc::name)
+        .def_readonly("shape", &tt::TTForgeTensorDesc::shape)
+        .def_readonly("ptr", &tt::TTForgeTensorDesc::ptr)
+        .def_readonly("constant", &tt::TTForgeTensorDesc::constant);
 
     py::class_<tt::Workload, std::shared_ptr<tt::Workload>>(m_torch_device, "Workload")
         .def_readonly("inputs", &tt::Workload::inputs)
@@ -36,7 +37,7 @@ void TorchDeviceModule(py::module &m_torch_device)
         .def_readonly("parameters", &tt::Workload::parameters)
         .def_readonly("outputs", &tt::Workload::outputs);
 
-    py::class_<tt::TTDevice>tt_device (m_torch_device, "TTDevice");
+    py::class_<tt::TTDevice> tt_device(m_torch_device, "TTDevice");
     tt_device.def_readonly("arch", &tt::TTDevice::arch)
         .def_readonly("mmio", &tt::TTDevice::mmio)
         .def_readonly("input_runtime_transforms", &tt::TTDevice::input_runtime_transforms)
@@ -53,4 +54,4 @@ void TorchDeviceModule(py::module &m_torch_device)
     m_torch_device.def("unique_id", tt::unique_id);
 }
 
-}
+}  // namespace tt

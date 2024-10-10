@@ -21,19 +21,19 @@ from .models import generic
 from .models import custom
 
 MODELS_PATH = "./forge/test/operators/matmul/models/"
-MODELS_GENERIC_PATH = MODELS_PATH + "generic/" 
+MODELS_GENERIC_PATH = MODELS_PATH + "generic/"
 MODELS_CUSTOM_PATH = MODELS_PATH + "custom/"
 
 SHAPE_NO = 1
 SHAPE_SIZE_MIN = 2
 SHAPE_SIZE_MAX = 4
 
-SHAPE_DIM_MIN = 2 ** 3
-SHAPE_DIM_MAX = 2 ** 7
+SHAPE_DIM_MIN = 2**3
+SHAPE_DIM_MAX = 2**7
 SHAPE_WDIM_MIN = 1
-SHAPE_WDIM_MAX = 2 ** 2
+SHAPE_WDIM_MAX = 2**2
 SHAPE_ZDIM_MIN = 1
-SHAPE_ZDIM_MAX = 2 ** 2
+SHAPE_ZDIM_MAX = 2**2
 
 SHAPE_FIXED = True
 WDIM_FIXED = True
@@ -56,63 +56,57 @@ if SHAPE_FIXED:
 
 # Generic Shape
 
-#@pytest.mark.xfail(
+# @pytest.mark.xfail(
 #    reason="tenstorrent/forge#22"
-#)
+# )
 @pytest.mark.parametrize("shape", shape, ids=[f"shape{'x'.join([str(jtem) for jtem in item])}" for item in shape])
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_GENERIC_PATH) if "model" in item])
 @pytest.mark.parametrize("op_test_kind", [TestKind.INFERENCE])
-def test_matmul_generic(
-    op_test_kind,
-    model,
-    shape
-):
+def test_matmul_generic(op_test_kind, model, shape):
     test_kind = op_test_kind
     if test_kind.is_training() and len(shape) >= 3 and shape[-3] > 1:
         pytest.skip("Matmul with gradient accumulate must have t=1")
 
-    architecture = f'generic.{model}.ForgeMatmulTest(shape={shape})'
+    architecture = f"generic.{model}.ForgeMatmulTest(shape={shape})"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     print(model.get_parameters())
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
+        tt0,
+        model.testname,
+        *model.inputs,
         compiler_cfg=CompilerConfig(
-                        enable_training=test_kind.is_training(),
-                        enable_recompute=test_kind.is_recompute(),
-                     ), 
-        verify_cfg=VerifyConfig()
+            enable_training=test_kind.is_training(),
+            enable_recompute=test_kind.is_recompute(),
+        ),
+        verify_cfg=VerifyConfig(),
     )
 
 
 # Custom Shape
 
+
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_CUSTOM_PATH) if "model" in item])
-def test_matmul_custom(
-    test_kind,
-    model
-):
+def test_matmul_custom(test_kind, model):
 
     if test_kind.is_training():
-        pytest.xfail() # numbers gets too big
+        pytest.xfail()  # numbers gets too big
 
     if model == "model_4":
-        pytest.xfail() # balancer failure
+        pytest.xfail()  # balancer failure
 
-    architecture = f'custom.{model}.ForgeMatmulTest()'
+    architecture = f"custom.{model}.ForgeMatmulTest()"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
+        tt0,
+        model.testname,
+        *model.inputs,
         compiler_cfg=CompilerConfig(
-                        enable_training=test_kind.is_training(),
-                        enable_recompute=test_kind.is_recompute(),
-                     ), 
-        verify_cfg=VerifyConfig()
+            enable_training=test_kind.is_training(),
+            enable_recompute=test_kind.is_recompute(),
+        ),
+        verify_cfg=VerifyConfig(),
     )

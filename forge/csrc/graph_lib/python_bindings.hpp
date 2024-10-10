@@ -7,16 +7,18 @@
 #include <pybind11/pybind11.h>
 #pragma clang diagnostic pop
 
-#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 namespace py = pybind11;
 
-namespace tt {
+namespace tt
+{
 
 // Compare two pytorch tensors, and return true if they are equal
 bool compare_tensors(std::shared_ptr<void> tensor0, std::shared_ptr<void> tensor1);
 
-namespace graphlib {
+namespace graphlib
+{
 
 class Graph;
 class Node;
@@ -24,10 +26,8 @@ class Node;
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);
 
-}
+}  // namespace graphlib
 
 void GraphModule(py::module &m_graph);
 
-}
-
-
+}  // namespace tt

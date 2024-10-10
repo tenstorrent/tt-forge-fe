@@ -19,13 +19,8 @@ from . import models
 
 MODELS_PATH = "./forge/test/operators/tm/hstack_hslice/models"
 
-def test_hstack_hslice(
-    tmh_train,
-    tmh_recompute,
-    tmh_model, 
-    tmh_shape, 
-    tmh_slice
-):
+
+def test_hstack_hslice(tmh_train, tmh_recompute, tmh_model, tmh_shape, tmh_slice):
 
     print("\n")
     print(f"tmh_train --> {tmh_train}")
@@ -37,15 +32,15 @@ def test_hstack_hslice(
 
     if not tmh_train and tmh_recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
-    
+
     assert type(tmh_train) in [bool, str], "Type of training parameter must be boolean or string"
     if type(tmh_train) == str:
-        training = True if tmh_train == 'True' else False
+        training = True if tmh_train == "True" else False
     else:
         training = tmh_train
     assert type(tmh_recompute) in [bool, str], "Type of recompute parameter must be boolean or string"
     if type(tmh_recompute) == str:
-        recompute = True if tmh_recompute == 'True' else False
+        recompute = True if tmh_recompute == "True" else False
     else:
         recompute = tmh_recompute
     model = tmh_model
@@ -60,18 +55,14 @@ def test_hstack_hslice(
     print(f"Slice --> {slice}")
     print("\n")
 
-
-    architecture = f'models.{model}.ForgeHStackHSliceTest(shape={shape}, slice={slice})'
+    architecture = f"models.{model}.ForgeHStackHSliceTest(shape={shape}, slice={slice})"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
+        verify_cfg=VerifyConfig(),
     )

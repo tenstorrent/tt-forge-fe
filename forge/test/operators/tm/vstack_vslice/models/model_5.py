@@ -5,7 +5,7 @@
 #   Test 5
 #   VStack, VSlice operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -19,17 +19,14 @@ from forge import ForgeModule, Tensor
 
 class ForgeVStackVSliceTest(ForgeModule):
     """
-        Forge Test 5
+    Forge Test 5
 
     """
 
-    def __init__(
-        self,
-        shape, 
-        slice):
+    def __init__(self, shape, slice):
         super().__init__("Forge Test 5")
 
-        assert hasattr(shape, '__iter__'), "Shape must be iterable"
+        assert hasattr(shape, "__iter__"), "Shape must be iterable"
         assert len(shape) == 4, "Shape must be 4"
         assert shape[1] > 1, "Z dimension must be bigger than 1"
         assert shape[-2] % slice == 0, "The last dimension must be divisible by slice"
@@ -40,13 +37,13 @@ class ForgeVStackVSliceTest(ForgeModule):
 
         if type(self.shape) == tuple:
             self.shape = list(self.shape)
-        self.shape[1] *= (self.slice * self.slice)
+        self.shape[1] *= self.slice * self.slice
         self.shape[1] *= self.slice
         self.shape[-2] *= self.slice
 
         print(f"SHAPE: {self.shape}")
         print(f"SLICE: {self.slice}")
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
 

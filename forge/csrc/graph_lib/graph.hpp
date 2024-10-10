@@ -7,12 +7,12 @@
 #include <cassert>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <set>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <optional>
 
 #include "graph_lib/defines.hpp"
 #include "graph_lib/edge.hpp"
@@ -121,8 +121,7 @@ class Graph
     const std::unordered_set<Edge> &operand_edges_set(const Node *node) const;
 
     std::vector<Edge> edges(EdgeType edge_type) const;
-    std::vector<Edge> edges(
-        const Node *node, std::function<bool(Edge)> edge_filter = [](Edge) { return true; }) const;
+    std::vector<Edge> edges(const Node *node, std::function<bool(Edge)> edge_filter = [](Edge) { return true; }) const;
     std::vector<Edge> operand_edges(
         const Node *node, std::function<bool(Edge)> edge_filter = [](Edge) { return true; }) const;
     std::vector<Edge> user_edges(
@@ -158,7 +157,8 @@ class Graph
     // templated to allow us to return a derived-class pointer back
     // to the user.
     template <typename NodeClassType>
-    NodeClassType *add_node(std::unique_ptr<NodeClassType> node, unsigned int subgraph_id, std::optional<NodeId> default_node_id = {});
+    NodeClassType *add_node(
+        std::unique_ptr<NodeClassType> node, unsigned int subgraph_id, std::optional<NodeId> default_node_id = {});
 
     // If edge_attributes not provided explicitly, we default construct them.
     void add_edge(const Edge &edge, std::shared_ptr<EdgeAttributes> edge_attributes = nullptr);
@@ -206,7 +206,7 @@ class Graph
     std::vector<Node *> nodes_by_type(NodeType type) const;
     const std::vector<Node *> &nodes() const;
 
-    std::vector<Node*> nodes_by_subgraph(unsigned int subgraph_id) const;
+    std::vector<Node *> nodes_by_subgraph(unsigned int subgraph_id) const;
     void move_node_to_subgraph(NodeId node_id, unsigned int subgraph_id);
     unsigned int get_subgraph_id_for_node(NodeId node_id) const;
     unsigned int num_subgraphs() const { return this->num_subgraphs_; }
@@ -272,7 +272,7 @@ class Graph
     std::vector<std::vector<int>> get_ordered_input_tile_dims() const;
     std::vector<std::vector<int>> get_ordered_parameter_tile_dims() const;
     std::vector<std::vector<int>> get_ordered_constant_tile_dims() const;
-    
+
     bool contains_nodes_of_epoch_type(NodeEpochType node_epoch_type) const;
 
     // Autograd mapping retrieval
@@ -288,8 +288,11 @@ class Graph
     void dump(std::string const &pass_name) const;
     bool is_node_visible(const Node *node) const;
     std::size_t virtual_node_count() const { return virtual_nodes_.size(); }
-    bool get_output_node_redirected() const {return this->output_node_redirected_;}
-    void set_output_node_redirected(bool output_node_redirected) {this->output_node_redirected_ = output_node_redirected;}
+    bool get_output_node_redirected() const { return this->output_node_redirected_; }
+    void set_output_node_redirected(bool output_node_redirected)
+    {
+        this->output_node_redirected_ = output_node_redirected;
+    }
 
    private:
     void mark_node_virtual(const Node *node);
@@ -337,7 +340,8 @@ class Graph
 };
 
 template <typename NodeClassType>
-NodeClassType *Graph::add_node(std::unique_ptr<NodeClassType> node, unsigned int subgraph_id, std::optional<NodeId> default_node_id)
+NodeClassType *Graph::add_node(
+    std::unique_ptr<NodeClassType> node, unsigned int subgraph_id, std::optional<NodeId> default_node_id)
 {
     NodeId node_id = (default_node_id) ? default_node_id.value() : this->generate_unique_node_id();
     node->set_id(node_id);
@@ -345,8 +349,8 @@ NodeClassType *Graph::add_node(std::unique_ptr<NodeClassType> node, unsigned int
     if (this->has_node_with_name(node->name()))
     {
         throw std::runtime_error(
-            "In graph " + this->name() +
-            ": trying to add a node with a name that already exists: " + node->name() + "\n");
+            "In graph " + this->name() + ": trying to add a node with a name that already exists: " + node->name() +
+            "\n");
     }
 
     node_name_to_node_id_[node->name()] = node_id;
@@ -376,10 +380,7 @@ class GraphTraversalContext
     using SetPtr = std::unique_ptr<const std::unordered_set<T>>;
 
    public:
-    GraphTraversalContext(
-        Graph *graph,
-        SetPtr<const Node*> context_virtual_nodes,
-        SetPtr<Edge> edges_to_ignore) :
+    GraphTraversalContext(Graph *graph, SetPtr<const Node *> context_virtual_nodes, SetPtr<Edge> edges_to_ignore) :
         graph(graph)
     {
         virtual_node_traversal_context_cache = std::move(graph->virtual_node_traversal_context_);
@@ -390,9 +391,7 @@ class GraphTraversalContext
         graph->node_traversal_context_ = nullptr;
     }
 
-    GraphTraversalContext(
-        graphlib::Graph *graph, SetPtr<const Node*> node_traversal_context) :
-        graph(graph)
+    GraphTraversalContext(graphlib::Graph *graph, SetPtr<const Node *> node_traversal_context) : graph(graph)
     {
         virtual_node_traversal_context_cache = std::move(graph->virtual_node_traversal_context_);
         ignored_edges_traversal_context_cache = std::move(graph->ignored_edges_traversal_context_);
@@ -404,8 +403,8 @@ class GraphTraversalContext
 
     GraphTraversalContext(
         graphlib::Graph *graph,
-        SetPtr<const Node*> node_traversal_context,
-        SetPtr<const Node*> context_virtual_nodes,
+        SetPtr<const Node *> node_traversal_context,
+        SetPtr<const Node *> context_virtual_nodes,
         SetPtr<Edge> edges_to_ignore) :
         graph(graph)
     {
@@ -426,9 +425,9 @@ class GraphTraversalContext
 
    private:
     graphlib::Graph *graph;
-    SetPtr<const Node*> virtual_node_traversal_context_cache = nullptr;
+    SetPtr<const Node *> virtual_node_traversal_context_cache = nullptr;
     SetPtr<Edge> ignored_edges_traversal_context_cache = nullptr;
-    SetPtr<const Node*> node_traversal_context_cache = nullptr;
+    SetPtr<const Node *> node_traversal_context_cache = nullptr;
 };
 
 std::ostream &operator<<(std::ostream &out, const Edge &e);

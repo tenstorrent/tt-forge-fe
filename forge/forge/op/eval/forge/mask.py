@@ -17,10 +17,11 @@ def eval(type, attr, ops):
         indices = ops[1].long()
         while len(indices.shape) < len(inp.shape):
             indices = indices.unsqueeze(0)
-            
+
         ones = torch.ones(indices.shape, dtype=inp.dtype)
         tensor = torch.zeros(inp.shape, dtype=inp.dtype).scatter_(dim, indices, ones)
         return tensor
+
 
 def shape(type, attr, ops):
     if type == "mask":
@@ -33,4 +34,3 @@ def lower(type, attr, lc, ops, outputs):
 
 def backward(type, attr, ac, operand, inputs, output, grad):
     raise RuntimeError("This should never be called.")
-

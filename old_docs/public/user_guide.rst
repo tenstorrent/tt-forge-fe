@@ -17,13 +17,13 @@ Compiling and running a PyBuda workload is as easy as:
   import pybuda
   import torch
   from transformers import BertModel, BertConfig
-  
+
   # Download the model from huggingface
   model = BertModel.from_pretrained("bert-base-uncased")
-  
+
   # Wrap the pytorch model in a PyBuda module wrapper
   module = pybuda.PyTorchModule("bert_encoder", model.encoder)
-  
+
   # Create a tenstorrent device
   tt0 = pybuda.TTDevice(
       "tt0",
@@ -31,11 +31,11 @@ Compiling and running a PyBuda workload is as easy as:
       arch=pybuda.BackendDevice.Wormhole_B0,
       devtype=pybuda.BackendType.Silicon,
   )
-  
+
   # Create an input tensor
   seq_len = 128
   input = torch.randn(1, seq_len, model.config.hidden_size)
-  
+
   # Compile and run inference
   output_queue = pybuda.run_inference(inputs=[input])
   print(output_queue.get())
@@ -90,7 +90,7 @@ PyBuda API and workflow is flexible enough that some of these steps can be merge
 Devices
 *******
 
-PyBuda makes it easy to distribute a workload onto a heterogenous set of devices available to you. This can be one or more 
+PyBuda makes it easy to distribute a workload onto a heterogenous set of devices available to you. This can be one or more
 Tenstorrent devices, CPUs, or GPUs. Each device that will be used to run your workflow needs to be declared by creating the appropriate
 device type and giving it a unique name:
 
@@ -102,7 +102,7 @@ device type and giving it a unique name:
 By default, the first available device of the appropriate type will be allocated, but out-of-order allocations can be done
 using the the optional `id` field.
 
-The order in which the devices are created is important, because they are automatically connected into a pipeline of devices, 
+The order in which the devices are created is important, because they are automatically connected into a pipeline of devices,
 which will be explained in mode detail :ref:`further down<Using Multiple Tenstorrent Devices>`.
 
 Each TTDevice can represent more than one hardware device, as described in :ref:`multi-device section<Multiple Devices>`.
@@ -111,7 +111,7 @@ Modules
 *******
 
 A typical ML/AI workload consists of modules. PyBuda supports modules that are written in various :ref:`frameworks<Framework Support>`, such
-as PyTorch, Tensorflow, and so on, as well as modules written in native PyBuda. Currently, all modules run on Tenstorrent devices, but 
+as PyTorch, Tensorflow, and so on, as well as modules written in native PyBuda. Currently, all modules run on Tenstorrent devices, but
 CPU and GPU devices can't run PyBuda modules.
 
 To run a module on a device, it needs to be "placed" on it
@@ -130,7 +130,7 @@ simiarly place a PyTorch module onto a Tenstorrent device, the module must be wr
 Run Workload
 ************
 
-The running of the workload involves two parts, usually done in parallel - data feeding, and actual running. 
+The running of the workload involves two parts, usually done in parallel - data feeding, and actual running.
 
 To feed data into the device pipeline, simply push inputs into the first device:
 
@@ -142,14 +142,14 @@ This can be done in a separate thread, through a data-loader, or any other commo
 that at least one set of inputs has been pushed into the first device before attempting to compile and run the workload, because PyBuda compiler
 requires a set of sample inputs to determine graph shapes, data formats, and other properties.
 
-PyBuda provides all-in-one APIs for compiling and running workloads, :py:func:`run_inference<pybuda.run_inference>` and 
-:py:func:`run_training<pybuda.run_training>`, which both return a queue in which the results will be automatically pushed. 
+PyBuda provides all-in-one APIs for compiling and running workloads, :py:func:`run_inference<pybuda.run_inference>` and
+:py:func:`run_training<pybuda.run_training>`, which both return a queue in which the results will be automatically pushed.
 For inference, and simple training setups, this is the simplest way to get up and running.
 
-Alternatively, the models can be compiled in a separate step, using the :py:func:`initialize_pipeline<pybuda.initialize_pipeline>` call, 
-which optioanlly takes sample inputs, if none have been pushed into the first device. Once the compilation has completed, the user 
-can run :py:func:`run_forward<pybuda.run_forward>` pass through the pipeline for inference, or a loop of 
-:py:func:`run_forward<pybuda.run_forward>`, :py:func:`run_backward<pybuda.run_backward>`, and :py:func:`run_optimizer<pybuda.run_optimizer>` 
+Alternatively, the models can be compiled in a separate step, using the :py:func:`initialize_pipeline<pybuda.initialize_pipeline>` call,
+which optioanlly takes sample inputs, if none have been pushed into the first device. Once the compilation has completed, the user
+can run :py:func:`run_forward<pybuda.run_forward>` pass through the pipeline for inference, or a loop of
+:py:func:`run_forward<pybuda.run_forward>`, :py:func:`run_backward<pybuda.run_backward>`, and :py:func:`run_optimizer<pybuda.run_optimizer>`
 calls to manually implement a training loop:
 
 .. code-block:: python
@@ -165,12 +165,12 @@ calls to manually implement a training loop:
 CPU Fallback
 ************
 
-If there are operators in the workload that are unsuppored by PyBuda, the user can create a CPUDevice and place module containing those 
+If there are operators in the workload that are unsuppored by PyBuda, the user can create a CPUDevice and place module containing those
 operators onto that CPUDevice. If enabled, PyBuda is capable of doing this automatically.
 
 If a TTDevice contains unsuppored operators, during compilation, the device will be split into mupltiple devices (TTDevice and CPUDevice). If
 the CPUDevice is at the front of the pipeline (i.e. the unsupported ops are in the first half of the graph), any inputs pushed to the TTDevice
-will be redirected to the correct CPUDevice. 
+will be redirected to the correct CPUDevice.
 
 To enable CPU fallback:
 
@@ -213,16 +213,16 @@ Output queues hold PyBuda tensors. For each PyBuda tensor, user can convert it b
 
     output_in_tf = output_q[0].to_framework("tensorflow")
 
-Advanced training scenarios sometimes require accumulated gradients to be retrieved and analyzed. For those cases, PyBuda provides an 
-:py::func:`API<pybuda.get_parameter_gradients>` that retrieves a dictionary of all currently accumulated gradients on a device. This can be used to 
+Advanced training scenarios sometimes require accumulated gradients to be retrieved and analyzed. For those cases, PyBuda provides an
+:py::func:`API<pybuda.get_parameter_gradients>` that retrieves a dictionary of all currently accumulated gradients on a device. This can be used to
 debug or analyze data, or even run a manual optimizer and push new weights onto the device.
 
 Saving and Loading Models
 -------------------------
 
-In a simple training workflow, a checkpoint interval can be set, and every N optimization steps the current device state will be pushed into 
-the checkpoint queue. For more advanced use cases, a manual checkpoint can be retrieved using 
-:py:func:`get_parameter_checkpoint<pybuda.get_parameter_checkpoint>` API, which returns a dictionary of all parameters on a 
+In a simple training workflow, a checkpoint interval can be set, and every N optimization steps the current device state will be pushed into
+the checkpoint queue. For more advanced use cases, a manual checkpoint can be retrieved using
+:py:func:`get_parameter_checkpoint<pybuda.get_parameter_checkpoint>` API, which returns a dictionary of all parameters on a
 device and their current values.
 
 Such a dictionary can also be pushed back onto the device using :py:func:`update_device_parameters<pybuda.update_device_parameters>`.
@@ -231,7 +231,7 @@ Such a dictionary can also be pushed back onto the device using :py:func:`update
 TensTorrent Device Image (TTI): Saving/Loading
 **********************************************
 
-A Tenstorrent Image (TTI) is a standalone archive file that captures the entire compiled state of a 
+A Tenstorrent Image (TTI) is a standalone archive file that captures the entire compiled state of a
 model. The contents of the archive include device configuration, compiler configuration, compiled model artifacts,
 backend build files (e.g. overlay and risc binaries), model parameter tensors. There can be multiple advantages
 with leveraging the usage of a TTI archive:
@@ -242,12 +242,12 @@ with leveraging the usage of a TTI archive:
 3) TTI archives can be shared and loaded across different machines and environments.
 4) When we save a TTI archive, we can configure the serialization format for the model parameters. This can be useful for
    scenarios where the user wants to save the model parameters in a tilized-binary format to avoid tilizing during model inference.
-   By default the serialization format is pickle. To configure for alternate serialization formats, the user can set either: 
+   By default the serialization format is pickle. To configure for alternate serialization formats, the user can set either:
    `PYBUDA_TTI_BACKEND_FORMAT=1` or `PYBUDA_TTI_BACKEND_TILIZED_FORMAT=1` environment variables.
 
 For example, from a machine without a silicon device, we can save a TTI archive intended to be deployed on a silicon device.
 We need to configure the device type and architecture of the target device and compile the model to a TTI archive.
-This can be done by invoking the `compile_to_image` method on  :py:class:`TTDevice<pybuda.TTDevice>`. 
+This can be done by invoking the `compile_to_image` method on  :py:class:`TTDevice<pybuda.TTDevice>`.
 
 .. code-block:: python
 
@@ -278,7 +278,7 @@ This will create the archive file `device_images/tt0.tti`. The contents of a TTI
     │   ├── brisc
     │   ├── erisc
     │   ├── nrisc
-    │   ├── hlks 
+    │   ├── hlks
     │   ├── epoch_programs
     ├── tensors # directory containing serialized tensors
     ├── module_files # Python file containing the PybudaModule of the model
@@ -359,14 +359,14 @@ To target a specific silicon device, we can set the device type and architecture
 Create TTI: Targeting Custom Row-Harvested Silicon Devices
 *********************************************************
 
-We can also save a TTI file targeting a machine with silicon devices with harvested rows offline. 
-The only difference from the above is we need to manually induce the harvested rows before saving TTI. 
+We can also save a TTI file targeting a machine with silicon devices with harvested rows offline.
+The only difference from the above is we need to manually induce the harvested rows before saving TTI.
 
 We can set the harvested rows by invoking  :py:func:`set_configuration_options<pybuda.set_configuration_options>` with `harvested_rows` argument.
- 
+
 .. code-block:: python
 
-    pybuda.set_configuration_options(harvested_rows=[1,11]) #manually harvest row 1 and 11 
+    pybuda.set_configuration_options(harvested_rows=[1,11]) #manually harvest row 1 and 11
 
     tt0 = pybuda.TTDevice("tt0",arch=BackendDevice.Grayskull, devtype=BackendType.Silicon)
     tt0.place_module(...)
@@ -380,15 +380,15 @@ The code snippet creates the TTI file targeting silicon devices with row 1 and 1
 Accordingly, part of the TTI file slightly changes as well:
 
 .. code-block:: yaml
- 
+
       Device Info...
       - arch: BackendDevice.Grayskull
       - chip_ids: [0]
       - backend device type: BackendType.Silicon
       - grid size: [8, 12]    # 2 rows are harvested from 10 rows
       - harvested rows: 2050  # indicates row 1 and 11 are harvested (in binary, 100000000010)
- 
-  
+
+
 Note that only rows 1-5 and 7-11 are harvestable, and TTI loading will raise an error if the manually harvested rows in TTI does not match with that of the loaded silicon device.
 
 
@@ -397,7 +397,7 @@ Create TTI: Targeting Custom Device Descriptor
 
 We can also save a TTI file targeting a machine with silicon devices with custom device descriptor (specified with file-path).
 This can be done by setting the device descriptor using :py:func:`set_configuration_options<pybuda.set_configuration_options>` with `backend_device_descriptor_path` argument.
- 
+
 .. code-block:: python
 
     pybuda.set_configuration_options(backend_device_descriptor_path="<device-descriptor-path>/wormhole_b0_4x6.yaml")
@@ -431,7 +431,7 @@ Here's an example of loading a generic TTI model from C++ for environments that 
   #include "tt_backend_api_types.hpp"
   #include "io_utils.h"
 
-  namespace fs = std::filesystem; 
+  namespace fs = std::filesystem;
 
   int main(int argc, char **argv) {
 
@@ -477,7 +477,7 @@ Here's an example of loading a generic TTI model from C++ for environments that 
               assert(tt::backend::push_input(io_desc, tensor_desc, false, 1) == tt::DEVICE_STATUS_CODE::Success);
               // Optional: Host memory management
               // - free releases storage on host (tensor data freed), since host is done with pushing data for this activation
-              // - The user can choose not to free this memory and use it even after the data is in device DRAM 
+              // - The user can choose not to free this memory and use it even after the data is in device DRAM
               std::cout << "Pushed Input tensor " << name << " data ptr: " << tensor_desc.ptr << std::endl;
               assert(tt::backend::free_tensor(tensor_desc) == tt::DEVICE_STATUS_CODE::Success);
           }
@@ -487,7 +487,7 @@ Here's an example of loading a generic TTI model from C++ for environments that 
           for (const auto& prog_name : backend -> get_programs()) {
               assert(backend->run_program(prog_name, program_parameters) == tt::DEVICE_STATUS_CODE::Success);
           }
-          
+
           // <io process> - Pop a microbatch of outputs from device
           for (const std::string &name : model->get_graph_output_names()) {
               tt::tt_dram_io_desc io_desc = tt::io::utils::get_queue_descriptor(backend, name);
@@ -502,7 +502,7 @@ Here's an example of loading a generic TTI model from C++ for environments that 
 
               // Host memory management
               // - free releases storage on host (tensor data freed), host is done with the output data
-              // - The user can choose not to free this memory and use it for downstream tasks 
+              // - The user can choose not to free this memory and use it for downstream tasks
               std::cout << "Got Output tensor " << name << " data ptr: " << tensor_desc.ptr << std::endl;
               assert(tt::backend::free_tensor(tensor_desc) == tt::DEVICE_STATUS_CODE::Success);
           }
@@ -522,7 +522,7 @@ Introduction
 ************
 
 Automatic Mixed Precision (AMP) is a technique employed by Pybuda to leverage the hardware's ability to adjust precision along the hardware data path.
-This technique mixes native support for low-precision block floating point (BFP) data format with higher precision data-formats (float16, bfloat16) 
+This technique mixes native support for low-precision block floating point (BFP) data format with higher precision data-formats (float16, bfloat16)
 to achieve accuracy results close or at parity relative to half precision.
 
 There are several benefits enabling AMP:
@@ -584,7 +584,7 @@ Here's a simple example for adjusting the precision of select operators, inputs 
     accumulate_df=pybuda.DataFormat.Float16_b,
     output_df=pybuda.DataFormat.Bfp8_b,
    )
-   
+
    # We'll also target the KQV matmul weights for attention modules and set them to lower precision
    pybuda.config.configure_mixed_precision(
     name_regex="layer.*.attention.self.(query|value|key).weight",
@@ -645,11 +645,11 @@ Multiple Devices
 Using Multiple Tenstorrent Devices
 **********************************
 
-PyBuda makes it easy to parallelize workloads onto multiple devices. A single :py:class:`TTDevice<pybuda.TTDevice>` can be used as a wrapper to any number of available 
+PyBuda makes it easy to parallelize workloads onto multiple devices. A single :py:class:`TTDevice<pybuda.TTDevice>` can be used as a wrapper to any number of available
 Tenstorrent devices accessible to the host - either locally or through ethernet. The PyBuda compiler will then break up the workload over
 assigned devices using either pipeline or model parllelism strategies, or a combination of both.
 
-The easiest way to use all available hardware is to set ``num_chips`` parameter in :py:class:`TTDevice<pybuda.TTDevice>` to 0, which instructs it to auto-detect and use everything it can find. 
+The easiest way to use all available hardware is to set ``num_chips`` parameter in :py:class:`TTDevice<pybuda.TTDevice>` to 0, which instructs it to auto-detect and use everything it can find.
 However, ``num_chips`` and ``chip_ids`` parameters can be used to select a subset of available hardware:
 
 .. code-block:: python
@@ -697,9 +697,9 @@ Pybuda exposes two entry points for users to run the Model Merging Tool:
 
 .. code-block:: bash
 
-  python3 pybuda/pybuda/tools/tti_merge.py [-h] [-mbl {dirname}] 
+  python3 pybuda/pybuda/tools/tti_merge.py [-h] [-mbl {dirname}]
     [-mdl {models}] [-a {arch}]
-    [-mml {filename}] [-scr] 
+    [-mml {filename}] [-scr]
     [-dqo]
 
 The following arguments are available when using `tti_merge.py`
@@ -723,7 +723,7 @@ The following arguments are available when using `tti_merge.py`
     - Disable memory optimization that switches channels for queues when OOM during memory allocation (default = False) [Optional]
   * - -dqo, --dynamic_queue_overlap_off
     - Disable memory optimization allowing dynamic queues to overlap in memory channels (default = False) [Optional]
-  
+
 As an example, given the following directory structure in the Pybuda root directory:
 
 .. code-block:: bash

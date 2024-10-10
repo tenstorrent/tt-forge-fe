@@ -5,9 +5,11 @@
 #include <cstdint>
 #define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
 
-namespace tt {
+namespace tt
+{
 
-namespace graphlib {
+namespace graphlib
+{
 
 // Dimension Index
 constexpr int X = -1;
@@ -29,13 +31,15 @@ enum NodeType
     kQueue,
 };
 
-enum NodeEpochType {
-  Forward = 1,
-  Backward = 2,
-  Optimizer = 3
+enum NodeEpochType
+{
+    Forward = 1,
+    Backward = 2,
+    Optimizer = 3
 };
 
-enum class UBlockOrder {
+enum class UBlockOrder
+{
     R,
     C,
 };

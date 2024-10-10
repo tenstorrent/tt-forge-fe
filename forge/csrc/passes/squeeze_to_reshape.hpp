@@ -9,8 +9,8 @@ class Graph;
 class OpNode;
 class Node;
 class Shape;
-}
-namespace tt::passes 
+}  // namespace tt::graphlib
+namespace tt::passes
 {
 bool squeeze_to_reshape(graphlib::Graph *graph);
-} // namespace tt:passes
+}  // namespace tt::passes

@@ -95,9 +95,7 @@ def test_llama_inference_cache_cpu():
     past_key_values = None
     pkv_length = len(past_key_values[0][0].shape[2]) if past_key_values else 0
     attention_mask = torch.ones_like(input_ids)
-    position_ids = torch.arange(
-        pkv_length, seq_length + pkv_length, dtype=torch.long
-    ).unsqueeze(0)
+    position_ids = torch.arange(pkv_length, seq_length + pkv_length, dtype=torch.long).unsqueeze(0)
 
     inputs = (input_ids, attention_mask, position_ids, past_key_values)
 
@@ -111,17 +109,13 @@ def test_llama_inference_cache_cpu():
     max_new_tokens = 46
     generated_tokens = input_ids
     for i in range(max_new_tokens):
-        logits, past_key_values = framework_model(
-            input_ids=next_token.unsqueeze(0), past_key_values=past_key_values
-        )
+        logits, past_key_values = framework_model(input_ids=next_token.unsqueeze(0), past_key_values=past_key_values)
         next_token_logits = logits[:, -1, :]
         next_token = torch.argmax(next_token_logits, dim=-1)
 
         if next_token == tokenizer.eos_token_id:
             break
-        generated_tokens = torch.cat(
-            [generated_tokens, next_token.unsqueeze(0)], dim=-1
-        )
+        generated_tokens = torch.cat([generated_tokens, next_token.unsqueeze(0)], dim=-1)
 
     # Generated text
     generated_text = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)

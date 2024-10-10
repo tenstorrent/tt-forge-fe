@@ -6,6 +6,7 @@ import torch
 from torchvision import datasets, transforms
 from torch.utils.tensorboard import SummaryWriter
 
+
 class FeedForward(torch.nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(FeedForward, self).__init__()
@@ -19,15 +20,14 @@ class FeedForward(torch.nn.Module):
         x = self.fc2(x)
         return x
 
+
 def train():
     torch.manual_seed(777)
-    transform=transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,)),
-        transforms.Lambda(lambda x: x.view(-1))
-        ])
-    train_dataset = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
-    test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,)), transforms.Lambda(lambda x: x.view(-1))]
+    )
+    train_dataset = datasets.MNIST(root="./data", train=True, transform=transform, download=True)
+    test_dataset = datasets.MNIST(root="./data", train=False, transform=transform, download=True)
 
     writer = SummaryWriter()
 
@@ -52,9 +52,11 @@ def train():
             loss.backward()
             optimizer.step()
 
-            if (batch_idx+1) % 100 == 0:
-                print(f'Epoch [{epoch+1}/{num_epochs}], Step [{batch_idx+1}/{len(train_loader)}], Loss: {loss.item():.4f}')
-                writer.add_scalar('Loss/train', loss.item(), epoch * len(train_loader) + batch_idx)
+            if (batch_idx + 1) % 100 == 0:
+                print(
+                    f"Epoch [{epoch+1}/{num_epochs}], Step [{batch_idx+1}/{len(train_loader)}], Loss: {loss.item():.4f}"
+                )
+                writer.add_scalar("Loss/train", loss.item(), epoch * len(train_loader) + batch_idx)
 
         total_correct = 0
         total_samples = 0
@@ -66,23 +68,24 @@ def train():
                 total_correct += (predicted == labels).sum().item()
 
         accuracy = 100.0 * total_correct / total_samples
-        print(f'Epoch [{epoch+1}/{num_epochs}], Validation Accuracy: {accuracy:.2f}%')
+        print(f"Epoch [{epoch+1}/{num_epochs}], Validation Accuracy: {accuracy:.2f}%")
 
         if accuracy > best_accuracy:
             best_accuracy = accuracy
             best_checkpoint = {
-                'epoch': epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'accuracy': accuracy
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "accuracy": accuracy,
             }
 
     if best_checkpoint is not None:
-        model.load_state_dict(best_checkpoint['model_state_dict'])
-        optimizer.load_state_dict(best_checkpoint['optimizer_state_dict'])
+        model.load_state_dict(best_checkpoint["model_state_dict"])
+        optimizer.load_state_dict(best_checkpoint["optimizer_state_dict"])
         print(f'Reverted to checkpoint with highest validation accuracy: {best_checkpoint["accuracy"]:.2f}%')
 
     writer.close()
+
 
 if __name__ == "__main__":
     train()

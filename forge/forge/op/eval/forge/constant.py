@@ -5,6 +5,7 @@
 import torch
 import torch.nn.functional
 
+
 def shape(type, attr, ops):
     assert len(ops) == 0, "constant should not have any operands"
     assert len(attr) == 1, "constant should contain single attr repr the const. val"

@@ -25,7 +25,7 @@ def eval(type, attr, ops):
     if type == "conv_sum":
 
         t_ops = to_torch_operands(*ops)
-        
+
         t_ops = list(t_ops)
 
         # Extract attributes
@@ -35,18 +35,20 @@ def eval(type, attr, ops):
 
         # Check operands
         for t_op in t_ops:
-            assert len(t_op.shape) == 4, f'Tensor must have 4 dimensions, given {len(t_op.shape)}'
+            assert len(t_op.shape) == 4, f"Tensor must have 4 dimensions, given {len(t_op.shape)}"
 
         # To forge shape
         for i in range(len(t_ops)):
-            t_ops[i] = t_ops[i][:, :, :originalY*originalX, :]
+            t_ops[i] = t_ops[i][:, :, : originalY * originalX, :]
             t_ops[i] = t_ops[i].transpose(2, 3)
             t_ops[i] = t_ops[i].reshape(1, t_ops[i].shape[2], originalY, originalX)
 
         # Shift and Add
         res = 0
         for i in range(len(t_ops)):
-            res += torch.nn.functional.pad(t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1]))
+            res += torch.nn.functional.pad(
+                t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1])
+            )
 
         # To forge shape
         res = res.reshape(1, res.shape[1], res.shape[2] * res.shape[3], 1)
@@ -103,9 +105,11 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
         for op_index in range(len(ops)):
             for dim_index in range(len(ops[op_index])):
                 if ops[op_index][dim_index] != output_shape[dim_index]:
-                    assert ops[op_index][dim_index] == 1, f"Eltwise nary ops must have same shape or operand must be 1 wide to broadcast: {ops}"
+                    assert (
+                        ops[op_index][dim_index] == 1
+                    ), f"Eltwise nary ops must have same shape or operand must be 1 wide to broadcast: {ops}"
                     broadcast.append((op_index, dim_index - len(output_shape), output_shape[dim_index]))
-        
+
         return tuple(output_shape), broadcast
 
     if type == "conv_sum":
@@ -113,7 +117,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
         for op in ops:
             assert len(op) <= 4, "Shape of an operand must be smaller than or equal to 4"
             if len(op) < 4:
-                op = (4 - len(op)) * (1, ) + op
+                op = (4 - len(op)) * (1,) + op
             if len(shapes) > 0:
                 assert shapes[-1] == op, "Shapes of all operands must be the same size"
             shapes.append(op)
@@ -127,7 +131,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
         output_shape = list(ops[0])
         for op in ops[1:]:
             output_shape[axis] += op[axis]
-        
+
         return output_shape, []
 
     elif type == "where":
@@ -152,7 +156,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
         output_shape = list(ops[0])
         for op in ops[1:]:
             output_shape[axis] += op[axis]
-        
+
         return output_shape, []
     assert False, f"{type} not defined in eltwise_nary"
 
@@ -172,7 +176,7 @@ def lower(type, attr, lc, ops, outputs):
         dim = attr[0]
 
         forge_attrs = {
-            "axis" : dim,
+            "axis": dim,
         }
 
         return lc.op("index_copy", ops, attr, forge_attrs)
@@ -199,15 +203,15 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
     elif op_type == "concatenate":
         axis = attr[0]
-        dim_offset = grad.shape[axis] 
+        dim_offset = grad.shape[axis]
 
         index_offset = 0
         for (i, input_) in enumerate(inputs):
             if operand is not i:
                 index_offset += input_.shape[axis]
                 continue
-            return ac.op("select", (grad, ), (axis, index_offset, input_.shape[axis], dim_offset))            
- 
+            return ac.op("select", (grad,), (axis, index_offset, input_.shape[axis], dim_offset))
+
     elif op_type == "interleave":
         axis = attr[0]
         stride = attr[1]
@@ -216,18 +220,23 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         num_operands = len(inputs)
         result = grad
         if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op("pad_tile", (result, ), (-1, grad.shape[-1]))
+            result = ac.op("pad_tile", (result,), (-1, grad.shape[-1]))
         if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op("pad_tile", (result, ), (-2, grad.shape[-2]))
-        result = ac.op("hstack", (result, ), (num_operands,))
+            result = ac.op("pad_tile", (result,), (-2, grad.shape[-2]))
+        result = ac.op("hstack", (result,), (num_operands,))
         if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op("narrow", (result, ), (-2, 0, grad.shape[-2], result.shape[-2]))
-        result = ac.op("select", (result, ), (-1, operand*align_up_tile(grad.shape[-1]), align_up_tile(grad.shape[-1]), result.shape[-1]))
+            result = ac.op("narrow", (result,), (-2, 0, grad.shape[-2], result.shape[-2]))
+        result = ac.op(
+            "select",
+            (result,),
+            (-1, operand * align_up_tile(grad.shape[-1]), align_up_tile(grad.shape[-1]), result.shape[-1]),
+        )
         if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op("narrow", (result, ), (-1, 0, grad.shape[-1], result.shape[-1]))
+            result = ac.op("narrow", (result,), (-1, 0, grad.shape[-1], result.shape[-1]))
         return result
 
     assert False, f"{op_type} not defined in eltwise_nary"
+
 
 def decompose(type, attr, dc, inputs):
     if type == "stack":
@@ -243,13 +252,16 @@ def decompose(type, attr, dc, inputs):
 
         output = dc.op("concatenate", new_inputs, (axis,))
         dc.fuse(output)
-        
+
     if type == "concatenate":
         if len(inputs) == 1:
             dc.fuse(dc.op(Nop.create(), [inputs[0]]))
-    
+
+
 from math import gcd
 from functools import reduce
+
+
 def find_gcd(list):
     x = reduce(gcd, list)
     return x
@@ -257,7 +269,7 @@ def find_gcd(list):
 
 def decompose_post_optimize(type, attr, dc, inputs):
     if type == "where":
-        
+
         condition = inputs[0]
         x = inputs[1]
         y = inputs[2]

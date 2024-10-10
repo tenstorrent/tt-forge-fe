@@ -17,9 +17,7 @@ from forge import ForgeModule, Tensor, VerifyConfig
 from test.common import run
 from forge.verify import TestKind, verify_module
 
-verify_cfg = VerifyConfig(
-    run_golden=True, run_net2pipe=True
-)  # Run backend golden check on all tests in here
+verify_cfg = VerifyConfig(run_golden=True, run_net2pipe=True)  # Run backend golden check on all tests in here
 
 
 @pytest.mark.parametrize(
@@ -40,9 +38,7 @@ def test_interleave(test_kind, test_device, input_shape, axis, stride, num_opera
             self.stride = stride
 
         def forward(self, *operands):
-            x = forge.op.Interleave(
-                "interleave0", *operands, axis=self.axis, stride=self.stride
-            )
+            x = forge.op.Interleave("interleave0", *operands, axis=self.axis, stride=self.stride)
             return x
 
     input_shapes = tuple([input_shape for _ in range(num_operands)])
@@ -62,9 +58,7 @@ def test_interleave(test_kind, test_device, input_shape, axis, stride, num_opera
 @pytest.mark.parametrize("aligned", [True, False])
 def test_concat(test_kind, test_device, dim, aligned):
     @run(
-        VerifyConfig(
-            test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch
-        ),
+        VerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch),
     )
     def simple_concat(a, b):
         return forge.op.Concatenate("", a, b, axis=dim)
@@ -75,21 +69,15 @@ def test_concat(test_kind, test_device, dim, aligned):
             2: (1, 3, 1024, 32),
             1: (1, 1, 128, 32),
         }
-        a = Tensor.create_from_torch(
-            torch.randn((1, 3, 128, 32), requires_grad=test_kind.is_training())
-        )
+        a = Tensor.create_from_torch(torch.randn((1, 3, 128, 32), requires_grad=test_kind.is_training()))
     else:
         shapes = {
             -1: (1, 3, 128, 6),
             2: (1, 3, 128, 6),
             1: (1, 1, 128, 6),
         }
-        a = Tensor.create_from_torch(
-            torch.randn((1, 3, 128, 6), requires_grad=test_kind.is_training())
-        )
-    b = Tensor.create_from_torch(
-        torch.randn(shapes[dim], requires_grad=test_kind.is_training())
-    )
+        a = Tensor.create_from_torch(torch.randn((1, 3, 128, 6), requires_grad=test_kind.is_training()))
+    b = Tensor.create_from_torch(torch.randn(shapes[dim], requires_grad=test_kind.is_training()))
     c = simple_concat(a, b)
 
 
@@ -97,9 +85,7 @@ def test_concat_two_kinds_pad(test_device):
     class Module(ForgeModule):
         def __init__(self, name):
             super().__init__(name)
-            self.add_parameter(
-                "w", forge.Parameter(*(1, 1, 352, 192), requires_grad=True)
-            )
+            self.add_parameter("w", forge.Parameter(*(1, 1, 352, 192), requires_grad=True))
 
         def forward(self, in0, in1, in2, in3, in4, in5, y):
             in0 = forge.op.Multiply("m0", in0, in0)
@@ -114,7 +100,7 @@ def test_concat_two_kinds_pad(test_device):
             x = forge.op.Matmul("mm0", x, self.get_parameter("w"))
             return x
 
-    compiler_cfg = forge.config._get_global_compiler_config() # load global compiler config object
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.balancer_policy = "CNN"
     # compiler_cfg.place_on_new_epoch("m6_transpose_nop_0")
     os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
@@ -144,6 +130,3 @@ def test_concat_two_kinds_pad(test_device):
     )
 
     os.environ["FORGE_PAD_SPARSE_MM"] = "{}"
-
-
-

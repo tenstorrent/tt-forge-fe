@@ -13,6 +13,7 @@ def eval(type, attr, ops):
 
     return t_ops[0]
 
+
 def shape(type, attr, ops, tile_height, tile_width):
     assert len(ops) == 1, "DRAM Queue should have one input"
     return ops[0], []

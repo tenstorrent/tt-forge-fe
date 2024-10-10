@@ -2,17 +2,19 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include "tt_device.hpp"
+
 #include <optional>
 
-#include "tt_device.hpp"
+#include "tt/runtime/runtime.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
-#include "tt/runtime/runtime.h"
+namespace tt
+{
 
-namespace tt {
-
-TTSystem detect_available_devices() {
+TTSystem detect_available_devices()
+{
     auto [system_desc, chip_ids] = runtime::getCurrentSystemDesc();
 
     std::vector<std::shared_ptr<TTDevice>> devices;
@@ -29,7 +31,7 @@ TTSystem detect_available_devices() {
             continue;
         }
 
-        switch(chip_desc->arch())
+        switch (chip_desc->arch())
         {
             case target::Arch::Grayskull: arch = ARCH::GRAYSKULL; break;
             case target::Arch::Wormhole_b0: arch = ARCH::WORMHOLE_B0; break;
@@ -45,20 +47,23 @@ TTSystem detect_available_devices() {
     return TTSystem{system_desc, chip_ids, devices};
 }
 
-TTSystem& TTSystem::get_system() {
+TTSystem& TTSystem::get_system()
+{
     static TTSystem system = detect_available_devices();
     return system;
 }
 
-void TTDevice::open_device() {
+void TTDevice::open_device()
+{
     TT_ASSERT(!is_open());
     rt_device = runtime::openDevice({index});
 }
 
-void TTDevice::close_device() {
+void TTDevice::close_device()
+{
     TT_ASSERT(is_open());
     runtime::closeDevice(rt_device.value());
     rt_device.reset();
 }
 
-} // namespace tt
+}  // namespace tt

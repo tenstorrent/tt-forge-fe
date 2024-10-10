@@ -2,15 +2,16 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include "passes/fuse_conv2d_bias.hpp"
+
 #include <pybind11/pybind11.h>
 
+#include "graph_lib/graph.hpp"
+#include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "utils/logger.hpp"
 #include "python_bindings_common.hpp"
-#include "graph_lib/node.hpp"
-#include "graph_lib/graph.hpp"
-#include "passes/fuse_conv2d_bias.hpp"
+#include "utils/logger.hpp"
 
 namespace tt::passes
 {
@@ -33,12 +34,12 @@ static bool has_fusable_upstream_conv2d(graphlib::Graph *graph, graphlib::PyOpNo
     return true;
 }
 
-void fuse_conv2d_bias(graphlib::Graph *graph) {
-
+void fuse_conv2d_bias(graphlib::Graph *graph)
+{
     for (tt::graphlib::Node *node : graphlib::topological_sort(*graph))
     {
         // Look for bias
-        if ( (node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "add") )
+        if ((node->node_type() != graphlib::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "add"))
             continue;
 
         graphlib::PyOpNode *op = node->as<graphlib::PyOpNode>();
@@ -52,7 +53,8 @@ void fuse_conv2d_bias(graphlib::Graph *graph) {
         auto tms = graph->get_edge_attributes(graph->operand_data_edges(op)[1])->get_tms();
         bool broadcast = false;
         for (auto tm : tms)
-            if (tm.op == "broadcast") {
+            if (tm.op == "broadcast")
+            {
                 broadcast = true;
                 break;
             }
@@ -65,7 +67,11 @@ void fuse_conv2d_bias(graphlib::Graph *graph) {
         // Create a new bias edge to conv2d
         tt::graphlib::Edge bias_input_edge = graph->operand_data_edges(op)[1];
         tt::graphlib::Edge new_bias_input_edge = tt::graphlib::Edge(
-            bias_input_edge.producer_node_id, bias_input_edge.producer_output_port_id, operands[0]->id(), 2, graphlib::EdgeType::kData);
+            bias_input_edge.producer_node_id,
+            bias_input_edge.producer_output_port_id,
+            operands[0]->id(),
+            2,
+            graphlib::EdgeType::kData);
         graph->add_edge(new_bias_input_edge);
         graph->copy_edge_attributes(bias_input_edge, new_bias_input_edge);
 
@@ -79,7 +85,11 @@ void fuse_conv2d_bias(graphlib::Graph *graph) {
                 producer_output_port_id = 2;
             }
             tt::graphlib::Edge new_edge = tt::graphlib::Edge(
-                operands[0]->id(), producer_output_port_id, edge.consumer_node_id, edge.consumer_input_port_id, edge.edge_type);
+                operands[0]->id(),
+                producer_output_port_id,
+                edge.consumer_node_id,
+                edge.consumer_input_port_id,
+                edge.edge_type);
             graph->add_edge(new_edge);
             graph->copy_edge_attributes(edge, new_edge);
         }
@@ -93,4 +103,4 @@ void fuse_conv2d_bias(graphlib::Graph *graph) {
     }
 }
 
-}
+}  // namespace tt::passes

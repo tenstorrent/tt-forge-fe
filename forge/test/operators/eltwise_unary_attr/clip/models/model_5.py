@@ -5,7 +5,7 @@
 #   Test 5
 #   Clip operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -20,7 +20,7 @@ from forge import ForgeModule, Tensor
 
 class ForgeClipTest(ForgeModule):
     """
-        Forge Test 5
+    Forge Test 5
 
     """
 
@@ -32,19 +32,14 @@ class ForgeClipTest(ForgeModule):
     WEIGHTS_RANGE_MAX = 1.0
     WEIGHTS_DISTRIBUTION = Normal
 
-    def __init__(
-        self,
-        shape,
-        min_value,
-        max_value
-    ):
+    def __init__(self, shape, min_value, max_value):
         super().__init__("Forge Test 5")
 
         self.testname = "Operator Clip, Test 5"
         self.shape = shape
         self.min_value = min_value
         self.max_value = max_value
-        
+
         self.train_param1 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param3 = forge.Parameter(*self.shape, requires_grad=True)
@@ -52,18 +47,16 @@ class ForgeClipTest(ForgeModule):
         self.inputs = []
         for i in range(3):
             input = ForgeClipTest.INPUTS_DISTRIBUTION(
-                ForgeClipTest.INPUTS_RANGE_MIN, 
-                ForgeClipTest.INPUTS_RANGE_MAX).sample(self.shape)
+                ForgeClipTest.INPUTS_RANGE_MIN, ForgeClipTest.INPUTS_RANGE_MAX
+            ).sample(self.shape)
             self.inputs.append(Tensor.create_from_torch(input))
 
         for i in range(1, 4):
             weights = ForgeClipTest.WEIGHTS_DISTRIBUTION(
-                ForgeClipTest.WEIGHTS_RANGE_MIN, 
-                ForgeClipTest.WEIGHTS_RANGE_MAX).sample(self.shape)
+                ForgeClipTest.WEIGHTS_RANGE_MIN, ForgeClipTest.WEIGHTS_RANGE_MAX
+            ).sample(self.shape)
             weights.requires_grad = True
             self.set_parameter("train_param" + str(i), weights)
-
-
 
     def forward(self, x1, x2, x3):
 

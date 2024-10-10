@@ -64,7 +64,7 @@ Before going into details, below is a simple example of SFPI code:
         // This emits a loadi (into tmp), loadi (as a temp for 1.2F) and a mad
         vFloat tmp = s2vFloat16a(value);
         dst_reg[5] = a * tmp + 1.2F;
-    
+
         v_if ((a >= 4.0F && a < 8.0F) || (a >= 12.0F && a < 16.0F)) {
             vInt b = exexp_nodebias(a);
             b &= 0xAA;
@@ -74,7 +74,7 @@ Before going into details, below is a simple example of SFPI code:
             v_endif;
         } v_elseif (a == s2vFloat16a(3.0F) {
             // RISCV branch
-            if (take_abs) { 
+            if (take_abs) {
                 dst_reg[7] = abs(a);
             } else {
                 dst_reg[7] = a;
@@ -289,11 +289,11 @@ Wormhole only
     vUInt int32_to_int8(vInt in, unsigned int descale, int round_mode = 1)
     vUInt float_to_uint16(vFloat in, int round_mode = 1)
     vUInt float_to_int16(vFloat in, int round_mode = 1)
-    
+
 Immediate Floating Point Values
 +++++++++++++++++++++++++++++++
 
-Assigning a float to a vFloat behaves slightly different on Grayskull vs Wormhole. 
+Assigning a float to a vFloat behaves slightly different on Grayskull vs Wormhole.
 On Grayskull, the value is interpreted as an fp16b; use the conversion routines below
 to explicitly specify the format.  On Wormhole, the floating point value is converted
 to an fp16a, fp16b, or fp32 by first looking to see if the range fits in fp16b

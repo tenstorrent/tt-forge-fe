@@ -10,6 +10,7 @@ from transformers import AutoFeatureExtractor, ViTForImageClassification
 import forge
 from test.utils import download_model
 
+
 def generate_model_deit_imgcls_hf_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

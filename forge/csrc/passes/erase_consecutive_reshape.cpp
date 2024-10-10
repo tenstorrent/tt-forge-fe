@@ -7,9 +7,9 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "utils/logger.hpp"
 #include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
+#include "utils/logger.hpp"
 namespace tt::passes
 {
 
@@ -39,10 +39,13 @@ static bool is_reshape_transpose(graphlib::Node const *node)
     if (_dim0 > _dim1)
         std::swap(_dim0, _dim1);
 
-    if (_dim0 + 1 == _dim1) {
+    if (_dim0 + 1 == _dim1)
+    {
         // Consecutive transpose dims
         return shape[_dim0] == 1 or shape[_dim1] == 1;
-    } else {
+    }
+    else
+    {
         auto shape_vector = shape.as_vector();
         std::uint32_t max_dim = 0;
         std::uint32_t volume = 1;
@@ -55,10 +58,11 @@ static bool is_reshape_transpose(graphlib::Node const *node)
     }
 }
 
-static std::vector<graphlib::Node *> path_to_reshape_after_communable_unaries(graphlib::Graph *graph, graphlib::Node *initial_node)
+static std::vector<graphlib::Node *> path_to_reshape_after_communable_unaries(
+    graphlib::Graph *graph, graphlib::Node *initial_node)
 {
     std::vector<graphlib::Node *> path;
-    
+
     path.push_back(dynamic_cast<graphlib::OpNode *>(initial_node));
     graphlib::Node *iter = initial_node;
     while (true)
@@ -67,24 +71,29 @@ static std::vector<graphlib::Node *> path_to_reshape_after_communable_unaries(gr
         TT_ASSERT(op);
 
         std::vector<graphlib::Node *> users = graph->data_users(op);
-        if (users.size() > 1) {
+        if (users.size() > 1)
+        {
             path.clear();
             break;
         }
         graphlib::OpNode *user = dynamic_cast<graphlib::OpNode *>(users[0]);
-        if (not user) {
+        if (not user)
+        {
             path.clear();
             break;
         }
-        if (graphlib::is_eltwise_unary(user) or graphlib::is_eltwise_binary(user)) {
+        if (graphlib::is_eltwise_unary(user) or graphlib::is_eltwise_binary(user))
+        {
             path.push_back(op);
         }
-        else if (is_reshape(user)) {
+        else if (is_reshape(user))
+        {
             path.push_back(op);
             path.push_back(user);
             break;
         }
-        else {
+        else
+        {
             path.clear();
             break;
         }
@@ -105,7 +114,8 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
 
     // path is reshape -> eltwise -> eltwise ... -> reshape
     // don't need to alter first reshape as it's getting removed
-    for (std::size_t i = 0; i < path.size()-1; ++i) {
+    for (std::size_t i = 0; i < path.size() - 1; ++i)
+    {
         graphlib::Node *node = path[i];
         node->set_shape(commute_shape);
 
@@ -118,11 +128,12 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
             // Handle the other operand if it's eltwise-binary op  (taken from erase-inverse-ops)
             if (graphlib::is_eltwise_binary(op))
             {
-		std::vector<graphlib::Edge> edges = graph->operand_data_edges(op);
-                graphlib::Edge current_edge = (edges[0].producer_node_id == path[i-1]->id()) ? edges[0] : edges[1];
+                std::vector<graphlib::Edge> edges = graph->operand_data_edges(op);
+                graphlib::Edge current_edge = (edges[0].producer_node_id == path[i - 1]->id()) ? edges[0] : edges[1];
                 auto current_edge_tms = graph->get_edge_attributes(current_edge)->get_tms();
 
-                for (graphlib::OpType &op_type : current_edge_tms) {
+                for (graphlib::OpType &op_type : current_edge_tms)
+                {
                     if (op_type.op == "broadcast")
                     {
                         int bcast_dim = std::get<int>(op_type.attr[0]);
@@ -134,26 +145,34 @@ static void commute_eltwise_ops(graphlib::Graph *graph, std::vector<graphlib::No
                     }
                 }
 
-                graphlib::Edge another_operand_edge = (edges[0].producer_node_id == path[i-1]->id()) ? edges[1] : edges[0]; // operand not in the current path
-           
-                auto name = last->name() + "_operand_commute_clone" + std::to_string(another_operand_edge.edge_creation_id);
+                graphlib::Edge another_operand_edge = (edges[0].producer_node_id == path[i - 1]->id())
+                                                          ? edges[1]
+                                                          : edges[0];  // operand not in the current path
+
+                auto name =
+                    last->name() + "_operand_commute_clone" + std::to_string(another_operand_edge.edge_creation_id);
                 graphlib::Node *clone = graph->add_node(last->clone(name), graph->get_subgraph_id_for_node(last->id()));
                 graphlib::OpNode *added_op = dynamic_cast<graphlib::OpNode *>(clone);
                 added_op->as<graphlib::TaggedNode>()->tag("dont_erase");
-                log_trace(LogGraphCompiler, "  Operand commute clone: {} -> between {} and {} ", name, added_op->name(), graph->node_by_id(another_operand_edge.producer_node_id)->name());
-            
+                log_trace(
+                    LogGraphCompiler,
+                    "  Operand commute clone: {} -> between {} and {} ",
+                    name,
+                    added_op->name(),
+                    graph->node_by_id(another_operand_edge.producer_node_id)->name());
+
                 update_reshape_attr(added_op, commute_shape);
                 clone->set_shape(commute_shape);
                 log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", commute_shape);
-           
-                // TODO: fix the bug that bc disapeears after lower-reinterpret-cast 
+
+                // TODO: fix the bug that bc disapeears after lower-reinterpret-cast
                 insert_node_on_edge(graph, another_operand_edge, clone);
                 handle_change_rank(graph, clone);
                 try_commute_bcast_through_clone(graph, added_op);
                 if (graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(graph->data_operands(clone)[0]))
-                    try_consteval_input_no_operand_forks(graph, input, true);   
-            } 
-        } 
+                    try_consteval_input_no_operand_forks(graph, input, true);
+            }
+        }
     }
 }
 
@@ -163,14 +182,20 @@ static bool are_consecutive_reshape(graphlib::Graph *graph, graphlib::Edge edge,
     graphlib::Node *consumer = graph->node_by_id(edge.consumer_node_id);
     bool doesnt_fork = graph->data_operands(producer).size() == 1;
     bool consecutive_reshape = false;
-    if (doesnt_fork) {
-        if (!commute_eltwise) {
+    if (doesnt_fork)
+    {
+        if (!commute_eltwise)
+        {
             consecutive_reshape = (is_reshape(producer) or is_reshape_transpose(producer)) and is_reshape(consumer);
         }
-        else {
-            if (is_reshape(producer) or is_reshape_transpose(producer)) {
-                std::vector<graphlib::Node *> path_to_reshape = path_to_reshape_after_communable_unaries(graph, producer);
-                if (!path_to_reshape.empty()) {
+        else
+        {
+            if (is_reshape(producer) or is_reshape_transpose(producer))
+            {
+                std::vector<graphlib::Node *> path_to_reshape =
+                    path_to_reshape_after_communable_unaries(graph, producer);
+                if (!path_to_reshape.empty())
+                {
                     commute_eltwise_ops(graph, path_to_reshape);
                     consecutive_reshape = true;
                 }
@@ -216,7 +241,8 @@ bool erase_consecutive_reshape(graphlib::Graph *graph, bool commute_eltwise)
 
             // TODO: relax this, but it causes a lot of edges cases
             bool has_bcast = graph->get_edge_attributes(user_edges[0])->has_broadcast_dims();
-            if (not has_bcast and (are_consecutive_reshape(graph, user_edges[0], commute_eltwise) or is_nop_reshape(graph, node)))
+            if (not has_bcast and
+                (are_consecutive_reshape(graph, user_edges[0], commute_eltwise) or is_nop_reshape(graph, node)))
             {
                 log_trace(LogGraphCompiler, "Bypass reshape: {}", node->name());
                 auto change_rank = [graph](graphlib::Edge new_edge, graphlib::Edge old_edge)
@@ -261,7 +287,8 @@ void bypass_nop_tms(graphlib::Graph *graph)
                 bypass_node(graph, node, true, change_rank);
                 updated = true;
                 break;
-            } else if (is_nop_narrow(graph, node))
+            }
+            else if (is_nop_narrow(graph, node))
             {
                 log_trace(LogGraphCompiler, "Bypass NOP narrow: {}", node->name());
                 bypass_node(graph, node, true);

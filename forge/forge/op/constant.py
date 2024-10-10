@@ -5,6 +5,7 @@ from ..tensor import Tensor
 from .common import ForgeOp as op
 from typing import Union, Tuple, List
 
+
 def Constant(name: str, *, constant: float) -> Tensor:
     """
     Op representing user-defined constant

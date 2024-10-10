@@ -89,15 +89,11 @@ class Falcon:
 
     def initialize(self):
 
-        forge.set_configuration_options(
-            backend_output_dir="tt_build/decode_demo"
-        )
+        forge.set_configuration_options(backend_output_dir="tt_build/decode_demo")
 
         config = RWConfig(**params, user_rows=self.user_rows)
         config.n_layer = self.layers
-        self.model = RWForCausalLMPaddedMaskedODKV.from_pretrained(
-            MODEL_CKPT, config=config
-        )
+        self.model = RWForCausalLMPaddedMaskedODKV.from_pretrained(MODEL_CKPT, config=config)
         self.model.transformer.split_qkv_weights()
         self.model.transformer.pad_decoders()  # After loading weights, pad the decoders
 
@@ -139,8 +135,7 @@ class Falcon:
         temperatures = []
         n_requests = len(prompts)
         assert 1 <= n_requests <= self.user_rows, (
-            "n_requests is not in the range 1-user_rows!"
-            f"n_requests = {n_requests}, user_rows = {self.user_rows}"
+            "n_requests is not in the range 1-user_rows!" f"n_requests = {n_requests}, user_rows = {self.user_rows}"
         )
         prompts += ["False start"] * (self.user_rows - n_requests)
         top_ps += [self.top_p] * self.user_rows
@@ -160,17 +155,11 @@ class Falcon:
         # initial attention mask, rows will be overwritten for prefill users
         # attention_mask = torch.ones((args.batch_size, args.user_rows, args.seqlen), dtype=torch.long, device=tokenized_attention_mask.device)
         # initial attention mask, rows will be overwritten for prefill users
-        attention_mask = torch.zeros(
-            (self.batch_size, self.user_rows, self.max_length), dtype=torch.long
-        )
+        attention_mask = torch.zeros((self.batch_size, self.user_rows, self.max_length), dtype=torch.long)
         input_ids = tokenized_input_ids[:, :, 0].clone()
 
-        assert (
-            min(prompt_token_counts) > 0
-        ), "Empty prompts for unconditional generation not currently supported"
-        assert (
-            self.batch_size == 1
-        ), "Pretty sure this code assumes batch size == 1, FIXME"
+        assert min(prompt_token_counts) > 0, "Empty prompts for unconditional generation not currently supported"
+        assert self.batch_size == 1, "Pretty sure this code assumes batch size == 1, FIXME"
 
         # tensor of right size and shape needed for forge to compile. initialise kv with zeros
         # value in tensor doesn't matter. we're going to prefill this in anyways
@@ -216,9 +205,7 @@ class Falcon:
                     # mask out tokens which haven't been prefilled
                     # attention_mask[:, i, :args.seqlen - num_tokens - 1] = 0
 
-                    attention_mask[:, i, num_tokens] = tokenized_attention_mask[
-                        :, i, num_tokens
-                    ]
+                    attention_mask[:, i, num_tokens] = tokenized_attention_mask[:, i, num_tokens]
 
                     # we get and set the prefill tokens attention mask according to the tokeniser which will mask out padded tokens for us
                     # attention_mask[:, i, args.seqlen - num_tokens - 1:] = tokenized_attention_mask[:, i, :num_tokens + 1]
@@ -232,9 +219,7 @@ class Falcon:
 
             # As we use right-padding all users have the same num_tokens
             position_ids = torch.tensor([[num_tokens]], dtype=torch.long)
-            position_ids = position_ids.expand(
-                self.batch_size, self.user_rows
-            ).clone()
+            position_ids = position_ids.expand(self.batch_size, self.user_rows).clone()
 
             kv_read_mask = torch.ones((1, 1, self.max_length, 1))
             kv_read_mask[:, :, [num_tokens % self.max_length], :] = 0
@@ -251,9 +236,7 @@ class Falcon:
                     kv_read_mask=kv_read_mask,
                     kv_write_mask=kv_write_mask,
                 )
-            logits = outputs[0].to(
-                "cpu"
-            )  # FIXME: doesn't this assume args.batch_size == 1?
+            logits = outputs[0].to("cpu")  # FIXME: doesn't this assume args.batch_size == 1?
             logits /= self.temperature
 
             if not self.top_p_enable:  # greedy
@@ -267,10 +250,7 @@ class Falcon:
                     token[i] = tokenized_input_ids[0, i, num_tokens + 1]
 
             for i in range(self.user_rows):
-                if (
-                    end_token_pos[i] is None
-                    and token[i] == self.tokenizer.eos_token_id
-                ):
+                if end_token_pos[i] is None and token[i] == self.tokenizer.eos_token_id:
                     end_token_pos[i] = num_tokens
 
             for i in range(self.user_rows):
@@ -282,9 +262,7 @@ class Falcon:
                     )
 
             # if we're at the end of prefilling use the newly-generated token as input (overridden above if we are prefilling)
-            input_ids = token.unsqueeze(
-                0
-            )  # FIXME: doesn't this assume args.batch_size == 1?
+            input_ids = token.unsqueeze(0)  # FIXME: doesn't this assume args.batch_size == 1?
 
             # Update the new and total token counts
             num_tokens += 1

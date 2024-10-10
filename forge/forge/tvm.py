@@ -41,6 +41,7 @@ def populate_binary_stack_attrs(graph, nid, attrs):
             attrs.append(dim - len(input_shape))
             break
 
+
 def populate_conv2d_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     strides = [int(stride) for stride in node["attrs"]["strides"][0]]
@@ -64,6 +65,7 @@ def populate_conv2d_attrs(graph, nid, attrs):
     attrs.append(padding[0])
     attrs.append(padding[2])
 
+
 def populate_maxpool2d_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
 
@@ -79,7 +81,7 @@ def populate_maxpool2d_attrs(graph, nid, attrs):
     assert all([dim == dilation[0] for dim in dilation])
     attrs.append(dilation[0])
 
-    ceil_mode = int(node["attrs"]["ceil_mode"][0][0]) # 1 for True
+    ceil_mode = int(node["attrs"]["ceil_mode"][0][0])  # 1 for True
     attrs.append(ceil_mode)
 
     padding = [int(padding) for padding in node["attrs"]["padding"][0]]
@@ -89,6 +91,7 @@ def populate_maxpool2d_attrs(graph, nid, attrs):
     attrs.append(padding[3])
     attrs.append(padding[0])
     attrs.append(padding[2])
+
 
 def populate_clip_transpose_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
@@ -102,6 +105,7 @@ def populate_argmax_attrs(graph, nid, attrs):
 
     dim = int(node["attrs"]["axis"][0][0])
     attrs.append(dim)
+
 
 def populate_avgpool2d_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
@@ -117,7 +121,7 @@ def populate_avgpool2d_attrs(graph, nid, attrs):
     dilation = [int(dilate) for dilate in node["attrs"]["dilation"][0]]
     attrs.append(dilation[0])
 
-    ceil_mode = int(node["attrs"]["ceil_mode"][0][0]) # 1 for True
+    ceil_mode = int(node["attrs"]["ceil_mode"][0][0])  # 1 for True
     attrs.append(ceil_mode)
 
     padding = [int(padding) for padding in node["attrs"]["padding"][0]]
@@ -128,6 +132,7 @@ def populate_avgpool2d_attrs(graph, nid, attrs):
     attrs.append(padding[0])
     attrs.append(padding[2])
 
+
 def populate_vslice_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     input_nid = node["inputs"][0][0]
@@ -135,17 +140,17 @@ def populate_vslice_attrs(graph, nid, attrs):
     output_shape = node["attrs"]["shape"][0][0]
     slice_size = output_shape[-3] // input_shape[-3]
     attrs.append(slice_size)
-    
+
 
 def populate_vstack_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
     output_shape = node["attrs"]["shape"][0][0]
-    
+
     slice_size = input_shape[-3] // output_shape[-3]
     attrs.append(slice_size)
-    
+
 
 def populate_hslice_attrs(graph, nid, attrs):
     attrs.append(graph["nodes"][nid]["forge_shape"][-3])
@@ -170,9 +175,11 @@ def populate_reduce_avg_attrs(graph, nid, attrs):
         axis -= len(input_shape)
     attrs.append(axis)
 
+
 def populate_reduce_max_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     attrs.append(int(node["attrs"]["axis"][0][0]))
+
 
 def populate_reduce_sum_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
@@ -240,18 +247,19 @@ def populate_conv2d_transpose_attrs(graph, nid, attrs):
     attrs.append(padding[0])
     attrs.append(padding[2])
 
+
 def populate_pad_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     pad_width = [int(x) for x in node["attrs"]["pad_width"][0]]
     shape = node["attrs"]["shape"][0][0]
 
-    if len(shape) > 2: 
+    if len(shape) > 2:
         # Forge Pad only supports padding on last 2 dims
         assert len(pad_width) == len(shape) * 2
         assert all([x == 0 for x in pad_width[0:-4]]), "Forge Pad only supports padding on last 2 dims"
         pad_width = pad_width[-4:]
 
-    # TVM nn.pad axis start from the last axis, need to swap 
+    # TVM nn.pad axis start from the last axis, need to swap
     pad_width_by_axis = [pad_width[x : x + 2] for x in range(0, len(pad_width), 2)]
     pad_width_by_axis.reverse()
     pad_width_final = [item for axis in pad_width_by_axis for item in axis]
@@ -276,9 +284,7 @@ def populate_transpose_attrs(graph, nid, attrs):
         if axis != idx:
             transpose_axes.insert(0, axis)
 
-    assert (
-        len(transpose_axes) == 2
-    ), "only single axis transpose supported at this time, decompose in tvm"
+    assert len(transpose_axes) == 2, "only single axis transpose supported at this time, decompose in tvm"
 
     [attrs.append(axis - len(transpose_shape)) for axis in transpose_axes]
 
@@ -296,12 +302,13 @@ def populate_transpose_attrs(graph, nid, attrs):
         "dim1": dim1,
         "z_dim_slice": z_dim_slice,
     }
-    
+
 
 def populate_reshape_attrs(graph, nid, attrs):
     output_shape = graph["nodes"][nid]["forge_shape"]
     for x in output_shape:
         attrs.append(x)
+
 
 def populate_concatenate_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
@@ -311,6 +318,7 @@ def populate_concatenate_attrs(graph, nid, attrs):
     if concat_axis >= 0:
         concat_axis -= len(forge_shape)
     attrs.append(concat_axis)
+
 
 def populate_broadcast_attrs(graph, nid, attrs):
 
@@ -381,16 +389,8 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
 
     subgraph = SubGraph(fn_name=op_type, attributes=attrs)
 
-    input_nids = [
-        node["inputs"][input_port][0]
-        for input_port in range(int(node["attrs"]["num_inputs"]))
-    ]
-    inputs = tuple(
-        [
-            forge.Tensor.create_from_torch(graph["nodes"][input_nid]["tensor"])
-            for input_nid in input_nids
-        ]
-    )
+    input_nids = [node["inputs"][input_port][0] for input_port in range(int(node["attrs"]["num_inputs"]))]
+    inputs = tuple([forge.Tensor.create_from_torch(graph["nodes"][input_nid]["tensor"]) for input_nid in input_nids])
 
     output = subgraph.forward(*inputs)
 
@@ -422,9 +422,7 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
                     port_index,
                     operand_broadcast,
                 )
-                logger.debug(
-                    f"Edge from: {visited_tensors[tensor]}:0 to: {output}:{port_index}"
-                )
+                logger.debug(f"Edge from: {visited_tensors[tensor]}:0 to: {output}:{port_index}")
             else:
                 set_as_subgraph_output(visited_tensors[tensor], tensor)
             continue
@@ -436,13 +434,9 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
             else:
                 name = "parameter_" + forge_graph.get_node_name(output)
 
-            inq = create_parameter_input(
-                graph, name, tensor.shape.get_pytorch_shape(), tensor.requires_grad
-            )
+            inq = create_parameter_input(graph, name, tensor.shape.get_pytorch_shape(), tensor.requires_grad)
             if output is not None:
-                create_data_edge(
-                    forge_graph, inq, 0, output, port_index, operand_broadcast
-                )
+                create_data_edge(forge_graph, inq, 0, output, port_index, operand_broadcast)
                 logger.debug("Edge from: {}:0 to: {}:{}", inq, output, port_index)
             else:
                 set_as_subgraph_output(inq, tensor)
@@ -455,9 +449,7 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
             forge_id = input_node["bid"]
 
             logger.debug("Setting {} as input to subgraph", forge_id)
-            create_data_edge(
-                forge_graph, forge_id, 0, output, port_index, operand_broadcast
-            )
+            create_data_edge(forge_graph, forge_id, 0, output, port_index, operand_broadcast)
             logger.debug("Edge from: {}:0 to: {}:{}", forge_id, output, port_index)
             visited_tensors[tensor] = forge_id
             continue
@@ -472,9 +464,7 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
             )
 
             if output is not None:
-                create_data_edge(
-                    forge_graph, constant, 0, output, port_index, operand_broadcast
-                )
+                create_data_edge(forge_graph, constant, 0, output, port_index, operand_broadcast)
                 logger.debug("Edge from: {}:0 to: {}:{}", constant, output, port_index)
             else:
                 set_as_subgraph_output(constant, tensor)
@@ -489,9 +479,7 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
             tensor.data_format,
             {},
         )
-        logger.debug(
-            f"Node: {op} shape: {tensor.shape.get_pytorch_shape()} name: {tensor.src_op.name}_{nid}"
-        )
+        logger.debug(f"Node: {op} shape: {tensor.shape.get_pytorch_shape()} name: {tensor.src_op.name}_{nid}")
         visited_tensors[tensor] = op
         intermediate[op] = tensor.value()
 
@@ -507,50 +495,50 @@ def expand_compound_op(graph, nid, attrs, forge_graph, intermediate):
 
 # keep sorted
 tvm_to_forge_op_map = {
-    "abs"                           : "abs",
-    "add"                           : "add",
-    "argmax"                        : "argmax",
-    "broadcast_to"                  : "broadcast",
-    "forge.binary_stack"           : "binary_stack",
-    "forge.forge_conv2d_with_bias"  : "conv2d",
-    "forge.concatenate"            : "concatenate",
-    "forge.hslice"                 : "hslice",
-    "forge.hstack"                 : "hstack",
-    "forge.matmul"                 : "matmul",
-    "forge.vslice"                 : "vslice",
-    "forge.vstack"                 : "vstack",
-    "clip"                          : "clip",
-    "cos"                           : "cos",
-    "exp"                           : "exp",
-    "gelu"                          : "gelu",
-    "image.resize2d"                : "resize2d",
-    "layernorm"                     : "layernorm",
-    "log"                           : "log",
-    "max"                           : "reduce_max",
-    "mean"                          : "reduce_avg",
-    "multiply"                      : "multiply",
-    "nn.avg_pool2d"                 : "avg_pool2d",
-    "nn.batch_matmul"               : "matmul",
-    "nn.conv2d_transpose"           : "conv2d_transpose",
-    "nn.conv2d"                     : "conv2d",
-    "nn.matmul"                     : "matmul",
-    "nn.max_pool2d"                 : "max_pool2d",
-    "nn.pad"                        : "pad",
-    "nn.relu"                       : "relu",
-    "nn.softmax"                    : "softmax",
-    "nop"                           : "nop",
-    "power"                         : "power",
-    "reciprocal"                    : "reciprocal",
-    "reshape"                       : "reshape",
-    "sigmoid"                       : "sigmoid",
-    "sigmoid"                       : "sigmoid",
-    "sin"                           : "sin",
-    "sqrt"                          : "sqrt",
-    "strided_slice"                 : "index",
-    "subtract"                      : "subtract",
-    "sum"                           : "reduce_sum",
-    "transpose"                     : "transpose",
-    "where"                         : "where",
+    "abs": "abs",
+    "add": "add",
+    "argmax": "argmax",
+    "broadcast_to": "broadcast",
+    "forge.binary_stack": "binary_stack",
+    "forge.forge_conv2d_with_bias": "conv2d",
+    "forge.concatenate": "concatenate",
+    "forge.hslice": "hslice",
+    "forge.hstack": "hstack",
+    "forge.matmul": "matmul",
+    "forge.vslice": "vslice",
+    "forge.vstack": "vstack",
+    "clip": "clip",
+    "cos": "cos",
+    "exp": "exp",
+    "gelu": "gelu",
+    "image.resize2d": "resize2d",
+    "layernorm": "layernorm",
+    "log": "log",
+    "max": "reduce_max",
+    "mean": "reduce_avg",
+    "multiply": "multiply",
+    "nn.avg_pool2d": "avg_pool2d",
+    "nn.batch_matmul": "matmul",
+    "nn.conv2d_transpose": "conv2d_transpose",
+    "nn.conv2d": "conv2d",
+    "nn.matmul": "matmul",
+    "nn.max_pool2d": "max_pool2d",
+    "nn.pad": "pad",
+    "nn.relu": "relu",
+    "nn.softmax": "softmax",
+    "nop": "nop",
+    "power": "power",
+    "reciprocal": "reciprocal",
+    "reshape": "reshape",
+    "sigmoid": "sigmoid",
+    "sigmoid": "sigmoid",
+    "sin": "sin",
+    "sqrt": "sqrt",
+    "strided_slice": "index",
+    "subtract": "subtract",
+    "sum": "reduce_sum",
+    "transpose": "transpose",
+    "where": "where",
 }
 
 compound_forge_ops = [
@@ -559,29 +547,29 @@ compound_forge_ops = [
 ]
 
 ops_needing_attributes = {
-    "argmax"            : populate_argmax_attrs,
-    "avg_pool2d"        : populate_avgpool2d_attrs,
-    "binary_stack"      : populate_binary_stack_attrs,
-    "broadcast"         : populate_broadcast_attrs,
-    "clip"              : populate_clip_transpose_attrs,
-    "concatenate"       : populate_concatenate_attrs,
-    "conv2d_transpose"  : populate_conv2d_transpose_attrs,
-    "conv2d"            : populate_conv2d_attrs,
-    "hslice"            : populate_hslice_attrs,
-    "hstack"            : populate_hstack_attrs,
-    "index"             : populate_index_attrs,
-    "layernorm"         : populate_layernorm_attrs,
-    "max_pool2d"        : populate_maxpool2d_attrs,
-    "pad"               : populate_pad_attrs,
-    "reduce_avg"        : populate_reduce_avg_attrs,
-    "reduce_max"        : populate_reduce_max_attrs,
-    "reduce_sum"        : populate_reduce_sum_attrs,
-    "reshape"           : populate_reshape_attrs,
-    "resize2d"          : populate_resize2d_attrs,
-    "softmax"           : populate_softmax_attrs,
-    "transpose"         : populate_transpose_attrs,
-    "vslice"            : populate_vslice_attrs,
-    "vstack"            : populate_vstack_attrs,
+    "argmax": populate_argmax_attrs,
+    "avg_pool2d": populate_avgpool2d_attrs,
+    "binary_stack": populate_binary_stack_attrs,
+    "broadcast": populate_broadcast_attrs,
+    "clip": populate_clip_transpose_attrs,
+    "concatenate": populate_concatenate_attrs,
+    "conv2d_transpose": populate_conv2d_transpose_attrs,
+    "conv2d": populate_conv2d_attrs,
+    "hslice": populate_hslice_attrs,
+    "hstack": populate_hstack_attrs,
+    "index": populate_index_attrs,
+    "layernorm": populate_layernorm_attrs,
+    "max_pool2d": populate_maxpool2d_attrs,
+    "pad": populate_pad_attrs,
+    "reduce_avg": populate_reduce_avg_attrs,
+    "reduce_max": populate_reduce_max_attrs,
+    "reduce_sum": populate_reduce_sum_attrs,
+    "reshape": populate_reshape_attrs,
+    "resize2d": populate_resize2d_attrs,
+    "softmax": populate_softmax_attrs,
+    "transpose": populate_transpose_attrs,
+    "vslice": populate_vslice_attrs,
+    "vstack": populate_vstack_attrs,
 }
 
 
@@ -621,6 +609,7 @@ def str_to_dataformat(t: str) -> DataFormat:
 
     raise RuntimeError("Unsupported format: " + t)
 
+
 def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_name, verify_cfg=None):
     from forge.op.eval.forge import get_f_forge_shape  # avoid circular import
     from forge.op.eval.forge import get_f_forge_eval  # avoid circular import
@@ -628,7 +617,9 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
 
     framework = forge.tvm_to_python.get_framework(module)
     module = torchmod.module
-    json_graph, pytorch_inputs, weights = load_tvm_graph(inputs, module, compiler_cfg, graph_name, framework, verify_cfg=verify_cfg)
+    json_graph, pytorch_inputs, weights = load_tvm_graph(
+        inputs, module, compiler_cfg, graph_name, framework, verify_cfg=verify_cfg
+    )
 
     forge_module = ModuleWrapper(module, torchmod.name + "_tvm")
 
@@ -662,16 +653,16 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
         if nid in output_nodes:
             output_name = "output_" + node["name"] + "_" + str(nid)
             outq = create_output(
-                forge_graph, output_name, node["forge_shape"],
+                forge_graph,
+                output_name,
+                node["forge_shape"],
                 str_to_dataformat(node["attrs"]["dtype"][0][0]),
-                False, # TODO: loss output?
+                False,  # TODO: loss output?
             )
-            logger.debug(
-                f"Ouput: {outq} name: + {output_name}"
-            )
+            logger.debug(f"Ouput: {outq} name: + {output_name}")
             ordered_output_bids[output_nodes.index(nid)] = outq
             create_data_edge(forge_graph, node["bid"], 0, outq, 0, [])
-    
+
     for nid, node in enumerate(graph["nodes"]):
         shape = node["attrs"]["shape"][0][0]
         node["forge_shape"] = tuple(shape)
@@ -684,8 +675,11 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
                     requires_grad = pytorch_inputs[input_nodes.index(nid)].requires_grad
 
                 inq = create_activation_input(
-                    forge_graph, "input_" + node["name"], node["forge_shape"], requires_grad,
-                    str_to_dataformat(node["attrs"]["dtype"][0][0])
+                    forge_graph,
+                    "input_" + node["name"],
+                    node["forge_shape"],
+                    requires_grad,
+                    str_to_dataformat(node["attrs"]["dtype"][0][0]),
                 )
 
                 if "nid_to_input_idx" in json_graph.keys() and len(json_graph["nid_to_input_idx"]) != 0:
@@ -706,10 +700,11 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
                 if len(shape) == 0:
                     constant_value = tensor.item()
                     inq = create_constant_input(
-                            forge_graph,
-                            "constant_" + node["name"],
-                            constant_value,
-                            str_to_dataformat(node["attrs"]["dtype"][0][0]))
+                        forge_graph,
+                        "constant_" + node["name"],
+                        constant_value,
+                        str_to_dataformat(node["attrs"]["dtype"][0][0]),
+                    )
                     node["tensor"] = tensor
                     logger.debug(
                         f"Node: {inq} shape: {node['forge_shape']} name: {forge_graph.get_node_name(inq)} type: constant"
@@ -726,7 +721,7 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
                         node["name"],
                         param.shape.get_pytorch_shape(),
                         param.requires_grad,
-                        pytorch_dtype_to_forge_dataformat(tensor.dtype)
+                        pytorch_dtype_to_forge_dataformat(tensor.dtype),
                     )
                     node["tensor"] = tensor
                     logger.debug(
@@ -745,10 +740,11 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
             if len(shape) == 0:
                 constant_value = tensor.item()
                 inq = create_constant_input(
-                        forge_graph,
-                        "constant_" + node["name"],
-                        constant_value,
-                        str_to_dataformat(node["attrs"]["dtype"][0][0]))
+                    forge_graph,
+                    "constant_" + node["name"],
+                    constant_value,
+                    str_to_dataformat(node["attrs"]["dtype"][0][0]),
+                )
             else:
                 # if tvm is folding constants, then params are const type, and 'requires_grad' from framework is not preserved
                 # so assume we do
@@ -795,7 +791,9 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
                 continue
 
             cpp_op_type = OpType(op_type, attrs) if named_attrs is None else OpType(op_type, named_attrs=named_attrs)
-            op = create_op_node(forge_graph, name, cpp_op_type, node["forge_shape"], str_to_dataformat(node["attrs"]["dtype"][0][0]), {})
+            op = create_op_node(
+                forge_graph, name, cpp_op_type, node["forge_shape"], str_to_dataformat(node["attrs"]["dtype"][0][0]), {}
+            )
             node["bid"] = op
 
             # TVM nn.pad has 2 inputs [Data, pad_value]
@@ -806,8 +804,7 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
                 assert pad_value_node["tensor"].numpy().item() == 0, "Forge only support padding with 0"
                 remove_node(forge_graph, pad_value_node["bid"])
                 # Remove from json
-                node["attrs"]["num_inputs"] = '1'
-
+                node["attrs"]["num_inputs"] = "1"
 
             logger.debug(
                 f"Node: {node['bid']} shape: {node['forge_shape']} name: {forge_graph.get_node_name(node['bid'])} type: op"
@@ -831,12 +828,8 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
                 input_node = graph["nodes"][node["inputs"][input_port][0]]
                 forge_id = input_node["bid"]
 
-                create_data_edge(
-                    forge_graph, forge_id, 0, op, input_port, operand_broadcast
-                )
-                logger.debug(
-                    f"Edge from: {input_node['bid']}:0 to: {node['bid']}:{input_port}"
-                )
+                create_data_edge(forge_graph, forge_id, 0, op, input_port, operand_broadcast)
+                logger.debug(f"Edge from: {input_node['bid']}:0 to: {node['bid']}:{input_port}")
 
         create_output_if_needed(nid, forge_graph, graph)
 
@@ -849,14 +842,10 @@ def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_nam
 
     forge_inputs = []
     for forge_input in input_nodes:
-        forge_inputs.append(
-            forge.Tensor.create_from_torch(graph["nodes"][forge_input]["tensor"])
-        )
+        forge_inputs.append(forge.Tensor.create_from_torch(graph["nodes"][forge_input]["tensor"]))
 
     forge_outputs = []
     for output in output_nodes:
-        forge_outputs.append(
-            forge.Tensor.create_from_torch(graph["nodes"][output]["tensor"])
-        )
+        forge_outputs.append(forge.Tensor.create_from_torch(graph["nodes"][output]["tensor"]))
 
     return forge_graph, forge_module, forge_inputs, forge_outputs, intermediate

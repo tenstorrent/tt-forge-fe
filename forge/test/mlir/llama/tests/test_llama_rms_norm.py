@@ -16,7 +16,7 @@ def test_llama_lm_head():
 
     # Input samples
     inputs = [
-        torch.rand((1, 12, 3200)), # Hidden states
+        torch.rand((1, 12, 3200)),  # Hidden states
     ]
 
     # Sanity run
@@ -24,10 +24,10 @@ def test_llama_lm_head():
 
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    
+
     # Run on TT device
     tt_out = compiled_model(*inputs)
     tt_out = [out.to("cpu") for out in tt_out]
-    
+
     # Validate results
     assert compare_with_golden_pcc(golden=golden_output, calculated=tt_out[0], pcc=0.99)

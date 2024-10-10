@@ -5,7 +5,7 @@
 #   Test 4
 #   Binary element-wise operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -52,5 +52,3 @@ class ForgeElementWiseBinaryTest(ForgeModule):
 
     def values(self):
         return [item.value() for item in self.inputs]
-
-    

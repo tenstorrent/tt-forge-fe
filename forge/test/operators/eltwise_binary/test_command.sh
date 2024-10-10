@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# 
+#
 # Commands for running element-wise binary tests
-# 
+#
 
 # Run single test
-# 
+#
 # To run using default parameters
 # model,     --bin_model     --> model_1, Note: for binary ops we have 11 models, model_[1-11]
 # training,  --bin_train     --> True
@@ -22,7 +22,7 @@ pytest -svv test_eltwise_binary_single.py --bin_model model_2 --bin_train True -
 pytest -svv test_eltwise_binary_single.py --bin_model model_5 --bin_train False
 pytest -svv test_eltwise_binary_single.py --bin_model model_4 --bin_shape '[1, 32, 256, 2048]'
 
-# Issue commands 
+# Issue commands
 pytest -svv test_eltwise_binary_single.py --bin_model model_2 --bin_train True --bin_recompute True --bin_op 'Subtract' --bin_shape '[21, 127, 102, 19]'
 pytest -svv test_eltwise_binary_single.py --bin_model model_2 --bin_train True --bin_recompute True --bin_op 'Subtract' --bin_shape '[29, 30, 15, 51]'
 
