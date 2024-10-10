@@ -4,7 +4,8 @@
 #
 # This file incorporates work covered by the following copyright and permission notice:
 # SPDX-FileCopyrightText: Copyright (c) 2016 Facebook, Inc
-# SPDX-License-Identifier: Caffe2
+# SPDX-License-Identifier: BSD-3-Clause
+# https://github.com/pytorch/pytorch/blob/main/LICENSE 
 
 from typing import Dict, List, Optional, Tuple, Iterable
 
