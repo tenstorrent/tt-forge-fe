@@ -35,9 +35,9 @@ python3 --version
 ```
 
 ## Build environment
-This is one off step to build the toolchain and create virtual environment for tt-forge. Generally you need to run this step only once, unless you want to update the toolchain (LLVM). 
+This is one off step to build the toolchain and create virtual environment for tt-forge. Generally you need to run this step only once, unless you want to update the toolchain (LLVM).
 
-First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see build environment section below). 
+First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see build environment section below).
 ```sh
 # FFE related toolchain (dafault path)
 sudo mkdir -p /opt/ttforge-toolchain
@@ -70,6 +70,22 @@ source env/activate
 cmake -G Ninja -B build
 cmake --build build
 ```
+
+## Build docs
+
+To build documentation `mdbook` is required, see the installation guide [here](./tools.md#mdbook).
+
+After installing `mdbook`, run the following commands to build and serve the documentation:
+
+```sh
+source env/activate
+cmake --build build -- docs
+
+# Serve the documentation
+mdbook serve build/docs
+```
+
+> **NOTE:** `mdbook serve` will by default create a local server at `http://localhost:3000`.
 
 ## Build Cleanup
 
