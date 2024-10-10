@@ -103,8 +103,13 @@ We provide two Docker images for tt-forge-fe:
 1. **Base Image**: This image includes all the necessary preinstalled dependencies.
 2. **Prebuilt Environment Image**: This image also comes with a prebuilt environment, allowing you to skip the environment build step.
 
-
-```
+```sh
 ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ird-ubuntu-22-04
 ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
+```
+
+_Note: To be able to build tt-forge-fe inside the docker containers, make sure to set yourself as the owner of tt-forge-fe and tt-mlir toolchain directories:_
+```sh
+sudo chown -R $USER /opt/ttforge-toolchain
+sudo chown -R $USER /opt/ttmlir-toolchain
 ```
