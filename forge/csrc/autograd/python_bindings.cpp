@@ -2,10 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "autograd/python_bindings.hpp"
-#include <cmath>
-#include <map>
-#include <string>
-#include <utils/logger.hpp>
 
 #include "autograd/autograd.hpp"
 #include "graph_lib/defines.hpp"
