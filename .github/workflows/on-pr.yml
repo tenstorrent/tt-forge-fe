@@ -12,6 +12,3 @@ jobs:
   docker-build:
     uses: ./.github/workflows/build-and-test.yml
     secrets: inherit
-  community:
-    uses: ./.github/workflows/on-community-issue.yml
-    secrets: inherit
