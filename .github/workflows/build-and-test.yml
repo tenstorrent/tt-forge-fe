@@ -45,7 +45,7 @@ jobs:
         JOB_ID=$(curl -s -H "Authorization: token ${{ github.token }}" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
           jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id')
-        
+
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
         echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
 

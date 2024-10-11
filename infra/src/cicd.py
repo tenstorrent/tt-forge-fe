@@ -45,14 +45,14 @@ def create_cicd_json_for_data_analysis(
     for raw_job in raw_jobs:
         tests = []
         github_job_id = raw_job["github_job_id"]
-        logger.info(f"Processing raw GitHub job {github_job_id}")        
+        logger.info(f"Processing raw GitHub job {github_job_id}")
         if github_job_id in github_job_id_to_test_reports:
             for test_report_path in github_job_id_to_test_reports[github_job_id]:
                 logger.info(f"Processing test report {test_report_path}")
                 tests_in_report = get_tests_from_test_report_path(test_report_path)
                 logger.info(f"Found {len(tests_in_report)} tests in report {test_report_path}")
                 tests.extend(tests_in_report)
-            logger.info(f"Found {len(tests)} tests total for job {github_job_id}")        
+            logger.info(f"Found {len(tests)} tests total for job {github_job_id}")
         jobs.append(pydantic_models.Job(**raw_job, tests=tests))
 
     return pydantic_models.Pipeline(**raw_pipeline, jobs=jobs)

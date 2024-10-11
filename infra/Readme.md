@@ -9,7 +9,7 @@ Steps:
 - Download workflow artifacts
 - Download job logs
 - Call `generate_data.py` to create a report file in JSON format
-- Upload the file to the data analytics SFTP server 
+- Upload the file to the data analytics SFTP server
 
 To run this manually, execute the following commands from the root folder:
 ```
@@ -24,7 +24,7 @@ To run infra script tests install python dependancies and run pytest.
 
 ```
 cd infra
-pytest --junitxml=pytest.xml --cov-report=term-missing --cov=src  
+pytest --junitxml=pytest.xml --cov-report=term-missing --cov=src
 ```
 
 ## Running jobs manually

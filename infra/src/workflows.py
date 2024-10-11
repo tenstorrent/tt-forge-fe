@@ -13,7 +13,7 @@ import junit_xml_utils
 import pydantic_models
 
 
-def get_github_job_id_to_test_reports(workflow_outputs_dir, workflow_run_id: int):    
+def get_github_job_id_to_test_reports(workflow_outputs_dir, workflow_run_id: int):
     job_paths_map = {}
     artifacts_dir = f"{workflow_outputs_dir}/{workflow_run_id}/artifacts"
 
