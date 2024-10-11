@@ -50,6 +50,7 @@ class ConvAE(torch.nn.Module):
 
         return act
 
+
 class LinearAE(torch.nn.Module):
     def __init__(self):
         super().__init__()
@@ -124,9 +125,12 @@ def test_conv_ae_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
+
 
 def test_linear_ae_pytorch(test_device):
     # Set Forge configuration parameters
@@ -162,6 +166,8 @@ def test_linear_ae_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )

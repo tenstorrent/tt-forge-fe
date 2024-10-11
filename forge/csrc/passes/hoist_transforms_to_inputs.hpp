@@ -7,5 +7,5 @@
 
 namespace tt::passes
 {
-    void hoist_transforms_to_inputs(tt::graphlib::Graph *graph);
+void hoist_transforms_to_inputs(tt::graphlib::Graph *graph);
 }

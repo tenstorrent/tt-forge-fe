@@ -25,25 +25,15 @@ struct TTDevice
     std::unordered_map<int, std::vector<int>> subgraph_to_tensor_uid_on_device;
 
     TTDevice(
-        std::optional<runtime::Device> rt_device,
-        runtime::SystemDesc system_desc,
-        ARCH arch,
-        bool mmio,
-        int index) :
-        rt_device(rt_device),
-        arch(arch),
-        mmio(mmio),
-        index(index)
+        std::optional<runtime::Device> rt_device, runtime::SystemDesc system_desc, ARCH arch, bool mmio, int index) :
+        rt_device(rt_device), arch(arch), mmio(mmio), index(index)
     {
     }
 
     TTDevice(const TTDevice&) = delete;
     TTDevice& operator=(const TTDevice&) = delete;
 
-    bool is_open() const
-    {
-        return rt_device.has_value();
-    }
+    bool is_open() const { return rt_device.has_value(); }
 
     void open_device();
     void close_device();
@@ -58,10 +48,7 @@ struct TTSystem
     TTSystem(const TTSystem&) = delete;
     TTSystem& operator=(const TTSystem&) = delete;
 
-    ~TTSystem()
-    {
-        close_devices();
-    }
+    ~TTSystem() { close_devices(); }
 
     void close_devices()
     {
@@ -79,5 +66,4 @@ struct TTSystem
 
 TTSystem detect_available_devices();
 
-} // namespace tt
-
+}  // namespace tt

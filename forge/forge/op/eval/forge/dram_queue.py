@@ -7,6 +7,7 @@ from .buffer import Buffer
 
 from ..common import to_torch_operands
 
+
 def eval(type, attr, ops):
     assert len(ops) == 1, "DRAM Queue should have one input"
     t_ops = to_torch_operands(*ops)
@@ -24,4 +25,4 @@ def lower(type, attr, lc, ops, outputs):
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):
-    return ac.op(Buffer.create(), (grad, ))
+    return ac.op(Buffer.create(), (grad,))

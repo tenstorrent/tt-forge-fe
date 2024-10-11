@@ -8,7 +8,7 @@ namespace tt::graphlib
 class Graph;
 class OpNode;
 class Shape;
-}
+}  // namespace tt::graphlib
 
 namespace tt::passes
 {

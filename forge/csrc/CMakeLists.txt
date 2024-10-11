@@ -1,6 +1,6 @@
 set(PYTHON_SITE_PACKAGES_DIR ${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages)
 
-set(CMAKE_PREFIX_PATH 
+set(CMAKE_PREFIX_PATH
     ${PYTHON_SITE_PACKAGES_DIR}/torch
     ${CMAKE_PREFIX_PATH})
 
@@ -45,7 +45,7 @@ add_subdirectory(test)
 
 ### ttforge_csrc_objs ###
 
-file(GLOB CPP_FILES 
+file(GLOB CPP_FILES
     "forge_bindings.cpp"
     "forge_passes.cpp"
     "passes/*.cpp"
@@ -56,7 +56,7 @@ add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})
 target_compile_options(ttforge_csrc_objs PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
 add_dependencies(ttforge_csrc_objs build_tt_mlir)
 
-### End of ttforge_csrc_objs ### 
+### End of ttforge_csrc_objs ###
 
 ######## ttforge_csrc ########
 

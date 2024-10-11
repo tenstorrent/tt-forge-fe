@@ -61,7 +61,11 @@ def test_segformer_image_classification_onnx(test_device, variant):
     # Load the sample image
     pixel_values = get_sample_data(variant)
 
-    onnx_model_path = "third_party/confidential_customer_models/generated/files/" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
+    onnx_model_path = (
+        "third_party/confidential_customer_models/generated/files/"
+        + str(variant).split("/")[-1].replace("-", "_")
+        + ".onnx"
+    )
     model = onnx.load(onnx_model_path)
     onnx.checker.check_model(model)
 

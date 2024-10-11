@@ -15,35 +15,43 @@ def decompose_split(self: torch.Tensor, split_size: int, dim: int = 0) -> Tuple[
         slices.append(self.narrow(dim, start, stop - start))
     return slices
 
+
 def decompose_matmul(bias, input, weight) -> torch.Tensor:
     res = torch.matmul(input, weight)
     res = torch.add(res, bias)
     return res
 
+
 forge_decompositions = {
-   torch.ops.aten.split.Tensor: decompose_split,
-   torch.ops.aten.addmm.default: decompose_matmul,
+    torch.ops.aten.split.Tensor: decompose_split,
+    torch.ops.aten.addmm.default: decompose_matmul,
 }
+
 
 def get_forge_decompositions():
     return forge_decompositions
 
+
 # Reconstruct
-class ReconstructBilinearResize2d():
+class ReconstructBilinearResize2d:
     @staticmethod
     def pattern(x, scale, output_size, input_size, device):
-        arange = torch.ops.aten.arange.start_step(0, output_size, dtype = torch.float32, layout = torch.strided, device = device, pin_memory = False)
-        arange_1 = torch.ops.aten.arange.start_step(0, output_size, dtype = torch.float32, layout = torch.strided, device = device, pin_memory = False)
+        arange = torch.ops.aten.arange.start_step(
+            0, output_size, dtype=torch.float32, layout=torch.strided, device=device, pin_memory=False
+        )
+        arange_1 = torch.ops.aten.arange.start_step(
+            0, output_size, dtype=torch.float32, layout=torch.strided, device=device, pin_memory=False
+        )
         mul = torch.ops.aten.mul.Tensor(arange, scale)
         mul_1 = torch.ops.aten.mul.Tensor(arange_1, scale)
-        _to_copy = torch.ops.aten._to_copy.default(mul, dtype = torch.int64)
+        _to_copy = torch.ops.aten._to_copy.default(mul, dtype=torch.int64)
         ceil = torch.ops.aten.ceil.default(mul)
         clamp = torch.ops.aten.clamp.default(ceil, None, input_size)
-        _to_copy_1 = torch.ops.aten._to_copy.default(clamp, dtype = torch.int64)
-        _to_copy_2 = torch.ops.aten._to_copy.default(mul_1, dtype = torch.int64)
+        _to_copy_1 = torch.ops.aten._to_copy.default(clamp, dtype=torch.int64)
+        _to_copy_2 = torch.ops.aten._to_copy.default(mul_1, dtype=torch.int64)
         ceil_1 = torch.ops.aten.ceil.default(mul_1)
         clamp_1 = torch.ops.aten.clamp.default(ceil_1, None, input_size)
-        _to_copy_3 = torch.ops.aten._to_copy.default(clamp_1, dtype = torch.int64)
+        _to_copy_3 = torch.ops.aten._to_copy.default(clamp_1, dtype=torch.int64)
         unsqueeze = torch.ops.aten.unsqueeze.default(mul, 1)
         unsqueeze_1 = torch.ops.aten.unsqueeze.default(_to_copy, 1)
         unsqueeze_2 = torch.ops.aten.unsqueeze.default(_to_copy_1, 1)
@@ -68,7 +76,8 @@ class ReconstructBilinearResize2d():
 
     @staticmethod
     def replacement(x, scale, output_size, input_size, device):
-        return torch.nn.functional.interpolate(x, size=output_size, mode='bilinear', align_corners=True)
+        return torch.nn.functional.interpolate(x, size=output_size, mode="bilinear", align_corners=True)
+
 
 def apply_torch_reconstruct_patterns(aten):
     patterns = [
@@ -77,4 +86,3 @@ def apply_torch_reconstruct_patterns(aten):
 
     for p in patterns:
         subgraph_rewriter.replace_pattern_with_filters(aten, p.pattern, p.replacement)
-

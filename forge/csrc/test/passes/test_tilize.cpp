@@ -33,7 +33,7 @@ TEST_F(TilizeGraph, tilize)
 
     node = graph->get_node_by_name("act");
     user = graph->data_users(node);
-    graphlib::OpNode* op_node = dynamic_cast<graphlib::OpNode*>(user[0]);
+    graphlib::OpNode *op_node = dynamic_cast<graphlib::OpNode *>(user[0]);
     ASSERT_FALSE(op_node->is_tilize());
 
     // insert tililze op
@@ -42,7 +42,7 @@ TEST_F(TilizeGraph, tilize)
     node = graph->get_node_by_name("act");
     user = graph->data_users(node);
 
-    op_node = dynamic_cast<graphlib::OpNode*>(user[0]);
+    op_node = dynamic_cast<graphlib::OpNode *>(user[0]);
     ASSERT_TRUE(op_node->is_tilize());
     user = graph->users(op_node);
 

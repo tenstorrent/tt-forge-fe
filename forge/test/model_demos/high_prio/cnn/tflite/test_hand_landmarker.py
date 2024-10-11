@@ -69,7 +69,6 @@ def test_palm_detection_lite_1x1(test_device):
     compiler_cfg.enable_tvm_constant_prop = True
     compiler_cfg.graph_solver_self_cut_type = "ConsumerOperandDataEdgesFirst"
 
-
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/palm_detection_lite.tflite"
 
     module = TFLiteModule("tflite_palm_detection_lite", tflite_path)

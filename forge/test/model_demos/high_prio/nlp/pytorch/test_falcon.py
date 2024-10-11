@@ -7,6 +7,7 @@ import pytest
 from forge import BackendDevice, BackendType
 from test.model_demos.models.falcon.model import Falcon
 
+
 def test_falcon_pytorch(test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip()

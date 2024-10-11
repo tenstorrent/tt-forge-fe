@@ -57,20 +57,18 @@ class Nop(ForgeEltwiseUnaryOp):
         elif tile_height < TILE_DIM:
             shape[-2] = tile_height
         else:
-            raise RuntimeError(
-                f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}"
-            )
+            raise RuntimeError(f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}")
 
         # Add NOP squeeze condition squash 5D -> 4D for squeeze NOP
-        if hasattr(self, 'squeeze') and hasattr(self, 'squeeze_dim'):
-            if (self.squeeze and self.squeeze_dim != None):
+        if hasattr(self, "squeeze") and hasattr(self, "squeeze_dim"):
+            if self.squeeze and self.squeeze_dim != None:
                 if self.squeeze_dim == 0:
                     ops_updated = Shape.create_forge(shape[1:], tile_height, tile_width)
                     return ops_updated, []
 
         # Add NOP unsqueeze condition extend 4D -> 5D for unsqueeze NOP
-        if hasattr(self, 'unsqueeze') and hasattr(self, 'unsqueeze_dim'):
-            if (self.unsqueeze is not None and self.unsqueeze_dim is not None):
+        if hasattr(self, "unsqueeze") and hasattr(self, "unsqueeze_dim"):
+            if self.unsqueeze is not None and self.unsqueeze_dim is not None:
                 if self.unsqueeze_dim == 4:
                     ops_updated = Shape.create_forge([1] + shape, tile_height, tile_width)
                     return ops_updated, []
@@ -90,9 +88,7 @@ class Nop(ForgeEltwiseUnaryOp):
         if compiler_cache_cycles is not None:
             return compiler_cache_cycles
 
-        use_legacy_path = bool(
-            int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0"))
-        )
+        use_legacy_path = bool(int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0")))
 
         if use_legacy_path:
             tile_weight = get_op_model_param(op_model_desc, "tile_weight")

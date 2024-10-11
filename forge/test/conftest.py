@@ -16,12 +16,13 @@ import tensorflow as tf
 # Essentially symbol names have to be unique in global scope to work with ZeBu,
 # hence need to be set as GLOBAL. This is a requirement for ZeBu.
 import sys
+
 original_flags = sys.getdlopenflags()
-if (os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1"):
+if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
     sys.setdlopenflags(os.RTLD_LAZY | os.RTLD_GLOBAL)
 # Import code that requires os.RTLD_GLOBAL goes here
 # Reset the flags to their original value
-if (os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1"):
+if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
     sys.setdlopenflags(original_flags)
 
 import forge
@@ -30,14 +31,15 @@ from forge.torch_compile import reset_state
 
 collect_ignore = ["legacy_tests"]
 
+
 def pytest_sessionstart(session):
     # See: https://github.com/pytorch/pytorch/wiki/Autograd-and-Fork
-    mp.set_start_method('spawn')
+    mp.set_start_method("spawn")
     num_threads = 8
-    if 'FORGE_NUM_THREADS' in os.environ:
-        num_threads = int(os.environ['FORGE_NUM_THREADS'])
+    if "FORGE_NUM_THREADS" in os.environ:
+        num_threads = int(os.environ["FORGE_NUM_THREADS"])
     torch.set_num_threads(num_threads)
-    mp.set_sharing_strategy('file_system')
+    mp.set_sharing_strategy("file_system")
     os.environ["TVM_NUM_THREADS"] = f"{num_threads}"
     tf.config.threading.set_intra_op_parallelism_threads(num_threads)
     tf.config.threading.set_inter_op_parallelism_threads(num_threads)
@@ -65,6 +67,7 @@ def pytest_sessionstart(session):
         for key, value in tt_backend_specific_vars.items():
             print(f"{key}={value}")
 
+
 @pytest.fixture(autouse=True)
 def clear_forge():
     if "FORGE_RESET_DEV_BEFORE_TEST" in os.environ:
@@ -73,31 +76,32 @@ def clear_forge():
         subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
 
     import random
+
     random.seed(0)
 
     import numpy as np
+
     np.random.seed(0)
 
     torch.manual_seed(0)
 
     import tensorflow as tf
+
     tf.random.set_seed(0)
 
     yield
 
     # clean up after each test
-    forge.forge_reset() 
+    forge.forge_reset()
     torch._dynamo.reset()
     reset_state()
-    
+
 
 def pytest_addoption(parser):
     parser.addoption(
         "--silicon-only", action="store_true", default=False, help="run silicon tests only, skip golden/model"
     )
-    parser.addoption(
-        "--no-silicon", action="store_true", default=False, help="skip silicon tests"
-    )
+    parser.addoption("--no-silicon", action="store_true", default=False, help="skip silicon tests")
     parser.addoption(
         "--compile-only", action="store_true", default=False, help="only compiles the model and generate TTI"
     )
@@ -105,17 +109,26 @@ def pytest_addoption(parser):
         "--run-only", action="store_true", default=False, help="load the generated TTI and only runs the model"
     )
     parser.addoption(
-        "--tti-path", default=None, type=str, help="Valid only if either --compile-only or --run-only is specified. Save/load TTI from the path"
+        "--tti-path",
+        default=None,
+        type=str,
+        help="Valid only if either --compile-only or --run-only is specified. Save/load TTI from the path",
     )
     parser.addoption(
         "--device-config", default=None, type=str, help="Runtime yaml is automatically configured based on the value"
     )
     parser.addoption(
-        "--devtype", default=None, type=str, choices=("golden", "silicon"), help="Valid only if --compile-only is specified. Set the backend device type between Golden or Silicon"
+        "--devtype",
+        default=None,
+        type=str,
+        choices=("golden", "silicon"),
+        help="Valid only if --compile-only is specified. Set the backend device type between Golden or Silicon",
     )
     parser.addoption(
         "--no-skips", action="store_true", default=False, help="ignore pytest.skip() calls, and continue on with test"
     )
+
+
 """
 def pytest_addoption(parser):
     parser.addoption(
@@ -152,6 +165,7 @@ def runslow(request):
    return request.config.getoption("--runslow")
 """
 
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_cmdline_preparse(config, args):
 
@@ -163,6 +177,7 @@ def pytest_cmdline_preparse(config, args):
 
     pytest.skip = no_skip
     _pytest.skipping.skip = no_skip  # can't run skipped tests with decorator @pytest.mark.skip without this
+
 
 # DEVICE_CONFIG_TO_BACKEND_DEVICE_TYPE = {
 #     "gs_e150": BackendDevice.Grayskull,
@@ -216,8 +231,8 @@ def pytest_cmdline_preparse(config, args):
 #         raise RuntimeError("Unknown test device: " + name)
 
 #     def is_available(self, device_list: List[BackendDevice], silicon_only: bool, no_silicon: bool, devtype: Optional[BackendType], devmode: DeviceMode) -> bool:
-#         """ 
-#         Return true if this kind of device is available on the current host. Expect a list of devices from 
+#         """
+#         Return true if this kind of device is available on the current host. Expect a list of devices from
 #         `detect_available_devices`.
 #         """
 #         if devtype is not None and self.devtype != devtype:
@@ -228,7 +243,7 @@ def pytest_cmdline_preparse(config, args):
 
 #         if self.devtype == BackendType.Model:
 #             return bool(int(os.environ.get("FORGE_ENABLE_MODEL_DEVICE", "0")))
-        
+
 #         if self.devtype == BackendType.Versim:
 #             return bool(int(os.environ.get("FORGE_ENABLE_VERSIM_DEVICE", "0")))
 
@@ -254,19 +269,25 @@ def pytest_cmdline_preparse(config, args):
 
 #     def is_grayskull(self):
 #         return self.arch == BackendDevice.Grayskull
-    
+
 #     def is_wormhole_b0(self):
 #         return self.arch == BackendDevice.Wormhole_B0
-    
+
 #     def is_blackhole(self):
 #         return self.arch == BackendDevice.Blackhole
 
 device_cfg_global = None
+
+
 def pytest_generate_tests(metafunc):
     global device_cfg_global
 
     if "test_kind" in metafunc.fixturenames:
-        metafunc.parametrize("test_kind", (TestKind.INFERENCE, TestKind.TRAINING, TestKind.TRAINING_RECOMPUTE), ids=["inference", "training", "training_with_recompute"])
+        metafunc.parametrize(
+            "test_kind",
+            (TestKind.INFERENCE, TestKind.TRAINING, TestKind.TRAINING_RECOMPUTE),
+            ids=["inference", "training", "training_with_recompute"],
+        )
 
     if "training" in metafunc.fixturenames:
         metafunc.parametrize("training", (False, True), ids=["inference", "training"])
@@ -274,10 +295,10 @@ def pytest_generate_tests(metafunc):
     if "test_device" in metafunc.fixturenames:
         # Temporary work arround to provide dummy test_device
         # TODO remove workarround https://github.com/tenstorrent/tt-forge-fe/issues/342
-        metafunc.parametrize("test_device", (None, ), ids=["no_device"])
+        metafunc.parametrize("test_device", (None,), ids=["no_device"])
 
     if "_test_device_not_implemented" in metafunc.fixturenames:
-    # if "test_device" in metafunc.fixturenames:
+        # if "test_device" in metafunc.fixturenames:
         names = ["Golden", "Model", "Versim", "Emulation", "Grayskull", "Wormhole_B0", "Blackhole"]
 
         # Set device-mode for the test
@@ -305,21 +326,28 @@ def pytest_generate_tests(metafunc):
         device_list = []
         if not no_silicon:
             device_list = detect_available_devices()
-        enabled_devices = [(d, name) for (d, name) in devices if d.is_available(device_list, silicon_only, no_silicon, devtype, devmode)]
+        enabled_devices = [
+            (d, name)
+            for (d, name) in devices
+            if d.is_available(device_list, silicon_only, no_silicon, devtype, devmode)
+        ]
         params = [pytest.param(d) for (d, _) in enabled_devices]
         ids = [name for (_, name) in enabled_devices]
-        
+
         metafunc.parametrize("test_device", params, ids=ids)
 
     # Configure backend runtime yaml
     device_cfg_global = metafunc.config.getoption("--device-config")
 
+
 environ_before_test = None
+
+
 def pytest_runtest_logreport(report):
     if report.when == "setup":
         global environ_before_test
         environ_before_test = os.environ.copy()
-        
+
         global device_cfg_global
         if device_cfg_global:
             forge.set_configuration_options(device_config=device_cfg_global)
@@ -327,15 +355,15 @@ def pytest_runtest_logreport(report):
         if "FORGE_OVERRIDES_VETO" in os.environ:
             from forge.config import _set_forge_override_veto
 
-            # This functionality represents one way to control general and env based compiler configuration (enable us to 
-            # add/update/remove existing configs in each test with ease during runtime). In sum, it uses a dict of key-value pairs 
-            # that control all Forge specific overrides set in test. Have in  mind that this doesn't apply for everything set 
+            # This functionality represents one way to control general and env based compiler configuration (enable us to
+            # add/update/remove existing configs in each test with ease during runtime). In sum, it uses a dict of key-value pairs
+            # that control all Forge specific overrides set in test. Have in  mind that this doesn't apply for everything set
             # outside of the test itself (e.g. env vars set before calling the specific pytest).
             #
             # Input to this function is represented as two dicts:
             # - first one is a dict of keys/value pairs that controls general compiler config settings
             # - second one is a dict of keys/value pairs that controls configurations set through environment variables
-            # 
+            #
             # Also, few general notes of how to use this these dicts to control the general and env based compiler configurations:
             # - overriding value with "" will use the value set in test itself
             # - overriding with some specific value will use that config and override it (ignoring the test config)
@@ -348,28 +376,32 @@ def pytest_runtest_logreport(report):
             # - Level 3 - set by dev in test;   we want to remove them entirely (purely for testing purposes)
             #
             if "FORGE_OVERRIDES_VETO_CUSTOM_SETUP" in os.environ:
-                _set_forge_override_veto({
-                    "backend_output_dir": "",
-                }, {})
+                _set_forge_override_veto(
+                    {
+                        "backend_output_dir": "",
+                    },
+                    {},
+                )
             else:
-                _set_forge_override_veto({
-                    "backend_output_dir": "",
-                    "backend_runtime_params_path": "",
-                    "harvesting_mask": "",
-                    "cpu_fallback_ops": "",
-
-                    # Level 1 overrides
-                    "balancer_policy": "",
-                    "enable_t_streaming": "",
-                    "default_df_override": "",
-                },
-                {
-                    # Level 2 overrides
-                    "FORGE_RIBBON2": "",
-                    "FORGE_DISABLE_STREAM_OUTPUT": "",
-                    "FORGE_PAD_OUTPUT_BUFFER": "",
-                    "FORGE_OVERRIDE_DEVICE_YAML": "" # Mostly used for 1x1 model overrides
-                })
+                _set_forge_override_veto(
+                    {
+                        "backend_output_dir": "",
+                        "backend_runtime_params_path": "",
+                        "harvesting_mask": "",
+                        "cpu_fallback_ops": "",
+                        # Level 1 overrides
+                        "balancer_policy": "",
+                        "enable_t_streaming": "",
+                        "default_df_override": "",
+                    },
+                    {
+                        # Level 2 overrides
+                        "FORGE_RIBBON2": "",
+                        "FORGE_DISABLE_STREAM_OUTPUT": "",
+                        "FORGE_PAD_OUTPUT_BUFFER": "",
+                        "FORGE_OVERRIDE_DEVICE_YAML": "",  # Mostly used for 1x1 model overrides
+                    },
+                )
 
     elif report.when == "teardown":
         environ_before_test_keys = set(environ_before_test.keys())
@@ -384,4 +416,3 @@ def pytest_runtest_logreport(report):
         for key, default_value in environ_before_test.items():
             if os.environ.get(key, "") != default_value:
                 os.environ[key] = default_value
-

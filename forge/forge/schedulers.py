@@ -47,14 +47,11 @@ class LearningRateScheduler:
         """
         raise RuntimeError("Needs to be implemented for child class")
 
-
     def get_pytorch_scheduler(self, optimizer: torch.optim.Optimizer):
         """
         Returns an equivalent pytorch scheduler, used for verification.
         """
         if self.torch_scheduler is None:
-            self.torch_scheduler = TorchLearningRateScheduler(
-                optimizer=optimizer
-            )
+            self.torch_scheduler = TorchLearningRateScheduler(optimizer=optimizer)
 
         return self.torch_scheduler

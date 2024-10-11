@@ -51,7 +51,8 @@ struct Result : public std::variant<T, E>
 }  // namespace tt
 
 #if defined(UTILS_RESULT_INCLUDE_PYBIND11) && (UTILS_RESULT_INCLUDE_PYBIND11 == 1)
-namespace pybind11::detail {
+namespace pybind11::detail
+{
 template <typename T, typename E>
 struct type_caster<tt::Result<T, E>>
 {
@@ -82,5 +83,5 @@ struct type_caster<tt::Result<T, E>>
     using Type = tt::Result<T, E>;
     PYBIND11_TYPE_CASTER(Type, _("Union[") + detail::concat(make_caster<T>::name, make_caster<E>::name) + _("]"));
 };
-}
+}  // namespace pybind11::detail
 #endif

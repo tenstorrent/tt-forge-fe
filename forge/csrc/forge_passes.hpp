@@ -9,7 +9,8 @@
 #include "passes/fracture.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 
-namespace tt {
+namespace tt
+{
 
 using NodeId = graphlib::NodeId;
 using PortId = graphlib::PortId;
@@ -50,7 +51,6 @@ std::unique_ptr<graphlib::Graph> run_pre_placer_forge_passes(
     bool enable_device_tilize = false);
 
 // Pre-lowering passes, last-minute changes before going to MLIR
-graphlib::Graph* run_pre_lowering_passes(
-    graphlib::Graph *graph,
-    const std::optional<DataFormat> default_df_override = {});
-}
+graphlib::Graph *run_pre_lowering_passes(
+    graphlib::Graph *graph, const std::optional<DataFormat> default_df_override = {});
+}  // namespace tt

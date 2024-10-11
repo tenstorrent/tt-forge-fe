@@ -10,9 +10,9 @@ class Graph;
 class OpNode;
 class Shape;
 struct Edge;
-}
+}  // namespace tt::graphlib
 
-namespace tt::passes 
+namespace tt::passes
 {
 // Returns true if any ops were commuted to input
 bool insert_inverse_on_inputs(graphlib::Graph *graph);
@@ -31,4 +31,4 @@ void add_inverse_to_input_edges(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,
     std::vector<std::pair<graphlib::Edge, std::pair<graphlib::Shape, graphlib::Shape>>> input_edges_and_shapes);
-}
+}  // namespace tt::passes

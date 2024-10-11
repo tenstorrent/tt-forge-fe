@@ -5,7 +5,7 @@
 #   Test 6
 #   Matmul operator defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -17,10 +17,10 @@ from forge import ForgeModule, Tensor
 
 class ForgeMatmulTest(ForgeModule):
     """
-        Forge Test 6
+    Forge Test 6
 
-        In this test we have 13 operations, and 4 input tensors and 4 trainable variables.
-        One operand represents input and the other one is trainable paramater.
+    In this test we have 13 operations, and 4 input tensors and 4 trainable variables.
+    One operand represents input and the other one is trainable paramater.
     """
 
     def __init__(self, shape):
@@ -55,12 +55,12 @@ class ForgeMatmulTest(ForgeModule):
         mm5 = forge.op.Matmul("mm5", mm1, mm2)
         mm6 = forge.op.Matmul("mm6", x3, mm3)
         mm7 = forge.op.Matmul("mm7", mm3, mm4)
-        
+
         # Layer 4
         mm8 = forge.op.Matmul("mm8", mm5, mm6)
         mm9 = forge.op.Matmul("mm9", mm3, mm7)
         mm10 = forge.op.Matmul("mm10", mm6, mm7)
-        
+
         # Layer 5
         mm11 = forge.op.Matmul("mm11", mm8, mm9)
         tr5 = forge.op.Transpose("tr5", mm10, -1, -2)

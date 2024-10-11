@@ -13,10 +13,7 @@ variants = ["ghostnet_100"]
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_ghostnet_timm(variant, test_device):
-    (
-        model,
-        inputs,
-    ) = generate_model_ghostnet_imgcls_timm(
+    (model, inputs,) = generate_model_ghostnet_imgcls_timm(
         test_device,
         variant,
     )

@@ -7,18 +7,22 @@
 #include "graph_lib/utils.hpp"
 #include "utils/logger.hpp"
 
-namespace tt {
+namespace tt
+{
 
 using NodeType = graphlib::NodeType;
 
 bool divisible_either_direction(int a, int b) { return (a % b == 0) or (b % a == 0); }
 
-void optimize_tms(std::vector<graphlib::OpType> &tms) {
-    if (tms.size() < 2) {
+void optimize_tms(std::vector<graphlib::OpType> &tms)
+{
+    if (tms.size() < 2)
+    {
         return;
     }
 
-    enum class Erase {
+    enum class Erase
+    {
         None,
         B,
         AB,
@@ -190,7 +194,8 @@ void optimize_tms(std::vector<graphlib::OpType> &tms) {
     using SingleUpdateFn = std::function<bool(OpType &)>;       // return true means remove this tm
     std::pair<SingleMatchFn, SingleUpdateFn> single_rules[] = {
         // Erase stacks and slices with factors of 1
-        {[](OpType const &a) {
+        {[](OpType const &a)
+         {
              return (a.op == "hstack" or a.op == "vstack" or a.op == "hslice" or a.op == "vslice") and
                     std::get<int>(a.attr[0]) == 1;
          },
@@ -221,16 +226,21 @@ void optimize_tms(std::vector<graphlib::OpType> &tms) {
         if (any_updated)
             continue;
 
-        for (auto [match_fn, merge_fn] : rules) {
+        for (auto [match_fn, merge_fn] : rules)
+        {
             auto iter = std::adjacent_find(tms.begin(), tms.end(), match_fn);
-            if (iter != tms.end()) {
+            if (iter != tms.end())
+            {
                 any_updated = true;
-                switch (merge_fn(*iter, *(iter + 1))) {
-                    case Erase::B: {
+                switch (merge_fn(*iter, *(iter + 1)))
+                {
+                    case Erase::B:
+                    {
                         tms.erase(iter + 1);
                         break;
                     }
-                    case Erase::AB: {
+                    case Erase::AB:
+                    {
                         tms.erase(iter, iter + 2);
                         break;
                     }
@@ -241,10 +251,14 @@ void optimize_tms(std::vector<graphlib::OpType> &tms) {
     }
 }
 
-void optimize_tms(Graph *graph) {
-    for (Node *node : graph->nodes()) {
-        if (node->node_type() == NodeType::kForgeOp) {
-            for (auto const &edge : graph->operand_data_edges(node)) {
+void optimize_tms(Graph *graph)
+{
+    for (Node *node : graph->nodes())
+    {
+        if (node->node_type() == NodeType::kForgeOp)
+        {
+            for (auto const &edge : graph->operand_data_edges(node))
+            {
                 auto edge_attributes = graph->get_edge_attributes(edge);
                 std::vector<graphlib::OpType> &tms = edge_attributes->get_tms();
                 // Collapse mergeable tms

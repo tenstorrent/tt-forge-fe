@@ -27,10 +27,10 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 def test_ghostnet_timm(variant, test_device):
-    
+
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Failing with: HLKC unpack compile failed.")
-    
+
     if variant == "ghostnet_130":
         pytest.skip("Skip ghostnet_130 due to hang on device")
     # Configurations
@@ -55,7 +55,9 @@ def test_ghostnet_timm(variant, test_device):
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         img_tensor = torch.rand(1, 3, 224, 224)
 
     # Sanity run

@@ -81,7 +81,7 @@ def test_dla_onnx(test_device, variant):
     verify_module(
         tt_model,
         input_shapes=[img_tensor.shape],
-        inputs=[(img_tensor, )],
+        inputs=[(img_tensor,)],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,

@@ -21,16 +21,16 @@ def test_llama_self_attn():
             hidden_states, _, _ = self.model(*inputs)
 
             return hidden_states
-    
+
     # Load Llama 3B model and tokenizer
     framework_model = load_model()
     framework_model = SelfAttention(framework_model.model.layers[0].self_attn)
 
     # Input samples
     inputs = [
-        torch.rand((1, 12, 3200)), # Hidden states
-        torch.ones((1, 1, 12, 12)), # Attention mask
-        torch.arange(12).unsqueeze(0), # Position IDs
+        torch.rand((1, 12, 3200)),  # Hidden states
+        torch.ones((1, 1, 12, 12)),  # Attention mask
+        torch.arange(12).unsqueeze(0),  # Position IDs
     ]
 
     # Sanity run
@@ -38,10 +38,10 @@ def test_llama_self_attn():
 
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    
+
     # Run on TT device
     tt_out = compiled_model(*inputs)
     tt_out = [out.to("cpu") for out in tt_out]
-    
+
     # Validate results
     assert compare_with_golden_pcc(golden=golden_output, calculated=tt_out[0], pcc=0.99)

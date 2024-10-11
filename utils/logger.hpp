@@ -27,8 +27,11 @@
 #include "fmt/ranges.h"
 #include "utils/env.hpp"
 
-template <typename T> struct fmt::formatter<T, std::enable_if_t<std::is_enum_v<T>, char>> : fmt::formatter<std::string> {
-    auto format(T t, format_context& ctx) const {
+template <typename T>
+struct fmt::formatter<T, std::enable_if_t<std::is_enum_v<T>, char>> : fmt::formatter<std::string>
+{
+    auto format(T t, format_context& ctx) const
+    {
         std::stringstream os;
         os << t;
         return formatter<std::string>::format(os.str(), ctx);
@@ -269,7 +272,8 @@ class Logger
 template <typename... Args>
 static void log_debug_(LogType type, char const* fmt, Args&&... args)
 {
-    Logger<tt::kLoggerABI>::get().log_level_type(Logger<tt::kLoggerABI>::Level::Debug, type, fmt, std::forward<Args>(args)...);
+    Logger<tt::kLoggerABI>::get().log_level_type(
+        Logger<tt::kLoggerABI>::Level::Debug, type, fmt, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
@@ -281,14 +285,15 @@ static void log_debug_(char const* fmt, Args&&... args)
 template <typename... Args>
 static void log_trace_(LogType type, std::string const& src_info, char const* fmt, Args&&... args)
 {
-    Logger<tt::kLoggerABI>::get().log_level_type(Logger<tt::kLoggerABI>::Level::Trace, type, fmt, src_info, std::forward<Args>(args)...);
+    Logger<tt::kLoggerABI>::get().log_level_type(
+        Logger<tt::kLoggerABI>::Level::Trace, type, fmt, src_info, std::forward<Args>(args)...);
 }
 
-#define log_trace(log_type, ...)           \
+#define log_trace(log_type, ...)                           \
     if (tt::Logger<tt::kLoggerABI>::get().trace_enabled()) \
     log_trace_(log_type, fmt::format(fmt::fg(fmt::color::green), "{}:{}", __FILE__, __LINE__), "{} - " __VA_ARGS__)
 
-#define log_debug(...)                     \
+#define log_debug(...)                                     \
     if (tt::Logger<tt::kLoggerABI>::get().debug_enabled()) \
     log_debug_(__VA_ARGS__)
 
@@ -310,7 +315,8 @@ static void log_trace(Args&&...)
 template <typename... Args>
 static void log_info(LogType type, char const* fmt, Args&&... args)
 {
-    Logger<tt::kLoggerABI>::get().log_level_type(Logger<tt::kLoggerABI>::Level::Info, type, fmt, std::forward<Args>(args)...);
+    Logger<tt::kLoggerABI>::get().log_level_type(
+        Logger<tt::kLoggerABI>::Level::Info, type, fmt, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
@@ -322,7 +328,8 @@ static void log_info(char const* fmt, Args&&... args)
 template <typename... Args>
 static void log_warning(LogType type, char const* fmt, Args&&... args)
 {
-    Logger<tt::kLoggerABI>::get().log_level_type(Logger<tt::kLoggerABI>::Level::Warning, type, fmt, std::forward<Args>(args)...);
+    Logger<tt::kLoggerABI>::get().log_level_type(
+        Logger<tt::kLoggerABI>::Level::Warning, type, fmt, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
@@ -334,7 +341,8 @@ static void log_warning(char const* fmt, Args&&... args)
 template <typename... Args>
 static void log_error(LogType type, char const* fmt, Args&&... args)
 {
-    Logger<tt::kLoggerABI>::get().log_level_type(Logger<tt::kLoggerABI>::Level::Error, type, fmt, std::forward<Args>(args)...);
+    Logger<tt::kLoggerABI>::get().log_level_type(
+        Logger<tt::kLoggerABI>::Level::Error, type, fmt, std::forward<Args>(args)...);
 }
 
 template <typename... Args>
@@ -346,7 +354,8 @@ static void log_error(char const* fmt, Args&&... args)
 template <typename... Args>
 static void log_fatal_(LogType type, char const* fmt, Args&&... args)
 {
-    Logger<tt::kLoggerABI>::get().log_level_type(Logger<kLoggerABI>::Level::Fatal, type, fmt, std::forward<Args>(args)...);
+    Logger<tt::kLoggerABI>::get().log_level_type(
+        Logger<kLoggerABI>::Level::Fatal, type, fmt, std::forward<Args>(args)...);
     Logger<tt::kLoggerABI>::get().flush();
     throw std::runtime_error(fmt::format(fmt, std::forward<Args>(args)...));
 }

@@ -8,78 +8,80 @@ import numpy as np
 import tensorflow as tf
 from loguru import logger
 
-def forge_df_str_from_str(df: str, name: str): 
-        df = df.lower()
-        
-        if df == "bfp2":
-            return "forge.DataFormat.Bfp2"
-        elif df == "bfp2_b":
-            return "forge.DataFormat.Bfp2_b"
-        elif df == "bfp4":
-            return "forge.DataFormat.Bfp4"
-        elif df == "bfp4_b":
-            return "forge.DataFormat.Bfp4_b"
-        elif df == "bfp8":
-            return "forge.DataFormat.Bfp8"
-        elif df == "bfp8_b":
-            return "forge.DataFormat.Bfp8_b"
-        elif df == "float16":
-            return "forge.DataFormat.Float16"
-        elif df in ["float16_b", "bfloat16"]:
-            return "forge.DataFormat.Float16_b"
-        elif df == "float32":
-            return "forge.DataFormat.Float32"
-        elif df == "int8":
-            return "forge.DataFormat.Int8"
-        elif df == "invalid":
-            return "forge.DataFormat.Invalid"
-        elif df == "lf8":
-            return "forge.DataFormat.Lf8"
-        elif df == "raw_uint16":
-            return "forge.DataFormat.RawUInt16"
-        elif df == "raw_uint32":
-            return "forge.DataFormat.RawUInt32"
-        elif df == "raw_uint8":
-            return "forge.DataFormat.RawUInt8"
-        elif df == "uint16":
-            return "forge.DataFormat.UInt16"
-        elif df == "uint8":
-            return "forge.DataFormat.UInt8"
-        elif df == "int8":
-            return "forge.DataFormat.Int8"
-        elif df == "int32":
-            return "forge.DataFormat.Int32"
-        else:
-            logger.warning(f"Invalid data format: {df} for constant/parameter \'{name}\', defaulting to float32")
-            return "forge.DataFormat.Float32"
-        
-def pytorch_df_str_from_str(df: str, name): 
-        df = df.lower()
-        
-        if df == "float16":
-            return "torch.float16"
-        elif df in ["float16_b", "bfloat16"]:
-            return "torch.bfloat16"
-        elif df == "float32":
-            return "torch.float32"
-        elif df == "float64":
-            return "torch.float64"
-        elif df == "uint8":
-            return "torch.uint8"
-        elif df == "int8":
-            return "torch.int8"
-        elif df == "int32":
-            return "torch.int32"
-        elif df == "int16":
-            return "torch.int16"
-        elif df == "int64":
-            return "torch.int64"
-        else:
-            logger.warning(f"Invalid data format: {df} for constant/parameter \'{name}\', defaulting to float32")
-            return "torch.float32"
+
+def forge_df_str_from_str(df: str, name: str):
+    df = df.lower()
+
+    if df == "bfp2":
+        return "forge.DataFormat.Bfp2"
+    elif df == "bfp2_b":
+        return "forge.DataFormat.Bfp2_b"
+    elif df == "bfp4":
+        return "forge.DataFormat.Bfp4"
+    elif df == "bfp4_b":
+        return "forge.DataFormat.Bfp4_b"
+    elif df == "bfp8":
+        return "forge.DataFormat.Bfp8"
+    elif df == "bfp8_b":
+        return "forge.DataFormat.Bfp8_b"
+    elif df == "float16":
+        return "forge.DataFormat.Float16"
+    elif df in ["float16_b", "bfloat16"]:
+        return "forge.DataFormat.Float16_b"
+    elif df == "float32":
+        return "forge.DataFormat.Float32"
+    elif df == "int8":
+        return "forge.DataFormat.Int8"
+    elif df == "invalid":
+        return "forge.DataFormat.Invalid"
+    elif df == "lf8":
+        return "forge.DataFormat.Lf8"
+    elif df == "raw_uint16":
+        return "forge.DataFormat.RawUInt16"
+    elif df == "raw_uint32":
+        return "forge.DataFormat.RawUInt32"
+    elif df == "raw_uint8":
+        return "forge.DataFormat.RawUInt8"
+    elif df == "uint16":
+        return "forge.DataFormat.UInt16"
+    elif df == "uint8":
+        return "forge.DataFormat.UInt8"
+    elif df == "int8":
+        return "forge.DataFormat.Int8"
+    elif df == "int32":
+        return "forge.DataFormat.Int32"
+    else:
+        logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
+        return "forge.DataFormat.Float32"
 
 
-class PythonWriter():
+def pytorch_df_str_from_str(df: str, name):
+    df = df.lower()
+
+    if df == "float16":
+        return "torch.float16"
+    elif df in ["float16_b", "bfloat16"]:
+        return "torch.bfloat16"
+    elif df == "float32":
+        return "torch.float32"
+    elif df == "float64":
+        return "torch.float64"
+    elif df == "uint8":
+        return "torch.uint8"
+    elif df == "int8":
+        return "torch.int8"
+    elif df == "int32":
+        return "torch.int32"
+    elif df == "int16":
+        return "torch.int16"
+    elif df == "int64":
+        return "torch.int64"
+    else:
+        logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
+        return "torch.float32"
+
+
+class PythonWriter:
     def __init__(self, module_name, open_file=True):
         self.filename = module_name + ".py"
 
@@ -100,12 +102,15 @@ class PythonWriter():
 
     def close_file(self):
         self.file.close()
-    
+
     def import_module_path(self):
         return self.module_directory + f".{self.module_name}"
 
+
 class ForgeWriter(PythonWriter):
-    incompatible_np_float_types = [tf.bfloat16, ]
+    incompatible_np_float_types = [
+        tf.bfloat16,
+    ]
 
     def __init__(self, module_name, framework, contains_incompatible_np_floats=False, delete_inputs=True):
         super().__init__(module_name)
@@ -154,7 +159,7 @@ class ForgeWriter(PythonWriter):
             self.wl("self.layers = []")
             self.wl("for i in range(self.num_layers):")
             self.indent += 1
-            self.wl("self.layers.append(Submodel(f\"layer_{i}\"))")
+            self.wl('self.layers.append(Submodel(f"layer_{i}"))')
             self.indent -= 1
 
         for param in params.values():
@@ -163,19 +168,22 @@ class ForgeWriter(PythonWriter):
                 continue
             self.param_names.append(name)
             if is_submodel:
-                self.wl(f"self.add_parameter(\"{name}\", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_str_from_str(dtype, name)}), prepend_name=True)")
+                self.wl(
+                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_str_from_str(dtype, name)}), prepend_name=True)'
+                )
             else:
-                self.wl(f"self.add_parameter(\"{name}\", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_str_from_str(dtype, name)}))")
-
+                self.wl(
+                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_str_from_str(dtype, name)}))'
+                )
 
         for const in constants.values():
             name = const[0]
             shape = tuple(const[1])
             self.const_names.append(name)
             if is_submodel:
-                self.wl(f"self.add_constant(\"{name}\", prepend_name=True, shape={shape})")
+                self.wl(f'self.add_constant("{name}", prepend_name=True, shape={shape})')
             else:
-                self.wl(f"self.add_constant(\"{name}\", shape={shape})")
+                self.wl(f'self.add_constant("{name}", shape={shape})')
 
         self.indent = 0
         self.wl("")
@@ -184,14 +192,13 @@ class ForgeWriter(PythonWriter):
         input_names = []
         for name in op.input_names:
             if name in self.param_names:
-                input_names.append("self.get_parameter(\"" + name + "\")")
+                input_names.append('self.get_parameter("' + name + '")')
             elif name in self.const_names:
-                input_names.append("self.get_constant(\"" + name + "\")")
+                input_names.append('self.get_constant("' + name + '")')
             else:
                 input_names.append(name)
 
         return input_names
-
 
     def write_forward(self, ops, inputs, outputs):
         self.indent = 1
@@ -207,11 +214,7 @@ class ForgeWriter(PythonWriter):
             if len(ops[key].args) == 0:
                 arg_text = ""
             else:
-                arg_text = "".join(
-                    [
-                        ", " + argument + "=" + value for argument, value in ops[key].args                    
-                    ]
-                )
+                arg_text = "".join([", " + argument + "=" + value for argument, value in ops[key].args])
 
             set_src_layer = ""
             if ops[key].src_layer:
@@ -225,15 +228,21 @@ class ForgeWriter(PythonWriter):
                             loop_len = f"{len(ops[key].loop_with) + 1}"
                         else:
                             loop_len = f"{ops[key].loop_start_index}, {len(ops[key].loop_with) + ops[key].loop_start_index + 1}"
-                        
-                    self.wl(f"for i in range({loop_len}):") # +1 for current op
+
+                    self.wl(f"for i in range({loop_len}):")  # +1 for current op
                     self.indent += 1
-                    self.wl(f"{ops[key].output_name} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}")
+                    self.wl(
+                        f"{ops[key].output_name} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}"
+                    )
                     self.indent -= 1
                 else:
-                    self.wl(f"{ops[key].output_name} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}")
+                    self.wl(
+                        f"{ops[key].output_name} = {ops[key].function_name}({activation_names}{arg_text}){set_src_layer}"
+                    )
             else:
-                self.wl(f"{ops[key].output_name} = {ops[key].function_name}(\"{ops[key].node_name}\"{activation_names}{arg_text}){set_src_layer}")
+                self.wl(
+                    f'{ops[key].output_name} = {ops[key].function_name}("{ops[key].node_name}"{activation_names}{arg_text}){set_src_layer}'
+                )
                 if self.delete_inputs:
                     for name_to_del in ops[key].inputs_to_delete:
                         self.wl(f"{name_to_del}._value = None")
@@ -248,7 +257,6 @@ class ForgeWriter(PythonWriter):
         self.indent = 0
         self.wl("")
 
-
     def write_param_parser(self, param_names, param_file_name):
         self.indent = 1
 
@@ -257,7 +265,7 @@ class ForgeWriter(PythonWriter):
             self.indent += 1
             self.wl(f"named_parameters = dict(model.state_dict().items())")
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl(f"named_parameters.update(serialized_params)")
             self.wl("named_buffers = dict(model.named_buffers())")
             self.wl("named_parameters.update(named_buffers)")
@@ -273,16 +281,20 @@ class ForgeWriter(PythonWriter):
             # Loop over all named params
             self.wl("for name, torch_param in named_parameters.items():")
             self.indent += 1
-            
+
             # Handle -inf and inf values
             self.wl("# Replace infinities with relevant numbers")
             self.wl("if torch.any(torch.isinf(torch_param)):")
             self.indent += 1
-            self.wl("torch_param = torch.where(torch.isposinf(torch_param), torch.tensor(1e4, dtype=torch_param.dtype), torch_param)")
-            self.wl("torch_param = torch.where(torch.isneginf(torch_param), torch.tensor(-1e4, dtype=torch_param.dtype), torch_param)")
-            self.wl("logger.warning(f\"Replacing -inf and inf values in tensor param: {name}\")")
+            self.wl(
+                "torch_param = torch.where(torch.isposinf(torch_param), torch.tensor(1e4, dtype=torch_param.dtype), torch_param)"
+            )
+            self.wl(
+                "torch_param = torch.where(torch.isneginf(torch_param), torch.tensor(-1e4, dtype=torch_param.dtype), torch_param)"
+            )
+            self.wl('logger.warning(f"Replacing -inf and inf values in tensor param: {name}")')
             self.indent -= 1
-            
+
             self.wl("tensor = torch_param.data")
 
             if len(param_names):
@@ -314,7 +326,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
 
                 self.indent -= 1
@@ -342,7 +354,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
 
@@ -366,7 +378,9 @@ class ForgeWriter(PythonWriter):
             self.indent += 1
             self.wl("name = weight.name")
             if self.contains_incompatible_np_floats:
-                self.wl("# Some floating-point weights in the model havea a dtype that is incompatible with the .numpy() call.")
+                self.wl(
+                    "# Some floating-point weights in the model havea a dtype that is incompatible with the .numpy() call."
+                )
                 self.wl("if weight.dtype in incompatible_np_float_types:")
                 self.indent += 1
                 self.wl("dtype = map_tf_dtype_to_pt(weight.dtype)")
@@ -374,12 +388,12 @@ class ForgeWriter(PythonWriter):
                 self.wl("tensor = torch.tensor(weight.numpy(), dtype=dtype)")
                 self.indent -= 1
                 self.wl("else:")
-                self.indent +=1
+                self.indent += 1
                 self.wl("tensor = torch.tensor(weight.numpy())")
                 self.indent -= 1
             else:
                 self.wl("tensor = torch.tensor(weight.numpy())")
-            
+
             self.wl("if name in flattened_to_hierarchical_map:")
             self.indent += 1
             self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
@@ -403,7 +417,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
 
@@ -427,13 +441,13 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
             self.indent -= 1
 
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl(f"for name, torch_param in serialized_params.items():")
                 self.indent += 1
                 self.wl("tensor = torch_param.data")
@@ -458,7 +472,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
                 self.indent -= 1
 
@@ -482,7 +496,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
                 self.indent -= 1
                 self.indent -= 1
@@ -496,7 +510,7 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
             self.wl("}")
 
-            self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+            self.wl(f'serialized_params = torch.load("{param_file_name}")')
             self.wl(f"for name, torch_param in serialized_params.items():")
             self.indent += 1
             self.wl("tensor = torch_param.data")
@@ -521,7 +535,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
 
@@ -545,7 +559,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
             self.indent -= 1
@@ -572,9 +586,8 @@ class ForgeWriter(PythonWriter):
             self.wl("name = weight.name")
             self.wl("weight_numpy = onnx.numpy_helper.to_array(weight)")
 
-
             self.wl("tensor = torch.tensor(weight_numpy)")
-            
+
             self.wl("if name in flattened_to_hierarchical_map:")
             self.indent += 1
             self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
@@ -596,7 +609,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
 
@@ -620,12 +633,12 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
             self.indent -= 1
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl(f"for name, torch_param in serialized_params.items():")
                 self.indent += 1
                 self.wl("tensor = torch_param.data")
@@ -651,7 +664,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
                 self.indent -= 1
 
@@ -675,7 +688,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
                 self.indent -= 1
                 self.indent -= 1
@@ -700,9 +713,8 @@ class ForgeWriter(PythonWriter):
             self.indent += 1
             self.wl("weight_numpy = weight.data().asnumpy()")
 
-
             self.wl("tensor = torch.tensor(weight_numpy)")
-            
+
             self.wl("if name in flattened_to_hierarchical_map:")
             self.indent += 1
             self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
@@ -724,7 +736,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
 
@@ -748,12 +760,12 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
             self.indent -= 1
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl(f"for name, torch_param in serialized_params.items():")
                 self.indent += 1
                 self.wl("tensor = torch_param.data")
@@ -779,7 +791,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
                 self.indent -= 1
 
@@ -803,7 +815,7 @@ class ForgeWriter(PythonWriter):
 
                 self.wl("else:")
                 self.indent += 1
-                self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
                 self.indent -= 1
                 self.indent -= 1
                 self.indent -= 1
@@ -840,7 +852,7 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
             self.indent -= 1
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl(f"for key, val in serialized_params.items():")
                 self.indent += 1
                 self.wl(f"model_params[key] = jnp.array(val.data.numpy())")
@@ -867,10 +879,10 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
             self.wl(f"else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
-            self.indent -= 1            
+            self.indent -= 1
         elif self.framework == "tflite":
             self.wl(f"def process_framework_parameters(self, model):")
             self.indent += 1
@@ -881,7 +893,7 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
             self.wl("}")
 
-            self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+            self.wl(f'serialized_params = torch.load("{param_file_name}")')
             self.wl(f"for name, torch_param in serialized_params.items():")
             self.indent += 1
             self.wl("tensor = torch_param.data")
@@ -906,7 +918,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
 
@@ -930,7 +942,7 @@ class ForgeWriter(PythonWriter):
 
             self.wl("else:")
             self.indent += 1
-            self.wl("logger.warning(f\"{name} not found in self._parameters and self._constants\")")
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
             self.indent -= 1
             self.indent -= 1
             self.indent -= 1
@@ -939,7 +951,9 @@ class ForgeWriter(PythonWriter):
 
 
 class PyTorchWriter(PythonWriter):
-    incompatible_np_float_types = [tf.bfloat16, ]
+    incompatible_np_float_types = [
+        tf.bfloat16,
+    ]
 
     def __init__(self, module_name, source_framework):
         super().__init__(module_name)
@@ -958,14 +972,14 @@ class PyTorchWriter(PythonWriter):
 
     def clean_name(self, name):
         new_name = []
-        for mod in name.split('.'):
+        for mod in name.split("."):
             if mod.isdigit():
-                new_name.append('l' + mod)
+                new_name.append("l" + mod)
             else:
                 new_name.append(mod)
-        new_name = '.'.join(new_name)
-        
-        return new_name.replace('/', '.').replace(':', '_')
+        new_name = ".".join(new_name)
+
+        return new_name.replace("/", ".").replace(":", "_")
 
     def write_class_definition(self, params, constants, class_name=None, num_submodels=0, is_submodel=False):
         if class_name is None:
@@ -994,7 +1008,9 @@ class PyTorchWriter(PythonWriter):
                 prefix = submodule + "."
 
             mod = self.clean_name(full_name).rpartition(name)[0]
-            self.wl(f"self.{mod}register_parameter(\"{name}\", nn.Parameter(torch.zeros(*{shape}, dtype={pytorch_df_str_from_str(dtype, name)}), requires_grad={requires_grad}))")
+            self.wl(
+                f'self.{mod}register_parameter("{name}", nn.Parameter(torch.zeros(*{shape}, dtype={pytorch_df_str_from_str(dtype, name)}), requires_grad={requires_grad}))'
+            )
 
         for const in constants.values():
             full_name, shape, dtype = const
@@ -1013,12 +1029,13 @@ class PyTorchWriter(PythonWriter):
                 prefix = submodule + "."
 
             mod = self.clean_name(full_name).rpartition(name)[0]
-            self.wl(f"self.{mod}register_buffer(\"{name}\", torch.zeros(*{shape}, dtype={pytorch_df_str_from_str(dtype, name)}))")
-
+            self.wl(
+                f'self.{mod}register_buffer("{name}", torch.zeros(*{shape}, dtype={pytorch_df_str_from_str(dtype, name)}))'
+            )
 
         self.indent = 0
         self.wl("")
-        
+
     def get_op_output_structure(self, op):
         """
         Defines operand output structure.
@@ -1030,21 +1047,21 @@ class PyTorchWriter(PythonWriter):
             str: Operation output structure
         """
         op_out_structure = op.output_name
-        
+
         # Handle special case PyTorch outputs
         if op.function_name == "torch.max":
             op_out_structure += ", _"
-            
+
         return op_out_structure
 
     def get_op_input_arguments(self, op):
         """
-        Constructs operand inputs in expected order. 
-        
-        As TVM recognize differences between operand inputs 
+        Constructs operand inputs in expected order.
+
+        As TVM recognize differences between operand inputs
         and attributes (unlike PyTorch), we reconstruct those
         within PyTorchWriter and generate ordered arguments
-        which can be used for relevant PyTorch function/operand.        
+        which can be used for relevant PyTorch function/operand.
 
         Args:
             op (Operation): Reference operation
@@ -1053,26 +1070,26 @@ class PyTorchWriter(PythonWriter):
             str: Ordered function/operation attributes
         """
         op_arguments = []
-        
+
         assert type(op.args) is dict, "Invalid op input type"
 
         # Structure TVM inputs
-        for name in op.args['inp']:
+        for name in op.args["inp"]:
             if self.clean_name(name) in self.param_names:
-                op_arguments.append(f"self.get_parameter(\"{self.clean_name(name)}\")")
+                op_arguments.append(f'self.get_parameter("{self.clean_name(name)}")')
             elif self.clean_name(name) in self.const_names:
-                op_arguments.append(f"self.get_buffer(\"{self.clean_name(name)}\")")
+                op_arguments.append(f'self.get_buffer("{self.clean_name(name)}")')
             else:
                 op_arguments.append(name)
-                
+
         # Handle special case TVM inputs - concatenate
         if op.function_name == "torch.cat":
             op_arguments = ["(" + ", ".join([arg for arg in op_arguments]) + ")"]
-            
+
         # Handle special case TVM inputs - stack
         if op.function_name == "torch.stack":
             op_arguments = ["(" + ", ".join([arg for arg in op_arguments]) + ",)"]
-            
+
         # Handle special case TVM inputs - where
         if op.function_name == "torch.where":
             # Handle when where represents adv_index op
@@ -1080,25 +1097,25 @@ class PyTorchWriter(PythonWriter):
                 # Reverse order of arguments
                 op_arguments = op_arguments[::-1]
                 # Add empty tensor as last argument
-                op_arguments.append(f'torch.zeros_like({op_arguments[0]}, dtype=torch.float32)')
-                
+                op_arguments.append(f"torch.zeros_like({op_arguments[0]}, dtype=torch.float32)")
+
             op_arguments[0] = op_arguments[0] + ".bool()"
 
         if op.function_name == "torch.index_select" and len(op_arguments) == 2:
             op_arguments[-1] = f"torch.squeeze({op_arguments[-1]}).long()"
-        
+
         # Handle special case TVM inputs - broadcast_to_like
         if op.function_name == "torch.broadcast_to_like":
             op.function_name = "torch.broadcast_to"
             op_arguments[-1] = op_arguments[-1] + ".shape"
-            
+
         # Structure TVM attributes
-        for attr_name, attr_info in op.args['attr'].items():
-            if 'as_named' in attr_info:
-                op_arguments.insert(attr_info['inp_pos'], f"{attr_name}={attr_info['val']}")
+        for attr_name, attr_info in op.args["attr"].items():
+            if "as_named" in attr_info:
+                op_arguments.insert(attr_info["inp_pos"], f"{attr_name}={attr_info['val']}")
             else:
-                op_arguments.insert(attr_info['inp_pos'], f"{attr_info['val']}")
-            
+                op_arguments.insert(attr_info["inp_pos"], f"{attr_info['val']}")
+
         # Construct operand arguments
         op_arguments = "".join([", " + name for name in op_arguments]).lstrip(", ")
 
@@ -1114,7 +1131,7 @@ class PyTorchWriter(PythonWriter):
         self.wl("return old_shape")
         self.indent -= 1
         self.wl("")
-        
+
         self.wl(f"if old_shape[0] != 1:")
         self.indent += 1
         self.wl("old_shape.insert(0, 1)")
@@ -1134,16 +1151,16 @@ class PyTorchWriter(PythonWriter):
         self.wl(f"new_shape.append(old_shape[i])")
         self.indent -= 1
         self.indent -= 1
-        
+
         self.wl(f"return new_shape")
         self.indent = 0
         self.wl("")
-    
+
     def write_forward(self, ops, inputs, outputs, force_batch_dim_outputs=[]):
-        
+
         if len(force_batch_dim_outputs):
             self._write_determine_shape_for_batch_dim()
-        
+
         self.indent = 1
         activation_names = "".join([", " + name for name in [inputs[key] for key in sorted(inputs)]])
 
@@ -1154,8 +1171,8 @@ class PyTorchWriter(PythonWriter):
             op_attributes = self.get_op_input_arguments(ops[key])
             op_out_structure = self.get_op_output_structure(ops[key])
 
-            if ops[key].args['inplace']:
-                op_attributes = op_attributes.split(', ')
+            if ops[key].args["inplace"]:
+                op_attributes = op_attributes.split(", ")
                 lhs = op_attributes[0]
                 rhs = ", ".join(op_attributes[1:])
                 self.wl(f"{op_out_structure} = {lhs}.{ops[key].function_name}({rhs})")
@@ -1164,17 +1181,19 @@ class PyTorchWriter(PythonWriter):
 
         outputs = list(outputs.values())
         self.wl("")
-        
+
         if len(force_batch_dim_outputs):
             self.wl("# Batch dim handling")
             # Force reshape to expose batch dimension
             self.wl(f"batch_dim = {inputs[0]}.shape[0]")
             for name in force_batch_dim_outputs:
                 output_idx = outputs.index(name)
-                self.wl(f"{outputs[output_idx]} = torch.reshape({name}, self.determine_shape_for_batch_dim({name}.shape, batch_dim))")
+                self.wl(
+                    f"{outputs[output_idx]} = torch.reshape({name}, self.determine_shape_for_batch_dim({name}.shape, batch_dim))"
+                )
 
             self.wl("")
-            
+
         if len(outputs) == 1:
             output_names = outputs[0]
         else:
@@ -1183,7 +1202,6 @@ class PyTorchWriter(PythonWriter):
         self.wl(f"return {output_names}")
         self.indent = 0
         self.wl("")
-
 
     def write_param_parser(self, param_names, param_file_name):
         self.indent = 1
@@ -1199,13 +1217,13 @@ class PyTorchWriter(PythonWriter):
             self.wl("name = '.'.join(['l' + mod if mod.isdigit() else mod for mod in name.split('.')])")
             self.wl("if name in my_params:")
             self.indent += 1
-            self.wl("module_path, _, param_name = name.rpartition(\".\")")
+            self.wl('module_path, _, param_name = name.rpartition(".")')
             self.wl("setattr(self.get_submodule(module_path), param_name, parameter)")
             self.indent -= 1
             self.indent -= 1
             self.wl("named_buffers = dict(model.named_buffers())")
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl("named_buffers.update(serialized_params)")
 
             self.wl("self.load_state_dict(named_buffers, strict=False)")
@@ -1227,20 +1245,22 @@ class PyTorchWriter(PythonWriter):
             self.wl("weight_numpy = onnx.numpy_helper.to_array(weight)")
             self.wl("tensor = torch.tensor(weight_numpy)")
             # self.breakpoint()
-            self.wl("tensor.requires_grad = issubclass(weight_numpy.dtype.type, np.floating) or issubclass(weight_numpy.dtype.type, np.complex)")
+            self.wl(
+                "tensor.requires_grad = issubclass(weight_numpy.dtype.type, np.floating) or issubclass(weight_numpy.dtype.type, np.complex)"
+            )
 
             self.wl("if name in named_parameters:")
             self.indent += 1
-            self.wl("module_path, _, param_name = name.rpartition(\".\")")
+            self.wl('module_path, _, param_name = name.rpartition(".")')
             self.wl("getattr(self.get_submodule(module_path), param_name).data = tensor")
             self.indent -= 1
             self.wl("named_parameters[name] = tensor")
-            
+
             self.indent -= 1
 
             if param_file_name is not None:
                 self.wl("named_parameters.update(named_buffers)")
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl("named_parameters.update(serialized_params)")
 
             self.wl("self.load_state_dict(named_parameters, strict=False)")
@@ -1251,17 +1271,17 @@ class PyTorchWriter(PythonWriter):
             self.wl("named_parameters = {}")
             self.wl(f"for weight in model.weights:")
             self.indent += 1
-            self.wl(f"name = weight.name.replace(\'/\', \'.\').replace(\':\', \'_\')")
+            self.wl(f"name = weight.name.replace('/', '.').replace(':', '_')")
             self.wl("name = '.'.join(['l' + mod if mod.isdigit() else mod for mod in name.split('.')])")
             self.wl(f"value = nn.Parameter(torch.from_numpy(weight.numpy()))")
             self.wl("named_parameters[name] = value\n")
             self.indent -= 1
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl("serialized_params_cleaned = {}")
                 self.wl(f"for key, value in serialized_params.items():")
                 self.indent += 1
-                self.wl(f"name = key.replace(\'/\', \'.\').replace(\':\', \'_\')")
+                self.wl(f"name = key.replace('/', '.').replace(':', '_')")
                 self.wl(f"serialized_params_cleaned[name] = value")
                 self.indent -= 1
                 self.wl("named_parameters.update(serialized_params_cleaned)\n")
@@ -1305,7 +1325,7 @@ class PyTorchWriter(PythonWriter):
             self.indent -= 1
             self.wl("named_parameters = {}")
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl(f"for key, val in serialized_params.items():")
                 self.indent += 1
                 self.wl(f"named_parameters[key] = val")
@@ -1327,11 +1347,11 @@ class PyTorchWriter(PythonWriter):
             self.indent += 1
             self.wl("named_parameters = {}")
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl("serialized_params_cleaned = {}")
                 self.wl(f"for key, value in serialized_params.items():")
                 self.indent += 1
-                self.wl(f"name = key.replace(\'/\', \'.\').replace(\':\', \'_\')")
+                self.wl(f"name = key.replace('/', '.').replace(':', '_')")
                 self.wl(f"serialized_params_cleaned[name] = value")
                 self.indent -= 1
                 self.wl("named_parameters.update(serialized_params_cleaned)\n")
@@ -1342,11 +1362,11 @@ class PyTorchWriter(PythonWriter):
             self.indent += 1
             self.wl("named_parameters = {}")
             if param_file_name is not None:
-                self.wl(f"serialized_params = torch.load(\"{param_file_name}\")")
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
                 self.wl("serialized_params_cleaned = {}")
                 self.wl(f"for key, value in serialized_params.items():")
                 self.indent += 1
-                self.wl(f"name = key.replace(\'/\', \'.\').replace(\':\', \'_\')")
+                self.wl(f"name = key.replace('/', '.').replace(':', '_')")
                 self.wl(f"serialized_params_cleaned[name] = value")
                 self.indent -= 1
                 self.wl("named_parameters.update(serialized_params_cleaned)\n")

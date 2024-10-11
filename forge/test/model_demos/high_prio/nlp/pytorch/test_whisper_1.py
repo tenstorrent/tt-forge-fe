@@ -16,7 +16,7 @@ from transformers import (
     WhisperTokenizer,
     WhisperFeatureExtractor,
     WhisperForConditionalGeneration,
-    LogitsProcessorList
+    LogitsProcessorList,
 )
 from datasets import load_dataset
 from typing import Optional
@@ -47,12 +47,7 @@ def test_whisper_dec_past_cache(test_device, variant):
     model, inputs, other = generate_model_whisper_decoder_past_cache(test_device, variant)
     compile_inputs = other["compile_inputs"]
     max_length = other["max_length"]
-    tt0 = forge.TTDevice(
-        "tt0", 
-        devtype=test_device.devtype, 
-        arch=test_device.arch, 
-        module=model
-    )
+    tt0 = forge.TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch, module=model)
 
     output_q = forge.initialize_pipeline(
         training=False,
@@ -70,7 +65,9 @@ def test_whisper_dec_past_cache(test_device, variant):
             ans = output_q.get()
 
         end = time.time()
-        print(f"Iteration 0: {tokens_to_generate} iterations took {end - start} seconds, speed: {(tokens_to_generate) / (end - start)} iters/sec")
+        print(
+            f"Iteration 0: {tokens_to_generate} iterations took {end - start} seconds, speed: {(tokens_to_generate) / (end - start)} iters/sec"
+        )
         if test_device.devtype != BackendType.Silicon:
             break
 
@@ -97,7 +94,6 @@ def test_whisper_enc_dec(test_device, variant):
         os.environ["FORGE_NOP_ON_DIRECT_SHORT_PATH"] = "1"
         os.environ["FORGE_SKIP_SMALL_UKT"] = "1"
 
-
         if variant == "openai/whisper-base":
             os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "None"
             compiler_cfg.enable_auto_fusing = False
@@ -108,9 +104,9 @@ def test_whisper_enc_dec(test_device, variant):
         if variant == "openai/whisper-medium":
             os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "None"
             compiler_cfg.enable_auto_fusing = False
-            compiler_cfg.balancer_op_override("layernorm_66.dc.add.14", "t_stream_shape", (1,1))
-            compiler_cfg.balancer_op_override("layernorm_1193.dc.add.14", "t_stream_shape", (1,1))
-        
+            compiler_cfg.balancer_op_override("layernorm_66.dc.add.14", "t_stream_shape", (1, 1))
+            compiler_cfg.balancer_op_override("layernorm_1193.dc.add.14", "t_stream_shape", (1, 1))
+
         if variant == "openai/whisper-large":
             os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "0"
             os.environ["FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY"] = "1"
@@ -124,7 +120,7 @@ def test_whisper_enc_dec(test_device, variant):
         if variant == "openai/whisper-base":
             compiler_cfg.amp_level = 1
         else:
-        #    compiler_cfg.enable_enumerate_u_kt = False
+            #    compiler_cfg.enable_enumerate_u_kt = False
             os.environ["FORGE_TEMP_RIBBON2_LEGACY_UTIL_EVAL"] = "1"
 
     run_encoder_on_tt = ("tiny" in variant) or ("base" in variant) or ("small" in variant) or ("medium" in variant)
@@ -152,7 +148,7 @@ def test_whisper_enc_dec(test_device, variant):
     )
     if pad_model:
         unpadded_model = WhisperForConditionalGeneration.from_pretrained(variant)
-        padded_param = torch.nn.functional.pad(unpadded_model.model.encoder.embed_positions.weight.data, (0,0,0,36))
+        padded_param = torch.nn.functional.pad(unpadded_model.model.encoder.embed_positions.weight.data, (0, 0, 0, 36))
         model.model.encoder.embed_positions.weight.data = padded_param
 
     feature_extractor = download_model(WhisperFeatureExtractor.from_pretrained, variant)
@@ -161,13 +157,13 @@ def test_whisper_enc_dec(test_device, variant):
     decoder_module_cross_attention = forge.PyTorchModule("Whisper_decoder_with_ca", Whisper_decoder(model))
     decoder_module_no_cross_attention = forge.PyTorchModule("Whisper_decoder_no_ca", Whisper_decoder(model))
 
-    #ds = load_dataset("hf-internal-testing/librispeech_asr_dummy", "clean", split="validation")
+    # ds = load_dataset("hf-internal-testing/librispeech_asr_dummy", "clean", split="validation")
     smaller_dataset = []
-    if True:#test_device.devtype != BackendType.Silicon:
+    if True:  # test_device.devtype != BackendType.Silicon:
         for i in range(1):
             sample = torch.load(f"forge/test/model_demos/utils/nlp/pytorch/1272-128104-000{i}.pt")
             smaller_dataset.append(sample)
-            #smaller_dataset.append(ds[i])
+            # smaller_dataset.append(ds[i])
         ds = smaller_dataset
     inputs = feature_extractor(ds[0]["audio"]["array"], return_tensors="pt")
     # sample = torch.load("forge/test/model_demos/utils/nlp/pytorch/1272-128104-0000.pt")
@@ -182,33 +178,54 @@ def test_whisper_enc_dec(test_device, variant):
     encoder_last_hidden_state_shape = (1, config.max_source_positions, config.d_model)
     encoder_last_hidden_state = torch.zeros(encoder_last_hidden_state_shape)
 
-    logits_processor = model._get_logits_processor(model.generation_config, TILE_DIM, input_features, None, LogitsProcessorList())
+    logits_processor = model._get_logits_processor(
+        model.generation_config, TILE_DIM, input_features, None, LogitsProcessorList()
+    )
     decoder_attention_mask = torch.zeros((1, max_length))
     decoder_input_ids = torch.ones((1, TILE_DIM), dtype=torch.int) * tokenizer.pad_token_id
     first_current_index = max_length - TILE_DIM
     position_embeds = torch.zeros((TILE_DIM, config.d_model))
-    enc_past_cache_self_shape = (1, config.decoder_attention_heads, max_length-TILE_DIM, config.d_model // config.decoder_attention_heads)
+    enc_past_cache_self_shape = (
+        1,
+        config.decoder_attention_heads,
+        max_length - TILE_DIM,
+        config.d_model // config.decoder_attention_heads,
+    )
     enc_past_cache_cross_shape = (1, 1, 1, 1)
 
     decoder_with_ca_inputs = [decoder_input_ids, decoder_attention_mask, encoder_last_hidden_state, position_embeds]
     for _ in range(config.decoder_layers):
-        decoder_with_ca_inputs += [torch.zeros(enc_past_cache_self_shape), torch.zeros(enc_past_cache_self_shape),
-                   torch.zeros(enc_past_cache_cross_shape), torch.zeros(enc_past_cache_cross_shape)]
+        decoder_with_ca_inputs += [
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+        ]
 
     dec = Whisper_decoder(model)
     dec(*decoder_with_ca_inputs)
-    enc_past_cache_cross_shape = (1, config.decoder_attention_heads, config.max_source_positions, config.d_model // config.decoder_attention_heads)
+    enc_past_cache_cross_shape = (
+        1,
+        config.decoder_attention_heads,
+        config.max_source_positions,
+        config.d_model // config.decoder_attention_heads,
+    )
     decoder_no_ca_inputs = [decoder_input_ids, decoder_attention_mask, encoder_last_hidden_state, position_embeds]
     for _ in range(config.decoder_layers):
-        decoder_no_ca_inputs += [torch.zeros(enc_past_cache_self_shape), torch.zeros(enc_past_cache_self_shape),
-                   torch.zeros(enc_past_cache_cross_shape), torch.zeros(enc_past_cache_cross_shape)]
+        decoder_no_ca_inputs += [
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+        ]
 
     if run_encoder_on_tt:
         tt0 = forge.TTDevice(
-            "tt0", 
-            devtype=test_device.devtype, 
+            "tt0",
+            devtype=test_device.devtype,
             arch=test_device.arch,
-            module=[encoder_module, decoder_module_cross_attention, decoder_module_no_cross_attention])
+            module=[encoder_module, decoder_module_cross_attention, decoder_module_no_cross_attention],
+        )
 
         output_q = forge.initialize_pipeline(
             training=False,
@@ -216,21 +233,23 @@ def test_whisper_enc_dec(test_device, variant):
                 (input_features,),
                 (decoder_with_ca_inputs),
                 (decoder_no_ca_inputs),
-            ))
+            ),
+        )
     else:
         tt0 = forge.TTDevice(
-            "tt0", 
-            devtype=test_device.devtype, 
-            arch=test_device.arch, 
-            module=[decoder_module_cross_attention, decoder_module_no_cross_attention])
+            "tt0",
+            devtype=test_device.devtype,
+            arch=test_device.arch,
+            module=[decoder_module_cross_attention, decoder_module_no_cross_attention],
+        )
 
         output_q = forge.initialize_pipeline(
             training=False,
             sample_inputs=(
                 (decoder_with_ca_inputs),
                 (decoder_no_ca_inputs),
-            ))
-
+            ),
+        )
 
     import time
 
@@ -242,7 +261,7 @@ def test_whisper_enc_dec(test_device, variant):
         else:
             input_features = inputs.input_features
         decoder_attention_mask = torch.zeros((1, max_length))
-        decoder_input_ids[0, 0] = tokenizer.encode('<|startoftranscript|>')[0]
+        decoder_input_ids[0, 0] = tokenizer.encode("<|startoftranscript|>")[0]
         decoder_attention_mask[0, first_current_index] = 1
         current_token_index = 0
 
@@ -258,7 +277,7 @@ def test_whisper_enc_dec(test_device, variant):
         first_active_subgraph = 0
         if run_encoder_on_tt:
             tt0.set_active_subgraph(0)
-            tt0.push_to_inputs((input_features, ))
+            tt0.push_to_inputs((input_features,))
             forge.run_forward()
             ans = output_q.get()
             encoder_last_hidden_state = ans[0].value().detach()
@@ -273,20 +292,27 @@ def test_whisper_enc_dec(test_device, variant):
                 start_1 = time.time()
                 encoder_last_hidden_state_consumed = True
                 tt0.set_active_subgraph(first_active_subgraph)
-                generate_inputs = (decoder_input_ids, decoder_attention_mask, encoder_last_hidden_state, position_embeds)
+                generate_inputs = (
+                    decoder_input_ids,
+                    decoder_attention_mask,
+                    encoder_last_hidden_state,
+                    position_embeds,
+                )
                 tt0.push_to_inputs(generate_inputs)
-                forge.run_generate(input_count=1, write_index=current_token_index//TILE_DIM)
+                forge.run_generate(input_count=1, write_index=current_token_index // TILE_DIM)
                 ans = output_q.get()
-                tt0.set_active_subgraph(first_active_subgraph+1)
+                tt0.set_active_subgraph(first_active_subgraph + 1)
                 start_2 = time.time()
             else:
                 generate_inputs = (decoder_input_ids, decoder_attention_mask, position_embeds)
                 tt0.push_to_inputs(generate_inputs)
-                forge.run_generate(input_count=1, write_index=current_token_index//TILE_DIM)
+                forge.run_generate(input_count=1, write_index=current_token_index // TILE_DIM)
                 ans = output_q.get()
 
             lm_head_out = ans[0].value().detach()
-            scores = logits_processor(decoder_input_ids[:, :current_token_index], lm_head_out[:, current_token_index % TILE_DIM])
+            scores = logits_processor(
+                decoder_input_ids[:, :current_token_index], lm_head_out[:, current_token_index % TILE_DIM]
+            )
             next_token = torch.argmax(scores, dim=-1).item()
             generated_tokens.append(next_token)
 
@@ -301,9 +327,15 @@ def test_whisper_enc_dec(test_device, variant):
             decoder_input_ids[0, current_token_index % TILE_DIM] = next_token
             decoder_attention_mask[0, first_current_index + (current_token_index % TILE_DIM)] = 1
         end = time.time()
-        print(f"{tokens_to_generate} iterations took {end - start} seconds, speed: {(tokens_to_generate) / (end - start)} iters/sec")
-        print(f"{(tokens_to_generate)} iterations took {end - start_1} seconds, speed: {(tokens_to_generate) / (end - start_1)} iters/sec")
-        print(f"{(tokens_to_generate - 1)} iterations took {end - start_2} seconds, speed: {(tokens_to_generate - 1) / (end - start_2)} iters/sec")
+        print(
+            f"{tokens_to_generate} iterations took {end - start} seconds, speed: {(tokens_to_generate) / (end - start)} iters/sec"
+        )
+        print(
+            f"{(tokens_to_generate)} iterations took {end - start_1} seconds, speed: {(tokens_to_generate) / (end - start_1)} iters/sec"
+        )
+        print(
+            f"{(tokens_to_generate - 1)} iterations took {end - start_2} seconds, speed: {(tokens_to_generate - 1) / (end - start_2)} iters/sec"
+        )
         print(f"Encoder took: {start_1 - start} seconds")
         print(f"Decoder with CA took: {start_2 - start_1} seconds")
         print(f"Decoder without CA took: {(end - start_2) / (tokens_to_generate - 2)} seconds")
@@ -344,8 +376,12 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
     decoder_module_no_cross_attention = forge.PyTorchModule("Whisper_decoder_no_ca", Whisper_decoder(model))
 
     for i in range(config.decoder_layers):
-        forge.config.override_t_stream_shape(f"model.model.decoder.layers.{i}.self_attn.k_proj.weight_cache_nop", [13, 1])
-        forge.config.override_t_stream_shape(f"model.model.decoder.layers.{i}.self_attn.v_proj.weight_cache_nop", [13, 1])
+        forge.config.override_t_stream_shape(
+            f"model.model.decoder.layers.{i}.self_attn.k_proj.weight_cache_nop", [13, 1]
+        )
+        forge.config.override_t_stream_shape(
+            f"model.model.decoder.layers.{i}.self_attn.v_proj.weight_cache_nop", [13, 1]
+        )
 
     sample = torch.load("forge/test/model_demos/utils/nlp/pytorch/1272-128104-0000.pt")
     sample_audio = sample["audio"]["array"]
@@ -357,31 +393,52 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
     encoder_last_hidden_state = torch.zeros(encoder_last_hidden_state_shape)
 
     model.generate(input_features)
-    logits_processor = model._get_logits_processor(model.generation_config, TILE_DIM, input_features, None, LogitsProcessorList())
+    logits_processor = model._get_logits_processor(
+        model.generation_config, TILE_DIM, input_features, None, LogitsProcessorList()
+    )
     sequence_length = 1500
     decoder_attention_mask = torch.zeros((1, max_length))
     decoder_input_ids = torch.ones((1, TILE_DIM), dtype=torch.int) * tokenizer.pad_token_id
     first_current_index = max_length - TILE_DIM
     position_embeds = torch.zeros((TILE_DIM, config.d_model))
-    enc_past_cache_self_shape = (1, config.decoder_attention_heads, max_length-TILE_DIM, config.d_model // config.decoder_attention_heads)
+    enc_past_cache_self_shape = (
+        1,
+        config.decoder_attention_heads,
+        max_length - TILE_DIM,
+        config.d_model // config.decoder_attention_heads,
+    )
     enc_past_cache_cross_shape = (1, 1, 1, 1)
 
     decoder_with_ca_inputs = [decoder_input_ids, decoder_attention_mask, encoder_last_hidden_state, position_embeds]
     for _ in range(config.decoder_layers):
-        decoder_with_ca_inputs += [torch.zeros(enc_past_cache_self_shape), torch.zeros(enc_past_cache_self_shape),
-                   torch.zeros(enc_past_cache_cross_shape), torch.zeros(enc_past_cache_cross_shape)]
-    enc_past_cache_cross_shape = (1, config.decoder_attention_heads, sequence_length, config.d_model // config.decoder_attention_heads)
+        decoder_with_ca_inputs += [
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+        ]
+    enc_past_cache_cross_shape = (
+        1,
+        config.decoder_attention_heads,
+        sequence_length,
+        config.d_model // config.decoder_attention_heads,
+    )
     decoder_no_ca_inputs = [decoder_input_ids, decoder_attention_mask, encoder_last_hidden_state, position_embeds]
     for _ in range(config.decoder_layers):
-        decoder_no_ca_inputs += [torch.zeros(enc_past_cache_self_shape), torch.zeros(enc_past_cache_self_shape),
-                   torch.zeros(enc_past_cache_cross_shape), torch.zeros(enc_past_cache_cross_shape)]
+        decoder_no_ca_inputs += [
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_self_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+            torch.zeros(enc_past_cache_cross_shape),
+        ]
 
     tt0 = forge.TTDevice(
-        "tt0", 
-        devtype=test_device.devtype, 
-        arch=test_device.arch, 
-        module=[decoder_module_cross_attention, decoder_module_no_cross_attention])
-        # module=[encoder_module, decoder_module_cross_attention, decoder_module_no_cross_attention])
+        "tt0",
+        devtype=test_device.devtype,
+        arch=test_device.arch,
+        module=[decoder_module_cross_attention, decoder_module_no_cross_attention],
+    )
+    # module=[encoder_module, decoder_module_cross_attention, decoder_module_no_cross_attention])
 
     output_q = forge.initialize_pipeline(
         training=False,
@@ -389,12 +446,12 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
             # (input_features,),
             (decoder_with_ca_inputs),
             (decoder_no_ca_inputs),
-        ))
-    
+        ),
+    )
+
     import time
 
     current_token_index = 0
-
 
     # encoder hangs, for now run on cpu
     generated_tokens = []
@@ -406,7 +463,7 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
         encoder_last_hidden_state = inputs[1]
         generated_tokens.append(inputs[0][:, current_token_index % TILE_DIM].item())
         print(f"generated tokens: {tokenizer.decode(generated_tokens)}")
-        decoder_input_ids[:, current_token_index % TILE_DIM] = inputs[0][:,current_token_index]
+        decoder_input_ids[:, current_token_index % TILE_DIM] = inputs[0][:, current_token_index]
         decoder_attention_mask[0, first_current_index + (current_token_index % TILE_DIM)] = 1
         generate_inputs = (decoder_input_ids, decoder_attention_mask, encoder_last_hidden_state, position_embeds)
         tt0.set_active_subgraph(0)
@@ -414,7 +471,7 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
         forge.run_generate(input_count=1, write_index=0)
         ans = output_q.get()
         lm_head_out = ans[0].value().detach()
-        lm_head_out = lm_head_out[:, :(current_token_index % TILE_DIM) + 1, :]
+        lm_head_out = lm_head_out[:, : (current_token_index % TILE_DIM) + 1, :]
 
         current_token_index += 1
         if current_token_index % TILE_DIM == 0:
@@ -423,7 +480,6 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
             decoder_input_ids[0, :] = tokenizer.pad_token_id
         return lm_head_out
 
-
     asr_pipeline = forge_pipeline(
         "automatic-speech-recognition",
         model=model,
@@ -431,6 +487,6 @@ def test_whisper_enc_dec_pipeline(test_device, variant):
         feature_extractor=feature_extractor,
         forward_fn=wrap_generate,
     )
-    
+
     tt_out = asr_pipeline(sample_audio)
-    print ("TT pipeline:", tt_out["text"])
+    print("TT pipeline:", tt_out["text"])

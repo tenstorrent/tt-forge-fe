@@ -18,7 +18,7 @@ from typing import Optional, List, Dict, Type, Union
 
 from forge import ForgeModule, Module, VerifyConfig
 from forge.op_repo import TensorShape
-from forge.verify import TestKind  #, verify_module
+from forge.verify import TestKind  # , verify_module
 from forge.config import _get_global_compiler_config
 from forge._C import MathFidelity
 
@@ -26,26 +26,25 @@ from .compat import TestDevice, verify_module
 
 
 # All supported framework model types
-FrameworkModelType = Union [
+FrameworkModelType = Union[
     Type[torch.nn.Module],
 ]
 
 
 class ShapeUtils:
-
     @staticmethod
     def reduce_microbatch_size(shape: TensorShape) -> TensorShape:
-        '''
+        """
         Reduce microbatch dimension of a shape to 1
         Usually used for calculating shape of a constant tensor
-        '''
-        return (1, ) + shape[1:]
-    
+        """
+        return (1,) + shape[1:]
+
     @staticmethod
     def extend_shapes_with_id(shapes: List[TensorShape]) -> List[TensorShape]:
-        '''
+        """
         Extend shapes with an id
-        '''
+        """
         shapes_with_ids = list()
         for shape in shapes:
             if type(shape) is tuple:
@@ -57,14 +56,16 @@ class ShapeUtils:
 
 @dataclass(frozen=True)
 class InputSourceFlag:
-    '''Dataclass for specifying compiler flags for specific input source'''
+    """Dataclass for specifying compiler flags for specific input source"""
+
     input_queues_on_host: bool
     set_default_dram_parameters: bool
     default_dram_parameters: Optional[bool]
 
 
 class InputSourceFlags(Enum):
-    '''Enums defining input source flags'''
+    """Enums defining input source flags"""
+
     FROM_HOST = InputSourceFlag(True, False, None)
     FROM_DRAM = InputSourceFlag(False, False, None)
     FROM_DRAM_PROLOGUED = InputSourceFlag(False, True, False)
@@ -73,11 +74,11 @@ class InputSourceFlags(Enum):
 
 
 class CompilerUtils:
-    '''Utility functions for Forge compiler configuration'''
+    """Utility functions for Forge compiler configuration"""
 
     @staticmethod
     def set_input_source(input_source_flag: InputSourceFlag):
-        '''Set compiler configuration for input source'''
+        """Set compiler configuration for input source"""
         compiler_cfg = _get_global_compiler_config()
         compiler_cfg.input_queues_on_host = input_source_flag.input_queues_on_host
         if input_source_flag.set_default_dram_parameters:
@@ -85,13 +86,13 @@ class CompilerUtils:
 
     @staticmethod
     def set_math_fidelity(math_fidelity: MathFidelity):
-        '''Set compiler configuration for math fidelity'''
+        """Set compiler configuration for math fidelity"""
         compiler_cfg = _get_global_compiler_config()
         compiler_cfg.default_math_fidelity = math_fidelity
 
 
 class VerifyUtils:
-    '''Utility functions for Forge verification'''
+    """Utility functions for Forge verification"""
 
     @staticmethod
     def verify(
@@ -103,8 +104,8 @@ class VerifyUtils:
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
         math_fidelity: forge.MathFidelity = None,
-        ):
-        '''Perform Forge verification on the model
+    ):
+        """Perform Forge verification on the model
 
         Args:
             model: Forge model
@@ -115,7 +116,7 @@ class VerifyUtils:
             input_source_flag: Input source flag
             dev_data_format: Data format
             math_fidelity: Math fidelity
-        '''
+        """
 
         if input_source_flag:
             CompilerUtils.set_input_source(input_source_flag.value)
@@ -142,21 +143,21 @@ class VerifyUtils:
 
 
 class LoggerUtils:
-    '''Utility functions for logging'''
+    """Utility functions for logging"""
 
     @staticmethod
     def set_log_level(package_name: str, level: str):
-        ''' Set log level for package_name and its subpackages
+        """Set log level for package_name and its subpackages
 
         Args:
             package_name (str): package name
             level (str): log level
-        '''
+        """
         logger.add(sys.stdout, level=level, filter=lambda record: record["name"].startswith(package_name))
 
 
 class RateLimiter:
-    '''Rate limiter class to limit the number of allowed operations by a rate limit factor'''
+    """Rate limiter class to limit the number of allowed operations by a rate limit factor"""
 
     def __init__(self, rng: random.Random, max_limit: int, current_limit: int):
         self.rng = rng
@@ -165,12 +166,12 @@ class RateLimiter:
         self.current_value: int = None
 
     def is_allowed(self) -> bool:
-        '''Check if the operation is allowed by the rate limit factor and current random value'''
+        """Check if the operation is allowed by the rate limit factor and current random value"""
         self.current_value = self.rng.randint(1, self.max_limit)
         return self.current_value <= self.current_limit
 
     def limit_info(self) -> str:
-        '''Return the rate limit info for previous operation'''
+        """Return the rate limit info for previous operation"""
         if self.current_value < self.current_limit:
             return f"{self.current_value} <= {self.current_limit}"
         else:

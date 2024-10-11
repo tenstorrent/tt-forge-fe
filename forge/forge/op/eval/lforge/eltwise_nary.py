@@ -17,7 +17,7 @@ def eval(type, attr, ops):
     if type == "conv_sum":
 
         t_ops = to_torch_operands(*ops)
-        
+
         t_ops = list(t_ops)
 
         # Extract attributes
@@ -27,18 +27,20 @@ def eval(type, attr, ops):
 
         # Check operands
         for t_op in t_ops:
-            assert len(t_op.shape) == 4, f'Tensor must have 4 dimensions, given {len(t_op.shape)}'
+            assert len(t_op.shape) == 4, f"Tensor must have 4 dimensions, given {len(t_op.shape)}"
 
         # To forge shape
         for i in range(len(t_ops)):
-            t_ops[i] = t_ops[i][:, :, :originalY*originalX, :]
+            t_ops[i] = t_ops[i][:, :, : originalY * originalX, :]
             t_ops[i] = t_ops[i].transpose(2, 3)
             t_ops[i] = t_ops[i].reshape(1, t_ops[i].shape[2], originalY, originalX)
 
         # Shift and Add
         res = 0
         for i in range(len(t_ops)):
-            res += torch.nn.functional.pad(t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1]))
+            res += torch.nn.functional.pad(
+                t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1])
+            )
 
         # To forge shape
         res = res.reshape(1, res.shape[1], res.shape[2] * res.shape[3], 1)
@@ -49,7 +51,6 @@ def eval(type, attr, ops):
             res = torch.nn.functional.pad(res, (0, 0, 0, pad))
 
         return res
-   
 
     if type == "concatenate" or type == "hconcat" or type == "vconcat":
         assert len(ops) + 1 == len(attr), f"{len(ops)} {len(attr)}"
@@ -84,7 +85,7 @@ def shape(type, attr, ops, tile_height, tile_width) -> Tuple[Tuple, List]:
         for op in ops:
             assert len(op) <= 4, "Shape of an operand must be smaller than or equal to 4"
             if len(op) < 4:
-                op = (4 - len(op)) * (1, ) + op
+                op = (4 - len(op)) * (1,) + op
             if len(shapes) > 0:
                 assert shapes[-1] == op, "Shapes of all operands must be the same size"
             shapes.append(op)
@@ -105,7 +106,7 @@ def shape(type, attr, ops, tile_height, tile_width) -> Tuple[Tuple, List]:
 
     if type == "index_copy":
         return ops[0], []
-        
+
     assert False, f"{type} not defined in eltwise_nary"
 
 

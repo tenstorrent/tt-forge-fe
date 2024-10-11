@@ -97,9 +97,12 @@ static void insert_pad_within_tile(graphlib::Graph *graph, graphlib::Edge edge, 
     TT_ASSERT(size % graphlib::Shape::FORGE_TILE_DIM == 0);
 
     // Handle with a pad_tile op
-    auto *pad_tile = graph->add_node(
-        consumer->clone("pad_tile_" + producer->name() + "_" + std::to_string(edge.edge_creation_id)),
-        graph->get_subgraph_id_for_node(producer->id()))->as<graphlib::OpNode>();
+    auto *pad_tile =
+        graph
+            ->add_node(
+                consumer->clone("pad_tile_" + producer->name() + "_" + std::to_string(edge.edge_creation_id)),
+                graph->get_subgraph_id_for_node(producer->id()))
+            ->as<graphlib::OpNode>();
     pad_tile->change_op_type(graphlib::OpType("pad_tile", {dim, (int)producer->shape()[dim]}));
     auto [incoming_edge, outgoing_edge] = graphlib::insert_node_on_edge(graph, edge, pad_tile);
     if (only_bcast)
@@ -280,8 +283,7 @@ static bool try_fold_constant_multiply_into_matmul_rhs(
         multiply_clone->set_shape(matmul_rhs->shape());
 
         auto *constant_clone = graph->add_node(
-            constant->clone(constant->name() + "_" + multiply->name()),
-            graph->get_subgraph_id_for_node(matmul->id()));
+            constant->clone(constant->name() + "_" + multiply->name()), graph->get_subgraph_id_for_node(matmul->id()));
 
         // Connect matmul rhs to multiply LHS
         graphlib::insert_node_on_edge(graph, matmul_operands[1], multiply_clone);

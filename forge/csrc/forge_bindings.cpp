@@ -8,16 +8,16 @@
 #pragma clang diagnostic pop
 
 #include <pybind11/stl.h>
-#include "pybind11_json/pybind11_json.hpp"
-
 
 #include <sstream>
+
+#include "pybind11_json/pybind11_json.hpp"
 namespace py = pybind11;
 
 #include "autograd/python_bindings.hpp"
 #include "backend_api/device_config.hpp"
-#include "forge_passes.hpp"
 #include "forge_graph_module.hpp"
+#include "forge_passes.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/python_bindings.hpp"
 #include "lower_to_forge/common.hpp"
@@ -25,10 +25,10 @@ namespace py = pybind11;
 #include "passes/consteval.hpp"
 #include "passes/fracture.hpp"
 #include "passes/link_past_cache_ios.hpp"
+#include "passes/mlir_compiler.hpp"
 #include "passes/move_index_to_mm_weights.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/python_bindings.hpp"
-#include "passes/mlir_compiler.hpp"
 #include "passes/split_graph.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
@@ -38,10 +38,11 @@ namespace py = pybind11;
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
 
-namespace tt {
+namespace tt
+{
 
-PYBIND11_MODULE(_C, m) {
-
+PYBIND11_MODULE(_C, m)
+{
     // Register signal handlers when loading forge module.
     static SignalHandlers signal_handlers;
 
@@ -82,33 +83,37 @@ PYBIND11_MODULE(_C, m) {
         .export_values()
         .def(
             "to_json",
-            [](tt::DataFormat df) {
+            [](tt::DataFormat df)
+            {
                 std::stringstream ss;
                 ss << df;
                 return ss.str();
             })
-        .def("from_json", [](std::string const &encoded) {
-            static std::unordered_map<std::string, tt::DataFormat> decode = {
-                {"Float32", tt::DataFormat::Float32},
-                {"Float16", tt::DataFormat::Float16},
-                {"Bfp8", tt::DataFormat::Bfp8},
-                {"Bfp4", tt::DataFormat::Bfp4},
-                {"Bfp2", tt::DataFormat::Bfp2},
-                {"Float16_b", tt::DataFormat::Float16_b},
-                {"Bfp8_b", tt::DataFormat::Bfp8_b},
-                {"Bfp4_b", tt::DataFormat::Bfp4_b},
-                {"Bfp2_b", tt::DataFormat::Bfp2_b},
-                {"Lf8", tt::DataFormat::Lf8},
-                {"UInt16", tt::DataFormat::UInt16},
-                {"Int8", tt::DataFormat::Int8},
-                {"RawUInt8", tt::DataFormat::RawUInt8},
-                {"RawUInt16", tt::DataFormat::RawUInt16},
-                {"RawUInt32", tt::DataFormat::RawUInt32},
-                {"Int32", tt::DataFormat::Int32},
-                {"Invalid", tt::DataFormat::Invalid},
-            };
-            return decode.at(encoded);
-        });
+        .def(
+            "from_json",
+            [](std::string const &encoded)
+            {
+                static std::unordered_map<std::string, tt::DataFormat> decode = {
+                    {"Float32", tt::DataFormat::Float32},
+                    {"Float16", tt::DataFormat::Float16},
+                    {"Bfp8", tt::DataFormat::Bfp8},
+                    {"Bfp4", tt::DataFormat::Bfp4},
+                    {"Bfp2", tt::DataFormat::Bfp2},
+                    {"Float16_b", tt::DataFormat::Float16_b},
+                    {"Bfp8_b", tt::DataFormat::Bfp8_b},
+                    {"Bfp4_b", tt::DataFormat::Bfp4_b},
+                    {"Bfp2_b", tt::DataFormat::Bfp2_b},
+                    {"Lf8", tt::DataFormat::Lf8},
+                    {"UInt16", tt::DataFormat::UInt16},
+                    {"Int8", tt::DataFormat::Int8},
+                    {"RawUInt8", tt::DataFormat::RawUInt8},
+                    {"RawUInt16", tt::DataFormat::RawUInt16},
+                    {"RawUInt32", tt::DataFormat::RawUInt32},
+                    {"Int32", tt::DataFormat::Int32},
+                    {"Invalid", tt::DataFormat::Invalid},
+                };
+                return decode.at(encoded);
+            });
 
     py::module_ m_graph = m.def_submodule("graph", "Submodule defining forge graph functions");
     GraphModule(m_graph);
@@ -257,9 +262,9 @@ PYBIND11_MODULE(_C, m) {
         .def_readonly("bcast_factor", &sparse::SparseFORGE::bcast_factor)
         .def("get_sparse_tile_ptr_bits", &sparse::SparseFORGE::get_sparse_tile_ptr_bits)
         .def("get_sparse_ublock_idx_bits", &sparse::SparseFORGE::get_sparse_ublock_idx_bits)
-        .def("get_sparse_tiles_and_encodings", [](tt::sparse::SparseFORGE &self, int grid_r) {
-            return self.get_sparse_tiles_and_encodings(grid_r);
-        });
+        .def(
+            "get_sparse_tiles_and_encodings",
+            [](tt::sparse::SparseFORGE &self, int grid_r) { return self.get_sparse_tiles_and_encodings(grid_r); });
 
     // m.def("compress_sparse_tensor", &sparse::compress_sparse_tensor);
     m.def("compress_sparse_tensor_and_strip_info", &sparse::compress_sparse_tensor_and_strip_info);
@@ -298,13 +303,14 @@ PYBIND11_MODULE(_C, m) {
         .def_readonly("name_regex_match", &tt::passes::AMPNodeProperties::name_regex_match)
         .def_readonly(
             "input_parameter_indices_to_optimize", &tt::passes::AMPNodeProperties::input_parameter_indices_to_optimize)
-        .def("to_json", [](tt::passes::AMPNodeProperties const& properties) {
-            nlohmann::json j = properties;
-            return j;
-        })
-        .def("from_json", [](nlohmann::json const& j) {
-            return j.template get<tt::passes::AMPNodeProperties>();
-        })
+        .def(
+            "to_json",
+            [](tt::passes::AMPNodeProperties const &properties)
+            {
+                nlohmann::json j = properties;
+                return j;
+            })
+        .def("from_json", [](nlohmann::json const &j) { return j.template get<tt::passes::AMPNodeProperties>(); })
         .def(py::pickle(
             [](const tt::passes::AMPNodeProperties &p) {  // __getstate__
                 return py::make_tuple(
@@ -338,4 +344,4 @@ PYBIND11_MODULE(_C, m) {
             }));
 }
 
-}
+}  // namespace tt

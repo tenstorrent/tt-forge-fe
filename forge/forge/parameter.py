@@ -6,15 +6,24 @@ from typing import Optional
 import torch
 from loguru import logger
 
-from .tensor import Tensor, TensorShape, TensorBase, pytorch_dtype_to_forge_dataformat, pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
+from .tensor import (
+    Tensor,
+    TensorShape,
+    TensorBase,
+    pytorch_dtype_to_forge_dataformat,
+    pad_pytorch_tensor_to_forge,
+    forge_dataformat_to_pytorch_dtype,
+)
 from .forgeglobal import lazy_trace_data
 from forge._C import DataFormat
 import forge
+
 
 class Parameter(TensorBase):
     """
     Module parameter
     """
+
     def __init__(
         self,
         *args,
@@ -24,7 +33,7 @@ class Parameter(TensorBase):
     ):
         """
         Create parameter of given shape.
-        
+
         Parameters
         ----------
         *args: Union[int, torch.Tensor]
@@ -63,7 +72,7 @@ class Parameter(TensorBase):
         elif self._value is not None:
             self._data_format = pytorch_dtype_to_forge_dataformat(self._value.dtype)
         else:
-            self._data_format = DataFormat.Float32 # default
+            self._data_format = DataFormat.Float32  # default
 
     def __repr__(self):
         ret = f"Forge Parameter {self.get_name()} {self.shape}"
@@ -101,17 +110,15 @@ class Parameter(TensorBase):
                 data_format = self._data_format
 
             self.empty_tensor = Tensor.create(
-                    self._tensor, 
-                    requires_grad=self.requires_grad, 
-                    data_format=data_format, 
-                    parameter=True)
+                self._tensor, requires_grad=self.requires_grad, data_format=data_format, parameter=True
+            )
 
         return self.empty_tensor
 
     def get_name(self) -> str:
         """
         Returns parameter name. This could return None if called before compilation and no user-provided name is set.
-        
+
         Returns
         -------
         str
@@ -142,8 +149,7 @@ class Parameter(TensorBase):
         if self._data_format is None:
             self._data_format = pytorch_dtype_to_forge_dataformat(self._value.dtype, fp32_fallback=self.fp32_fallback)
 
-
-    def value(self, is_forge = False) -> torch.Tensor:
+    def value(self, is_forge=False) -> torch.Tensor:
         """
         Return parameter value, optionally padded to forge dimensions.
         """

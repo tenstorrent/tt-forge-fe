@@ -2,8 +2,8 @@
 
 set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
 
-add_custom_target(build_tt_mlir ALL 
-    COMMAND ${CMAKE_COMMAND} -E env 
+add_custom_target(build_tt_mlir ALL
+    COMMAND ${CMAKE_COMMAND} -E env
     BUILD_TYPE=${CMAKE_BUILD_TYPE} # Export build type to use
     CXX_COMPILER=${CMAKE_CXX_COMPILER} # Export CXX compiler to use
     C_COMPILER=${CMAKE_C_COMPILER} # Export C compiler to use

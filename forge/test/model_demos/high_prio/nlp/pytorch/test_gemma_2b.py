@@ -45,8 +45,10 @@ def cpu_sanity_run_1():
 
     # Generate
     generate_ids = model.generate(inputs.input_ids, max_length=30)
-    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-    
+    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[
+        0
+    ]
+
     print(generated_text)
 
 
@@ -60,10 +62,10 @@ variants = [
 def test_gemma_2b_rotary_embedding(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    
+
     # Load model
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -72,7 +74,7 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
 
         def forward(self, x, pos_ids):
             cos, sin = self.model(x, pos_ids)
-            
+
             return cos, sin
 
     config = download_model(GemmaConfig.from_pretrained, variant)
@@ -87,15 +89,25 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     # Define inputs
     x = torch.rand((1, 1, 7, 256)).to(torch.float32)
     pos_ids = torch.arange(7).unsqueeze(0).to(torch.float32)
-    
+
     # Sanity run
     out = pytorch_model(x, pos_ids)
     print(out)
 
     verify_module(
         tt_model,
-        input_shapes=[(x.shape, pos_ids.shape,)],
-        inputs=[(x, pos_ids,)],
+        input_shapes=[
+            (
+                x.shape,
+                pos_ids.shape,
+            )
+        ],
+        inputs=[
+            (
+                x,
+                pos_ids,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -110,7 +122,7 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
 def test_gemma_2b_rms_norm(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -122,7 +134,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
 
         def forward(self, x):
             out = self.model(x)
-            
+
             return out
 
     config = download_model(GemmaConfig.from_pretrained, variant)
@@ -136,7 +148,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
 
     # Define inputs
     x = torch.rand((1, 7, 2048)).to(torch.float32)
-    
+
     # Sanity run
     out = pytorch_model(x)
     print(out)
@@ -159,7 +171,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
 def test_gemma_2b_attention(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -171,7 +183,7 @@ def test_gemma_2b_attention(test_device, variant):
 
         def forward(self, hidden_states, attn_mask, pos_ids):
             attn_output, attn_weights, past_key_value = self.model(hidden_states, attn_mask, pos_ids)
-            
+
             return attn_output
 
     config = download_model(GemmaConfig.from_pretrained, variant)
@@ -187,15 +199,27 @@ def test_gemma_2b_attention(test_device, variant):
     hidden_states = torch.rand((1, 7, 2048)).to(torch.float32)
     attn_mask = torch.ones((1, 1, 7, 7)).to(torch.float32)
     pos_ids = torch.arange(7).unsqueeze(0).to(torch.float32)
-    
+
     # Sanity run
     out = pytorch_model(hidden_states, attn_mask, pos_ids)
     print(out)
 
     verify_module(
         tt_model,
-        input_shapes=[(hidden_states.shape, attn_mask.shape, pos_ids.shape,)],
-        inputs=[(hidden_states, attn_mask, pos_ids,)],
+        input_shapes=[
+            (
+                hidden_states.shape,
+                attn_mask.shape,
+                pos_ids.shape,
+            )
+        ],
+        inputs=[
+            (
+                hidden_states,
+                attn_mask,
+                pos_ids,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -210,7 +234,7 @@ def test_gemma_2b_attention(test_device, variant):
 def test_gemma_2b_mlp(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -222,7 +246,7 @@ def test_gemma_2b_mlp(test_device, variant):
 
         def forward(self, hidden_states):
             out = self.model(hidden_states)
-            
+
             return out
 
     config = download_model(GemmaConfig.from_pretrained, variant)
@@ -236,7 +260,7 @@ def test_gemma_2b_mlp(test_device, variant):
 
     # Define inputs
     x = torch.rand((1, 7, 2048)).to(torch.float32)
-    
+
     # Sanity run
     out = pytorch_model(x)
     print(out)
@@ -259,7 +283,7 @@ def test_gemma_2b_mlp(test_device, variant):
 def test_gemma_2b_single_decoder(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -271,7 +295,7 @@ def test_gemma_2b_single_decoder(test_device, variant):
 
         def forward(self, hidden_states, attn_mask, pos_ids):
             out = self.model(hidden_states, attn_mask, pos_ids)
-            
+
             return out
 
     config = download_model(GemmaConfig.from_pretrained, variant)
@@ -287,15 +311,27 @@ def test_gemma_2b_single_decoder(test_device, variant):
     hidden_states = torch.rand((1, 7, 2048)).to(torch.float32)
     attn_mask = torch.ones((1, 1, 7, 7)).to(torch.float32)
     pos_ids = torch.arange(7).unsqueeze(0).to(torch.float32)
-    
+
     # Sanity run
     out = pytorch_model(hidden_states, attn_mask, pos_ids)
     print(out)
 
     verify_module(
         tt_model,
-        input_shapes=[(hidden_states.shape, attn_mask.shape, pos_ids.shape,)],
-        inputs=[(hidden_states, attn_mask, pos_ids,)],
+        input_shapes=[
+            (
+                hidden_states.shape,
+                attn_mask.shape,
+                pos_ids.shape,
+            )
+        ],
+        inputs=[
+            (
+                hidden_states,
+                attn_mask,
+                pos_ids,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -323,7 +359,7 @@ def test_gemma_2b(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     tt_model = PyTorchModule("pytorch_gemma_2b", pytorch_model)
-    
+
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -334,17 +370,29 @@ def test_gemma_2b(test_device, variant):
 
     # Sanity run
     generate_ids = pytorch_model.generate(inputs.input_ids, max_length=30)
-    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-    
+    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[
+        0
+    ]
+
     print(f"Sanity run generated text: {generated_text}")
-    
+
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
-    
+
     verify_module(
         tt_model,
-        input_shapes=[(input_ids.shape, attn_mask.shape,)],
-        inputs=[(input_ids, attn_mask,)],
+        input_shapes=[
+            (
+                input_ids.shape,
+                attn_mask.shape,
+            )
+        ],
+        inputs=[
+            (
+                input_ids,
+                attn_mask,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -358,10 +406,10 @@ def test_gemma_2b(test_device, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1(test_device, variant):
     pytest.xfail("Passing locally, failing on CI. Keeping as XFail to be able to track potential regressions.")
-    
+
     # Random see for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -377,7 +425,7 @@ def test_gemma_2b_1x1(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     tt_model = PyTorchModule("pytorch_gemma_2b_1x1", pytorch_model)
-    
+
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -388,17 +436,29 @@ def test_gemma_2b_1x1(test_device, variant):
 
     # Sanity run
     generate_ids = pytorch_model.generate(inputs.input_ids, max_length=30)
-    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-    
+    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[
+        0
+    ]
+
     print(f"Sanity run generated text: {generated_text}")
-    
+
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
-    
+
     verify_module(
         tt_model,
-        input_shapes=[(input_ids.shape, attn_mask.shape,)],
-        inputs=[(input_ids, attn_mask,)],
+        input_shapes=[
+            (
+                input_ids.shape,
+                attn_mask.shape,
+            )
+        ],
+        inputs=[
+            (
+                input_ids,
+                attn_mask,
+            )
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -412,7 +472,7 @@ def test_gemma_2b_1x1(test_device, variant):
 def test_gemma_2b_gen(test_device, variant):
     # Random seed for reproducibility
     torch.manual_seed(42)
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
@@ -420,22 +480,20 @@ def test_gemma_2b_gen(test_device, variant):
 
     if test_device.arch != BackendDevice.Grayskull:
         compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-        
+
         # Configure all matmul ops to operate on HiFi4 with Bfp8_b inputs/params and Float16 accumulation
         forge.config.configure_mixed_precision(
-            op_type='matmul',
+            op_type="matmul",
             math_fidelity=MathFidelity.HiFi4,
-            input_df={0:[DataFormat.Bfp8_b, False], 1:[DataFormat.Bfp8_b, False]},
-            accumulate_df=DataFormat.Float16_b
+            input_df={0: [DataFormat.Bfp8_b, False], 1: [DataFormat.Bfp8_b, False]},
+            accumulate_df=DataFormat.Float16_b,
         )
 
         # Configure all other ops to run on HiFi4 with Float16 accumulation
         forge.config.configure_mixed_precision(
-            op_type='^((?!matmul).)*$',
-            math_fidelity=MathFidelity.HiFi4,
-            accumulate_df=DataFormat.Float16_b
+            op_type="^((?!matmul).)*$", math_fidelity=MathFidelity.HiFi4, accumulate_df=DataFormat.Float16_b
         )
-    
+
     if test_device.arch == BackendDevice.Grayskull:
         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{65*1024}"
 
@@ -443,10 +501,10 @@ def test_gemma_2b_gen(test_device, variant):
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
-    
+
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    
+
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -457,14 +515,16 @@ def test_gemma_2b_gen(test_device, variant):
 
     # Sanity run
     generate_ids = pytorch_model.generate(inputs.input_ids, max_length=30)
-    generated_pt_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-    
+    generated_pt_text = tokenizer.batch_decode(
+        generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
+    )[0]
+
     print("Based on prompt:")
     print(f"{prompt}")
     print(f"\nPyTorch (sanity) generated:")
-    pt_ans = generated_pt_text.split('\n\n')[1]
+    pt_ans = generated_pt_text.split("\n\n")[1]
     print(f"{pt_ans}")
-    
+
     # Initialize and Run text2text generator on Tenstorrent device
     text2text_generator = forge_pipeline(
         "text2text-generation",
@@ -479,12 +539,12 @@ def test_gemma_2b_gen(test_device, variant):
         num_return_sequences=1,
         no_repeat_ngram_size=2,
     )
-    
+
     print("Based on prompt:")
     print(f"{prompt}")
     print(f"\nTT generated:")
     for sequence in generated_tt_text:
-        tt_ans = sequence['generated_text'][len(prompt):]
+        tt_ans = sequence["generated_text"][len(prompt) :]
         print(f"{tt_ans}")
 
 
@@ -492,13 +552,13 @@ def test_gemma_2b_gen(test_device, variant):
 def test_gemma_2b_1x1_gen(test_device, variant):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Not supporting the Grayskull 1x1 overlay yet")
-    
+
     # Random seed for reproducibility
     torch.manual_seed(42)
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    
-    if test_device.devtype == BackendType.Silicon and "CI_PROJECT_DIR" in os.environ: 
+
+    if test_device.devtype == BackendType.Silicon and "CI_PROJECT_DIR" in os.environ:
         pytest.skip("Failing on CI with Read 0xffffffff from ARC scratch[6]: you should reset the board")
 
     # Configurations
@@ -509,27 +569,25 @@ def test_gemma_2b_1x1_gen(test_device, variant):
 
     # Configure all matmul ops to operate on HiFi4 with Bfp8_b inputs/params and Float16 accumulation
     forge.config.configure_mixed_precision(
-        op_type='matmul',
+        op_type="matmul",
         math_fidelity=MathFidelity.HiFi4,
-        input_df={0:[DataFormat.Bfp8_b, False], 1:[DataFormat.Bfp8_b, False]},
-        accumulate_df=DataFormat.Float16_b
+        input_df={0: [DataFormat.Bfp8_b, False], 1: [DataFormat.Bfp8_b, False]},
+        accumulate_df=DataFormat.Float16_b,
     )
 
     # Configure all other ops to run on HiFi4 with Float16 accumulation
     forge.config.configure_mixed_precision(
-        op_type='^((?!matmul).)*$',
-        math_fidelity=MathFidelity.HiFi4,
-        accumulate_df=DataFormat.Float16_b
+        op_type="^((?!matmul).)*$", math_fidelity=MathFidelity.HiFi4, accumulate_df=DataFormat.Float16_b
     )
 
     config = download_model(GemmaConfig.from_pretrained, variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
-    
+
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    
+
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -540,14 +598,16 @@ def test_gemma_2b_1x1_gen(test_device, variant):
 
     # Sanity run
     generate_ids = pytorch_model.generate(inputs.input_ids, max_length=30)
-    generated_pt_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-    
+    generated_pt_text = tokenizer.batch_decode(
+        generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
+    )[0]
+
     print("Based on prompt:")
     print(f"{prompt}")
     print(f"\nPyTorch (sanity) generated:")
-    pt_ans = generated_pt_text.split('\n\n')[1]
+    pt_ans = generated_pt_text.split("\n\n")[1]
     print(f"{pt_ans}")
-    
+
     # Initialize and Run text2text generator on Tenstorrent device
     text2text_generator = forge_pipeline(
         "text2text-generation",
@@ -562,12 +622,12 @@ def test_gemma_2b_1x1_gen(test_device, variant):
         num_return_sequences=1,
         no_repeat_ngram_size=2,
     )
-    
+
     print("Based on prompt:")
     print(f"{prompt}")
     print(f"\nTT generated:")
     for sequence in generated_tt_text:
-        tt_ans = sequence['generated_text'][len(prompt):]
+        tt_ans = sequence["generated_text"][len(prompt) :]
         print(f"{tt_ans}")
 
 

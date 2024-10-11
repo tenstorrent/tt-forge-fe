@@ -112,6 +112,11 @@ T* add_node(
     unsigned int subgraph_id = 0)
 {
     return add_node<T>(
-        graph, name, graphlib::OpType(type, op_attrs, forge_op_attrs, named_attrs), ops, user_edge_op_id_edge_id, subgraph_id);
+        graph,
+        name,
+        graphlib::OpType(type, op_attrs, forge_op_attrs, named_attrs),
+        ops,
+        user_edge_op_id_edge_id,
+        subgraph_id);
 }
 }  // namespace tt

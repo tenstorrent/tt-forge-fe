@@ -11,7 +11,8 @@
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
-namespace tt {
+namespace tt
+{
 
 // TODO: move tags to a vector of enums
 NodeContext DecomposingContext::op(
@@ -24,25 +25,29 @@ NodeContext DecomposingContext::op(
 {
     std::string suffix = ".dc." + op_type.op + "." + std::to_string(op_index);
 
-    graphlib::PyOpNode *new_node =
-        this->graph->add_node(graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op_type), subgraph_idx);
+    graphlib::PyOpNode *new_node = this->graph->add_node(
+        graphlib::create_node<graphlib::PyOpNode>(this->node_->name() + suffix, op_type), subgraph_idx);
 
-    if (dont_decompose) {
+    if (dont_decompose)
+    {
         new_node->as<graphlib::TaggedNode>()->tag("dont_decompose");
     }
 
-    if (optimize_hoist) {
+    if (optimize_hoist)
+    {
         new_node->as<graphlib::TaggedNode>()->tag("optimize_hoist");
     }
 
     // record the original op {name, type} before decomposition as tags
-    new_node->as<graphlib::TaggedNode>()->add_tags(
-        this->node_->as<graphlib::TaggedNode>()->get_tags());
+    new_node->as<graphlib::TaggedNode>()->add_tags(this->node_->as<graphlib::TaggedNode>()->get_tags());
 
     new_node->set_epoch_type(this->node_->get_epoch_type());
-    if (output_df == DataFormat::Invalid) {
+    if (output_df == DataFormat::Invalid)
+    {
         new_node->set_output_df(this->node_->output_df());
-    } else {
+    }
+    else
+    {
         new_node->set_output_df(output_df);
     }
     new_node->set_golden_transforms(this->node_->get_golden_transforms());
@@ -57,11 +62,12 @@ NodeContext DecomposingContext::op(
 
     new_node->set_shape(shape);
 
-    for (int i = 0; i < (int)operands.size(); i++) {
-
+    for (int i = 0; i < (int)operands.size(); i++)
+    {
         graphlib::Node *current_node = this->graph->node_by_id(operands[i].id);
 
-        if (new_node->get_epoch_type() != current_node->get_epoch_type()) {
+        if (new_node->get_epoch_type() != current_node->get_epoch_type())
+        {
             TT_ASSERT(
                 (current_node->get_epoch_type() == graphlib::NodeEpochType::Forward and
                  new_node->get_epoch_type() == graphlib::NodeEpochType::Backward) or
@@ -69,21 +75,26 @@ NodeContext DecomposingContext::op(
 
             graphlib::Edge edge(current_node->id(), 0, new_node->id(), 0, graphlib::EdgeType::kAutogradFwdToBwd);
             graph->add_edge(edge);
-
         }
 
-        graphlib::Edge edge(operands[i].id, (graphlib::PortId)0, new_node->id(), (graphlib::PortId)i, graphlib::EdgeType::kData);
+        graphlib::Edge edge(
+            operands[i].id, (graphlib::PortId)0, new_node->id(), (graphlib::PortId)i, graphlib::EdgeType::kData);
         graph->add_edge(edge);
 
-        if (copy_tms) {
-            for(graphlib::Edge op_edge : graph->operand_data_edges(this->node_)) {
-                if (op_edge.producer_node_id == operands[i].id) {
+        if (copy_tms)
+        {
+            for (graphlib::Edge op_edge : graph->operand_data_edges(this->node_))
+            {
+                if (op_edge.producer_node_id == operands[i].id)
+                {
                     graph->get_edge_attributes(edge)->set_tms(graph->get_edge_attributes(op_edge)->get_tms());
                 }
             }
         }
-        for (graphlib::DimBroadcast broadcast : broadcasts) {
-            if (i == std::get<0>(broadcast)) {
+        for (graphlib::DimBroadcast broadcast : broadcasts)
+        {
+            if (i == std::get<0>(broadcast))
+            {
                 std::shared_ptr<graphlib::EdgeAttributes> attr = graph->get_edge_attributes(edge);
                 attr->set_broadcast_dim(std::get<1>(broadcast), std::get<2>(broadcast));
             }
@@ -97,15 +108,16 @@ NodeContext DecomposingContext::op(
 }
 
 // Fuse provided operand with output of node being decomposed
-void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out_port) {
+void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out_port)
+{
     output_node_id = operand.id;
-    
+
     // Inherit gradient op from original node
     graph->node_by_id(output_node_id)->as<graphlib::PyOpNode>()->set_gradient_op(node_->is_gradient_op());
 
-
     // Map operand control edges
-    for (graphlib::Edge in_edge : graph->operand_edges(node_)) {
+    for (graphlib::Edge in_edge : graph->operand_edges(node_))
+    {
         if (in_edge.edge_type == graphlib::EdgeType::kData)
             continue;
 
@@ -117,24 +129,28 @@ void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out
             in_edge.edge_type != graphlib::EdgeType::kDataLoopback or
             in_edge.edge_type != graphlib::EdgeType::kControlLoop);
 
-        for (graphlib::PyOpNode *inserted_node : inserted_nodes) {
-          graphlib::Edge new_in_edge(
+        for (graphlib::PyOpNode *inserted_node : inserted_nodes)
+        {
+            graphlib::Edge new_in_edge(
                 in_edge.producer_node_id, in_edge.producer_output_port_id, inserted_node->id(), 0, in_edge.edge_type);
             this->graph->add_edge(new_in_edge);
         }
     }
 
-    for (graphlib::Edge in_edge : graph->operand_edges(node_)) {
+    for (graphlib::Edge in_edge : graph->operand_edges(node_))
+    {
         if (in_edge.edge_type != graphlib::EdgeType::kAutogradFwdToGradient)
             continue;
 
-        graphlib::Edge new_in_edge(in_edge.producer_node_id, in_edge.producer_output_port_id, operand.id, 0, in_edge.edge_type);
+        graphlib::Edge new_in_edge(
+            in_edge.producer_node_id, in_edge.producer_output_port_id, operand.id, 0, in_edge.edge_type);
         this->graph->add_edge(new_in_edge);
         break;
     }
 
-    for (graphlib::Edge out_edge : graph->user_edges(node_)) {
-      graphlib::Edge new_out_edge(
+    for (graphlib::Edge out_edge : graph->user_edges(node_))
+    {
+        graphlib::Edge new_out_edge(
             operand.id,
             producer_out_port,
             out_edge.consumer_node_id,
@@ -147,8 +163,10 @@ void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out
 
 NodeContext DecomposingContext::tensor(std::shared_ptr<void> tensor, graphlib::Shape tensor_shape, DataFormat df)
 {
-    auto new_node = graph->add_node(graphlib::create_node<graphlib::ConstantInputNode>(
-        "dc.input_tensor." + this->node_->name() + "." + std::to_string(this->op_index), tensor, tensor_shape), subgraph_idx);
+    auto new_node = graph->add_node(
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            "dc.input_tensor." + this->node_->name() + "." + std::to_string(this->op_index), tensor, tensor_shape),
+        subgraph_idx);
     new_node->set_shape(tensor_shape);
 
     new_node->set_output_df((df != DataFormat::Invalid) ? df : this->node_->output_df());
@@ -164,30 +182,33 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
     std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> inserted_node_id_mapping;
     py::module_ eval_module = py::module_::import("forge.op.eval.forge");
     uint32_t nodes_removed = 1;
-    while(nodes_removed)
+    while (nodes_removed)
     {
         nodes_removed = 0;
 
         for (graphlib::Node *node : graphlib::topological_sort(*graph))
         {
-
             if (node->node_type() != graphlib::NodeType::kPyOp)
                 continue;
 
-            graphlib::PyOpNode* py_node = node->as<graphlib::PyOpNode>();
+            graphlib::PyOpNode *py_node = node->as<graphlib::PyOpNode>();
 
             graphlib::OpType type = py_node->op_type();
-            if (py_node->as<graphlib::TaggedNode>()->has_tag("dont_decompose")) {
+            if (py_node->as<graphlib::TaggedNode>()->has_tag("dont_decompose"))
+            {
                 continue;
             }
 
             py::function forge_decompose = eval_module.attr(dispatcher_name)(type);
 
             std::vector<NodeContext> inputs;
-            for(graphlib::Edge op_edge : graph->operand_data_edges(node)) {
-                inputs.push_back(NodeContext(graph->node_by_id(op_edge.producer_node_id), op_edge.producer_output_port_id));
+            for (graphlib::Edge op_edge : graph->operand_data_edges(node))
+            {
+                inputs.push_back(
+                    NodeContext(graph->node_by_id(op_edge.producer_node_id), op_edge.producer_output_port_id));
                 inputs.back().shape = py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id));
-                inputs.back().unbroadcast_shape = py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id), true);
+                inputs.back().unbroadcast_shape =
+                    py_node->shape_of_operand(graph, graph->node_by_id(op_edge.producer_node_id), true);
             }
 
             DecomposingContext dc(graph, py_node, compiler_cfg);
@@ -195,7 +216,8 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
             log_trace(LogGraphCompiler, "Decomposing {}", node->name());
             forge_decompose(&dc, inputs);
 
-            if (dc.get_op_index() == 0) {
+            if (dc.get_op_index() == 0)
+            {
                 // No ops were added
                 continue;
             }
@@ -231,4 +253,4 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> decompose_tt_forge_gr
     return inserted_node_id_mapping;
 }
 
-} // namespace tt
+}  // namespace tt

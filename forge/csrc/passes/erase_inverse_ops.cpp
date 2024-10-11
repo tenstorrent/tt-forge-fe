@@ -7,10 +7,10 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "utils/logger.hpp"
-#include "passes/passes_utils.hpp"
 #include "passes/commute_utils.hpp"
+#include "passes/passes_utils.hpp"
 #include "reportify/reportify.hpp"
+#include "utils/logger.hpp"
 
 namespace tt::passes
 {
@@ -29,12 +29,14 @@ static std::vector<graphlib::Node *> find_path_to_inverse_op(
 
     bool found_inverse = false;
     while (not found_inverse)
-    {   
+    {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(iter);
         TT_ASSERT(op);
         bool can_commute = true;
-        if (previous_op) {
-            auto [can_commute_through_bcast, bcast_dims] = handle_shape_change_through_bcast(graph, initial_op, previous_op, op, &commute_shape, &clone_shape);
+        if (previous_op)
+        {
+            auto [can_commute_through_bcast, bcast_dims] =
+                handle_shape_change_through_bcast(graph, initial_op, previous_op, op, &commute_shape, &clone_shape);
             can_commute = can_commute_through_bcast;
             if (not can_commute)
                 break;
@@ -48,7 +50,8 @@ static std::vector<graphlib::Node *> find_path_to_inverse_op(
         for (std::size_t i = 1; (i < users.size()) and all_forks_have_inverse; ++i)
         {
             graphlib::OpNode *user = dynamic_cast<graphlib::OpNode *>(users[i]);
-            all_forks_have_inverse &= user and not find_path_to_inverse_op(graph, initial_op, commute_shape, user, op).empty();
+            all_forks_have_inverse &=
+                user and not find_path_to_inverse_op(graph, initial_op, commute_shape, user, op).empty();
         }
 
         if (found_inverse or can_commute or (op == initial_op))
@@ -67,7 +70,7 @@ static std::vector<graphlib::Node *> find_path_to_inverse_op(
         graphlib::OutputNode *output = dynamic_cast<graphlib::OutputNode *>(users[0]);
         if (output)
             break;
-            
+
         previous_op = op;
         iter = dynamic_cast<graphlib::OpNode *>(users[0]);
         if (not iter)
@@ -79,7 +82,6 @@ static std::vector<graphlib::Node *> find_path_to_inverse_op(
 
     return path;
 }
-
 
 bool has_broadcast_on_dim(graphlib::Graph *graph, graphlib::Edge edge, int needed_dim)
 {
@@ -98,13 +100,16 @@ bool has_broadcast_on_dim(graphlib::Graph *graph, graphlib::Edge edge, int neede
     return false;
 }
 
-void set_bcast_dims(graphlib::Graph *graph, std::vector<int> &volumes, graphlib::Edge edge) {
+void set_bcast_dims(graphlib::Graph *graph, std::vector<int> &volumes, graphlib::Edge edge)
+{
     graph->get_edge_attributes(edge)->clear_broadcast_dims();
 
-    for (std::size_t i = 0; i < volumes.size(); i++) {
+    for (std::size_t i = 0; i < volumes.size(); i++)
+    {
         int volume = volumes[i];
-        if (volume > 1) {
-            graph->get_edge_attributes(edge)->set_broadcast_dim(i, volume, false); 
+        if (volume > 1)
+        {
+            graph->get_edge_attributes(edge)->set_broadcast_dim(i, volume, false);
         }
     }
 }
@@ -141,16 +146,24 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
 
             graphlib::OpNode *producer_as_op = dynamic_cast<graphlib::OpNode *>(producer);
             auto edge_consumer_as_op = dynamic_cast<graphlib::OpNode *>(graph->node_by_id(user_edge.consumer_node_id));
-            if (producer_as_op and edge_consumer_as_op) {
-                
-                auto [commute_bcasts, clone_bcasts] = handle_shape_change_through_bcast(graph, first, producer_as_op, edge_consumer_as_op, &fork_commute_shape, &fork_clone_shape).second;
+            if (producer_as_op and edge_consumer_as_op)
+            {
+                auto [commute_bcasts, clone_bcasts] =
+                    handle_shape_change_through_bcast(
+                        graph, first, producer_as_op, edge_consumer_as_op, &fork_commute_shape, &fork_clone_shape)
+                        .second;
                 graphlib::Edge between_edge = retrieve_between_edge(graph, producer, consumer);
-                set_bcast_dims(graph, commute_bcasts, between_edge);  
-
+                set_bcast_dims(graph, commute_bcasts, between_edge);
             }
             auto name = first->name() + "_user_commute_clone" + std::to_string(user_edge.edge_creation_id);
-            log_trace(LogGraphCompiler, "  User commute clone: {} -> between {} and {} ", name, producer->name(), graph->node_by_id(user_edge.consumer_node_id)->name());
-            auto *clone = graph->add_node(first->clone(name), graph->get_subgraph_id_for_node(user_edge.consumer_node_id));
+            log_trace(
+                LogGraphCompiler,
+                "  User commute clone: {} -> between {} and {} ",
+                name,
+                producer->name(),
+                graph->node_by_id(user_edge.consumer_node_id)->name());
+            auto *clone =
+                graph->add_node(first->clone(name), graph->get_subgraph_id_for_node(user_edge.consumer_node_id));
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(clone);
             update_reshape_attr(op, fork_clone_shape);
             clone->set_shape(fork_clone_shape);
@@ -163,73 +176,77 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
 
         // Set the shape to the desired final shape for this whole path
         if (graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(consumer))
-        {   
+        {
             graphlib::OpNode *producer_as_op = dynamic_cast<graphlib::OpNode *>(producer);
-            if (producer_as_op) {
-                // Must change commute shape, clone shape, and golden transform if there are broadcasts on the incoming edge
-                auto [commute_bcasts, clone_bcasts] = handle_shape_change_through_bcast(graph, first, producer_as_op, op, &commute_shape, &clone_shape).second;
-                if (golden_transform.op == "reshape") {
-                    for (std::size_t i = 0; i < golden_transform.attr.size(); i++) {
+            if (producer_as_op)
+            {
+                // Must change commute shape, clone shape, and golden transform if there are broadcasts on the incoming
+                // edge
+                auto [commute_bcasts, clone_bcasts] =
+                    handle_shape_change_through_bcast(graph, first, producer_as_op, op, &commute_shape, &clone_shape)
+                        .second;
+                if (golden_transform.op == "reshape")
+                {
+                    for (std::size_t i = 0; i < golden_transform.attr.size(); i++)
+                    {
                         int current_dim = std::get<int>(golden_transform.attr[i]);
-                        golden_transform.attr[i] = clone_bcasts[i]*current_dim;
+                        golden_transform.attr[i] = clone_bcasts[i] * current_dim;
                     }
                 }
 
                 graphlib::Edge between_edge = retrieve_between_edge(graph, producer, consumer);
-                set_bcast_dims(graph, commute_bcasts, between_edge);                
+                set_bcast_dims(graph, commute_bcasts, between_edge);
             }
 
             if (op->op_name() == "reduce_avg" or op->op_name() == "reduce_sum")
             {
                 commute_through_reduce(
-                    graph, 
-                    op, 
-                    first, 
-                    producer_as_op, 
-                    path[i+1],
-                    &commute_shape, 
-                    &clone_shape, 
-                    false, // Not only checking for commutability
-                    &retain_operand_dim, 
-                    &operand_dims, 
-                    &golden_transform
-                );
+                    graph,
+                    op,
+                    first,
+                    producer_as_op,
+                    path[i + 1],
+                    &commute_shape,
+                    &clone_shape,
+                    false,  // Not only checking for commutability
+                    &retain_operand_dim,
+                    &operand_dims,
+                    &golden_transform);
             }
             else if (op->op_name() == "concatenate")
             {
                 commute_through_concat(
-                    graph, 
-                    op, 
-                    first, 
-                    producer_as_op, 
-                    &commute_shape, 
-                    &clone_shape, 
-                    false, // Not only checking for commutability
-                    &retain_operand_dim, 
-                    &operand_dims, 
-                    &golden_transform
-                );
+                    graph,
+                    op,
+                    first,
+                    producer_as_op,
+                    &commute_shape,
+                    &clone_shape,
+                    false,  // Not only checking for commutability
+                    &retain_operand_dim,
+                    &operand_dims,
+                    &golden_transform);
             }
             else if (op->op_name() == "select")
             {
                 commute_through_select(
-                    graph, 
-                    op, 
-                    first, 
-                    producer_as_op, 
-                    &commute_shape, 
-                    &clone_shape, 
-                    false, // Not only checking for commutability
-                    &retain_operand_dim, 
-                    &operand_dims, 
-                    &golden_transform
-                );
+                    graph,
+                    op,
+                    first,
+                    producer_as_op,
+                    &commute_shape,
+                    &clone_shape,
+                    false,  // Not only checking for commutability
+                    &retain_operand_dim,
+                    &operand_dims,
+                    &golden_transform);
             }
             else if (is_elementwise(op))
             {
                 commute_through_eltwise(op, &commute_shape, &golden_transform);
             }
-            else if (is_quantization_ops(op)) {
+            else if (is_quantization_ops(op))
+            {
                 commute_through_quantization(op, &commute_shape, &golden_transform);
             }
             log_trace(LogGraphCompiler, "  Op node: {} -> shape set to {}", consumer->name(), commute_shape);
@@ -244,13 +261,20 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
 
             convert_implicit_to_explicit_bcasts(graph, operand_edge);
             auto name = last->name() + "_operand_commute_clone" + std::to_string(operand_edge.edge_creation_id);
-            graphlib::Node *clone = graph->add_node(last->clone(name), graph->get_subgraph_id_for_node(operand_edge.producer_node_id));
+            graphlib::Node *clone =
+                graph->add_node(last->clone(name), graph->get_subgraph_id_for_node(operand_edge.producer_node_id));
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(clone);
-            log_trace(LogGraphCompiler, "  Operand commute clone: {} -> between {} and {} ", name, consumer->name(), graph->node_by_id(operand_edge.producer_node_id)->name());
+            log_trace(
+                LogGraphCompiler,
+                "  Operand commute clone: {} -> between {} and {} ",
+                name,
+                consumer->name(),
+                graph->node_by_id(operand_edge.producer_node_id)->name());
             if (retain_operand_dim)
             {
                 auto updated_commute_shape = commute_shape;
-                updated_commute_shape[operand_dims.second] = graph->node_by_id(operand_edge.producer_node_id)->shape()[operand_dims.first];
+                updated_commute_shape[operand_dims.second] =
+                    graph->node_by_id(operand_edge.producer_node_id)->shape()[operand_dims.first];
                 update_reshape_attr(op, updated_commute_shape);
                 clone->set_shape(updated_commute_shape);
                 log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", updated_commute_shape);
@@ -263,38 +287,49 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             }
 
             // Operand commute clones for squeeze/unsqueeze need to be swapped to the opposite op
-            if (first->op_name() == "unsqueeze") {
-                op->change_op_type("squeeze", {first->op_attrs()[0]}, graphlib::OpType::Attrs{
-                    {"dim", first->op_attrs()[0]}
-                });
+            if (first->op_name() == "unsqueeze")
+            {
+                op->change_op_type(
+                    "squeeze", {first->op_attrs()[0]}, graphlib::OpType::Attrs{{"dim", first->op_attrs()[0]}});
             }
-            else if (first->op_name() == "squeeze") {
+            else if (first->op_name() == "squeeze")
+            {
                 op->change_op_type("unsqueeze");
-                op->change_op_type("unsqueeze", {first->op_attrs()[0], (int)graph->node_by_id(operand_edge.producer_node_id)->shape().size()}, graphlib::OpType::Attrs{
-                    {"dim", first->op_attrs()[0]}
-                });
+                op->change_op_type(
+                    "unsqueeze",
+                    {first->op_attrs()[0], (int)graph->node_by_id(operand_edge.producer_node_id)->shape().size()},
+                    graphlib::OpType::Attrs{{"dim", first->op_attrs()[0]}});
             }
 
             // Inputs can have mismatched number of dims and still function corretly to the consuming op
-            // Thus if the op we are commuting through has shape (1, 128, 1024) and its operand is a param with shape (1024,)
-            // Placing an unsqueeze clone will cause the input to be (1, 1024) which isn't wrong but also is not correct.
-            // In this case we shall convert the clone to a reshape which contains the correct number of unsqueezes implicitly.
-            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze") and dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id))) {
+            // Thus if the op we are commuting through has shape (1, 128, 1024) and its operand is a param with shape
+            // (1024,) Placing an unsqueeze clone will cause the input to be (1, 1024) which isn't wrong but also is not
+            // correct. In this case we shall convert the clone to a reshape which contains the correct number of
+            // unsqueezes implicitly.
+            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze") and
+                dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id)))
+            {
                 op->change_op_type("reshape");
                 graphlib::Shape op_shape = graphlib::Shape::create(std::vector<uint32_t>(consumer->shape().size(), 1));
                 auto input = dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id));
 
-                for (int i = -1; i >= -(int)input->shape().size(); i--) {
+                for (int i = -1; i >= -(int)input->shape().size(); i--)
+                {
                     if (i + (int)op_shape.size() >= 0)
                         op_shape[i] = input->shape()[i];
-                    else {
-                        TT_ASSERT(input->shape()[i] == 1, "After this point all dims should be 1 else the squeeze op is not valid.");
+                    else
+                    {
+                        TT_ASSERT(
+                            input->shape()[i] == 1,
+                            "After this point all dims should be 1 else the squeeze op is not valid.");
                     }
                 }
                 std::vector<graphlib::OpType> tms = graph->get_edge_attributes(operand_edge)->get_tms();
 
-                for (graphlib::OpType& tm : tms) {
-                    if (tm.op == "broadcast") {
+                for (graphlib::OpType &tm : tms)
+                {
+                    if (tm.op == "broadcast")
+                    {
                         int dim = std::get<int>(tm.attr[0]);
                         int volume = std::get<int>(tm.attr[1]);
                         op_shape[dim] *= volume;
@@ -324,22 +359,22 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
         auto edge = graph->operand_data_edges(last)[0];
         graph->get_edge_attributes(edge)->clear_broadcast_dims();
         graph->get_edge_attributes(edge)->set_broadcast_dim(are_inverse.second, broadcast_volume, false);
-        
     }
     bool is_squeeze_unsqueeze = first->op_name() == "squeeze" or first->op_name() == "unsqueeze";
     int first_id = first->id();
     int last_id = last->id();
     // `first` has commuted to `last`, these nodes are now back to back and cancel each other out
-    auto change_rank = [graph, path, first_id, last_id, is_squeeze_unsqueeze](graphlib::Edge new_edge, graphlib::Edge old_edge) {
+    auto change_rank =
+        [graph, path, first_id, last_id, is_squeeze_unsqueeze](graphlib::Edge new_edge, graphlib::Edge old_edge)
+    {
         // If the inverse pair are squeeze/unsqueeze and ther are adjacent to eachother (i.e path length of 2)
         // We do not need to handle_change_rank. If we do, handle change_rank will end up adding back a pair
         // of adjacent squeeze/unsqueeze nodes unnecessarily.
         // We check the old edge because in the event 'first' forks we still want to handle_change_rank on those edges
-        if (not is_squeeze_unsqueeze 
-            or (first_id != old_edge.producer_node_id) 
-            or (last_id != old_edge.consumer_node_id))
+        if (not is_squeeze_unsqueeze or (first_id != old_edge.producer_node_id) or
+            (last_id != old_edge.consumer_node_id))
         {
-            handle_change_rank(graph, new_edge);   
+            handle_change_rank(graph, new_edge);
         }
     };
     bypass_node(graph, first, true, change_rank);
@@ -350,14 +385,14 @@ bool erase_inverse_ops(graphlib::Graph *graph)
 {
     // Three step process:
     // 1. Find all inverse ops that can be commuted to each other or commuted to an ouptut
-    //      -   If commuting to output add an inverse op, plus a reshape back to original the original shape 
+    //      -   If commuting to output add an inverse op, plus a reshape back to original the original shape
     //          which will be lowered into reinterpret shape
     // 2. Find all ops that can be commuted to an input and add inverse op to the input
     // 3. Repeat step 1 to eliminate newly created ops and their inverse
     bool attempt_update = true;
     bool updated_anything = false;
     while (attempt_update)
-    {   
+    {
         // Set to false here because we want to stop looping if no update occurs
         attempt_update = false;
         for (auto *node : graphlib::topological_sort(*graph))
@@ -371,7 +406,6 @@ bool erase_inverse_ops(graphlib::Graph *graph)
 
             if (match_fns.find(op->op_name()) == match_fns.end())
                 continue;
-
 
             std::vector<graphlib::Node *> path = find_path_to_inverse_op(graph, op, shape_of_only_operand(graph, op));
             if (path.empty())

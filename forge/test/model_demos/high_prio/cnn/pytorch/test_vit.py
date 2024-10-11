@@ -31,30 +31,63 @@ def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
     compiler_cfg.balancer_policy = "Ribbon"
 
     # STEP 2: Create Forge module from PyTorch model
-    image_processor = download_model(AutoImageProcessor.from_pretrained,
-        variant
-    )
-    model = download_model(ViTForImageClassification.from_pretrained,
-        variant
-    )
+    image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
+    model = download_model(ViTForImageClassification.from_pretrained, variant)
     tt_model = forge.PyTorchModule("ViT_classif_16_224", model)
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = image_processor(image_1, return_tensors="pt").pixel_values
     # output = model(img_tensor).logits
-    
+
     return tt_model, [img_tensor], {}
 
 
 variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
+
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classify_224_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
-        test_device, variant,
+        test_device,
+        variant,
     )
 
     if "FORGE_NEB_GALAXY_CI" in os.environ:
-        chip_ids = [0, 11, 10, 9, 8, 7, 19, 20, 21, 22, 23, 24, 6, 5, 14, 13, 12, 16, 15, 3, 4, 26, 25, 32, 31, 30, 29, 28, 27, 1, 2, 18, 17]
+        chip_ids = [
+            0,
+            11,
+            10,
+            9,
+            8,
+            7,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            6,
+            5,
+            14,
+            13,
+            12,
+            16,
+            15,
+            3,
+            4,
+            26,
+            25,
+            32,
+            31,
+            30,
+            29,
+            28,
+            27,
+            1,
+            2,
+            18,
+            17,
+        ]
     else:
         chip_ids = [0]
 
@@ -68,11 +101,14 @@ def test_vit_classify_224_hf_pytorch(variant, test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.9,
-            chip_ids=chip_ids
-        )
+            chip_ids=chip_ids,
+        ),
     )
 
+
 variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
+
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant, already tested with test_vit_classification_1x1_demo")
 def test_vit_classify_224_hf_pytorch_1x1(variant, test_device):
@@ -83,9 +119,9 @@ def test_vit_classify_224_hf_pytorch_1x1(variant, test_device):
     if "large" in variant:
         os.environ["FORGE_EXTRA_L1_MARGIN"] = "20000"
 
-
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
-        test_device, variant,
+        test_device,
+        variant,
     )
 
     verify_module(
@@ -97,18 +133,18 @@ def test_vit_classify_224_hf_pytorch_1x1(variant, test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            pcc=0.9
-        )
+            pcc=0.9,
+        ),
     )
 
-modes = [
-    "verify",
-    "demo"
-]
+
+modes = ["verify", "demo"]
 variants = [
     "google/vit-base-patch16-224",
     "google/vit-large-patch16-224",
 ]
+
+
 @pytest.mark.parametrize("mode", modes, ids=modes)
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classification_1x1_demo(test_device, mode, variant):
@@ -117,25 +153,25 @@ def test_vit_classification_1x1_demo(test_device, mode, variant):
 
     # Setup for 1x1 grid
     os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
-    
+
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
     os.environ["FORGE_RIBBON2"] = "1"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     compiler_cfg.enable_tvm_cpu_fallback = False
-    
+
     # Load image preprocessor and model
-    image_processor = download_model(AutoImageProcessor.from_pretrained,  variant)
+    image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
     framework_model = download_model(ViTForImageClassification.from_pretrained, variant)
-    model_name = "_".join(variant.split('/')[-1].split('-')[:2]) + f"_{mode}"
+    model_name = "_".join(variant.split("/")[-1].split("-")[:2]) + f"_{mode}"
     tt_model = forge.PyTorchModule(model_name, framework_model)
 
     # Load and preprocess image
     dataset = load_dataset("huggingface/cats-image")
     input_image = dataset["test"]["image"][0]
     input_image = image_processor(input_image, return_tensors="pt").pixel_values
-    
+
     if mode == "verify":
         # Verify model on Tenstorrent device
         verify_module(
@@ -147,7 +183,7 @@ def test_vit_classification_1x1_demo(test_device, mode, variant):
                 devtype=test_device.devtype,
                 devmode=test_device.devmode,
                 test_kind=TestKind.INFERENCE,
-            )
+            ),
         )
     elif mode == "demo":
         # Run inference on Tenstorrent device

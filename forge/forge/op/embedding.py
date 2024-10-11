@@ -7,10 +7,8 @@ from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
 
-def Embedding(
-        name: str, 
-        indices: Tensor,
-        embedding_table: Union[Tensor, Parameter]) -> Tensor:
+
+def Embedding(name: str, indices: Tensor, embedding_table: Union[Tensor, Parameter]) -> Tensor:
     """
     Embedding lookup
 

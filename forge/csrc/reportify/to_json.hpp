@@ -4,8 +4,8 @@
 #pragma once
 
 #include "graph_lib/node_types.hpp"
-#include "nlohmann/json_fwd.hpp"
 #include "lower_to_forge/common.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace std
 {
@@ -16,11 +16,13 @@ void to_json(json& j, variant<Ts...> const& v)
 }
 }  // namespace std
 
-namespace tt {
+namespace tt
+{
 inline void to_json(json& j, DramLoc const& dram_loc) { j = std::make_pair(dram_loc.channel, dram_loc.address); }
-}
+}  // namespace tt
 
-namespace tt {
+namespace tt
+{
 namespace graphlib
 {
 void to_json(json& j, UBlockOrder const& ublock_order);

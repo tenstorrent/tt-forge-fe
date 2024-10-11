@@ -21,6 +21,7 @@ from ...forgeglobal import TILE_DIM
 from ...tensor import narrow_forge_tensor_to_pytorch, pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
 from forge import DataFormat, MathFidelity
 
+
 def to_torch_operands(*ops):
     """
     Convert input tensors into torch tensors.
@@ -45,6 +46,7 @@ def to_torch_operands(*ops):
 
     return ops
 
+
 def cast_for_cpu_eval(t_ops, op_name=None):
     # Torch does not support int8 or float16 on CPU
     # So we cast to float32
@@ -62,7 +64,10 @@ def cast_for_cpu_eval(t_ops, op_name=None):
                 original_type = torch.int8
     return t_ops, original_type
 
-def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], is_forge: bool, df: DataFormat) -> torch.Tensor:
+
+def create_constant_tensor_from_value(
+    value: float, dims: Tuple[int, int], is_forge: bool, df: DataFormat
+) -> torch.Tensor:
     dim_r, dim_c = dims
     if dim_r < 0:
         dim_r = TILE_DIM if is_forge else 0
@@ -93,6 +98,7 @@ def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], is_fo
 
     return tensor
 
+
 def create_constant_tensor_from_tile(tile: List[float], is_forge: bool, df: DataFormat) -> torch.Tensor:
 
     assert is_forge, "Tile tensors should only be created for forge graphs"
@@ -102,7 +108,10 @@ def create_constant_tensor_from_tile(tile: List[float], is_forge: bool, df: Data
     tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
-def create_constant_tensor_from_tensor(tensor_values: List[float], tensor_shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
+
+def create_constant_tensor_from_tensor(
+    tensor_values: List[float], tensor_shape: List[int], is_forge: bool, df: DataFormat
+) -> torch.Tensor:
     assert prod(tensor_shape) == len(tensor_values)
     tensor = torch.FloatTensor(tensor_values)
     tensor = tensor.reshape(tensor_shape)
@@ -110,6 +119,7 @@ def create_constant_tensor_from_tensor(tensor_values: List[float], tensor_shape:
         tensor = pad_pytorch_tensor_to_forge(tensor, [])
     tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
+
 
 def create_constant_tensor(flat_data: List[float], shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
     tensor = torch.FloatTensor(flat_data)
@@ -121,27 +131,30 @@ def create_constant_tensor(flat_data: List[float], shape: List[int], is_forge: b
 
 
 def dump_tensor(tensor, name, entry=0):
-    fmt = 'f'
+    fmt = "f"
     if tensor.dtype == torch.half or tensor.dtype == torch.float16 or tensor.dtype == torch.bfloat16:
         tensor = tensor.to(torch.float)
     elif tensor.dtype == torch.int or tensor.dtype == torch.int32:
-        fmt = 'i'
+        fmt = "i"
     elif tensor.dtype == torch.short or tensor.dtype == torch.int16:
-        fmt = 'h'
+        fmt = "h"
     elif tensor.dtype == torch.int8:
-        fmt = 'b'
+        fmt = "b"
     elif tensor.dtype == torch.uint8:
-        fmt = 'B'
+        fmt = "B"
 
-    with open(f"{name}.{entry}.bin", 'wb') as out_file:
+    with open(f"{name}.{entry}.bin", "wb") as out_file:
         for val in tensor.ravel().tolist():
-            out_file.write(struct.pack(fmt, val)) 
+            out_file.write(struct.pack(fmt, val))
         out_file.close()
+
 
 def eval_debug_print(type, inputs, output):
     mode = int(os.environ.get("EVAL_DEBUG", "0"))
     if mode > 0:
-        print(f"{type}: inputs: {[i.shape if isinstance(i, torch.Tensor) else 1 for i in inputs]}, output: {output.shape}")
+        print(
+            f"{type}: inputs: {[i.shape if isinstance(i, torch.Tensor) else 1 for i in inputs]}, output: {output.shape}"
+        )
         if mode > 1:
             for i, input in enumerate(inputs):
                 print("input ", i)
@@ -149,10 +162,11 @@ def eval_debug_print(type, inputs, output):
             print("output:")
             print(output)
 
+
 def calculate_pcc(a, b):
     if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
         logger.warning("Both tensors are 'nan'")
-        return 1.0 
+        return 1.0
 
     if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
         logger.error("One tensor is all nan, the other is not.")
@@ -162,10 +176,10 @@ def calculate_pcc(a, b):
     if torch.any(a.bool()) != torch.any(b.bool()):
         return 0.0
 
-    #if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
+    # if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
     #    raise RuntimeError(f"Tensor overflow to infinity: \n{a}\n{b}")
 
-    #if torch.any(torch.isneginf(a)) or torch.any(torch.isneginf(b)):
+    # if torch.any(torch.isneginf(a)) or torch.any(torch.isneginf(b)):
     #    raise RuntimeError(f"Tensor overflow to negative infinity: \n{a}\n{b}")
 
     # For now, mask all infs and nans so that we check the rest... TODO
@@ -181,21 +195,25 @@ def calculate_pcc(a, b):
         a = a.type(torch.float32)
         b = b.type(torch.float32)
     pcc = np.min(
-            np.ma.corrcoef(
-                np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(), 
-                np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten()
-        ))
+        np.ma.corrcoef(
+            np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
+            np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
+        )
+    )
 
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
 
     return pcc
 
-#Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
-def compare_with_golden(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc: float = 0.99):
+
+# Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
+def compare_with_golden(
+    golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc: float = 0.99
+):
     if golden.dtype == torch.bool:
         return compare_with_golden_bool(golden, calculated)
-    if golden.flatten().size() != (1,): # PCC for single values doesn't work
+    if golden.flatten().size() != (1,):  # PCC for single values doesn't work
         return compare_with_golden_pcc(golden, calculated, pcc)
     else:
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
@@ -203,13 +221,20 @@ def compare_with_golden(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], cal
         calculated = calculated.flatten()[0]
         return torch.allclose(golden, calculated)
 
+
 # Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
-def compare_with_golden_pcc(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, pcc: float = 0.99, rtol=None, atol=None):
+def compare_with_golden_pcc(
+    golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
+    calculated: torch.Tensor,
+    pcc: float = 0.99,
+    rtol=None,
+    atol=None,
+):
     assert pcc is not None
     assert golden.flatten().size() != (1,), "PCC for single values doesn't work"
 
     pcc_value = calculate_pcc(golden, calculated)
-    if pcc_value >= pcc :
+    if pcc_value >= pcc:
         logger.trace("PCC is correct")
         logger.trace("Golden: (shape = {}", golden.shape)
         logger.trace(golden)
@@ -220,7 +245,10 @@ def compare_with_golden_pcc(golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
         logger.error("Tensor mismatch")
         return False
 
-def compare_with_golden_bool(golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, dissimilarity_threshold=0.001):
+
+def compare_with_golden_bool(
+    golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, dissimilarity_threshold=0.001
+):
     if calculated.dtype != torch.bool:
         calculated = calculated.to(torch.bool)
 
@@ -228,7 +256,7 @@ def compare_with_golden_bool(golden: Union[torch.Tensor, tf.Tensor, tf.Variable]
     calculated_squeezed = calculated.view(-1).detach().numpy()
     dissimilarity = distance.rogerstanimoto(golden_squeezed, calculated_squeezed)
 
-    #threshold picked empirically. We will update it as TTNN evolves
+    # threshold picked empirically. We will update it as TTNN evolves
     if dissimilarity <= dissimilarity_threshold:
         logger.trace("Bool vectors are not dissimilar. Dissimiliarity = {}", dissimilarity)
         logger.trace("Golden: (shape = {}", golden.shape)
@@ -241,7 +269,18 @@ def compare_with_golden_bool(golden: Union[torch.Tensor, tf.Tensor, tf.Variable]
         return False
 
 
-def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, tf.Variable], calculated: torch.Tensor, is_forge=False, rtol=None, atol=None, pcc=None, warning_only=False, relative_atol = None, verify_cfg = None):
+def compare_tensor_to_golden(
+    name: str,
+    golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
+    calculated: torch.Tensor,
+    is_forge=False,
+    rtol=None,
+    atol=None,
+    pcc=None,
+    warning_only=False,
+    relative_atol=None,
+    verify_cfg=None,
+):
     # Convert golden to pytorch tensor for comparisons
     if isinstance(golden, (tf.Tensor, tf.Variable)):
         golden = torch.from_numpy(golden.numpy())
@@ -259,7 +298,7 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
         if verify_cfg is not None and golden.dtype in verify_cfg.rtol and verify_cfg.rtol[golden.dtype] is not None:
             rtol = verify_cfg.rtol[golden.dtype]
         else:
-            rtol = 0 # use atol only, rtol is unreliable for very small numbers
+            rtol = 0  # use atol only, rtol is unreliable for very small numbers
     elif isinstance(rtol, dict):
         rtol = rtol[golden.dtype]
 
@@ -276,7 +315,7 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
                 atol = 0
             else:
                 max_value = (torch.max(torch.abs(golden[~torch.isnan(golden)]))).item()
-                atol = max_value * relative_atol # allow up to 'relative_atol' error
+                atol = max_value * relative_atol  # allow up to 'relative_atol' error
     elif isinstance(atol, dict):
         atol = atol[golden.dtype]
 
@@ -299,10 +338,14 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
         calculated = calculated.type(golden.dtype)
 
     ok = torch.allclose(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
-    callback_ok = True if verify_cfg is None or verify_cfg.golden_compare_callback is None else verify_cfg.golden_compare_callback(golden, calculated)
+    callback_ok = (
+        True
+        if verify_cfg is None or verify_cfg.golden_compare_callback is None
+        else verify_cfg.golden_compare_callback(golden, calculated)
+    )
     ok &= callback_ok
     pcc_value = 0
-    if not (pcc is None or golden.flatten().size() == (1,)): # PCC for single values doesn't work
+    if not (pcc is None or golden.flatten().size() == (1,)):  # PCC for single values doesn't work
         pcc_value = calculate_pcc(golden, calculated)
         if pcc_value >= pcc and not ok:
             logger.warning("PCC is correct but allclose failed on {}", name)
@@ -310,8 +353,18 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
             logger.trace(golden)
             logger.trace("Calculated: (shape = {}", calculated.shape)
             logger.trace(calculated)
-            logger.warning("Max ATOL Delta: " + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item()) + ", atol=" +  "{}".format(atol))
-            logger.warning("Max RTOL Delta: " + "{:.3e}".format(torch.max(torch.abs(golden - calculated)/calculated).item()) + ", rtol=" + "{}".format(rtol) )
+            logger.warning(
+                "Max ATOL Delta: "
+                + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
+                + ", atol="
+                + "{}".format(atol)
+            )
+            logger.warning(
+                "Max RTOL Delta: "
+                + "{:.3e}".format(torch.max(torch.abs(golden - calculated) / calculated).item())
+                + ", rtol="
+                + "{}".format(rtol)
+            )
         ok |= pcc_value >= pcc
 
     if not ok:
@@ -323,15 +376,25 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
         logger.trace(golden)
         logger.trace("Calculated: (shape = {}", calculated.shape)
         logger.trace(calculated)
-        logger.info("Max ATOL Delta: " + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item()) + ", atol=" +  "{}".format(atol))
-        logger.info("Max RTOL Delta: " + "{:.3e}".format(torch.max(torch.abs(golden - calculated)/calculated).item()) + ", rtol=" + "{}".format(rtol) )
+        logger.info(
+            "Max ATOL Delta: "
+            + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
+            + ", atol="
+            + "{}".format(atol)
+        )
+        logger.info(
+            "Max RTOL Delta: "
+            + "{:.3e}".format(torch.max(torch.abs(golden - calculated) / calculated).item())
+            + ", rtol="
+            + "{}".format(rtol)
+        )
         if pcc is not None:
             logger.info("PCC got={}, required={}", pcc_value, pcc)
         if not callback_ok:
             logger.info("User golden_compare_callback returned False")
-        #torch.set_printoptions(profile="full")
-        #print(golden-calculated)
-        #torch.set_printoptions(profile="default")
+        # torch.set_printoptions(profile="full")
+        # print(golden-calculated)
+        # torch.set_printoptions(profile="default")
         if not warning_only:
             return False
     else:
@@ -345,6 +408,7 @@ def compare_tensor_to_golden(name: str, golden: Union[torch.Tensor, tf.Tensor, t
         logger.debug("Tensors match on {}", name)
 
     return True
+
 
 def math_fidelity_to_multiplier(fidelity: MathFidelity) -> int:
     if fidelity == MathFidelity.LoFi:
@@ -378,6 +442,7 @@ def data_format_to_int(df: DataFormat) -> int:
     if df == DataFormat.Lf8:
         return 11
     raise RuntimeError(f"Unknown data format {df}")
+
 
 # def op_model_to_desc(
 #     type: str,
@@ -506,10 +571,11 @@ def data_format_to_int(df: DataFormat) -> int:
 
 #     return desc
 
+
 def calculate_tile_size(val):
-    # We might not even care about large dim size 
+    # We might not even care about large dim size
     # that are not divisible by 32
-    if (val > 32):
+    if val > 32:
         return 32
 
     smallest_pad = 31
@@ -520,20 +586,20 @@ def calculate_tile_size(val):
     for tile_size_ in tile_sizes:
         rem = val % tile_size_
         pad = tile_size_ - rem
-        if (rem == 0 and smallest_pad != 0):
+        if rem == 0 and smallest_pad != 0:
             # Pick the largest tile size that divides evenly
             smallest_pad = 0
             current_tile_size = tile_size_
-        elif (pad <= smallest_pad):
+        elif pad <= smallest_pad:
             # pick the tile size with smallest pad
             smallest_pad = pad
             current_tile_size = tile_size_
 
-
     return current_tile_size
 
+
 # Global compiler cache
-g_compiler_perf_cache : defaultdict = defaultdict(dict)
+g_compiler_perf_cache: defaultdict = defaultdict(dict)
 
 # def get_compiler_cached_cycles(desc: OpModelDesc) -> int:
 #     global g_compiler_perf_cache

@@ -1,6 +1,6 @@
 Overview
 -----
-This directory contains all environment dependencies for tt-forge. By default all dependencies will be installed 
+This directory contains all environment dependencies for tt-forge. By default all dependencies will be installed
 to the /opt/ttforge-toolchain directory. To override this behavior, set the `TTFORGE_TOOLCHAIN_DIR` environment variable.
 Note that you need to build toolchain only once, unless you want to update it.
 

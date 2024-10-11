@@ -20,18 +20,14 @@ class OpTypeWrapper:
             object.__setattr__(self, "op_type", op_type)
         else:
             cls_name = self.__getattribute__("__class__").__name__
-            raise RuntimeError(
-                f"Called {cls_name} __init__ fn, did you mean to call '{cls_name}.create'?"
-            )
+            raise RuntimeError(f"Called {cls_name} __init__ fn, did you mean to call '{cls_name}.create'?")
 
     def __getattr__(self, name):
         try:
             return getattr(self.op_type, name)
         except IndexError:
             cls_name = self.__getattribute__("__class__").__name__
-            raise AttributeError(
-                f"'{cls_name}' object has no attribute '{name}' (via OpType cpp underlying class)"
-            )
+            raise AttributeError(f"'{cls_name}' object has no attribute '{name}' (via OpType cpp underlying class)")
 
     def __setattr__(self, name, value):
         return setattr(self.op_type, name, value)
@@ -90,21 +86,15 @@ class PyOp(OpTypeWrapper):
     ):
         raise NotImplemented()
 
-    def decompose(
-        self, decomposing_context: DecomposingContext, tensors: List[NodeContext]
-    ):
+    def decompose(self, decomposing_context: DecomposingContext, tensors: List[NodeContext]):
         # Optional implementation
         pass
 
-    def decompose_post_autograd(
-        self, decomposing_context: DecomposingContext, tensors: List[NodeContext]
-    ):
+    def decompose_post_autograd(self, decomposing_context: DecomposingContext, tensors: List[NodeContext]):
         # Optional implementation
         pass
 
-    def decompose_post_optimize(
-        self, decomposing_context: DecomposingContext, tensors: List[NodeContext]
-    ):
+    def decompose_post_optimize(self, decomposing_context: DecomposingContext, tensors: List[NodeContext]):
         # Optional implementation
         pass
 
@@ -212,9 +202,7 @@ class ForgeOp(OpTypeWrapper):
     def eval(self, tensors: List[torch.Tensor]) -> torch.Tensor:
         raise NotImplemented()
 
-    def shape(
-        self, tensor_shapes: List[Tuple[int]], tile_height: int, tile_width: int
-    ) -> Tuple[Tuple[int], List[int]]:
+    def shape(self, tensor_shapes: List[Tuple[int]], tile_height: int, tile_width: int) -> Tuple[Tuple[int], List[int]]:
         raise NotImplemented()
 
     def parallelization(self, op_shape, fracture_factor) -> Tuple[int]:

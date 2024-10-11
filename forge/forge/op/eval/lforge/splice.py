@@ -62,11 +62,7 @@ def as_physical_offset(
             shape[-1] // (TILE_DIM * ublock_c * grid_c * t_stream_factor_c),
         )
         num_ublocks_dim = num_ublocks_r if dim == 3 else num_ublocks_c
-        physical_offset = (
-            logical_offset
-            if ublock_order_cuts_dim
-            else logical_offset * num_ublocks_dim
-        )
+        physical_offset = logical_offset if ublock_order_cuts_dim else logical_offset * num_ublocks_dim
     return physical_offset
 
 
@@ -92,9 +88,7 @@ class Splice(ForgeEltwiseNaryOp):
         input_shapes,
     ):
         assert dim >= 1 and dim <= 3, f"Illegal dim {dim}"
-        assert (
-            splice_type in Splice.supported_splice_types
-        ), f"Illegal splice_type {splice_type}"
+        assert splice_type in Splice.supported_splice_types, f"Illegal splice_type {splice_type}"
         assert len(ranges) == len(input_shapes)
 
         self = cls("splice")
@@ -164,28 +158,20 @@ class Splice(ForgeEltwiseNaryOp):
 
     def eval(self, tensors):
         tensors = list(tensors)  # create a new list
-        expected_shape, _ = self.shape(
-            [tensor.shape for tensor in tensors], TILE_DIM, TILE_DIM
-        )
+        expected_shape, _ = self.shape([tensor.shape for tensor in tensors], TILE_DIM, TILE_DIM)
         is_splice_mode_ublock = self.dim != 1
 
         if is_splice_mode_ublock:
             # Slice each tensor down to just 1 ublock face
             for input_index, tensor in enumerate(tensors):
-                slice_factor_r = tensor.shape[2] // (
-                    TILE_DIM * self.ublock_r * self.grid_r
-                )
-                slice_factor_c = tensor.shape[3] // (
-                    TILE_DIM * self.ublock_c * self.grid_c
-                )
+                slice_factor_r = tensor.shape[2] // (TILE_DIM * self.ublock_r * self.grid_r)
+                slice_factor_c = tensor.shape[3] // (TILE_DIM * self.ublock_c * self.grid_c)
 
                 # Slice into grid chunks
                 tensor = slice_tms(tensor, self.grid_r, self.grid_c)
 
                 # Slice into ublock chunks
-                tensor = slice_tms(
-                    tensor, slice_factor_r, slice_factor_c, self.ublock_order_r
-                )
+                tensor = slice_tms(tensor, slice_factor_r, slice_factor_c, self.ublock_order_r)
 
                 face_shape_tiles = (
                     tensor.shape[2] // TILE_DIM,
@@ -226,17 +212,11 @@ class Splice(ForgeEltwiseNaryOp):
 
         # Re-stack ublocks into the output shape
         if is_splice_mode_ublock:
-            stack_factor_r = expected_shape[2] // (
-                TILE_DIM * self.ublock_r * self.grid_r
-            )
-            stack_factor_c = expected_shape[3] // (
-                TILE_DIM * self.ublock_c * self.grid_c
-            )
+            stack_factor_r = expected_shape[2] // (TILE_DIM * self.ublock_r * self.grid_r)
+            stack_factor_c = expected_shape[3] // (TILE_DIM * self.ublock_c * self.grid_c)
 
             # Stack back the ublock chunks into per-grid chunks
-            result = stack_tms(
-                result, stack_factor_r, stack_factor_c, self.ublock_order_r
-            )
+            result = stack_tms(result, stack_factor_r, stack_factor_c, self.ublock_order_r)
 
             # Stack back the grid
             result = stack_tms(result, self.grid_r, self.grid_c)
@@ -297,11 +277,7 @@ class Splice(ForgeEltwiseNaryOp):
             index, length, stride = ranges[0]
 
             par = 1
-            if (
-                len(ranges) == 1
-                and input_dim % (index + stride) == 0
-                and output_dim % (index + stride) == 0
-            ):
+            if len(ranges) == 1 and input_dim % (index + stride) == 0 and output_dim % (index + stride) == 0:
                 par = input_dim // (index + stride)
             return par
 
@@ -323,9 +299,7 @@ class Splice(ForgeEltwiseNaryOp):
         return get_op_model_execution_cycles(op_model_desc)
 
     def convert_mode_t(self):
-        assert (
-            self.dim == 2 or self.dim == 3
-        ), f"Illegal dim for convert_mode_t: {self.dim}"
+        assert self.dim == 2 or self.dim == 3, f"Illegal dim for convert_mode_t: {self.dim}"
         output_dim = self._get_output_tile_shape()[self.dim - 2]
         orig_z = self.shape(self.input_shapes, TILE_DIM, TILE_DIM)[0][1]
         orig_dim = self.dim
@@ -406,9 +380,7 @@ class Splice(ForgeEltwiseNaryOp):
         for rng, shape in zip(self.canonical_ranges, self.input_shapes):
             index, length, stride = rng
             assert length > 0
-            ranges.append(
-                (as_phys(index, shape), as_phys(length, shape), as_phys(stride, shape))
-            )
+            ranges.append((as_phys(index, shape), as_phys(length, shape), as_phys(stride, shape)))
         self.ranges = ranges
 
         for i, rng in enumerate(self.ranges):

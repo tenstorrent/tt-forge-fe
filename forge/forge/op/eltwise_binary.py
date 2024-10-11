@@ -7,10 +7,8 @@ from ..tensor import Tensor
 from ..parameter import Parameter
 from .common import ForgeOp as op
 
-def Add(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Add(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise add of two tensors
 
@@ -34,10 +32,8 @@ def Add(
 
     return _Eltwise(name, operandA, operandB, "add")
 
-def Subtract(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Tensor) -> Tensor:
+
+def Subtract(name: str, operandA: Tensor, operandB: Tensor) -> Tensor:
 
     """
     Elementwise subtraction of two tensors
@@ -62,10 +58,8 @@ def Subtract(
 
     return _Eltwise(name, operandA, operandB, "subtract")
 
-def Multiply(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Multiply(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
 
     """
     Elementwise multiply of two tensors
@@ -90,10 +84,8 @@ def Multiply(
 
     return _Eltwise(name, operandA, operandB, "multiply")
 
-def Divide(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Divide(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
 
     """
     Elementwise divide of two tensors
@@ -118,10 +110,8 @@ def Divide(
 
     return _Eltwise(name, operandA, operandB, "divide")
 
-def Max(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Max(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise max of two tensors
 
@@ -145,10 +135,8 @@ def Max(
 
     return _Eltwise(name, operandA, operandB, "maximum")
 
-def Min(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Min(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise min of two tensors
 
@@ -172,10 +160,8 @@ def Min(
 
     return _Eltwise(name, operandA, operandB, "minimum")
 
-def Heaviside(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Heaviside(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise max of two tensors
 
@@ -199,11 +185,8 @@ def Heaviside(
 
     return _Eltwise(name, operandA, operandB, "heaviside")
 
-def BinaryStack(
-        name: str,
-        operandA: Tensor,
-        operandB: Union[Tensor, Parameter],
-        dim: int) -> Tensor:
+
+def BinaryStack(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter], dim: int) -> Tensor:
     """
     Elementwise max of two tensors
 
@@ -228,12 +211,10 @@ def BinaryStack(
 
     """
 
-    return op("binary_stack", name, operandA, operandB, attrs=(dim, )).get_tensor()
+    return op("binary_stack", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
-def Power(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+
+def Power(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     OperandA to the power of OperandB
 
@@ -258,11 +239,7 @@ def Power(
     return _Eltwise(name, operandA, operandB, "power")
 
 
-def Equal(
-    name: str,
-    operandA: Tensor,
-    operandB: Union[Tensor, Parameter]
-    ) -> Tensor:
+def Equal(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise equal of two tensors
 
@@ -287,11 +264,7 @@ def Equal(
     return _Eltwise(name, operandA, operandB, "equal")
 
 
-def NotEqual(
-    name: str,
-    operandA: Tensor,
-    operandB: Union[Tensor, Parameter]
-    ) -> Tensor:
+def NotEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise equal of two tensors
 
@@ -316,10 +289,7 @@ def NotEqual(
     return _Eltwise(name, operandA, operandB, "not_equal")
 
 
-def Greater(
-    name: str,
-    operandA: Tensor,
-    operandB: Union[Tensor, Parameter]) -> Tensor:
+def Greater(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise greater of two tensors
 
@@ -344,10 +314,7 @@ def Greater(
     return _Eltwise(name, operandA, operandB, "greater")
 
 
-def Less(
-    name: str,
-    operandA: Tensor,
-    operandB: Union[Tensor, Parameter]) -> Tensor:
+def Less(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise less of two tensors
 
@@ -372,10 +339,7 @@ def Less(
     return _Eltwise(name, operandA, operandB, "less")
 
 
-def GreaterEqual(
-    name: str, 
-    operandA: Tensor, 
-    operandB: Union[Tensor, Parameter]) -> Tensor:
+def GreaterEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise greater or equal of two tensors
 
@@ -400,10 +364,7 @@ def GreaterEqual(
     return _Eltwise(name, operandA, operandB, "greater_equal")
 
 
-def LessEqual(
-    name: str, 
-    operandA: Tensor, 
-    operandB: Union[Tensor, Parameter]) -> Tensor:
+def LessEqual(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     """
     Elementwise less or equal of two tensors
 
@@ -428,11 +389,7 @@ def LessEqual(
     return _Eltwise(name, operandA, operandB, "less_equal")
 
 
-def _Eltwise(
-        name: str, 
-        operandA: Tensor, 
-        operandB: Union[Tensor, Parameter],
-        op_type: str) -> Tensor:
+def _Eltwise(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter], op_type: str) -> Tensor:
 
     """
     Common implementation for eltwise ops.
@@ -461,10 +418,7 @@ def _Eltwise(
     return result
 
 
-def LogicalAnd(
-        name: str,
-        operandA: Tensor,
-        operandB: Union[Tensor, Parameter]) -> Tensor:
+def LogicalAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
 
     """
     Logical and operation.

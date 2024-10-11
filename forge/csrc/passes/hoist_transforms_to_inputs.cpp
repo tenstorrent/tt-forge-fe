@@ -41,7 +41,7 @@ void hoist_transforms_to_inputs(tt::graphlib::Graph *graph)
         TT_ASSERT(input);
 
         // TODO: Something (like a tag) should tell us which transform to tack on
-        graphlib::RuntimeTensorTransform runtime_tensor_transform {};
+        graphlib::RuntimeTensorTransform runtime_tensor_transform{};
         runtime_tensor_transform.type = graphlib::RuntimeTensorTransformType::Prestride;
         runtime_tensor_transform.original_shape = input->shape();
         runtime_tensor_transform.reinterpreted_shape = op_node->shape();

@@ -20,7 +20,8 @@ template <graphlib::IRLevel ir_level>
 class GraphTest : public ::testing::Test
 {
    public:
-    using OpType = std::conditional_t<ir_level == graphlib::IRLevel::IR_FORGE, graphlib::ForgeOpNode, graphlib::PyOpNode>;
+    using OpType =
+        std::conditional_t<ir_level == graphlib::IRLevel::IR_FORGE, graphlib::ForgeOpNode, graphlib::PyOpNode>;
 
     virtual std::vector<OpType*> create_graph() = 0;
 
@@ -249,7 +250,8 @@ class GraphTest : public ::testing::Test
         return append_tm(graphlib::OpType(type, {attrs...}), node, operand_idx);
     }
 
-    void append_tm(std::string const& type, graphlib::Node* node, int operand_idx, graphlib::OpType::Attrs const& named_attrs)
+    void append_tm(
+        std::string const& type, graphlib::Node* node, int operand_idx, graphlib::OpType::Attrs const& named_attrs)
     {
         return append_tm(graphlib::OpType(type, {}, {}, named_attrs), node, operand_idx);
     }

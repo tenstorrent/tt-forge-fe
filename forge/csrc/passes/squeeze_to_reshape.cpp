@@ -5,8 +5,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "graph_lib/utils.hpp"
 #include "graph_lib/node_types.hpp"
+#include "graph_lib/utils.hpp"
 
 namespace tt::passes
 {
@@ -36,4 +36,4 @@ bool squeeze_to_reshape(graphlib::Graph *graph)
     }
     return changed_anything;
 }
-} // namespace tt::passes
+}  // namespace tt::passes

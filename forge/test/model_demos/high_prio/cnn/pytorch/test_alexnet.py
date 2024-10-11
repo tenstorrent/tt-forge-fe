@@ -26,17 +26,13 @@ def test_alexnet_torchhub(test_device):
     os.environ["FORGE_CONV2D_SPARSE_SECOND"] = "1"
 
     # Load model
-    framework_model = download_model(
-        torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True
-    )
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
     framework_model.eval()
     forge_model = forge.PyTorchModule("pt_alexnet_torchhub", framework_model)
 
     # Load and pre-process image
     try:
-        torch.hub.download_url_to_file(
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg"
-        )
+        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
         input_image = Image.open("dog.jpg")
         preprocess = transforms.Compose(
             [
@@ -48,7 +44,9 @@ def test_alexnet_torchhub(test_device):
         )
         img_tensor = preprocess(input_image).unsqueeze(0)
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         img_tensor = torch.rand(1, 3, 224, 224)
 
     # Sanity run
@@ -93,9 +91,7 @@ def test_alexnet_osmr(test_device):
 
     # Load and pre-process image
     try:
-        torch.hub.download_url_to_file(
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg"
-        )
+        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
         input_image = Image.open("dog.jpg")
         preprocess = transforms.Compose(
             [
@@ -107,13 +103,13 @@ def test_alexnet_osmr(test_device):
         )
         img_tensor = preprocess(input_image).unsqueeze(0)
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         img_tensor = torch.rand(1, 3, 224, 224)
 
     # Sanity run
-    os.system(
-        "wget -nc https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
-    )
+    os.system("wget -nc https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt")
     with open("imagenet_classes.txt", "r") as f:
         categories = [s.strip() for s in f.readlines()]
     cpu_out = framework_model(img_tensor)

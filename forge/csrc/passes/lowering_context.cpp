@@ -11,21 +11,26 @@
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
-namespace tt {
+namespace tt
+{
 
 using NodeType = graphlib::NodeType;
 using Edge = graphlib::Edge;
 using EdgeType = graphlib::EdgeType;
 
-Node *LoweringContext::get_or_insert_node(NodeContext node) {
+Node *LoweringContext::get_or_insert_node(NodeContext node)
+{
     Node *new_node = nullptr;
     Node *old_node = old_graph->node_by_id(node.id);
 
     auto match = old_to_new.find(old_node);
-    if (match == old_to_new.end()) {
+    if (match == old_to_new.end())
+    {
         TT_ASSERT(old_node->node_type() != graphlib::NodeType::kPyOp);
         new_node = lower_queue(old_graph, new_graph, old_node, old_to_new);
-    } else {
+    }
+    else
+    {
         new_node = match->second;
     }
 
@@ -37,43 +42,44 @@ template <typename NodeT>
 NodeT *LoweringContext::lower_node(graphlib::OpType const &op_type, std::vector<NodeContext> const &operands)
 {
     std::string suffix;
-    if (op_index > 0) {
+    if (op_index > 0)
+    {
         suffix = ".lc" + std::to_string(op_index);
     }
-    NodeT *new_node = new_graph->add_node(
-        graphlib::create_node<NodeT>(node->name() + suffix, op_type), subgraph_idx);
+    NodeT *new_node = new_graph->add_node(graphlib::create_node<NodeT>(node->name() + suffix, op_type), subgraph_idx);
 
     new_node->copy_lowered_op_attributes(node);
     old_to_new.insert_or_assign(node, new_node);
 
     std::vector<Node *> new_operands;
-    for (const NodeContext &op : operands) 
+    for (const NodeContext &op : operands)
     {
         // Already a new-graph op
-        if (new_graph->has_node_with_id(op.id)) {
+        if (new_graph->has_node_with_id(op.id))
+        {
             new_operands.push_back(new_graph->node_by_id(op.id));
             continue;
         }
-            
+
         // Old op, translate
         new_operands.push_back(get_or_insert_node(op));
     }
 
     for (std::size_t i = 0; i < new_operands.size(); i++)
     {
-        Edge new_edge = Edge(new_operands[i]->id(), operands[i].output_index, new_node->id(), i, graphlib::EdgeType::kData);
+        Edge new_edge =
+            Edge(new_operands[i]->id(), operands[i].output_index, new_node->id(), i, graphlib::EdgeType::kData);
         new_graph->add_edge(new_edge);
 
         // check if this is a new node, and skip as there are no edges to copy
         if (new_graph->has_node_with_id(operands[i].id))
             continue;
 
-
         // Find the old edge, and copy over attributes
-        for (Edge old_edge : old_graph->operand_data_edges(node)) 
+        for (Edge old_edge : old_graph->operand_data_edges(node))
         {
-            if ( (old_edge.producer_node_id == operands[i].id) && 
-                 (old_edge.producer_output_port_id == operands[i].output_index) )
+            if ((old_edge.producer_node_id == operands[i].id) &&
+                (old_edge.producer_output_port_id == operands[i].output_index))
             {
                 std::shared_ptr<graphlib::EdgeAttributes> new_attr = new_graph->get_edge_attributes(new_edge);
                 lower_edge_tms(old_graph, old_edge, new_attr);
@@ -98,7 +104,7 @@ NodeContext LoweringContext::op(
     Node *lowered_node = lower_node<graphlib::ForgeOpNode>(op_type, operands);
     TileDim target_tile_dim = graphlib::get_tile_dim_from_height_width(tile_height, tile_width);
 
-    lowered_node->set_tile_dim(target_tile_dim); // propagate TileDim to forge op
+    lowered_node->set_tile_dim(target_tile_dim);  // propagate TileDim to forge op
     if (tag != "")
         lowered_node->as<graphlib::TaggedNode>()->tag(tag);
 
@@ -137,7 +143,8 @@ void LoweringContext::set_runtime_tensor_transform(NodeContext node, graphlib::R
 
 void LoweringContext::set_broadcast_dim(NodeContext src, NodeContext dest, int dim, int factor, bool explicit_bcast)
 {
-    for (Edge e : new_graph->user_data_edges(new_graph->node_by_id(src.id))) {
+    for (Edge e : new_graph->user_data_edges(new_graph->node_by_id(src.id)))
+    {
         if (e.producer_output_port_id != (std::uint32_t)src.output_index)
             continue;
 
@@ -147,7 +154,6 @@ void LoweringContext::set_broadcast_dim(NodeContext src, NodeContext dest, int d
         TT_ASSERT(dim >= 0, "Dimension in broadcast must be positive");
         new_graph->get_edge_attributes(e)->set_broadcast_dim(dim, factor, explicit_bcast);
     }
-
 }
 
 std::vector<std::uint32_t> LoweringContext::shape(NodeContext node, bool use_new_graph) const
@@ -156,10 +162,7 @@ std::vector<std::uint32_t> LoweringContext::shape(NodeContext node, bool use_new
     return graph->node_by_id(node.id)->shape().as_vector();
 }
 
-std::vector<std::uint32_t> LoweringContext::forge_shape() const
-{
-    return node->shape().as_vector();
-}
+std::vector<std::uint32_t> LoweringContext::forge_shape() const { return node->shape().as_vector(); }
 
 NodeContext LoweringContext::constant(float value, std::pair<int, int> rc_dims)
 {
@@ -180,8 +183,10 @@ NodeContext LoweringContext::constant(float value, std::pair<int, int> rc_dims)
 
 NodeContext LoweringContext::constant_tile(std::vector<float> value)
 {
-    auto new_node = new_graph->add_node(graphlib::create_node<graphlib::ConstantInputNode>(
-        "input_constant" + std::to_string(constant_index++) + "_" + node->name(), value), subgraph_idx);
+    auto new_node = new_graph->add_node(
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            "input_constant" + std::to_string(constant_index++) + "_" + node->name(), value),
+        subgraph_idx);
 
     new_node->set_shape(graphlib::Shape::single_tile());
     new_node->set_output_df(node->output_df());
@@ -192,8 +197,10 @@ NodeContext LoweringContext::constant_tile(std::vector<float> value)
 
 NodeContext LoweringContext::tensor(std::shared_ptr<void> tensor, graphlib::Shape shape, DataFormat df)
 {
-    auto new_node = new_graph->add_node(graphlib::create_node<graphlib::ConstantInputNode>(
-        "lc.input_tensor." + node->name() + "." + std::to_string(this->op_index++), tensor, shape), subgraph_idx);
+    auto new_node = new_graph->add_node(
+        graphlib::create_node<graphlib::ConstantInputNode>(
+            "lc.input_tensor." + node->name() + "." + std::to_string(this->op_index++), tensor, shape),
+        subgraph_idx);
     new_node->set_shape(graphlib::Shape::create_forge(shape.as_vector()));
     new_node->set_output_df((df != DataFormat::Invalid) ? df : node->output_df());
     new_node->as<graphlib::TaggedNode>()->add_tags(this->node->as<graphlib::TaggedNode>()->get_tags());
@@ -208,13 +215,17 @@ NodeContext LoweringContext::tensor_with_blob(
     return nc;
 }
 
-bool requires_lowering_to_ram(Node* node) {
+bool requires_lowering_to_ram(Node *node)
+{
     using graphlib::InputNodeType;
 
-    if (node->node_type() == NodeType::kInput) {
+    if (node->node_type() == NodeType::kInput)
+    {
         InputNodeType input_type = node->as<graphlib::InputNode>()->input_type();
         return (input_type == InputNodeType::Parameter) or (input_type == InputNodeType::OptimizerParameter);
-    } else if (node->node_type() == NodeType::kQueue) {
+    }
+    else if (node->node_type() == NodeType::kQueue)
+    {
         return node->as<graphlib::QueueNode>()->is_grad_accumulator();
     }
     return false;
@@ -222,7 +233,7 @@ bool requires_lowering_to_ram(Node* node) {
 
 int calculate_tile_size(int val)
 {
-    // We might not even care about large dim size 
+    // We might not even care about large dim size
     // that are not divisible by 32
     if (val > 32)
         return 32;
@@ -236,11 +247,14 @@ int calculate_tile_size(int val)
     {
         int rem = val % tile_size_;
         int pad = tile_size_ - rem;
-        if (rem == 0 and smallest_pad != 0) {
+        if (rem == 0 and smallest_pad != 0)
+        {
             // Pick the largest tile size that divides evenly
             smallest_pad = 0;
             current_tile_size = tile_size_;
-        } else if (pad <= smallest_pad) {
+        }
+        else if (pad <= smallest_pad)
+        {
             // pick the tile size with smallest pad
             smallest_pad = pad;
             current_tile_size = tile_size_;
@@ -249,20 +263,23 @@ int calculate_tile_size(int val)
     return current_tile_size;
 }
 
-Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNodeMap &old_to_new) {
+Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNodeMap &old_to_new)
+{
     Node *new_node = new_graph->add_node(old_node->clone(), old_graph->get_subgraph_id_for_node(old_node->id()));
 
-    if (env_as<bool>("FORGE_ENABLE_TINY_TILE")) {
+    if (env_as<bool>("FORGE_ENABLE_TINY_TILE"))
+    {
         graphlib::Shape shape = old_node->shape();
         shape = shape.canonical();
-        int tile_size_r = calculate_tile_size(shape[-2]); 
-        int tile_size_c = graphlib::Shape::FORGE_TILE_DIM; // Force Column to 32 for now
+        int tile_size_r = calculate_tile_size(shape[-2]);
+        int tile_size_c = graphlib::Shape::FORGE_TILE_DIM;  // Force Column to 32 for now
         auto calculated_tile_dim = graphlib::get_tile_dim_from_height_width(tile_size_r, tile_size_c);
         old_node->set_tile_dim(calculated_tile_dim);
     }
     new_node->set_shape(graphlib::Shape::to_forge(old_node->shape()));
 
-    if (requires_lowering_to_ram(old_node)) {
+    if (requires_lowering_to_ram(old_node))
+    {
         new_node->as<graphlib::QueueNode>()->set_memory_access_type(graphlib::MemoryAccessType::RAM);
     }
 
@@ -270,7 +287,8 @@ Node *lower_queue(Graph *old_graph, Graph *new_graph, Node *old_node, NodeToNode
     old_to_new.insert(std::make_pair(old_node, new_node));
 
     // Output queues should inherit their df from producer
-    if (new_node->node_type() == NodeType::kOutput) {
+    if (new_node->node_type() == NodeType::kOutput)
+    {
         auto operands = new_graph->data_operands(new_node);
         TT_ASSERT(operands.size() == 1);
         Node *producer = operands[0];
@@ -319,7 +337,7 @@ void lower_node(const LoweringContext &lc)
     py::function forge_lower = eval_module.attr("get_f_forge_lower")(type);
 
     std::vector<NodeContext> inputs;
-    for(Edge opedge : lc.get_old_graph()->operand_data_edges(node))
+    for (Edge opedge : lc.get_old_graph()->operand_data_edges(node))
     {
         inputs.push_back(
             NodeContext(lc.get_old_graph()->node_by_id(opedge.producer_node_id), opedge.producer_output_port_id));
@@ -330,7 +348,7 @@ void lower_node(const LoweringContext &lc)
     }
 
     std::vector<NodeContext> outputs;
-    for(Edge user_edge : lc.get_old_graph()->user_data_edges(node))
+    for (Edge user_edge : lc.get_old_graph()->user_data_edges(node))
     {
         outputs.push_back(
             NodeContext(lc.get_old_graph()->node_by_id(user_edge.consumer_node_id), user_edge.consumer_input_port_id));
@@ -338,39 +356,47 @@ void lower_node(const LoweringContext &lc)
     }
 
     forge_lower(lc, inputs, outputs);
-    
 }
 
 // Copy incoming edges from old graph to new node on new graph after lowering
 void copy_operand_edges_to_new_graph(
-        Graph *old_graph,
-        Graph *new_graph,
-        Node *old_node,
-        Node *new_node,
-        const NodeToNodeMap &old_to_new,
-        bool control_only,
-        bool loopback_only)
+    Graph *old_graph,
+    Graph *new_graph,
+    Node *old_node,
+    Node *new_node,
+    const NodeToNodeMap &old_to_new,
+    bool control_only,
+    bool loopback_only)
 {
     for (Edge edge : old_graph->operand_edges(old_node))
     {
         if (control_only && (edge.edge_type == graphlib::EdgeType::kData))
             continue;
 
-        if (loopback_only != (edge.edge_type == graphlib::EdgeType::kDataLoopback or edge.edge_type == graphlib::EdgeType::kPartialDataCopy))
+        if (loopback_only != (edge.edge_type == graphlib::EdgeType::kDataLoopback or
+                              edge.edge_type == graphlib::EdgeType::kPartialDataCopy))
             continue;
 
-        try {
+        try
+        {
             Node *operand = old_to_new.at(old_graph->node_by_id(edge.producer_node_id));
-            Edge new_edge = Edge(operand->id(), edge.producer_output_port_id, new_node->id(), edge.consumer_input_port_id, edge.edge_type);
+            Edge new_edge = Edge(
+                operand->id(),
+                edge.producer_output_port_id,
+                new_node->id(),
+                edge.consumer_input_port_id,
+                edge.edge_type);
             new_graph->add_edge(new_edge);
 
             std::shared_ptr<graphlib::EdgeAttributes> new_attr = new_graph->get_edge_attributes(new_edge);
             lower_edge_tms(old_graph, edge, new_attr);
-            //new_graph->copy_edge_attributes(edge, new_edge, old_graph);
-            
-        } catch (std::out_of_range &e) {
-            log_fatal("Input operand not mapped to new graph during lowering: {}", 
-                    old_graph->node_by_id(edge.producer_node_id)->name());
+            // new_graph->copy_edge_attributes(edge, new_edge, old_graph);
+        }
+        catch (std::out_of_range &e)
+        {
+            log_fatal(
+                "Input operand not mapped to new graph during lowering: {}",
+                old_graph->node_by_id(edge.producer_node_id)->name());
         }
     }
 }
@@ -386,7 +412,8 @@ void lower_edge_tms(Graph *old_graph, Edge &old_edge, std::shared_ptr<graphlib::
         // and below, we need to account for 4 dimensions to match the Forge expectations.
         int delta = 0;
         int producer_rank = old_graph->node_by_id(old_edge.producer_node_id)->shape().as_vector().size();
-        if (producer_rank <= 4) {
+        if (producer_rank <= 4)
+        {
             delta = 4 - producer_rank;
             producer_rank = 4;
         }
@@ -394,28 +421,34 @@ void lower_edge_tms(Graph *old_graph, Edge &old_edge, std::shared_ptr<graphlib::
         auto new_tm = graphlib::OpType(tm);
 
         // If TM attr is referenced backwards (negative indexing), directly convert to positive axis.
-        if (std::get<int>(new_tm.attr[0]) < 0) {
+        if (std::get<int>(new_tm.attr[0]) < 0)
+        {
             std::get<int>(new_tm.attr[0]) += producer_rank;
-        } else {
+        }
+        else
+        {
             std::get<int>(new_tm.attr[0]) += delta;
         }
 
-        if ( (std::get<int>(new_tm.attr[0]) >= 2) && (std::get<int>(new_tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM != 0) )
+        if ((std::get<int>(new_tm.attr[0]) >= 2) &&
+            (std::get<int>(new_tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM != 0))
         {
             // snap up to tile dim
-            std::get<int>(new_tm.attr[1]) += graphlib::Shape::FORGE_TILE_DIM - (std::get<int>(new_tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM);
+            std::get<int>(new_tm.attr[1]) +=
+                graphlib::Shape::FORGE_TILE_DIM - (std::get<int>(new_tm.attr[1]) % graphlib::Shape::FORGE_TILE_DIM);
         }
-        //std::cout << " to " << new_tm.attr[0] << ", " << new_tm.attr[1] << std::endl;
+        // std::cout << " to " << new_tm.attr[0] << ", " << new_tm.attr[1] << std::endl;
 
         if (tm.op == "broadcast" and std::get<int>(new_tm.attr[0]) >= 2)
         {
             std::get<int>(new_tm.attr[1]) /= graphlib::Shape::FORGE_TILE_DIM;
         }
 
-        TT_ASSERT(std::get<int>(new_tm.attr[0]) >= 0 && std::get<int>(new_tm.attr[0]) <= 3, "Invalid broadcast dim after lowering");
+        TT_ASSERT(
+            std::get<int>(new_tm.attr[0]) >= 0 && std::get<int>(new_tm.attr[0]) <= 3,
+            "Invalid broadcast dim after lowering");
         new_attr->append_tm(new_tm);
     }
 }
 
-
-} // namespace tt
+}  // namespace tt

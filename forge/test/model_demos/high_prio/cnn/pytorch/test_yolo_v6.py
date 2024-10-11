@@ -18,9 +18,7 @@ from forge._C.backend_api import BackendDevice
 # preprocessing steps referred form https://github.com/meituan/YOLOv6/blob/main/inference.ipynb
 
 
-def letterbox(
-    im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32
-):
+def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32):
     """Resize and pad image while meeting stride-multiple constraints."""
     shape = im.shape[:2]  # current shape [height, width]
     if isinstance(new_shape, int):
@@ -47,9 +45,7 @@ def letterbox(
         im = cv2.resize(im, new_unpad, interpolation=cv2.INTER_LINEAR)
     top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
     left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
-    im = cv2.copyMakeBorder(
-        im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color
-    )  # add border
+    im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
 
     return im, r, (left, top)
 
@@ -68,9 +64,7 @@ def check_img_size(img_size, s=32, floor=0):
         raise Exception(f"Unsupported type of img_size: {type(img_size)}")
 
     if new_size != img_size:
-        print(
-            f"WARNING: --img-size {img_size} must be multiple of max stride {s}, updating to {new_size}"
-        )
+        print(f"WARNING: --img-size {img_size} must be multiple of max stride {s}, updating to {new_size}")
     return new_size if isinstance(img_size, list) else [new_size] * 2
 
 
@@ -114,9 +108,7 @@ def test_yolo_v6_pytorch(variant, test_device):
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
 
         if test_device.arch == BackendDevice.Grayskull and variant == "yolov6m":
-            compiler_cfg.balancer_op_override(
-                "conv2d_258.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_258.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1))
             compiler_cfg.balancer_op_override(
                 "conv2d_258.dc.reshape.12.dc.sparse_matmul.3.lc2",
                 "t_stream_shape",
@@ -127,9 +119,7 @@ def test_yolo_v6_pytorch(variant, test_device):
             os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
 
         if test_device.arch == BackendDevice.Grayskull and variant == "yolov6l":
-            compiler_cfg.balancer_op_override(
-                "conv2d_484.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_484.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1))
             compiler_cfg.balancer_op_override(
                 "conv2d_484.dc.reshape.12.dc.sparse_matmul.3.lc2",
                 "t_stream_shape",

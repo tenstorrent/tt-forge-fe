@@ -5,7 +5,7 @@
 #   Test 3
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -44,41 +44,41 @@ class ForgeReduceTest(ForgeModule):
 
         # Layer 2
         red1 = self.operator(self.opname + "1", x1, 3)
-                # (W, Z, R, C) --> (W, Z, R, 1)
+        # (W, Z, R, C) --> (W, Z, R, 1)
         red2 = self.operator(self.opname + "2", self.train_param1, 2)
-                # (W, Z, R, C) --> (W, Z, 1, C)
+        # (W, Z, R, C) --> (W, Z, 1, C)
         tr = forge.op.Transpose("tr", x2, 3, 2)
-                # (W, Z, R, C) --> (W, Z, C, R)
+        # (W, Z, R, C) --> (W, Z, C, R)
         red3 = self.operator(self.opname + "3", self.train_param2, 3)
-                # (W, Z, R, C) --> (W, Z, R, 1)
+        # (W, Z, R, C) --> (W, Z, R, 1)
 
         # Layer 3
         mm1 = forge.op.Matmul("mm1", red1, red2)
-                # (W, Z, R, 1) x (W, Z, 1, C) --> (W, Z, R, C)
+        # (W, Z, R, 1) x (W, Z, 1, C) --> (W, Z, R, C)
         red4 = self.operator(self.opname + "4", tr, 2)
-                # (W, Z, C, R) --> (W, Z, 1, R)
+        # (W, Z, C, R) --> (W, Z, 1, R)
         red5 = self.operator(self.opname + "5", red3, 2)
-                # (W, Z, R, 1) --> (W, Z, 1, 1)
+        # (W, Z, R, 1) --> (W, Z, 1, 1)
 
         # Layer 4
         red6 = self.operator(self.opname + "6", mm1, 3)
-                # (W, Z, R, C) --> (W, Z, R, 1)
+        # (W, Z, R, C) --> (W, Z, R, 1)
         mm2 = forge.op.Matmul("mm2", red6, red4)
-                # (W, Z, R, 1) x (W, Z, 1, R) --> (W, Z, R, R)
+        # (W, Z, R, 1) x (W, Z, 1, R) --> (W, Z, R, R)
 
         # Layer 5
         red7 = self.operator(self.opname + "7", mm2, 3)
-                # (W, Z, R, R) --> (W, Z, R, 1)
+        # (W, Z, R, R) --> (W, Z, R, 1)
 
         # Layer 6
         mm3 = forge.op.Matmul("mm3", red7, red5)
-                # (W, Z, R, 1) x (W, Z, 1, 1) --> (W, Z, R, 1)
+        # (W, Z, R, 1) x (W, Z, 1, 1) --> (W, Z, R, 1)
 
         # Layer 7
         red8 = self.operator(self.opname + "8", mm3, 2)
-                # (W, Z, R, 1) --> (W, Z, 2)
+        # (W, Z, R, 1) --> (W, Z, 2)
 
         return red8
 
     def values(self):
-        return [item.value() for item in self.inputs]   
+        return [item.value() for item in self.inputs]

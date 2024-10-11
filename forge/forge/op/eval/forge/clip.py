@@ -18,7 +18,7 @@ from ..lforge.nop import Nop as ForgeNop
 
 class Clip(PyEltwiseUnaryOp):
     @classmethod
-    def create(cls, min=float('-inf'), max=float('inf')):
+    def create(cls, min=float("-inf"), max=float("inf")):
         self = cls("clip")
         self.min = min
         self.max = max
@@ -60,7 +60,7 @@ class Clip(PyEltwiseUnaryOp):
             max_value = 65504.0
 
         if (min_value == 0) and (max_value >= 0):
-            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"),(tensors[0],))
+            res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"), (tensors[0],))
             return
 
         shape = list(tensors[0].shape.as_list())
@@ -69,9 +69,7 @@ class Clip(PyEltwiseUnaryOp):
         shape[-1] = ((shape[-1] - 1) // TILE_DIM + 1) * TILE_DIM
         # Align up to 4 dimensions
         if len(shape) > 4:
-            raise RuntimeError(
-                "Operator clip, operand must have number of dimensions less or equal to 4. "
-            )
+            raise RuntimeError("Operator clip, operand must have number of dimensions less or equal to 4. ")
         if len(shape) < 4:
             shape = (4 - len(shape)) * [1] + shape
 
@@ -86,15 +84,13 @@ class Clip(PyEltwiseUnaryOp):
 
         res = lc.op("subtract", (tensors[0], min_value_tensor))
         # x - min_value
-        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0 ,relu_mode="min"),(res,))
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res,))
 
         # ReLU(x - min_value)
         res = lc.op("subtract", (diff_tensor, res))
         # diff_value - ReLU(x - min_value), diff = max - min
-        res = lc.op(
-            ForgeNop.create(relu_en=True, relu_threshold=0.0,relu_mode="min"),
-            (res,))
-        
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res,))
+
         # ReLU(diff_value - ReLU(x - min_value))
         lc.op("subtract", (max_value_tensor, res))
         # max_value - ReLU(diff_value - ReLU(x - min_value))

@@ -424,8 +424,8 @@ static std::pair<std::vector<std::int32_t>, int> encode_strips(
         //
         if (nz_tiles_in_ublock > (1 << nz_tiles_in_ublock_bits))
         {
-            throw std::runtime_error(fmt::format(
-                "UBlock index {} exceeds {} bit encoding", current_ublock_index, sparse_ublock_idx_bits));
+            throw std::runtime_error(
+                fmt::format("UBlock index {} exceeds {} bit encoding", current_ublock_index, sparse_ublock_idx_bits));
         }
 
         // Use 0 to represent (1 << nz_tiles_in_ublock_bits)
@@ -552,8 +552,7 @@ static std::pair<std::vector<std::int32_t>, int> encode_strips(
     return allocator.finish_forge_strips();
 }
 
-static void print_info_indices(
-    std::vector<std::int32_t> const& forge_indices, int sparse_ublock_idx_bits)
+static void print_info_indices(std::vector<std::int32_t> const& forge_indices, int sparse_ublock_idx_bits)
 {
     using IndexType = std::remove_extent_t<decltype(strip_info_struct::F::index_array)>;
     int ublock_tile_index_bytes = 16 - sparse_ublock_idx_bits;
@@ -683,7 +682,6 @@ int SparseFORGE::get_sparse_ublock_idx_bits(int grid_r, int t_factor_r, int u_rt
     int num_lz = 32 - __builtin_clz(max_num);
     return num_lz;
 }
-
 
 int SparseFORGE::get_max_u_kt(int grid_r, int t_factor_r, int u_rt, int sparse_tile_ptr_bits) const
 {

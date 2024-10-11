@@ -15,6 +15,7 @@ import numpy as np
 from forge.op.eval.common import calculate_tile_size
 from .nop import Nop
 
+
 class Tilizer(PyEltwiseUnaryOp):
     @classmethod
     def create(cls):
@@ -31,7 +32,7 @@ class Tilizer(PyEltwiseUnaryOp):
             ret = ret.type(original_types[0])
 
         return ret
-    
+
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1, "Tilizer should have one input"
         shape = tensor_shapes[0]
@@ -41,5 +42,4 @@ class Tilizer(PyEltwiseUnaryOp):
         assert len(inputs) == 1, "Tilizer should have one input"
         assert operand == 0, "Invalid operand index"
 
-        return ac.op(Nop.create(), (grad, ))
-    
+        return ac.op(Nop.create(), (grad,))

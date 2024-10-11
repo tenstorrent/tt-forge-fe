@@ -23,14 +23,7 @@ MODELS_PATH = "./forge/test/operators/eltwise_unary/models/"
 # @pytest.mark.xfail(
 #     reason="tenstorrent/forge#1"
 # )
-def test_eltwise_unary(
-    un_train,
-    un_recompute,
-    un_op,
-    un_model,
-    un_shape,
-    un_kwargs
-):
+def test_eltwise_unary(un_train, un_recompute, un_op, un_model, un_shape, un_kwargs):
 
     print("\n")
     print(f"un_train --> {un_train}")
@@ -43,15 +36,15 @@ def test_eltwise_unary(
 
     if not un_train and un_recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
-    
+
     assert type(un_train) in [bool, str], "Type of training parameter must be boolean or string"
     if type(un_train) == str:
-        training = True if un_train == 'True' else False
+        training = True if un_train == "True" else False
     else:
         training = un_train
     assert type(un_recompute) in [bool, str], "Type of recompute parameter must be boolean or string"
     if type(un_recompute) == str:
-        recompute = True if un_recompute == 'True' else False
+        recompute = True if un_recompute == "True" else False
     else:
         recompute = un_recompute
     operation = un_op
@@ -63,7 +56,6 @@ def test_eltwise_unary(
     if operation == "LeakyRelu":
         if un_train:
             pcc = 0.95
-    
 
     print("\n")
     print(f"Training --> {training}")
@@ -74,21 +66,20 @@ def test_eltwise_unary(
     print(f"Kwargs --> {kwargs}")
     print("\n")
 
-    architecture = f'models.{model}.ForgeElementWiseUnaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}'
+    architecture = (
+        f'models.{model}.ForgeElementWiseUnaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}'
+    )
     for k, v in kwargs.items():
-        architecture = f'{architecture}, {k}={v}'
-    architecture = f'{architecture})'
+        architecture = f"{architecture}, {k}={v}"
+    architecture = f"{architecture})"
 
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute
-                     ), 
-        verify_cfg=VerifyConfig(pcc=pcc)
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
+        verify_cfg=VerifyConfig(pcc=pcc),
     )

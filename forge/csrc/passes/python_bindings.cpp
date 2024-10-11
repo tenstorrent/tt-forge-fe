@@ -5,14 +5,13 @@
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node_types.hpp"
 #include "lower_to_forge/common.hpp"
-#include "shared_utils/sparse_matmul_utils.hpp"
-#include "python_bindings_common.hpp"
-
 #include "passes/decomposing_context.hpp"
 #include "passes/lowering_context.hpp"
+#include "python_bindings_common.hpp"
+#include "shared_utils/sparse_matmul_utils.hpp"
 
-
-namespace tt {
+namespace tt
+{
 
 static bool has_newstyle_interface(std::string const &op_name, bool is_forge)
 {
@@ -290,4 +289,4 @@ void PassesModule(py::module &m_passes)
             [](tt::DecomposingContext &self) { return borrow_shared_py_object(self.get_compiler_cfg()); });
 }
 
-}
+}  // namespace tt

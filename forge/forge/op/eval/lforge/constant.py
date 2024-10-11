@@ -7,6 +7,7 @@ import torch.nn.functional
 
 SINGLE_TILE_SHAPE = (1, 1, 32, 32)
 
+
 def shape(type, attr, ops, tile_height, tile_width):
     assert len(ops) == 0, "constant should not have any operands"
     assert len(attr) == 1, "constant should contain single attr repr the const. val"

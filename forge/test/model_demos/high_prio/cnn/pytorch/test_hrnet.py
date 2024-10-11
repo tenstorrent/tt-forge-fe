@@ -26,16 +26,15 @@ from timm.data.transforms_factory import create_transform
 torch.multiprocessing.set_sharing_strategy("file_system")
 #############
 
+
 def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = (
-        forge.config._get_global_compiler_config()
-    )  # load global compiler config object
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
 
     # tenstorrent/forge#950
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    
+
     # STEP 2: Create Forge module from PyTorch model
     """
     models = [
@@ -56,9 +55,7 @@ def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
 
     # Model load
     try:
-        torch.hub.download_url_to_file(
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg"
-        )
+        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
         input_image = Image.open("dog.jpg")
         preprocess = transforms.Compose(
             [
@@ -69,14 +66,14 @@ def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
             ]
         )
         input_tensor = preprocess(input_image)
-        input_batch = input_tensor.unsqueeze(
-            0
-        )  # create a mini-batch as expected by the model
+        input_batch = input_tensor.unsqueeze(0)  # create a mini-batch as expected by the model
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         input_batch = torch.rand(1, 3, 224, 224)
     print(input_batch.shape)
-    
+
     return tt_model, [input_batch], {}
 
 
@@ -96,7 +93,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_osmr_pytorch(variant, test_device):
     model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
-        test_device, variant,
+        test_device,
+        variant,
     )
 
     verify_module(
@@ -112,12 +110,11 @@ def test_hrnet_osmr_pytorch(variant, test_device):
         ),
     )
 
+
 def generate_model_hrnet_imgcls_timm_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = (
-        forge.config._get_global_compiler_config()
-    )  # load global compiler config object
-    
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+
     # tenstorrent/forge#950
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
@@ -152,10 +149,12 @@ def generate_model_hrnet_imgcls_timm_pytorch(test_device, variant):
         img = Image.open(filename).convert("RGB")
         input_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         input_tensor = torch.rand(1, 3, 224, 224)
     print(input_tensor.shape)
-    
+
     return tt_model, [input_tensor], {}
 
 
@@ -175,7 +174,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(variant, test_device):
     model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
-        test_device, variant,
+        test_device,
+        variant,
     )
 
     verify_module(

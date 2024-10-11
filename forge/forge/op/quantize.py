@@ -5,13 +5,10 @@ from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 from .common import ForgeOp as op
 import torch
 
+
 def Quantize(
-        name: str,
-        operandA: Tensor,
-        operandB: Tensor,
-        zero_point: int, 
-        axis: int,
-        out_dtype: torch.dtype) -> Tensor:
+    name: str, operandA: Tensor, operandB: Tensor, zero_point: int, axis: int, out_dtype: torch.dtype
+) -> Tensor:
     """
     Quantize input tensor to INT using provided zero point and scale
 
@@ -41,16 +38,19 @@ def Quantize(
         Forge tensor
     """
 
-    return op("quantize", name, operandA, operandB, attrs=(zero_point, axis, str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
+    return op("quantize", name, operandA, operandB, attrs=(zero_point, axis, str(out_dtype))).get_tensor(
+        out_df=pytorch_dtype_to_forge_dataformat(out_dtype)
+    )
 
 
 def Dequantize(
-        name: str,
-        operandA: Tensor,
-        operandB: Tensor,
-        zero_point: int,
-        axis: int = -1,
-        out_dtype: torch.dtype = torch.float32) -> Tensor:
+    name: str,
+    operandA: Tensor,
+    operandB: Tensor,
+    zero_point: int,
+    axis: int = -1,
+    out_dtype: torch.dtype = torch.float32,
+) -> Tensor:
     """
     Dequantize input tensor to Float using provided zero point and scale
 
@@ -74,19 +74,29 @@ def Dequantize(
         Forge tensor
     """
 
+    return op(
+        "dequantize",
+        name,
+        operandA,
+        operandB,
+        attrs=(
+            zero_point,
+            axis,
+        ),
+    ).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
-    return op("dequantize", name, operandA, operandB, attrs=(zero_point, axis,)).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
 def Requantize(
-        name: str,
-        operandA: Tensor,
-        operand_inp_scale: Tensor,
-        operand_out_scale: Tensor,
-        input_zero_point: float,
-        output_zero_point: float,
-        out_dtype: torch.dtype,
-        axis: int =-1,
-        rounding: str = "None",) -> Tensor:
+    name: str,
+    operandA: Tensor,
+    operand_inp_scale: Tensor,
+    operand_out_scale: Tensor,
+    input_zero_point: float,
+    output_zero_point: float,
+    out_dtype: torch.dtype,
+    axis: int = -1,
+    rounding: str = "None",
+) -> Tensor:
     """
     ReQuantize input tensor using provided zero point and scale
 
@@ -123,19 +133,25 @@ def Requantize(
     """
 
     return op(
-        "requantize", name, operandA, operand_inp_scale,operand_out_scale,attrs=(output_zero_point, input_zero_point, axis,rounding,str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
+        "requantize",
+        name,
+        operandA,
+        operand_inp_scale,
+        operand_out_scale,
+        attrs=(output_zero_point, input_zero_point, axis, rounding, str(out_dtype)),
+    ).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
 
 
 def ForgeRequantize(
-        name: str,
-        operandA: Tensor,
-        scale: Tensor,
-        zero_point: float,
-        out_dtype: torch.dtype,
-        axis: int =-1,
-        rounding: str = "None") -> Tensor:
+    name: str,
+    operandA: Tensor,
+    scale: Tensor,
+    zero_point: float,
+    out_dtype: torch.dtype,
+    axis: int = -1,
+    rounding: str = "None",
+) -> Tensor:
 
-
-
-    return op(
-        "forge_requantize", name, operandA, scale,attrs=(zero_point,axis,rounding,str(out_dtype))).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
+    return op("forge_requantize", name, operandA, scale, attrs=(zero_point, axis, rounding, str(out_dtype))).get_tensor(
+        out_df=pytorch_dtype_to_forge_dataformat(out_dtype)
+    )

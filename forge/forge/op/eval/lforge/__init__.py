@@ -20,85 +20,76 @@ from .tilizer import Tilizer
 from .clip import Clip
 
 op_to_module_map = {
-        "add":             "eltwise_binary",
-        "subtract":        "eltwise_binary",
-        "multiply":        "eltwise_binary",
-        "maximum":         "eltwise_binary",
-        "minimum":         "eltwise_binary",
-        "heaviside":       "eltwise_binary",
-        "binary_vstack":   "eltwise_binary",
-        "binary_hstack":   "eltwise_binary",
-        "greater":         "eltwise_binary",
-        "greater_equal":   "eltwise_binary",
-        "less":            "eltwise_binary",
-        "less_equal":      "eltwise_binary",
-        "equal":           "eltwise_binary",
-        "not_equal":       "eltwise_binary",
-        "ethernet_datacopy": EthernetDatacopy,
-        "exp":             Exp,
-        "nop":             Nop,
-        "buffer":          Buffer,
-        "reciprocal":      Reciprocal,
-        "sqrt":             Sqrt,
-        "lrelu":           "eltwise_unary",
-        "gelu":            "eltwise_unary",
-        "gelu_derivative": "eltwise_unary",
-        "log":             Log,
-        "sigmoid":         "eltwise_unary",
-        "clip":            Clip,
-        "reduce":          "eltwise_unary",
-        "abs":             Abs,
-        "tanh":            Tanh,
-        "dropout":         "eltwise_unary",
-        "cosine":          Cosine,
-        "sine":            "eltwise_unary",
-        "power":           "eltwise_unary",
-        "tilizer":         Tilizer,
-
-        "conv_sum":        "eltwise_nary",
-        "hconcat":         "eltwise_nary",
-        "vconcat":         "eltwise_nary",
-        "concatenate":     "eltwise_nary",
-        "index_copy":      "eltwise_nary",
-        "splice":          Splice,
-
-        "matmul":        "matmul",
-
-        "depthwise": "depthwise",
-
-        "embedding":     "embedding",
-
-        "transpose":                TransposeTM,
-        "reshape":                  "tm",
-        "select":                   "tm",
-        "gather":                   "tm",
-        "hslice":                   "tm",
-        "hstack":                   "tm",
-        "vslice":                   "tm",
-        "vstack":                   "tm",
-        "broadcast":                "tm",
-        "conv2d_grouped_weights":   "tm",
-        "conv2d_prestride_act":     "tm",
-        "tile_broadcast":           "tm",
-        "forge_pad":                 "tm",
-        "forge_unpad":               "tm",
-
-
-        "constant":  "constant",
-        "dram_queue":  "dram_queue",
-
-        "fused_op": "fused_ops",
-
-
-        "quantization"            : "quantize",
-        "dequantization"          : "quantize",
-        "requantization"          : "quantize",
-
-        "void": "void", # void op for testing purposes
+    "add": "eltwise_binary",
+    "subtract": "eltwise_binary",
+    "multiply": "eltwise_binary",
+    "maximum": "eltwise_binary",
+    "minimum": "eltwise_binary",
+    "heaviside": "eltwise_binary",
+    "binary_vstack": "eltwise_binary",
+    "binary_hstack": "eltwise_binary",
+    "greater": "eltwise_binary",
+    "greater_equal": "eltwise_binary",
+    "less": "eltwise_binary",
+    "less_equal": "eltwise_binary",
+    "equal": "eltwise_binary",
+    "not_equal": "eltwise_binary",
+    "ethernet_datacopy": EthernetDatacopy,
+    "exp": Exp,
+    "nop": Nop,
+    "buffer": Buffer,
+    "reciprocal": Reciprocal,
+    "sqrt": Sqrt,
+    "lrelu": "eltwise_unary",
+    "gelu": "eltwise_unary",
+    "gelu_derivative": "eltwise_unary",
+    "log": Log,
+    "sigmoid": "eltwise_unary",
+    "clip": Clip,
+    "reduce": "eltwise_unary",
+    "abs": Abs,
+    "tanh": Tanh,
+    "dropout": "eltwise_unary",
+    "cosine": Cosine,
+    "sine": "eltwise_unary",
+    "power": "eltwise_unary",
+    "tilizer": Tilizer,
+    "conv_sum": "eltwise_nary",
+    "hconcat": "eltwise_nary",
+    "vconcat": "eltwise_nary",
+    "concatenate": "eltwise_nary",
+    "index_copy": "eltwise_nary",
+    "splice": Splice,
+    "matmul": "matmul",
+    "depthwise": "depthwise",
+    "embedding": "embedding",
+    "transpose": TransposeTM,
+    "reshape": "tm",
+    "select": "tm",
+    "gather": "tm",
+    "hslice": "tm",
+    "hstack": "tm",
+    "vslice": "tm",
+    "vstack": "tm",
+    "broadcast": "tm",
+    "conv2d_grouped_weights": "tm",
+    "conv2d_prestride_act": "tm",
+    "tile_broadcast": "tm",
+    "forge_pad": "tm",
+    "forge_unpad": "tm",
+    "constant": "constant",
+    "dram_queue": "dram_queue",
+    "fused_op": "fused_ops",
+    "quantization": "quantize",
+    "dequantization": "quantize",
+    "requantization": "quantize",
+    "void": "void",  # void op for testing purposes
 }
+
 
 def has_newstyle_interface(op_name):
     return type(op_to_module_map[op_name]) is not str
+
 
 def is_eltwise(op_type):
     module_name_or_cls = op_to_module_map[op_type.op]
@@ -107,12 +98,14 @@ def is_eltwise(op_type):
     else:
         return module_name_or_cls(op_type).is_eltwise()
 
+
 def is_eltwise_binary(op_type):
     module_name_or_cls = op_to_module_map[op_type.op]
     if type(module_name_or_cls) is str:
         return "eltwise_binary" == module_name_or_cls
     else:
         return module_name_or_cls(op_type).is_eltwise_binary()
+
 
 def is_eltwise_unary(op_type):
     module_name_or_cls = op_to_module_map[op_type.op]
@@ -122,12 +115,14 @@ def is_eltwise_unary(op_type):
     else:
         return module_name_or_cls(op_type).is_eltwise_unary()
 
+
 def is_eltwise_nary(op_type):
     module_name_or_cls = op_to_module_map[op_type.op]
     if type(module_name_or_cls) is str:
         return "eltwise_nary" in module_name_or_cls
     else:
         return module_name_or_cls(op_type).is_eltwise_nary()
+
 
 @lru_cache(maxsize=len(op_to_module_map))
 def _get_module_or_class(op_name):
@@ -138,10 +133,12 @@ def _get_module_or_class(op_name):
     else:
         return module_name_or_cls
 
+
 def get_f_instance(op_type):
     module_or_class = _get_module_or_class(op_type.op)
     assert not isinstance(module_or_class, ModuleType)
     return module_or_class(op_type)
+
 
 def get_f_forge_shape(op_type, tile_height, tile_width):
     module_or_class = _get_module_or_class(op_type.op)
@@ -150,12 +147,14 @@ def get_f_forge_shape(op_type, tile_height, tile_width):
     else:
         return lambda *args: module_or_class(op_type).shape(*args, tile_height, tile_width)
 
+
 def get_f_forge_eval(op_type):
     module_or_class = _get_module_or_class(op_type.op)
     if isinstance(module_or_class, ModuleType):
         return lambda *args: module_or_class.eval(op_type.op, op_type.attr, *args)
     else:
         return module_or_class(op_type).eval
+
 
 def get_f_forge_parallelization(op_type):
     module_or_class = _get_module_or_class(op_type.op)
@@ -164,12 +163,14 @@ def get_f_forge_parallelization(op_type):
     else:
         return module_or_class(op_type).parallelization
 
+
 def get_f_forge_input_ublock_order(op_type, num_operands):
     module_or_class = _get_module_or_class(op_type.op)
     if isinstance(module_or_class, ModuleType):
         return module_or_class.input_ublock_order(op_type.op, op_type.attr, num_operands)
     else:
         return module_or_class(op_type).input_ublock_order(num_operands)
+
 
 def get_f_forge_execution_cycles(op_type):
     module_or_class = _get_module_or_class(op_type.op)

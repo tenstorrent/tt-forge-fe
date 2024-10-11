@@ -3,31 +3,30 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <string>
 #include <optional>
-#include <variant>
-#include <unordered_map>
 #include <regex>
+#include <string>
+#include <unordered_map>
+#include <variant>
 
+#include "graph_lib/defines.hpp"
 #include "graph_lib/graph.hpp"
 #include "lower_to_forge/common.hpp"
-#include "graph_lib/defines.hpp"
 #include "nlohmann/json.hpp"
 #include "shared_utils/json_extension.hpp"
-
 
 namespace tt
 {
 
 struct DeviceConfig;
 
-} // namespace tt
+}  // namespace tt
 
 namespace tt::graphlib
 {
 class Graph;
 class Node;
-}
+}  // namespace tt::graphlib
 
 namespace tt::passes
 {
@@ -64,7 +63,8 @@ struct AMPNodeProperties
         std::optional<std::string> name_regex_match = std::nullopt,
         std::optional<InputDfConfig> input_df = std::nullopt,
         std::optional<bool> is_gradient_op = std::nullopt,
-        std::optional<std::vector<std::pair<std::uint32_t, std::uint32_t>>> input_parameter_indices_to_optimize = std::nullopt) :
+        std::optional<std::vector<std::pair<std::uint32_t, std::uint32_t>>> input_parameter_indices_to_optimize =
+            std::nullopt) :
         op_type(op_type),
         epoch_type(epoch_type),
         output_df(output_df),
@@ -79,27 +79,28 @@ struct AMPNodeProperties
     }
 };
 
-class RegexMatcher {
-private:
+class RegexMatcher
+{
+   private:
     std::unordered_map<std::string, std::regex> regex_cache;
 
-public:
+   public:
     bool has_matching_string(const std::string& regex_string, const std::string& candidate_string);
 };
 
-bool is_matched_op(const AMPNodeProperties &amp_properties, RegexMatcher &regex_matcher, const graphlib::Node* node);
+bool is_matched_op(const AMPNodeProperties& amp_properties, RegexMatcher& regex_matcher, const graphlib::Node* node);
 
 void to_json(nlohmann::json& j, const AMPNodeProperties& p);
 void from_json(const nlohmann::json& j, AMPNodeProperties& p);
 
 void run_automatic_mixed_precision(
-    graphlib::Graph *graph,
-    const DeviceConfig &device_config,
+    graphlib::Graph* graph,
+    const DeviceConfig& device_config,
     const std::optional<DataFormat> default_df_override,
     const int amp_level,
     const std::vector<AMPNodeProperties>& amp_properties);
 
-nlohmann::json write_mixed_precision_json(graphlib::Graph *graph);
-void dump_mixed_precision_json_to_file(graphlib::Graph *graph, std::optional<std::string> file_path = std::nullopt);
+nlohmann::json write_mixed_precision_json(graphlib::Graph* graph);
+void dump_mixed_precision_json_to_file(graphlib::Graph* graph, std::optional<std::string> file_path = std::nullopt);
 
-}
+}  // namespace tt::passes

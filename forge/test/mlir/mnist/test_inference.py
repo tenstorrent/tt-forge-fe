@@ -7,6 +7,7 @@ from .utils import *
 import forge
 from forge.op.eval.common import compare_with_golden_pcc
 
+
 def test_mnist_inference():
     inputs = [torch.rand(1, 784)]
 

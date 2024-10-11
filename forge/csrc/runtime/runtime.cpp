@@ -3,13 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "runtime.hpp"
+
 #include <optional>
 
+#include "tt/runtime/runtime.h"
 #include "tt_device.hpp"
 #include "utils/logger.hpp"
-#include "tt/runtime/runtime.h"
 
-namespace tt {
+namespace tt
+{
 
 static target::DataType torch_scalar_type_to_dt(torch::ScalarType st)
 {
@@ -46,7 +48,7 @@ static torch::ScalarType dt_to_torch_scalar_type(target::DataType df)
         case target::DataType::BFloat16: return torch::ScalarType::BFloat16;
         default: break;
     }
-    
+
     log_fatal(LogTTDevice, "Unhandled dtype {}", target::EnumNameDataType(df));
 }
 
@@ -73,11 +75,7 @@ static runtime::Tensor create_tensor(const torch::Tensor& tensor)
     auto stride = std::vector<uint32_t>(tensor.strides().begin(), tensor.strides().end());
 
     return runtime::createTensor(
-        data,
-        shape,
-        stride,
-        tensor.element_size(),
-        torch_scalar_type_to_dt(tensor.scalar_type()));
+        data, shape, stride, tensor.element_size(), torch_scalar_type_to_dt(tensor.scalar_type()));
 }
 
 runtime::Binary load_binary_from_file(std::string const& filename)
@@ -86,14 +84,16 @@ runtime::Binary load_binary_from_file(std::string const& filename)
     return binary;
 }
 
-std::vector<torch::Tensor> run_binary_from_file(std::string const& filename, int program_idx, std::vector<torch::Tensor> const& inputs)
+std::vector<torch::Tensor> run_binary_from_file(
+    std::string const& filename, int program_idx, std::vector<torch::Tensor> const& inputs)
 {
     auto binary = load_binary_from_file(filename);
 
     return run_binary(binary, program_idx, inputs);
 }
 
-void verify_input_tensors(const std::vector<torch::Tensor>& input_tensors, const std::vector<runtime::TensorDesc>& input_descs)
+void verify_input_tensors(
+    const std::vector<torch::Tensor>& input_tensors, const std::vector<runtime::TensorDesc>& input_descs)
 {
     if (input_tensors.size() != input_descs.size())
     {
@@ -110,12 +110,18 @@ void verify_input_tensors(const std::vector<torch::Tensor>& input_tensors, const
 
         if (input_tensor.sizes().vec() != shape)
         {
-            log_fatal(LogTTDevice, "Tensor {} - shape mismatch: expected {}, got {}", i, shape, input_tensor.sizes().vec());
+            log_fatal(
+                LogTTDevice, "Tensor {} - shape mismatch: expected {}, got {}", i, shape, input_tensor.sizes().vec());
         }
 
         if (input_tensor.strides().vec() != stride)
         {
-            log_fatal(LogTTDevice, "Tensor {} - stride mismatch: expected {}, got {}", i, stride, input_tensor.strides().vec());
+            log_fatal(
+                LogTTDevice,
+                "Tensor {} - stride mismatch: expected {}, got {}",
+                i,
+                stride,
+                input_tensor.strides().vec());
         }
 
         if (torch_scalar_type_to_dt(input_tensor.scalar_type()) != desc.dataType)
@@ -124,15 +130,15 @@ void verify_input_tensors(const std::vector<torch::Tensor>& input_tensors, const
             auto got = target::EnumNameDataType(torch_scalar_type_to_dt(input_tensor.scalar_type()));
             log_fatal(LogTTDevice, "Tensor {} - data type mismatch: expected {}, got {}", i, expected, got);
         }
-
     }
 }
 
-std::vector<torch::Tensor> run_binary(runtime::Binary &binary, int program_idx, std::vector<torch::Tensor> const& inputs)
+std::vector<torch::Tensor> run_binary(
+    runtime::Binary& binary, int program_idx, std::vector<torch::Tensor> const& inputs)
 {
     auto& system = TTSystem::get_system();
 
-    for (auto &device : system.devices)
+    for (auto& device : system.devices)
     {
         if (!device->is_open())
         {
@@ -177,4 +183,4 @@ std::vector<torch::Tensor> run_binary(runtime::Binary &binary, int program_idx, 
     return outputs;
 }
 
-} // namespace tt
+}  // namespace tt

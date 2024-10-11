@@ -19,16 +19,9 @@ from . import models_nd
 
 MODELS_PATH = "./forge/test/operators/reduce/models_nd/"
 
+
 @pytest.mark.xfail
-def test_reduce(
-    red_train,
-    red_recompute,
-    red_op,
-    red_model,
-    red_shape,
-    red_dim,
-    red_keepdim
-):
+def test_reduce(red_train, red_recompute, red_op, red_model, red_shape, red_dim, red_keepdim):
 
     print("\n")
     print(f"red_train --> {red_train}")
@@ -42,22 +35,22 @@ def test_reduce(
 
     if not red_train and red_recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
-    
+
     assert type(red_train) in [bool, str], "Type of training parameter must be boolean or string"
     if type(red_train) == str:
-        training = True if red_train == 'True' else False
+        training = True if red_train == "True" else False
     else:
         training = red_train
     assert type(red_recompute) in [bool, str], "Type of recompute parameter must be boolean or string"
     if type(red_recompute) == str:
-        recompute = True if red_recompute == 'True' else False
+        recompute = True if red_recompute == "True" else False
     else:
         recompute = red_recompute
     model = red_model
     shape = eval(red_shape) if type(red_shape) == str else red_shape
     operation = red_op
     dim = int(red_dim)
-    keepdim = True if red_keepdim == 'True' else False
+    keepdim = True if red_keepdim == "True" else False
 
     print("\n")
     print(f"Training --> {training}")
@@ -74,12 +67,9 @@ def test_reduce(
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
+        verify_cfg=VerifyConfig(),
     )

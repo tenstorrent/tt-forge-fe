@@ -9,11 +9,12 @@
 #include <pybind11/pybind11.h>
 #pragma clang diagnostic pop
 
-#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 namespace py = pybind11;
 
-namespace tt {
+namespace tt
+{
 
 void TorchDeviceModule(py::module &m_torch_device);
 

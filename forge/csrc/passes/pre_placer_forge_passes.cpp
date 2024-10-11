@@ -8,12 +8,16 @@
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
 
-namespace tt {
+namespace tt
+{
 
-void lower_to_buffering_queues(Graph* graph) {
+void lower_to_buffering_queues(Graph *graph)
+{
     std::vector<Node *> nodes = graphlib::topological_sort(*graph);
-    for (Node* node : nodes) {
-        if (node->node_type() == NodeType::kForgeOp and node->as<graphlib::ForgeOpNode>()->op_name() == "dram_queue") {
+    for (Node *node : nodes)
+    {
+        if (node->node_type() == NodeType::kForgeOp and node->as<graphlib::ForgeOpNode>()->op_name() == "dram_queue")
+        {
             int entries = std::get<int>(node->as<graphlib::ForgeOpNode>()->op_attrs().at(0));
             graphlib::QueueNode *buffering_queue = graph->add_node(
                 graphlib::create_node<graphlib::BufferingQueueNode>("lowered_" + node->name(), entries),
@@ -28,7 +32,8 @@ void split_unsupported_gradient_ops(graphlib::Graph *graph, const DeviceConfig &
     std::unordered_set<std::string> supported_gradient_ops = {"matmul", "multiply", "nop"};
 
     // On WH_B0, supported_gradient_ops include add/subtract
-    if(device_config.is_wormhole_b0()) supported_gradient_ops.insert({"add", "subtract"});
+    if (device_config.is_wormhole_b0())
+        supported_gradient_ops.insert({"add", "subtract"});
 
     auto is_unsupported_gradient_op = [&supported_gradient_ops](Node *n)
     {
@@ -47,9 +52,8 @@ void split_unsupported_gradient_ops(graphlib::Graph *graph, const DeviceConfig &
         TT_ASSERT(users.size() == 1, "Gradient ops should only have a single user");
         auto user_edge = users[0];
         graphlib::ForgeOpNode *gradient_accumulator =
-            graph->add_node(
-                op->clone(op->name() + "_gradient_accumulator"),
-                graph->get_subgraph_id_for_node(op->id()))->as<graphlib::ForgeOpNode>();
+            graph->add_node(op->clone(op->name() + "_gradient_accumulator"), graph->get_subgraph_id_for_node(op->id()))
+                ->as<graphlib::ForgeOpNode>();
         gradient_accumulator->change_op_type(OpType("nop", {}, {}));
         insert_node_on_edge(graph, user_edge, gradient_accumulator);
         gradient_accumulator->set_gradient_op(true);
@@ -132,9 +136,8 @@ static void hoist_relu(graphlib::Graph *graph, Node *nop)
 // Remove NOPs from the graph that have no TMs
 void remove_nops(graphlib::Graph *graph)
 {
-    auto is_nop_node = [](Node *n) {
-        return (n->node_type() == graphlib::kForgeOp) && (n->as<graphlib::ForgeOpNode>()->op_type() == "nop");
-    };
+    auto is_nop_node = [](Node *n)
+    { return (n->node_type() == graphlib::kForgeOp) && (n->as<graphlib::ForgeOpNode>()->op_type() == "nop"); };
 
     auto cannot_bypass_nary_tm_operand = [graph](Node *n)
     {
@@ -165,7 +168,9 @@ void remove_nops(graphlib::Graph *graph)
 
     for (Node *node : nop_nodes)
     {
-        if ((node->as<tt::graphlib::TaggedNode>()->has_tag("padding_nop")) or (node->as<tt::graphlib::TaggedNode>()->has_tag("dont_remove"))) {
+        if ((node->as<tt::graphlib::TaggedNode>()->has_tag("padding_nop")) or
+            (node->as<tt::graphlib::TaggedNode>()->has_tag("dont_remove")))
+        {
             continue;
         }
 
@@ -179,11 +184,13 @@ void remove_nops(graphlib::Graph *graph)
             graphlib::bypass_node(graph, node, true);
             continue;
         }
-        if (not node->as<graphlib::ForgeOpNode>()->forge_attrs().empty()) {
+        if (not node->as<graphlib::ForgeOpNode>()->forge_attrs().empty())
+        {
             // by default, just skip for now until we get a clearer picture on which nops can be skipped
             continue;
         }
-        if (node->as<graphlib::ForgeOpNode>()->is_gradient_op()) {
+        if (node->as<graphlib::ForgeOpNode>()->is_gradient_op())
+        {
             // don't remove nops that have the `is_gradient_op` flag tagged
             continue;
         }
@@ -194,12 +201,14 @@ void remove_nops(graphlib::Graph *graph)
 
         std::vector<Edge> operand_edges = graph->operand_data_edges(node);
         TT_ASSERT(operand_edges.size() == 1);
-        const Edge& producer_to_nop_edge = operand_edges[0];
-        Node* producer = graph->node_by_id(producer_to_nop_edge.producer_node_id);
+        const Edge &producer_to_nop_edge = operand_edges[0];
+        Node *producer = graph->node_by_id(producer_to_nop_edge.producer_node_id);
 
         bool is_output_node_immediate_user = false;
-        for (Node* user : graph->data_users(node)) {
-            if (user->node_type() == graphlib::NodeType::kOutput or user->node_type() == graphlib::NodeType::kQueue) {
+        for (Node *user : graph->data_users(node))
+        {
+            if (user->node_type() == graphlib::NodeType::kOutput or user->node_type() == graphlib::NodeType::kQueue)
+            {
                 is_output_node_immediate_user = true;
             }
         }
@@ -221,19 +230,12 @@ void remove_nops(graphlib::Graph *graph)
     }
 }
 
-
 void tag_subgraph_nodes(graphlib::Graph *graph)
 {
-    auto is_op_node = [](graphlib::Node *n)
-    {
-        return (n->node_type() == graphlib::kForgeOp);
-    };
-    auto is_input_node = [](graphlib::Node *n)
-    {
-        return (n->node_type() == graphlib::kInput);
-    };
+    auto is_op_node = [](graphlib::Node *n) { return (n->node_type() == graphlib::kForgeOp); };
+    auto is_input_node = [](graphlib::Node *n) { return (n->node_type() == graphlib::kInput); };
     std::vector<std::vector<graphlib::Node *>> subgraphs;
-    for (graphlib::Node *output_node: graph->ordered_module_outputs())
+    for (graphlib::Node *output_node : graph->ordered_module_outputs())
     {
         std::vector<graphlib::Node *> reachable = reachable_nodes(graph, output_node, is_op_node);
         if (reachable.size() == graph->nodes_by_type(graphlib::kForgeOp).size())  // No disjoint subgraphs
@@ -243,7 +245,7 @@ void tag_subgraph_nodes(graphlib::Graph *graph)
         unsigned int subgraph_index = 0;
         unsigned int io_subgraph_index;
         for (auto subgraph : subgraphs)
-        {            
+        {
             if (std::is_permutation(subgraph.begin(), subgraph.end(), reachable.begin()))
             {
                 found = true;
@@ -260,8 +262,7 @@ void tag_subgraph_nodes(graphlib::Graph *graph)
         }
         graph->move_node_to_subgraph(output_node->id(), io_subgraph_index);
         std::vector<graphlib::Node *> inputs = reachable_nodes(graph, output_node, is_input_node);
-        for (graphlib::Node *input_node : inputs)
-            graph->move_node_to_subgraph(input_node->id(), io_subgraph_index);
+        for (graphlib::Node *input_node : inputs) graph->move_node_to_subgraph(input_node->id(), io_subgraph_index);
     }
     unsigned int subgraph_index = 0;
     log_info(LogGraphCompiler, "Dividing graph into: {} subgraphs", subgraphs.size());
@@ -276,12 +277,12 @@ void tag_subgraph_nodes(graphlib::Graph *graph)
     }
 
     return;
-} 
+}
 
 // Remove transposes on srcB by inserting nops where needed. Supports WH_b0 Architecture
 void fix_transposes(graphlib::Graph *graph, const DeviceConfig &device_config)
 {
-    for (graphlib::Node *node : graphlib::topological_sort(*graph)) 
+    for (graphlib::Node *node : graphlib::topological_sort(*graph))
     {
         if (node->node_type() != graphlib::NodeType::kForgeOp)
             continue;
@@ -289,36 +290,44 @@ void fix_transposes(graphlib::Graph *graph, const DeviceConfig &device_config)
         graphlib::ForgeOpNode *opnode = node->as<graphlib::ForgeOpNode>();
 
         // No need to insert nop before a nop
-        if(opnode->op_type().op == "nop")
+        if (opnode->op_type().op == "nop")
             continue;
-         
+
         std::vector<Edge> operand_data_edges = graph->operand_data_edges(node);
         std::vector<Edge> edges_to_check;
         edges_to_check.reserve(2);
 
-        // WH_b0 Hardware supports transpose feeding into srcA reg, so no need to insert a nop for element-wise ops for input_indx == 0
-        if(device_config.is_wormhole_b0() and graphlib::is_eltwise(opnode) and (graphlib::is_eltwise_unary(opnode) or graphlib::is_eltwise_binary(opnode))){
+        // WH_b0 Hardware supports transpose feeding into srcA reg, so no need to insert a nop for element-wise ops for
+        // input_indx == 0
+        if (device_config.is_wormhole_b0() and graphlib::is_eltwise(opnode) and
+            (graphlib::is_eltwise_unary(opnode) or graphlib::is_eltwise_binary(opnode)))
+        {
             TT_ASSERT(operand_data_edges.size() > 0);
-            
+
             // EXCEPTION = We dont support if input 1 == matmul
-            bool is_input1_matmul = (operand_data_edges.size() > 1) && [&]() -> bool{
+            bool is_input1_matmul = (operand_data_edges.size() > 1) && [&]() -> bool
+            {
                 auto producer_input1 = graph->node_by_id(operand_data_edges.at(1).producer_node_id);
-                return (producer_input1->node_type() == graphlib::NodeType::kForgeOp) && (producer_input1->as<graphlib::ForgeOpNode>()->is_matmul());
+                return (producer_input1->node_type() == graphlib::NodeType::kForgeOp) &&
+                       (producer_input1->as<graphlib::ForgeOpNode>()->is_matmul());
             }();
-            
+
             auto start_indx = is_input1_matmul ? 0 : 1;
             edges_to_check = std::vector<Edge>(operand_data_edges.begin() + start_indx, operand_data_edges.end());
         }
-        else if (opnode->is_matmul()) {
+        else if (opnode->is_matmul())
+        {
             // matmul sends operand 0 to src B.. maybe it shouldn't?
             edges_to_check.push_back(operand_data_edges[0]);
         }
-        else {
+        else
+        {
             // All other ops do not support transpose TM anywhere, check all data edges
             edges_to_check = operand_data_edges;
         }
 
-        for (std::size_t i = 0; i < edges_to_check.size(); i++) {
+        for (std::size_t i = 0; i < edges_to_check.size(); i++)
+        {
             Edge edge = edges_to_check[i];
             try_insert_nop_on_transpose_edge(graph, edge);
         }
@@ -328,7 +337,7 @@ void fix_transposes(graphlib::Graph *graph, const DeviceConfig &device_config)
 // Insert NOPs on outputs that have a TM on their input, since outputs aren't capable of performing TMs
 void fix_tms_on_output(graphlib::Graph *graph)
 {
-    for (Node *n: graph->nodes_by_type(graphlib::NodeType::kOutput))
+    for (Node *n : graph->nodes_by_type(graphlib::NodeType::kOutput))
     {
         std::vector<Edge> edges = graph->operand_data_edges(n);
         TT_ASSERT(edges.size() == 1);
@@ -337,14 +346,16 @@ void fix_tms_on_output(graphlib::Graph *graph)
         if (tms.size() == 0)
             continue;
 
-        graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
-                    n->name() + "_tm_nop", "nop"), graph->get_subgraph_id_for_node(n->id()));
+        graphlib::ForgeOpNode *nop = graph->add_node(
+            graphlib::create_node<graphlib::ForgeOpNode>(n->name() + "_tm_nop", "nop"),
+            graph->get_subgraph_id_for_node(n->id()));
         nop->copy_parent_op_attributes(graph->node_by_id(edges[0].producer_node_id)->as<graphlib::ForgeOpNode>());
         graphlib::insert_node_on_edge(graph, edges[0], nop);
     }
 }
 
-void insert_queues_for_op_intermediates(graphlib::Graph *graph, const std::vector<std::string> &op_intermediates_to_save)
+void insert_queues_for_op_intermediates(
+    graphlib::Graph *graph, const std::vector<std::string> &op_intermediates_to_save)
 {
     for (const std::string &op_intermediate : op_intermediates_to_save)
     {
@@ -364,10 +375,9 @@ void insert_queues_for_op_intermediates(graphlib::Graph *graph, const std::vecto
                 op_intermediate);
         }
 
-        auto intermediate_output =
-            graph->add_node(
-                graphlib::create_node<graphlib::OutputNode>(node->name() + "_intermediate_output"),
-                graph->get_subgraph_id_for_node(node->id()));
+        auto intermediate_output = graph->add_node(
+            graphlib::create_node<graphlib::OutputNode>(node->name() + "_intermediate_output"),
+            graph->get_subgraph_id_for_node(node->id()));
         graph->add_edge(node, intermediate_output);
         intermediate_output->set_shape(Shape::create(node->shape().as_vector()));
         intermediate_output->set_output_df(node->output_df());
@@ -378,16 +388,14 @@ void insert_queues_for_op_intermediates(graphlib::Graph *graph, const std::vecto
 
 void sanitize_past_cache_ios(graphlib::Graph *graph)
 {
-    auto is_partial_datacopy_edge = [](Edge e) {
-        return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-    };
+    auto is_partial_datacopy_edge = [](Edge e) { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
 
     for (Node *node : graph->nodes_by_type(NodeType::kOutput))
     {
         std::vector<graphlib::Edge> partial_datacopy_edges = graph->user_edges(node, is_partial_datacopy_edge);
         if (partial_datacopy_edges.size() == 0)
             continue;
-        
+
         auto output_node = node->as<graphlib::OutputNode>();
         output_node->set_untilize(false);
     }
@@ -402,8 +410,8 @@ void fix_untilized_outputs(graphlib::Graph *graph, const DeviceConfig &device_co
     // and will place these ops on an MMIO-capable device.
     bool is_multichip_wormhole = device_config.is_wormhole_b0() and device_config.chip_ids.size() > 1;
 
-    std::unordered_map<Node *, int> output_nop_indices; // For the cases where one op feeds multiple outputs
-    for (Node *n: graph->nodes_by_type(graphlib::NodeType::kOutput))
+    std::unordered_map<Node *, int> output_nop_indices;  // For the cases where one op feeds multiple outputs
+    for (Node *n : graph->nodes_by_type(graphlib::NodeType::kOutput))
     {
         auto output_node = n->as<graphlib::OutputNode>();
         if (not output_node->untilize())
@@ -424,9 +432,10 @@ void fix_untilized_outputs(graphlib::Graph *graph, const DeviceConfig &device_co
         if (!needs_nop)
             continue;
 
-        graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
-                    node->name() + "_output_nop_" + std::to_string(output_nop_indices[node]++), "nop"),
-                    graph->get_subgraph_id_for_node(n->id()));
+        graphlib::ForgeOpNode *nop = graph->add_node(
+            graphlib::create_node<graphlib::ForgeOpNode>(
+                node->name() + "_output_nop_" + std::to_string(output_nop_indices[node]++), "nop"),
+            graph->get_subgraph_id_for_node(n->id()));
         nop->copy_parent_op_attributes(source->as<graphlib::ForgeOpNode>());
         nop->as<graphlib::TaggedNode>()->add_tags(source->as<graphlib::TaggedNode>()->get_tags());
         graphlib::insert_node_on_edge(graph, edges[0], nop);
@@ -434,12 +443,13 @@ void fix_untilized_outputs(graphlib::Graph *graph, const DeviceConfig &device_co
 }
 
 // Replace 'buffer' with 'nop' ops
-void replace_buffers_with_nops (graphlib::Graph *graph)
+void replace_buffers_with_nops(graphlib::Graph *graph)
 {
     for (Node *n : graph->nodes_by_type(NodeType::kForgeOp))
     {
         auto op = n->as<graphlib::ForgeOpNode>();
-        if (op->op_type().op == "buffer") {
+        if (op->op_type().op == "buffer")
+        {
             auto op_type = op->op_type();
             op_type.op = "nop";
             op->change_op_type(op_type);
@@ -452,12 +462,14 @@ void insert_nop_on_matmul_input(graphlib::Graph *graph)
     for (Node *n : graph->nodes_by_type(NodeType::kForgeOp))
     {
         auto op = n->as<graphlib::ForgeOpNode>();
-        if (op->op_type().op == "matmul") {
+        if (op->op_type().op == "matmul")
+        {
             auto operand_edges = graph->operand_data_edges(op);
             if (operand_edges[0].producer_node_id == operand_edges[1].producer_node_id)
             {
-                graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
-                            op->name() + "_input_nop", "nop"), graph->get_subgraph_id_for_node(n->id()));
+                graphlib::ForgeOpNode *nop = graph->add_node(
+                    graphlib::create_node<graphlib::ForgeOpNode>(op->name() + "_input_nop", "nop"),
+                    graph->get_subgraph_id_for_node(n->id()));
                 nop->copy_parent_op_attributes(op->as<graphlib::ForgeOpNode>());
                 graphlib::insert_node_on_edge(graph, operand_edges[1], nop);
             }
@@ -465,18 +477,21 @@ void insert_nop_on_matmul_input(graphlib::Graph *graph)
     }
 }
 
-void insert_tilize_op_on_input(graphlib::Graph *graph){
-
-    for (Node* n: graph->nodes_by_type(NodeType::kInput))
+void insert_tilize_op_on_input(graphlib::Graph *graph)
+{
+    for (Node *n : graph->nodes_by_type(NodeType::kInput))
     {
         auto op = n->as<graphlib::InputNode>();
         graphlib::RuntimeTensorTransform runtime_tensor_transform = op->get_runtime_tensor_transform();
-        if(runtime_tensor_transform.type != graphlib::RuntimeTensorTransformType::Prestride && op->is_activation())
+        if (runtime_tensor_transform.type != graphlib::RuntimeTensorTransformType::Prestride && op->is_activation())
         {
             for (auto user_edge : graph->user_edges(op))
             {
-                graphlib::ForgeOpNode *tilize = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>
-                (op->name() + "_"+graph->node_by_id(user_edge.consumer_node_id)->name()+"_tilizer","tilizer"), graph->get_subgraph_id_for_node(n->id()));
+                graphlib::ForgeOpNode *tilize = graph->add_node(
+                    graphlib::create_node<graphlib::ForgeOpNode>(
+                        op->name() + "_" + graph->node_by_id(user_edge.consumer_node_id)->name() + "_tilizer",
+                        "tilizer"),
+                    graph->get_subgraph_id_for_node(n->id()));
                 graphlib::insert_node_on_edge(graph, user_edge, tilize, true, true, 0, true);
             }
         }
@@ -509,7 +524,8 @@ void fix_host_inputs(graphlib::Graph *graph)
             //
             for (std::size_t i = 1; i < user_data_edges.size(); i++)
             {
-                if (!(*graph->get_edge_attributes(user_data_edges[0]) == *graph->get_edge_attributes(user_data_edges[i])))
+                if (!(*graph->get_edge_attributes(user_data_edges[0]) ==
+                      *graph->get_edge_attributes(user_data_edges[i])))
                 {
                     return;
                 }
@@ -554,7 +570,8 @@ std::vector<std::vector<std::string>> update_epoch_breaks_for_partial_datacopy(
     std::vector<std::vector<std::string>> updated_op_names_to_epoch_break = op_names_to_epoch_break;
     for (auto node : graph->nodes())
     {
-        auto partial_datacopy_edges = graph->operand_edges(node, [](Edge e) { return e.edge_type == graphlib::EdgeType::kPartialDataCopy; });
+        auto partial_datacopy_edges =
+            graph->operand_edges(node, [](Edge e) { return e.edge_type == graphlib::EdgeType::kPartialDataCopy; });
         if (partial_datacopy_edges.empty())
             continue;
 
@@ -584,10 +601,10 @@ void calculate_ublock_order(graphlib::Graph *graph)
         {
             auto [edge, order] = needs_visit.back();
             needs_visit.pop_back();
-            if (
-                equivalence_sets.at(graphlib::UBlockOrder::R).find(edge) != equivalence_sets.at(graphlib::UBlockOrder::R).end()
-                or equivalence_sets.at(graphlib::UBlockOrder::C).find(edge) != equivalence_sets.at(graphlib::UBlockOrder::C).end()
-            )
+            if (equivalence_sets.at(graphlib::UBlockOrder::R).find(edge) !=
+                    equivalence_sets.at(graphlib::UBlockOrder::R).end() or
+                equivalence_sets.at(graphlib::UBlockOrder::C).find(edge) !=
+                    equivalence_sets.at(graphlib::UBlockOrder::C).end())
                 continue;
 
             equivalence_sets.at(order).insert(edge);
@@ -607,29 +624,34 @@ void calculate_ublock_order(graphlib::Graph *graph)
             bool no_input_ublock_reqs = not maybe_input_ublock_order;
             if (no_input_ublock_reqs)
             {
-                for (auto operand : operands) {
+                for (auto operand : operands)
+                {
                     auto edge_attrs = graph->get_edge_attributes(edge);
-                    if (edge_attrs->has_tm("transpose")) {
-                        needs_visit.insert(needs_visit.end(),
-                            {std::make_pair(operand, order == graphlib::UBlockOrder::R ? graphlib::UBlockOrder::C : graphlib::UBlockOrder::R)}
-                        );
-
-                    } else if (edge_attrs->has_tm("vslice") and edge_attrs->get_tms().size() == 1) {
-                        needs_visit.insert(needs_visit.end(),
-                            {std::make_pair(operand, graphlib::UBlockOrder::R)}
-                        );
-                    } else if (edge_attrs->has_tm("hslice") and edge_attrs->get_tms().size() == 1) {
-                        needs_visit.insert(needs_visit.end(),
-                            {std::make_pair(operand, graphlib::UBlockOrder::C)}
-                        );
-                    } else {
-                        needs_visit.insert(needs_visit.end(), {std::make_pair(operand, order) });
+                    if (edge_attrs->has_tm("transpose"))
+                    {
+                        needs_visit.insert(
+                            needs_visit.end(),
+                            {std::make_pair(
+                                operand,
+                                order == graphlib::UBlockOrder::R ? graphlib::UBlockOrder::C
+                                                                  : graphlib::UBlockOrder::R)});
+                    }
+                    else if (edge_attrs->has_tm("vslice") and edge_attrs->get_tms().size() == 1)
+                    {
+                        needs_visit.insert(needs_visit.end(), {std::make_pair(operand, graphlib::UBlockOrder::R)});
+                    }
+                    else if (edge_attrs->has_tm("hslice") and edge_attrs->get_tms().size() == 1)
+                    {
+                        needs_visit.insert(needs_visit.end(), {std::make_pair(operand, graphlib::UBlockOrder::C)});
+                    }
+                    else
+                    {
+                        needs_visit.insert(needs_visit.end(), {std::make_pair(operand, order)});
                     }
                 }
             }
         }
     };
-
 
     std::map<graphlib::UBlockOrder, std::set<Edge>> order_equivalence = {
         {graphlib::UBlockOrder::R, std::set<Edge>{}},
@@ -699,38 +721,38 @@ void calculate_ublock_order(graphlib::Graph *graph)
     }
 
     // Set order on partial datacopy edges consumers
-    for (Node * node : graph->nodes())
+    for (Node *node : graph->nodes())
     {
-        auto is_partial_datacopy_edge = [](Edge e) {
-            return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-        };
+        auto is_partial_datacopy_edge = [](Edge e) { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
         std::vector<graphlib::Edge> partial_datacopy_edges = graph->operand_edges(node, is_partial_datacopy_edge);
 
         if (partial_datacopy_edges.empty())
             continue;
-        
+
         // Fetch producers' edges because they are the kData edges that have ublock order
         std::vector<graphlib::Edge> producer_edges;
-        for (auto edge : partial_datacopy_edges) {
+        for (auto edge : partial_datacopy_edges)
+        {
             auto output_node = graph->node_by_id(edge.producer_node_id);
             TT_ASSERT(graph->operand_edges(output_node).size() == 1, "Output node should only have 1 producer");
-            producer_edges.push_back(
-                graph->operand_edges(output_node).front()
-            );
+            producer_edges.push_back(graph->operand_edges(output_node).front());
         }
 
         // partial datacopy edges should always have the same ublock order from all producers
         auto ublock_order = graph->get_edge_attributes(producer_edges[0])->get_ublock_order();
 
-        for (auto edge : producer_edges) {
+        for (auto edge : producer_edges)
+        {
             auto edge_attrs = graph->get_edge_attributes(edge);
-            if (edge_attrs->get_ublock_order() != ublock_order) {
+            if (edge_attrs->get_ublock_order() != ublock_order)
+            {
                 // Insert NOP to transpose ublock order
                 auto producer_node = graph->node_by_id(edge.producer_node_id);
-                auto nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
-                    producer_node->name() + "_partial_datacopy_nop", "nop"),
+                auto nop = graph->add_node(
+                    graphlib::create_node<graphlib::ForgeOpNode>(
+                        producer_node->name() + "_partial_datacopy_nop", "nop"),
                     graph->get_subgraph_id_for_node(producer_node->id()));
-                
+
                 auto [new_edge0, new_edge1] = graphlib::insert_node_on_edge(graph, edge, nop);
                 graph->get_edge_attributes(new_edge1)->set_ublock_order(ublock_order);
                 graphlib::calculate_and_set_node_shape(graph, nop);
@@ -739,31 +761,32 @@ void calculate_ublock_order(graphlib::Graph *graph)
     }
 
     // Set linking on subgraphs
-    for (Node * node : graph->nodes())
+    for (Node *node : graph->nodes())
     {
-        auto is_subgraph_link_edge = [](Edge e) {
-            return (e.edge_type == graphlib::EdgeType::kSubgraphLink);
-        };
+        auto is_subgraph_link_edge = [](Edge e) { return (e.edge_type == graphlib::EdgeType::kSubgraphLink); };
         std::vector<graphlib::Edge> subgraph_link_edge = graph->operand_edges(node, is_subgraph_link_edge);
 
         if (subgraph_link_edge.empty())
             continue;
-        
+
         // Fetch producers' edges because they are the kData edges that have ublock order
         auto output_node = graph->node_by_id(subgraph_link_edge[0].producer_node_id);
         TT_ASSERT(graph->operand_edges(output_node).size() == 1, "Output node should only have 1 producer");
-        auto producer_ublock_order = graph->get_edge_attributes(graph->operand_edges(output_node)[0])->get_ublock_order();
+        auto producer_ublock_order =
+            graph->get_edge_attributes(graph->operand_edges(output_node)[0])->get_ublock_order();
 
         // Consumer should have the same ublock order as producer
-        for (auto e : graph->user_data_edges(node)) {
+        for (auto e : graph->user_data_edges(node))
+        {
             auto edge_attrs = graph->get_edge_attributes(e);
-            if (edge_attrs->get_ublock_order() != producer_ublock_order) {
+            if (edge_attrs->get_ublock_order() != producer_ublock_order)
+            {
                 // Insert NOP to transpose ublock order
-                auto nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
-                    node->name() + "_subgraph_link_nop", "nop"),
+                auto nop = graph->add_node(
+                    graphlib::create_node<graphlib::ForgeOpNode>(node->name() + "_subgraph_link_nop", "nop"),
                     graph->get_subgraph_id_for_node(node->id()));
                 auto original_ublock_order = edge_attrs->get_ublock_order();
-                
+
                 auto [new_edge0, new_edge1] = graphlib::insert_node_on_edge(graph, e, nop);
                 graph->get_edge_attributes(new_edge0)->set_ublock_order(producer_ublock_order);
                 graph->get_edge_attributes(new_edge1)->set_ublock_order(original_ublock_order);
@@ -771,8 +794,6 @@ void calculate_ublock_order(graphlib::Graph *graph)
             }
         }
     }
-
-
 
 #ifdef DEBUG
     //
@@ -798,20 +819,23 @@ void calculate_ublock_order(graphlib::Graph *graph)
                       operands.size(), graph->get_edge_attributes(operands.front())->get_ublock_order());
         for (std::size_t i = 0; i < operands.size(); ++i)
         {
-            TT_ASSERT(graph->get_edge_attributes(operands[i])->get_ublock_order() == required_input_ublock_order[i], "UBlock order mismatch on {} and {}",
-                graph->node_by_id(operands[i].producer_node_id)->name(), node->name());
+            TT_ASSERT(
+                graph->get_edge_attributes(operands[i])->get_ublock_order() == required_input_ublock_order[i],
+                "UBlock order mismatch on {} and {}",
+                graph->node_by_id(operands[i].producer_node_id)->name(),
+                node->name());
         }
     }
 #endif
 }
 
-void split_broadcasts(Graph* graph)
+void split_broadcasts(Graph *graph)
 {
     std::function<bool(graphlib::Edge)> has_broadcast_filter = [&graph](graphlib::Edge edge)
     {
         auto edge_attributes = graph->get_edge_attributes(edge);
         std::vector<graphlib::OpType> &tms = edge_attributes->get_tms();
-        return std::any_of(tms.begin(), tms.end(), [](graphlib::OpType& ot) { return ot.op == "broadcast"; });
+        return std::any_of(tms.begin(), tms.end(), [](graphlib::OpType &ot) { return ot.op == "broadcast"; });
     };
 
     // Create a list of edges with broadcast TMs eligible for splitting
@@ -828,7 +852,7 @@ void split_broadcasts(Graph* graph)
             std::vector<graphlib::OpType> &tms = graph->get_edge_attributes(edge)->get_tms();
 
             int cnt_broadcast_tms = 0;
-            for (graphlib::OpType& opType : tms)
+            for (graphlib::OpType &opType : tms)
             {
                 if (opType.op == "broadcast")
                 {
@@ -844,7 +868,7 @@ void split_broadcasts(Graph* graph)
     }
 
     // For each edge in the list, iteratively keep adding nops and splitting TM attributes
-    for (Edge& edge_candidate : edge_candidates)
+    for (Edge &edge_candidate : edge_candidates)
     {
         Node *consumer = graph->node_by_id(edge_candidate.consumer_node_id);
         int curr_producer_id = edge_candidate.producer_node_id;
@@ -868,7 +892,8 @@ void split_broadcasts(Graph* graph)
                 if (tms[i].op == "broadcast")
                 {
                     int broadcast_dim = std::get<int>(tms[i].attr[0]);
-                    broadcast_dim = broadcast_dim < 0? broadcast_dim + graphlib::Shape::FORGE_DIM_COUNT: broadcast_dim;
+                    broadcast_dim =
+                        broadcast_dim < 0 ? broadcast_dim + graphlib::Shape::FORGE_DIM_COUNT : broadcast_dim;
                     if (broadcast_dim != 1 && (first_non_t_broadcast_idx == -1))
                     {
                         // non t-dim broadcast
@@ -896,7 +921,7 @@ void split_broadcasts(Graph* graph)
 
                     if (cnt_broadcast_tms > 1)
                     {
-                        auto [inserted, _, __]  = split_broadcast(graph, consumer, edge, prev_broadcast_tm_idx);
+                        auto [inserted, _, __] = split_broadcast(graph, consumer, edge, prev_broadcast_tm_idx);
                         curr_producer_id = inserted->id();
 
                         found = true;
@@ -921,17 +946,19 @@ std::tuple<Node *, Edge, Edge> split_broadcast(Graph *graph, Node *consumer, Edg
 
     std::uint32_t index = 0;
     std::string nop_name;
-    while (true) {
-        nop_name = graph->node_by_id(edge.producer_node_id)->name() + "_splt_brcst_" + std::to_string(broadcast_dim) + "_" + std::to_string(index);
-        if (graph->has_node_with_name(nop_name)) {
-            index ++;
+    while (true)
+    {
+        nop_name = graph->node_by_id(edge.producer_node_id)->name() + "_splt_brcst_" + std::to_string(broadcast_dim) +
+                   "_" + std::to_string(index);
+        if (graph->has_node_with_name(nop_name))
+        {
+            index++;
             continue;
         }
         break;
     }
-    graphlib::ForgeOpNode *nop =
-        graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(nop_name, "nop"),
-        graph->get_subgraph_id_for_node(consumer->id()));
+    graphlib::ForgeOpNode *nop = graph->add_node(
+        graphlib::create_node<graphlib::ForgeOpNode>(nop_name, "nop"), graph->get_subgraph_id_for_node(consumer->id()));
     nop->copy_parent_op_attributes(consumer->as<graphlib::ForgeOpNode>());
     auto [new_edge0, new_edge1] = graphlib::insert_node_on_edge(graph, edge, nop);
 
@@ -947,20 +974,29 @@ std::tuple<Node *, Edge, Edge> split_broadcast(Graph *graph, Node *consumer, Edg
     return std::make_tuple(nop, new_edge0, new_edge1);
 }
 
-void validate_buffering_queues(graphlib::Graph *graph) {
-    for (graphlib::Node *node : graphlib::topological_sort(*graph))  {
-        if (node->node_type() != graphlib::NodeType::kQueue) {
+void validate_buffering_queues(graphlib::Graph *graph)
+{
+    for (graphlib::Node *node : graphlib::topological_sort(*graph))
+    {
+        if (node->node_type() != graphlib::NodeType::kQueue)
+        {
             continue;
         }
-        if (node->as<graphlib::QueueNode>()->is_buffering()) {
+        if (node->as<graphlib::QueueNode>()->is_buffering())
+        {
             // verify that we're only buffering queues are inserted between ops
-            for (Node *operand : graph->data_operands(node)) {
-                if (operand->node_type() != graphlib::NodeType::kForgeOp) {
-                    log_fatal("buffering queue: {} has operand: {} that is not a ForgeOp", node->name(), operand->name());
+            for (Node *operand : graph->data_operands(node))
+            {
+                if (operand->node_type() != graphlib::NodeType::kForgeOp)
+                {
+                    log_fatal(
+                        "buffering queue: {} has operand: {} that is not a ForgeOp", node->name(), operand->name());
                 }
             }
-            for (Node *user : graph->data_users(node)) {
-                if (user->node_type() != graphlib::NodeType::kForgeOp) {
+            for (Node *user : graph->data_users(node))
+            {
+                if (user->node_type() != graphlib::NodeType::kForgeOp)
+                {
                     log_fatal("buffering queue: {} has user: {} that is not a ForgeOp", node->name(), user->name());
                 }
             }
@@ -968,22 +1004,25 @@ void validate_buffering_queues(graphlib::Graph *graph) {
     }
 }
 
-
-void insert_partial_datacopy_tms(graphlib::Graph *graph) {
-
-    auto is_partial_datacopy_edge = [](Edge e) {
-        return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-    };
-    for (graphlib::Node *node : graphlib::topological_sort(*graph))  {
+void insert_partial_datacopy_tms(graphlib::Graph *graph)
+{
+    auto is_partial_datacopy_edge = [](Edge e) { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
+    for (graphlib::Node *node : graphlib::topological_sort(*graph))
+    {
         std::vector<graphlib::Edge> partial_datacopy_edges = graph->user_edges(node, is_partial_datacopy_edge);
-        if (node->node_type() != graphlib::NodeType::kOutput or partial_datacopy_edges.empty()) {
+        if (node->node_type() != graphlib::NodeType::kOutput or partial_datacopy_edges.empty())
+        {
             continue;
         }
         for (auto edge : partial_datacopy_edges)
         {
             auto input_node = graph->node_by_id(edge.consumer_node_id);
             // We don't need tms for full datacopy (i.e. past cache produced in single iteration)
-            TT_ASSERT(input_node->shape().volume() % node->shape().volume() == 0, "Node volume {} and {} aren't multiples", input_node->name(), node->name());
+            TT_ASSERT(
+                input_node->shape().volume() % node->shape().volume() == 0,
+                "Node volume {} and {} aren't multiples",
+                input_node->name(),
+                node->name());
             std::vector<graphlib::OpType> stack_tms;
             std::vector<graphlib::OpType> slice_tms;
             int v_stack = input_node->shape().canonical()[-2] / node->shape().canonical()[-2];
@@ -991,7 +1030,8 @@ void insert_partial_datacopy_tms(graphlib::Graph *graph) {
             {
                 graphlib::OpType stack("vstack", {v_stack});
                 stack_tms.push_back(stack);
-                graphlib::ConstEvalGraph *consteval_graph = input_node->as<graphlib::InputNode>()->get_consteval_graph(graph, true, true);
+                graphlib::ConstEvalGraph *consteval_graph =
+                    input_node->as<graphlib::InputNode>()->get_consteval_graph(graph, true, true);
                 graphlib::OpType slice("vslice", {v_stack});
                 slice_tms.push_back(slice);
                 auto slice_node = graphlib::create_node<graphlib::PyOpNode>(input_node->name() + "_vslice", slice);
@@ -1009,7 +1049,8 @@ void insert_partial_datacopy_tms(graphlib::Graph *graph) {
             {
                 graphlib::OpType stack("hstack", {h_stack});
                 stack_tms.push_back(stack);
-                graphlib::ConstEvalGraph *consteval_graph = input_node->as<graphlib::InputNode>()->get_consteval_graph(graph, true, true);
+                graphlib::ConstEvalGraph *consteval_graph =
+                    input_node->as<graphlib::InputNode>()->get_consteval_graph(graph, true, true);
                 graphlib::OpType slice("hslice", {h_stack});
                 slice_tms.push_back(slice);
                 auto slice_node = graphlib::create_node<graphlib::PyOpNode>(input_node->name() + "_hslice", slice);
@@ -1036,8 +1077,9 @@ void insert_partial_datacopy_tms(graphlib::Graph *graph) {
                     if (producer_edge.edge_type != EdgeType::kDataLoopback)
                         continue;
                     auto producer = graph->node_by_id(producer_edge.producer_node_id);
-                    graphlib::ForgeOpNode *nop = graph->add_node(graphlib::create_node<graphlib::ForgeOpNode>(
-                                input_node->name() + "_tm_nop", "nop"), graph->get_subgraph_id_for_node(producer->id()));
+                    graphlib::ForgeOpNode *nop = graph->add_node(
+                        graphlib::create_node<graphlib::ForgeOpNode>(input_node->name() + "_tm_nop", "nop"),
+                        graph->get_subgraph_id_for_node(producer->id()));
                     graph->remove_edge(producer_edge);
                     graphlib::Edge data_edge = Edge(producer->id(), 0, nop->id(), 0, EdgeType::kData);
                     graph->add_edge(data_edge);
@@ -1053,8 +1095,8 @@ void insert_partial_datacopy_tms(graphlib::Graph *graph) {
 
 void constant_pre_broadcast(Graph *graph)
 {
-    auto promote = []
-    (graphlib::Graph* graph, graphlib::ConstantInputNode *input, std::vector<graphlib::OpType> const &broadcasts)
+    auto promote =
+        [](graphlib::Graph *graph, graphlib::ConstantInputNode *input, std::vector<graphlib::OpType> const &broadcasts)
     {
         graphlib::ConstEvalGraph *consteval_graph = input->get_consteval_graph(graph, true, true);
 
@@ -1134,8 +1176,7 @@ void constant_pre_broadcast(Graph *graph)
             if (broadcasts.empty())
                 continue;
 
-            for (auto iter = indices.rbegin(); iter != indices.rend(); ++iter)
-                tms.erase(tms.begin() + *iter);
+            for (auto iter = indices.rbegin(); iter != indices.rend(); ++iter) tms.erase(tms.begin() + *iter);
 
             promote(graph, input, broadcasts);
         }
@@ -1145,7 +1186,6 @@ void constant_pre_broadcast(Graph *graph)
 // Convert TTForge graph to Forge graph
 std::unique_ptr<Graph> lower_to_forge_ops(Graph *graph)
 {
-
     auto new_graph = std::make_unique<Graph>(graphlib::IRLevel::IR_FORGE, graph->name());
 
     new_graph->set_microbatch(graph->get_microbatch());
@@ -1161,11 +1201,14 @@ std::unique_ptr<Graph> lower_to_forge_ops(Graph *graph)
         if (node->node_type() == NodeType::kInput)
             continue;
 
-        if (node->node_type() == NodeType::kPyOp) {
+        if (node->node_type() == NodeType::kPyOp)
+        {
             // Ops get converted
             log_trace(LogGraphCompiler, "Lowering node: {}", node->name());
             lower_node(LoweringContext(graph, new_graph.get(), node->as<graphlib::PyOpNode>(), old_to_new));
-        } else {
+        }
+        else
+        {
             log_trace(LogGraphCompiler, "Lowering queue: {}", node->name());
             lower_queue(graph, new_graph.get(), node, old_to_new);
         }
@@ -1184,14 +1227,15 @@ std::unique_ptr<Graph> lower_to_forge_ops(Graph *graph)
     std::sort(ordered_old_nodes_to_process.begin(), ordered_old_nodes_to_process.end());
     for (graphlib::NodeId old_node_id : ordered_old_nodes_to_process)
     {
-        Node* old_node = graph->node_by_id(old_node_id);
-        Node* new_node = old_to_new.at(old_node);
+        Node *old_node = graph->node_by_id(old_node_id);
+        Node *new_node = old_to_new.at(old_node);
 
         new_node->set_tt_forge_id(old_node->id());
         copy_operand_edges_to_new_graph(graph, new_graph.get(), old_node, new_node, old_to_new, true, true);
 
         if (old_node->node_type() == NodeType::kPyOp and new_node->node_type() == NodeType::kPyOp)
-            new_node->as<graphlib::ForgeOpNode>()->set_gradient_op(old_node->as<graphlib::PyOpNode>()->is_gradient_op());
+            new_node->as<graphlib::ForgeOpNode>()->set_gradient_op(
+                old_node->as<graphlib::PyOpNode>()->is_gradient_op());
     }
 
     return new_graph;
@@ -1228,7 +1272,8 @@ void insert_user_defined_queues(
         // be full. microbatch size is the highest num_entires one buffering queue will ever need, since it is inside
         // one epoch
         std::string name = "insert_queue" + std::to_string(id++);
-        graphlib::QueueNode *queue_node = graphlib::create_buffering_queue(graph, producer, name, graph->get_microbatch());
+        graphlib::QueueNode *queue_node =
+            graphlib::create_buffering_queue(graph, producer, name, graph->get_microbatch());
         queue_node->as<graphlib::TaggedNode>()->tag("inserted_queue");
 
         auto ublock_order = graph->get_edge_attributes(*match)->get_ublock_order();

@@ -7,12 +7,19 @@ from test.utils import download_model
 import os
 
 import forge
-from transformers import BertForMaskedLM, BertTokenizer, BertForTokenClassification, BertForSequenceClassification, BertForQuestionAnswering
+from transformers import (
+    BertForMaskedLM,
+    BertTokenizer,
+    BertForTokenClassification,
+    BertForSequenceClassification,
+    BertForQuestionAnswering,
+)
 
 from forge.verify.backend import verify_module
 from forge import VerifyConfig
 from forge._C.backend_api import BackendType, BackendDevice
 from forge.verify.config import TestKind, NebulaGalaxy
+
 
 def generate_model_bert_maskedlm_hf_pytorch(test_device, variant):
     # Load Bert tokenizer and model from HuggingFace
@@ -20,7 +27,7 @@ def generate_model_bert_maskedlm_hf_pytorch(test_device, variant):
     tokenizer = BertTokenizer.from_pretrained(model_ckpt)
     model = BertForMaskedLM.from_pretrained(model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Load data sample
@@ -37,11 +44,13 @@ def generate_model_bert_maskedlm_hf_pytorch(test_device, variant):
 
     model = forge.PyTorchModule("pt_bert_masked_lm", model)
 
-    return model, [input_tokens['input_ids']], {}
+    return model, [input_tokens["input_ids"]], {}
+
 
 def test_bert_masked_lm_pytorch(test_device):
     model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch(
-        test_device, "bert-base-uncased",
+        test_device,
+        "bert-base-uncased",
     )
 
     verify_module(
@@ -54,8 +63,10 @@ def test_bert_masked_lm_pytorch(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.9,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
 
 
@@ -65,7 +76,7 @@ def generate_model_bert_qa_hf_pytorch(test_device, variant):
     tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
     model = download_model(BertForQuestionAnswering.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     compiler_cfg.balancer_policy = "Ribbon"
     os.environ["FORGE_RIBBON2"] = "1"
@@ -91,15 +102,16 @@ def generate_model_bert_qa_hf_pytorch(test_device, variant):
         truncation=True,
         return_tensors="pt",
     )
-    
-    model = forge.PyTorchModule("pt_bert_question_answering", model)
-    
-    return model, [input_tokens['input_ids']], {}
 
-    
+    model = forge.PyTorchModule("pt_bert_question_answering", model)
+
+    return model, [input_tokens["input_ids"]], {}
+
+
 def test_bert_question_answering_pytorch(test_device):
     model, inputs, _ = generate_model_bert_qa_hf_pytorch(
-        test_device, "bert-large-cased-whole-word-masking-finetuned-squad",
+        test_device,
+        "bert-large-cased-whole-word-masking-finetuned-squad",
     )
 
     verify_module(
@@ -112,8 +124,10 @@ def test_bert_question_answering_pytorch(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
 
 
@@ -123,7 +137,7 @@ def generate_model_bert_seqcls_hf_pytorch(test_device, variant):
     tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
     model = download_model(BertForSequenceClassification.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Load data sample
@@ -137,15 +151,16 @@ def generate_model_bert_seqcls_hf_pytorch(test_device, variant):
         truncation=True,
         return_tensors="pt",
     )
-    
+
     model = forge.PyTorchModule("pt_bert_sequence_classification", model)
-    
-    return model, [input_tokens['input_ids']], {}
+
+    return model, [input_tokens["input_ids"]], {}
 
 
 def test_bert_sequence_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(
-        test_device, "textattack/bert-base-uncased-SST-2",
+        test_device,
+        "textattack/bert-base-uncased-SST-2",
     )
 
     if test_device.arch == BackendDevice.Wormhole_B0:
@@ -161,17 +176,20 @@ def test_bert_sequence_classification_pytorch(test_device):
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             enabled=False,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
-    
+
+
 def generate_model_bert_tkcls_hf_pytorch(test_device, variant):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = variant
     tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
     model = download_model(BertForTokenClassification.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Load data sample
@@ -185,15 +203,16 @@ def generate_model_bert_tkcls_hf_pytorch(test_device, variant):
         truncation=True,
         return_tensors="pt",
     )
-    
+
     model = forge.PyTorchModule("pt_bert_token_classification", model)
-    
-    return model, [input_tokens['input_ids']], {}
+
+    return model, [input_tokens["input_ids"]], {}
 
 
 def test_bert_token_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(
-        test_device, "dbmdz/bert-large-cased-finetuned-conll03-english",
+        test_device,
+        "dbmdz/bert-large-cased-finetuned-conll03-english",
     )
 
     verify_module(
@@ -205,6 +224,8 @@ def test_bert_token_classification_pytorch(test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )

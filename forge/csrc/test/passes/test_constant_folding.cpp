@@ -166,4 +166,4 @@ TEST_P(ConstantFoldBackToBack, constant_fold_back_to_back)
 }
 INSTANTIATE_TEST_SUITE_P(BinaryOps, ConstantFoldBackToBack, testing::Values("add", "multiply"));
 
-}  // namespace tt
+}  // namespace tt::test

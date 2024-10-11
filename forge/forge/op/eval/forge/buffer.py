@@ -54,6 +54,4 @@ class Buffer(PyEltwiseUnaryOp):
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
 
-        lc.op(
-            ForgeBuffer.create(), tensors, tile_height=tile_height, tile_width=tile_width
-        )
+        lc.op(ForgeBuffer.create(), tensors, tile_height=tile_height, tile_width=tile_width)

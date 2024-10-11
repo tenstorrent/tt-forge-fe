@@ -27,7 +27,6 @@ def style(string, color=None, bold=False):
     return f"{fmt}{string}{reset}"
 
 
-
 def generate_blobgen_cmd(
     root,
     device_yaml,
@@ -38,9 +37,10 @@ def generate_blobgen_cmd(
 ):
     blobgen_exe = root + "/src/overlay/blob_gen.rb"
     temporal_epoch_graph_name = "pipegen_epoch" + str(temporal_epoch)
- 
+
     # parse general spec
     import yaml
+
     with open(device_yaml) as fd:
         device_descriptor_yaml = yaml.load(fd, Loader=yaml.Loader)
 
@@ -57,23 +57,38 @@ def generate_blobgen_cmd(
         overlay_version = int(device_descriptor_yaml["features"]["overlay"]["version"])
         tensix_memsize = 1499136 if "wormhole_b0" == arch_name else 1024 * 1024
         noc_translation_id_enabled = False
-        if "noc" in device_descriptor_yaml["features"] and "translation_id_enabled" in device_descriptor_yaml["features"]["noc"]:
+        if (
+            "noc" in device_descriptor_yaml["features"]
+            and "translation_id_enabled" in device_descriptor_yaml["features"]["noc"]
+        ):
             noc_translation_id_enabled = bool(device_descriptor_yaml["features"]["noc"]["translation_id_enabled"])
 
         blobgen_cmd = [
-            "ruby", blobgen_exe,
-            "--blob_out_dir", blob_output_dir,
+            "ruby",
+            blobgen_exe,
+            "--blob_out_dir",
+            blob_output_dir,
             "--graph_yaml 1",
-            "--graph_input_file", blob_yaml,
-            "--graph_name", temporal_epoch_graph_name,
-            "--noc_x_size", str(physical_grid_size_x),
-            "--noc_y_size", str(physical_grid_size_y),
-            "--noc_x_logical_size", str(grid_size_x),
-            "--noc_y_logical_size", str(grid_size_y),
-            "--chip", arch_name,
-            "--noc_version", str(overlay_version),
-            "--tensix_mem_size", str(tensix_memsize),
-            "--noc_translation_id_enabled", str(int(noc_translation_id_enabled)),
+            "--graph_input_file",
+            blob_yaml,
+            "--graph_name",
+            temporal_epoch_graph_name,
+            "--noc_x_size",
+            str(physical_grid_size_x),
+            "--noc_y_size",
+            str(physical_grid_size_y),
+            "--noc_x_logical_size",
+            str(grid_size_x),
+            "--noc_y_logical_size",
+            str(grid_size_y),
+            "--chip",
+            arch_name,
+            "--noc_version",
+            str(overlay_version),
+            "--tensix_mem_size",
+            str(tensix_memsize),
+            "--noc_translation_id_enabled",
+            str(int(noc_translation_id_enabled)),
         ]
 
         # parse eth spec
@@ -84,28 +99,35 @@ def generate_blobgen_cmd(
                 eth_max_memsize = 256 * 1024
                 eth_overlay_blob_base = 0x9000 + 92 * 1024 + 128
                 eth_data_buffer_space_base = 0x9000 + 124 * 1024
-            else: # grayskull
-                eth_max_memsize = 0 
+            else:  # grayskull
+                eth_max_memsize = 0
                 eth_overlay_blob_base = 0
                 eth_data_buffer_space_base = 0
             eth_cores_swap = []
             for e_core in eth_cores:
-                cord = e_core.split('-')
-                swapped_cord = str(cord[1]) + '-' + str(cord[0])
+                cord = e_core.split("-")
+                swapped_cord = str(cord[1]) + "-" + str(cord[0])
                 eth_cores_swap.append(swapped_cord)
             eth_cores_str = ",".join(eth_cores_swap)
             chip_ids_str = ",".join([str(idx) for idx in chip_ids])
             extra_cmds = [
-                "--tensix_mem_size_eth", str(eth_max_memsize),
-                "--eth_cores", eth_cores_str,
-                "--blob_section_start", str(l1_overlay_blob_base),
-                "--blob_section_start_eth", str(eth_overlay_blob_base),
-                "--data_buffer_space_base_eth", str(eth_data_buffer_space_base),
-                "--chip_ids", chip_ids_str
+                "--tensix_mem_size_eth",
+                str(eth_max_memsize),
+                "--eth_cores",
+                eth_cores_str,
+                "--blob_section_start",
+                str(l1_overlay_blob_base),
+                "--blob_section_start_eth",
+                str(eth_overlay_blob_base),
+                "--data_buffer_space_base_eth",
+                str(eth_data_buffer_space_base),
+                "--chip_ids",
+                chip_ids_str,
             ]
             blobgen_cmd.extend(extra_cmds)
 
         return blobgen_cmd
+
 
 def pipegen(
     net2pipe_output_dir,
@@ -138,7 +160,7 @@ def pipegen(
             ]
 
             p = subprocess.run(cmd, capture_output=True)
-            pipegen_fails = (p.returncode)
+            pipegen_fails = p.returncode
             if verbose:
                 sys.stdout.buffer.write(p.stdout)
             if p.returncode != 0:
@@ -149,8 +171,10 @@ def pipegen(
                 error_msgs.append(error_message)
 
             if run_blobgen and not pipegen_fails:
-                blobgen_cmd = generate_blobgen_cmd(pipegen_root_path, device_yaml, blob_yaml, base_path, temporal_epoch, [0])
-                blobgen_cmd_conn = ' '.join(blobgen_cmd)
+                blobgen_cmd = generate_blobgen_cmd(
+                    pipegen_root_path, device_yaml, blob_yaml, base_path, temporal_epoch, [0]
+                )
+                blobgen_cmd_conn = " ".join(blobgen_cmd)
                 p = subprocess.Popen(blobgen_cmd_conn, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, errors = p.communicate()
                 if verbose:

@@ -207,7 +207,7 @@ Level 3
       - ``4``: All prev optimization, looping-on-device, disable eq l1 shadow ptrs, and dis hazard checks
   * - ``place_queue_to_chip_dram``
     - Given a dict of dram queue names to ``(chip_id, dram_chan)``, force the placement of these queues.
-    - This can be useful when the ``dram_placement_algorithm`` is allocating queues with the desired results. 
+    - This can be useful when the ``dram_placement_algorithm`` is allocating queues with the desired results.
   * - - ``insert_queues``
       - ``insert_buffering_nop``
     - These two configuration options insert DRAM queues or no-op ops between the specified edge.  This is useful in situations where a subgraph has a fork/join or skip-connect topology, especially ones where the paths are not balanced in terms of number of ops.  This runs into a pipelining issue where the short path must wait for the long path to finish in order to make forward progress.  These two configurations can help explicitly balance these situations to mitigate pipeline bubbles, or in some cases even deadlocks.  These APIs should be required by defualt, we have an fork/join graph pass that does this automatically.
@@ -239,59 +239,59 @@ Reportify is a webserver that typically runs on the same remote machine as the c
 
 **Home Page**
 
-.. image:: images/reportify_landing.png 
+.. image:: images/reportify_landing.png
    :alt: Landing Page
 
 When you go to the reportify address in your browser, you'll get the above landing page.  Each row entry represents a different module compilation or test, note that successive compilations clobber previous results.
 
-.. image:: images/reportify_test.png 
+.. image:: images/reportify_test.png
    :alt: Module
 
 Clicking on a row brings you to a list of report types associated with this compilation.  The 2 most common report types that are used are typically *Buda Reports: Passes* and *Placement Reports*.
 
-.. image:: images/reportify_passes.png 
+.. image:: images/reportify_passes.png
    :alt: Buda Reports: Passes
 
 When clicking on the *Buda Reports: Passes* tab, we get a dropdown list of different graph passes to look at.  Each entry corresponds to a high level graph pass that the compiler ran and generated a report for.  We'll look in detail at 2 of the graph passes, *initial_graph* and *post_placer*.
 
-.. image:: images/reportify_initial.png 
+.. image:: images/reportify_initial.png
    :alt: Initial Graph Pass
 
 When you first click on a graph to visualize, reportify will be fully zoomed out to fit the entire graph inside the window.  Point your cursor to a section of graph you wish to zoom into and use the scroll wheel to zoom.
 
-.. image:: images/reportify_initial_zoom.png 
+.. image:: images/reportify_initial_zoom.png
    :alt: Initial Graph Pass
 
 Here we can better see a section of the initial graph.  The initial graph is less of a graph pass and is rather a direct representation of the initial graph data structure that the compiler generated from tracing the module.  Graph input and output queues are typically drawn with ovals, light blue for activations and dark blue for parameters. Operations in the graph are denoted by rectangles and are annotated with the op's name, internal compiler attributes associated with this op, and lastly the op's shape in brackets.
 
-.. image:: images/reportify_initial_dialog.png 
+.. image:: images/reportify_initial_dialog.png
    :alt: Initial Graph Pass
 
 Clicking on a node in the graph brings up a dialog with tons of additional information and metadata about the node.
 
-.. image:: images/reportify_passes.png 
+.. image:: images/reportify_passes.png
    :alt: Buda Reports: Passes
 
 Let's step out of the initial graph, and next take a look at another important graph pass, *post_placer*.
 
-.. image:: images/reportify_post_placer.png 
+.. image:: images/reportify_post_placer.png
    :alt: Post Placer Pass
 
 The post-placer graph is at the other end of the spectrum from the initial graph, this represents the fully lowered and placed graph. Here, I've already zoomed into an area of subgraph and clicked on a node.  This graph is particularly useful for gathering additional metadata about the placement, low level blocking and tile allocation amounts for each op.  This data is directly used to populate the netlist yaml, the IR format passed to the backend during the final compilation step.
 
 **Placement Reports**
 
-.. image:: images/reportify_test.png 
+.. image:: images/reportify_test.png
    :alt: Module
 
 Ok, let's step back to the report type's page and this time take a look at a different report type, *Placement Reports*.
 
-.. image:: images/reportify_placement.jpg 
+.. image:: images/reportify_placement.jpg
    :alt: Placement
 
 This report type displays a top level view of the device grid and how operations have been placed with respect to each other.  We can see the orange matmul in the middle has been placed onto a 2x5 grid, meaning it uses 10 cores worth of resources during this epoch execution, whereas, most other ops on this epoch are on a 1x1 grid, using only a single core.
 
-.. image:: images/reportify_placement_dialog.jpg 
+.. image:: images/reportify_placement_dialog.jpg
    :alt: Placement
 
 When hovering over an op with your cursor, a dialog pops up with all of the netlist information about this op.  The input edges, in orange, and output edges, in blue, are also highlighted to visualize the source and destinations of data with respect to this op.  This UI is incredibly useful to see what placement decisions the compiler made.
@@ -299,8 +299,8 @@ When hovering over an op with your cursor, a dialog pops up with all of the netl
 Perf Analyzer (Terminal App)
 ----------------------------
 
-.. image:: images/perf_analyzer_summary.png 
-   :alt: Perf Analyzer 
+.. image:: images/perf_analyzer_summary.png
+   :alt: Perf Analyzer
 
 **Overview**
 
@@ -352,7 +352,7 @@ Pressing 'H' will open up a help window with more information about the current 
 
 The app initially opens up in the summary screen:
 
-.. image:: images/perf_analyzer_summary.png 
+.. image:: images/perf_analyzer_summary.png
    :alt: Perf Analyzer Summary
 
 *Note: Most of this information can be seen inside the app by pressing the 'H' key for help*
@@ -374,7 +374,7 @@ Pressing 'N' moves to the user to the next epoch, or, if on the summary screen, 
 
 *Note: Most of this information can be seen inside the app by pressing the 'H' key for help*
 
-.. image:: images/perf_analyzer_epoch.png 
+.. image:: images/perf_analyzer_epoch.png
    :alt: Perf Analyzer Epoch Analysis
 
 This window shows op performance and utilization for each op in the current epoch. Use P/N keys to move to previous/next epoch, and arrow keys to scroll the rows and columns of the table if it doesn't fit on the screen. Use F to toggle between full op names and shortened version.
@@ -393,12 +393,12 @@ Some of the key fields in the table are:
 
 Let's consider an example performance report:
 
-.. image:: images/perf_analyzer_wf_initial.png 
+.. image:: images/perf_analyzer_wf_initial.png
    :alt: Perf Analyzer Epoch Analysis
 
 Let's look at this initial epoch:
 
-.. image:: images/perf_analyzer_epoch_0_initial.png 
+.. image:: images/perf_analyzer_epoch_0_initial.png
    :alt: Perf Analyzer Epoch 0
 
 Just taking a look down the ``kernel`` column here we can see that ``_fused_op_0`` took 4-6x longer to execute that all other ops on this epoch, so this is definitely something we should look into.  Let's take a look at the placement report for this epoch:

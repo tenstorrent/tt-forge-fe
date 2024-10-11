@@ -56,15 +56,9 @@ def rotate_half(x):
 def gather_cos_sin(cos, sin, position_ids, batch_size=1):
     # TODO: lookinto gather_cos_sin for user_batch
     gather_indices = position_ids[:, None, :, None]  # [bs, 1, seq_len, 1]
-    gather_indices = gather_indices.repeat(1, cos.shape[1], 1, cos.shape[3]).to(
-        cos.device
-    )
-    cos = torch.gather(
-        cos.repeat(gather_indices.shape[0], 1, 1, 1), 2, gather_indices
-    )
-    sin = torch.gather(
-        sin.repeat(gather_indices.shape[0], 1, 1, 1), 2, gather_indices
-    )
+    gather_indices = gather_indices.repeat(1, cos.shape[1], 1, cos.shape[3]).to(cos.device)
+    cos = torch.gather(cos.repeat(gather_indices.shape[0], 1, 1, 1), 2, gather_indices)
+    sin = torch.gather(sin.repeat(gather_indices.shape[0], 1, 1, 1), 2, gather_indices)
     return cos, sin
 
 
@@ -76,13 +70,9 @@ def apply_rotary_pos_emb(q, k, cos, sin):
 
 
 class RotaryEmbeddingTT(torch.nn.Module):
-    def __init__(
-        self, dim, max_position_embeddings=2048, base=10000, device=None
-    ):
+    def __init__(self, dim, max_position_embeddings=2048, base=10000, device=None):
         super().__init__()
-        inv_freq = 1.0 / (
-            base ** (torch.arange(0, dim, 2).float().to(device) / dim)
-        )
+        inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float().to(device) / dim))
         self.register_buffer("inv_freq", inv_freq)
 
         # Build here to make `torch.jit.trace` work.
@@ -96,12 +86,8 @@ class RotaryEmbeddingTT(torch.nn.Module):
         #        freqs = torch.mul(t.view((t.shape[0], 1)), self.inv_freq.view((1, self.inv_freq.shape[0]))) # einsum free implementation
         # Different from paper, but it uses a different permutation in order to obtain the same calculation
         emb = torch.cat((freqs, freqs), dim=-1)
-        self.register_buffer(
-            "cos_cached", emb.cos()[None, None, :, :], persistent=False
-        )
-        self.register_buffer(
-            "sin_cached", emb.sin()[None, None, :, :], persistent=False
-        )
+        self.register_buffer("cos_cached", emb.cos()[None, None, :, :], persistent=False)
+        self.register_buffer("sin_cached", emb.sin()[None, None, :, :], persistent=False)
 
     def forward(self):
         return self.cos_cached, self.sin_cached
@@ -125,9 +111,7 @@ def _make_causal_mask(
     if past_key_values_length > 0:
         mask[:, :past_key_values_length] = False
 
-    expanded_mask = mask[None, None, :, :].expand(
-        batch_size, 1, target_length, target_length + past_key_values_length
-    )
+    expanded_mask = mask[None, None, :, :].expand(batch_size, 1, target_length, target_length + past_key_values_length)
     return expanded_mask
 
 
@@ -139,9 +123,7 @@ def _expand_mask(mask: torch.Tensor, tgt_length: int) -> torch.BoolTensor:
     return expanded_mask.expand(batch_size, 1, tgt_length, src_length)
 
 
-def dropout_add(
-    x: torch.Tensor, residual: torch.Tensor, prob: float, training: bool
-) -> torch.Tensor:
+def dropout_add(x: torch.Tensor, residual: torch.Tensor, prob: float, training: bool) -> torch.Tensor:
     out = F.dropout(x, p=prob, training=training)
     out = residual + out
     return out
@@ -169,31 +151,19 @@ class TT_functional:
             # value: [num_batches, users, context, head_dim]
 
         def make_mask(L, S, DTYPE):
-            attn_mask = (
-                torch.ones(L, S, dtype=DTYPE).tril(diagonal=0).to(K.device)
-            )
+            attn_mask = torch.ones(L, S, dtype=DTYPE).tril(diagonal=0).to(K.device)
             inverted_mask = 1.0 - attn_mask
-            return inverted_mask.masked_fill(
-                inverted_mask.to(torch.bool), torch.finfo(DTYPE).min
-            )
+            return inverted_mask.masked_fill(inverted_mask.to(torch.bool), torch.finfo(DTYPE).min)
 
-        assert (
-            is_causal or attn_mask is not None
-        ), "attn_mask must be provided if is_causal is False"
-        assert (
-            not is_causal or attn_mask is None
-        ), "attn_mask must be None if is_causal is True"
+        assert is_causal or attn_mask is not None, "attn_mask must be provided if is_causal is False"
+        assert not is_causal or attn_mask is None, "attn_mask must be None if is_causal is True"
 
         if attn_mask is None or is_causal:
             attn_mask = make_mask(L, S, DTYPE)
 
         # attn_weight = torch.softmax((Q @ K.transpose(-2, -1) / torch.sqrt(torch.tensor(Q.size(-1), dtype=DTYPE))) + attn_mask, dim=-1)
         # attn_weight = torch.dropout(attn_weight, dropout_p, train)
-        ATT = (
-            Q
-            @ K.transpose(-2, -1)
-            / torch.tensor(Q.size(-1) ** (1 / 2), dtype=DTYPE).to(K.device)
-        )
+        ATT = Q @ K.transpose(-2, -1) / torch.tensor(Q.size(-1) ** (1 / 2), dtype=DTYPE).to(K.device)
         attn_weight = F.softmax(ATT + attn_mask, dim=-1, dtype=DTYPE)
         attn_weight = nn.Dropout(p=dropout_p)(attn_weight)
         return attn_weight @ V
@@ -205,9 +175,7 @@ class PaddedAttentionTT(nn.Module):
 
         self.original_hidden_size = config.hidden_size
         self.head_dim = self.original_hidden_size // config.n_head
-        self.hidden_size = (
-            config.hidden_size + config.padded_heads * self.head_dim
-        )
+        self.hidden_size = config.hidden_size + config.padded_heads * self.head_dim
         self.num_heads = config.n_head + config.padded_heads
         self.padded_heads = config.padded_heads
         self.pad_amt = self.padded_heads * self.head_dim
@@ -229,9 +197,7 @@ class PaddedAttentionTT(nn.Module):
         self.wv = Linear(self.hidden_size, self.head_dim, bias=config.bias)
 
         self.multi_query = config.multi_query
-        self.dense = Linear(
-            self.hidden_size, self.hidden_size, bias=config.bias
-        )
+        self.dense = Linear(self.hidden_size, self.hidden_size, bias=config.bias)
         self.attention_dropout = nn.Dropout(config.attention_dropout)
         self.num_kv = config.n_head if not self.multi_query else 1
 
@@ -257,12 +223,8 @@ class PaddedAttentionTT(nn.Module):
         )
         if make_kvs:
             # by default, this should not be necessary as input activation has padded features 0
-            self.wk.weight.data = self.mask_weight(
-                self.wk.weight.data, self.head_dim, self.original_hidden_size
-            )
-            self.wv.weight.data = self.mask_weight(
-                self.wv.weight.data, self.head_dim, self.original_hidden_size
-            )
+            self.wk.weight.data = self.mask_weight(self.wk.weight.data, self.head_dim, self.original_hidden_size)
+            self.wv.weight.data = self.mask_weight(self.wv.weight.data, self.head_dim, self.original_hidden_size)
 
         self.init_padding = True
 
@@ -305,32 +267,18 @@ class PaddedAttentionTT(nn.Module):
         value_layer = self.wv(hidden_states)
 
         if self.multi_query:
-            key_layer = key_layer.unsqueeze(
-                2
-            )  # [batch_size, seq_length, 1, head_dim]
-            value_layer = value_layer.unsqueeze(
-                2
-            )  # [batch_size, seq_length, 1, head_dim]
+            key_layer = key_layer.unsqueeze(2)  # [batch_size, seq_length, 1, head_dim]
+            value_layer = value_layer.unsqueeze(2)  # [batch_size, seq_length, 1, head_dim]
 
         batch_size, q_length, _, _ = query_layer.shape
 
-        query_layer = query_layer.transpose(
-            1, 2
-        )  # [batch_size, num_heads, seq_length, head_dim]
-        key_layer = key_layer.transpose(
-            1, 2
-        )  # [batch_size, 1, seq_length, head_dim]
-        value_layer = value_layer.transpose(
-            1, 2
-        )  # [batch_size, 1, seq_length, head_dim]
+        query_layer = query_layer.transpose(1, 2)  # [batch_size, num_heads, seq_length, head_dim]
+        key_layer = key_layer.transpose(1, 2)  # [batch_size, 1, seq_length, head_dim]
+        value_layer = value_layer.transpose(1, 2)  # [batch_size, 1, seq_length, head_dim]
 
-        query_layer, key_layer = apply_rotary_pos_emb(
-            query_layer, key_layer, cos, sin
-        )
+        query_layer, key_layer = apply_rotary_pos_emb(query_layer, key_layer, cos, sin)
 
-        key_layer_ret, value_layer_ret = key_layer.squeeze(
-            1
-        ), value_layer.squeeze(1)
+        key_layer_ret, value_layer_ret = key_layer.squeeze(1), value_layer.squeeze(1)
 
         if layer_past is not None and layer_past[0] is not None:
             past_key, past_value = layer_past
@@ -345,9 +293,7 @@ class PaddedAttentionTT(nn.Module):
         _, _, kv_length, _ = key_layer.shape
 
         if layer_past is not None and layer_past[0] is not None:
-            assert (
-                q_length == 1
-            ), "Input can only have one token if we're passing in a layer_past"
+            assert q_length == 1, "Input can only have one token if we're passing in a layer_past"
             # attention_mask = torch.ones(1, kv_length, dtype=torch.bool)
             is_causal = False
         else:
@@ -360,9 +306,7 @@ class PaddedAttentionTT(nn.Module):
         #     present = None
 
         if attention_mask is not None:
-            attention_mask = attention_mask.view(
-                batch_size, 1, q_length, kv_length
-            )
+            attention_mask = attention_mask.view(batch_size, 1, q_length, kv_length)
 
         attn_output = TT_functional.scaled_dot_product_attention(
             query_layer,
@@ -375,9 +319,7 @@ class PaddedAttentionTT(nn.Module):
 
         # x = attn_output.view(batch_size, self.num_heads, q_length, self.head_dim)
         x = attn_output.permute(0, 2, 1, 3)
-        attn_output = x.reshape(
-            batch_size, q_length, self.num_heads * self.head_dim
-        )
+        attn_output = x.reshape(batch_size, q_length, self.num_heads * self.head_dim)
 
         output_tensor = self.dense(attn_output)
 
@@ -405,16 +347,12 @@ class PaddedAttentionTT(nn.Module):
         # hidden_states: [num_batch, users, hidden_size]
 
         num_batch, users = hidden_states.size()[:2]
-        query_layer = self.wq(hidden_states).view(
-            num_batch, users, self.num_heads, self.head_dim
-        )
+        query_layer = self.wq(hidden_states).view(num_batch, users, self.num_heads, self.head_dim)
         key_layer = self.wk(hidden_states)
         value_layer = self.wv(hidden_states)
 
         key_layer = key_layer.unsqueeze(1)  # [num_batch, 1, users, head_dim]
-        value_layer = value_layer.unsqueeze(
-            2
-        )  # [num_batch, users, 1, head_dim]
+        value_layer = value_layer.unsqueeze(2)  # [num_batch, users, 1, head_dim]
 
         # query: [num_batch, users, num_heads, head_dim]
         # key: [num_batch, users, 1, head_dim]
@@ -422,17 +360,11 @@ class PaddedAttentionTT(nn.Module):
 
         # cos, sin must match query, key in user dimension. cos: [num_batch, 1, users, head_dim]
         # cos, sin = cos.transpose(-2,-3), sin.transpose(-2,-3)
-        query_layer = query_layer.transpose(
-            1, 2
-        )  # [num_batch, num_heads, users, head_dim]
+        query_layer = query_layer.transpose(1, 2)  # [num_batch, num_heads, users, head_dim]
         # TODO: rotary embeds correct for user batch?
-        query_layer, key_layer = apply_rotary_pos_emb(
-            query_layer, key_layer, cos, sin
-        )
+        query_layer, key_layer = apply_rotary_pos_emb(query_layer, key_layer, cos, sin)
 
-        query_layer, key_layer = query_layer.transpose(
-            1, 2
-        ), key_layer.transpose(1, 2)
+        query_layer, key_layer = query_layer.transpose(1, 2), key_layer.transpose(1, 2)
 
         key_layer_ret, value_layer_ret = (
             key_layer,
@@ -460,9 +392,7 @@ class PaddedAttentionTT(nn.Module):
             # kv_read_mask2 = torch.where(self.kv_mask != num_tokens.unsqueeze(0).unsqueeze(0).repeat(1, 32, 256, 64), 1, 0)
             # kv_write_mask2 = torch.where(self.kv_mask == num_tokens.unsqueeze(0).unsqueeze(0).repeat(1, 32, 256, 64), 1, 0)
 
-            past_key = (
-                past_key * kv_read_mask
-            )  # zero out k/v for index where we will write current token
+            past_key = past_key * kv_read_mask  # zero out k/v for index where we will write current token
             past_value = past_value * kv_read_mask
 
             key_layer = (
@@ -472,9 +402,7 @@ class PaddedAttentionTT(nn.Module):
 
             # import pdb; pdb.set_trace()
 
-            key_layer = (
-                key_layer + past_key
-            )  # add the two and this should get us the correct current K and V
+            key_layer = key_layer + past_key  # add the two and this should get us the correct current K and V
             value_layer = value_layer + past_value
 
         # how do we want to use k and v cache?
@@ -508,9 +436,7 @@ class PaddedAttentionTT(nn.Module):
         # past_key_values[i*2+1].view(1, seq_len, user_rows, self.head_dim).transpose(1, 2)
 
         # [1, 32, 72, 2048] -> [1, 1, 72, 2048x32]
-        attention_mask = attention_mask.view(
-            1, self.num_heads, users, seq_len
-        ).transpose(1, 2)
+        attention_mask = attention_mask.view(1, self.num_heads, users, seq_len).transpose(1, 2)
         # import pdb; pdb.set_trace()
         # past_key_values[i*2].view(1, seq_len, user_rows, self.head_dim).transpose(1, 2)
 
@@ -526,9 +452,7 @@ class PaddedAttentionTT(nn.Module):
 
         # attn_output: [num_batch, users, num_heads, head_dim]
 
-        attn_output = attn_output.reshape(
-            num_batch, users, self.num_heads * self.head_dim
-        )
+        attn_output = attn_output.reshape(num_batch, users, self.num_heads * self.head_dim)
         # attn_output: [num_batch, users, num_heads * head_dim]
         output_tensor = self.dense(attn_output)
 
@@ -582,21 +506,13 @@ class PaddedAttentionTT(nn.Module):
     def split_qkv_weights(self):
 
         # load wq, wk, wv from query_key_value
-        self.wq.weight = nn.Parameter(
-            self.query_key_value.weight[: self.hidden_size].clone()
-        )
+        self.wq.weight = nn.Parameter(self.query_key_value.weight[: self.hidden_size].clone())
 
         self.wk.weight = nn.Parameter(
-            self.query_key_value.weight[
-                self.hidden_size : self.hidden_size + self.head_dim
-            ].clone()
+            self.query_key_value.weight[self.hidden_size : self.hidden_size + self.head_dim].clone()
         )
 
-        self.wv.weight = nn.Parameter(
-            self.query_key_value.weight[
-                self.hidden_size + self.head_dim :
-            ].clone()
-        )
+        self.wv.weight = nn.Parameter(self.query_key_value.weight[self.hidden_size + self.head_dim :].clone())
 
         self.did_split = True
 
@@ -628,9 +544,7 @@ class Attention(nn.Module):
 
         self.query_key_value = Linear(
             self.hidden_size,
-            3 * self.hidden_size
-            if not config.multi_query
-            else (self.hidden_size + 2 * self.head_dim),
+            3 * self.hidden_size if not config.multi_query else (self.hidden_size + 2 * self.head_dim),
             bias=config.bias,
         )
 
@@ -639,30 +553,20 @@ class Attention(nn.Module):
         self.wv = Linear(self.hidden_size, self.head_dim, bias=config.bias)
 
         self.multi_query = config.multi_query
-        self.dense = Linear(
-            self.hidden_size, self.hidden_size, bias=config.bias
-        )
+        self.dense = Linear(self.hidden_size, self.hidden_size, bias=config.bias)
         self.attention_dropout = nn.Dropout(config.attention_dropout)
         self.num_kv = config.n_head if not self.multi_query else 1
 
     def split_qkv_weights(self):
 
         # load wq, wk, wv from query_key_value
-        self.wq.weight = nn.Parameter(
-            self.query_key_value.weight[: self.hidden_size].clone()
-        )
+        self.wq.weight = nn.Parameter(self.query_key_value.weight[: self.hidden_size].clone())
 
         self.wk.weight = nn.Parameter(
-            self.query_key_value.weight[
-                self.hidden_size : self.hidden_size + self.head_dim
-            ].clone()
+            self.query_key_value.weight[self.hidden_size : self.hidden_size + self.head_dim].clone()
         )
 
-        self.wv.weight = nn.Parameter(
-            self.query_key_value.weight[
-                self.hidden_size + self.head_dim :
-            ].clone()
-        )
+        self.wv.weight = nn.Parameter(self.query_key_value.weight[self.hidden_size + self.head_dim :].clone())
 
         self.did_split = True
 
@@ -695,33 +599,19 @@ class Attention(nn.Module):
         value_layer = self.wv(hidden_states)
 
         if self.multi_query:
-            key_layer = key_layer.unsqueeze(
-                2
-            )  # [batch_size, seq_length, 1, head_dim]
-            value_layer = value_layer.unsqueeze(
-                2
-            )  # [batch_size, seq_length, 1, head_dim]
+            key_layer = key_layer.unsqueeze(2)  # [batch_size, seq_length, 1, head_dim]
+            value_layer = value_layer.unsqueeze(2)  # [batch_size, seq_length, 1, head_dim]
 
         batch_size, q_length, _, _ = query_layer.shape
 
-        query_layer = query_layer.transpose(
-            1, 2
-        )  # [batch_size, num_heads, seq_length, head_dim]
-        key_layer = key_layer.transpose(
-            1, 2
-        )  # [batch_size, 1, seq_length, head_dim]
-        value_layer = value_layer.transpose(
-            1, 2
-        )  # [batch_size, 1, seq_length, head_dim]
+        query_layer = query_layer.transpose(1, 2)  # [batch_size, num_heads, seq_length, head_dim]
+        key_layer = key_layer.transpose(1, 2)  # [batch_size, 1, seq_length, head_dim]
+        value_layer = value_layer.transpose(1, 2)  # [batch_size, 1, seq_length, head_dim]
 
         # query_layer, key_layer = self.maybe_rotary(query_layer, key_layer)
-        query_layer, key_layer = apply_rotary_pos_emb(
-            query_layer, key_layer, cos, sin
-        )
+        query_layer, key_layer = apply_rotary_pos_emb(query_layer, key_layer, cos, sin)
 
-        key_layer_ret, value_layer_ret = key_layer.squeeze(
-            2
-        ), value_layer.squeeze(2)
+        key_layer_ret, value_layer_ret = key_layer.squeeze(2), value_layer.squeeze(2)
 
         if layer_past is not None and layer_past[0] is not None:
             past_key, past_value = layer_past
@@ -736,9 +626,7 @@ class Attention(nn.Module):
         _, _, kv_length, _ = key_layer.shape
 
         if layer_past is not None and layer_past[0] is not None:
-            assert (
-                q_length == 1
-            ), "Input can only have one token if we're passing in a layer_past"
+            assert q_length == 1, "Input can only have one token if we're passing in a layer_past"
             # attention_mask = torch.ones(1, kv_length, dtype=torch.bool)
             is_causal = False
         else:
@@ -761,9 +649,7 @@ class Attention(nn.Module):
 
         # x = attn_output.view(batch_size, self.num_heads, q_length, self.head_dim)
         x = attn_output.permute(0, 2, 1, 3)
-        attn_output = x.reshape(
-            batch_size, q_length, self.num_heads * self.head_dim
-        )
+        attn_output = x.reshape(batch_size, q_length, self.num_heads * self.head_dim)
 
         output_tensor = self.dense(attn_output)
 
@@ -778,13 +664,9 @@ class MLP(nn.Module):
         super().__init__()
         hidden_size = config.hidden_size
 
-        self.dense_h_to_4h = Linear(
-            hidden_size, 4 * hidden_size, bias=config.bias
-        )
+        self.dense_h_to_4h = Linear(hidden_size, 4 * hidden_size, bias=config.bias)
         self.act = nn.GELU()
-        self.dense_4h_to_h = Linear(
-            4 * hidden_size, hidden_size, bias=config.bias
-        )
+        self.dense_4h_to_h = Linear(4 * hidden_size, hidden_size, bias=config.bias)
         self.hidden_dropout = config.hidden_dropout
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -808,13 +690,9 @@ class PaddedMLP(nn.Module):
         self.padded_heads = config.padded_heads
         self.pad_amt = self.padded_heads * self.head_dim
 
-        self.dense_h_to_4h = Linear(
-            hidden_size, 4 * hidden_size, bias=config.bias
-        )
+        self.dense_h_to_4h = Linear(hidden_size, 4 * hidden_size, bias=config.bias)
         self.act = nn.GELU()
-        self.dense_4h_to_h = Linear(
-            4 * hidden_size, hidden_size, bias=config.bias
-        )
+        self.dense_4h_to_h = Linear(4 * hidden_size, hidden_size, bias=config.bias)
         self.hidden_dropout = config.hidden_dropout
 
         self.init_padding = False
@@ -857,9 +735,7 @@ class PaddedMLP(nn.Module):
         return masked_w
 
     def forward(self, x: torch.Tensor, masked_input=False) -> torch.Tensor:
-        assert (
-            self.init_padding
-        ), "Must call make_pad_weights() after loading new weights in."
+        assert self.init_padding, "Must call make_pad_weights() after loading new weights in."
         x = self.act(self.dense_h_to_4h(x))
         x = self.dense_4h_to_h(x)
         return x
@@ -870,18 +746,14 @@ class DecoderLayer(nn.Module):
         super().__init__()
         hidden_size = config.hidden_size
 
-        self.input_layernorm = LayerNorm(
-            hidden_size, eps=config.layer_norm_epsilon
-        )
+        self.input_layernorm = LayerNorm(hidden_size, eps=config.layer_norm_epsilon)
         self.num_heads = config.n_head
         self.self_attention = Attention(config)
         self.use_cache = config.use_cache
 
         self.mlp = MLP(config)
 
-        self.apply_residual_connection_post_layernorm = (
-            config.apply_residual_connection_post_layernorm
-        )
+        self.apply_residual_connection_post_layernorm = config.apply_residual_connection_post_layernorm
         self.hidden_dropout = config.hidden_dropout
 
         self.config = config
@@ -910,9 +782,7 @@ class DecoderLayer(nn.Module):
 
         layernorm_output = self.input_layernorm(hidden_states)
         # residual = hidden_states
-        residual = (
-            hidden_states * self.input_layernorm.mask
-        )  # padding requires this
+        residual = hidden_states * self.input_layernorm.mask  # padding requires this
 
         # Self attention.
         attention_output, key_past, value_past = self.self_attention(
@@ -948,9 +818,7 @@ class DecoderLayer(nn.Module):
 
     def pad_decoder(self):
 
-        assert (
-            self.self_attention.did_split
-        ), "Must call split_heads() before padding decoder"
+        assert self.self_attention.did_split, "Must call split_heads() before padding decoder"
 
         self.num_heads = self.config.n_head + self.config.padded_heads
         self.padded_heads = self.config.padded_heads
@@ -960,9 +828,7 @@ class DecoderLayer(nn.Module):
         unpadded_hidden = self.config.hidden_size
 
         padded_hidden_size = self.config.hidden_size + self.pad_amt
-        assert (
-            padded_hidden_size % (self.num_heads) == 0
-        ), "hidden_size must be divisible by n_head+padded_heads"
+        assert padded_hidden_size % (self.num_heads) == 0, "hidden_size must be divisible by n_head+padded_heads"
 
         # replace layernorm with padded
         padded_ln = PaddedLayerNorm(
@@ -971,9 +837,7 @@ class DecoderLayer(nn.Module):
             pad_amt=self.pad_amt,
         )
 
-        padded_ln.weight.data[
-            :unpadded_hidden
-        ] = self.input_layernorm.weight.data
+        padded_ln.weight.data[:unpadded_hidden] = self.input_layernorm.weight.data
         padded_ln.bias.data[:unpadded_hidden] = self.input_layernorm.bias.data
         self.input_layernorm = padded_ln
 
@@ -990,18 +854,10 @@ class DecoderLayer(nn.Module):
 
         # replace attention with padded
         padded_attn = PaddedAttentionTT(self.config)
-        padded_attn.wq.weight.data[
-            :unpadded_hidden, :unpadded_hidden
-        ] = self.self_attention.wq.weight.data
-        padded_attn.dense.weight.data[
-            :unpadded_hidden, :unpadded_hidden
-        ] = self.self_attention.dense.weight.data
-        padded_attn.wk.weight.data[
-            :, :unpadded_hidden
-        ] = self.self_attention.wk.weight.data
-        padded_attn.wv.weight.data[
-            :, :unpadded_hidden
-        ] = self.self_attention.wv.weight.data
+        padded_attn.wq.weight.data[:unpadded_hidden, :unpadded_hidden] = self.self_attention.wq.weight.data
+        padded_attn.dense.weight.data[:unpadded_hidden, :unpadded_hidden] = self.self_attention.dense.weight.data
+        padded_attn.wk.weight.data[:, :unpadded_hidden] = self.self_attention.wk.weight.data
+        padded_attn.wv.weight.data[:, :unpadded_hidden] = self.self_attention.wv.weight.data
         padded_attn.make_pad_weights(make_kvs=True)
         padded_attn.did_split = self.self_attention.did_split
         self.self_attention = padded_attn
@@ -1030,24 +886,18 @@ class RWPreTrainedModel(PreTrainedModel):
         if isinstance(module, nn.Linear) or isinstance(module, Linear):
             # Slightly different from the TF version which uses truncated_normal for initialization
             # cf https://github.com/pytorch/pytorch/pull/5617
-            module.weight.data.normal_(
-                mean=0.0, std=self.config.initializer_range
-            )
+            module.weight.data.normal_(mean=0.0, std=self.config.initializer_range)
             if module.bias is not None:
                 module.bias.data.zero_()
         elif isinstance(module, nn.Embedding):
-            module.weight.data.normal_(
-                mean=0.0, std=self.config.initializer_range
-            )
+            module.weight.data.normal_(mean=0.0, std=self.config.initializer_range)
             if module.padding_idx is not None:
                 module.weight.data[module.padding_idx].zero_()
         elif isinstance(module, LayerNorm):
             module.bias.data.zero_()
             module.weight.data.fill_(1.0)
 
-    def _set_gradient_checkpointing(
-        self, module: nn.Module, value: bool = False
-    ):
+    def _set_gradient_checkpointing(self, module: nn.Module, value: bool = False):
         if isinstance(module, RWModel):
             module.gradient_checkpointing = value
 
@@ -1060,9 +910,7 @@ class RWPreTrainedModel(PreTrainedModel):
         Standardizes the format of the cache so as to match most implementations, i.e. to tuple(tuple([batch_size,
         num_heads, ...]))
         """
-        batch_size_times_num_heads, head_dim, seq_length = past_key_value[0][
-            0
-        ].shape
+        batch_size_times_num_heads, head_dim, seq_length = past_key_value[0][0].shape
         num_heads = batch_size_times_num_heads // batch_size
         # key: [batch_size * num_heads, head_dim, seq_length] -> [batch_size, num_heads, head_dim, seq_length]
         # value: [batch_size * num_heads, seq_length, head_dim] -> [batch_size, num_heads, seq_length, head_dim]
@@ -1084,12 +932,8 @@ class RWPreTrainedModel(PreTrainedModel):
         # value: [batch_size, num_heads, seq_length, head_dim] -> [batch_size * num_heads, seq_length, head_dim]
         return tuple(
             (
-                layer_past[0].view(
-                    batch_size_times_num_heads, head_dim, seq_length
-                ),
-                layer_past[1].view(
-                    batch_size_times_num_heads, seq_length, head_dim
-                ),
+                layer_past[0].view(batch_size_times_num_heads, head_dim, seq_length),
+                layer_past[1].view(batch_size_times_num_heads, seq_length, head_dim),
             )
             for layer_past in past_key_value
         )
@@ -1131,13 +975,9 @@ class SequentialCaller(nn.Module):
         for i, block in enumerate(self.layers):
             if len(past_key_values) > 0:
                 # layer_past = past_key_values[i*2], past_key_values[i*2+1]
-                layer_past = past_key_values[i * 2].view(
-                    1, seq_len, user_rows, self.head_dim
-                ).transpose(1, 2), past_key_values[i * 2 + 1].view(
-                    1, seq_len, user_rows, self.head_dim
-                ).transpose(
+                layer_past = past_key_values[i * 2].view(1, seq_len, user_rows, self.head_dim).transpose(
                     1, 2
-                )
+                ), past_key_values[i * 2 + 1].view(1, seq_len, user_rows, self.head_dim).transpose(1, 2)
             else:
                 layer_past = None
 
@@ -1160,12 +1000,8 @@ class SequentialCaller(nn.Module):
             # value_past = value_past.transpose(1, 2).reshape(1, -1, self.head_dim*user_rows)
 
             # [1, 32, 2048, 64] -> transpose [1, 2048, 32, 64] -> transpose
-            key_past = key_past.transpose(1, 2).reshape(
-                1, 1, seq_len, self.head_dim * user_rows
-            )
-            value_past = value_past.transpose(1, 2).reshape(
-                1, 1, seq_len, self.head_dim * user_rows
-            )
+            key_past = key_past.transpose(1, 2).reshape(1, 1, seq_len, self.head_dim * user_rows)
+            value_past = value_past.transpose(1, 2).reshape(1, 1, seq_len, self.head_dim * user_rows)
 
             # TODO: return only new_key, new_value
             hidden_states = output
@@ -1212,12 +1048,8 @@ class PaddedLayerNorm(nn.Module):
         )  # this is the scale factor for the mean, n_p/n
 
         if self.elementwise_affine:
-            self.weight = nn.Parameter(
-                torch.empty(self.normalized_shape, **factory_kwargs)
-            )
-            self.bias = nn.Parameter(
-                torch.empty(self.normalized_shape, **factory_kwargs)
-            )
+            self.weight = nn.Parameter(torch.empty(self.normalized_shape, **factory_kwargs))
+            self.bias = nn.Parameter(torch.empty(self.normalized_shape, **factory_kwargs))
         else:
             self.register_parameter("weight", None)
             self.register_parameter("bias", None)
@@ -1245,10 +1077,7 @@ class PaddedLayerNorm(nn.Module):
 
         # fracture multiply add
         if self.elementwise_affine:
-            return (
-                self.weight.to(input.device) * normalized_input
-                + self.bias.to(input.device)
-            ) * self.mask
+            return (self.weight.to(input.device) * normalized_input + self.bias.to(input.device)) * self.mask
         return normalized_input * self.mask
 
 
@@ -1264,9 +1093,7 @@ class RWModel(RWPreTrainedModel):
         self.word_embeddings = nn.Embedding(config.vocab_size, self.embed_dim)
 
         # Transformer blocks
-        self.h = nn.ModuleList(
-            [DecoderLayer(config) for _ in range(config.num_hidden_layers)]
-        )
+        self.h = nn.ModuleList([DecoderLayer(config) for _ in range(config.num_hidden_layers)])
 
         self.blocks = SequentialCaller(self.h)
 
@@ -1318,9 +1145,7 @@ class RWModel(RWPreTrainedModel):
         # [batch_size, seq_length] -> [batch_size, 1, tgt_length, src_length]
         expanded_attn_mask = _expand_mask(attention_mask, tgt_length=src_length)
         combined_attention_mask = (
-            expanded_attn_mask
-            if combined_attention_mask is None
-            else expanded_attn_mask | combined_attention_mask
+            expanded_attn_mask if combined_attention_mask is None else expanded_attn_mask | combined_attention_mask
         )
 
         return combined_attention_mask
@@ -1336,9 +1161,7 @@ class RWModel(RWPreTrainedModel):
     def main_forward_part(
         self,
         input_ids: Optional[torch.LongTensor] = None,
-        past_key_values: Optional[
-            Tuple[Tuple[torch.Tensor, torch.Tensor], ...]
-        ] = None,
+        past_key_values: Optional[Tuple[Tuple[torch.Tensor, torch.Tensor], ...]] = None,
         attention_mask: Optional[torch.Tensor] = None,
         head_mask: Optional[torch.LongTensor] = None,
         inputs_embeds: Optional[torch.LongTensor] = None,
@@ -1350,9 +1173,7 @@ class RWModel(RWPreTrainedModel):
         kv_read_mask=None,
         kv_write_mask=None,
         **deprecated_arguments,
-    ) -> Union[
-        Tuple[torch.Tensor, ...], BaseModelOutputWithPastAndCrossAttentions
-    ]:
+    ) -> Union[Tuple[torch.Tensor, ...], BaseModelOutputWithPastAndCrossAttentions]:
         if deprecated_arguments.pop("position_ids", False) is not False:
             # `position_ids` could have been `torch.Tensor` or `None` so defaulting pop to `False` allows to detect if users were passing explicitly `None`
             warnings.warn(
@@ -1361,41 +1182,25 @@ class RWModel(RWPreTrainedModel):
                 FutureWarning,
             )
         if len(deprecated_arguments) > 0:
-            raise ValueError(
-                f"Got unexpected arguments: {deprecated_arguments}"
-            )
+            raise ValueError(f"Got unexpected arguments: {deprecated_arguments}")
 
         # import pdb; pdb.set_trace()
 
-        output_attentions = (
-            output_attentions
-            if output_attentions is not None
-            else self.config.output_attentions
-        )
+        output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
         output_hidden_states = (
-            output_hidden_states
-            if output_hidden_states is not None
-            else self.config.output_hidden_states
+            output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
         )
         use_cache = self.use_cache
-        return_dict = (
-            return_dict
-            if return_dict is not None
-            else self.config.use_return_dict
-        )
+        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         if input_ids is not None and inputs_embeds is not None:
-            raise ValueError(
-                "You cannot specify both input_ids and inputs_embeds at the same time"
-            )
+            raise ValueError("You cannot specify both input_ids and inputs_embeds at the same time")
         elif input_ids is not None:
             batch_size, seq_length = input_ids.shape
         elif inputs_embeds is not None:
             batch_size, seq_length, _ = inputs_embeds.shape
         else:
-            raise ValueError(
-                "You have to specify either input_ids or inputs_embeds"
-            )
+            raise ValueError("You have to specify either input_ids or inputs_embeds")
 
         # if past_key_values is None:
         # past_key_values = tuple([None] * len(self.h))
@@ -1450,14 +1255,11 @@ class RWModel(RWPreTrainedModel):
                 # attention_mask = attention_mask.view(num_batch, 1, 1, kv_length).expand(num_batch, users, self.head_total, kv_length)
                 # import pdb; pdb.set_trace()
                 num_batch, users, kv_length = attention_mask.size()
-                attention_mask = attention_mask.view(
-                    num_batch, users, 1, kv_length
-                ).expand(num_batch, users, self.head_total, kv_length)
+                attention_mask = attention_mask.view(num_batch, users, 1, kv_length).expand(
+                    num_batch, users, self.head_total, kv_length
+                )
                 att_mask_stacked = torch.cat(
-                    [
-                        attention_mask[:, [n], :, :]
-                        for n in range(attention_mask.shape[1])
-                    ],
+                    [attention_mask[:, [n], :, :] for n in range(attention_mask.shape[1])],
                     dim=3,
                 )
                 # att_mask_stacked = attention_mask
@@ -1471,21 +1273,15 @@ class RWModel(RWPreTrainedModel):
         # Rotary Embeddings
         cos, sin = self.rotary_emb()
         if position_ids is None:
-            position_ids = (
-                torch.arange(inputs_embeds.size(-2)).unsqueeze(0).to(cos.device)
-            )
+            position_ids = torch.arange(inputs_embeds.size(-2)).unsqueeze(0).to(cos.device)
         cos, sin = gather_cos_sin(cos, sin, position_ids, batch_size=batch_size)
 
         # Pad inputs to model
         # TODO: check this for user_rows > 1
         padded_hidden = (
-            self.config.hidden_size
-            + (self.config.hidden_size // self.config.n_head)
-            * self.config.padded_heads
+            self.config.hidden_size + (self.config.hidden_size // self.config.n_head) * self.config.padded_heads
         )
-        hidden_states_padded = torch.zeros(
-            (hidden_states.size(0), hidden_states.size(1), padded_hidden)
-        )
+        hidden_states_padded = torch.zeros((hidden_states.size(0), hidden_states.size(1), padded_hidden))
         hidden_states_padded[:, :, : self.config.hidden_size] = hidden_states
         hidden_states = hidden_states_padded
 
@@ -1570,9 +1366,7 @@ class RWForCausalLM(RWPreTrainedModel):
     def __init__(self, config: RWConfig):
         super().__init__(config)
         self.transformer = RWModel(config)
-        self.lm_head = nn.Linear(
-            config.hidden_size, config.vocab_size, bias=False
-        )
+        self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
 
         # Initialize weights and apply final processing
         self.post_init()
@@ -1612,9 +1406,7 @@ class RWForCausalLM(RWPreTrainedModel):
     def main_forward_part(
         self,
         input_ids: Optional[torch.LongTensor] = None,
-        past_key_values: Optional[
-            Tuple[Tuple[torch.Tensor, torch.Tensor], ...]
-        ] = None,
+        past_key_values: Optional[Tuple[Tuple[torch.Tensor, torch.Tensor], ...]] = None,
         attention_mask: Optional[torch.Tensor] = None,
         head_mask: Optional[torch.Tensor] = None,
         inputs_embeds: Optional[torch.Tensor] = None,
@@ -1645,15 +1437,9 @@ class RWForCausalLM(RWPreTrainedModel):
                 FutureWarning,
             )
         if len(deprecated_arguments) > 0:
-            raise ValueError(
-                f"Got unexpected arguments: {deprecated_arguments}"
-            )
+            raise ValueError(f"Got unexpected arguments: {deprecated_arguments}")
 
-        return_dict = (
-            return_dict
-            if return_dict is not None
-            else self.config.use_return_dict
-        )
+        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         transformer_outputs = self.transformer.main_forward_part(
             input_ids,
@@ -1715,24 +1501,16 @@ class RWForCausalLM(RWPreTrainedModel):
 
         Output shares the same memory storage as `past`.
         """
-        standardized_past = self._convert_to_standard_cache(
-            past, batch_size=len(beam_idx)
-        )
+        standardized_past = self._convert_to_standard_cache(past, batch_size=len(beam_idx))
 
         # Get a copy of `beam_idx` on all the devices where we need those indices.
         device_to_beam_idx = {
-            past_state.device: beam_idx.to(past_state.device)
-            for layer_past in past
-            for past_state in layer_past
+            past_state.device: beam_idx.to(past_state.device) for layer_past in past for past_state in layer_past
         }
         reordered_past = tuple(
             (
-                layer_past[0].index_select(
-                    0, device_to_beam_idx[layer_past[0].device]
-                ),
-                layer_past[1].index_select(
-                    0, device_to_beam_idx[layer_past[0].device]
-                ),
+                layer_past[0].index_select(0, device_to_beam_idx[layer_past[0].device]),
+                layer_past[1].index_select(0, device_to_beam_idx[layer_past[0].device]),
             )
             for layer_past in standardized_past
         )

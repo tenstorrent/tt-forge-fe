@@ -21,11 +21,11 @@ MODELS_PATH = "./forge/test/operators/eltwise_unary_attr/leaky_relu/models"
 
 SHAPE_NO = 3
 SHAPE_DIM_MIN = 1
-SHAPE_DIM_MAX = 2 ** 6
+SHAPE_DIM_MAX = 2**6
 SHAPE_WDIM_MIN = 1
-SHAPE_WDIM_MAX = 2 ** 6
+SHAPE_WDIM_MAX = 2**6
 SHAPE_ZDIM_MIN = 2
-SHAPE_ZDIM_MAX = 2 ** 6
+SHAPE_ZDIM_MAX = 2**6
 
 WDIM_FIXED = True
 ZDIM_FIXED = True
@@ -56,33 +56,23 @@ alpha = np.random.rand(ALPHA_NO) * (ALPHA_MAX - ALPHA_MIN) + ALPHA_MIN
 @pytest.mark.parametrize("recompute", (True, False), ids=["Recompute", "NoRecompute"])
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_PATH) if "model" in item])
 @pytest.mark.parametrize("mode", ["Inference"])
-def test_leaky_relu(
-    mode,
-    recompute,
-    model, 
-    shape,
-    alpha
-):
+def test_leaky_relu(mode, recompute, model, shape, alpha):
 
-    training = (mode == "Training")
+    training = mode == "Training"
 
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.ForgeLeakyReluTest(shape={shape}, alpha={alpha})'
+    architecture = f"models.{model}.ForgeLeakyReluTest(shape={shape}, alpha={alpha})"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
 
-    #Fusing disabled due to tenstorrent/forge#784
+    # Fusing disabled due to tenstorrent/forge#784
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute,
-                        enable_auto_fusing=False
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute, enable_auto_fusing=False),
+        verify_cfg=VerifyConfig(),
     )

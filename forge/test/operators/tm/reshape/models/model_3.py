@@ -5,7 +5,7 @@
 #   Test 3
 #   Reshape operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -20,14 +20,11 @@ from forge import ForgeModule, Tensor
 
 class ForgeReshapeTest(ForgeModule):
     """
-        Forge Test 3
+    Forge Test 3
 
     """
 
-    def __init__(
-        self,
-        old_shape,
-        new_shape):
+    def __init__(self, old_shape, new_shape):
         super().__init__("Forge Test 3")
 
         assert np.prod(old_shape) == np.prod(new_shape), "Size of a tensor should stay the same"
@@ -35,7 +32,7 @@ class ForgeReshapeTest(ForgeModule):
         self.testname = "Operator reshape Test 3"
         self.old_shape = old_shape
         self.new_shape = new_shape
-        
+
         self.train_param1 = forge.Parameter(*self.old_shape, requires_grad=True)
         self.train_param2 = forge.Parameter(*self.old_shape, requires_grad=True)
 
@@ -46,7 +43,7 @@ class ForgeReshapeTest(ForgeModule):
     def forward(self, x1, x2):
 
         # Layer 2
-        mul1 = forge.op.Multiply("mul1", x1, self.train_param1) 
+        mul1 = forge.op.Multiply("mul1", x1, self.train_param1)
         mul2 = forge.op.Multiply("mul2", self.train_param1, x2)
         mul3 = forge.op.Multiply("mul3", x2, self.train_param2)
 
@@ -70,4 +67,4 @@ class ForgeReshapeTest(ForgeModule):
         return mul6, mul7
 
     def values(self):
-        return [item.value() for item in self.inputs]   
+        return [item.value() for item in self.inputs]

@@ -12,4 +12,4 @@ namespace tt::passes
 {
 bool erase_consecutive_reshape(graphlib::Graph *graph, bool commute_eltwise);
 void bypass_nop_tms(graphlib::Graph *graph);
-}
+}  // namespace tt::passes

@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "graph_lib/defines.hpp"
-#include "graph_lib/node.hpp"
-#include "utils/assert.hpp"
 
 #include <string>
+
+#include "graph_lib/node.hpp"
+#include "utils/assert.hpp"
 
 namespace tt::graphlib
 {

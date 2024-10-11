@@ -13,10 +13,9 @@
 #include "forge/csrc/lower_to_forge/common.hpp"
 #include "forge/csrc/tt_torch_device/python_bindings.hpp"
 #include "forge/csrc/tt_torch_device/tt_device.hpp"
+#include "tt/runtime/runtime.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
-
-#include "tt/runtime/runtime.h"
 
 namespace tt
 {
@@ -103,7 +102,7 @@ class TorchDeviceImpl final : public c10::impl::DeviceGuardImplInterface
 // on library load. This causes a hang in tt-metal during device close.
 // c10::impl::DeviceGuardImplRegistrar tt_device_impl_reg(TT, &TorchDeviceImpl::get());
 
-const std::shared_ptr<TTDevice>& get_default_tt_device() { return TorchDeviceImpl::get().getDefaultTTDevice();}
+const std::shared_ptr<TTDevice>& get_default_tt_device() { return TorchDeviceImpl::get().getDefaultTTDevice(); }
 std::vector<std::shared_ptr<TTDevice>> get_available_tt_devices() { return TorchDeviceImpl::get().getTTDevices(); }
 
 struct Mallocator final : public c10::Allocator
@@ -121,10 +120,9 @@ struct Mallocator final : public c10::Allocator
     }
 };
 
-
 void fallback(const c10::OperatorHandle& op, torch::jit::Stack* stack)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     log_debug(LogTorchDevice, "Fallback {}\n", op.operator_name());
     PyGILState_Release(gstate);
     at::native::cpu_fallback(op, stack);
@@ -181,7 +179,10 @@ std::string get_runtime_transform(torch::Tensor const& tensor, bool input)
     }
     else
     {
-        TT_ASSERT(TorchDeviceImpl::get().ordered_input_trasforms.size(), "Please do not copy inputs to device until compilation has finished, first run can be performed on CPU tensors");
+        TT_ASSERT(
+            TorchDeviceImpl::get().ordered_input_trasforms.size(),
+            "Please do not copy inputs to device until compilation has finished, first run can be performed on CPU "
+            "tensors");
         size_t input_index = TorchDeviceImpl::get().copied_inputs.size();
         TT_ASSERT(input_index < TorchDeviceImpl::get().ordered_input_trasforms.size());
         TorchDeviceImpl::get().copied_inputs.push_back(tensor.const_data_ptr());
@@ -189,13 +190,9 @@ std::string get_runtime_transform(torch::Tensor const& tensor, bool input)
     }
 }
 
-
 torch::Device torch_device_at_index(std::int64_t index) { return torch::Device(TT, index); }
 
-std::string device_type_name(c10::DeviceType type, bool lower_case)
-{
-    return DeviceTypeName(type, lower_case);
-}
+std::string device_type_name(c10::DeviceType type, bool lower_case) { return DeviceTypeName(type, lower_case); }
 
 torch::Tensor empty_strided(
     torch::IntArrayRef size,
@@ -222,13 +219,13 @@ torch::Tensor empty_strided(
     impl->set_sizes_and_strides(torch::IntArrayRef(size), torch::IntArrayRef(forge_stride));
 
     c10::intrusive_ptr<c10::BackendMeta> backend_meta{std::unique_ptr<c10::BackendMeta>(new TTMetaData())};
-    TTMetaData *tt_meta = dynamic_cast<TTMetaData*>(backend_meta.get());
+    TTMetaData* tt_meta = dynamic_cast<TTMetaData*>(backend_meta.get());
     tt_meta->original_shape = size;
     tt_meta->runtime_transformed = false;
     impl->set_backend_meta(backend_meta);
-    
+
     auto t = torch::Tensor::wrap_tensor_impl(impl);
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     log_trace(
         LogTorchDevice,
         "empty_strided tensor({})[{}, {}] [{}, {}, {}]",
@@ -250,11 +247,8 @@ torch::Tensor empty(
     c10::optional<bool> pin_memory,
     c10::optional<c10::MemoryFormat> /*memory_format*/)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
-    log_trace(
-        LogTorchDevice,
-        "empty size {}",
-        size);
+    PyGILState_STATE gstate = PyGILState_Ensure();
+    log_trace(LogTorchDevice, "empty size {}", size);
     PyGILState_Release(gstate);
     std::vector<std::int64_t> stride(size.size(), 1);
 
@@ -280,7 +274,7 @@ torch::Tensor empty(
 //     bool non_blocking,
 //     bool copy,
 //     c10::optional<c10::MemoryFormat> optional_memory_format
-// ) 
+// )
 // {
 //     (void)dtype;
 //     (void)layout;
@@ -312,7 +306,7 @@ torch::Tensor empty(
 
 torch::Tensor _copy_from(const torch::Tensor& self, const torch::Tensor& dest, bool non_blocking)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     log_trace(
         LogTorchDevice,
         "copy_from self tensor({})[{} {} {}] dest tensor({})[{} {} {}] non_blocking[{}]",
@@ -342,7 +336,7 @@ torch::Tensor _copy_from(const torch::Tensor& self, const torch::Tensor& dest, b
     if (self.device().is_cpu() and dest.device().type() == TT)
     {
         // pad to forge
-        
+
         // std::string transform = get_runtime_transform(dest, true);
         // torch::Tensor evaled = eval_runtime_transform(self, transform);
         // self_tensor_data = evaled.getIntrusivePtr()->data();
@@ -359,7 +353,6 @@ torch::Tensor _copy_from(const torch::Tensor& self, const torch::Tensor& dest, b
         TT_ASSERT(dest_nbytes <= self_nbytes, dest_nbytes, self_nbytes);
         std::memcpy(dest_tensor_data, self_tensor_data, dest_nbytes);
 
-        
         // std::string transform = get_runtime_transform(self, false);
         // // TODO: Check for emptry transform to avoid the memcpy
         // torch::Tensor evaled = eval_runtime_transform(dest, transform);
@@ -376,11 +369,11 @@ torch::Tensor _copy_from(const torch::Tensor& self, const torch::Tensor& dest, b
         // barrier self
         // barrier dest
         // dest = self
-        
-        //log_fatal(
-        //    "Unsupported (for now) _copy_from TTDevice[{}] to TTDevice[{}]",
-        //    self.device().index(),
-        //    dest.device().index());
+
+        // log_fatal(
+        //     "Unsupported (for now) _copy_from TTDevice[{}] to TTDevice[{}]",
+        //     self.device().index(),
+        //     dest.device().index());
         auto self_num_items = self.numel();
         auto dest_num_items = dest.numel();
         TT_ASSERT(self_num_items == dest_num_items, self_num_items, dest_num_items);
@@ -399,7 +392,7 @@ torch::Tensor _copy_from(const torch::Tensor& self, const torch::Tensor& dest, b
 
 torch::Tensor _copy_from_and_resize(const torch::Tensor& self, const torch::Tensor& dest)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     log_debug(LogTorchDevice, "copy_from_and_resize");
     PyGILState_Release(gstate);
     if (dest.device().type() == TT)
@@ -413,7 +406,7 @@ torch::Tensor _copy_from_and_resize(const torch::Tensor& self, const torch::Tens
 
 torch::Tensor _reshape_alias(torch::Tensor const& self, c10::IntArrayRef size, c10::IntArrayRef stride)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     log_debug(LogTorchDevice, "reshape_alias");
     log_trace(
         LogTorchDevice,
@@ -438,10 +431,13 @@ torch::Tensor _reshape_alias(torch::Tensor const& self, c10::IntArrayRef size, c
     return self;
 }
 
-torch::Tensor as_strided(const torch::Tensor & self, c10::IntArrayRef size, c10::IntArrayRef stride, c10::optional<int64_t> storage_offset)
+torch::Tensor as_strided(
+    const torch::Tensor& self, c10::IntArrayRef size, c10::IntArrayRef stride, c10::optional<int64_t> storage_offset)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
-    log_trace(LogTorchDevice, "as_strided tensor({})[{} {} {}] size[{}] stride[{}]",
+    PyGILState_STATE gstate = PyGILState_Ensure();
+    log_trace(
+        LogTorchDevice,
+        "as_strided tensor({})[{} {} {}] size[{}] stride[{}]",
         self.getIntrusivePtr()->data(),
         self.device(),
         self.sizes(),
@@ -466,10 +462,13 @@ torch::Tensor as_strided(const torch::Tensor & self, c10::IntArrayRef size, c10:
     return self.detach();
 }
 
-torch::Tensor & index_outf(const torch::Tensor &self, const c10::List<c10::optional<torch::Tensor>> & indices, torch::Tensor & out)
+torch::Tensor& index_outf(
+    const torch::Tensor& self, const c10::List<c10::optional<torch::Tensor>>& indices, torch::Tensor& out)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
-    log_trace(LogTorchDevice, "index_out tensor({})[{} {} {}]",
+    PyGILState_STATE gstate = PyGILState_Ensure();
+    log_trace(
+        LogTorchDevice,
+        "index_out tensor({})[{} {} {}]",
         out.getIntrusivePtr()->data(),
         out.device(),
         out.sizes(),
@@ -493,14 +492,16 @@ torch::Tensor & index_outf(const torch::Tensor &self, const c10::List<c10::optio
     }
     cpu.index(cpu_indices);
     out = cpu.to(self.device());
-    
+
     return out;
 }
 
-torch::Tensor view(const torch::Tensor &self, const c10::IntArrayRef size)
+torch::Tensor view(const torch::Tensor& self, const c10::IntArrayRef size)
 {
-    PyGILState_STATE gstate=PyGILState_Ensure();
-    log_trace(LogTorchDevice, "view tensor({})[{} {} {}] [{}]",
+    PyGILState_STATE gstate = PyGILState_Ensure();
+    log_trace(
+        LogTorchDevice,
+        "view tensor({})[{} {} {}] [{}]",
         self.getIntrusivePtr()->data(),
         self.device(),
         self.sizes(),
@@ -509,13 +510,10 @@ torch::Tensor view(const torch::Tensor &self, const c10::IntArrayRef size)
 
     PyGILState_Release(gstate);
     at::DimVector inferred_size = at::infer_size_dv(size, self.numel());
-    c10::optional<at::DimVector>  stride = at::detail::computeStride(self.sizes(),
-                                            self.strides(),
-                                            inferred_size);
-
+    c10::optional<at::DimVector> stride = at::detail::computeStride(self.sizes(), self.strides(), inferred_size);
 
     torch::Tensor ret = at::detail::make_tensor<torch::TensorImpl>(
-      c10::TensorImpl::VIEW, c10::Storage(self.storage()), self.key_set(), self.dtype());
+        c10::TensorImpl::VIEW, c10::Storage(self.storage()), self.key_set(), self.dtype());
 
     auto* ret_tmp_ = ret.unsafeGetTensorImpl();
     ret_tmp_->set_storage_offset(self.storage_offset());
@@ -555,7 +553,8 @@ TORCH_LIBRARY_IMPL(_, PrivateUse1, m)
     m.fallback(torch::CppFunction::makeFromBoxedFunction<&tt::fallback>());
 }
 
-template<> struct fmt::formatter<c10::Device> : fmt::formatter<std::string_view>
+template <>
+struct fmt::formatter<c10::Device> : fmt::formatter<std::string_view>
 {
     inline auto format(const c10::Device& device, fmt::format_context& ctx) const -> decltype(ctx.out())
     {
@@ -565,7 +564,8 @@ template<> struct fmt::formatter<c10::Device> : fmt::formatter<std::string_view>
     }
 };
 
-template<> struct fmt::formatter<c10::OperatorName> : fmt::formatter<std::string_view>
+template <>
+struct fmt::formatter<c10::OperatorName> : fmt::formatter<std::string_view>
 {
     inline auto format(const c10::OperatorName& operator_name, fmt::format_context& ctx) const -> decltype(ctx.out())
     {
@@ -574,4 +574,3 @@ template<> struct fmt::formatter<c10::OperatorName> : fmt::formatter<std::string
         return fmt::formatter<std::string_view>::format(oss.str(), ctx);
     }
 };
-

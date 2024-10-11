@@ -220,19 +220,16 @@ struct DeviceConfig
     // During the onboarding process of the blackhole architecture,
     // we temporarily treat it as equivalent to the Wormhole_b0 architecture.
     inline bool is_wormhole_b0() const { return arch == ARCH::WORMHOLE_B0 || is_blackhole(); }
-    
+
     // Get if the device is a grayskull
     inline bool is_grayskull() const { return arch == ARCH::GRAYSKULL; }
 
     template <typename T>
-    T get(std::string const &param, const bool system_level_command) const;
+    T get(std::string const& param, const bool system_level_command) const;
     void load_system_level_params();
     std::unordered_map<std::uint32_t, std::uint32_t> get_harvested_cfg() const;
 
-    std::size_t get_clock_freq() const
-    {
-        return 1000000000;
-    }
+    std::size_t get_clock_freq() const { return 1000000000; }
     std::uint32_t get_host_memory_num_channels() const
     {
         return get<std::uint32_t>("sysmem-host_region_num_channels", false);
@@ -263,10 +260,7 @@ struct DeviceConfig
         // Get this number from DB query:
         return 100 * 1024;
     }
-    std::size_t get_noc_bandwidth_bytes_per_cycle() const
-    {
-        return 32;
-    }
+    std::size_t get_noc_bandwidth_bytes_per_cycle() const { return 32; }
     std::uint32_t get_dram_num_channels() const { return get<std::uint32_t>("dram-num_channels", false); }
     std::uint32_t get_dram_num_subchannels() const
     {
@@ -453,7 +447,8 @@ inline std::ostream& operator<<(std::ostream& os, DeviceConfig const& device_con
 
 }  // namespace tt
 
-template<> struct fmt::formatter<tt::DeviceConfig> : fmt::formatter<std::string_view>
+template <>
+struct fmt::formatter<tt::DeviceConfig> : fmt::formatter<std::string_view>
 {
     inline auto format(const tt::DeviceConfig& device_config, fmt::format_context& ctx) const -> decltype(ctx.out())
     {

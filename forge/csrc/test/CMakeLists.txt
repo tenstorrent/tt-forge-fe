@@ -11,7 +11,7 @@ function (add_unittest TEST_DIR)
     set(TEST_NAME "test_${TEST_DIR}")
 
     add_executable(${TEST_NAME} EXCLUDE_FROM_ALL ${TEST_FILES})
-    target_compile_options(${TEST_NAME} PRIVATE 
+    target_compile_options(${TEST_NAME} PRIVATE
         ${TTFORGE_CSRC_CFLAGS}
         ${CXXFLAGS}
     )

@@ -19,13 +19,8 @@ from . import models
 
 MODELS_PATH = "./forge/test/operators/tm/reshape/models"
 
-def test_reshape(
-    resh_train,
-    resh_recompute,
-    resh_model, 
-    resh_oshape, 
-    resh_nshape
-):
+
+def test_reshape(resh_train, resh_recompute, resh_model, resh_oshape, resh_nshape):
 
     print("\n")
     print(f"resh_train --> {resh_train}")
@@ -40,12 +35,12 @@ def test_reshape(
 
     assert type(resh_train) in [bool, str], "Type of training parameter must be boolean or string"
     if type(resh_train) == str:
-        training = True if resh_train == 'True' else False
+        training = True if resh_train == "True" else False
     else:
         training = resh_train
     assert type(resh_recompute) in [bool, str], "Type of recompute parameter must be boolean or string"
     if type(resh_recompute) == str:
-        recompute = True if resh_recompute == 'True' else False
+        recompute = True if resh_recompute == "True" else False
     else:
         recompute = resh_recompute
     model = resh_model
@@ -60,17 +55,14 @@ def test_reshape(
     print(f"New Operation --> {new_shape}")
     print("\n")
 
-    architecture = f'models.{model}.ForgeReshapeTest(old_shape={old_shape}, new_shape={new_shape})'
+    architecture = f"models.{model}.ForgeReshapeTest(old_shape={old_shape}, new_shape={new_shape})"
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
+        verify_cfg=VerifyConfig(),
     )

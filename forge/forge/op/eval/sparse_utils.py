@@ -17,13 +17,13 @@ from math import gcd
 def conv2d_padding_to_canonical(padding, kernel_size):
     # current implementation is without dilation
 
-    assert isinstance(kernel_size,int) or isinstance(kernel_size,tuple) , "Unsupported kernel size"
-    kH, kW = kernel_size if isinstance(kernel_size,tuple) else (kernel_size,kernel_size)
+    assert isinstance(kernel_size, int) or isinstance(kernel_size, tuple), "Unsupported kernel size"
+    kH, kW = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size)
 
     if isinstance(padding, int):
         return [padding] * 4
     elif isinstance(padding, str):
-        assert padding == "same" , "Unsupported padding"
+        assert padding == "same", "Unsupported padding"
         padding = [kW // 2] * 2 + [kH // 2] * 2
         if kW % 2 == 0:
             padding[1] -= 1
@@ -36,22 +36,22 @@ def conv2d_padding_to_canonical(padding, kernel_size):
         elif len(padding) == 4:
             return list(padding)
         else:
-            raise AssertionError ("Unsupported padding")
+            raise AssertionError("Unsupported padding")
     else:
-        raise AssertionError ("Unsupported padding")
+        raise AssertionError("Unsupported padding")
 
 
 def conv3d_padding_to_canonical(padding, kernel_size):
     # current implementation is without dilation
 
-    assert isinstance(kernel_size,int) or isinstance(kernel_size,tuple) , "Unsupported kernel size"
-    kD, kH, kW = kernel_size if isinstance(kernel_size,tuple) else (kernel_size,kernel_size,kernel_size)
+    assert isinstance(kernel_size, int) or isinstance(kernel_size, tuple), "Unsupported kernel size"
+    kD, kH, kW = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size, kernel_size)
 
     if isinstance(padding, int):
         return [padding] * 6
     elif isinstance(padding, str):
-        assert padding == "same" , "Unsupported padding"
-        padding = [kW // 2] * 2  + [kH // 2] * 2 + [kD // 2] * 2
+        assert padding == "same", "Unsupported padding"
+        padding = [kW // 2] * 2 + [kH // 2] * 2 + [kD // 2] * 2
         if kW % 2 == 0:
             padding[1] -= 1
         if kH % 2 == 0:
@@ -65,10 +65,9 @@ def conv3d_padding_to_canonical(padding, kernel_size):
         elif len(padding) == 6:
             return list(padding)
         else:
-            raise AssertionError ("Unsupported padding")
+            raise AssertionError("Unsupported padding")
     else:
-        raise AssertionError ("Unsupported padding")
-
+        raise AssertionError("Unsupported padding")
 
 
 def calculate_conv2d_output_dimensions(
@@ -85,18 +84,8 @@ def calculate_conv2d_output_dimensions(
 
     # Padding is [left, right, top, bottom]
     if ceil_mode:
-        y = (
-            math.ceil(
-                (original_y + padding[2] + padding[3] - dilation * (kernel_size[0] - 1) - 1) / stride[0]
-            )
-            + 1
-        )
-        x = (
-            math.ceil(
-                (original_x + padding[0] + padding[1] - dilation * (kernel_size[1] - 1) - 1) / stride[1]
-            )
-            + 1
-        )
+        y = math.ceil((original_y + padding[2] + padding[3] - dilation * (kernel_size[0] - 1) - 1) / stride[0]) + 1
+        x = math.ceil((original_x + padding[0] + padding[1] - dilation * (kernel_size[1] - 1) - 1) / stride[1]) + 1
     else:
         y = (original_y + padding[2] + padding[3] - dilation * (kernel_size[0] - 1) - 1) // stride[0] + 1
         x = (original_x + padding[0] + padding[1] - dilation * (kernel_size[1] - 1) - 1) // stride[1] + 1
@@ -117,24 +106,9 @@ def calculate_conv3d_output_dimensions(
 
     # Padding is [left, right, top, bottom]
     if ceil_mode:
-        z = (
-            math.ceil(
-                (original_z + padding[4] + padding[5] - dilation * (kernel_size[0] - 1) - 1) / stride[0]
-            )
-            + 1
-        )
-        y = (
-            math.ceil(
-                (original_y + padding[2] + padding[3] - dilation * (kernel_size[1] - 1) - 1) / stride[1]
-            )
-            + 1
-        )
-        x = (
-            math.ceil(
-                (original_x + padding[0] + padding[1] - dilation * (kernel_size[2] - 1) - 1) / stride[2]
-            )
-            + 1
-        )
+        z = math.ceil((original_z + padding[4] + padding[5] - dilation * (kernel_size[0] - 1) - 1) / stride[0]) + 1
+        y = math.ceil((original_y + padding[2] + padding[3] - dilation * (kernel_size[1] - 1) - 1) / stride[1]) + 1
+        x = math.ceil((original_x + padding[0] + padding[1] - dilation * (kernel_size[2] - 1) - 1) / stride[2]) + 1
     else:
         z = (original_z + padding[4] + padding[5] - dilation * (kernel_size[0] - 1) - 1) // stride[0] + 1
         y = (original_y + padding[2] + padding[3] - dilation * (kernel_size[1] - 1) - 1) // stride[1] + 1
@@ -148,20 +122,8 @@ def calculate_conv2d_transpose_output_dimensions(
     if isinstance(padding, int):
         padding = [padding] * 4
 
-    y = (
-        (original_y - 1) * stride
-        - (padding[2] + padding[3])
-        + dilation * (kernel_size[0] - 1)
-        + 1
-        + output_padding
-    )
-    x = (
-        (original_x - 1) * stride
-        - (padding[0] + padding[1])
-        + dilation * (kernel_size[1] - 1)
-        + 1
-        + output_padding
-    )
+    y = (original_y - 1) * stride - (padding[2] + padding[3]) + dilation * (kernel_size[0] - 1) + 1 + output_padding
+    x = (original_x - 1) * stride - (padding[0] + padding[1]) + dilation * (kernel_size[1] - 1) + 1 + output_padding
     return y, x
 
 
@@ -184,7 +146,11 @@ def calculate_conv2d_prestride_weights_and_padding(weights, original_y, original
     weights_top_pad = stride[0] if weights_top_pad == 0 else weights_top_pad
     for y in range(stride[0]):
         for x in range(stride[1]):
-            pre_strided_weights.append(torch.nn.functional.pad(weights, (stride[1] - weights_left_pad, x, stride[0] - weights_top_pad, y))[:, :, y::stride[0], x::stride[1]])
+            pre_strided_weights.append(
+                torch.nn.functional.pad(weights, (stride[1] - weights_left_pad, x, stride[0] - weights_top_pad, y))[
+                    :, :, y :: stride[0], x :: stride[1]
+                ]
+            )
 
     pre_strided_weights = torch.cat(pre_strided_weights, dim=-3)
 
@@ -208,12 +174,17 @@ def calculate_conv2d_prestride_weights_and_padding(weights, original_y, original
         kernel_size=kernel_size,
         stride=stride,
         padding=padding,
-        dilation=1)
+        dilation=1,
+    )
 
     pad_left = round_up_div(padding[0], stride[1])
     pad_top = round_up_div(padding[2], stride[0])
-    pad_right = pad_right_bottom(pad_left, 1, round_up_div(original_x, stride[1]), output_shape[1], pre_strided_weights.shape[-1])
-    pad_bottom = pad_right_bottom(pad_top, 1, round_up_div(original_y, stride[0]), output_shape[0], pre_strided_weights.shape[-2])
+    pad_right = pad_right_bottom(
+        pad_left, 1, round_up_div(original_x, stride[1]), output_shape[1], pre_strided_weights.shape[-1]
+    )
+    pad_bottom = pad_right_bottom(
+        pad_top, 1, round_up_div(original_y, stride[0]), output_shape[0], pre_strided_weights.shape[-2]
+    )
 
     pre_strided_padding = (
         pad_left,
@@ -227,7 +198,9 @@ def calculate_conv2d_prestride_weights_and_padding(weights, original_y, original
     return pre_strided_weights, pre_strided_padding
 
 
-def _calculate_pad_for_ceil_mode_single_dim(original_dim, out_dim, kernel_size, stride, pad_prefix, pad_suffix, dilation=1):
+def _calculate_pad_for_ceil_mode_single_dim(
+    original_dim, out_dim, kernel_size, stride, pad_prefix, pad_suffix, dilation=1
+):
     assert isinstance(original_dim, int)
     assert isinstance(out_dim, int)
     assert isinstance(kernel_size, int)
@@ -246,15 +219,15 @@ def _calculate_pad_for_ceil_mode_single_dim(original_dim, out_dim, kernel_size, 
 
     # Equation to calculate output size (in single dimension) for convs and pooling ops:
     #   out_dim = floor((in_dim + total_padding - dilation * (kernel_size - 1) - 1) / stride) + 1
-    # 
-    # For out_dim, we can plug in the size we would get if we were to do ceil_mode=True, solve for total_padding, plug 
+    #
+    # For out_dim, we can plug in the size we would get if we were to do ceil_mode=True, solve for total_padding, plug
     # in all the other params, and subtract the original padding from the result in order to calculate how much extra
     # padding we need to add so that we get the desired out_dim
     # Additionally, we can remove the floor() (or ceil()) function from the equation to get the exact padding
     #
     # Solve for total_padding:
     #   total_padding = stride * (out_dim - 1) - in_dim + dilation * (kernel_size - 1) + 1
-    # 
+    #
     # Calculate amount of padding to add:
     #   padding_to_add = total_padding - pad_prefix - pad_suffix
     total_padding = stride * (out_dim - 1) - original_dim + dilation * (kernel_size - 1) + 1
@@ -273,7 +246,9 @@ def calculate_pad_for_ceil_mode(original_y, original_x, kernel_size, stride, pad
     if isinstance(kernel_size, int):
         kernel_size = (kernel_size, kernel_size)
 
-    y_out, x_out = calculate_conv2d_output_dimensions(original_y, original_x, kernel_size, stride, padding, dilation, ceil_mode=True)
+    y_out, x_out = calculate_conv2d_output_dimensions(
+        original_y, original_x, kernel_size, stride, padding, dilation, ceil_mode=True
+    )
 
     pad_right = _calculate_pad_for_ceil_mode_single_dim(
         original_dim=original_x,
@@ -282,7 +257,7 @@ def calculate_pad_for_ceil_mode(original_y, original_x, kernel_size, stride, pad
         stride=stride[1],
         pad_prefix=padding[0],
         pad_suffix=padding[1],
-        dilation=1
+        dilation=1,
     )
 
     pad_bottom = _calculate_pad_for_ceil_mode_single_dim(
@@ -292,7 +267,7 @@ def calculate_pad_for_ceil_mode(original_y, original_x, kernel_size, stride, pad
         stride=stride[0],
         pad_prefix=padding[2],
         pad_suffix=padding[3],
-        dilation=1
+        dilation=1,
     )
 
     return pad_right, pad_bottom
@@ -320,7 +295,19 @@ def create_conv2d_picker_matrix(y, x, y_shift, x_shift, stride, tile_align=False
 
 
 def create_conv2d_sparse_picker_matrix(
-    y, x, y_shift, x_shift, k_y, k_x, stride, padding, dilation, tile_align=False, pad_x_only=False, sparse_r_pad=0, sparse_c_pad=0
+    y,
+    x,
+    y_shift,
+    x_shift,
+    k_y,
+    k_x,
+    stride,
+    padding,
+    dilation,
+    tile_align=False,
+    pad_x_only=False,
+    sparse_r_pad=0,
+    sparse_c_pad=0,
 ):
     cols = torch.arange(start=1, end=y * x + 1).view(y, x)
 
@@ -331,15 +318,11 @@ def create_conv2d_sparse_picker_matrix(
     shift_x = dilation * ((k_x - 1) // 2 - x_shift)
     cols = torch.nn.functional.pad(cols, (-shift_x, shift_x, -shift_y, shift_y))
     # stride
-    cols = cols[::stride[0], ::stride[1]]
+    cols = cols[:: stride[0], :: stride[1]]
     # clamp to output dims
-    out_y, out_x = calculate_conv2d_output_dimensions(
-        y, x, [k_y, k_x], stride, padding, dilation
-    )
+    out_y, out_x = calculate_conv2d_output_dimensions(y, x, [k_y, k_x], stride, padding, dilation)
 
-    cols = torch.nn.functional.pad(
-        cols, (0, out_x - cols.shape[1], 0, out_y - cols.shape[0])
-    )
+    cols = torch.nn.functional.pad(cols, (0, out_x - cols.shape[1], 0, out_y - cols.shape[0]))
 
     cols = cols.reshape(-1)
     rows = torch.arange(cols.shape[0])
@@ -452,7 +435,7 @@ def create_index_sparse_picker_matrix(r, start, stop, stride, tile_align=False):
 
 
 def create_reshape_flatten_sparse_picker_matrix(orig_r, new_r, tile_dim=TILE_DIM):
-    cols = torch.arange(new_r//tile_dim)
+    cols = torch.arange(new_r // tile_dim)
     rows = cols * tile_dim
     return torch.sparse_coo_tensor(
         [rows.tolist(), cols.tolist()],
@@ -465,8 +448,8 @@ def create_reshape_flatten_sparse_picker_matrix(orig_r, new_r, tile_dim=TILE_DIM
 def create_reshape_flatten_sparse_picker_matrix_narrower(orig_r, new_r, org_length, tile_dim=TILE_DIM):
     cols = torch.arange(orig_r)
     rows = torch.tensor([])
-    for i in range(0, new_r, tile_dim): 
-        rows = torch.cat([rows, (torch.arange(org_length) + i)])  
+    for i in range(0, new_r, tile_dim):
+        rows = torch.cat([rows, (torch.arange(org_length) + i)])
     return torch.sparse_coo_tensor(
         [rows.tolist(), cols.tolist()],
         torch.ones(cols.shape[0]),
@@ -474,7 +457,10 @@ def create_reshape_flatten_sparse_picker_matrix_narrower(orig_r, new_r, org_leng
         dtype=torch.float32,
     )
 
-def create_flattened_padding_removal_sparse_picker_matrix(r, start, stop, length, align_up_rows=False, align_up_cols=False):
+
+def create_flattened_padding_removal_sparse_picker_matrix(
+    r, start, stop, length, align_up_rows=False, align_up_cols=False
+):
     num_pads = r // length
     cols = []
     [cols.extend((torch.arange(start, stop) + (length * pad)).tolist()) for pad in range(num_pads)]
@@ -488,20 +474,18 @@ def create_flattened_padding_removal_sparse_picker_matrix(r, start, stop, length
         dtype=torch.float32,
     )
 
+
 def create_padding_shift_sparse_picker_matrix(length, slices, padded_length):
     rows = torch.arange(0, length).tolist()
     cols = []
     for i in range(slices):
-        lo = i*align_up_tile(length//slices)
-        hi = lo + length//slices
+        lo = i * align_up_tile(length // slices)
+        hi = lo + length // slices
         col = torch.arange(lo, hi)
         cols = cols + col.tolist()
 
     return torch.sparse_coo_tensor(
-        [rows, cols],
-        torch.ones(len(cols)),
-        (padded_length, align_up_tile(cols[-1]+1)),
-        dtype=torch.float32
+        [rows, cols], torch.ones(len(cols)), (padded_length, align_up_tile(cols[-1] + 1)), dtype=torch.float32
     )
 
 
@@ -517,6 +501,7 @@ def create_real_row_sparse_picker_matrix(orig_x, padded_y):
     )
     return spm
 
+
 def create_repeat_sparse_picker_matrix(orig_x, repeat):
     cols = torch.arange(orig_x).tolist() * repeat
     rows = torch.arange(orig_x * repeat).tolist()
@@ -531,21 +516,20 @@ def create_repeat_sparse_picker_matrix(orig_x, repeat):
 
 
 def create_sparse_interleave_picker_matrix(length, orig_x, orig_z):
-    
     def create_rows(orig_x, orig_z):
         rows = []
         curr_row = 0
         for i in range(orig_x):
-            rows.append(torch.arange(curr_row, curr_row+orig_z).tolist())
+            rows.append(torch.arange(curr_row, curr_row + orig_z).tolist())
             curr_row += align_up_tile(orig_z)
         return rows
-    
+
     def create_cols(length, orig_x):
         cols = []
         for i in range(orig_x):
             curr_cols = []
-            for j in range(length//align_up_tile(orig_x)):
-                vals = [i+ j*align_up_tile(orig_x)]
+            for j in range(length // align_up_tile(orig_x)):
+                vals = [i + j * align_up_tile(orig_x)]
                 curr_cols += vals
 
             cols.append(curr_cols)
@@ -553,11 +537,16 @@ def create_sparse_interleave_picker_matrix(length, orig_x, orig_z):
 
     rows = create_rows(orig_x, orig_z)
     cols = create_cols(length, orig_x)
-    matrix = torch.sparse_coo_tensor([rows[0], cols[0]],torch.ones(len(cols[0])), (align_up_tile(rows[-1][-1]+1), length), dtype=torch.float32)
+    matrix = torch.sparse_coo_tensor(
+        [rows[0], cols[0]], torch.ones(len(cols[0])), (align_up_tile(rows[-1][-1] + 1), length), dtype=torch.float32
+    )
     for i in range(1, orig_x):
-        matrix += torch.sparse_coo_tensor([rows[i], cols[i]],torch.ones(len(cols[i])), (align_up_tile(rows[-1][-1]+1), length), dtype=torch.float32)
+        matrix += torch.sparse_coo_tensor(
+            [rows[i], cols[i]], torch.ones(len(cols[i])), (align_up_tile(rows[-1][-1] + 1), length), dtype=torch.float32
+        )
 
     return matrix
+
 
 def transpose_sparse_picker_matrix(sparse):
     sparse_r = sparse.shape[-2]
@@ -614,9 +603,7 @@ def get_sparse_picker_matrix_max_span(sparse: torch.Tensor):
         z_slice = sparse.select(dim=0, index=z)  # Now 2d
         rows, cols = z_slice.coalesce().indices().tolist()
 
-        non_zero_tiles = {
-            (rows[i] // TILE_DIM, cols[i] // TILE_DIM) for i in range(len(rows))
-        }
+        non_zero_tiles = {(rows[i] // TILE_DIM, cols[i] // TILE_DIM) for i in range(len(rows))}
 
         d = dict()
         for k, v in non_zero_tiles:
@@ -647,7 +634,11 @@ def up_idx_to_orig_idx_align_corners(up_idx, original_size, upsample_size):
 
 
 def create_nearest_neighbor_upsample_picker_matrix(
-    scale_factor, shape, tile_align=False, for_din=False, channel_last=False,
+    scale_factor,
+    shape,
+    tile_align=False,
+    for_din=False,
+    channel_last=False,
 ):
     if channel_last:
         if for_din:
@@ -656,10 +647,7 @@ def create_nearest_neighbor_upsample_picker_matrix(
         rows = torch.arange(shape[-3] * scale_factor[0] * shape[-2] * scale_factor[1])
         cols = []
         for i in range(shape[-3]):
-            col = (
-                torch.arange(shape[-2]).repeat_interleave(scale_factor[0]).repeat(scale_factor[1])
-                + i * (shape[-2])
-            )
+            col = torch.arange(shape[-2]).repeat_interleave(scale_factor[0]).repeat(scale_factor[1]) + i * (shape[-2])
             cols.append(col)
 
         cols = torch.concat(cols)
@@ -670,19 +658,14 @@ def create_nearest_neighbor_upsample_picker_matrix(
             sparse_r = align_up_tile(sparse_r)
             sparse_c = align_up_tile(sparse_c)
 
-        return torch.sparse_coo_tensor(
-            [rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c)
-        )
+        return torch.sparse_coo_tensor([rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c))
     else:
         if for_din:
             rows = torch.arange(shape[-3] * scale_factor[2] * shape[-4])
-            #cols = torch.arange(shape[-3]).repeat_interleave(scale_factor)
+            # cols = torch.arange(shape[-3]).repeat_interleave(scale_factor)
             cols = []
             for i in range(shape[-4]):
-                col = (
-                    torch.arange(shape[-3]).repeat_interleave(scale_factor[2])
-                    + i * shape[-3]
-                )
+                col = torch.arange(shape[-3]).repeat_interleave(scale_factor[2]) + i * shape[-3]
                 cols.append(col)
             cols = torch.concat(cols)
             sparse_r = rows.shape[0]
@@ -691,10 +674,7 @@ def create_nearest_neighbor_upsample_picker_matrix(
             rows = torch.arange(shape[-2] * scale_factor[0] * shape[-1] * scale_factor[1])
             cols = []
             for i in range(shape[-2]):
-                col = (
-                    torch.arange(shape[-1]).repeat_interleave(scale_factor[0]).repeat(scale_factor[1])
-                    + i * shape[-1]
-                )
+                col = torch.arange(shape[-1]).repeat_interleave(scale_factor[0]).repeat(scale_factor[1]) + i * shape[-1]
                 cols.append(col)
             cols = torch.concat(cols)
             sparse_r = rows.shape[0]
@@ -704,21 +684,22 @@ def create_nearest_neighbor_upsample_picker_matrix(
             sparse_r = align_up_tile(sparse_r)
             sparse_c = align_up_tile(sparse_c)
 
-        return torch.sparse_coo_tensor(
-            [rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c)
-        )
+        return torch.sparse_coo_tensor([rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c))
+
 
 def create_nearest_neighbor_downsample_picker_matrix(
-    scale_factor, shape, tile_align=False, channel_last=False,
+    scale_factor,
+    shape,
+    tile_align=False,
+    channel_last=False,
 ):
     if channel_last:
         rows = torch.arange((shape[-3] // scale_factor) * (shape[-2] // scale_factor))
         rows = scale_factor * (rows // scale_factor)
         cols = []
         for i in range(shape[-3]):
-            col = (
-                torch.arange(shape[-2]).repeat_interleave(scale_factor).repeat(scale_factor)
-                + i * align_up_tile(shape[-2])
+            col = torch.arange(shape[-2]).repeat_interleave(scale_factor).repeat(scale_factor) + i * align_up_tile(
+                shape[-2]
             )
             cols.append(col)
 
@@ -730,11 +711,9 @@ def create_nearest_neighbor_downsample_picker_matrix(
             sparse_r = align_up_tile(sparse_r)
             sparse_c = align_up_tile(sparse_c)
 
-        return torch.sparse_coo_tensor(
-            [rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c)
-        )
+        return torch.sparse_coo_tensor([rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c))
     else:
-        cols = torch.arange(shape[-2] // scale_factor)*scale_factor
+        cols = torch.arange(shape[-2] // scale_factor) * scale_factor
         rows = cols // scale_factor
         sparse_r = cols.shape[0]
         sparse_c = shape[-1]
@@ -742,13 +721,17 @@ def create_nearest_neighbor_downsample_picker_matrix(
             sparse_r = align_up_tile(sparse_r)
             sparse_c = align_up_tile(sparse_c)
 
-        return torch.sparse_coo_tensor(
-            [rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c)
-        )
+        return torch.sparse_coo_tensor([rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c))
 
 
 def create_bilinear_upsample_picker_matrix(
-    scale_factor, shape, align_corners=False, tile_align=False, channel_last=False, split_idx=0, split_factor=1,
+    scale_factor,
+    shape,
+    align_corners=False,
+    tile_align=False,
+    channel_last=False,
+    split_idx=0,
+    split_factor=1,
 ):
     r = shape[-2]
     c = shape[-1]
@@ -764,19 +747,11 @@ def create_bilinear_upsample_picker_matrix(
     upsample_c_idx = torch.arange(0, c * scale_factor[0])
     upsample_r_idx = torch.arange(0, r * scale_factor[1])
     if align_corners:
-        upsample_c_idx_adjusted = up_idx_to_orig_idx_align_corners(
-            upsample_c_idx, c, c * scale_factor[0]
-        )
-        upsample_r_idx_adjusted = up_idx_to_orig_idx_align_corners(
-            upsample_r_idx, r, r * scale_factor[1]
-        )
+        upsample_c_idx_adjusted = up_idx_to_orig_idx_align_corners(upsample_c_idx, c, c * scale_factor[0])
+        upsample_r_idx_adjusted = up_idx_to_orig_idx_align_corners(upsample_r_idx, r, r * scale_factor[1])
     else:
-        upsample_c_idx_adjusted = up_idx_to_orig_idx_no_align_corners(
-            upsample_c_idx, scale_factor[0]
-        )
-        upsample_r_idx_adjusted = up_idx_to_orig_idx_no_align_corners(
-            upsample_r_idx, scale_factor[1]
-        )
+        upsample_c_idx_adjusted = up_idx_to_orig_idx_no_align_corners(upsample_c_idx, scale_factor[0])
+        upsample_r_idx_adjusted = up_idx_to_orig_idx_no_align_corners(upsample_r_idx, scale_factor[1])
 
     # Clip index between 0 and c
     upsample_c_idx_adjusted = torch.clip(upsample_c_idx_adjusted, min=0, max=c - 1)
@@ -819,16 +794,17 @@ def create_bilinear_upsample_picker_matrix(
 
         inp_idx_to_weight_r[inp_idx] = clipped_idx
 
-    # Go through each cell in input activation and build up contribution depending on 
-    # row and column. 
+    # Go through each cell in input activation and build up contribution depending on
+    # row and column.
     baseline = torch.stack([inp_idx_to_weight_c[i % c].unsqueeze(0) for i in range(num_cols)], dim=0)
     idx_elements = torch.stack([inp_idx_to_weight_r[i // c].unsqueeze(-1) for i in range(num_cols)], dim=0)
     indices = torch.bmm(idx_elements, baseline.to_dense()).view(num_cols, num_rows).transpose(-2, -1)
     if split_factor > 1:
         assert num_rows % split_factor == 0
         chunk = num_rows // split_factor
-        indices = indices[(split_idx*chunk):((split_idx+1)*chunk)]
+        indices = indices[(split_idx * chunk) : ((split_idx + 1) * chunk)]
     return indices.to_sparse()
+
 
 def create_conv2d_transpose_weight_dident(kH, kW, tile_align=False):
     rows = torch.arange(kH * kW)
@@ -841,9 +817,7 @@ def create_conv2d_transpose_weight_dident(kH, kW, tile_align=False):
         sparse_r = align_up_tile(sparse_r)
         sparse_c = align_up_tile(sparse_c)
 
-    return torch.sparse_coo_tensor(
-        [rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c)
-    )
+    return torch.sparse_coo_tensor([rows.tolist(), cols.tolist()], torch.ones(cols.shape[0]), (sparse_r, sparse_c))
 
 
 def create_conv2d_transpose_input_act_dident(y, x, stride, tile_align=False):
@@ -881,15 +855,18 @@ def create_eye_sparse_picker_matrix(r, tile_align=False):
     if tile_align:
         sparse_r = align_up_tile(sparse_r)
         sparse_c = align_up_tile(sparse_c)
-    return torch.sparse_coo_tensor(
-        [eye.tolist(), eye.tolist()], torch.ones(eye.shape[0]), (sparse_r, sparse_c)
-    )
+    return torch.sparse_coo_tensor([eye.tolist(), eye.tolist()], torch.ones(eye.shape[0]), (sparse_r, sparse_c))
 
 
 def create_all_around_padding_picker_matrix(shape, padding, channel_last=False, tile_align=False):
 
     assert len(padding) == 4
-    padding_left, padding_right, padding_top, padding_bottom, = padding
+    (
+        padding_left,
+        padding_right,
+        padding_top,
+        padding_bottom,
+    ) = padding
 
     if channel_last:
         r = shape[-3]
@@ -966,7 +943,12 @@ def vslice(t: torch.Tensor, split_factor: int, pack=False):
         ret[slice_idx][1].append(cols[idx])
         ret[slice_idx][2].append(vals[idx])
 
-    ret = [torch.sparse_coo_tensor(indices=[r[0], r[1]], values=r[2], size=(t.shape[0] // split_factor, t.shape[1]), dtype=t.dtype) for r in ret]
+    ret = [
+        torch.sparse_coo_tensor(
+            indices=[r[0], r[1]], values=r[2], size=(t.shape[0] // split_factor, t.shape[1]), dtype=t.dtype
+        )
+        for r in ret
+    ]
 
     if pack:
         ret = torch.stack(ret, dim=0)
@@ -994,7 +976,12 @@ def hslice(t: torch.Tensor, split_factor: int, pack=False):
         ret[slice_idx][1].append(cols[idx] % slice_width)
         ret[slice_idx][2].append(vals[idx])
 
-    ret = [torch.sparse_coo_tensor(indices=[r[0], r[1]], values=r[2], size=(t.shape[0], t.shape[1] // split_factor), dtype=t.dtype) for r in ret]
+    ret = [
+        torch.sparse_coo_tensor(
+            indices=[r[0], r[1]], values=r[2], size=(t.shape[0], t.shape[1] // split_factor), dtype=t.dtype
+        )
+        for r in ret
+    ]
 
     if pack:
         ret = torch.stack(ret, dim=0)
@@ -1023,7 +1010,12 @@ def hstack(t: torch.Tensor, stack_factor: int):
         ret[3].append(cols[idx] + (zs[idx] % stack_factor) * t.shape[-1])
         ret[4].append(vals[idx])
 
-    ret = torch.sparse_coo_tensor(indices=[ret[0], ret[1], ret[2], ret[3]], values=ret[4], size=(t.shape[0], slices_count, t.shape[2], t.shape[3] * stack_factor), dtype=t.dtype)
+    ret = torch.sparse_coo_tensor(
+        indices=[ret[0], ret[1], ret[2], ret[3]],
+        values=ret[4],
+        size=(t.shape[0], slices_count, t.shape[2], t.shape[3] * stack_factor),
+        dtype=t.dtype,
+    )
     return ret
 
 
@@ -1038,7 +1030,7 @@ def vslice_interleave(sparse, grid_r, t_factor, bcast_factor):
                 b_slices.append(vsliced[i])
         for r in range(grid_r):
             i = r * bcast_factor
-            slices.append(torch.cat(b_slices[i:(i+bcast_factor)]))
+            slices.append(torch.cat(b_slices[i : (i + bcast_factor)]))
     return slices
 
 
@@ -1062,7 +1054,7 @@ def interleave_tiles(pickers: "list[torch.Tensor]"):
         indices=[rows, cols],
         values=vals,
         size=(pickers[0].shape[0], pickers[0].shape[1] * zdim),
-        dtype=pickers[0].dtype
+        dtype=pickers[0].dtype,
     ).coalesce()
 
 
@@ -1092,9 +1084,7 @@ def create_sparse_forge(sparse, bcast_factor=1, fracture_factor=1, tile_align=Tr
         rows, cols = zslice.indices()
         vals = zslice.values()
         assert len(zslice.shape) == 2
-        sparse_zs.append(
-            SparseCOO(rows.tolist(), cols.tolist(), vals.tolist(), list(zslice.shape))
-        )
+        sparse_zs.append(SparseCOO(rows.tolist(), cols.tolist(), vals.tolist(), list(zslice.shape)))
 
     return compress_sparse_tensor_and_strip_info(sparse_zs, bcast_factor, fracture_factor)
 
@@ -1103,8 +1093,10 @@ def shapeify_sparse_tiles_and_encodings(sparse, encodings, grid_r, fracture_fact
     # TODO: this can be done more efficiently without handling each fracture separately
     sparse_fs = []
     for f in range(fracture_factor):
-        sparse_f = sparse[grid_r * f: grid_r * (f + 1)]
-        sparse_f = torch.tensor(sparse_f, requires_grad=False).view(1, 1, -1, TILE_DIM)  # TODO: Do we want a specific dtype?
+        sparse_f = sparse[grid_r * f : grid_r * (f + 1)]
+        sparse_f = torch.tensor(sparse_f, requires_grad=False).view(
+            1, 1, -1, TILE_DIM
+        )  # TODO: Do we want a specific dtype?
         sparse_f = sparse_f.reshape(-1, TILE_DIM, TILE_DIM).transpose(0, 1).reshape(TILE_DIM, -1).hsplit(grid_r)
         sparse_f = torch.cat(sparse_f, dim=0).view(1, 1, TILE_DIM * grid_r, -1)
         sparse_fs.append(sparse_f)
@@ -1131,15 +1123,13 @@ def compress_forge_picker(sparse, strip_info=True, tile_align=True):
         rows, cols = zslice.indices()
         vals = zslice.values()
         assert len(zslice.shape) == 2
-        sparse_zs.append(
-            SparseCOO(rows.tolist(), cols.tolist(), vals.tolist(), list(zslice.shape))
-        )
+        sparse_zs.append(SparseCOO(rows.tolist(), cols.tolist(), vals.tolist(), list(zslice.shape)))
 
-    assert strip_info == True, "removed compress_sparse_tensor, oops, ping svuckovic"  # TODO: Check with Nick if we can remove this code
+    assert (
+        strip_info == True
+    ), "removed compress_sparse_tensor, oops, ping svuckovic"  # TODO: Check with Nick if we can remove this code
     sparse_forge = (
-        compress_sparse_tensor_and_strip_info(sparse_zs, 1)
-        if strip_info
-        else compress_sparse_tensor(sparse_zs)
+        compress_sparse_tensor_and_strip_info(sparse_zs, 1) if strip_info else compress_sparse_tensor(sparse_zs)
     )
 
     # TODO: Code below needs fixing to account for grid_r > 1
@@ -1171,7 +1161,7 @@ def num_sparse_tiles_in_strip(sparse, verbose=False):
     if verbose:
         for r in range(rt):
             for c in range(ct):
-                print("." if out[r, c].item() == 0 else "1", end='')
+                print("." if out[r, c].item() == 0 else "1", end="")
             print("")
     return out.sum(dim=-2)
 
@@ -1188,9 +1178,9 @@ def get_u_kts(k):
 
 def calculate_total_sparse_tile_util(slices, grid_r, ts, bcast_factor, verbose=False):
     if verbose:
-        print("="*32)
+        print("=" * 32)
         print(f"= Grid_r[{grid_r}] T[{ts}] Bfactor[{bcast_factor}]")
-        print("="*32)
+        print("=" * 32)
     u_kts = get_u_kts(align_up_tile(slices[0].shape[-1]) // TILE_DIM)
     total_util = {}
     for u_kt in u_kts:
@@ -1215,7 +1205,9 @@ def calculate_total_sparse_tile_util(slices, grid_r, ts, bcast_factor, verbose=F
             total_util[u_kt] += util
     for u_kt in u_kts:
         util = total_util[u_kt] / ts
-        print(f"> Grid_r[{grid_r:2}] T[{ts:2}] Bfactor[{bcast_factor:2}] u_kt[{u_kt:2}] -> total_util [{util:0.4}] speedup[{util * grid_r:0.4}]")
+        print(
+            f"> Grid_r[{grid_r:2}] T[{ts:2}] Bfactor[{bcast_factor:2}] u_kt[{u_kt:2}] -> total_util [{util:0.4}] speedup[{util * grid_r:0.4}]"
+        )
 
 
 def is_kernel_fracturing_candidate(operands, z_bcast_factor):
@@ -1224,7 +1216,9 @@ def is_kernel_fracturing_candidate(operands, z_bcast_factor):
     force_allow_fracturing = bool(int(os.environ.get("FORGE_FORCE_ALLOW_FRACTURING", "0")))
     force_disallow_fracturing = bool(int(os.environ.get("FORGE_FORCE_DISALLOW_FRACTURING", "0")))
 
-    assert not (force_allow_fracturing and force_disallow_fracturing), "Both FORGE_FORCE_ALLOW_FRACTURING and FORGE_FORCE_DISALLOW_FRACTURING set to non-zero"
+    assert not (
+        force_allow_fracturing and force_disallow_fracturing
+    ), "Both FORGE_FORCE_ALLOW_FRACTURING and FORGE_FORCE_DISALLOW_FRACTURING set to non-zero"
 
     if force_allow_fracturing:
         return True
@@ -1304,10 +1298,18 @@ def can_fracture_conv_at_op_level(attr, dc, inputs):
 
 
 def does_fracturing_conv_at_op_level_improve_perf(attr, dc, inputs):
-    stride = [attr[0], attr[1],]
+    stride = [
+        attr[0],
+        attr[1],
+    ]
     dilation = attr[2]
     groups = attr[3]
-    padding = [attr[4], attr[5], attr[6], attr[7],]
+    padding = [
+        attr[4],
+        attr[5],
+        attr[6],
+        attr[7],
+    ]
     channel_last = attr[-1]
 
     activations = inputs[0]
@@ -1315,11 +1317,11 @@ def does_fracturing_conv_at_op_level_improve_perf(attr, dc, inputs):
     bias = inputs[2] if len(inputs) == 3 else None
 
     if channel_last:
-        _, yout, xout, _ = conv2d_out_shape('conv2d', attr, [activations.shape, weights.shape])[0]
+        _, yout, xout, _ = conv2d_out_shape("conv2d", attr, [activations.shape, weights.shape])[0]
         w, y, x, cin = (activations.shape.w, activations.shape.z, activations.shape.r, activations.shape.c)
     else:
         w, cin, y, x = (activations.shape.w, activations.shape.z, activations.shape.r, activations.shape.c)
-        _, _, yout, xout = conv2d_out_shape('conv2d', attr, [activations.shape, weights.shape])[0]
+        _, _, yout, xout = conv2d_out_shape("conv2d", attr, [activations.shape, weights.shape])[0]
 
     cout, _, kH, kW = (weights.shape.w, weights.shape.z, weights.shape.r, weights.shape.c)
 
@@ -1346,7 +1348,9 @@ def should_fracture_conv_at_op_level(attr, dc, inputs):
 
     # Check if fracturing is forced
     if bool(int(os.environ.get("FORGE_FORCE_CONV_MULTI_OP_FRACTURE", "0"))) and inputs[1].shape.r > 1:
-        logger.warning("Environment variable \"FORGE_FORCE_CONV_MULTI_OP_FRACTURE\" will be deprecated soon, please do NOT use.")
+        logger.warning(
+            'Environment variable "FORGE_FORCE_CONV_MULTI_OP_FRACTURE" will be deprecated soon, please do NOT use.'
+        )
         return True
 
     # Check if user overriden
@@ -1356,10 +1360,14 @@ def should_fracture_conv_at_op_level(attr, dc, inputs):
         kH = inputs[1].shape.r
         if compiler_cfg.conv_multi_op_fracture_factor_override[dc.node_name()] == -1:
             compiler_cfg.conv_multi_op_fracture_factor_override[dc.node_name()] = kH
-        assert compiler_cfg.conv_multi_op_fracture_factor_override[dc.node_name()] == kH, "Invalid multi_op_fracture_factor used!"
+        assert (
+            compiler_cfg.conv_multi_op_fracture_factor_override[dc.node_name()] == kH
+        ), "Invalid multi_op_fracture_factor used!"
         return True
 
-    return can_fracture_conv_at_op_level(attr, dc, inputs) and does_fracturing_conv_at_op_level_improve_perf(attr, dc, inputs)
+    return can_fracture_conv_at_op_level(attr, dc, inputs) and does_fracturing_conv_at_op_level_improve_perf(
+        attr, dc, inputs
+    )
 
 
 def visualize_sparse(sparses, file_path, grid_r=1, ts=1):
@@ -1394,7 +1402,11 @@ def visualize_sparse(sparses, file_path, grid_r=1, ts=1):
             tilized_rows = []
             tilized_cols = []
             for r, c in zip(rows, cols):
-                if len(tilized_rows) == 0 or (tilized_rows[-1] != (r // TILE_DIM)) or (tilized_cols[-1] != (c // TILE_DIM)):
+                if (
+                    len(tilized_rows) == 0
+                    or (tilized_rows[-1] != (r // TILE_DIM))
+                    or (tilized_cols[-1] != (c // TILE_DIM))
+                ):
                     tilized_rows.append(r // TILE_DIM)
                     tilized_cols.append(c // TILE_DIM)
 
@@ -1410,22 +1422,22 @@ def visualize_sparse(sparses, file_path, grid_r=1, ts=1):
 
 
 def pad_sparse_coo_tensor(sparse_tensor, new_shape):
-    
+
     assert sparse_tensor.shape[-2] <= new_shape[-2]
     assert sparse_tensor.shape[-1] <= new_shape[-1]
-    
+
     sparse_tensor = sparse_tensor.coalesce()
     indices = sparse_tensor.indices()
     values = sparse_tensor.values()
 
     result = torch.sparse_coo_tensor(indices, values, new_shape)
-    
+
     return result
 
 
 def create_pad_replicate_sparse_picker(r, c, left, right, top, bottom):
-    new_shape = (r+top+bottom) * (c+left+right)
-    orig_shape = r*c
+    new_shape = (r + top + bottom) * (c + left + right)
+    orig_shape = r * c
 
     rows = torch.arange(new_shape).tolist()
     cols = []
@@ -1436,30 +1448,35 @@ def create_pad_replicate_sparse_picker(r, c, left, right, top, bottom):
         last_dim_index.append(0)
     last_dim_index.extend(torch.arange(c).tolist())
     for _ in range(right):
-        last_dim_index.append(c-1)
+        last_dim_index.append(c - 1)
 
     # dim=-2 padding
     for _ in range(top):
         cols.extend(last_dim_index)
-    [cols.extend((torch.tensor(last_dim_index) + offset*c).tolist()) for offset in range(r)]
+    [cols.extend((torch.tensor(last_dim_index) + offset * c).tolist()) for offset in range(r)]
     for _ in range(bottom):
-        cols.extend((torch.tensor(last_dim_index) + (r-1)*c).tolist())
+        cols.extend((torch.tensor(last_dim_index) + (r - 1) * c).tolist())
 
     spm = torch.sparse_coo_tensor((rows, cols), torch.ones(new_shape), (new_shape, orig_shape))
     return spm
 
+
 def create_pad_reflect_sparse_picker(r, c, left, right, top, bottom):
-    new_shape = (r+top+bottom) * (c+left+right)
-    orig_shape = r*c
+    new_shape = (r + top + bottom) * (c + left + right)
+    orig_shape = r * c
 
     rows = torch.arange(new_shape).tolist()
     cols = []
 
-    horizontal_indices = [left - cidx for cidx in range(left)] + torch.arange(c).tolist() + [c - cidx - 2 for cidx in range(right)]
-    vertical_indices = [top - ridx for ridx in range(top)] + torch.arange(r).tolist() + [r - ridx - 2 for ridx in range(bottom)]
+    horizontal_indices = (
+        [left - cidx for cidx in range(left)] + torch.arange(c).tolist() + [c - cidx - 2 for cidx in range(right)]
+    )
+    vertical_indices = (
+        [top - ridx for ridx in range(top)] + torch.arange(r).tolist() + [r - ridx - 2 for ridx in range(bottom)]
+    )
 
     for vertical_index in vertical_indices:
-        
+
         vectical_offset = vertical_index * c
         last_dim_index = [x + vectical_offset for x in horizontal_indices]
         cols.extend(last_dim_index)
@@ -1499,10 +1516,18 @@ def conv2d_out_shape(type, attr, ops):
     activations = ops[0]
     weights = ops[1]
     kernel_size = [weights[2], weights[3]]
-    stride = [attr[0], attr[1],]
+    stride = [
+        attr[0],
+        attr[1],
+    ]
     dilation = attr[2]
     groups = attr[3]
-    padding = [attr[4], attr[5], attr[6], attr[7],]
+    padding = [
+        attr[4],
+        attr[5],
+        attr[6],
+        attr[7],
+    ]
     is_convtranspose2d = attr[8]  # True if decomposed from convtranspose2d
     channel_last = attr[-1]
 
@@ -1514,9 +1539,7 @@ def conv2d_out_shape(type, attr, ops):
         in_x = activations[3]
 
     if type == "conv2d":
-        y, x = calculate_conv2d_output_dimensions(
-            in_y, in_x, kernel_size, stride, padding, dilation
-        )
+        y, x = calculate_conv2d_output_dimensions(in_y, in_x, kernel_size, stride, padding, dilation)
 
         # TODO: the existence of this `if` block is a but confusing, should be fixed once this proposal is implemented:
         # tenstorrent/forge#1761
@@ -1548,6 +1571,7 @@ def conv2d_out_shape(type, attr, ops):
         else:
             return (activations[0], weights[1] * groups, y, x), []
 
+
 def conv3d_out_shape(type, attr, ops):
     assert len(ops) <= 3, "Conv3d should have three inputs"
     assert len(attr) == 12, f"Conv3d invalid num attributes: {len(attr)}"
@@ -1571,11 +1595,8 @@ def conv3d_out_shape(type, attr, ops):
         in_x = activations[4]
 
     if type == "conv3d":
-        z, y, x = calculate_conv3d_output_dimensions(
-            in_z, in_y, in_x, kernel_size, stride, padding, dilation
-        )
+        z, y, x = calculate_conv3d_output_dimensions(in_z, in_y, in_x, kernel_size, stride, padding, dilation)
         if attr[-1] == 1:
             return (activations[0], z, y, x, weights[0]), []
         else:
             return (activations[0], weights[0], z, y, x), []
-

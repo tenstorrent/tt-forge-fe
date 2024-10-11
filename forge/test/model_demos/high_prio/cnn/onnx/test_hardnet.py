@@ -53,9 +53,7 @@ def test_hardnet_onnx(variant, test_device):
     input_tensor = preprocess(input_image)
     img_tensor = input_tensor.unsqueeze(0)
 
-    load_path = (
-        f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
-    )
+    load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
     model_name = f"{variant}_onnx"
 
     # Create Forge module from onnx weights

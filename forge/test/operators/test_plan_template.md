@@ -4,13 +4,13 @@ GENERAL OP SUPPORT TEST PLAN:
    - (-)  2.1 From another op
       - Operator -> input
    - (-)  2.2 From DRAM queue
-      - Operator is first node in network 
+      - Operator is first node in network
       - Input_queue flag = false
    - (-)  2.3 Const Inputs (const eval pass)
       - Operator where all inputs are constants.
    - (-)  2.4 From host
       - Input tensor as input of network
-      - Operator is first node in network 
+      - Operator is first node in network
       - Input_queue flag = true
 3. Tensor ranks:
    - (-)  3.1 Full tensor (i.e. full expected shape)
