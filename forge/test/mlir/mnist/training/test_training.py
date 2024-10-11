@@ -2,6 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import pytest
+
 import torch
 from torch import nn
 
@@ -69,7 +71,6 @@ def test_mnist_training():
 
             # Run backward pass on device
             loss.backward()
-
             tt_model.backward(pred.grad)
 
             if batch_idx >= limit_num_batches:
@@ -92,12 +93,10 @@ def test_mnist_training():
 
     print(f"Test (total) loss: {test_loss}")
 
-def test_batch_size():
-    num_epochs = 2
-    batch_size = 2
-    in_features = 128
-    out_features = 10
-
+@pytest.mark.parametrize("batch_size", [1, 2, 16])
+@pytest.mark.parametrize("in_features", [256])
+@pytest.mark.parametrize("out_features", [20])
+def test_batch_size(batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):
             super(SimpleModel, self).__init__()
@@ -114,23 +113,11 @@ def test_batch_size():
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
     tt_model = forge.compile(model, sample_inputs=[in_data], loss=loss_fn, optimizer=optimizer)
-    for epoch_idx in range(num_epochs):
-        optimizer.zero_grad()
-        pred = tt_model(in_data)[0]
-        loss = loss_fn(pred, out_data)
-        loss.backward()
-        tt_model.backward(pred.grad)
 
-        optimizer.step()
-        print(f"epoch: {epoch_idx} loss: {loss.item()}")    
-
-    tt_model = forge.compile(model, sample_inputs=[in_data], loss=loss_fn, optimizer=optimizer)
-    for epoch_idx in range(num_epochs):
-        optimizer.zero_grad()
-        pred = tt_model(in_data)[0]
-        loss = loss_fn(pred, out_data)
-        loss.backward()
-        tt_model.backward(pred.grad)
-
-        optimizer.step()
-        print(f"epoch: {epoch_idx} loss: {loss.item()}")    
+    optimizer.zero_grad()
+    pred = tt_model(in_data)[0]
+    golden_pred = model(in_data)
+    loss = loss_fn(pred, out_data)
+    golden_loss = loss_fn(golden_pred, out_data)
+    tt_model.backward(pred.grad)
+    compare_with_golden(golden_loss, loss)
