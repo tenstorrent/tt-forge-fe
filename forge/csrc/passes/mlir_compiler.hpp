@@ -7,11 +7,11 @@
 
 namespace tt
 {
-    class ForgeGraphModule;
+class ForgeGraphModule;
 }
 
 namespace tt::passes
 {
-    /// Public API for running MLIR passes and generating binary.
-    runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module);
-}
+/// Public API for running MLIR passes and generating binary.
+runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module);
+}  // namespace tt::passes

@@ -19,6 +19,7 @@ from utils import (
 )
 from forge.config import _get_global_compiler_config
 
+
 class FeedForward(torch.nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(FeedForward, self).__init__()
@@ -32,15 +33,14 @@ class FeedForward(torch.nn.Module):
         x = self.fc2(x)
         return x
 
+
 def train(loss_on_cpu=True):
     torch.manual_seed(777)
-    transform=transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,)),
-        transforms.Lambda(lambda x: x.view(-1))
-        ])
-    train_dataset = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
-    test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,)), transforms.Lambda(lambda x: x.view(-1))]
+    )
+    train_dataset = datasets.MNIST(root="./data", train=True, transform=transform, download=True)
+    test_dataset = datasets.MNIST(root="./data", train=False, transform=transform, download=True)
 
     writer = SummaryWriter()
 
@@ -54,9 +54,7 @@ def train(loss_on_cpu=True):
 
     framework_model = FeedForward(input_size, hidden_size, output_size)
     tt_model = forge.PyTorchModule(f"mnist_linear_{batch_size}", framework_model)
-    tt_optimizer = forge.optimizers.SGD(
-        learning_rate=learning_rate, device_params=True
-    )
+    tt_optimizer = forge.optimizers.SGD(learning_rate=learning_rate, device_params=True)
     tt0 = forge.TTDevice("tt0", module=tt_model, optimizer=tt_optimizer)
 
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -76,7 +74,7 @@ def train(loss_on_cpu=True):
     else:
         tt_loss = forge.PyTorchModule(f"loss_{batch_size}", torch.nn.CrossEntropyLoss())
         tt0.place_loss_module(tt_loss)
- 
+
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_auto_fusing = False
 
@@ -99,11 +97,7 @@ def train(loss_on_cpu=True):
             images = (images.unsqueeze(0),)
             tt0.push_to_inputs(images)
 
-            targets = (
-                torch.nn.functional.one_hot(labels, num_classes=output_size)
-                .float()
-                .unsqueeze(0)
-            )          
+            targets = torch.nn.functional.one_hot(labels, num_classes=output_size).float().unsqueeze(0)
             if loss_on_cpu:
                 cpu0.push_to_target_inputs(targets)
             else:
@@ -126,6 +120,7 @@ def train(loss_on_cpu=True):
             #     step += 1
 
     writer.close()
+
 
 if __name__ == "__main__":
     train()

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-//This file incorporates work covered by the following copyright and  permission notice:  
+// This file incorporates work covered by the following copyright and  permission notice:
 //
 // Copyright (c) 2015 Microsoft Corporation. All rights reserved.
 //
@@ -20,31 +20,30 @@
 
 #pragma once
 
-#include <algorithm>    // for forward
-#include <cassert>      // for assert
-#include <cstddef>      // for ptrdiff_t, nullptr_t, size_t
-#include <memory>       // for shared_ptr, unique_ptr
-#include <system_error> // for hash
-#include <type_traits>  // for enable_if_t, is_convertible, is_assignable
+#include <algorithm>     // for forward
+#include <cassert>       // for assert
+#include <cstddef>       // for ptrdiff_t, nullptr_t, size_t
+#include <memory>        // for shared_ptr, unique_ptr
+#include <system_error>  // for hash
+#include <type_traits>   // for enable_if_t, is_convertible, is_assignable
 
 namespace gsl
 {
 
 namespace details
 {
-    template <typename T, typename = void>
-    struct is_comparable_to_nullptr : std::false_type
-    {
-    };
+template <typename T, typename = void>
+struct is_comparable_to_nullptr : std::false_type
+{
+};
 
-    template <typename T>
-    struct is_comparable_to_nullptr<
-        T,
-        std::enable_if_t<std::is_convertible<decltype(std::declval<T>() != nullptr), bool>::value>>
-        : std::true_type
-    {
-    };
-} // namespace details
+template <typename T>
+struct is_comparable_to_nullptr<
+    T,
+    std::enable_if_t<std::is_convertible<decltype(std::declval<T>() != nullptr), bool>::value>> : std::true_type
+{
+};
+}  // namespace details
 
 //
 // GSL.owner: ownership pointers
@@ -81,7 +80,7 @@ using owner = T;
 template <class T>
 class not_null
 {
-public:
+   public:
     static_assert(details::is_comparable_to_nullptr<T>::value, "T cannot be compared to nullptr.");
 
     template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
@@ -98,7 +97,8 @@ public:
 
     template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
     constexpr not_null(const not_null<U>& other) : not_null(other.get())
-    {}
+    {
+    }
 
     not_null(const not_null& other) = default;
     not_null& operator=(const not_null& other) = default;
@@ -125,7 +125,7 @@ public:
     not_null& operator-=(std::ptrdiff_t) = delete;
     void operator[](std::ptrdiff_t) const = delete;
 
-private:
+   private:
     T ptr_;
 };
 
@@ -142,51 +142,45 @@ std::ostream& operator<<(std::ostream& os, const not_null<T>& val)
     os << val.get();
     return os;
 }
-#endif // !defined(GSL_NO_IOSTREAMS)
+#endif  // !defined(GSL_NO_IOSTREAMS)
 
 template <class T, class U>
-auto operator==(const not_null<T>& lhs,
-                const not_null<U>& rhs) noexcept(noexcept(lhs.get() == rhs.get()))
+auto operator==(const not_null<T>& lhs, const not_null<U>& rhs) noexcept(noexcept(lhs.get() == rhs.get()))
     -> decltype(lhs.get() == rhs.get())
 {
     return lhs.get() == rhs.get();
 }
 
 template <class T, class U>
-auto operator!=(const not_null<T>& lhs,
-                const not_null<U>& rhs) noexcept(noexcept(lhs.get() != rhs.get()))
+auto operator!=(const not_null<T>& lhs, const not_null<U>& rhs) noexcept(noexcept(lhs.get() != rhs.get()))
     -> decltype(lhs.get() != rhs.get())
 {
     return lhs.get() != rhs.get();
 }
 
 template <class T, class U>
-auto operator<(const not_null<T>& lhs,
-               const not_null<U>& rhs) noexcept(noexcept(lhs.get() < rhs.get()))
+auto operator<(const not_null<T>& lhs, const not_null<U>& rhs) noexcept(noexcept(lhs.get() < rhs.get()))
     -> decltype(lhs.get() < rhs.get())
 {
     return lhs.get() < rhs.get();
 }
 
 template <class T, class U>
-auto operator<=(const not_null<T>& lhs,
-                const not_null<U>& rhs) noexcept(noexcept(lhs.get() <= rhs.get()))
+auto operator<=(const not_null<T>& lhs, const not_null<U>& rhs) noexcept(noexcept(lhs.get() <= rhs.get()))
     -> decltype(lhs.get() <= rhs.get())
 {
     return lhs.get() <= rhs.get();
 }
 
 template <class T, class U>
-auto operator>(const not_null<T>& lhs,
-               const not_null<U>& rhs) noexcept(noexcept(lhs.get() > rhs.get()))
+auto operator>(const not_null<T>& lhs, const not_null<U>& rhs) noexcept(noexcept(lhs.get() > rhs.get()))
     -> decltype(lhs.get() > rhs.get())
 {
     return lhs.get() > rhs.get();
 }
 
 template <class T, class U>
-auto operator>=(const not_null<T>& lhs,
-                const not_null<U>& rhs) noexcept(noexcept(lhs.get() >= rhs.get()))
+auto operator>=(const not_null<T>& lhs, const not_null<U>& rhs) noexcept(noexcept(lhs.get() >= rhs.get()))
     -> decltype(lhs.get() >= rhs.get())
 {
     return lhs.get() >= rhs.get();
@@ -202,7 +196,7 @@ not_null<T> operator+(const not_null<T>&, std::ptrdiff_t) = delete;
 template <class T>
 not_null<T> operator+(std::ptrdiff_t, const not_null<T>&) = delete;
 
-} // namespace gsl
+}  // namespace gsl
 
 namespace std
 {
@@ -212,7 +206,7 @@ struct hash<gsl::not_null<T>>
     std::size_t operator()(const gsl::not_null<T>& value) const { return hash<T>{}(value.get()); }
 };
 
-} // namespace std
+}  // namespace std
 
 namespace gsl
 {
@@ -237,22 +231,26 @@ namespace gsl
 template <class T>
 class strict_not_null : public not_null<T>
 {
-public:
+   public:
     template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
     constexpr explicit strict_not_null(U&& u) : not_null<T>(std::forward<U>(u))
-    {}
+    {
+    }
 
     template <typename = std::enable_if_t<!std::is_same<std::nullptr_t, T>::value>>
     constexpr explicit strict_not_null(T u) : not_null<T>(u)
-    {}
+    {
+    }
 
     template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
     constexpr strict_not_null(const not_null<U>& other) : not_null<T>(other)
-    {}
+    {
+    }
 
     template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
     constexpr strict_not_null(const strict_not_null<U>& other) : not_null<T>(other)
-    {}
+    {
+    }
 
     strict_not_null(strict_not_null&& other) = default;
     strict_not_null(const strict_not_null& other) = default;
@@ -301,19 +299,16 @@ not_null(T) -> not_null<T>;
 template <class T>
 strict_not_null(T) -> strict_not_null<T>;
 
-#endif // ( defined(__cpp_deduction_guides) && (__cpp_deduction_guides >= 201611L) )
+#endif  // ( defined(__cpp_deduction_guides) && (__cpp_deduction_guides >= 201611L) )
 
-} // namespace gsl
+}  // namespace gsl
 
 namespace std
 {
 template <class T>
 struct hash<gsl::strict_not_null<T>>
 {
-    std::size_t operator()(const gsl::strict_not_null<T>& value) const
-    {
-        return hash<T>{}(value.get());
-    }
+    std::size_t operator()(const gsl::strict_not_null<T>& value) const { return hash<T>{}(value.get()); }
 };
 
-} // namespace std
+}  // namespace std

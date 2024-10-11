@@ -22,16 +22,16 @@ MODELS_PATH = "./forge/test/operators/eltwise_binary_comparison/models/"
 
 SHAPE_NO = 1
 SHAPE_DIM_MIN = 1
-SHAPE_DIM_MAX = 2 ** 10
+SHAPE_DIM_MAX = 2**10
 SHAPE_WDIM_MIN = 1
-SHAPE_WDIM_MAX = 2 ** 2
+SHAPE_WDIM_MAX = 2**2
 SHAPE_ZDIM_MIN = 2
-SHAPE_ZDIM_MAX = 2 ** 2
+SHAPE_ZDIM_MAX = 2**2
 
-SLICE_SIZE_MIN = 2 ** 3
-SLICE_SIZE_MAX = 2 ** 7
+SLICE_SIZE_MIN = 2**3
+SLICE_SIZE_MAX = 2**7
 SLICE_MIN = 2
-SLICE_MAX = 2 ** 4
+SLICE_MAX = 2**4
 
 WDIM_FIXED = True
 ZDIM_FIXED = True
@@ -51,10 +51,11 @@ for i in range(SHAPE_NO):
     shape.append(sh)
 
 rng_min = [-10.0, 0.0]
-rng_max = [ 10.0, 1.0]
+rng_max = [10.0, 1.0]
 rng = list(zip(rng_min, rng_max))
 
 # print(rng)
+
 
 @pytest.mark.parametrize("rng_min, rng_max", rng, ids=[(f"min={item[0]}-max={item[1]}") for item in rng])
 @pytest.mark.parametrize("mask", (True, False), ids=["Masked", "NotMasked"])
@@ -63,18 +64,9 @@ rng = list(zip(rng_min, rng_max))
 @pytest.mark.parametrize("recompute", (True, False), ids=["Recompute", "NoRecompute"])
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_PATH) if "model" in item])
 @pytest.mark.parametrize("mode", ["Inference"])
-def test_comparison(
-    mode,
-    recompute,
-    model, 
-    shape,
-    op,
-    mask,
-    rng_min,
-    rng_max
-):
+def test_comparison(mode, recompute, model, shape, op, mask, rng_min, rng_max):
 
-    training = (mode == "Training")
+    training = mode == "Training"
 
     if training:
         pytest.skip()
@@ -82,26 +74,24 @@ def test_comparison(
     if not training and recompute:
         pytest.skip("Inference and recompute is the same as just inference.")
 
-    architecture = f'models.{model}.ForgeComparisonTest(' +\
-                                        f'shape={shape} ,' +\
-                                        f'opname="{op}" ,' +\
-                                        f'operator=forge.op.{op} ,' +\
-                                        f'mask={mask} ,' +\
-                                        f'rng_min={rng_min} ,' +\
-                                        f'rng_max={rng_max})'
+    architecture = (
+        f"models.{model}.ForgeComparisonTest("
+        + f"shape={shape} ,"
+        + f'opname="{op}" ,'
+        + f"operator=forge.op.{op} ,"
+        + f"mask={mask} ,"
+        + f"rng_min={rng_min} ,"
+        + f"rng_max={rng_max})"
+    )
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
 
-    #Fusing disabled due to tenstorrent/forge#784
+    # Fusing disabled due to tenstorrent/forge#784
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=training,
-                        enable_recompute=recompute,
-                        enable_auto_fusing=False
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute, enable_auto_fusing=False),
+        verify_cfg=VerifyConfig(),
     )

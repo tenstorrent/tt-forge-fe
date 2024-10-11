@@ -12,4 +12,3 @@ FrameworkModule = torch.nn.Module | tf.keras.Model
 FrameworkTensor = torch.Tensor | tf.Tensor
 AnyModule = FrameworkModule | ForgeModule
 AnyTensor = FrameworkTensor | Tensor
-

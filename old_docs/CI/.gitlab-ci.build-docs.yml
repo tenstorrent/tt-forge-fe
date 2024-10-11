@@ -3,12 +3,12 @@
   artifacts:
     paths:
       - docs/public/md
-  needs: 
+  needs:
     - pybuda-wh-b0-wheel
     - !reference [.common_deps, needs]
   tags:
     - 8-core
-  script: 
+  script:
     - !reference [.common_prep, script]
     - pip3 install sphinx
     - pip3 install sphinx-rtd-theme
@@ -27,7 +27,7 @@ build-docs-main:
     - if: $CI_COMMIT_TAG
     - if: $CI_COMMIT_REF_NAME == "main"
       when: manual
-    - when: never  
+    - when: never
   allow_failure: true
   script:
     - !reference [.build-docs, script]
@@ -40,9 +40,9 @@ build-docs-staging:
   extends: .build-docs
   rules:
   - if: $CI_COMMIT_BRANCH == "main"
-  script: 
+  script:
     - !reference [.build-docs, script]
-    - git checkout staging 
+    - git checkout staging
     - cp -r ../docs/public/md/* pybuda
     - git add pybuda
     - git commit -m "update docs from pipeline $CI_PIPELINE_ID"
@@ -55,14 +55,14 @@ build-docs-docsite:
   artifacts:
     paths:
       - docs/public/md
-  needs: 
+  needs:
     - pybuda-wh-b0-wheel
     - !reference [.common_deps, needs]
   tags:
     - 8-core
   rules:
   - if: $CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
-  script: 
+  script:
     - !reference [.common_prep, script]
     - pip3 install sphinx
     - pip3 install sphinx-markdown-builder

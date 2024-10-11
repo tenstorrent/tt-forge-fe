@@ -5,7 +5,7 @@
 #   Test 2
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -40,24 +40,24 @@ class ForgeReduceTest(ForgeModule):
 
         # Layer 2
         tr = forge.op.Transpose("tr", self.train_param, 3, 2)
-                # (W, Z, R, C) --> (W, Z, C, R)
+        # (W, Z, R, C) --> (W, Z, C, R)
 
         # Layer 3
         mm1 = forge.op.Matmul("mm1", x, tr)
-                # (W, Z, R, C) x (W, Z, C, R) --> (W, Z, R, R)
+        # (W, Z, R, C) x (W, Z, C, R) --> (W, Z, R, R)
 
         # Layer 4
         red1 = self.operator(self.opname + "1", mm1, 2)
-                # (W, Z, R, R) --> (W, Z, 1, R)
+        # (W, Z, R, R) --> (W, Z, 1, R)
         red2 = self.operator(self.opname + "2", self.train_param, 3)
-                # (W, Z, R, C) --> (W, Z, R, 1)
+        # (W, Z, R, C) --> (W, Z, R, 1)
         # Layer 5
         mm2 = forge.op.Matmul("mm2", red1, red2)
-                # (W, Z, 1, R) x (W, Z, R, 1) --> (W, Z, 1, 1)
+        # (W, Z, 1, R) x (W, Z, R, 1) --> (W, Z, 1, 1)
 
         # Layer 6
         red3 = self.operator(self.opname + "3", mm2, 2)
-                # (W, Z, 1, 1) --> (W, Z, 1, 1)
+        # (W, Z, 1, 1) --> (W, Z, 1, 1)
 
         return red3
 

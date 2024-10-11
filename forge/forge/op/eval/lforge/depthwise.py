@@ -17,7 +17,13 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
 from forge._C.graph import UBlockOrder
 
-from ..common import to_torch_operands, math_fidelity_to_multiplier, data_format_to_int, op_model_to_desc, cast_for_cpu_eval
+from ..common import (
+    to_torch_operands,
+    math_fidelity_to_multiplier,
+    data_format_to_int,
+    op_model_to_desc,
+    cast_for_cpu_eval,
+)
 
 
 def eval(type, attr, ops):
@@ -44,12 +50,13 @@ def eval(type, attr, ops):
     kernel_ratio = in0.shape[3] // in1.shape[2]
 
     for idx in range(cnt_kernels):
-        kernel = in1[:, :, idx * TILE_DIM: (idx + 1) * TILE_DIM, :]
+        kernel = in1[:, :, idx * TILE_DIM : (idx + 1) * TILE_DIM, :]
         section_h = idx * kernel_ratio * TILE_DIM
         for idx_ratio in range(kernel_ratio):
-            result[..., idx_ratio * TILE_DIM: (idx_ratio + 1) * TILE_DIM] += \
-                torch.matmul(in0[..., section_h + idx_ratio * TILE_DIM: section_h + (idx_ratio + 1) * TILE_DIM],
-                            kernel[..., idx_ratio * TILE_DIM: (idx_ratio + 1) * TILE_DIM])
+            result[..., idx_ratio * TILE_DIM : (idx_ratio + 1) * TILE_DIM] += torch.matmul(
+                in0[..., section_h + idx_ratio * TILE_DIM : section_h + (idx_ratio + 1) * TILE_DIM],
+                kernel[..., idx_ratio * TILE_DIM : (idx_ratio + 1) * TILE_DIM],
+            )
 
     if bias is not None:
         result += bias

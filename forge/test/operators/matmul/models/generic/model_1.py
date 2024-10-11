@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-#   Test 1 
+#   Test 1
 #   Matmul operator defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -17,10 +17,10 @@ from forge import ForgeModule, Tensor
 
 class ForgeMatmulTest(ForgeModule):
     """
-        Forge Matmul Test 1
+    Forge Matmul Test 1
 
-        In this test we have only one operator with two operands.
-        One operand represents input and the other one is trainable paramater.
+    In this test we have only one operator with two operands.
+    One operand represents input and the other one is trainable paramater.
     """
 
     def __init__(self, shape):

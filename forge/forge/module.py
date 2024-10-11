@@ -12,7 +12,15 @@ from loguru import logger
 
 import forge
 from .forgeglobal import register_module, lazy_trace_data
-from .tensor import SomeTensor, Tensor, to_pt_tensors, to_tf_tensors, to_tf_variables, pytorch_dtype_to_forge_dataformat, forge_dataformat_to_pytorch_dtype
+from .tensor import (
+    SomeTensor,
+    Tensor,
+    to_pt_tensors,
+    to_tf_tensors,
+    to_tf_variables,
+    pytorch_dtype_to_forge_dataformat,
+    forge_dataformat_to_pytorch_dtype,
+)
 from .parameter import Parameter
 import onnx
 import onnxruntime
@@ -20,6 +28,7 @@ import jax.numpy as jnp
 import numpy as np
 
 from forge.tvm_utils import map_pt_dtype_to_tf, flatten_structured_output
+
 
 class Module:
     """
@@ -41,7 +50,6 @@ class Module:
         if self.device:
             ret += " on " + str(self.device)
         return ret
-
 
     def _set_device(self, device: "Device"):
         """
@@ -97,16 +105,17 @@ class Module:
     def __getstate__(self):
         state = self.__dict__.copy()
         # Remove the unpicklable entries.
-        state['device'] = None
+        state["device"] = None
         return state
+
 
 class PyTorchModule(Module):
     """
     A wrapper around a PyTorch module. If placed on a CPU device, PyTorchModules will be executed as is, and if placed
-    on a TT device, modules will be lowered to Forge. 
+    on a TT device, modules will be lowered to Forge.
     """
-    def __init__(self, name: str, 
-            module: torch.nn.Module, redirect_forward: bool = True):
+
+    def __init__(self, name: str, module: torch.nn.Module, redirect_forward: bool = True):
         """
         Create PyTorch module wrapper.
 
@@ -186,7 +195,7 @@ class PyTorchModule(Module):
 
     def add_parameter(self, name: str, parameter: Parameter):
         """
-        Adds a new parameter. 
+        Adds a new parameter.
 
         Parameters
         ----------
@@ -236,16 +245,18 @@ class PyTorchModule(Module):
         """
         params = []
         recorded_names = []
-        all_params = [self.module.named_parameters(), self.module.named_buffers(), self.module.state_dict().items(), self.module._parameters.items()]
+        all_params = [
+            self.module.named_parameters(),
+            self.module.named_buffers(),
+            self.module.state_dict().items(),
+            self.module._parameters.items(),
+        ]
         for name, param in itertools.chain(*all_params):
             if name in recorded_names:
                 continue
             if param == None:
                 continue
-            forge_param = Parameter(
-                param.cpu(),
-                requires_grad = param.requires_grad,
-                name=name)
+            forge_param = Parameter(param.cpu(), requires_grad=param.requires_grad, name=name)
             params.append(forge_param)
             recorded_names.append(name)
 
@@ -261,8 +272,8 @@ class TFModule(Module):
     """
     A wrapper around a TF module. Currently, TF modules can only run on a CPU device.
     """
-    def __init__(self, name: str, 
-            module: tf.keras.Model):
+
+    def __init__(self, name: str, module: tf.keras.Model):
         """
         Create TF module wrapper.
 
@@ -297,7 +308,12 @@ class TFModule(Module):
             Output tensors, one for each of the module outputs
         """
         args = to_tf_variables(args)
-        kwargs = {k : tf.Variable(tf.convert_to_tensor(v.detach().numpy(), dtype=map_pt_dtype_to_tf(v.dtype)), trainable=v.requires_grad) for k, v in kwargs.items()}
+        kwargs = {
+            k: tf.Variable(
+                tf.convert_to_tensor(v.detach().numpy(), dtype=map_pt_dtype_to_tf(v.dtype)), trainable=v.requires_grad
+            )
+            for k, v in kwargs.items()
+        }
         outputs = self.call(*args, **kwargs)
         outputs = to_pt_tensors(outputs)
         return outputs
@@ -309,7 +325,6 @@ class TFModule(Module):
         outputs = flatten_structured_output([outputs])
         outputs = to_pt_tensors(outputs)
         return outputs
-
 
     def call(self, *args, **kwargs) -> Tuple[tf.Tensor]:
         """
@@ -351,21 +366,18 @@ class TFModule(Module):
         vars_as_pt = to_pt_tensors(self.module.trainable_variables)
         names = [var.name for var in self.module.trainable_variables]
         for param, name in zip(vars_as_pt, names):
-            forge_param = Parameter(
-                param,
-                requires_grad = True,
-                name=name)
+            forge_param = Parameter(param, requires_grad=True, name=name)
             params.append(forge_param)
 
         return params
+
 
 class OnnxModule(Module):
     """
     A wrapper around a Onnx module.
     """
-    def __init__(self, name: str, 
-            module: onnx.onnx_ml_pb2.ModelProto,
-            onnx_path: str):
+
+    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto, onnx_path: str):
         """
         Create Onnx module wrapper.
 
@@ -385,18 +397,19 @@ class OnnxModule(Module):
 
     def forward(self, *args, **kwargs):
         import onnxruntime as ort
-        
+
         assert self.onnx_path != None, "Onnx compile needs path to onnx file on disk."
 
         so = ort.SessionOptions()
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
-        
+
         ort_sess = ort.InferenceSession(
             self.onnx_path,
             sess_options=so,
             use_deterministic_compute=True,
-            providers=["CPUExecutionProvider"],)
+            providers=["CPUExecutionProvider"],
+        )
         # Load input names
         input_names = []
         for inp in ort_sess.get_inputs():
@@ -416,14 +429,14 @@ class OnnxModule(Module):
         # Handle batched verification
         slice_single_batch = False
         for inp in ort_sess.get_inputs():
-            if (all([isinstance(x, int) for x in inp.shape]) # Don't modify dynamic shapes
-                and list(inp.shape) != list(input_dict[inp.name].shape)
+            if all([isinstance(x, int) for x in inp.shape]) and list(inp.shape) != list(  # Don't modify dynamic shapes
+                input_dict[inp.name].shape
             ):
                 assert inp.shape[0] != input_dict[inp.name].shape[0], "Only batch dim is allowed to be different."
                 repeat_times = [inp.shape[0]] + [1] * (len(inp.shape) - 1)
                 input_dict[inp.name] = np.tile(input_dict[inp.name], repeat_times)
                 slice_single_batch = True
-        
+
         framework_outputs = ort_sess.run(output_names, input_dict)
 
         if slice_single_batch:
@@ -444,14 +457,14 @@ class OnnxModule(Module):
         raise NotImplementedError
 
     def get_parameters(self) -> List[Parameter]:
-        return [] # TODO
-
+        return []  # TODO
 
 
 class TFLiteModule(Module):
     """
     A wrapper around a TFLite module.
     """
+
     def __init__(self, name: str, tflite_path: str):
         """
         Create TFLite module wrapper.
@@ -471,11 +484,11 @@ class TFLiteModule(Module):
         output_details = self.module.get_output_details()
         self.module.allocate_tensors()
         args = to_tf_variables(args)
-        self.module.set_tensor(input_details[0]['index'], *args)
+        self.module.set_tensor(input_details[0]["index"], *args)
         self.module.invoke()
         framework_outputs = []
         for i in range(len(output_details)):
-            framework_outputs.append(self.module.get_tensor(output_details[i]['index']))
+            framework_outputs.append(self.module.get_tensor(output_details[i]["index"]))
 
         outputs = flatten_structured_output(framework_outputs)
 
@@ -492,8 +505,8 @@ class TFLiteModule(Module):
         raise NotImplementedError
 
     def get_parameters(self) -> List[Parameter]:
-        return [] # TODO
-    
+        return []  # TODO
+
 
 # class MXNetModule(Module):
 #     """
@@ -540,8 +553,8 @@ class TFGraphDefModule(Module):
     """
     A wrapper around a TFGraphDef module.
     """
-    def __init__(self, name: str, 
-            module, path, output_names):
+
+    def __init__(self, name: str, module, path, output_names):
         super().__init__(name)
         self.module = module
         self.path = path
@@ -558,7 +571,7 @@ class TFGraphDefModule(Module):
         raise NotImplementedError
 
     def get_parameters(self) -> List[Parameter]:
-        return [] # TODO
+        return []  # TODO
 
     def cpu_eval_forward(self, *args, **kwargs):
         input_names = []
@@ -572,8 +585,9 @@ class TFGraphDefModule(Module):
         detached_args = [x.detach() for x in detached_args]
         inp_dict = dict(zip(input_names, detached_args))
         import tensorflow.compat.v1 as tf
+
         tf.reset_default_graph()
-        
+
         with tf.Graph().as_default() as graph:
             with tf.Session() as sess:
                 with tf.io.gfile.GFile(self.path, "rb") as f:
@@ -582,7 +596,7 @@ class TFGraphDefModule(Module):
                     sess.graph.as_default()
 
                     tf.graph_util.import_graph_def(tf_graph, name="")
-                    
+
                     _outputs = []
                     for name in self.output_names:
                         _outputs.append(graph.get_tensor_by_name(name))
@@ -599,8 +613,8 @@ class JaxModule(Module):
     """
     A wrapper around a Jax module.
     """
-    def __init__(self, name: str, 
-            module):
+
+    def __init__(self, name: str, module):
         super().__init__(name)
         self.module = module
 
@@ -614,7 +628,12 @@ class JaxModule(Module):
         raise NotImplementedError
 
     def cpu_eval_forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
-        args = [jnp.asarray(x.detach().numpy(),) for x in args]
+        args = [
+            jnp.asarray(
+                x.detach().numpy(),
+            )
+            for x in args
+        ]
         outputs = self.module(*args)
 
         outputs = to_pt_tensors(outputs)
@@ -622,13 +641,14 @@ class JaxModule(Module):
         return outputs
 
     def get_parameters(self) -> List[Parameter]:
-        return [] # TODO
+        return []  # TODO
 
 
 class ForgeModule(Module):
     """
     A base class for all Forge modules. User should extend this class and implement `forward` function with workload implementation.
     """
+
     def __init__(self, name: str):
         super().__init__(name)
 
@@ -659,6 +679,7 @@ class ForgeModule(Module):
         if name == "forward":
             orig_forward = super(ForgeModule, self).__getattribute__("forward")
             if callable(orig_forward):
+
                 def wrap_forward(*args, **kwargs):
                     if len(self.input_names):
                         assert len(self.input_names) == len(args)
@@ -666,7 +687,7 @@ class ForgeModule(Module):
                         args = []
                         kwargs.update(input_dict)
                     return orig_forward(*args, **kwargs)
-                
+
                 return wrap_forward
         return super(ForgeModule, self).__getattribute__(name)
 
@@ -675,10 +696,9 @@ class ForgeModule(Module):
         Called before forward. Override this function to add custom logic.
         """
 
-
     def add_parameter(self, name: str, parameter: Parameter, prepend_name: bool = False):
         """
-        Adds a new parameter. 
+        Adds a new parameter.
 
         Parameters
         ----------
@@ -703,7 +723,7 @@ class ForgeModule(Module):
 
     def add_constant(self, name: str, prepend_name: bool = False, shape: Tuple[int] = None):
         """
-        Adds a new constant. 
+        Adds a new constant.
 
         Parameters
         ----------
@@ -724,10 +744,9 @@ class ForgeModule(Module):
         else:
             self._constants[_name] = None
 
-
     def get_constant(self, name) -> Tensor:
         """
-        Gets a constant by name 
+        Gets a constant by name
 
         Parameters
         ----------
@@ -748,10 +767,9 @@ class ForgeModule(Module):
 
         return self._constants[name]
 
-
     def set_constant(self, name: str, data: SomeTensor):
         """
-        Set value for a module constant. 
+        Set value for a module constant.
 
         Parameters
         ----------
@@ -769,19 +787,23 @@ class ForgeModule(Module):
         lazy_trace_data(data)
 
         if isinstance(data, torch.Tensor):
-            data = forge.Tensor.create_from_torch(data, constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype))
+            data = forge.Tensor.create_from_torch(
+                data, constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype)
+            )
 
         import numpy as np
+
         if isinstance(data, np.ndarray):
-            data = forge.Tensor.create_from_torch(torch.Tensor(data), constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype))
+            data = forge.Tensor.create_from_torch(
+                torch.Tensor(data), constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype)
+            )
 
         assert isinstance(data, forge.Tensor)
         self._constants[name] = data
 
-
     def get_parameter(self, name) -> Parameter:
         """
-        Gets a parameter by name 
+        Gets a parameter by name
 
         Parameters
         ----------
@@ -827,7 +849,7 @@ class ForgeModule(Module):
 
     def set_parameter(self, name: str, data: SomeTensor):
         """
-        Set value for a module parameter. 
+        Set value for a module parameter.
 
         Parameters
         ----------
@@ -845,7 +867,7 @@ class ForgeModule(Module):
 
     def load_parameter_dict(self, data: Dict[str, SomeTensor]):
         """
-        Load all parameter values specified in the dictionary. 
+        Load all parameter values specified in the dictionary.
 
         Parameters
         ----------
@@ -886,7 +908,7 @@ class ForgeModule(Module):
             if name != "_submodulelists" and name != "input_names":
                 self._submodulelists.append(value)
 
-        object.__setattr__(self, name, value) # default set
+        object.__setattr__(self, name, value)  # default set
         if isinstance(value, ForgeModule):
             value.initialize_parameters()
 
@@ -900,7 +922,6 @@ class ForgeModule(Module):
             del self._submodules[name]
 
         object.__delattr__(self, name)
-
 
     def insert_tapout_queue_for_op(self, op_name: str, output_index: int):
         """
@@ -921,7 +942,7 @@ class ForgeModule(Module):
         """
         op_name = self.name + "." + op_name
         self._user_inserted_tapout_queues.append((op_name, output_index))
-        return IntQueueHandle(self, op_name, output_index) 
+        return IntQueueHandle(self, op_name, output_index)
 
     def __call__(self, *args) -> Tuple:
         return self.forward(*args)
@@ -946,12 +967,14 @@ class IntQueueHandle:
     """
     Handle for an intermediate queue, a debug device for reading out intermediate operation results from the device
     """
+
     def __init__(self, module: ForgeModule, op_name: str, output_index: int):
         self.module = module
         self.op_name = op_name
         self.output_index = output_index
 
-def wrap_module(module, name: str)-> Module:
+
+def wrap_module(module, name: str) -> Module:
     """
     Wrap a module in a Forge module
 
@@ -976,4 +999,3 @@ def wrap_module(module, name: str)-> Module:
         return module
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
-

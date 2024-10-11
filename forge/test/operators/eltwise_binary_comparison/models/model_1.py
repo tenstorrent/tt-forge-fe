@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-#   Test 1 
+#   Test 1
 #   Cimparison operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -19,19 +19,11 @@ from forge import ForgeModule, Tensor
 
 class ForgeComparisonTest(ForgeModule):
     """
-        Forge Test 1
+    Forge Test 1
 
     """
 
-    def __init__(
-        self,
-        shape,
-        opname,
-        operator,
-        mask,
-        rng_min,
-        rng_max
-    ):
+    def __init__(self, shape, opname, operator, mask, rng_min, rng_max):
         super().__init__("Forge Test 1")
 
         self.testname = "Comparison Operator, Test 1"
@@ -41,12 +33,12 @@ class ForgeComparisonTest(ForgeModule):
         self.mask = mask
         self.rng_min = rng_min
         self.rng_max = rng_max
-        
+
         self.train_param = forge.Parameter(*self.shape, requires_grad=True)
 
         input_ = torch.rand(*self.shape) * (self.rng_max - self.rng_min) + self.rng_min
         if self.mask:
-            input_ *= (1.0 * torch.randint(0, 2, self.shape))
+            input_ *= 1.0 * torch.randint(0, 2, self.shape)
         self.inputs = [Tensor.create_from_torch(input_)]
         self.set_parameter("train_param", torch.rand(*self.shape, requires_grad=True))
 
@@ -60,4 +52,4 @@ class ForgeComparisonTest(ForgeModule):
         return mul
 
     def values(self):
-        return [item.value() for item in self.inputs]   
+        return [item.value() for item in self.inputs]

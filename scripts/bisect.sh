@@ -8,13 +8,13 @@ SAMPLE:
 Script run command : bash ./scripts/bisect.sh
 
 INPUTS:
-Enter Pytest Command: 
+Enter Pytest Command:
 pytest --devtype golden forge/test/model_demos/high_prio/cnn/pytorch/test_xception.py::test_xception_timm[Golden-xception] --device-config gs_e150
-Enter Passing Commit Id: 
+Enter Passing Commit Id:
 8e576abe7fdc250ba88775322b448fa05acf52d1 #passing commit id
 Enter Failing Commit Id:
 6c2a0f68aab744ce08174f5c59abc946be6b8395 #failing commit id
-Enter Architecture(grayskull/wormhole_b0): 
+Enter Architecture(grayskull/wormhole_b0):
 grayskull
 Device config(e150/e300):
 e150
@@ -23,7 +23,7 @@ compile
 
 COMMENT
 
-# Enabling required flags based on the architecture and run type 
+# Enabling required flags based on the architecture and run type
 set_evn_flags() {
     local arch=$1
     local runtype=$2
@@ -38,13 +38,13 @@ set_evn_flags() {
         export ARCH_NAME=wormhole_b0
 
         if [ "$device_config" = "no" ] ; then
-            export FORGE_FORCE_EMULATE_HARVESTED=1 
+            export FORGE_FORCE_EMULATE_HARVESTED=1
         fi
-        
+
         if [ "$runtype" = "compile" ] ; then
-            export GOLDEN_WORMHOLE_B0=1 
-            export FORGE_DEVMODE=1 
-            export FORGE_EMULATE_SILICON_DEVICE=1 
+            export GOLDEN_WORMHOLE_B0=1
+            export FORGE_DEVMODE=1
+            export FORGE_EMULATE_SILICON_DEVICE=1
             export FORGE_VERIFY_GOLDEN=1
         else
             export PYTEST_ADDOPTS=" -svv --silicon-only"
@@ -56,12 +56,12 @@ set_evn_flags() {
         export ARCH_NAME=grayskull
 
         if [ "$device_config" = "e300" ] ; then
-            export FORGE_FORCE_EMULATE_HARVESTED=1 
+            export FORGE_FORCE_EMULATE_HARVESTED=1
         fi
 
         if [ "$runtype" = "compile" ] ; then
-            export FORGE_DEVMODE=1 
-            export FORGE_EMULATE_SILICON_DEVICE=1 
+            export FORGE_DEVMODE=1
+            export FORGE_EMULATE_SILICON_DEVICE=1
             export FORGE_VERIFY_GOLDEN=1
         else
             export PYTEST_ADDOPTS=" -svv --silicon-only"
@@ -73,11 +73,11 @@ set_evn_flags() {
 # Getting inputs from the user
 get_inputs() {
     local pytest_cmd
-    read -p "Enter Pytest Command: " pytest_cmd 
-    read -p "Enter Passing Commit Id: " pass_id 
-    read -p "Enter Failing Commit Id: " fail_id 
+    read -p "Enter Pytest Command: " pytest_cmd
+    read -p "Enter Passing Commit Id: " pass_id
+    read -p "Enter Failing Commit Id: " fail_id
     read -p "Enter Architecture(grayskull/wormhole_b0): " arch
-    
+
     if [ "$arch" = "wormhole_b0" ] ; then
         read -p "Is it 1x1 config(yes/no): " device_config
     else
@@ -107,47 +107,47 @@ env_clean_and_build() {
     echo "Submodules Updated"
     if [ -d "build" ]; then
         echo "Build directory exists. Doing a clean up..."
-        rm -rf .pkl_memoize_py3 
-        rm -rf .pytest_cache 
-        rm -rf device_images/ 
-        rm -rf .hlkc_cache  
-        rm -rf wheel_out/  
-        rm -rf wheel_env/  
-        rm -rf forge.egg-info/ 
-        rm -rf wheele_env/ 
-        rm -rf generated_modules 
-        rm -rf tt_build 
-        rm -rf net2pipe_output 
-        rm -rf tensor_binaries 
+        rm -rf .pkl_memoize_py3
+        rm -rf .pytest_cache
+        rm -rf device_images/
+        rm -rf .hlkc_cache
+        rm -rf wheel_out/
+        rm -rf wheel_env/
+        rm -rf forge.egg-info/
+        rm -rf wheele_env/
+        rm -rf generated_modules
+        rm -rf tt_build
+        rm -rf net2pipe_output
+        rm -rf tensor_binaries
         rm -rf imagenet_classes*
         rm -rf core*
-        rm -rf *.log 
-        rm -rf *.summary 
-        rm -rf *.yaml 
-        rm -rf *.png 
-        rm -rf *.jpg 
-        rm -rf *.pt 
+        rm -rf *.log
+        rm -rf *.summary
+        rm -rf *.yaml
+        rm -rf *.png
+        rm -rf *.jpg
+        rm -rf *.pt
         rm -rf *.xml
         rm -rf *.json
         make clean >/dev/null 2>&1
         error_handling "$?" "Clean"
         echo "Build and cache is cleaned!"
     fi
-    
+
     # Disable this code if your testing old regression
-    if [ "$arch" = "wormhole_b0" ] ; then 
+    if [ "$arch" = "wormhole_b0" ] ; then
         source env_for_wormhole_b0.sh >/dev/null 2>&1
-    else 
+    else
         source env_for_silicon.sh >/dev/null 2>&1
     fi
     error_handling "$?" "Build"
 
     #Enable below code for old regression
 
-    #export TORCH_VISION_INSTALL=0 
-    #if [ "$arch" = "wormhole_b0" ] ; then 
+    #export TORCH_VISION_INSTALL=0
+    #if [ "$arch" = "wormhole_b0" ] ; then
     #    source env_for_wormhole_b0.sh >/dev/null 2>&1
-    #else 
+    #else
     #    source env_for_silicon.sh >/dev/null 2>&1
     #fi
     #error_handling "$?" "Build"
@@ -158,7 +158,7 @@ env_clean_and_build() {
     #export TORCH_VISION_INSTALL=1
     #make torchvision >/dev/null 2>&1
     #error_handling "$?" "Torchvision"
-    
+
     echo "Build Successfully"
 
 }
@@ -170,11 +170,11 @@ env_clean_and_build() {
 # Output:
 #   Last line of the pytest result
 pytest_run() {
-    local cmd="$1" 
+    local cmd="$1"
     local log_path=$2
     command="$cmd >$log_path"
     eval "$command" >/dev/null 2>&1
-    result=$(tail -1 "$log_path") 
+    result=$(tail -1 "$log_path")
     echo "$result"
 }
 
@@ -204,23 +204,23 @@ comparison_result() {
     if echo "$pytest_result" | grep -q "$expecting_string" ; then
         if [ "$replication" -eq 0 ] ; then
             echo "============================= Test case got $expecting_string ============================="
-        else 
-            echo "============================= $expecting_string case got replicated =============================" 
+        else
+            echo "============================= $expecting_string case got replicated ============================="
         fi
     else
         if [ "$replication" -eq 0 ] ; then
             echo "============================= Test case got failed ============================="
-            expecting_string="failed" 
-        else 
-            echo "============================= Not able to replicate $expecting_string case =============================" 
+            expecting_string="failed"
+        else
+            echo "============================= Not able to replicate $expecting_string case ============================="
             exit 1
         fi
     fi
 
-    echo "Bisect results" 
+    echo "Bisect results"
     if [ "$expecting_string" = "passed" ] ; then
         bis_out=$(git bisect good | head -n 1 )
-    else 
+    else
         if [ "$expecting_string" = "failed" ] ; then
             bis_out=$(git bisect bad | head -n 1 )
         fi
@@ -233,7 +233,7 @@ comparison_result() {
 # $1: Expected string to be replicated
 # $2: Architecture
 # $3: Pytest Command
-# $4: Log Path 
+# $4: Log Path
 # $5: Run count
 # Output:
 #   First line of the bisect output
@@ -321,15 +321,15 @@ echo "Going to replicate fail case in first failing commit id..."
 git checkout "$fail_id" >/dev/null 2>&1
 bisect_output=$(bisect_run "failed" "$arch" "$pytest_command" "$folder_path" "$run_count")
 echo "$bisect_output"
-result=$(echo "$bisect_output" | awk '/Bisect results/{p=1; next} p') 
+result=$(echo "$bisect_output" | awk '/Bisect results/{p=1; next} p')
 
 #This loop will be continued untill we are getting first regressed commit id
 while ! echo "$result" | grep -q "first bad commit"; do
     run_count=$((run_count+1))
     bisect_output=$(bisect_run "NA" "$arch" "$pytest_command" "$folder_path" "$run_count")
     echo "$bisect_output"
-    result=$(echo "$bisect_output" | awk '/Bisect results/{p=1; next} p') 
-    sleep 1 
+    result=$(echo "$bisect_output" | awk '/Bisect results/{p=1; next} p')
+    sleep 1
 done
 
 extension="/bisect_log.txt"

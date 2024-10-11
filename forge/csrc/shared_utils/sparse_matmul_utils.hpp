@@ -21,7 +21,6 @@ namespace tt::sparse
 
 constexpr uint32_t TILE_DIM = 32;
 
-
 union strip_info_struct
 {
     struct
@@ -339,7 +338,7 @@ struct SparseIndex
     int zdim = 0;
 
     SparseIndex(std::uint32_t unique_id, int ct, int rt, int z, int zdim) :
-        unique_id(unique_id), ct(ct), rt(rt), z(z), zdim(zdim){};
+        unique_id(unique_id), ct(ct), rt(rt), z(z), zdim(zdim) {};
 
     int ubr_idx(int u_rt) const { return rt / u_rt; }
     int ubc_idx(int u_kt) const { return ct / u_kt; }

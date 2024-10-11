@@ -43,6 +43,8 @@ from forge.verify import VerifyConfig, do_verify, _generate_random_losses, _run_
 
 
 LAST_SUCCESSFUL_STAGE = None
+
+
 def init_log_last_successful_compile_stage():
     global LAST_SUCCESSFUL_STAGE
     LAST_SUCCESSFUL_STAGE = None
@@ -50,6 +52,7 @@ def init_log_last_successful_compile_stage():
 
 def dump_compiler_cfg(backend_output_directory, compiler_cfg, graph_name):
     import yaml
+
     try:
         int(os.environ["FORGE_DUMP_CONFIG"])
         path = f"{graph_name}_config.yaml"
@@ -62,6 +65,7 @@ def dump_compiler_cfg(backend_output_directory, compiler_cfg, graph_name):
 def load_compiler_cfg(compiler_cfg, clobber=False):
     import yaml
     import json
+
     path = os.environ["FORGE_LOAD_CONFIG"]
     loader = json.load if os.path.splitext(path)[1] == ".json" else lambda f: yaml.load(f, yaml.SafeLoader)
     with open(path) as fd:
@@ -74,6 +78,7 @@ def load_compiler_cfg(compiler_cfg, clobber=False):
 
 def generate_override_config(graph, balancer_solution, placer_solution, nop_instructions, graph_name):
     import yaml
+
     try:
         int(os.environ["FORGE_GENERATE_OVERRIDE_CONFIG"])
         path = f"{graph_name}_override_config.yaml"
@@ -81,12 +86,15 @@ def generate_override_config(graph, balancer_solution, placer_solution, nop_inst
         path = os.environ["FORGE_GENERATE_OVERRIDE_CONFIG"]
 
     overrides = {}
-    overrides["balancer_op_overrides"] = {k: {
-        "grid_shape": [v.grid_shape.r, v.grid_shape.c],
-        "t_stream_dir": str(v.t_stream_factor.dir).split(".")[1],
-        "t_stream_shape": [v.t_stream_factor.r, v.t_stream_factor.c],
-        "fracture_factor": v.fracture_factor,
-    } for k, v in balancer_solution.op_models.items()}
+    overrides["balancer_op_overrides"] = {
+        k: {
+            "grid_shape": [v.grid_shape.r, v.grid_shape.c],
+            "t_stream_dir": str(v.t_stream_factor.dir).split(".")[1],
+            "t_stream_shape": [v.t_stream_factor.r, v.t_stream_factor.c],
+            "fracture_factor": v.fracture_factor,
+        }
+        for k, v in balancer_solution.op_models.items()
+    }
 
     overrides["buffering_nops_to_insert"] = [NopInsertionInstruction.to_json(n) for n in nop_instructions]
 
@@ -94,6 +102,7 @@ def generate_override_config(graph, balancer_solution, placer_solution, nop_inst
 
     with open(path, "w") as fd:
         yaml.dump(overrides, fd, indent=2)
+
 
 @dataclass
 class CompileContext:
@@ -133,11 +142,8 @@ class CompileContext:
     forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
 
-def calculate_grads(
-        outputs: Tuple[Tensor, ...],
-        intermediate_golden_tensors: Dict,
-        is_forge: bool,
-        losses=None):
+
+def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, is_forge: bool, losses=None):
     """
     Verify graph vs. pytorch golden
     """
@@ -165,12 +171,13 @@ def calculate_grads(
 
     return losses
 
+
 def compile_main(
-        module: AnyModule,
-        sample_inputs: List[torch.Tensor],
-        module_name: Optional[str] = None,
-        loss: Optional[torch.nn.Module | ForgeModule] = None,
-        optimizer: Optional[torch.optim.Optimizer] = None,
+    module: AnyModule,
+    sample_inputs: List[torch.Tensor],
+    module_name: Optional[str] = None,
+    loss: Optional[torch.nn.Module | ForgeModule] = None,
+    optimizer: Optional[torch.optim.Optimizer] = None,
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -210,7 +217,7 @@ def compile_main(
 
     logger.info("Compiling module {}", module_name)
 
-    if (sample_inputs is None):
+    if sample_inputs is None:
         logger.error("No sample inputs provided for module {}", module_name)
         assert False
 
@@ -235,7 +242,7 @@ def compile_main(
     )
 
     return forge_compile_from_context(compile_context)
-    
+
 
 def forge_compile_from_context(context: CompileContext) -> CompiledModel:
     """
@@ -281,33 +288,65 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         # Check if we need to stop compilation or perform verifications in the current stage.
         should_early_stop_compilation = check_for_compilation_early_stop(compiler_cfg.compile_depth, current_stage)
 
-        can_verify = current_stage != CompileDepth.INIT_COMPILE and current_stage != CompileDepth.PRE_LOWERING_PASS and current_stage != CompileDepth.POST_PATTERN_MATCHER
+        can_verify = (
+            current_stage != CompileDepth.INIT_COMPILE
+            and current_stage != CompileDepth.PRE_LOWERING_PASS
+            and current_stage != CompileDepth.POST_PATTERN_MATCHER
+        )
         should_verify = current_stage == CompileDepth.POST_AUTOGRAD_PASS and verify_cfg.verify_post_autograd_passes
 
-        if (verify_cfg.verify_all or (verify_cfg.verify_last and should_early_stop_compilation) or should_verify) and can_verify:
+        if (
+            verify_cfg.verify_all or (verify_cfg.verify_last and should_early_stop_compilation) or should_verify
+        ) and can_verify:
             in_training = context.compiler_cfg.enable_training and current_stage.value >= CompileDepth.AUTOGRAD.value
             assert False, "verification not working yet"
-            do_verify(current_stage.name.lower(), in_training, context.graph, context.inputs, context.parameter_dict, context.input_grads, context.outputs, dev, context.intermediate_tensors, verify_cfg, False, losses=context.losses, targets=context.targets)
+            do_verify(
+                current_stage.name.lower(),
+                in_training,
+                context.graph,
+                context.inputs,
+                context.parameter_dict,
+                context.input_grads,
+                context.outputs,
+                dev,
+                context.intermediate_tensors,
+                verify_cfg,
+                False,
+                losses=context.losses,
+                targets=context.targets,
+            )
 
         if should_early_stop_compilation:
             logger.info("Early stopping compilation at stage {}", current_stage.name.lower())
-            return generate_compile_results(context.verify_cfg, context.initial_graph_copy, context.outputs, context.intermediate_tensors, context.final_graph, pass_specific_output_kwargs=context.output_kwargs)
+            return generate_compile_results(
+                context.verify_cfg,
+                context.initial_graph_copy,
+                context.outputs,
+                context.intermediate_tensors,
+                context.final_graph,
+                pass_specific_output_kwargs=context.output_kwargs,
+            )
 
         context.stage = next_stage
 
     compile_results = generate_compile_results(
         verify_cfg,
-        context.initial_graph_copy, context.outputs,
+        context.initial_graph_copy,
+        context.outputs,
         context.intermediate_tensors,
         final_graph=context.final_graph,
-        pass_specific_output_kwargs = context.output_kwargs
+        pass_specific_output_kwargs=context.output_kwargs,
     )
 
     assert context.forge_module is not None
-    fwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], context.forge_module.get_graph(GraphType.Forward))
+    fwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(
+        context.modules[0], context.forge_module.get_graph(GraphType.Forward)
+    )
     bwd_compiled_graph_state = None
     if context.training:
-        bwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(context.modules[0], context.forge_module.get_graph(GraphType.Backward))
+        bwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(
+            context.modules[0], context.forge_module.get_graph(GraphType.Backward)
+        )
 
     assert context.compiled_binary is not None
 
@@ -326,11 +365,8 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
 
 
 def forge_compile_torch(
-        module_name: str,
-        module: torch.fx.GraphModule,
-        graph: Graph,
-        *inputs: Union[Tensor, List[Any], Dict[str, Any]]
-    ):
+    module_name: str, module: torch.fx.GraphModule, graph: Graph, *inputs: Union[Tensor, List[Any], Dict[str, Any]]
+):
     """
     Entry point for forge compile for torch 2.0 api.
 
@@ -357,7 +393,7 @@ def forge_compile_torch(
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.apply_env_config_overrides()
-    
+
     compile_context: CompileContext = CompileContext(
         modules=[module],
         graph_name=module_name,
@@ -371,15 +407,17 @@ def forge_compile_torch(
 
     return forge_compile_from_context(compile_context)
 
+
 def forge_compile(
-        graph_name: str,
-        *inputs: Union[Tensor, List[Any], Dict[str, Any]],
-        targets: List[Tensor] = [],
-        compiler_cfg: Optional[CompilerConfig] = None,
-        verify_cfg: Optional[VerifyConfig] = None,
-        losses: Optional[List[Tensor]] = None,
-        microbatch_size: int = 1,
-        microbatch_count: int = 1) -> CompileResults:
+    graph_name: str,
+    *inputs: Union[Tensor, List[Any], Dict[str, Any]],
+    targets: List[Tensor] = [],
+    compiler_cfg: Optional[CompilerConfig] = None,
+    verify_cfg: Optional[VerifyConfig] = None,
+    losses: Optional[List[Tensor]] = None,
+    microbatch_size: int = 1,
+    microbatch_count: int = 1,
+) -> CompileResults:
     """
     Run front-end compile passes and generate a Forge netlist for given input tensors. Optionally verify
     against PyTorch model.
@@ -415,7 +453,7 @@ def forge_compile(
 
     inputs = list(inputs)
     if verify_cfg is None:
-        verify_cfg = VerifyConfig.disabled() # no verification config provided, disable by default
+        verify_cfg = VerifyConfig.disabled()  # no verification config provided, disable by default
 
     if compiler_cfg is None:
         compiler_cfg = _get_global_compiler_config()
@@ -434,6 +472,7 @@ def forge_compile(
     )
 
     return forge_compile_from_context(compile_context)
+
 
 def check_for_compilation_early_stop(desired_stage, current_stage):
     """
@@ -466,6 +505,7 @@ def check_for_compilation_early_stop(desired_stage, current_stage):
 
     return False
 
+
 def placer_breaks_eval(value):
     if type(value) is query.NodePredicateBuilder:
         return value.eval()
@@ -474,6 +514,7 @@ def placer_breaks_eval(value):
     else:
         assert type(value) is str
         return value
+
 
 def placer_op_overrides_eval(value):
     assert type(value) is tuple
@@ -484,13 +525,13 @@ def placer_op_overrides_eval(value):
 
 
 def generate_compile_results(
-    verify_cfg = None,
-    initial_graph = None,
-    outputs = None,
-    intermediate_tensors = None,
-    final_graph = None,
+    verify_cfg=None,
+    initial_graph=None,
+    outputs=None,
+    intermediate_tensors=None,
+    final_graph=None,
     *,
-    pass_specific_output_kwargs = None,
+    pass_specific_output_kwargs=None,
 ):
     """
     Wrapper for generating result from the graph compiler. Contains initial and final graphs, output tensors,
@@ -527,7 +568,8 @@ def generate_compile_results(
     if verify_cfg and verify_cfg.intermediates:
         ret.golden_intermediates = {
             initial_graph.get_node_name(node_id): tensor
-            for node_id, tensor in intermediate_tensors.items() if initial_graph.has_node_with_id(node_id)
+            for node_id, tensor in intermediate_tensors.items()
+            if initial_graph.has_node_with_id(node_id)
         }
     ret.final_graph = final_graph
 
@@ -539,8 +581,9 @@ def generate_compile_results(
 
     return ret
 
+
 def init_compile(context: CompileContext) -> CompileDepth:
-    
+
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
 
@@ -561,6 +604,7 @@ def init_compile(context: CompileContext) -> CompileDepth:
 
     return CompileDepth.GENERATE_INITIAL_GRAPH
 
+
 def generate_initial_graph(context: CompileContext) -> CompileDepth:
     """
     Generates initial graph from the input framework.
@@ -580,7 +624,9 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
         module_inputs = context.inputs
         for module in context.modules:
             if not isinstance(module, ForgeModule):
-                module, module_inputs = convert_to_forge_module(module, module_inputs, context.compiler_cfg, context.verify_cfg)
+                module, module_inputs = convert_to_forge_module(
+                    module, module_inputs, context.compiler_cfg, context.verify_cfg
+                )
                 assert isinstance(module, ForgeModule)
 
                 context.inputs = module_inputs
@@ -588,7 +634,14 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
             modules_.append(module)
 
     if context.graph is None:
-        context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(modules_, *context.inputs, return_intermediate=context.verify_cfg.intermediates, graph_name=context.graph_name, compiler_cfg=context.compiler_cfg, target_tensors=context.targets)
+        context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
+            modules_,
+            *context.inputs,
+            return_intermediate=context.verify_cfg.intermediates,
+            graph_name=context.graph_name,
+            compiler_cfg=context.compiler_cfg,
+            target_tensors=context.targets,
+        )
 
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")
@@ -605,7 +658,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
         for i in inputs_to_remove:
             context.inputs.remove(i)
 
-    context.initial_graph_copy = context.graph.clone() # save the original graph for verification and analysis
+    context.initial_graph_copy = context.graph.clone()  # save the original graph for verification and analysis
     context.input_grads = []
 
     context.parameter_dict = {}
@@ -618,6 +671,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
                 context.parameter_dict[name] = value
 
     return CompileDepth.POST_INITIAL_GRAPH_PASS
+
 
 def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     """
@@ -641,7 +695,9 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     if should_run_consteval(context):
         run_consteval_graph_pass(graph)
 
-    inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(graph, compiler_cfg, compiler_cfg.fracture_groups)
+    inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
+        graph, compiler_cfg, compiler_cfg.fracture_groups
+    )
 
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
         # If we have multi-level of decomposition, some node id might not in the original
@@ -659,8 +715,10 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
 
     return next_stage
 
+
 def should_run_consteval(context: CompileContext) -> bool:
     return context.compiler_cfg.enable_consteval and not context.training
+
 
 def run_consteval_pass(context: CompileContext) -> CompileDepth:
     """
@@ -688,6 +746,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
 
     return next_stage
 
+
 def run_post_pattern_matcher(context: CompileContext) -> CompileDepth:
     """
     Runs post pattern matcher passes.
@@ -712,6 +771,7 @@ def run_post_pattern_matcher(context: CompileContext) -> CompileDepth:
         dump_graph(graph, graph_name, "looped_graph")
 
     return CompileDepth.OPTIMIZED_GRAPH
+
 
 def run_optimization_pass(context: CompileContext) -> CompileDepth:
     """
@@ -745,6 +805,7 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
 
     return next_stage
 
+
 def run_autograd_pass(context: CompileContext) -> CompileDepth:
     """
     Runs autograd pass.
@@ -771,14 +832,17 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     graph = autograd_engine.run()
     dump_graph(graph, graph_name, "post_autograd")
 
-    # GOLDEN: 
+    # GOLDEN:
     # context.losses = calculate_grads(outputs, dev, intermediate_tensors, False, context.losses)
 
     # Record calculated input grads from the previous do_verify call and save so that we don't keep re-calculating and
     # accumulating on each verification call
-    context.input_grads = [i.value().grad for i in context.inputs if i.value().requires_grad and i.value().grad is not None]
+    context.input_grads = [
+        i.value().grad for i in context.inputs if i.value().requires_grad and i.value().grad is not None
+    ]
 
     return CompileDepth.POST_AUTOGRAD_PASS
+
 
 def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
     """
@@ -795,7 +859,12 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
     """
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
-    graph, intermediate_tensors, losses, outputs = context.graph, context.intermediate_tensors, context.losses, context.outputs
+    graph, intermediate_tensors, losses, outputs = (
+        context.graph,
+        context.intermediate_tensors,
+        context.losses,
+        context.outputs,
+    )
 
     inserted_node_id_mapping = run_post_autograd_graph_passes(graph, compiler_cfg)
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
@@ -808,6 +877,7 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
         calculate_grads(outputs, dev, intermediate_tensors, False, losses)
 
     return CompileDepth.PRE_LOWERING_PASS
+
 
 def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     """
@@ -826,13 +896,12 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph = context.graph
 
-    graph = run_pre_lowering_passes(
-        graph,
-        compiler_cfg.default_df_override)
+    graph = run_pre_lowering_passes(graph, compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
 
     context.final_graph = graph
     return CompileDepth.SPLIT_GRAPH
+
 
 def split_graph(context: CompileContext) -> CompileDepth:
     """
@@ -852,6 +921,7 @@ def split_graph(context: CompileContext) -> CompileDepth:
     context.forge_module = forge._C.split_graph(context.graph)
 
     return CompileDepth.RUN_MLIR_COMPILER
+
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
     assert context.forge_module is not None
@@ -878,7 +948,13 @@ def finish_compile(context: CompileContext) -> CompileDepth:
 
     return CompileDepth.FULL
 
-def convert_to_forge_module(module: AnyModule, module_inputs: Union[AnyTensor, List[AnyTensor]], compiler_cfg: CompilerConfig, verify_cfg: VerifyConfig) -> ForgeModule:
+
+def convert_to_forge_module(
+    module: AnyModule,
+    module_inputs: Union[AnyTensor, List[AnyTensor]],
+    compiler_cfg: CompilerConfig,
+    verify_cfg: VerifyConfig,
+) -> ForgeModule:
     """
     Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).
 
@@ -888,31 +964,40 @@ def convert_to_forge_module(module: AnyModule, module_inputs: Union[AnyTensor, L
     """
 
     from .tvm_to_python import generate_forge_module
+
     prev_state = state_changed()
 
     if module_inputs is None:
         logger.error("No inputs provided for module {}", module.name)
         assert False
 
-    forge_module, dev_types, module_inputs = generate_forge_module(module, to_pt_tensors(module_inputs), compiler_cfg, module.name, verify_cfg,)
+    forge_module, dev_types, module_inputs = generate_forge_module(
+        module,
+        to_pt_tensors(module_inputs),
+        compiler_cfg,
+        module.name,
+        verify_cfg,
+    )
     assert len(forge_module) == 1, "Attemping to load split model onto single devices"
 
-    if not(prev_state):
+    if not (prev_state):
         clear_state_changed()
 
     if isinstance(module_inputs, Tensor):
-        module_inputs = (module_inputs,) # Force a tuple
+        module_inputs = (module_inputs,)  # Force a tuple
 
     return forge_module[0], module_inputs
 
+
 def generate_graph(
-        modules,
-        *inputs: Tensor, 
-        target_tensors: List[Tensor] = [],
-        return_intermediate: bool = False, 
-        graph_name: str = "default_graph", 
-        compiler_cfg: Optional[CompilerConfig] = None, 
-        trace_only: bool = False) -> Tuple[Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]]:
+    modules,
+    *inputs: Tensor,
+    target_tensors: List[Tensor] = [],
+    return_intermediate: bool = False,
+    graph_name: str = "default_graph",
+    compiler_cfg: Optional[CompilerConfig] = None,
+    trace_only: bool = False,
+) -> Tuple[Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]]:
     """
     Generate a forge graph from the passed modules, and return the graph and output tensors.
     If input tensors have a value set, the output tensor will also have the calculated output value
@@ -938,16 +1023,24 @@ def generate_graph(
         Forge graph, outputs, optional intermediates, original inputs, target tensor
     """
 
-    '''
+    """
     TODO: This function was copied over from ttdevice.py with some modifications. Probably needs to be refactored (possibly moved to cpp)
-    '''
+    """
 
     from .forgeglobal import start_tracing, stop_tracing
     from forge.tvm_utils import flatten_inputs
     from collections import deque
     import inspect
 
-    from forge._C.graph import create_output, create_parameter_input, create_data_edge, create_activation_input, create_constant_input, create_op_node, create_target_input
+    from forge._C.graph import (
+        create_output,
+        create_parameter_input,
+        create_data_edge,
+        create_activation_input,
+        create_constant_input,
+        create_op_node,
+        create_target_input,
+    )
 
     output_to_module_name_prefix = {}
     output_to_subgraph_index = {}
@@ -973,12 +1066,14 @@ def generate_graph(
         outputs = module.forward(*outputs)
         stop_tracing()
         if isinstance(outputs, Tensor):
-            outputs = (outputs,) # Force a tuple
+            outputs = (outputs,)  # Force a tuple
 
         for output in outputs:
             output_to_module_name_prefix[output] = module.get_name()
             if compiler_cfg.compile_subgraphs:
-                assert output not in output_to_subgraph_index, "Output tensor {} is produced by multiple modules".format(output)
+                assert (
+                    output not in output_to_subgraph_index
+                ), "Output tensor {} is produced by multiple modules".format(output)
 
             output_to_subgraph_index[output] = module.subgraph_idx
 
@@ -1001,7 +1096,9 @@ def generate_graph(
     if isinstance(inputs[0], Tensor):
         inputs = (inputs,)
     for index, (module, submodule_input) in enumerate(zip(modules, inputs)):
-        submodule_input_node_names = list(inspect.signature(super(ForgeModule, module).__getattribute__("forward")).parameters.keys())
+        submodule_input_node_names = list(
+            inspect.signature(super(ForgeModule, module).__getattribute__("forward")).parameters.keys()
+        )
         if len(modules) > 1:
             submodule_input_node_names = [f"{input_name}_{index}" for input_name in submodule_input_node_names]
         input_node_names += submodule_input_node_names
@@ -1010,7 +1107,7 @@ def generate_graph(
     inputs, _, _ = flatten_inputs(inputs)
 
     for out in all_subgraph_outputs:
-        is_loss_output = False # self.loss_module is not None
+        is_loss_output = False  # self.loss_module is not None
         if out.src_op is None:
 
             # No source op. It could be a pass-through, so let's compare to inputs
@@ -1018,12 +1115,14 @@ def generate_graph(
             for input in inputs:
                 if input == out:
                     # Found a passthrough
-                    outq = create_output(graph, 
+                    outq = create_output(
+                        graph,
                         output_to_module_name_prefix.get(out, "") + f".output_passthrough_{len(passthroughs)}",
-                        out.shape.get_pytorch_shape(), 
+                        out.shape.get_pytorch_shape(),
                         out.data_format,
                         is_loss_output,
-                        output_to_subgraph_index.get(out, 0))
+                        output_to_subgraph_index.get(out, 0),
+                    )
                     passthroughs.add(input)
                     found = True
                     break
@@ -1032,14 +1131,16 @@ def generate_graph(
                 raise RuntimeError("Untraced output tensor encountered")
 
         else:
-            outq = create_output(graph, 
-                    output_to_module_name_prefix.get(out, "") + ".output_" + out.src_op.name, 
-                    out.shape.get_pytorch_shape(), 
-                    out.data_format,
-                    is_loss_output,
-                    output_to_subgraph_index.get(out, 0))
+            outq = create_output(
+                graph,
+                output_to_module_name_prefix.get(out, "") + ".output_" + out.src_op.name,
+                out.shape.get_pytorch_shape(),
+                out.data_format,
+                is_loss_output,
+                output_to_subgraph_index.get(out, 0),
+            )
         module_output_tensor_to_node[out] = outq
-        pending_tensors.append( (out, outq, 0, [], output_to_subgraph_index.get(out, 0)) )
+        pending_tensors.append((out, outq, 0, [], output_to_subgraph_index.get(out, 0)))
 
     recorded_parameters = {}
 
@@ -1054,7 +1155,7 @@ def generate_graph(
 
         if isinstance(tensor, int):
             # integer constant. Don't add to visited tensors.
-            assert False # not supported any more
+            assert False  # not supported any more
 
         if isinstance(tensor, Parameter):
             # parameter tensor
@@ -1067,37 +1168,46 @@ def generate_graph(
                 # Multiple subgraphs might use the same parameter. If it is used in the same subgraph,
                 # we should have already found it in the visited_tensors dictionary. Putting an assert here
                 # to catch fallouts.
-                assert graph.get_subgraph_id_for_node(recorded_parameters[name]) != subgraph_idx, \
-                        "Trying to add parameter with name: {} that is used in the same subgraph".format(name)
+                assert (
+                    graph.get_subgraph_id_for_node(recorded_parameters[name]) != subgraph_idx
+                ), "Trying to add parameter with name: {} that is used in the same subgraph".format(name)
                 create_data_edge(graph, recorded_parameters[name], 0, output, port_index, operand_broadcast)
                 continue
 
             inq = create_parameter_input(
-                    graph, 
-                    name,
-                    tensor.shape.get_pytorch_shape(),
-                    tensor.requires_grad,
-                    tensor.data_format,
-                    subgraph_idx)
+                graph, name, tensor.shape.get_pytorch_shape(), tensor.requires_grad, tensor.data_format, subgraph_idx
+            )
             create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
             visited_tensors[tensor] = inq
             recorded_parameters[name] = inq
             continue
-        
+
         if tensor.src_op is None:
-            input_name = input_node_names[inputs.index(tensor)] if input_names_known and tensor in inputs else "input_" + str(port_index) + "_" + graph.get_node_name(output)
+            input_name = (
+                input_node_names[inputs.index(tensor)]
+                if input_names_known and tensor in inputs
+                else "input_" + str(port_index) + "_" + graph.get_node_name(output)
+            )
             if tensor in passthroughs:
                 # passthrough input->output, add a nop
                 inq = create_activation_input(
-                        graph,
-                        input_name,
-                        tensor.shape.get_pytorch_shape(),
-                        tensor.requires_grad,
-                        tensor.data_format,
-                        subgraph_idx)
+                    graph,
+                    input_name,
+                    tensor.shape.get_pytorch_shape(),
+                    tensor.requires_grad,
+                    tensor.data_format,
+                    subgraph_idx,
+                )
 
-                nop = create_op_node(graph, f"_passthrough_nop_{output}", 
-                        OpType("nop"), tensor.shape.get_pytorch_shape(), tensor.data_format, subgraph_idx, {})
+                nop = create_op_node(
+                    graph,
+                    f"_passthrough_nop_{output}",
+                    OpType("nop"),
+                    tensor.shape.get_pytorch_shape(),
+                    tensor.data_format,
+                    subgraph_idx,
+                    {},
+                )
 
                 create_data_edge(graph, inq, 0, nop, 0, operand_broadcast)
                 create_data_edge(graph, nop, 0, output, 0, operand_broadcast)
@@ -1108,12 +1218,13 @@ def generate_graph(
             elif tensor in target_tensors:
                 # Target input
                 inq = create_target_input(
-                        graph,
-                        input_name,
-                        tensor.shape.get_pytorch_shape(),
-                        tensor.requires_grad,
-                        tensor.data_format,
-                        subgraph_idx)
+                    graph,
+                    input_name,
+                    tensor.shape.get_pytorch_shape(),
+                    tensor.requires_grad,
+                    tensor.data_format,
+                    subgraph_idx,
+                )
                 create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
                 visited_tensors[tensor] = inq
                 module_target_tensor_to_node[tensor] = inq
@@ -1122,12 +1233,13 @@ def generate_graph(
             elif tensor.is_constant():
                 # Target input
                 inq = create_constant_input(
-                        graph,
-                        input_name,
-                        tensor.value(),
-                        tensor.shape.get_pytorch_shape(),
-                        tensor.data_format,
-                        subgraph_idx)
+                    graph,
+                    input_name,
+                    tensor.value(),
+                    tensor.shape.get_pytorch_shape(),
+                    tensor.data_format,
+                    subgraph_idx,
+                )
                 create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
                 visited_tensors[tensor] = inq
                 module_target_tensor_to_node[tensor] = inq
@@ -1135,18 +1247,23 @@ def generate_graph(
 
             else:
                 # input tensor
-                input_creator = create_activation_input if input_name not in compiler_cfg.loopback_outputs else create_parameter_input
+                input_creator = (
+                    create_activation_input
+                    if input_name not in compiler_cfg.loopback_outputs
+                    else create_parameter_input
+                )
 
                 if input_name in compiler_cfg.loopback_outputs:
                     module.add_parameter(input_name, Parameter(tensor.value(), requires_grad=True, name=input_name))
 
                 inq = input_creator(
-                        graph,
-                        input_name,
-                        tensor.shape.get_pytorch_shape(),
-                        tensor.requires_grad,
-                        tensor.data_format,
-                        subgraph_idx)
+                    graph,
+                    input_name,
+                    tensor.shape.get_pytorch_shape(),
+                    tensor.requires_grad,
+                    tensor.data_format,
+                    subgraph_idx,
+                )
                 create_data_edge(graph, inq, 0, output, port_index, operand_broadcast)
                 visited_tensors[tensor] = inq
                 if input_name not in compiler_cfg.loopback_outputs:
@@ -1159,17 +1276,18 @@ def generate_graph(
         elif tensor.src_op.op_type == "constant":
             constant_value = tensor.src_op.attrs[0]
             constant = create_constant_input(
-                    graph,
-                    "constant_" + str(port_index) + "_" + graph.get_node_name(output),
-                    constant_value,
-                    tensor.data_format,
-                    subgraph_idx)
+                graph,
+                "constant_" + str(port_index) + "_" + graph.get_node_name(output),
+                constant_value,
+                tensor.data_format,
+                subgraph_idx,
+            )
 
             create_data_edge(graph, constant, 0, output, port_index, operand_broadcast)
             visited_tensors[tensor] = constant
             continue
 
-        '''
+        """
         print("ttdevice.py, create_op_node")
         print(f"graph type: {type(graph)}")
         print(f"src_op name: {tensor.src_op.name}")
@@ -1177,12 +1295,20 @@ def generate_graph(
         print(f"src_op attrs: {tensor.src_op.attrs}")
         print(f"shape: {tensor.shape.get_pytorch_shape()}")
         print(f"data format: {tensor.data_format}")
-        '''
+        """
 
         tags = {}
         if tensor.src_layer is not None:
             tags["layer"] = tensor.src_layer
-        op = create_op_node(graph, tensor.src_op.name, tensor.src_op.cpp_op_type, tensor.shape.get_pytorch_shape(), tensor.data_format, subgraph_idx, tags)
+        op = create_op_node(
+            graph,
+            tensor.src_op.name,
+            tensor.src_op.cpp_op_type,
+            tensor.shape.get_pytorch_shape(),
+            tensor.data_format,
+            subgraph_idx,
+            tags,
+        )
 
         visited_tensors[tensor] = op
         if return_intermediate and tensor.has_value():
@@ -1191,16 +1317,32 @@ def generate_graph(
         create_data_edge(graph, op, 0, output, port_index, operand_broadcast)
 
         for i, t in enumerate(tensor.src_op.operands):
-            pending_tensors.append( (t, op, i, tensor.src_op.operand_broadcast, subgraph_idx) )
+            pending_tensors.append((t, op, i, tensor.src_op.operand_broadcast, subgraph_idx))
 
     # Register input/output order of the module to the graph now that the nodes are created
-    module_inputs = [module_input_tensor_to_node[input_tensor] for input_tensor in inputs if input_tensor in module_input_tensor_to_node]
-    module_outputs = [module_output_tensor_to_node[output_tensor] for output_tensor in all_subgraph_outputs if output_tensor in module_output_tensor_to_node]
+    module_inputs = [
+        module_input_tensor_to_node[input_tensor]
+        for input_tensor in inputs
+        if input_tensor in module_input_tensor_to_node
+    ]
+    module_outputs = [
+        module_output_tensor_to_node[output_tensor]
+        for output_tensor in all_subgraph_outputs
+        if output_tensor in module_output_tensor_to_node
+    ]
     module_targets = [module_target_tensor_to_node[target_tensor] for target_tensor in target_tensors]
-    out_requires_grad = [output_tensor.requires_grad for output_tensor in all_subgraph_outputs if output_tensor in module_output_tensor_to_node]
+    out_requires_grad = [
+        output_tensor.requires_grad
+        for output_tensor in all_subgraph_outputs
+        if output_tensor in module_output_tensor_to_node
+    ]
 
     # Remove unused inputs from list of module inputs
-    inputs = [input_tensor for input_tensor in inputs if input_tensor in module_input_tensor_to_node or input_tensor in module_output_tensor_to_node]
+    inputs = [
+        input_tensor
+        for input_tensor in inputs
+        if input_tensor in module_input_tensor_to_node or input_tensor in module_output_tensor_to_node
+    ]
 
     # Remove loopback inputs from list of module inputs
     inputs = [input_tensor for input_tensor in inputs if input_tensor not in module_loopback_tensor_to_node]
@@ -1228,4 +1370,3 @@ def generate_graph(
         return graph, outputs, intermediate, inputs, target_tensors
 
     return graph, outputs, {}, inputs, target_tensors
-

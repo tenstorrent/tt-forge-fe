@@ -6,4 +6,3 @@ add_library(backend_api
 target_link_libraries(backend_api shared_utils)
 add_dependencies(backend_api shared_utils)
 target_compile_options(backend_api PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
-

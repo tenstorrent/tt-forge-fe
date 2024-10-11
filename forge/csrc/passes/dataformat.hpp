@@ -19,7 +19,7 @@ using MfMap = std::unordered_map<std::string, MathFidelity>;
 using AMPNodeProperties = passes::AMPNodeProperties;
 
 struct DeviceConfig;
-} // namespace tt
+}  // namespace tt
 
 namespace tt::graphlib
 {
@@ -37,10 +37,9 @@ void apply_user_override_data_formats(graphlib::Graph *graph, std::optional<Data
 void satisfy_data_format_constraints(graphlib::Graph *graph, bool fp32_acc_supported);
 void configure_a_b_format_conversion(
     graphlib::Graph *graph, const DeviceConfig &device_config, const std::optional<DataFormat> default_df_override);
-void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig& device_config);
+void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config);
 void validate_post_placer_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config);
-void configure_output_data_formats(
-    graphlib::Graph *graph, std::optional<DataFormat> default_df_override);
+void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFormat> default_df_override);
 
 void run_dataformat_passes(
     graphlib::Graph *graph,

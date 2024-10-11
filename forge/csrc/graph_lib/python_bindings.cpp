@@ -24,7 +24,8 @@ using json = nlohmann::json;
 
 PYBIND11_DECLARE_HOLDER_TYPE(T, tt::raw_ptr<T>);
 
-namespace tt {
+namespace tt
+{
 
 using Graph = graphlib::Graph;
 using Node = graphlib::Node;
@@ -32,7 +33,12 @@ using NodeType = graphlib::NodeType;
 using Shape = graphlib::Shape;
 
 // Ideally, this would be in graphlib... but being in a different shared object causes import errors at runtime :(
-std::tuple<std::vector<py::object>,std::unordered_map<std::string, py::object>,std::vector<py::object>,std::unordered_map<std::string, py::object>,std::unordered_map<std::string, py::object>>
+std::tuple<
+    std::vector<py::object>,
+    std::unordered_map<std::string, py::object>,
+    std::vector<py::object>,
+    std::unordered_map<std::string, py::object>,
+    std::unordered_map<std::string, py::object>>
 eval_graph(
     Graph *graph,
     const std::vector<py::object> &inputs,
@@ -144,7 +150,8 @@ void GraphModule(py::module &m_graph)
                 auto inputs = graph->ordered_module_inputs();
                 for (int i = 0; i < (int)inputs.size(); ++i)
                 {
-                    graphlib::RuntimeTensorTransform transform = inputs[i]->as<graphlib::InputNode>()->get_runtime_tensor_transform();
+                    graphlib::RuntimeTensorTransform transform =
+                        inputs[i]->as<graphlib::InputNode>()->get_runtime_tensor_transform();
                     if (transform.type == graphlib::RuntimeTensorTransformType::ConstantInput)
                     {
                         constants.push_back(std::make_tuple(inputs[i]->name(), transform.get_constant_input_tensor()));
@@ -160,7 +167,8 @@ void GraphModule(py::module &m_graph)
                 auto outputs = graph->ordered_module_outputs();
                 for (int i = 0; i < (int)outputs.size(); ++i)
                 {
-                    tt::graphlib::RuntimeTensorTransform transform = outputs[i]->as<graphlib::OutputNode>()->get_runtime_tensor_transform();
+                    tt::graphlib::RuntimeTensorTransform transform =
+                        outputs[i]->as<graphlib::OutputNode>()->get_runtime_tensor_transform();
                     transform.swap_original_and_reinterpreted_shapes();
                     transforms.push_back(transform);
                 }
@@ -210,9 +218,7 @@ void GraphModule(py::module &m_graph)
                     throw std::runtime_error("Shape: Invalid state!");
 
                 return Shape::create_from_pickled(
-                    t[0].cast<bool>(),
-                    t[1].cast<int>(),
-                    t[2].cast<std::vector<std::uint32_t>>());
+                    t[0].cast<bool>(), t[1].cast<int>(), t[2].cast<std::vector<std::uint32_t>>());
             }))
         .def("__get_pickle_data", &Shape::get_pickle_data)
         .def_static("__create_from_pickled", &Shape::create_from_pickled)
@@ -327,15 +333,14 @@ void GraphModule(py::module &m_graph)
                     transform.stride_width,
                     transform.concat_group,
                     transform.concat_index,
-                    transform.concat_dim
-                );
+                    transform.concat_dim);
             },
             [](py::tuple t) {  // __setstate__
                 if (t.size() != 9)
                     throw std::runtime_error("tt::graphlib::RuntimeTensorTransform: Invalid state!");
 
                 // TODO: Covers only ReinterpretShape
-                tt::graphlib::RuntimeTensorTransform transform {};
+                tt::graphlib::RuntimeTensorTransform transform{};
                 transform.type = t[0].cast<tt::graphlib::RuntimeTensorTransformType>();
                 transform.original_shape = t[1].cast<tt::graphlib::Shape>();
                 transform.reinterpreted_shape = t[2].cast<tt::graphlib::Shape>();
@@ -348,8 +353,14 @@ void GraphModule(py::module &m_graph)
 
                 return transform;
             }))
-        .def("to_json", [](tt::graphlib::RuntimeTensorTransform const& rtt) { json j = rtt; return j; })
-        .def("from_json", [](json const& j) { return j.get<tt::graphlib::RuntimeTensorTransform>(); });
+        .def(
+            "to_json",
+            [](tt::graphlib::RuntimeTensorTransform const &rtt)
+            {
+                json j = rtt;
+                return j;
+            })
+        .def("from_json", [](json const &j) { return j.get<tt::graphlib::RuntimeTensorTransform>(); });
 
     m_graph.def(
         "create_op_node",
@@ -369,64 +380,103 @@ void GraphModule(py::module &m_graph)
             node->as<graphlib::TaggedNode>()->add_tags(tags);
             return node->id();
         });
-    m_graph.def("create_parameter_input", 
-    [](Graph *graph, const std::string &name, const std::vector<std::uint32_t> &shape, bool requires_grad, tt::DataFormat data_format, const int subgraph_index) {
-        auto node = graph->add_node(graphlib::create_node<graphlib::InputNode>(
-                    name, 
-                    graphlib::InputNodeType::Parameter, 
-                    requires_grad), subgraph_index);
-        node->set_shape(Shape::create(shape));
-        node->set_output_df(data_format);
-        node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-        return node->id();
-    });
-    m_graph.def("create_activation_input", 
-    [](Graph *graph, const std::string &name, const std::vector<std::uint32_t> &shape, bool requires_grad, tt::DataFormat data_format, const int subgraph_index) {
-        auto node = graph->add_node(graphlib::create_node<graphlib::InputNode>(
-                    name,
-                    graphlib::InputNodeType::Activation, 
-                    requires_grad), subgraph_index);
-        node->set_shape(Shape::create(shape));
-        node->set_output_df(data_format);
-        node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-        return node->id();
-    });
-    m_graph.def("create_target_input", 
-    [](Graph *graph, const std::string &name, const std::vector<std::uint32_t> &shape, bool requires_grad, tt::DataFormat data_format, const int subgraph_index) {
-        auto node = graph->add_node(graphlib::create_node<graphlib::InputNode>(
-                    name,
-                    graphlib::InputNodeType::Target, 
-                    requires_grad), subgraph_index);
-        node->set_shape(Shape::create(shape));
-        node->set_output_df(data_format);
-        node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
-        return node->id();
-    });
-    m_graph.def("create_constant_input", [](Graph *graph, const std::string &name, float constant_value, tt::DataFormat data_format, const int subgraph_index) {
-        auto node = graph->add_node(graphlib::create_node<graphlib::ConstantInputNode>(
-                    name,
-                    constant_value), subgraph_index);
-        node->set_shape(Shape::create({1}));
-        node->set_output_df(data_format);
-        return node->id();
-    });
-    m_graph.def("create_constant_input", 
-    [](Graph *graph, const std::string &name, py::object constant_value, const std::vector<std::uint32_t> &shape, tt::DataFormat data_format, const int subgraph_index) {
-        auto node = graph->add_node(graphlib::create_node<graphlib::ConstantInputNode>(
-                    name,
-                    make_shared_py_object(constant_value),
-                    Shape::create(shape)), subgraph_index);
-        node->set_output_df(data_format);
-        return node->id();
-    });
-    m_graph.def("create_output", 
-    [](Graph *graph, const std::string &name, const std::vector<std::uint32_t> &shape, tt::DataFormat data_format, bool is_loss_output, const int subgraph_index) {
-        auto node = graph->add_node(graphlib::create_node<graphlib::OutputNode>(name), subgraph_index);
-        node->set_shape(Shape::create(shape));
-        node->set_output_df(data_format);
-        if (is_loss_output) node->set_loss_output();
-        return node->id();
-    });
+    m_graph.def(
+        "create_parameter_input",
+        [](Graph *graph,
+           const std::string &name,
+           const std::vector<std::uint32_t> &shape,
+           bool requires_grad,
+           tt::DataFormat data_format,
+           const int subgraph_index)
+        {
+            auto node = graph->add_node(
+                graphlib::create_node<graphlib::InputNode>(name, graphlib::InputNodeType::Parameter, requires_grad),
+                subgraph_index);
+            node->set_shape(Shape::create(shape));
+            node->set_output_df(data_format);
+            node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
+            return node->id();
+        });
+    m_graph.def(
+        "create_activation_input",
+        [](Graph *graph,
+           const std::string &name,
+           const std::vector<std::uint32_t> &shape,
+           bool requires_grad,
+           tt::DataFormat data_format,
+           const int subgraph_index)
+        {
+            auto node = graph->add_node(
+                graphlib::create_node<graphlib::InputNode>(name, graphlib::InputNodeType::Activation, requires_grad),
+                subgraph_index);
+            node->set_shape(Shape::create(shape));
+            node->set_output_df(data_format);
+            node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
+            return node->id();
+        });
+    m_graph.def(
+        "create_target_input",
+        [](Graph *graph,
+           const std::string &name,
+           const std::vector<std::uint32_t> &shape,
+           bool requires_grad,
+           tt::DataFormat data_format,
+           const int subgraph_index)
+        {
+            auto node = graph->add_node(
+                graphlib::create_node<graphlib::InputNode>(name, graphlib::InputNodeType::Target, requires_grad),
+                subgraph_index);
+            node->set_shape(Shape::create(shape));
+            node->set_output_df(data_format);
+            node->as<graphlib::TaggedNode>()->tag("original_op_name", name);
+            return node->id();
+        });
+    m_graph.def(
+        "create_constant_input",
+        [](Graph *graph,
+           const std::string &name,
+           float constant_value,
+           tt::DataFormat data_format,
+           const int subgraph_index)
+        {
+            auto node = graph->add_node(
+                graphlib::create_node<graphlib::ConstantInputNode>(name, constant_value), subgraph_index);
+            node->set_shape(Shape::create({1}));
+            node->set_output_df(data_format);
+            return node->id();
+        });
+    m_graph.def(
+        "create_constant_input",
+        [](Graph *graph,
+           const std::string &name,
+           py::object constant_value,
+           const std::vector<std::uint32_t> &shape,
+           tt::DataFormat data_format,
+           const int subgraph_index)
+        {
+            auto node = graph->add_node(
+                graphlib::create_node<graphlib::ConstantInputNode>(
+                    name, make_shared_py_object(constant_value), Shape::create(shape)),
+                subgraph_index);
+            node->set_output_df(data_format);
+            return node->id();
+        });
+    m_graph.def(
+        "create_output",
+        [](Graph *graph,
+           const std::string &name,
+           const std::vector<std::uint32_t> &shape,
+           tt::DataFormat data_format,
+           bool is_loss_output,
+           const int subgraph_index)
+        {
+            auto node = graph->add_node(graphlib::create_node<graphlib::OutputNode>(name), subgraph_index);
+            node->set_shape(Shape::create(shape));
+            node->set_output_df(data_format);
+            if (is_loss_output)
+                node->set_loss_output();
+            return node->id();
+        });
 
     m_graph.def("get_constant_input_value", &get_constant_input_value);
 
@@ -438,161 +488,199 @@ void GraphModule(py::module &m_graph)
             return node->shape().as_vector();
         });
 
-    m_graph.def("create_data_edge", [](
-          Graph *graph,
-          const graphlib::NodeId start,
-          int out_port_id,
-          const graphlib::NodeId end,
-          int in_port_id,
-          std::vector<py::tuple> operand_broadcast)
-    {
-        graphlib::Edge edge(start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kData);
-        graph->add_edge(edge);
-        std::shared_ptr<graphlib::EdgeAttributes> attr = graph->get_edge_attributes(edge);
-
-        for (const py::tuple &broadcast : operand_broadcast) {
-            if (in_port_id == broadcast[0].cast<int>()) {
-                int dim = broadcast[1].cast<int>();
-                int size = broadcast[2].cast<int>();
-                attr->set_broadcast_dim(dim, size);
-            }
-        }
-    });
-
-    m_graph.def("add_partial_datacopy_edge", [](
-          Graph *graph,
-          const graphlib::NodeId start,
-          int out_port_id,
-          const graphlib::NodeId end,
-          int in_port_id)
-    {
-        graphlib::Edge edge(start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kPartialDataCopy);
-        graph->add_edge(edge);
-        // Disable consteval for partial datacopy inputs
-        graphlib::Node *input = graph->node_by_id(end);
-        input->as<graphlib::TaggedNode>()->tag("dont_consteval", "true");
-    });
-
-    m_graph.def("add_subgraph_io_link_edge", [](
-          Graph *graph,
-          const graphlib::NodeId start,
-          int out_port_id,
-          const graphlib::NodeId end,
-          int in_port_id)
-    {
-        graphlib::Edge edge(start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kSubgraphLink);
-        graph->add_edge(edge);
-        // Disable consteval for partial datacopy inputs
-        graphlib::Node *input = graph->node_by_id(end);
-        input->as<graphlib::TaggedNode>()->tag("dont_consteval", "true");
-    });
-
-    m_graph.def("create_control_edge", [](
-          Graph *graph,
-          const graphlib::NodeId start,
-          int out_port_id,
-          const graphlib::NodeId end,
-          int in_port_id)
-    {
-        graph->add_edge(graphlib::Edge(start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kControl));
-    });
-
-    m_graph.def("get_optimizer_param_info", [](
-          Graph *graph,
-          const std::string &param_name)
-    {
-        TT_ASSERT(graph->has_node_with_name(param_name),
-                    "Module contains parameter name: " + param_name + " which doesn't exist in the graph.");
-        Node *node = graph->get_node_by_name(param_name);
-        return graphlib::get_optimizer_param_info(graph, node);
-    }, py::return_value_policy::reference);
-
-    m_graph.def("get_intermediate_tensors",
+    m_graph.def(
+        "create_data_edge",
         [](Graph *graph,
-            const std::vector<py::object> &inputs,
-            const std::unordered_map<std::string, py::object> &parameters,
-            py::object tt_device,
-            float relative_atol, 
-            float pcc,
-            const std::unordered_map<int, py::object> &intermediate_golden_tensors,
-            const std::vector<py::object> &losses,
-            const std::vector<py::object> &targets,
-            std::string const& dump_tensors_path,
-            bool allow_modified_shapes) {
-                
-        auto [ret, fwd_to_gradient_mapping, bwd_gradients, updated_parameter_mapping, intermediate_tensors] =  eval_graph(graph, inputs, parameters, tt_device, intermediate_golden_tensors, losses, targets, relative_atol, pcc, dump_tensors_path, allow_modified_shapes, true);
-        return intermediate_tensors;
-    },
-        py::arg("graph"),
-        py::arg("inputs"),
-        py::arg("parameters"),
-        py::arg("tt_device"),
-        py::arg("relative_atol"),
-        py::arg("pcc"),
-        py::arg("intermediate_golden_tensors") = std::unordered_map<int, py::object>(),
-        py::arg("losses") = std::vector<py::object>(),
-        py::arg("targets") = std::vector<py::object>(),
-        py::arg("dump_tensors_path") = "",
-        py::arg("allow_modified_shapes") = false
-    );
-
-
-    m_graph.def("eval",
-        [](Graph *graph,
-            const std::vector<py::object> &inputs,
-            const std::unordered_map<std::string, py::object> &parameters,
-            py::object tt_device,
-            float relative_atol, 
-            float pcc,
-            const std::unordered_map<int, py::object> &intermediate_golden_tensors,
-            const std::vector<py::object> &losses,
-            const std::vector<py::object> &targets,
-            std::string const& dump_tensors_path,
-            bool allow_modified_shapes) {
-        auto ret =  eval_graph(graph, inputs, parameters, tt_device, intermediate_golden_tensors, losses, targets, relative_atol, pcc, dump_tensors_path, allow_modified_shapes, false);
-        return std::make_tuple(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret), std::get<3>(ret));
-
-    },
-        py::arg("graph"),
-        py::arg("inputs"),
-        py::arg("parameters"),
-        py::arg("tt_device"),
-        py::arg("relative_atol"),
-        py::arg("pcc"),
-        py::arg("intermediate_golden_tensors") = std::unordered_map<int, py::object>(),
-        py::arg("losses") = std::vector<py::object>(),
-        py::arg("targets") = std::vector<py::object>(),
-        py::arg("dump_tensors_path") = "",
-        py::arg("allow_modified_shapes") = false
-    );
-
-    m_graph.def("remove_node", [](Graph *graph, const graphlib::NodeId id) {
-        graph->remove_node(id);
-        return;
-    });
-
-    m_graph.def("record_consteval_operations", [](Graph *graph) {
-        std::unordered_map<std::string, std::optional<json>> recorded_consteval_operations;
-
-        for (Node *node : tt::graphlib::topological_sort(*graph))
+           const graphlib::NodeId start,
+           int out_port_id,
+           const graphlib::NodeId end,
+           int in_port_id,
+           std::vector<py::tuple> operand_broadcast)
         {
-            if (node->node_type() == NodeType::kInput)
-            {
-                graphlib::InputNode *input = node->as<graphlib::InputNode>();
+            graphlib::Edge edge(
+                start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kData);
+            graph->add_edge(edge);
+            std::shared_ptr<graphlib::EdgeAttributes> attr = graph->get_edge_attributes(edge);
 
-                if (input->get_consteval_graph()) 
+            for (const py::tuple &broadcast : operand_broadcast)
+            {
+                if (in_port_id == broadcast[0].cast<int>())
                 {
-                    recorded_consteval_operations[node->name()] = 
-                        reportify::create_json_for_graph(input->get_consteval_graph()->get_graph());
-                } 
-                else
-                {
-                    recorded_consteval_operations[node->name()] = std::nullopt;
+                    int dim = broadcast[1].cast<int>();
+                    int size = broadcast[2].cast<int>();
+                    attr->set_broadcast_dim(dim, size);
                 }
             }
-        }
-        return recorded_consteval_operations;
-    });
+        });
+
+    m_graph.def(
+        "add_partial_datacopy_edge",
+        [](Graph *graph, const graphlib::NodeId start, int out_port_id, const graphlib::NodeId end, int in_port_id)
+        {
+            graphlib::Edge edge(
+                start,
+                (graphlib::PortId)out_port_id,
+                end,
+                (graphlib::PortId)in_port_id,
+                graphlib::EdgeType::kPartialDataCopy);
+            graph->add_edge(edge);
+            // Disable consteval for partial datacopy inputs
+            graphlib::Node *input = graph->node_by_id(end);
+            input->as<graphlib::TaggedNode>()->tag("dont_consteval", "true");
+        });
+
+    m_graph.def(
+        "add_subgraph_io_link_edge",
+        [](Graph *graph, const graphlib::NodeId start, int out_port_id, const graphlib::NodeId end, int in_port_id)
+        {
+            graphlib::Edge edge(
+                start,
+                (graphlib::PortId)out_port_id,
+                end,
+                (graphlib::PortId)in_port_id,
+                graphlib::EdgeType::kSubgraphLink);
+            graph->add_edge(edge);
+            // Disable consteval for partial datacopy inputs
+            graphlib::Node *input = graph->node_by_id(end);
+            input->as<graphlib::TaggedNode>()->tag("dont_consteval", "true");
+        });
+
+    m_graph.def(
+        "create_control_edge",
+        [](Graph *graph, const graphlib::NodeId start, int out_port_id, const graphlib::NodeId end, int in_port_id)
+        {
+            graph->add_edge(graphlib::Edge(
+                start, (graphlib::PortId)out_port_id, end, (graphlib::PortId)in_port_id, graphlib::EdgeType::kControl));
+        });
+
+    m_graph.def(
+        "get_optimizer_param_info",
+        [](Graph *graph, const std::string &param_name)
+        {
+            TT_ASSERT(
+                graph->has_node_with_name(param_name),
+                "Module contains parameter name: " + param_name + " which doesn't exist in the graph.");
+            Node *node = graph->get_node_by_name(param_name);
+            return graphlib::get_optimizer_param_info(graph, node);
+        },
+        py::return_value_policy::reference);
+
+    m_graph.def(
+        "get_intermediate_tensors",
+        [](Graph *graph,
+           const std::vector<py::object> &inputs,
+           const std::unordered_map<std::string, py::object> &parameters,
+           py::object tt_device,
+           float relative_atol,
+           float pcc,
+           const std::unordered_map<int, py::object> &intermediate_golden_tensors,
+           const std::vector<py::object> &losses,
+           const std::vector<py::object> &targets,
+           std::string const &dump_tensors_path,
+           bool allow_modified_shapes)
+        {
+            auto [ret, fwd_to_gradient_mapping, bwd_gradients, updated_parameter_mapping, intermediate_tensors] =
+                eval_graph(
+                    graph,
+                    inputs,
+                    parameters,
+                    tt_device,
+                    intermediate_golden_tensors,
+                    losses,
+                    targets,
+                    relative_atol,
+                    pcc,
+                    dump_tensors_path,
+                    allow_modified_shapes,
+                    true);
+            return intermediate_tensors;
+        },
+        py::arg("graph"),
+        py::arg("inputs"),
+        py::arg("parameters"),
+        py::arg("tt_device"),
+        py::arg("relative_atol"),
+        py::arg("pcc"),
+        py::arg("intermediate_golden_tensors") = std::unordered_map<int, py::object>(),
+        py::arg("losses") = std::vector<py::object>(),
+        py::arg("targets") = std::vector<py::object>(),
+        py::arg("dump_tensors_path") = "",
+        py::arg("allow_modified_shapes") = false);
+
+    m_graph.def(
+        "eval",
+        [](Graph *graph,
+           const std::vector<py::object> &inputs,
+           const std::unordered_map<std::string, py::object> &parameters,
+           py::object tt_device,
+           float relative_atol,
+           float pcc,
+           const std::unordered_map<int, py::object> &intermediate_golden_tensors,
+           const std::vector<py::object> &losses,
+           const std::vector<py::object> &targets,
+           std::string const &dump_tensors_path,
+           bool allow_modified_shapes)
+        {
+            auto ret = eval_graph(
+                graph,
+                inputs,
+                parameters,
+                tt_device,
+                intermediate_golden_tensors,
+                losses,
+                targets,
+                relative_atol,
+                pcc,
+                dump_tensors_path,
+                allow_modified_shapes,
+                false);
+            return std::make_tuple(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret), std::get<3>(ret));
+        },
+        py::arg("graph"),
+        py::arg("inputs"),
+        py::arg("parameters"),
+        py::arg("tt_device"),
+        py::arg("relative_atol"),
+        py::arg("pcc"),
+        py::arg("intermediate_golden_tensors") = std::unordered_map<int, py::object>(),
+        py::arg("losses") = std::vector<py::object>(),
+        py::arg("targets") = std::vector<py::object>(),
+        py::arg("dump_tensors_path") = "",
+        py::arg("allow_modified_shapes") = false);
+
+    m_graph.def(
+        "remove_node",
+        [](Graph *graph, const graphlib::NodeId id)
+        {
+            graph->remove_node(id);
+            return;
+        });
+
+    m_graph.def(
+        "record_consteval_operations",
+        [](Graph *graph)
+        {
+            std::unordered_map<std::string, std::optional<json>> recorded_consteval_operations;
+
+            for (Node *node : tt::graphlib::topological_sort(*graph))
+            {
+                if (node->node_type() == NodeType::kInput)
+                {
+                    graphlib::InputNode *input = node->as<graphlib::InputNode>();
+
+                    if (input->get_consteval_graph())
+                    {
+                        recorded_consteval_operations[node->name()] =
+                            reportify::create_json_for_graph(input->get_consteval_graph()->get_graph());
+                    }
+                    else
+                    {
+                        recorded_consteval_operations[node->name()] = std::nullopt;
+                    }
+                }
+            }
+            return recorded_consteval_operations;
+        });
 
     // Query
     py::module_ m_graph_query = m_graph.def_submodule("query", "Submodule defining forge graph queries");
@@ -613,11 +701,13 @@ void GraphModule(py::module &m_graph)
 
 py::object eval_relu(py::object tensor, graphlib::OpType type);
 
-py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphlib::IRLevel ir_level, bool evaluate_output_relu = true) {
-
+py::object eval_op(
+    graphlib::OpType type, std::vector<py::object> inputs, graphlib::IRLevel ir_level, bool evaluate_output_relu = true)
+{
     py::object eval_module;
 
-    switch (ir_level) {
+    switch (ir_level)
+    {
         case graphlib::IRLevel::IR_TT_FORGE: eval_module = py::module_::import("forge.op.eval.forge"); break;
         case graphlib::IRLevel::IR_FORGE: eval_module = py::module_::import("forge.op.eval.lforge"); break;
         case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("forge.op.eval.forge"); break;
@@ -626,18 +716,22 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphl
     py::function forge_eval = eval_module.attr("get_f_forge_eval")(type);
 
     log_trace(LogEval, "  eval_op: {}", type);
-    bool has_requant = type.forge_attrs.find("requant") != type.forge_attrs.end() and std::get<bool>(type.forge_attrs.at("requant"));
+    bool has_requant =
+        type.forge_attrs.find("requant") != type.forge_attrs.end() and std::get<bool>(type.forge_attrs.at("requant"));
 
     std::vector<py::object> inputs_;
-    if (has_requant) {
-        inputs_.assign(inputs.begin(), inputs.end()); 
-        inputs_.erase(inputs_.end() - 1); // skip requantization input (last input)
-    } else {
+    if (has_requant)
+    {
+        inputs_.assign(inputs.begin(), inputs.end());
+        inputs_.erase(inputs_.end() - 1);  // skip requantization input (last input)
+    }
+    else
+    {
         inputs_ = inputs;
     }
 
     py::object result = forge_eval(inputs_);
-    
+
     py::object common_module = py::module_::import("forge.op.eval");
     common_module.attr("eval_debug_print")(type.op, inputs, result);
 
@@ -657,9 +751,9 @@ py::object eval_op(graphlib::OpType type, std::vector<py::object> inputs, graphl
 
 py::object eval_relu(py::object tensor, graphlib::OpType type)
 {
-
     auto relu_match = type.forge_attrs.find("relu_en");
-    if (relu_match != type.forge_attrs.end()) {
+    if (relu_match != type.forge_attrs.end())
+    {
         std::vector<py::object> inputs;
         inputs.push_back(tensor);
         float relu_threshold = (type.forge_attrs.find("relu_threshold") != type.forge_attrs.end())
@@ -728,60 +822,82 @@ void eval_partial_datacopy_golden_transforms(
     else
     {
         graphlib::OpType overlay("add");
-        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor}, graphlib::IRLevel::IR_TT_FORGE
-        );
+        ret.at(output_index) = eval_op(overlay, {ret.at(output_index), output_tensor}, graphlib::IRLevel::IR_TT_FORGE);
     }
 }
 
-bool compare_tensor_to_golden(const std::string &name, const py::object &golden, const py::object &calculated, 
-        float relative_atol, float pcc, graphlib::IRLevel ir_level, bool warning_only = false)
+bool compare_tensor_to_golden(
+    const std::string &name,
+    const py::object &golden,
+    const py::object &calculated,
+    float relative_atol,
+    float pcc,
+    graphlib::IRLevel ir_level,
+    bool warning_only = false)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
     bool is_forge = ir_level == graphlib::IRLevel::IR_FORGE;
 
-    if (pcc == 0.0) 
-        return eval_module.attr("compare_tensor_to_golden")(name, golden, calculated, is_forge, 
+    if (pcc == 0.0)
+        return eval_module
+            .attr("compare_tensor_to_golden")(
+                name,
+                golden,
+                calculated,
+                is_forge,
                 py::none(), /* rtol */
                 py::none(), /* atol */
                 py::none(), /* pcc */
-                warning_only, 
+                warning_only,
                 relative_atol,
-                py::none() /* verify_cfg */).cast<bool>();
+                py::none() /* verify_cfg */)
+            .cast<bool>();
 
-    return eval_module.attr("compare_tensor_to_golden")(name, golden, calculated, is_forge, 
-                py::none(), /* rtol */
-                py::none(), /* atol */
-                pcc,
-                warning_only, 
-                relative_atol,
-                py::none() /* verify_cfg */).cast<bool>();
+    return eval_module
+        .attr("compare_tensor_to_golden")(
+            name,
+            golden,
+            calculated,
+            is_forge,
+            py::none(), /* rtol */
+            py::none(), /* atol */
+            pcc,
+            warning_only,
+            relative_atol,
+            py::none() /* verify_cfg */)
+        .cast<bool>();
 }
 
-py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, bool is_forge, DataFormat df) {
+py::object create_constant_tensor(float constant_value, std::pair<int, int> constant_dims, bool is_forge, DataFormat df)
+{
     py::object eval_module = py::module_::import("forge.op.eval");
     return eval_module.attr("create_constant_tensor_from_value")(constant_value, constant_dims, is_forge, df);
 }
 
-py::object create_constant_tensor(const std::vector<float> &tile_value, bool is_forge, DataFormat df) {
+py::object create_constant_tensor(const std::vector<float> &tile_value, bool is_forge, DataFormat df)
+{
     py::object eval_module = py::module_::import("forge.op.eval");
     return eval_module.attr("create_constant_tensor_from_tile")(tile_value, is_forge, df);
 }
 
-py::object create_constant_tensor(const std::vector<float> &tensor_value, const Shape &tensor_shape, bool is_forge, tt::DataFormat df)
+py::object create_constant_tensor(
+    const std::vector<float> &tensor_value, const Shape &tensor_shape, bool is_forge, tt::DataFormat df)
 {
     py::object eval_module = py::module_::import("forge.op.eval");
     return eval_module.attr("create_constant_tensor_from_tensor")(tensor_value, tensor_shape.as_vector(), is_forge, df);
 }
 
-
-void dump_tensor(py::object tensor, std::string filename) {
+void dump_tensor(py::object tensor, std::string filename)
+{
     py::object eval_module = py::module_::import("forge.op.eval");
     eval_module.attr("dump_tensor")(tensor, filename);
 }
 
 // Evaluate TMs
-py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms, graphlib::IRLevel ir_level) {
-    for (graphlib::OpType tm : tms) {
+py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms, graphlib::IRLevel ir_level)
+{
+    for (graphlib::OpType tm : tms)
+    {
         std::vector<py::object> inputs;
         inputs.push_back(tensor);
         tensor = eval_op(tm, inputs, ir_level);
@@ -792,9 +908,11 @@ py::object eval_tms(py::object tensor, const std::vector<graphlib::OpType> &tms,
 std::vector<py::object> eval_operand_tms(
     graphlib::Graph *graph,
     graphlib::Node *node,
-    std::unordered_map<graphlib::NodeId, std::vector<py::object>> const &node_outputs) {
+    std::unordered_map<graphlib::NodeId, std::vector<py::object>> const &node_outputs)
+{
     std::vector<py::object> inputs;
-    for (graphlib::Edge &input_edge : graph->operand_data_edges(node)) {
+    for (graphlib::Edge &input_edge : graph->operand_data_edges(node))
+    {
         TT_LOG_ASSERT(
             node_outputs.find(input_edge.producer_node_id) != node_outputs.end(),
             "Producer node output not in map, either hasn't run yet or doesn't exist in graph, node: {} producer: {}",
@@ -835,7 +953,8 @@ py::object consteval_input(
     py::object tensor_module;
     py::function narrow_forge_tensor_to_pytorch;
     py::function pad_pytorch_tensor_to_forge;
-    if (is_forge) {
+    if (is_forge)
+    {
         tensor_module = py::module_::import("forge.tensor");
         narrow_forge_tensor_to_pytorch = tensor_module.attr("narrow_forge_tensor_to_pytorch");
         pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
@@ -852,10 +971,12 @@ py::object consteval_input(
     py::object output;
     std::unordered_map<graphlib::NodeId, std::vector<py::object>> node_outputs;
     for (Node *node : tt::graphlib::topological_sort(
-             *consteval_graph, [node_epoch_type](Node *n) { return n->get_epoch_type() == node_epoch_type; })) {
+             *consteval_graph, [node_epoch_type](Node *n) { return n->get_epoch_type() == node_epoch_type; }))
+    {
         log_trace(LogConstEval, "ConstEval node: {} - {} - Shape{}", node->name(), node->get_type(), node->shape());
 
-        if (node->node_type() == graphlib::NodeType::kInput) {
+        if (node->node_type() == graphlib::NodeType::kInput)
+        {
             py::object input_value = py::none();
 
             auto input_node = node->as<graphlib::InputNode>();
@@ -870,14 +991,16 @@ py::object consteval_input(
 
             TT_ASSERT(not input_value.is_none());
 
-            if (is_forge) {
+            if (is_forge)
+            {
                 input_value = narrow_forge_tensor_to_pytorch(input_value, node->shape().as_vector());
             }
             node_outputs.insert({node->id(), {input_value}});
             continue;
         }
 
-        if (node->node_type() == graphlib::NodeType::kOutput or node->node_type() == graphlib::NodeType::kQueue) {
+        if (node->node_type() == graphlib::NodeType::kOutput or node->node_type() == graphlib::NodeType::kQueue)
+        {
             continue;
         }
 
@@ -900,7 +1023,8 @@ py::object consteval_input(
 
     TT_ASSERT(output.ptr() != nullptr, runtime_node->name());
 
-    if (is_forge) {
+    if (is_forge)
+    {
         output = pad_pytorch_tensor_to_forge(output, std::vector<int>{});
     }
 
@@ -962,10 +1086,8 @@ py::object eval_reinterpret_shape(Graph *graph, Node *node, py::object input_val
     {
         auto original = runtime_tensor_transform.original_shape.canonical();
         auto reinterpreted = runtime_tensor_transform.reinterpreted_shape.canonical();
-        for (size_t i = 0; i < original.size(); ++i)
-            attr.push_back((int)original[i]); 
-        for (size_t i = 0; i < reinterpreted.size(); ++i)
-            attr.push_back((int)reinterpreted[i]);
+        for (size_t i = 0; i < original.size(); ++i) attr.push_back((int)original[i]);
+        for (size_t i = 0; i < reinterpreted.size(); ++i) attr.push_back((int)reinterpreted[i]);
     }
     else
     {
@@ -1045,7 +1167,12 @@ py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
         return input_value;
     }
 
-    log_trace(LogEval, "Eval prestride {}: {} -> {}", node->name(), node->shape(), runtime_tensor_transform.reinterpreted_shape);
+    log_trace(
+        LogEval,
+        "Eval prestride {}: {} -> {}",
+        node->name(),
+        node->shape(),
+        runtime_tensor_transform.reinterpreted_shape);
     std::vector<graphlib::OpType::Attr> attr;
 
     attr.emplace_back(runtime_tensor_transform.stride_height);
@@ -1059,7 +1186,8 @@ py::object eval_prestride(Graph *graph, Node *node, py::object input_value)
     return eval_op(prestride_act, {input_value}, graph->get_ir_level());
 }
 
-py::object eval_concatenate(Graph *graph, std::vector<Node *> nodes, std::vector<py::object> input_values, size_t output_index)
+py::object eval_concatenate(
+    Graph *graph, std::vector<Node *> nodes, std::vector<py::object> input_values, size_t output_index)
 {
     graphlib::OutputNode *output = dynamic_cast<graphlib::OutputNode *>(nodes[output_index]);
 
@@ -1099,7 +1227,8 @@ py::object eval_concatenate(Graph *graph, std::vector<Node *> nodes, std::vector
                 continue;
             }
 
-            if (runtime_tensor_transform.concat_group == conat_group and (size_t)runtime_tensor_transform.concat_index == i)
+            if (runtime_tensor_transform.concat_group == conat_group and
+                (size_t) runtime_tensor_transform.concat_index == i)
             {
                 concat_inputs.push_back(input_values[i]);
                 if (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE)
@@ -1115,9 +1244,10 @@ py::object eval_concatenate(Graph *graph, std::vector<Node *> nodes, std::vector
     return eval_op(prestride_act, concat_inputs, graph->get_ir_level());
 }
 
-std::vector<py::object> eval_runtime_tensor_transform(Graph *graph, std::vector<Node *> nodes, std::vector<py::object> input_values, bool flip = false)
+std::vector<py::object> eval_runtime_tensor_transform(
+    Graph *graph, std::vector<Node *> nodes, std::vector<py::object> input_values, bool flip = false)
 {
-    std::vector <py::object> ret;
+    std::vector<py::object> ret;
     TT_ASSERT(nodes.size() == input_values.size());
     for (size_t i = 0; i < nodes.size(); i++)
     {
@@ -1172,23 +1302,29 @@ py::object get_constant_input_value(graphlib::Node *node, bool is_forge)
     TT_ASSERT(node->as<graphlib::InputNode>()->is_constant());
     graphlib::ConstantInputNode *cnode = node->as<graphlib::ConstantInputNode>();
 
-    if (cnode->is_single_value()) {
+    if (cnode->is_single_value())
+    {
         auto constant_value = cnode->constant_value();
         auto constant_dims = cnode->constant_dims();
         return create_constant_tensor(constant_value, constant_dims, is_forge, node->output_df());
-    } else if (cnode->is_single_tile()) {
+    }
+    else if (cnode->is_single_tile())
+    {
         auto constant_tile = cnode->tile_value();
         return create_constant_tensor(constant_tile, is_forge, node->output_df());
-    } else if (cnode->is_tensor()) {
+    }
+    else if (cnode->is_tensor())
+    {
         auto tensor = borrow_shared_py_object(cnode->tensor());
-        if (is_forge) {
+        if (is_forge)
+        {
             py::object tensor_module = py::module_::import("forge.tensor");
             py::function pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
             tensor = pad_pytorch_tensor_to_forge(
                 tensor,
                 node->as<graphlib::InputNode>()->get_tile_broadcast_dims(),
-                false, // squeeze
-                1, // microbatch
+                false,  // squeeze
+                1,      // microbatch
                 node->shape().get_tile_height(),
                 node->shape().get_tile_width());
         }
@@ -1198,16 +1334,22 @@ py::object get_constant_input_value(graphlib::Node *node, bool is_forge)
     throw std::runtime_error("Shouldn't reach here.");
 }
 
-bool is_gradient_comparison_valid(Graph* graph, const graphlib::Edge& gradient_edge) {
-    Node* forward_node = graph->node_by_id(gradient_edge.producer_node_id);
-    Node* bwd_node_producing_gradient = graph->node_by_id(gradient_edge.consumer_node_id);
+bool is_gradient_comparison_valid(Graph *graph, const graphlib::Edge &gradient_edge)
+{
+    Node *forward_node = graph->node_by_id(gradient_edge.producer_node_id);
+    Node *bwd_node_producing_gradient = graph->node_by_id(gradient_edge.consumer_node_id);
 
     bool is_gradient_comparison_valid = forward_node->shape() == bwd_node_producing_gradient->shape();
-    log_trace(tt::LogTest, "forward_node:({}:{}), gradient_node: ({}:{})",
-            forward_node->name(), forward_node->shape().as_string(),
-            bwd_node_producing_gradient->name(), bwd_node_producing_gradient->shape().as_string());
+    log_trace(
+        tt::LogTest,
+        "forward_node:({}:{}), gradient_node: ({}:{})",
+        forward_node->name(),
+        forward_node->shape().as_string(),
+        bwd_node_producing_gradient->name(),
+        bwd_node_producing_gradient->shape().as_string());
 
-    for (const auto& user_edge : graph->user_data_edges(bwd_node_producing_gradient)) {
+    for (const auto &user_edge : graph->user_data_edges(bwd_node_producing_gradient))
+    {
         auto edge_attributes = graph->get_edge_attributes(user_edge);
         is_gradient_comparison_valid &= (not edge_attributes->has_tms());
     }
@@ -1304,7 +1446,8 @@ eval_graph(
     std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, parameters, optimizer);
 
     // Populate parameters and constant tensor mapping automatically that were created during compile
-    for (Node *node : tt::graphlib::topological_sort(*graph)) {
+    for (Node *node : tt::graphlib::topological_sort(*graph))
+    {
         graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(node);
         if (not input)
             continue;
@@ -1330,22 +1473,25 @@ eval_graph(
     }
 
     // Populate loss tensor mapping
-    if (losses.size() > 0) {
+    if (losses.size() > 0)
+    {
         size_t losses_index = 0;
         std::vector<std::string> output_gradient_names = graph->get_ordered_output_gradient_names();
-        TT_ASSERT(output_gradient_names.size() == losses.size(), "The number of output gradient ports (" + std::to_string(output_gradient_names.size()) +
-                                ") and losses (" + std::to_string(losses.size()) + ") should match.");
+        TT_ASSERT(
+            output_gradient_names.size() == losses.size(),
+            "The number of output gradient ports (" + std::to_string(output_gradient_names.size()) + ") and losses (" +
+                std::to_string(losses.size()) + ") should match.");
 
         std::vector<Node *> nodes;
-        for (auto name : output_gradient_names)
-            nodes.push_back(graph->get_node_by_name(name));
+        for (auto name : output_gradient_names) nodes.push_back(graph->get_node_by_name(name));
         std::vector<py::object> loss_tensors = eval_runtime_tensor_transform(graph, nodes, losses);
         for (std::string loss_name : graph->get_ordered_output_gradient_names())
         {
             py::object loss = loss_tensors.at(losses_index);
             Node *node = graph->get_node_by_name(loss_name);
-            TT_ASSERT( (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_loss(), 
-                    "Expected that this node is a loss");
+            TT_ASSERT(
+                (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_loss(),
+                "Expected that this node is a loss");
             log_debug(tt::LogTest, "Populating bwd loss: {}", node->name());
             node_outputs[node->id()].push_back(loss);
             ++losses_index;
@@ -1353,16 +1499,20 @@ eval_graph(
     }
 
     // Populate target tensor mapping
-    if (targets.size() > 0) {
+    if (targets.size() > 0)
+    {
         size_t targets_index = 0;
         std::vector<std::string> target_inputs = graph->get_ordered_target_names();
-        TT_ASSERT(target_inputs.size() == targets.size(), "The number of target inputs (" + std::to_string(target_inputs.size()) +
-                                ") and targets (" + std::to_string(targets.size()) + ") should match.");
+        TT_ASSERT(
+            target_inputs.size() == targets.size(),
+            "The number of target inputs (" + std::to_string(target_inputs.size()) + ") and targets (" +
+                std::to_string(targets.size()) + ") should match.");
         for (std::string target : target_inputs)
         {
             Node *node = graph->get_node_by_name(target);
-            TT_ASSERT( (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_target(), 
-                    "Expected that this node is a target input");
+            TT_ASSERT(
+                (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_target(),
+                "Expected that this node is a target input");
             log_debug(tt::LogTest, "Populating target input: {}", node->name());
             node_outputs[node->id()].push_back(targets.at(targets_index++));
         }
@@ -1370,18 +1520,22 @@ eval_graph(
 
     // Populate Forge input tensor mapping
     int input_index = 0;
-    std::vector<py::object> input_tensors = eval_runtime_tensor_transform(graph, graph->ordered_module_inputs(), inputs);
-    for (Node *node : graph->ordered_module_inputs()) {
+    std::vector<py::object> input_tensors =
+        eval_runtime_tensor_transform(graph, graph->ordered_module_inputs(), inputs);
+    for (Node *node : graph->ordered_module_inputs())
+    {
         bool ignore_shape = node->as<graphlib::InputNode>()->get_runtime_tensor_transform().type ==
                             graphlib::RuntimeTensorTransformType::EmbeddingIndex;
         py::object input = input_tensors.at(input_index);
 
         // Evaluate tile_broadcast after runtime_tensor_transform
-        if (graph->get_tile_broadcast_dims_for_input(input_index).size() > 0) {
+        if (graph->get_tile_broadcast_dims_for_input(input_index).size() > 0)
+        {
             log_debug(tt::LogTest, "Evaluating tile_broadcast on input node {}", node->name());
 
             std::vector<graphlib::OpType::Attr> attr;
-            for (auto dim : graph->get_tile_broadcast_dims_for_input(input_index)) {
+            for (auto dim : graph->get_tile_broadcast_dims_for_input(input_index))
+            {
                 attr.emplace_back((int)dim);
                 graphlib::OpType tile_bcast("tile_broadcast", attr);
                 input = eval_op(tile_bcast, {input}, graph->get_ir_level());
@@ -1391,27 +1545,30 @@ eval_graph(
         std::vector<std::uint32_t> shape = input.attr("shape").cast<std::vector<std::uint32_t>>();
         if (!ignore_shape && !allow_modified_shapes && (shape != node->shape().as_vector()))
         {
-            throw std::runtime_error("Input " + std::to_string(input_index) + "'s shape is incorrect. " +
-                    "Expected: " + node->shape().as_string() + ", got: " + Shape::create(shape).as_string());
+            throw std::runtime_error(
+                "Input " + std::to_string(input_index) + "'s shape is incorrect. " +
+                "Expected: " + node->shape().as_string() + ", got: " + Shape::create(shape).as_string());
         }
         node_outputs[node->id()].push_back(input);
         log_debug(tt::LogTest, "Populating module input: {}", node->name());
         input_index++;
     }
 
-    for (Node *node : tt::graphlib::topological_sort(*graph)) {
-
+    for (Node *node : tt::graphlib::topological_sort(*graph))
+    {
         if (node->node_type() == NodeType::kInput)
             continue;
 
         if (node->node_type() == NodeType::kOutput)
             continue;
 
-        if (node->node_type() == NodeType::kQueue) {
+        if (node->node_type() == NodeType::kQueue)
+        {
             // Copy input to output. Output to queue should never have TMs, only queue to next op will.
             graphlib::Edge input_edge = graph->operand_data_edges(node)[0];
             py::object tensor = node_outputs.at(input_edge.producer_node_id)[input_edge.producer_output_port_id];
-            TT_ASSERT(graph->get_edge_attributes(input_edge)->get_tms().size() == 0, "Edges to queues should never have TMs");
+            TT_ASSERT(
+                graph->get_edge_attributes(input_edge)->get_tms().size() == 0, "Edges to queues should never have TMs");
             node_outputs[node->id()].push_back(tensor);
             continue;
         }
@@ -1430,8 +1587,8 @@ eval_graph(
 
         graphlib::OpNode *op_node = node->as<graphlib::OpNode>();
 
-        try {
-
+        try
+        {
             log_trace(LogEval, "Eval node: {} - {} - Shape{}", op_node->name(), op_node->op_type(), op_node->shape());
 
             std::vector<py::object> inputs = eval_operand_tms(graph, node, node_outputs);
@@ -1439,43 +1596,57 @@ eval_graph(
             py::object obj = eval_op(
                 op_node->op_type(), inputs, graph->get_ir_level(), false);  // Don't Eval relu for intermediate checking
 
-            auto gradient_edges = graph->operand_edges(node, 
-                [](const auto& edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
+            auto gradient_edges = graph->operand_edges(
+                node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
 
-            for (Node* user : graph->data_users(node)) {
+            for (Node *user : graph->data_users(node))
+            {
                 if (user->node_type() == graphlib::NodeType::kQueue and
-                    user->as<graphlib::QueueNode>()->is_grad_accumulator()) {
+                    user->as<graphlib::QueueNode>()->is_grad_accumulator())
+                {
                     // inherit grad edges for eval
-                    auto gradient_edges_from_grad_queue = graph->operand_edges(user, 
-                        [](const auto& edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
-                    for (const auto& gradient_edge : gradient_edges_from_grad_queue) {
+                    auto gradient_edges_from_grad_queue = graph->operand_edges(
+                        user,
+                        [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
+                    for (const auto &gradient_edge : gradient_edges_from_grad_queue)
+                    {
                         gradient_edges.push_back(gradient_edge);
                     }
                 }
             }
 
-            auto golden_node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? node->tt_forge_id() : node->id();
-            if (op_node->has_golden_id()) {
-                golden_node_id = op_node->golden_id(); // if a different intermediate node is used as a reference...
+            auto golden_node_id =
+                (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? node->tt_forge_id() : node->id();
+            if (op_node->has_golden_id())
+            {
+                golden_node_id = op_node->golden_id();  // if a different intermediate node is used as a reference...
             }
             auto golden = intermediate_golden_tensors.find(golden_node_id);
-            if (golden != intermediate_golden_tensors.end()) {
+            if (golden != intermediate_golden_tensors.end())
+            {
                 // Intermediate checks are for debug only, so setting `warning only` to not fail tests for minor
                 // mismatches on intermediates
                 py::object calculated = eval_golden_transforms(node, obj);
                 compare_tensor_to_golden(
                     node->name(), golden->second, calculated, relative_atol, pcc, graph->get_ir_level(), true);
-            } else {
+            }
+            else
+            {
                 // Check if there's a gradient to check
-                if (gradient_edges.size() > 0) {
-                    Node* producer = graph->node_by_id(gradient_edges.at(0).producer_node_id);
-                    auto node_id  = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? producer->tt_forge_id() : producer->id();
+                if (gradient_edges.size() > 0)
+                {
+                    Node *producer = graph->node_by_id(gradient_edges.at(0).producer_node_id);
+                    auto node_id = (graph->get_ir_level() == graphlib::IRLevel::IR_FORGE) ? producer->tt_forge_id()
+                                                                                          : producer->id();
                     auto golden_fwd = intermediate_golden_tensors.find(node_id);
-                    if (golden_fwd != intermediate_golden_tensors.end()) {
+                    if (golden_fwd != intermediate_golden_tensors.end())
+                    {
                         bool is_valid = is_gradient_comparison_valid(graph, gradient_edges.at(0));
-                        if (is_valid) {
+                        if (is_valid)
+                        {
                             py::object grad = golden_fwd->second.attr("grad");
-                            if (!grad.is(py::none())) {
+                            if (!grad.is(py::none()))
+                            {
                                 py::object calculated = eval_golden_transforms(producer, obj);
                                 compare_tensor_to_golden(
                                     node->name() + " from " + producer->name(),
@@ -1485,13 +1656,14 @@ eval_graph(
                                     pcc,
                                     graph->get_ir_level());
                             }
-                        } else {
+                        }
+                        else
+                        {
                             log_debug(
                                 tt::LogTest,
                                 "Skipping Gradient Check: {} from {} because TMs on edge make the comparison invalid",
                                 node->name(),
-                                producer->name()
-                            );
+                                producer->name());
                         }
                     }
                 }
@@ -1501,23 +1673,26 @@ eval_graph(
             obj = eval_relu(obj, op_node->op_type());
             node_outputs[node->id()].push_back(obj);
 
-            std::vector<graphlib::Edge> loopback_edges = graph->user_edges(node,
-                [](const auto& edge) { return edge.edge_type == graphlib::EdgeType::kDataLoopback; });
-            for (const auto& loopback_edge : loopback_edges) {
-                Node* consumer_node = graph->node_by_id(loopback_edge.consumer_node_id);
-                if (consumer_node->node_type() == NodeType::kInput) {
+            std::vector<graphlib::Edge> loopback_edges = graph->user_edges(
+                node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kDataLoopback; });
+            for (const auto &loopback_edge : loopback_edges)
+            {
+                Node *consumer_node = graph->node_by_id(loopback_edge.consumer_node_id);
+                if (consumer_node->node_type() == NodeType::kInput)
+                {
                     updated_parameter_mapping[consumer_node->name()] = eval_input_bw(consumer_node, obj, is_forge);
                 }
             }
 
             // Pick out gradient ops
-            if (op_node->is_gradient_op()) 
+            if (op_node->is_gradient_op())
             {
                 for (graphlib::Edge gradient_edge : gradient_edges)
                 {
                     Node *producer = graph->node_by_id(gradient_edge.producer_node_id);
                     py::object ret = eval_golden_transforms(node, obj);
-                    if (producer->node_type() == NodeType::kInput) {
+                    if (producer->node_type() == NodeType::kInput)
+                    {
                         auto operands = graph->data_operands(producer);
                         if (operands.size() == 1)
                         {
@@ -1529,13 +1704,17 @@ eval_graph(
                     }
 
                     fwd_to_gradient_mapping[producer->name()] = ret;
-                    log_debug(tt::LogTest, "Populating gradient op map: {}, gradient:{}", producer->name(), op_node->name());
+                    log_debug(
+                        tt::LogTest, "Populating gradient op map: {}, gradient:{}", producer->name(), op_node->name());
                 }
             }
-
-        } catch (std::out_of_range &e) {
+        }
+        catch (std::out_of_range &e)
+        {
             throw std::runtime_error("Eval is missing inputs for " + node->name() + ", something went wrong.");
-        } catch (py::error_already_set &e) {
+        }
+        catch (py::error_already_set &e)
+        {
             throw std::runtime_error(
                 "Encountered python error while evaluating node " + node->name() + " (" + node->get_type() + "): \n" +
                 std::string(e.what()));
@@ -1548,22 +1727,26 @@ eval_graph(
         }
     }
 
-    for (Node *node : tt::graphlib::topological_sort(*graph)) {
-        if (node->node_type() == NodeType::kOutput) {
-            std::vector<Node*> operands = graph->data_operands(node);
+    for (Node *node : tt::graphlib::topological_sort(*graph))
+    {
+        if (node->node_type() == NodeType::kOutput)
+        {
+            std::vector<Node *> operands = graph->data_operands(node);
 
             TT_ASSERT(operands.size() == 1);
             node_outputs[node->id()] = node_outputs.at(operands[0]->id());
         }
     }
 
-    for (Node *node : tt::graphlib::topological_sort(*graph)) {
+    for (Node *node : tt::graphlib::topological_sort(*graph))
+    {
         if (node->node_type() == NodeType::kInput and node->as<graphlib::InputNode>()->is_activation())
         {
-            auto gradient_user_edges = graph->user_edges(node,
-                [](const auto& edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
+            auto gradient_user_edges = graph->user_edges(
+                node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
 
-            for (const auto& gradient_user_edge : gradient_user_edges) {
+            for (const auto &gradient_user_edge : gradient_user_edges)
+            {
                 py::object gradient = node_outputs.at(gradient_user_edge.consumer_node_id).at(0);
                 gradient = eval_golden_transforms(graph->node_by_id(gradient_user_edge.consumer_node_id), gradient);
                 gradient = eval_input_bw(node, gradient, is_forge);
@@ -1576,12 +1759,14 @@ eval_graph(
     std::vector<py::object> golden_transforms_outputs;
     auto module_outputs = graph->ordered_module_outputs();
 
-    for (Node *output_node : graph->ordered_module_outputs()) {
+    for (Node *output_node : graph->ordered_module_outputs())
+    {
         TT_ASSERT(output_node->node_type() == NodeType::kOutput);
         std::vector<Node *> operands = graph->data_operands(output_node);
         TT_ASSERT(operands.size() == 1);
-        const std::vector<py::object>& output_tensors = node_outputs.at(output_node->id());
-        for (auto output_tensor : output_tensors) {
+        const std::vector<py::object> &output_tensors = node_outputs.at(output_node->id());
+        for (auto output_tensor : output_tensors)
+        {
             output_tensor = eval_golden_transforms(operands[0], output_tensor, /* eval_for_output */ true);
             golden_transforms_outputs.push_back(output_tensor);
         }
@@ -1616,7 +1801,8 @@ eval_graph(
     }
 
     std::vector<py::object> bwd_gradients;
-    for (Node *node : graph->ordered_module_inputs()) {
+    for (Node *node : graph->ordered_module_inputs())
+    {
         TT_ASSERT(node->node_type() == NodeType::kInput);
         if (node->as<graphlib::InputNode>()->requires_grad())
         {
@@ -1626,18 +1812,28 @@ eval_graph(
         }
     }
 
-    if (!dump_tensors_path.empty()) {
-        for (auto &[node_id, output_tensor] : node_outputs) {
+    if (!dump_tensors_path.empty())
+    {
+        for (auto &[node_id, output_tensor] : node_outputs)
+        {
             auto node = graph->node_by_id(node_id);
-            if ((node->node_type() == NodeType::kPyOp) || (node->node_type() == NodeType::kForgeOp)) {
+            if ((node->node_type() == NodeType::kPyOp) || (node->node_type() == NodeType::kForgeOp))
+            {
                 dump_tensor(output_tensor.at(0), dump_tensors_path + "/" + "intermediates." + node->name());
-            }  else if (node->node_type() == NodeType::kInput) {
-                if (updated_parameter_mapping.find(node->name()) != updated_parameter_mapping.end()) {
+            }
+            else if (node->node_type() == NodeType::kInput)
+            {
+                if (updated_parameter_mapping.find(node->name()) != updated_parameter_mapping.end())
+                {
                     dump_tensor(updated_parameter_mapping[node->name()], dump_tensors_path + "/" + node->name());
-                } else {
+                }
+                else
+                {
                     dump_tensor(output_tensor.at(0), dump_tensors_path + "/" + node->name());
                 }
-            } else {
+            }
+            else
+            {
                 dump_tensor(output_tensor.at(0), dump_tensors_path + "/" + node->name());
             }
         }

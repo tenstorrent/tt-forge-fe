@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# 
+#
 # Commands for running matmul tests
-# 
+#
 
 # Run single test
-# 
+#
 # To run using default parameters
 # model,     --mm_model     --> model_1, Note: for matmul ops we have 7 models, model_[1-3, 6-8, 10]
 # training,  --mm_train     --> True

@@ -16,10 +16,12 @@ from forge.parameter import Parameter
 import forge.torch_optimizers
 from forge.torch_optimizers import AdamNoBiasCorrection
 
+
 class Optimizer:
     """
     Optimizer base class
     """
+
     def __init__(self, device_params: bool = False):
         """
         Create baseline optimizer. If device_params is set, no parameters are provided at the time of
@@ -42,7 +44,9 @@ class Optimizer:
         """
         raise RuntimeError("Subclasses should implement this.")
 
-    def torch_parameter_update(self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor) -> torch.Tensor:
+    def torch_parameter_update(
+        self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
+    ) -> torch.Tensor:
         """
         Pytorch eval implementation for the optimizer
 
@@ -57,6 +61,7 @@ class Optimizer:
 
     def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor]) -> torch.optim.Optimizer:
         raise RuntimeError("Subclasses should implement this.")
+
 
 class SGD(Optimizer):
     """
@@ -95,7 +100,7 @@ class SGD(Optimizer):
         """
         # Forge needs a pytorch array for now
         # TODO(jchu): modify these two lines when we deprecate the old path
-        learning_rate_torch = torch.full( (1,), self.learning_rate, dtype=dtype)
+        learning_rate_torch = torch.full((1,), self.learning_rate, dtype=dtype)
 
         learning_rate = Tensor.create_from_torch(learning_rate_torch)
         return {"lr": learning_rate}
@@ -115,7 +120,6 @@ class SGD(Optimizer):
                 tile_broadcast_dims = [-1, -2] if one_d else []
                 ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
         return ret
-
 
     def get_type(self) -> str:
         return "sgd"
@@ -145,7 +149,7 @@ class SGD(Optimizer):
             self.learning_rate = learning_rate
 
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            learning_rate_tensor = torch.full( (1, ), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
+            learning_rate_tensor = torch.full((1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
             opt_inputs["lr"] = Tensor.create_from_torch(learning_rate_tensor)
 
     def generate_op_trace(self, ac, parameter, gradient):
@@ -156,10 +160,12 @@ class SGD(Optimizer):
 
         return param_minus_lr_times_grad
 
-    def torch_parameter_update(self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor) -> torch.Tensor:
+    def torch_parameter_update(
+        self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
+    ) -> torch.Tensor:
         return parameter - self.learning_rate * gradient
 
-    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr = None) -> torch.optim.Optimizer:
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
         """
         Return an equivalent pytorch optimizer, used for verification.
         """
@@ -268,12 +274,12 @@ class Adam(Optimizer):
         # For each Parameter, we register its associated set of optimizer parameters
         for parameter in parameters:
             if parameter.requires_grad:
-                self.parameter_to_opt_inputs[
-                    parameter.get_name()
-                ] = self.get_param_dict(parameter.pt_data_format, parameter.shape.get_pytorch_shape())
-                self.parameter_to_opt_torch_inputs[
-                    parameter.get_name()
-                ] = self.get_cpu_param_dict(parameter.pt_data_format, parameter.shape.get_pytorch_shape())
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
 
     def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
         if parameter_name not in self.parameter_to_opt_inputs:
@@ -285,9 +291,7 @@ class Adam(Optimizer):
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(
-                    tile_broadcast_dims=tile_broadcast_dims, clone=True
-                )
+                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
         return ret
 
     def set_optimizer_parameters(self, learning_rate: Optional[float] = None) -> None:
@@ -316,9 +320,7 @@ class Adam(Optimizer):
 
         # {mean, variance} get updated in the loopback
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            torch_lr = torch.full(
-                (1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format
-            )
+            torch_lr = torch.full((1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
             opt_inputs["lr"] = Tensor.create_from_torch(torch_lr)
 
     def generate_op_trace(self, ac, parameter, gradient):
@@ -328,13 +330,13 @@ class Adam(Optimizer):
             weight_decay = None
         ## import locally to avoid circular dependency from Dataformat, fix it later
         from forge.op.eval.forge.buffer import Buffer
+
         # we copy the grad accum. queue since it only accepts a single consumer/pop
         gradient_copy = ac.op(Buffer.create(), (gradient,))
 
         if weight_decay and not self.enable_adam_w:
             weight_decay_times_param = ac.op("multiply", (weight_decay, parameter))
             gradient_copy = ac.op("add", (gradient_copy, weight_decay_times_param))
-
 
         # self.mean = self.beta1 * self.mean + one_minus_beta1 * gradient
         mean = ac.input("mean", parameter.shape, copy_consteval_operations=True)
@@ -350,26 +352,24 @@ class Adam(Optimizer):
         one_minus_beta2 = ac.constant(1 - self.beta2)
         variance_times_beta2 = ac.op("multiply", (variance, beta2))
         gradient_squared = ac.op("multiply", (gradient_copy, gradient_copy))
-        gradient_squared_times_one_minus_beta2 = ac.op(
-            "multiply", (gradient_squared, one_minus_beta2)
-        )
-        updated_variance = ac.op(
-            "add", (variance_times_beta2, gradient_squared_times_one_minus_beta2)
-        )
+        gradient_squared_times_one_minus_beta2 = ac.op("multiply", (gradient_squared, one_minus_beta2))
+        updated_variance = ac.op("add", (variance_times_beta2, gradient_squared_times_one_minus_beta2))
         from forge.op.eval.forge.reciprocal import Reciprocal
-        #import Sqrt module locally to avoid circular dependency
+
+        # import Sqrt module locally to avoid circular dependency
         from forge.op.eval.forge.sqrt import Sqrt
+
         if self.bias_correction:
             # bias_correction1 = 1 - beta1 ** step
             beta1_one = ac.constant(1.0)
-            beta1_pow = ac.input("beta1_pow", (1,), disable_consteval=True) # stores beta1 ** step
+            beta1_pow = ac.input("beta1_pow", (1,), disable_consteval=True)  # stores beta1 ** step
             updated_beta1_pow = ac.op("multiply", (beta1_pow, beta1))
-            bias_correction1  = ac.op("subtract", (beta1_one, updated_beta1_pow))
+            bias_correction1 = ac.op("subtract", (beta1_one, updated_beta1_pow))
             reciprocal_bias_correction1 = ac.op(Reciprocal.create(), (bias_correction1,))
 
             # bias_correction2 = 1 - beta2 ** step
             beta2_one = ac.constant(1.0)
-            beta2_pow = ac.input("beta2_pow", (1,), disable_consteval=True) # stores beta2 ** step
+            beta2_pow = ac.input("beta2_pow", (1,), disable_consteval=True)  # stores beta2 ** step
             updated_beta2_pow = ac.op("multiply", (beta2_pow, beta2))
             bias_correction2 = ac.op("subtract", (beta2_one, updated_beta2_pow))
             sqrt_bias_correction2 = ac.op(Sqrt.create(), (bias_correction2,))
@@ -383,9 +383,7 @@ class Adam(Optimizer):
 
         epsilon = ac.constant(self.epsilon)
         sqrt_of_variance_plus_epsilon = ac.op("add", (sqrt_of_variance, epsilon))
-        reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op(
-            Reciprocal.create(), (sqrt_of_variance_plus_epsilon,)
-        )
+        reciprocal_of_sqrt_of_variance_plus_epsilon = ac.op(Reciprocal.create(), (sqrt_of_variance_plus_epsilon,))
 
         if self.bias_correction:
             # mean / bias_correction1
@@ -405,7 +403,9 @@ class Adam(Optimizer):
                 "add", (mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon, weight_decay_times_param)
             )
         else:
-            mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param = mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon
+            mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon_plus_weight_decay_times_param = (
+                mean_times_reciprocal_of_sqrt_of_variance_plus_epsilon
+            )
 
         lr = ac.input("lr", (1,))
         parameter_delta = ac.op(
@@ -428,11 +428,23 @@ class Adam(Optimizer):
             gradient = gradient + self.weight_decay * parameter
 
         if self.bias_correction:
-            updated_torch_mean = (self.beta1 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_mean"] + (1 - self.beta1) * gradient) / (1 - self.beta1)
-            updated_torch_variance = (self.beta2 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_variance"] + (1 - self.beta2) * gradient**2) / (1 - self.beta2)
+            updated_torch_mean = (
+                self.beta1 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_mean"]
+                + (1 - self.beta1) * gradient
+            ) / (1 - self.beta1)
+            updated_torch_variance = (
+                self.beta2 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_variance"]
+                + (1 - self.beta2) * gradient**2
+            ) / (1 - self.beta2)
         else:
-            updated_torch_mean = self.beta1 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_mean"] + (1 - self.beta1) * gradient
-            updated_torch_variance = self.beta2 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_variance"] + (1 - self.beta2) * gradient**2
+            updated_torch_mean = (
+                self.beta1 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_mean"]
+                + (1 - self.beta1) * gradient
+            )
+            updated_torch_variance = (
+                self.beta2 * self.parameter_to_opt_torch_inputs[parameter_name]["torch_variance"]
+                + (1 - self.beta2) * gradient**2
+            )
 
         updated_parameter = parameter - self.learning_rate * (
             updated_torch_mean / (torch.sqrt(updated_torch_variance) + self.epsilon)
@@ -441,8 +453,7 @@ class Adam(Optimizer):
 
         return updated_parameter
 
-
-    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr = None) -> torch.optim.Optimizer:
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
         """
         Return an equivalent pytorch optimizer, used for verification.
         """
@@ -466,21 +477,14 @@ class Adam(Optimizer):
                     betas=(self.beta1, self.beta2),
                     eps=self.epsilon,
                     weight_decay=self.weight_decay,
-                    enable_adam_w=self.enable_adam_w
+                    enable_adam_w=self.enable_adam_w,
                 )
         return self.torch_optimizer
 
 
 def get_optimizer_type_from_string(type_string: str):
     # replace this implementation with one that inspects module classes
-    string_to_type = {
-        "sgd": SGD,
-        "adam": Adam,
-        "adamw": AdamW,
-        "lars": LARS,
-        "lamb": LAMB
-
-    }
+    string_to_type = {"sgd": SGD, "adam": Adam, "adamw": AdamW, "lars": LARS, "lamb": LAMB}
     return string_to_type[type_string]
 
 
@@ -498,27 +502,36 @@ class AdamW(Adam):
         weight_decay: float = 0.01,
         bias_correction: bool = True,
         parameters: Optional[List[Parameter]] = None,
-        device_params: bool = False
+        device_params: bool = False,
     ):
-        super().__init__(learning_rate, beta1, beta2, eps, weight_decay, bias_correction, parameters, device_params, enable_adam_w=True)
+        super().__init__(
+            learning_rate,
+            beta1,
+            beta2,
+            eps,
+            weight_decay,
+            bias_correction,
+            parameters,
+            device_params,
+            enable_adam_w=True,
+        )
 
 
 class LAMB(Optimizer):
-    
     def __init__(
-        self, 
+        self,
         learning_rate: float = 0.001,
         beta1: float = 0.9,
         beta2: float = 0.999,
         eps: float = 1e-8,
         weight_decay: float = 0.01,
         correction: bool = False,
-        clip_value = (0.0, 10.0),
+        clip_value=(0.0, 10.0),
         parameters: Optional[List[Parameter]] = None,
-        device_params: bool = False
+        device_params: bool = False,
     ):
         super().__init__(device_params)
-        
+
         # LAMB Optimizer Constants
         assert learning_rate >= 0.0, f"Invalid learning rate value: {learning_rate}"
         assert beta1 >= 0.0 and beta1 < 1.0, f"Invalid beta1 value: {beta1}"
@@ -548,26 +561,18 @@ class LAMB(Optimizer):
 
         self.device_params = device_params
 
-
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
         # For each Parameter, we register its associated set of optimizer parameters
         for parameter in parameters:
             if parameter.requires_grad:
                 # Forge
-                self.parameter_to_opt_inputs[
-                    parameter.get_name()
-                ] = self.get_param_dict(
-                        parameter.pt_data_format, 
-                        parameter.shape.get_pytorch_shape()
-                    )
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
                 # PyTorch
-                self.parameter_to_opt_torch_inputs[
-                    parameter.get_name()
-                ] = self.get_cpu_param_dict(
-                        parameter.pt_data_format, 
-                        parameter.shape.get_pytorch_shape()
-                    )
-
+                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
 
     def set_optimizer_parameters(self, learning_rate: Optional[float] = None) -> None:
         """
@@ -595,22 +600,17 @@ class LAMB(Optimizer):
 
         # {mean, variance} get updated in the loopback
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            torch_lr = torch.full(
-                (1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format
-            )
+            torch_lr = torch.full((1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
             opt_inputs["lr"] = Tensor.create_from_torch(torch_lr)
-
 
     def get_optimizer_state_keys(self) -> List:
         return []
-
 
     def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
         return {
             "torch_mean": torch.full(shape, 0.0, dtype=dtype),
             "torch_variance": torch.full(shape, 0.0, dtype=dtype),
         }
-
 
     def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
 
@@ -620,7 +620,6 @@ class LAMB(Optimizer):
             "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
             "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
         }
-
 
     def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
 
@@ -633,15 +632,11 @@ class LAMB(Optimizer):
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(
-                    tile_broadcast_dims=tile_broadcast_dims, clone=True
-                )
+                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
         return ret
-
 
     def get_type(self) -> str:
         return "lamb"
-
 
     def generate_op_trace(self, ac, parameter, gradient):
 
@@ -651,62 +646,65 @@ class LAMB(Optimizer):
         # gradinet buffering
 
         # g(t) -> gradient at current timestep
-        #temp fix to avoid circular dependency by importing locally
+        # temp fix to avoid circular dependency by importing locally
         from forge.op.eval.forge.buffer import Buffer
-        grad = ac.op(Buffer.create(), (gradient, ))
+
+        grad = ac.op(Buffer.create(), (gradient,))
 
         # m(t) <- beta1 * m(t - 1) + (1 - beta1) * g(t)
         # m(t)     : mean at current timestep
         # m(t - 1) : mean at previous timestep
-        mean = ac.input("mean", parameter.shape)    # m(t)
+        mean = ac.input("mean", parameter.shape)  # m(t)
         beta1_torch = torch.zeros(param_shape) + self.beta1
-        beta1 = ac.tensor(beta1_torch)      # beta1
+        beta1 = ac.tensor(beta1_torch)  # beta1
 
-        mean_1 = ac.op("multiply", (beta1, mean))   
+        mean_1 = ac.op("multiply", (beta1, mean))
         mean_2_1 = ac.tensor(1 - beta1_torch)
         mean_2 = ac.op("multiply", (mean_2_1, grad))
         updated_mean = ac.op("add", (mean_1, mean_2))
 
         # v(t) <- beta2 * v(t -1) + (1 - beta2) * g(t) ^ 2
         # v(t)     : variance at current timestep
-        # v(t - 1) : variance at previous timestep  
+        # v(t - 1) : variance at previous timestep
         variance = ac.input("variance", parameter.shape)
         beta2_torch = torch.zeros(param_shape) + self.beta2
         beta2 = ac.tensor(beta2_torch)
-        
+
         variance_1 = ac.op("multiply", (beta2, variance))
         variance_2_1 = ac.tensor(1 - beta2_torch)
         variance_2_2 = ac.op("multiply", (grad, grad))
         variance_2 = ac.op("multiply", (variance_2_1, variance_2_2))
         updated_variance = ac.op("add", (variance_1, variance_2))
 
-        '''
+        """
         if self.correction:
             # m_hat(t) <- m(t) / (1 - beta1 ^ t)
             mean_hat = None
             # v_hat(t) <- v(t) / (1 - beta2 ^ t)
             variance_hat = None
-        '''
+        """
 
         # L2 normaliztion of weights
         phi_norm = ac.op("multiply", (parameter, parameter))
         phi_norm_shape = phi_norm.shape.as_list()
         if len(phi_norm_shape) > 1:
-            phi_norm = ac.op("reduce_sum", (phi_norm, ), (-2, ))
-        phi_norm = ac.op("reduce_sum", (phi_norm, ), (-1, ))
+            phi_norm = ac.op("reduce_sum", (phi_norm,), (-2,))
+        phi_norm = ac.op("reduce_sum", (phi_norm,), (-1,))
 
-        #importing locally to avoid circular dependency from Dataformats
+        # importing locally to avoid circular dependency from Dataformats
         from forge.op.eval.forge.sqrt import Sqrt
-        phi_norm = ac.op(Sqrt.create(), (phi_norm, ))
+
+        phi_norm = ac.op(Sqrt.create(), (phi_norm,))
 
         epsilon = ac.tensor(torch.zeros(param_shape) + self.eps)
         weight_decay = ac.tensor(torch.zeros(param_shape) + self.weight_decay)
 
         # adam ratio, ratio of corrected mean and corrected variance stabilized with epsilon
-        r_t = ac.op(Sqrt.create(), (updated_variance, ))
+        r_t = ac.op(Sqrt.create(), (updated_variance,))
         r_t = ac.op("add", (r_t, epsilon))
         from forge.op.eval.forge.reciprocal import Reciprocal
-        r_t = ac.op("multiply", (updated_mean,  ac.op(Reciprocal.create(), (r_t, ))))
+
+        r_t = ac.op("multiply", (updated_mean, ac.op(Reciprocal.create(), (r_t,))))
 
         if self.weight_decay != 0:
             decayed_param = ac.op("multiply", (parameter, weight_decay))
@@ -715,9 +713,9 @@ class LAMB(Optimizer):
         r_t_norm = ac.op("multiply", (r_t, r_t))
         r_t_norm_shape = r_t_norm.shape.as_list()
         if len(r_t_norm_shape) > 1:
-            r_t_norm = ac.op("reduce_sum", (r_t_norm, ), (-2, ))
-        r_t_norm = ac.op("reduce_sum", (r_t_norm, ), (-1, ))
-        r_t_norm = ac.op(Sqrt.create(), (r_t_norm, ))
+            r_t_norm = ac.op("reduce_sum", (r_t_norm,), (-2,))
+        r_t_norm = ac.op("reduce_sum", (r_t_norm,), (-1,))
+        r_t_norm = ac.op(Sqrt.create(), (r_t_norm,))
 
         #
         #   IF phi_norm != 0 AND r_t_norm != 0:
@@ -746,10 +744,11 @@ class LAMB(Optimizer):
         phi_norm_eq = ac.op("equal", (phi_norm, zero))
         r_t_norm_ne = ac.op("not_equal", (r_t_norm, zero))
         r_t_norm_eq = ac.op("equal", (r_t_norm, zero))
-        trust_ratio = ac.op(Reciprocal.create(), (r_t_norm, ))
+        trust_ratio = ac.op(Reciprocal.create(), (r_t_norm,))
         trust_ratio = ac.op("multiply", (phi_norm, trust_ratio))
         from forge.op.eval.forge.clip import Clip
-        trust_ratio = ac.op(Clip.create(min=self.clip_value[0], max=self.clip_value[1]), (trust_ratio, ))
+
+        trust_ratio = ac.op(Clip.create(min=self.clip_value[0], max=self.clip_value[1]), (trust_ratio,))
         trust_ratio = ac.op("multiply", (trust_ratio, r_t_norm_ne))
         trust_ratio = ac.op("add", (trust_ratio, r_t_norm_eq))
         trust_ratio = ac.op("multiply", (trust_ratio, phi_norm_ne))
@@ -764,40 +763,35 @@ class LAMB(Optimizer):
         # Update mean and variance
         ac.loopback(updated_mean, mean)
         ac.loopback(updated_variance, variance)
-        
+
         return updated_parameter
 
-
     def torch_parameter_update(
-        self, 
-        *, 
-        parameter_name: str, 
-        parameter: torch.Tensor, 
-        gradient: torch.Tensor
+        self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
     ) -> torch.Tensor:
 
         torch_mean = self.parameter_to_opt_torch_inputs[parameter_name]["torch_mean"]
         torch_variance = self.parameter_to_opt_torch_inputs[parameter_name]["torch_variance"]
-        
+
         # m(t) <- beta1 * m(t - 1) + (1 - beta1) * g(t)
         # m(t)     : mean at current timestep
         # m(t - 1) : mean at previous timestep
         mean = self.beta1 * torch_mean + (1 - self.beta1) * gradient
 
-        # v(t) <- beta2 * v(t - 1) + (1 - beta2) * g(t) ^ 2  
+        # v(t) <- beta2 * v(t - 1) + (1 - beta2) * g(t) ^ 2
         # v(t)     : variance at current timestep
         # v(t - 1) : variance at previous timestep
-        variance = self.beta2 * torch_variance + (1 - self.beta2) * gradient ** 2
+        variance = self.beta2 * torch_variance + (1 - self.beta2) * gradient**2
 
         # L2 normaliztion of weights
-        phi_norm = torch.sqrt(torch.sum(parameter ** 2))
-        
+        phi_norm = torch.sqrt(torch.sum(parameter**2))
+
         # adam ratio, ratio of corrected mean and corrected variance stabilized with epsilon
         r_t = torch.sqrt(variance)
         r_t = mean / (torch.sqrt(variance) + self.eps)
         if self.weight_decay != 0:
             r_t += parameter * self.weight_decay
-        r_t_norm = torch.sqrt(torch.sum(r_t ** 2))
+        r_t_norm = torch.sqrt(torch.sum(r_t**2))
 
         if phi_norm != 0 and r_t_norm != 0:
             trust_ratio = phi_norm / r_t_norm
@@ -809,10 +803,9 @@ class LAMB(Optimizer):
 
         return updated_parameter
 
-
-    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr = None) -> torch.optim.Optimizer:
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
         """
-        Return an equivalent pytorch optimizer, used for verification. 
+        Return an equivalent pytorch optimizer, used for verification.
         """
         if not self.torch_optimizer:
             self.torch_optimizer = forge.torch_optimizers.LAMB(
@@ -820,17 +813,16 @@ class LAMB(Optimizer):
                 lr=self.learning_rate,
                 betas=(self.beta1, self.beta2),
                 eps=self.eps,
-                weight_decay=self.weight_decay                
+                weight_decay=self.weight_decay,
             )
         return self.torch_optimizer
-
 
 
 class LARS(Optimizer):
     """
     Implements LARS optimizer, Layer-Wise Adaptive Rate Scaling.
     """
-    
+
     def __init__(
         self,
         learning_rate: float = 0.001,
@@ -841,7 +833,7 @@ class LARS(Optimizer):
         lars_coeff: float = 0.001,
         parameters: Optional[List[Parameter]] = None,
         device_params: bool = False,
-        epsilon: float = 1e-8
+        epsilon: float = 1e-8,
     ):
         # LARS Optimizer Constants
         assert learning_rate >= 0.0, f"Invalid learning rate value: {learning_rate}"
@@ -870,26 +862,18 @@ class LARS(Optimizer):
 
         self.device_params = device_params
 
-
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
         # For each Parameter, we register its associated set of optimizer parameters
         for parameter in parameters:
             if parameter.requires_grad:
                 # Forge
-                self.parameter_to_opt_inputs[
-                    parameter.get_name()
-                ] = self.get_param_dict(
-                        parameter.pt_data_format, 
-                        parameter.shape.get_pytorch_shape()
-                    )
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
                 # PyTorch
-                self.parameter_to_opt_torch_inputs[
-                    parameter.get_name()
-                ] = self.get_cpu_param_dict(
-                        parameter.pt_data_format, 
-                        parameter.shape.get_pytorch_shape()
-                    )
-
+                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
 
     def set_optimizer_parameters(self, learning_rate: Optional[float] = None) -> None:
         """
@@ -917,21 +901,16 @@ class LARS(Optimizer):
 
         # {mean, variance} get updated in the loopback
         for parameter, opt_inputs in self.parameter_to_opt_inputs.items():
-            torch_lr = torch.full(
-                (1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format
-            )
+            torch_lr = torch.full((1,), self.learning_rate, dtype=opt_inputs["lr"].pt_data_format)
             opt_inputs["lr"] = Tensor.create_from_torch(torch_lr)
-
 
     def get_optimizer_state_keys(self) -> List:
         return []
-
 
     def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
         return {
             "torch_momentum": torch.full(shape, 0.0, dtype=dtype),
         }
-
 
     def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
         torch_lr = torch.full((1,), self.learning_rate, dtype=dtype)
@@ -939,7 +918,6 @@ class LARS(Optimizer):
             "lr": Tensor.create_from_torch(torch_lr),
             "momentum": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
         }
-
 
     def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
 
@@ -952,15 +930,11 @@ class LARS(Optimizer):
                 # optimize params should always tile broadcast if they are scalar
                 one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
                 tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(
-                    tile_broadcast_dims=tile_broadcast_dims, clone=True
-                )
+                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
         return ret
-
 
     def get_type(self) -> str:
         return "lars"
-
 
     def generate_op_trace(self, ac, parameter, gradient):
 
@@ -970,27 +944,29 @@ class LARS(Optimizer):
         # gradinet buffering
 
         # g(t) -> gradient at current timestep
-        #temp fix for circular dependency
+        # temp fix for circular dependency
         from forge.op.eval.forge.buffer import Buffer
-        grad = ac.op(Buffer.create(), (gradient, ))
+
+        grad = ac.op(Buffer.create(), (gradient,))
 
         # lambda <- || w(t) || / (|| g(t) || + beta * || w(t) ||)
         weight_norm = ac.op("multiply", (parameter, parameter))
         weight_norm_shape = weight_norm.shape.as_list()
         if len(weight_norm_shape) > 1:
-            weight_norm = ac.op("reduce_sum", (weight_norm, ), (-2, ))
-        weight_norm = ac.op("reduce_sum", (weight_norm, ), (-1, ))
-        #importing locally to avoid circular dependency from Dataformats
+            weight_norm = ac.op("reduce_sum", (weight_norm,), (-2,))
+        weight_norm = ac.op("reduce_sum", (weight_norm,), (-1,))
+        # importing locally to avoid circular dependency from Dataformats
         from forge.op.eval.forge.sqrt import Sqrt
-        weight_norm = ac.op(Sqrt.create(), (weight_norm, ))
+
+        weight_norm = ac.op(Sqrt.create(), (weight_norm,))
 
         grad_norm = ac.op("multiply", (grad, grad))
         grad_norm_shape = grad_norm.shape.as_list()
         if len(grad_norm_shape) > 1:
-            grad_norm = ac.op("reduce_sum", (grad_norm, ), (-2, ))
-        grad_norm = ac.op("reduce_sum", (grad_norm, ), (-1, ))
-        grad_norm = ac.op(Sqrt.create(), (grad_norm, ))
- 
+            grad_norm = ac.op("reduce_sum", (grad_norm,), (-2,))
+        grad_norm = ac.op("reduce_sum", (grad_norm,), (-1,))
+        grad_norm = ac.op(Sqrt.create(), (grad_norm,))
+
         #
         #   IF weight_norm != 0 AND grad_norm != 0:
         #       local_lr = lars_coeff * weight_norm / (grad_norm + weight_decay * weight_norm + epsilon)
@@ -1009,7 +985,7 @@ class LARS(Optimizer):
         #
         #
         # so, local learning rate is
-        #   
+        #
         #   local_lr = lars_coeff * weight_norm / (grad_norm + weight_decay * weight_norm + epsilon)
         #   local_lr = (weight_norm != 0) * ((grad_norn != 0) * local_lr + (grad_norm == 0)) + (weight_norm == 0)
         #
@@ -1031,7 +1007,8 @@ class LARS(Optimizer):
         local_learning_rate = ac.op("add", (grad_norm, local_learning_rate))
         local_learning_rate = ac.op("add", (epsilon, local_learning_rate))
         from forge.op.eval.forge.reciprocal import Reciprocal
-        local_learning_rate = ac.op(Reciprocal.create(), (local_learning_rate, ))
+
+        local_learning_rate = ac.op(Reciprocal.create(), (local_learning_rate,))
         local_learning_rate = ac.op("multiply", (weight_norm, local_learning_rate))
         local_learning_rate = ac.op("multiply", (lars_coeff, local_learning_rate))
 
@@ -1064,7 +1041,10 @@ class LARS(Optimizer):
         momentum_ = ac.tensor(torch.zeros(param_shape) + self.momentum)
         current_momentum = ac.op("multiply", (momentum, momentum_))
         learning_rate = ac.tensor(torch.zeros(param_shape) + self.learning_rate)
-        updated_momentum = ac.op("add", (ac.op("multiply", (learning_rate, ac.op("multiply", (local_learning_rate, grad)))), current_momentum))
+        updated_momentum = ac.op(
+            "add",
+            (ac.op("multiply", (learning_rate, ac.op("multiply", (local_learning_rate, grad)))), current_momentum),
+        )
 
         # w(t + 1) <- w(t) - v(t + 1)
         updated_parameter = ac.op("subtract", (parameter, updated_momentum))
@@ -1074,26 +1054,24 @@ class LARS(Optimizer):
         return updated_parameter
 
     def torch_parameter_update(
-        self, 
-        *, 
-        parameter_name: str, 
-        parameter: torch.Tensor, 
-        gradient: torch.Tensor
+        self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
     ) -> torch.Tensor:
-        
+
         torch_momentum = self.parameter_to_opt_torch_inputs[parameter_name]["torch_momentum"]
 
-        weight_norm = torch.sqrt(torch.sum(parameter ** 2))
-        gradient_norm = torch.sqrt(torch.sum(gradient ** 2))
+        weight_norm = torch.sqrt(torch.sum(parameter**2))
+        gradient_norm = torch.sqrt(torch.sum(gradient**2))
 
         if weight_norm != 0 and gradient_norm != 0:
-            local_learning_rate = self.lars_coeff * weight_norm / (gradient_norm + self.weight_decay * weight_norm + self.epsilon)
+            local_learning_rate = (
+                self.lars_coeff * weight_norm / (gradient_norm + self.weight_decay * weight_norm + self.epsilon)
+            )
         else:
             local_learning_rate = 1
 
         if self.weight_decay != 0:
             gradient += self.weight_decay * parameter
-            
+
         # if self.momentum != 0:
         #     previous_momentum = self.momentum * torch_momentum
         #     previous_momentum += (1 - self.dampening) * gradient
@@ -1108,10 +1086,9 @@ class LARS(Optimizer):
 
         return updated_parameter
 
-
-    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr = None) -> torch.optim.Optimizer:
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
         """
-        Return an equivalent pytorch optimizer, used for verification. 
+        Return an equivalent pytorch optimizer, used for verification.
         """
         if not self.torch_optimizer:
             self.torch_optimizer = forge.torch_optimizers.LARS(
@@ -1122,7 +1099,6 @@ class LARS(Optimizer):
                 weight_decay=self.weight_decay,
                 dampening=self.dampening,
                 nesterov=self.nesterov,
-                eps=self.epsilon             
+                eps=self.epsilon,
             )
         return self.torch_optimizer
-

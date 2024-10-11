@@ -20,6 +20,7 @@ from forge._C.graph import UBlockOrder
 from ..common import op_model_to_desc, get_compiler_cached_cycles
 from forge.op.eval.forge.quantize import STRING_TO_LOWER_LIMIT, STRING_TO_UPPER_LIMIT, STRING_TO_TORCH_DTYPE
 
+
 def eval(type, attr, ops):
     if type == "quantization":
         zero_point, axis, out_dtype = attr
@@ -28,10 +29,11 @@ def eval(type, attr, ops):
         output_float = torch.clamp(
             torch.round(input_float * scale) + zero_point,
             STRING_TO_LOWER_LIMIT[out_dtype],
-            STRING_TO_UPPER_LIMIT[out_dtype],)
-        
+            STRING_TO_UPPER_LIMIT[out_dtype],
+        )
+
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
-        
+
     elif type == "dequantization":
         zero_point, axis = attr
         input_float = ops[0].float()
@@ -48,10 +50,12 @@ def eval(type, attr, ops):
         output_float = torch.clamp(
             output_float,
             STRING_TO_LOWER_LIMIT[out_dtype],
-            STRING_TO_UPPER_LIMIT[out_dtype],)
+            STRING_TO_UPPER_LIMIT[out_dtype],
+        )
 
         return output_float.to(STRING_TO_TORCH_DTYPE[out_dtype])
-    
+
+
 def shape(type, attr, ops, tile_height, tile_width):
     broadcast = []
 
@@ -78,12 +82,15 @@ def shape(type, attr, ops, tile_height, tile_width):
 
     return ops[0], broadcast
 
+
 def parallelization(type, attr, op_shape, fracture_factor):
 
     return (op_shape.outputs[0].rt, op_shape.outputs[0].ct)
 
+
 def input_ublock_order(type, attr, num_operands):
     return None
+
 
 def execution_cycles(type, arch_name, op_model) -> int:
     op_model_desc = op_model_to_desc(type, arch_name, op_model)
@@ -91,7 +98,7 @@ def execution_cycles(type, arch_name, op_model) -> int:
     # for dequant and requant input0 format is important,
     # output format is always Int8 for requant and Float32 for dequant;
     # this is a workaround until we expand the API to accept all data formats for an op
-    if (op_model_desc.type == "dequantization" or op_model_desc.type == "requantization"):
+    if op_model_desc.type == "dequantization" or op_model_desc.type == "requantization":
         op_model_desc.data_format = op_model.input_buffers[0].data_format
 
     compiler_cache_cycles = get_compiler_cached_cycles(op_model_desc)

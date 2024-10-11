@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # Commands for running reduce tests
-# 
+#
 
 # Run single test
-# 
+#
 # To run using default parameters
 # model,           --red_model     --> model_1, Note: for matmul ops we have 5 models, model_[1-5]
 # training,        --red_train     --> True

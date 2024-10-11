@@ -21,9 +21,9 @@ from ..lforge.exp import Exp as ForgeExp
 from .exp import Exp
 from .reciprocal import Reciprocal
 
-M_2_SQRTPI  = 1.12837916709551257390	# 2/sqrt(pi) 
-M_SQRT2     = 1.41421356237309504880	# sqrt(2) 
-M_SQRT1_2   = 0.7071067811865476
+M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
+M_SQRT2 = 1.41421356237309504880  # sqrt(2)
+M_SQRT1_2 = 0.7071067811865476
 
 # Reference implementation is at pytorch/aten/src/ATen/native/cpu/Activation.cpp
 # https://github.com/pytorch/pytorch/blob/4f8b986e28736b59bc46cd0873a0f36fdaa6f5b8/aten/src/ATen/native/cpu/Activation.cpp
@@ -39,14 +39,16 @@ def gelu_derivative(x, approximate):
     else:
         raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
 
+
 def gelu_forward(x, approximate):
     if approximate == "none":
         return torch.nn.functional.gelu(x)
     elif approximate == "tanh":
         import math
+
         return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
     else:
-         raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
+        raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
 
 
 def tile_broadcast(attr, i):
@@ -61,19 +63,19 @@ def tile_broadcast(attr, i):
 def eval(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
-            len(attr) == 0 or
-            (type == "clip" and len(attr) == 2) or
-            (type == "argmax" and len(attr) == 1) or
-            (type == "leaky_relu" and len(attr) == 1) or
-            (type == "relu" and len(attr) <= 2) or
-            (type == "cumsum" and len(attr) == 2) or
-            (type == "dropout" and len(attr) == 3) or
-            (type == "tile_broadcast" and len(attr) == 2) or
-            (type == "gelu" and len(attr) == 1) or
-            (type == "gelu_derivative" and len(attr) == 1) or 
-            (type == "pow" and len(attr) == 1)
-        ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu, and cumsum"
-    
+        len(attr) == 0
+        or (type == "clip" and len(attr) == 2)
+        or (type == "argmax" and len(attr) == 1)
+        or (type == "leaky_relu" and len(attr) == 1)
+        or (type == "relu" and len(attr) <= 2)
+        or (type == "cumsum" and len(attr) == 2)
+        or (type == "dropout" and len(attr) == 3)
+        or (type == "tile_broadcast" and len(attr) == 2)
+        or (type == "gelu" and len(attr) == 1)
+        or (type == "gelu_derivative" and len(attr) == 1)
+        or (type == "pow" and len(attr) == 1)
+    ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu, and cumsum"
+
     t_ops = to_torch_operands(*ops)
 
     # Some ops don't support non-fp32 in pytorch
@@ -120,14 +122,14 @@ def eval(type, attr, ops):
         "sqrt": lambda i: torch.sqrt(i[0]),
         # "relu": lambda i: i[0] * (i[0] >= relu_threshold).to(i[0].dtype),
         "leaky_relu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
-        "gelu": lambda i : gelu_forward(i[0], approximate=attr[0]),
-        "gelu_derivative": lambda i : gelu_derivative(i[0], approximate=attr[0]),
+        "gelu": lambda i: gelu_forward(i[0], approximate=attr[0]),
+        "gelu_derivative": lambda i: gelu_derivative(i[0], approximate=attr[0]),
         "nop": lambda i: i[0],
         "tilizer": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
-        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10), # add epsilon to avoid infinity
-        "log": lambda i: torch.log(i[0] + 1e-10), # add epsilon to avoid nan
+        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
+        "log": lambda i: torch.log(i[0] + 1e-10),  # add epsilon to avoid nan
         "sigmoid": lambda i: torch.sigmoid(i[0]),
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "abs": lambda i: torch.abs(i[0]),
@@ -138,7 +140,7 @@ def eval(type, attr, ops):
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "logical_not": lambda i: torch.logical_not(i[0]),
-        "pow": lambda i: torch.pow(i[0], attr[0])
+        "pow": lambda i: torch.pow(i[0], attr[0]),
     }
 
     assert type in f, f"{type} not defined in eval map for eltwise unary ops."
@@ -149,22 +151,23 @@ def eval(type, attr, ops):
 
     return ret
 
+
 def shape(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     assert (
-            len(attr) == 0 or
-            (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2)) or
-            (type == "clip" and len(attr) == 2) or
-            (type == "argmax" and len(attr) == 1) or
-            (type == "leaky_relu" and len(attr) == 1) or
-            (type == "relu" and len(attr) <= 2) or
-            (type == "cumsum" and len(attr) == 2) or
-            (type == "dropout" and len(attr) == 3) or
-            (type == "tile_broadcast" and len(attr) == 2) or
-            (type == "gelu" and len(attr) == 1) or
-            (type == "gelu_derivative" and len(attr) == 1) or
-            (type == "pow" and len(attr) == 1)
-        ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
+        len(attr) == 0
+        or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
+        or (type == "clip" and len(attr) == 2)
+        or (type == "argmax" and len(attr) == 1)
+        or (type == "leaky_relu" and len(attr) == 1)
+        or (type == "relu" and len(attr) <= 2)
+        or (type == "cumsum" and len(attr) == 2)
+        or (type == "dropout" and len(attr) == 3)
+        or (type == "tile_broadcast" and len(attr) == 2)
+        or (type == "gelu" and len(attr) == 1)
+        or (type == "gelu_derivative" and len(attr) == 1)
+        or (type == "pow" and len(attr) == 1)
+    ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
 
     if type == "argmax":
         dim = attr[0] if len(attr) > 0 else None
@@ -185,9 +188,10 @@ def shape(type, attr, ops):
 
     return ops[0], []
 
+
 def lower(type, attr, lc, ops, outputs):
     assert len(ops) == 1 or type == "tile_broadcast", "Eltwise unary should one input"
-    
+
     if type == "relu":
         threshold = 0.0
         mode = "min"
@@ -197,7 +201,7 @@ def lower(type, attr, lc, ops, outputs):
         if len(attr) > 1:
             mode = attr[1]
         lc.op(ForgeNop.create(relu_en=True, relu_threshold=threshold, relu_mode=mode), ops)
-        
+
     elif type == "leaky_relu":
         lc.op("lrelu", ops, attr, {"slope": attr[0]})
 
@@ -221,16 +225,15 @@ def lower(type, attr, lc, ops, outputs):
             node_shape = lc.forge_shape()
             tile_height = calculate_tile_size(node_shape[-2])
             if node_shape[-2] % tile_height == 0:
-                lc.op(ForgeNop.create(), ops, tile_height=tile_height,tile_width=TILE_DIM)
-                return # Don't need to tile bcast to full tile
-
+                lc.op(ForgeNop.create(), ops, tile_height=tile_height, tile_width=TILE_DIM)
+                return  # Don't need to tile bcast to full tile
 
         broadcast_dim = TILE_DIM
         if output_dim % TILE_DIM != 0:
             broadcast_dim = ((output_dim // TILE_DIM) + 1) * TILE_DIM
 
         # use matmul to perform broadcast
-        
+
         if dim == 2:
             assert len(ops[0].shape) == 1 or ops[0].shape[-2] == 1, "Tile broadcast must be on dim that is 1"
             if shape_size == 4:
@@ -238,24 +241,34 @@ def lower(type, attr, lc, ops, outputs):
                 const_shape = (ops[0].shape[0], 1, broadcast_dim, TILE_DIM)
             else:
                 const_shape = (1, 1, broadcast_dim, TILE_DIM)
-            
+
             tensor = torch.zeros(const_shape, dtype=forge_dataformat_to_pytorch_dtype(ops[0].output_df))
-            tensor[:, :, 0:output_dim, 0] = 1.0 # row broadcast
+            tensor[:, :, 0:output_dim, 0] = 1.0  # row broadcast
             const = lc.tensor(tensor)
             if output_dim % TILE_DIM != 0:
                 # this isn't just a tile broadcast any more, we're broadcasting to a special dim
                 lc.op("matmul", (const, ops[0]))
             else:
                 lc.op("matmul", (const, ops[0]), tag="tile_broadcast_r")
-        else: 
+        else:
             assert ops[0].shape[-1] == 1, "Tile broadcast must be on dim that is 1"
             if shape_size == 4:
                 # Preseve W dim
-                const_shape = (ops[0].shape[0], 1, TILE_DIM, broadcast_dim, )
+                const_shape = (
+                    ops[0].shape[0],
+                    1,
+                    TILE_DIM,
+                    broadcast_dim,
+                )
             else:
-                const_shape = (1, 1, TILE_DIM, broadcast_dim, )
+                const_shape = (
+                    1,
+                    1,
+                    TILE_DIM,
+                    broadcast_dim,
+                )
             tensor = torch.zeros(const_shape, dtype=forge_dataformat_to_pytorch_dtype(ops[0].output_df))
-            tensor[:, :, 0, 0:output_dim] = 1.0 # column broadcast
+            tensor[:, :, 0, 0:output_dim] = 1.0  # column broadcast
             const = lc.tensor(tensor)
             if output_dim % TILE_DIM != 0:
                 # this isn't just a tile broadcast any more, we're broadcasting to a special dim
@@ -275,16 +288,18 @@ def lower(type, attr, lc, ops, outputs):
             r = ops[0].shape[-2] if len(ops[0].shape) > 1 else 1
             c = ops[0].shape[-1]
             forge_attr = {"p": p, "seed": seed}
-            lc.op(type, ops, attr + [r, c, 1, 1, True, False], forge_attr) # straigh 1-1 for all other unaries
+            lc.op(type, ops, attr + [r, c, 1, 1, True, False], forge_attr)  # straigh 1-1 for all other unaries
         else:
             lc.op(ForgeNop.create(), ops)
     elif type == "gelu":
         lc.op("gelu", ops, attr, {"approximate_mode": "true" if attr[0] == "tanh" else "false"})
     elif type == "gelu_derivative":
-        lc.op("gelu_derivative", ops, attr, {"approximate_mode": "true" if "FORGE_EXP_APPROX" in os.environ else "false"})
+        lc.op(
+            "gelu_derivative", ops, attr, {"approximate_mode": "true" if "FORGE_EXP_APPROX" in os.environ else "false"}
+        )
 
     elif type == "clip":
-        
+
         min_value = attr[0]
         max_value = attr[1]
 
@@ -293,11 +308,11 @@ def lower(type, attr, lc, ops, outputs):
             max_value = 65504.0
 
         if (min_value == 0) and (max_value >= 0):
-            lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"), (ops[0], ))
+            lc.op(ForgeNop.create(relu_en=True, relu_threshold=max_value, relu_mode="max"), (ops[0],))
             return
 
         shape = list(ops[0].shape.as_list())
-        # Align up to tile 
+        # Align up to tile
         shape[-2] = ((shape[-2] - 1) // TILE_DIM + 1) * TILE_DIM
         shape[-1] = ((shape[-1] - 1) // TILE_DIM + 1) * TILE_DIM
         # Align up to 4 dimensions
@@ -316,15 +331,15 @@ def lower(type, attr, lc, ops, outputs):
         # y = 0.0 - y
 
         res = lc.op("subtract", (ops[0], min_value_tensor))
-                # x - min_value
-        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res, ))
-                # ReLU(x - min_value)
+        # x - min_value
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res,))
+        # ReLU(x - min_value)
         res = lc.op("subtract", (diff_tensor, res))
-                # diff_value - ReLU(x - min_value), diff = max - min
-        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res, ))
-                # ReLU(diff_value - ReLU(x - min_value))
+        # diff_value - ReLU(x - min_value), diff = max - min
+        res = lc.op(ForgeNop.create(relu_en=True, relu_threshold=0.0, relu_mode="min"), (res,))
+        # ReLU(diff_value - ReLU(x - min_value))
         lc.op("subtract", (max_value_tensor, res))
-                # max_value - ReLU(diff_value - ReLU(x - min_value))
+        # max_value - ReLU(diff_value - ReLU(x - min_value))
 
     elif type == "pow":
         if isinstance(attr[0], int):
@@ -332,11 +347,11 @@ def lower(type, attr, lc, ops, outputs):
             lc.op("power", ops, attr, forge_attr)
         else:
             exponent_value = attr[0]
-            shape = list(ops[0].shape.as_list()) 
+            shape = list(ops[0].shape.as_list())
             ln_x = lc.op(ForgeLog.create(), ops)
-            y_ln_x = lc.op("multiply", (lc.tensor(torch.zeros(shape) + exponent_value), ln_x)) 
+            y_ln_x = lc.op("multiply", (lc.tensor(torch.zeros(shape) + exponent_value), ln_x))
             approximate_mode = "true" if "FORGE_EXP_APPROX" in os.environ else "false"
-            lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])          
+            lc.op(ForgeExp.create(approximate_mode=approximate_mode), [y_ln_x])
 
     else:
         # Find proper tile sizes
@@ -348,46 +363,47 @@ def lower(type, attr, lc, ops, outputs):
         else:
             tile_height, tile_width = TILE_DIM, TILE_DIM
             forge_attr = {}
-        lc.op(type, ops, attr, forge_attr, "", tile_height, TILE_DIM) # straigh 1-1 for all other unaries
+        lc.op(type, ops, attr, forge_attr, "", tile_height, TILE_DIM)  # straigh 1-1 for all other unaries
+
 
 def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert len(inputs) == 1, "Eltwise unary should have one input"
     assert operand == 0, "Invalid operand index"
-    assert ( 
-            len(attr) == 0 or
-            (type == "clip" and len(attr) == 2) or
-            (type == "argmax" and len(attr) == 1) or
-            (type == "leaky_relu" and len(attr) == 1) or
-            (type == "relu" and len(attr) <= 2) or
-            (type == "cumsum" and len(attr) == 2) or
-            (type == "dropout" and len(attr) == 3) or
-            (type == "tile_broadcast" and len(attr) == 2) or
-            (type == "gelu" and len(attr) == 1) or 
-            (type == "pow" and len(attr) == 1)
-        ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
+    assert (
+        len(attr) == 0
+        or (type == "clip" and len(attr) == 2)
+        or (type == "argmax" and len(attr) == 1)
+        or (type == "leaky_relu" and len(attr) == 1)
+        or (type == "relu" and len(attr) <= 2)
+        or (type == "cumsum" and len(attr) == 2)
+        or (type == "dropout" and len(attr) == 3)
+        or (type == "tile_broadcast" and len(attr) == 2)
+        or (type == "gelu" and len(attr) == 1)
+        or (type == "pow" and len(attr) == 1)
+    ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
 
     if type == "nop":
-        return ac.op(Nop.create(), (grad, ))
+        return ac.op(Nop.create(), (grad,))
 
     if type == "tilizer":
-        return ac.op(Nop.create(), (grad, ))
+        return ac.op(Nop.create(), (grad,))
 
-    if type == "tile_broadcast": # the full TM broadcast will generate a reduce
-        return ac.op(Nop.create(), (grad, ))
+    if type == "tile_broadcast":  # the full TM broadcast will generate a reduce
+        return ac.op(Nop.create(), (grad,))
 
     if type == "buffer":
-        return ac.op(Buffer.create(), (grad, ))
+        return ac.op(Buffer.create(), (grad,))
 
     if type == "exp":
         return ac.op("multiply", (output, grad))
 
-    if type == "reciprocal": # -1/x^2
+    if type == "reciprocal":  # -1/x^2
         sq = ac.op("multiply", (output, output))
         neg = ac.op("multiply", (sq, ac.constant(-1)))
         return ac.op("multiply", (neg, grad))
 
-    if type == "sqrt": # 0.5 / f(x)
+    if type == "sqrt":  # 0.5 / f(x)
         rec = ac.op(Reciprocal.create(), (output,))
         mult = ac.op("multiply", (rec, ac.constant(0.5)))
         return ac.op("multiply", (mult, grad))
@@ -398,10 +414,10 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         shape = inputs[0].shape.as_list()
         if len(attr) > 0:
             f32_epsilon = 1.19209289551e-07
-            threshold = attr[0] - f32_epsilon 
-        threshold_tensor = ac.tensor(torch.zeros(shape) + threshold)  
-       
-        # handle different modes 
+            threshold = attr[0] - f32_epsilon
+        threshold_tensor = ac.tensor(torch.zeros(shape) + threshold)
+
+        # handle different modes
         mode = "min"
         if len(attr) > 1:
             mode = attr[1]
@@ -451,19 +467,19 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     if type == "argmax":
         raise RuntimeError("Argmax does not require grad and does not have a backwards function")
-    
+
     if type == "cumsum":
         dim = attr[0]
-        
+
         assert dim == 0, "Unsupported dim different then 0 for cumulative sum backward pass"
-        
+
         if dim == 0:
-            return ac.op(Nop.create(), (grad, ))
-        
+            return ac.op(Nop.create(), (grad,))
+
         return res
 
     if type == "dropout":
-        return ac.op("dropout", (grad, ), attr)
+        return ac.op("dropout", (grad,), attr)
 
     if type == "clip":
         x = inputs[0]
@@ -483,12 +499,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         exponent_value = attr[0]
         shape = list(inputs[0].shape.as_list())
         recip = ac.op(Reciprocal.create(), (inputs[0],))
-        partial_grad = ac.op("multiply", (output, recip))  
+        partial_grad = ac.op("multiply", (output, recip))
         pow_grad = ac.op("multiply", (ac.tensor(torch.zeros(shape) + exponent_value), partial_grad))
         return ac.op("multiply", (pow_grad, grad))
-    
+
     elif type == "abs":
-        
+
         heaviside = ac.op("heaviside", (inputs[0], ac.constant(0.5)))
         subtract = ac.op("subtract", (heaviside, ac.constant(0.5)))
         stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
@@ -504,22 +520,23 @@ def decompose(type, attr, dc, inputs):
 
         if axis is None:
             import math
+
             inp_node = dc.op("reshape", [inp_node], (1, math.prod(inp_node.shape.as_list())))
             axis = -1
 
         input_shape = inp_node.shape.as_list()
         if axis >= 0:
             axis -= len(input_shape)
-            assert axis < 0, "valid axis should be < 0 after subtracting len(input_shape)" 
+            assert axis < 0, "valid axis should be < 0 after subtracting len(input_shape)"
 
-        # First we want to get array of zeros and ones, with ones standing on the indices of maximums. 
-        # For example, starting array is [1, 3, 5, 2, 0, 5]. We want to get [0, 0, 1, 0, 0, 1]. 
-        # We do that by multiplying array with some large number (10^10), subtracting maximum of the array from array, 
-        # then add 1 to each element to make sure that only maximums are now above 0 (equal to 1). 
-        # Then we threshold the array with ReLu to get [0, 0, 1, 0, 0, 1]. 
-        # Then we multiply that array with array of indices [0,1,2,3,4,5] to get [0,0,2,0,0,5]. 
-        # The rest is manipulation how to extract first maximum index. 
-        # We do that by taking complement of [0, 0, 1, 0, 0, 1] => [1, 1, 0, 1, 1, 0] and multiplying it 
+        # First we want to get array of zeros and ones, with ones standing on the indices of maximums.
+        # For example, starting array is [1, 3, 5, 2, 0, 5]. We want to get [0, 0, 1, 0, 0, 1].
+        # We do that by multiplying array with some large number (10^10), subtracting maximum of the array from array,
+        # then add 1 to each element to make sure that only maximums are now above 0 (equal to 1).
+        # Then we threshold the array with ReLu to get [0, 0, 1, 0, 0, 1].
+        # Then we multiply that array with array of indices [0,1,2,3,4,5] to get [0,0,2,0,0,5].
+        # The rest is manipulation how to extract first maximum index.
+        # We do that by taking complement of [0, 0, 1, 0, 0, 1] => [1, 1, 0, 1, 1, 0] and multiplying it
         # with size(6) and add it to [0,0,2,0,0,5] => [6,6,2,6,6,5] and just find argmin of this array which is 2.
 
         data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
@@ -531,24 +548,39 @@ def decompose(type, attr, dc, inputs):
         factor = torch.ones((input_shape), dtype=data_type) * 1e10
         factor_tensor = dc.tensor(factor)
 
-        ones = torch.ones((input_shape), dtype=data_type) 
+        ones = torch.ones((input_shape), dtype=data_type)
         ones_tensor = dc.tensor(ones)
         negative_ones = dc.tensor(ones * (-1))
 
         # this it the tensor that has all elements equal to input shape on axis on which we do argmax.
         offset_tensor = dc.tensor(ones * input_shape[axis])
 
-        scaled_input = dc.op("multiply", (inp_node, factor_tensor),)
+        scaled_input = dc.op(
+            "multiply",
+            (inp_node, factor_tensor),
+        )
         max_1 = dc.op("reduce_max", [scaled_input], [axis])
         scaled_input = dc.op("subtract", (scaled_input, max_1))
-        scaled_input = dc.op("add", [scaled_input, ones_tensor],)
+        scaled_input = dc.op(
+            "add",
+            [scaled_input, ones_tensor],
+        )
 
         relu_1 = dc.op("relu", (scaled_input,))
         relu_1_complement = dc.op("subtract", (ones_tensor, relu_1))
 
-        mul_1 = dc.op("multiply", [relu_1, indices_tensor],)
-        mul_2 = dc.op("multiply", [relu_1_complement, offset_tensor],)
-        add_1 = dc.op("add", [mul_1, mul_2],)
+        mul_1 = dc.op(
+            "multiply",
+            [relu_1, indices_tensor],
+        )
+        mul_2 = dc.op(
+            "multiply",
+            [relu_1_complement, offset_tensor],
+        )
+        add_1 = dc.op(
+            "add",
+            [mul_1, mul_2],
+        )
         negative_add_1 = dc.op("multiply", [add_1, negative_ones])
         negative_argmax = dc.op("reduce_max", [negative_add_1], [axis])
 
@@ -560,8 +592,8 @@ def decompose(type, attr, dc, inputs):
 
     elif type == "sigmoid" and bool(int(os.environ.get("FORGE_DECOMPOSE_SIGMOID", "0"))):
         inp = inputs[0]
-        minus_one = dc.tensor(torch.ones([1,1]) * -1)
-        plus_one = dc.tensor(torch.ones([1,1]))
+        minus_one = dc.tensor(torch.ones([1, 1]) * -1)
+        plus_one = dc.tensor(torch.ones([1, 1]))
         neg_ = dc.op("multiply", [inp, minus_one])
         exp_ = dc.op(Exp.create(), [neg_])
         result = dc.op("add", [plus_one, exp_])
@@ -589,11 +621,27 @@ def decompose(type, attr, dc, inputs):
 
 def initial_flops_estimate(type, attr, ops):
     flops = 0
-    sfpu_unary_ops = ["exp", "sqrt", "relu", "leaky_relu", "gelu", "gelu_derivative", "reciprocal", "log", "sigmoid", "abs", "cosine", "sine", "argmax", "tanh", "cumsum", "pow",]
+    sfpu_unary_ops = [
+        "exp",
+        "sqrt",
+        "relu",
+        "leaky_relu",
+        "gelu",
+        "gelu_derivative",
+        "reciprocal",
+        "log",
+        "sigmoid",
+        "abs",
+        "cosine",
+        "sine",
+        "argmax",
+        "tanh",
+        "cumsum",
+        "pow",
+    ]
     output_shape = shape(type, attr, ops)[0]
-    
+
     if type in sfpu_unary_ops:
         flops = np.prod(output_shape)
-    
+
     return flops
-    

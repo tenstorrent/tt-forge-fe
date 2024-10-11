@@ -24,16 +24,20 @@ from .forgeglobal import TILE_DIM
 TILE_WIDTH = TILE_DIM
 TILE_HEIGHT = TILE_DIM
 
+
 def align_up(v, a):
     v -= 1
     return v - (v % a) + a
+
 
 def align_up_tile(v):
     v -= 1
     return v - (v % TILE_WIDTH) + TILE_WIDTH
 
+
 def round_up_div(n, d):
     return (n + d - 1) // d
+
 
 def clamp(a, lower=None, upper=None):
     if lower is not None and a < lower:
@@ -42,11 +46,14 @@ def clamp(a, lower=None, upper=None):
         return upper
     return a
 
+
 def calculate_output_dimensions(original_x, original_y, stride, padding):
     import math
+
     return math.ceil(original_x / stride), math.ceil(original_y / stride)
 
-#def generate_conv2d_inputs(input_channels, act_r_dim, act_c_dim, r0_rows_per_iteration=0):
+
+# def generate_conv2d_inputs(input_channels, act_r_dim, act_c_dim, r0_rows_per_iteration=0):
 #    padded_inp_channels = math.ceil(input_channels / TILE_HEIGHT) * TILE_HEIGHT
 #    padded_r_dim = math.ceil(act_r_dim / TILE_HEIGHT) * TILE_HEIGHT
 #    padded_c_dim = math.ceil(act_c_dim / TILE_WIDTH) * TILE_WIDTH
@@ -66,8 +73,8 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
 #
 #    return torch.tensor(activations), torch.tensor(act_transposed)
 #
-#    
-#def transform_forge_conv2d_output(result, act_c_dim, act_r_dim, stride, channel_size=None):
+#
+# def transform_forge_conv2d_output(result, act_c_dim, act_r_dim, stride, channel_size=None):
 #    # Re-transpose back
 #    act_c_dim = math.ceil(act_c_dim / stride)
 #    act_r_dim = math.ceil(act_r_dim / stride)
@@ -82,7 +89,7 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
 #    result = result[:, :channel_size, :act_r_dim, :act_c_dim] # unpad
 #    return result
 #
-#def extract_reduce_outputs(result, dim, keepdims):
+# def extract_reduce_outputs(result, dim, keepdims):
 #    dim_param_to_int = {
 #        forge.Dim.R : (-2,),
 #        forge.Dim.C : (-1,),
@@ -104,6 +111,7 @@ def calculate_output_dimensions(original_x, original_y, stride, padding):
 #    return result
 #
 
+
 def as_json(t):
     return dataclasses_json.config(encoder=t.to_json, decoder=t.from_json)
 
@@ -111,8 +119,10 @@ def as_json(t):
 def dict_as_json(t):
     def to_json(d):
         return {k: t.to_json(v) for k, v in d.items()}
+
     def from_json(d):
         return {k: t.from_json(v) for k, v in d.items()}
+
     return dataclasses_json.config(encoder=to_json, decoder=from_json)
 
 
@@ -121,23 +131,28 @@ def list_as_json(t):
         to_json = list
         from_json = tuple
     else:
+
         def to_json(d):
             return [t.to_json(v) for v in d]
+
         def from_json(d):
             return [t.from_json(v) for v in d]
+
     return dataclasses_json.config(encoder=to_json, decoder=from_json)
 
 
 def optional_as_json(t):
     def to_json(d):
         return None if d is None else t.to_json(d)
+
     def from_json(d):
         return None if d is None else t.from_json(d)
+
     return dataclasses_json.config(encoder=to_json, decoder=from_json)
 
 
 def get_padded_tensors(parameters):
-    """ Forge expects activation/parameter tensors to be 4-dimensions R/C-dim being 32-aligned"""
+    """Forge expects activation/parameter tensors to be 4-dimensions R/C-dim being 32-aligned"""
 
     updated_tensors = {}
     for parameter_name, parameter_tensor in parameters.items():
@@ -161,6 +176,7 @@ def get_padded_tensors(parameters):
 
 def get_forge_parameters_from_state_dict(state_dict: Dict[str, torch.Tensor]):
     from forge.parameter import Parameter
+
     forge_parameters = {}
     torch_parameters = get_padded_tensors(state_dict)
     for parameter_name, parameter_tensor in torch_parameters.items():
@@ -169,6 +185,7 @@ def get_forge_parameters_from_state_dict(state_dict: Dict[str, torch.Tensor]):
             requires_grad=parameter_tensor.requires_grad,
         )
     return forge_parameters
+
 
 def detach_tensors(tensors: List[torch.Tensor], fix_non_contiguos: bool = False) -> List[torch.Tensor]:
     """
@@ -184,6 +201,7 @@ def detach_tensors(tensors: List[torch.Tensor], fix_non_contiguos: bool = False)
 
     return detached_tensors
 
+
 def get_forge_git_hash() -> Optional[str]:
     try:
         git_hash = (
@@ -198,10 +216,13 @@ def get_forge_git_hash() -> Optional[str]:
     except:
         return None
 
+
 def get_forgebackend_git_hash() -> Optional[str]:
     try:
         git_hash = (
-            subprocess.check_output(["git", "rev-parse", "--short", "HEAD:third_party/forgebackend"], stderr=subprocess.STDOUT)
+            subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD:third_party/forgebackend"], stderr=subprocess.STDOUT
+            )
             .decode("utf-8")
             .strip()
         )
@@ -212,11 +233,12 @@ def get_forgebackend_git_hash() -> Optional[str]:
     except:
         return None
 
+
 def forgebackend_path() -> str:
     if "FORGE_HOME" in os.environ:
         return os.environ["FORGE_HOME"]
 
-    if os.path.exists(os.getcwd() + '/third_party/forgebackend'):
+    if os.path.exists(os.getcwd() + "/third_party/forgebackend"):
         # must be in forge root
         return "third_party/forgebackend/"
     else:
@@ -232,7 +254,7 @@ def resolve_device_descriptor_path(device_yaml_override: str) -> str:
         raise FileNotFoundError(f"Device descriptor file not found: {device_yaml_override}")
 
 
-def get_forge_compile_and_runtime_configs() -> Dict[str, str]: 
+def get_forge_compile_and_runtime_configs() -> Dict[str, str]:
     """
     Capture compile-time and runtime environment variables used to compile and run on the device.
     Eventually we want to separate out compile-time and runtime environment variables but we don't
@@ -241,7 +263,7 @@ def get_forge_compile_and_runtime_configs() -> Dict[str, str]:
     The current filter/capture is just a filter for 'FORGE_*' and 'TT_BACKEND_*'
     """
     compile_and_runtime_env_vars = {
-        config: value for config, value in os.environ.items() if config.startswith(('FORGE_', 'TT_BACKEND_'))
+        config: value for config, value in os.environ.items() if config.startswith(("FORGE_", "TT_BACKEND_"))
     }
     return compile_and_runtime_env_vars
 
@@ -252,11 +274,11 @@ def write_forge_envs_configs(dst_dir: str) -> None:
 
 
 def get_tmp_dir() -> str:
-    return os.path.join(os.environ.get('TMPDIR', '/tmp'), getpass.getuser())
+    return os.path.join(os.environ.get("TMPDIR", "/tmp"), getpass.getuser())
 
 
 def get_output_build_dir() -> str:
-    user_defined_path = os.environ.get('FORGE_BUILD_DIR', None)
+    user_defined_path = os.environ.get("FORGE_BUILD_DIR", None)
     output_build_directory = user_defined_path or get_tmp_dir()
     return output_build_directory
 
@@ -273,6 +295,7 @@ def file_lock_directory(func):
         lock_file_path = get_lock_file_path(test_output_directory)
         with filelock.FileLock(lock_file_path):
             return func(test_output_directory, *args, **kwargs)
+
     return wrapper
 
 
@@ -284,6 +307,7 @@ def clear_test_output_build_directory(directory: str) -> None:
     except Exception as e:
         logger.error(f"Failed to clear {directory}. Reason: {e}")
 
+
 @file_lock_directory
 def create_test_output_build_directory(directory: str) -> None:
     try:
@@ -291,19 +315,24 @@ def create_test_output_build_directory(directory: str) -> None:
     except Exception as e:
         logger.error(f"Failed to create test output build dir{directory}. Reason: {e}")
 
+
 @file_lock_directory
 def make_test_output_directory(test_output_directory: str) -> None:
     os.makedirs(test_output_directory, exist_ok=True)
+
 
 def get_current_pytest():
     if "PYTEST_CURRENT_TEST" in os.environ:
         return os.environ.get("PYTEST_CURRENT_TEST", "").replace(" (call)", "")
     else:
         import sys
+
         return " ".join(sys.argv)
+
 
 def generate_hash(org_str):
     return hashlib.sha256(org_str.encode()).hexdigest()[:12]
+
 
 def resolve_output_build_directory(*, directory_prefix: str = None) -> str:
     """
@@ -322,7 +351,7 @@ def resolve_output_build_directory(*, directory_prefix: str = None) -> str:
     test_permutation = forge_env_options_hash + get_current_pytest()
     hashed_suffix = generate_hash(test_permutation)
 
-    test_output_directory_name =  "_".join(filter(None, [directory_prefix, hashed_suffix]))
+    test_output_directory_name = "_".join(filter(None, [directory_prefix, hashed_suffix]))
     test_output_directory = os.path.join(output_build_directory, test_output_directory_name)
 
     make_test_output_directory(test_output_directory)

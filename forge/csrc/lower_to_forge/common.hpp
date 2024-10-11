@@ -11,9 +11,11 @@
 #include <variant>
 #include <vector>
 
-namespace tt {
+namespace tt
+{
 
-struct ForgeBlocks {
+struct ForgeBlocks
+{
     int z;
     int ublock_rt, ublock_ct;
     int mblock_m, mblock_n;
@@ -69,15 +71,16 @@ std::ostream &operator<<(std::ostream &os, const ForgeOpAttr &attr);
 
 enum class ExpPrecision : uint8_t
 {
-  A = 0,
-  B = 1,
+    A = 0,
+    B = 1,
 };
 
 /**
  * @brief Tile dimension enum used to pass variable tile sizes across the SW+HW stack.
  * Only specific dimensions are valid. Please check the enum definition for all valid dimensions.
- */ 
-enum class TileDim : std::uint8_t {
+ */
+enum class TileDim : std::uint8_t
+{
     Dim32x32 = 0,
     Dim16x32 = 1,
     Dim32x16 = 2,
@@ -85,38 +88,38 @@ enum class TileDim : std::uint8_t {
     Dim4x32 = 4,
     Dim2x32 = 5,
     Dim1x32 = 6,
-    Default   = Dim32x32,
-    Invalid   = 0xff,
+    Default = Dim32x32,
+    Invalid = 0xff,
 };
 
 enum class DataFormat : std::uint8_t
 {
-    Float32   = 0,
-    Float16   = 1,
-    Bfp8      = 2,
-    Bfp4      = 3,
-    Bfp2      = 11,
+    Float32 = 0,
+    Float16 = 1,
+    Bfp8 = 2,
+    Bfp4 = 3,
+    Bfp2 = 11,
     Float16_b = 5,
-    Bfp8_b    = 6,
-    Bfp4_b    = 7,
-    Bfp2_b    = 15,
-    Lf8       = 10,
-    UInt16    = 12,
-    Int8      = 14,
-    Int32      = 8,
-    RawUInt8  = 0xf0,
+    Bfp8_b = 6,
+    Bfp4_b = 7,
+    Bfp2_b = 15,
+    Lf8 = 10,
+    UInt16 = 12,
+    Int8 = 14,
+    Int32 = 8,
+    RawUInt8 = 0xf0,
     RawUInt16 = 0xf1,
     RawUInt32 = 0xf2,
-    Invalid   = 0xff
+    Invalid = 0xff
 };
 
 enum class MathFidelity : uint8_t
 {
-    LoFi          = 0,
-    HiFi2         = 2,
-    HiFi3         = 3,
-    HiFi4         = 4,
-    Invalid       = 0xff,
+    LoFi = 0,
+    HiFi2 = 2,
+    HiFi3 = 3,
+    HiFi4 = 4,
+    Invalid = 0xff,
 };
 
 std::uint32_t data_format_byte_size(DataFormat df, int elements = 1);
@@ -140,9 +143,9 @@ inline bool is_valid_accumulate_df(DataFormat df)
 {
     switch (df)
     {
-        case DataFormat::Float32:   // fallthrough
-        case DataFormat::Float16_b: // fallthrough
-        case DataFormat::Float16:   // fallthrough
+        case DataFormat::Float32:    // fallthrough
+        case DataFormat::Float16_b:  // fallthrough
+        case DataFormat::Float16:    // fallthrough
         case DataFormat::Int32: return true;
         default: return false;
     }
@@ -187,7 +190,8 @@ inline bool is_b_data_format(DataFormat df)
 
 inline bool is_a_data_format(DataFormat df)
 {
-    switch(df){
+    switch (df)
+    {
         case DataFormat::Float16:
         case DataFormat::Bfp8:
         case DataFormat::Bfp4:
@@ -250,11 +254,11 @@ std::ostream &operator<<(std::ostream &os, MathFidelity const &mf);
 
 struct PytorchTensorDesc
 {
-    const void* ptr;
+    const void *ptr;
     std::uint32_t itemsize;
     DataFormat format;
-    std::array<std::uint32_t, 4> shape;   // outer-most dimension first
-    std::array<std::uint32_t, 4> strides; // outer-most dimension first, in bytes
+    std::array<std::uint32_t, 4> shape;    // outer-most dimension first
+    std::array<std::uint32_t, 4> strides;  // outer-most dimension first, in bytes
 };
 
 }  // namespace tt

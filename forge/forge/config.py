@@ -12,7 +12,14 @@ from forge._C import DataFormat, MathFidelity, AMPNodeProperties
 import forge.query as query
 from dataclasses_json import dataclass_json, config
 
-from forge.utils import as_json, dict_as_json, list_as_json, optional_as_json, resolve_output_build_directory, resolve_device_descriptor_path
+from forge.utils import (
+    as_json,
+    dict_as_json,
+    list_as_json,
+    optional_as_json,
+    resolve_output_build_directory,
+    resolve_device_descriptor_path,
+)
 from loguru import logger
 
 
@@ -33,7 +40,7 @@ class CompileDepth(Enum):
 
     @classmethod
     def has_value(cls, value):
-        return value in cls._value2member_map_ 
+        return value in cls._value2member_map_
 
     @classmethod
     def to_json(cls, value):
@@ -43,10 +50,11 @@ class CompileDepth(Enum):
     def from_json(cls, value):
         return cls[value.upper()]
 
+
 class PerfTraceLevel(Enum):
-    NONE = 0                    # No backend performance trace data will be captured
-    LIGHT = 1                   # Basic op start/end times will be captured
-    VERBOSE = 2                 # Detailed set of events will be captured. This could have negative impact on performance.
+    NONE = 0  # No backend performance trace data will be captured
+    LIGHT = 1  # Basic op start/end times will be captured
+    VERBOSE = 2  # Detailed set of events will be captured. This could have negative impact on performance.
 
     @classmethod
     def to_json(cls, value):
@@ -64,7 +72,7 @@ class PerfTraceLevel(Enum):
             return "--dump-perf-events --perf-level 0 --perf-target-inputs 0,1,2,-1,-2 --perf-suppress-warnings"
 
         if self.value == PerfTraceLevel.VERBOSE.value:
-            #return "--dump-perf-events-intermediate --perf-level 1 --perf-target-inputs 0,1,2,3,-1,-2,-3 --perf-suppress-warnings"
+            # return "--dump-perf-events-intermediate --perf-level 1 --perf-target-inputs 0,1,2,3,-1,-2,-3 --perf-suppress-warnings"
             return "--dump-perf-events-intermediate --perf-level 1 --perf-target-inputs 0,1,2,35,36,37,38,39,40,41,42,43,44,45,46,47,56,57,58,59,60,61,62,-1 --perf-suppress-warnings"
             # The below command (with concurrent instead of intermediate) is useful when some traces result in out-of-memory errors
             # However, it hasn't been extensively tested that I know of, so won't turn it into the default setting just yet...
@@ -73,12 +81,12 @@ class PerfTraceLevel(Enum):
         raise RuntimeError("Unsupported level")
 
 
-
 class TTIDumpFormat(Enum):
     """
     Enumerates the supported formats for dumping a TTDeviceImage to disk.
     This specifies the serialization format for tensor data.
     """
+
     DEFAULT = "DEFAULT"
     BACKEND = "BACKEND"
     BACKEND_TILIZED = "BACKEND_TILIZED"
@@ -103,125 +111,193 @@ class TTIDumpFormat(Enum):
 @dataclass_json
 @dataclass
 class CompilerConfig:
-    enable_training: bool = False           # enable training; run autograd & training passes
-    enable_recompute: bool = False          # enable training recompute during autograd
-    match_subgraph_patterns: Optional[int] = None   # invokes pattern_matcher to compact isomorphic subgraphs
+    # enable training; run autograd & training passes
+    enable_training: bool = False
+    # enable training recompute during autograd
+    enable_recompute: bool = False
+    # invokes pattern_matcher to compact isomorphic subgraphs
+    match_subgraph_patterns: Optional[int] = None
 
-    balancer_policy: str = "default"        # balancer policy to determine decision making on grid-shapes, blocks etc
-    scheduler_policy: str = "ModuleInputsBFS" # scheduler policy to determine ordering of the ops submitted to be placed by placer
-    enable_t_streaming: bool = True         # enable flattening r/c dims into t for minimal buffering
-    manual_t_streaming: bool = False        # only respect overrides, by default no streaming
-    enable_consteval: bool = True           # enable promotion of nodes to be constant evaluated where possible
-    enable_auto_fusing: bool = True         # enable automatic fusing of ops
-    compile_subgraphs: bool = False         # Compile each disjoint graph separately into its own program
-    graph_solver_self_cut_type: str = "FastCut" # which type of self-cut to use for graphsolver
-    use_interactive_placer: bool = True     # use interactive placer if chosen policy supports it
-    enable_enumerate_u_kt: bool = True      # Enable searching all possible matmul u_kts
-    enable_link_past_cache_ios: bool = False # Enable auto detection and linking of past key-value pairs
-    enable_pt2_fx_graph_link: bool = False  # Enable linking of past key-value pairs in the graph
+    # balancer policy to determine decision making on grid-shapes, blocks etc
+    balancer_policy: str = "default"
+    # scheduler policy to determine ordering of the ops submitted to be placed by placer
+    scheduler_policy: str = "ModuleInputsBFS"
+    # enable flattening r/c dims into t for minimal buffering
+    enable_t_streaming: bool = True
+    # only respect overrides, by default no streaming
+    manual_t_streaming: bool = False
+    # enable promotion of nodes to be constant evaluated where possible
+    enable_consteval: bool = True
+    # enable automatic fusing of ops
+    enable_auto_fusing: bool = True
+    # Compile each disjoint graph separately into its own program
+    compile_subgraphs: bool = False
+    # which type of self-cut to use for graphsolver
+    graph_solver_self_cut_type: str = "FastCut"
+    # use interactive placer if chosen policy supports it
+    use_interactive_placer: bool = True
+    # Enable searching all possible matmul u_kts
+    enable_enumerate_u_kt: bool = True
+    # Enable auto detection and linking of past key-value pairs
+    enable_link_past_cache_ios: bool = False
+    # Enable linking of past key-value pairs in the graph
+    enable_pt2_fx_graph_link: bool = False
 
-    compile_depth: int = field(default=CompileDepth.FULL, metadata=as_json(CompileDepth))  # Defines compilation depth. Used to limit scope of some unit tests
+    # Defines compilation depth. Used to limit scope of some unit tests
+    compile_depth: int = field(default=CompileDepth.FULL, metadata=as_json(CompileDepth))
 
-    enable_tvm_cpu_fallback: bool = False    # Create cpu device for unsupported forge ops
-    cpu_fallback_ops: Set[str] = field(default_factory=lambda: set(["embedding"])) # Types of ops to fall back to CPU for
-    enable_tm_cpu_fallback: bool = False    # Extend CPU fallback for TM ops
-    tm_cpu_fallback_max_depth: int = 10     # Max search depth for extended CPU fallback
+    # Create cpu device for unsupported forge ops
+    enable_tvm_cpu_fallback: bool = False
+    # Types of ops to fall back to CPU for
+    cpu_fallback_ops: Set[str] = field(default_factory=lambda: set(["embedding"]))
+    # Extend CPU fallback for TM ops
+    enable_tm_cpu_fallback: bool = False
+    # Max search depth for extended CPU fallback
+    tm_cpu_fallback_max_depth: int = 10
 
-    enable_tvm_dropout: bool = False        # (Temporary): Remove when forge supports dropout
-    enable_tvm_unsupported_ops: bool = False# Create "unsupported" forge ops in python file, allowing user to modify later
-    enable_op_level_comparision: bool = False # Should we need to compare every op with framework output at each compilation stage.
-    enable_tvm_constant_prop: bool = False  # Should we constant prop in tvm
-    convert_framework_params_to_tvm: bool = False # Convert framework params to relay params
-    enable_xla_jax_convert: bool = False    # Convert JAX model to TF through XLA
-    enable_tvm_jax_freeze_large_model: bool = True # When model param is larger than 2GB, Protobuf will error out. This flag will enable large model tracing
-    framework_model_output_names: List[str] = field(default_factory=lambda: list())   # List of output names specified by framework
-    tvm_constnat_prop_mask: Set[str] = field(default_factory=lambda: set())  # Which parameters should be constant propped by tvm
-    compile_tvm_to_python: bool = True      # instead of generating a direct forge graph from TVM, generate a forge python class
-    retain_tvm_python_files: bool = False   # Whether to keep generated python code, or load and delete
-    tvm_graph_store_path: str = ""          # Defines store path of serilized TVM graphs. 
-    tvm_graph_load_path: str = ""           # Defines load path of serilized TVM graphs.
-    tvm_module_to_num_patterns: Dict[str, int] = field(default_factory=lambda: dict()) # Number of patterns to match for each module
+    # (Temporary): Remove when forge supports dropout
+    enable_tvm_dropout: bool = False
+    # Create "unsupported" forge ops in python file, allowing user to modify later
+    enable_tvm_unsupported_ops: bool = False
+    # Should we need to compare every op with framework output at each compilation stage.
+    enable_op_level_comparision: bool = False
+    # Should we constant prop in tvm
+    enable_tvm_constant_prop: bool = False
+    # Convert framework params to relay params
+    convert_framework_params_to_tvm: bool = False
+    # Convert JAX model to TF through XLA
+    enable_xla_jax_convert: bool = False
+    # When model param is larger than 2GB, Protobuf will error out. This flag will enable large model tracing
+    enable_tvm_jax_freeze_large_model: bool = True
+    # List of output names specified by framework
+    framework_model_output_names: List[str] = field(default_factory=lambda: list())
+    # Which parameters should be constant propped by tvm
+    tvm_constnat_prop_mask: Set[str] = field(default_factory=lambda: set())
+    # instead of generating a direct forge graph from TVM, generate a forge python class
+    compile_tvm_to_python: bool = True
+    # Whether to keep generated python code, or load and delete
+    retain_tvm_python_files: bool = False
+    # Defines store path of serilized TVM graphs.
+    tvm_graph_store_path: str = ""
+    # Defines load path of serilized TVM graphs.
+    tvm_graph_load_path: str = ""
+    # Number of patterns to match for each module
+    tvm_module_to_num_patterns: Dict[str, int] = field(default_factory=lambda: dict())
 
-    enable_conv_prestride: bool = True      # Enables a transform for conv that directly reads input, such that it goes from stride > 1 to stride = 1
-                                            # This usually translates to lower DRAM BW and less math as the input better populates tiles
+    # Enables a transform for conv that directly reads input, such that it goes from stride > 1 to stride = 1
+    # This usually translates to lower DRAM BW and less math as the input better populates tiles
+    enable_conv_prestride: bool = True
 
-    max_pool_add_sub_surround: bool = False         # Add add op before, and subtract op after max_pool during the decomposition. The reason for 
-                                                    # adding it is to tangle with negative values for max_pool, as current decomposition uses sparse
-                                                    # matmul which is padded with 0. Therefore, 0 will be maximum value when max_pool is run - which 
-                                                    # represents invalid results. 
-    max_pool_add_sub_surround_value: float = 1.0    # Value which will be added and subtracted before and after (respectively) around max_pool op. This
-                                                    # way, we're able to support negative values even with sparse matmul implementation.
+    # Add add op before, and subtract op after max_pool during the decomposition. The reason for
+    # adding it is to tangle with negative values for max_pool, as current decomposition uses sparse
+    # matmul which is padded with 0. Therefore, 0 will be maximum value when max_pool is run - which
+    # represents invalid results.
+    max_pool_add_sub_surround: bool = False
 
-    loopback_outputs: Dict[str, int] = field(default_factory=lambda: dict())  # Outputs will be kept on device and looped back to inputs of subsequent runs
-    enable_device_tilize: bool = False # If true, enables Tilize op for embedded platform
-    enable_forked_dram_inputs = False # If true, enables forked_dram_inputs optimization
+    # Value which will be added and subtracted before and after (respectively) around max_pool op. This
+    # way, we're able to support negative values even with sparse matmul implementation.
+    max_pool_add_sub_surround_value: float = 1.0
 
-    chip_placement_policy: str = "MMIO_LAST"       # how to order the given chip ids for placement
-    op_names_dont_fuse: List[str] = field(default_factory=lambda: list())           # A list of ops to disable being fused
-    op_names_manual_fuse: List[str] = field(default_factory=lambda: list())          # A list of ops to allow being fused, non specified ops will no longer participate in fusion
-    default_dram_parameters: Optional[bool] = None # If set to true/false, place parameters in dram by default i.e. prologue=False/True, if it's None we refer to microbatch-size to set prologue config
-    default_df_override: Optional[DataFormat] = field(default=None, metadata=optional_as_json(DataFormat)) # Default override for all node data formats, None means automatically inferred
-    default_accumulate_df: Optional[DataFormat] = field(default=None, metadata=optional_as_json(DataFormat)) # Accumulation format, for chips that support it
-    enable_broadcast_splitting: bool = False  # if true, large broadcasts will be split into multiple edges with nops between them
-    default_math_fidelity: MathFidelity = field(default=MathFidelity.HiFi3, metadata=as_json(MathFidelity)) # default math fidelity for all ops
-    performance_trace: PerfTraceLevel = field(default=PerfTraceLevel.NONE, metadata=as_json(PerfTraceLevel)) # backend performance trace level
-    amp_level: Optional[int] = None     # Configure Automatic Mixed Precision (AMP) level. By default it's set to 'None' (0), which means no AMP is applied. However, there
-                                        # are few levels of AMP that can be applied: 
-                                        # 1: Matmuls inputs/outputs are set to BFP8_b;  Fused ops, Softmax, LayerNorm ops are set to FP16_b;
-                                        # 2: Matmuls inputs/outputs are set to BFP8;    Fused ops, Softmax, LayerNorm ops are set to FP16;  GELU is BFP8;
-                                        # 
-                                        # Have in mind that in each AMP level, non-mentioned op types are left with default data format (usually set by user; i.e. FP32).
-    harvesting_mask: int = 0 # List of harvested rows (same across all chips)
-    enable_auto_transposing_placement: bool = ("FORGE_ENABLE_AUTO_TRANSPOSE" in os.environ)  # compiler automatically detects ops to transpose on placement when the flag is set
-    fracture_groups: List[Tuple[List[Tuple[str, int, int]], List[str], List[int]]] = field(default_factory=lambda: list()) # see insert_fracture_group
-    conv_multi_op_fracture_factor_override: Dict[str, int] = field(default_factory=lambda: dict())  # override multi op fracture factor for conv
+    # Outputs will be kept on device and looped back to inputs of subsequent runs
+    loopback_outputs: Dict[str, int] = field(default_factory=lambda: dict())
+    # If true, enables Tilize op for embedded platform
+    enable_device_tilize: bool = False
+    # If true, enables forked_dram_inputs optimization
+    enable_forked_dram_inputs = False
+
+    # how to order the given chip ids for placement
+    chip_placement_policy: str = "MMIO_LAST"
+    # A list of ops to disable being fused
+    op_names_dont_fuse: List[str] = field(default_factory=lambda: list())
+    # A list of ops to allow being fused, non specified ops will no longer participate in fusion
+    op_names_manual_fuse: List[str] = field(default_factory=lambda: list())
+    # If set to true/false, place parameters in dram by default i.e. prologue=False/True, if it's None we refer to microbatch-size to set prologue config
+    default_dram_parameters: Optional[bool] = None
+    # Default override for all node data formats, None means automatically inferred
+    default_df_override: Optional[DataFormat] = field(default=None, metadata=optional_as_json(DataFormat))
+    # Accumulation format, for chips that support it
+    default_accumulate_df: Optional[DataFormat] = field(default=None, metadata=optional_as_json(DataFormat))
+    # if true, large broadcasts will be split into multiple edges with nops between them
+    enable_broadcast_splitting: bool = False
+    # default math fidelity for all ops
+    default_math_fidelity: MathFidelity = field(default=MathFidelity.HiFi3, metadata=as_json(MathFidelity))
+    # backend performance trace level
+    performance_trace: PerfTraceLevel = field(default=PerfTraceLevel.NONE, metadata=as_json(PerfTraceLevel))
+
+    # Configure Automatic Mixed Precision (AMP) level. By default it's set to 'None' (0), which means no AMP is applied. However, there
+    # are few levels of AMP that can be applied:
+    # 1: Matmuls inputs/outputs are set to BFP8_b;  Fused ops, Softmax, LayerNorm ops are set to FP16_b;
+    # 2: Matmuls inputs/outputs are set to BFP8;    Fused ops, Softmax, LayerNorm ops are set to FP16;  GELU is BFP8;
+    #
+    # Have in mind that in each AMP level, non-mentioned op types are left with default data format (usually set by user; i.e. FP32).
+    amp_level: Optional[int] = None
+
+    # List of harvested rows (same across all chips)
+    harvesting_mask: int = 0
+    # compiler automatically detects ops to transpose on placement when the flag is set
+    enable_auto_transposing_placement: bool = "FORGE_ENABLE_AUTO_TRANSPOSE" in os.environ
+    # see insert_fracture_group
+    fracture_groups: List[Tuple[List[Tuple[str, int, int]], List[str], List[int]]] = field(
+        default_factory=lambda: list()
+    )
+    # override multi op fracture factor for conv
+    conv_multi_op_fracture_factor_override: Dict[str, int] = field(default_factory=lambda: dict())
     enable_single_buffer_fallback: bool = False
 
-    backend_opt_level: int = 4 # backend optimization level
-    backend_output_dir: str = field(default_factory=lambda: resolve_output_build_directory()) # backend compile and perf trace output directory
+    # backend optimization level
+    backend_opt_level: int = 4
+    # backend compile and perf trace output directory
+    backend_output_dir: str = field(default_factory=lambda: resolve_output_build_directory())
     backend_device_descriptor_path: str = ""
     backend_cluster_descriptor_path: str = ""
     backend_runtime_params_path: str = ""
     backend_runtime_args: str = ""
-    store_backend_db_to_yaml: bool = False # whether to dump the backend DB to a yaml file or not
-    input_queues_on_host: bool = True # whether to place input queues on device
-    output_queues_on_host: bool = True # whether to place output queues on device
-    insert_queues: List[Tuple[str, str, int]] = field(default_factory=lambda: list(), metadata=list_as_json(tuple)) # Insert queues between (producer_op_name, consumer_op_name, input_port_id)
-    amp_properties: List[AMPNodeProperties] = field(default_factory=lambda: list(), metadata=list_as_json(AMPNodeProperties))
+    # whether to dump the backend DB to a yaml file or not
+    store_backend_db_to_yaml: bool = False
+    # whether to place input queues on device
+    input_queues_on_host: bool = True
+    # whether to place output queues on device
+    output_queues_on_host: bool = True
+    # Insert queues between (producer_op_name, consumer_op_name, input_port_id)
+    insert_queues: List[Tuple[str, str, int]] = field(default_factory=lambda: list(), metadata=list_as_json(tuple))
+    amp_properties: List[AMPNodeProperties] = field(
+        default_factory=lambda: list(), metadata=list_as_json(AMPNodeProperties)
+    )
     scheduler_constraints: List[List[str]] = field(default_factory=lambda: list())
     paddings: Dict[str, bool] = field(default_factory=lambda: dict())
-    op_intermediates_to_save: List[str] = field(default_factory=lambda: list()) # list of tagged ops that will spill its output to queue
+    # list of tagged ops that will spill its output to queue
+    op_intermediates_to_save: List[str] = field(default_factory=lambda: list())
     tti_dump_format: TTIDumpFormat = field(default=TTIDumpFormat.DEFAULT, metadata=as_json(TTIDumpFormat))
 
     # TODO: add reportify dir
 
     def apply_env_config_overrides(self):
         if "FORGE_OVERRIDE_NUM_CHIPS" in os.environ:
-            self.chip_ids = list(range(int(os.environ.get('FORGE_OVERRIDE_NUM_CHIPS'))))
+            self.chip_ids = list(range(int(os.environ.get("FORGE_OVERRIDE_NUM_CHIPS"))))
 
         if "FORGE_DISABLE_OP_FUSING" in os.environ:
             self.enable_auto_fusing = False
 
         if "FORGE_PERFORMANCE_TRACE" in os.environ:
             self.performance_trace = {
-                    "none": PerfTraceLevel.NONE,
-                    "light": PerfTraceLevel.LIGHT,
-                    "verbose": PerfTraceLevel.VERBOSE,
-                }[os.environ["FORGE_PERFORMANCE_TRACE"].lower()]
+                "none": PerfTraceLevel.NONE,
+                "light": PerfTraceLevel.LIGHT,
+                "verbose": PerfTraceLevel.VERBOSE,
+            }[os.environ["FORGE_PERFORMANCE_TRACE"].lower()]
 
         if "FORGE_COMPILE_DEPTH" in os.environ:
             self.compile_depth = {
-                    "full": CompileDepth.FULL,
-                    "init_compile": CompileDepth.INIT_COMPILE,
-                    "generate_initial_graph": CompileDepth.GENERATE_INITIAL_GRAPH,
-                    "post_initial_graph_pass": CompileDepth.POST_INITIAL_GRAPH_PASS,
-                    "pre_lowering_pass": CompileDepth.PRE_LOWERING_PASS,
-                    "forge_graph_pre_placer": CompileDepth.FORGE_GRAPH_PRE_PLACER,
-                    "balancer_pass": CompileDepth.BALANCER_PASS,
-                    "generate_netlist": CompileDepth.GENERATE_NETLIST,
-                    "post_pattern_matcher": CompileDepth.POST_PATTERN_MATCHER,
-                    "backend_golden_verify": CompileDepth.BACKEND_GOLDEN_VERIFY,
-                }[os.environ["FORGE_COMPILE_DEPTH"].lower()]
+                "full": CompileDepth.FULL,
+                "init_compile": CompileDepth.INIT_COMPILE,
+                "generate_initial_graph": CompileDepth.GENERATE_INITIAL_GRAPH,
+                "post_initial_graph_pass": CompileDepth.POST_INITIAL_GRAPH_PASS,
+                "pre_lowering_pass": CompileDepth.PRE_LOWERING_PASS,
+                "forge_graph_pre_placer": CompileDepth.FORGE_GRAPH_PRE_PLACER,
+                "balancer_pass": CompileDepth.BALANCER_PASS,
+                "generate_netlist": CompileDepth.GENERATE_NETLIST,
+                "post_pattern_matcher": CompileDepth.POST_PATTERN_MATCHER,
+                "backend_golden_verify": CompileDepth.BACKEND_GOLDEN_VERIFY,
+            }[os.environ["FORGE_COMPILE_DEPTH"].lower()]
 
         if "FORGE_ENABLE_INPUT_QUEUES_ON_HOST" in os.environ:
             self.input_queues_on_host = bool(int(os.environ["FORGE_ENABLE_INPUT_QUEUES_ON_HOST"]))
@@ -265,7 +341,9 @@ class CompilerConfig:
             self.scheduler_policy = os.environ["FORGE_SCHEDULER_POLICY"]
 
         if "FORGE_OVERRIDE_DEVICE_YAML" in os.environ and os.environ["FORGE_OVERRIDE_DEVICE_YAML"] != "":
-            self.backend_device_descriptor_path = resolve_device_descriptor_path(os.environ["FORGE_OVERRIDE_DEVICE_YAML"])
+            self.backend_device_descriptor_path = resolve_device_descriptor_path(
+                os.environ["FORGE_OVERRIDE_DEVICE_YAML"]
+            )
 
     def __post_init__(self):
         self.apply_env_config_overrides()
@@ -283,13 +361,20 @@ class CompilerConfig:
         target_mm_weights, target_mm_bias = True, True
         input_parameter_indices = [
             (operand_index, mantissa_bits)
-            for use_lower_precision, operand_index in zip((target_mm_weights, target_mm_bias), range(1,3))
+            for use_lower_precision, operand_index in zip((target_mm_weights, target_mm_bias), range(1, 3))
             if use_lower_precision
         ]
         self.amp_properties.append(
-            AMPNodeProperties(op_type="matmul", math_fidelity=math_fidelity, input_parameter_indices_to_optimize=input_parameter_indices)
+            AMPNodeProperties(
+                op_type="matmul",
+                math_fidelity=math_fidelity,
+                input_parameter_indices_to_optimize=input_parameter_indices,
+            )
         )
-    def place_on_new_epoch(self, op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]) -> None:
+
+    def place_on_new_epoch(
+        self, op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]
+    ) -> None:
         """
         Given a list of ops, `op_names`, select the op appearing first in the placement schedule and issue an epoch break.
         """
@@ -301,8 +386,9 @@ class CompilerConfig:
             assert isinstance(op_names, list)
             self.op_names_to_epoch_break.append(op_names)
 
-
-    def place_on_new_chip(self, op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]) -> None:
+    def place_on_new_chip(
+        self, op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]
+    ) -> None:
         """
         Given a list of ops, `op_names`, select the op appearing first in the placement schedule and issue a chip break.
         """
@@ -347,69 +433,71 @@ class CompilerConfig:
 
 
 def get_harvesting_mask(row_indices: List[int]):
-    harvested_rows_mask = 0 
+    harvested_rows_mask = 0
     for r in row_indices:
-        harvested_rows_mask += (1 << r)
+        harvested_rows_mask += 1 << r
     return harvested_rows_mask
+
 
 # Backend runtime yaml path for supported B0 boards
 supported_backend_configurations = {
-    "wh_n150"      : "tti/runtime_param_yamls/wh_n150_syslevel.yaml",
-    "wh_n300"      : "tti/runtime_param_yamls/wh_n300_syslevel.yaml",
-    "galaxy"       : "tti/runtime_param_yamls/galaxy_syslevel.yaml",
-    "gs_e150"      : "tti/runtime_param_yamls/gs_e150_syslevel.yaml",
-    "gs_e300"      : "tti/runtime_param_yamls/gs_e300_syslevel.yaml",
+    "wh_n150": "tti/runtime_param_yamls/wh_n150_syslevel.yaml",
+    "wh_n300": "tti/runtime_param_yamls/wh_n300_syslevel.yaml",
+    "galaxy": "tti/runtime_param_yamls/galaxy_syslevel.yaml",
+    "gs_e150": "tti/runtime_param_yamls/gs_e150_syslevel.yaml",
+    "gs_e300": "tti/runtime_param_yamls/gs_e300_syslevel.yaml",
 }
 
 # Global compiler configuration
-g_compiler_config : CompilerConfig = CompilerConfig()
+g_compiler_config: CompilerConfig = CompilerConfig()
 
 
-# 
+#
 # User-level API for setting compiler configuration options
 #
 def set_configuration_options(
-        enable_recompute: Optional[bool] = None,
-        balancer_policy: Optional[str] = None,
-        place_on_one_row: Optional[bool] = None,
-        enable_t_streaming: Optional[bool] = None,
-        manual_t_streaming: Optional[bool] = None,
-        enable_consteval: Optional[bool] = None,
-        default_df_override: Optional[DataFormat] = None,
-        accumulate_df: Optional[DataFormat] = None,
-        math_fidelity: Optional[MathFidelity] = None,
-        performance_trace: Optional[PerfTraceLevel] = None,
-        backend_opt_level: Optional[int] = None,
-        backend_output_dir: Optional[str] = None,
-        backend_device_descriptor_path: Optional[str] = None,
-        backend_cluster_descriptor_path: Optional[str] = None,
-        backend_runtime_params_path: Optional[str] = None,
-        backend_runtime_args: Optional[str] = None,
-        enable_auto_fusing: Optional[bool] = None,
-        enable_conv_prestride: Optional[bool] = None,
-        amp_level: Optional[int] = None,
-        harvested_rows: Optional[List[List[int]]] = None,
-        store_backend_db_to_yaml: Optional[bool] = None,
-        input_queues_on_host: Optional[bool] = None,
-        output_queues_on_host: Optional[bool] = None,
-        enable_auto_transposing_placement: Optional[bool] = None,
-        use_interactive_placer: Optional[bool] = None,
-        op_intermediates_to_save: Optional[List[str]] = None,
-        enable_enumerate_u_kt: Optional[bool] = None,
-        enable_device_tilize: Optional[bool] = None,
-        chip_placement_policy: Optional[str] = None,
-        enable_forked_dram_inputs: Optional[bool] = None,
-        device_config: Optional[str] = None):
+    enable_recompute: Optional[bool] = None,
+    balancer_policy: Optional[str] = None,
+    place_on_one_row: Optional[bool] = None,
+    enable_t_streaming: Optional[bool] = None,
+    manual_t_streaming: Optional[bool] = None,
+    enable_consteval: Optional[bool] = None,
+    default_df_override: Optional[DataFormat] = None,
+    accumulate_df: Optional[DataFormat] = None,
+    math_fidelity: Optional[MathFidelity] = None,
+    performance_trace: Optional[PerfTraceLevel] = None,
+    backend_opt_level: Optional[int] = None,
+    backend_output_dir: Optional[str] = None,
+    backend_device_descriptor_path: Optional[str] = None,
+    backend_cluster_descriptor_path: Optional[str] = None,
+    backend_runtime_params_path: Optional[str] = None,
+    backend_runtime_args: Optional[str] = None,
+    enable_auto_fusing: Optional[bool] = None,
+    enable_conv_prestride: Optional[bool] = None,
+    amp_level: Optional[int] = None,
+    harvested_rows: Optional[List[List[int]]] = None,
+    store_backend_db_to_yaml: Optional[bool] = None,
+    input_queues_on_host: Optional[bool] = None,
+    output_queues_on_host: Optional[bool] = None,
+    enable_auto_transposing_placement: Optional[bool] = None,
+    use_interactive_placer: Optional[bool] = None,
+    op_intermediates_to_save: Optional[List[str]] = None,
+    enable_enumerate_u_kt: Optional[bool] = None,
+    enable_device_tilize: Optional[bool] = None,
+    chip_placement_policy: Optional[str] = None,
+    enable_forked_dram_inputs: Optional[bool] = None,
+    device_config: Optional[str] = None,
+):
     """
     Set global compile configuration options.
 
     Parameters
     ----------
-    enable_recompute: Optional[bool] 
+    enable_recompute: Optional[bool]
         For training only. Enable 'recompute' feature which significantly reduces memory requirements at a cost of
         some performance.
 
-    balancer_policy: Optional[str] 
+    balancer_policy: Optional[str]
         Override default place & route policy. Valid values are:
 
         "NLP": Custom policy with reasonable defaults for NLP-like models
@@ -423,24 +511,24 @@ def set_configuration_options(
         [DEPRECATED]
         "CNN"
 
-    place_on_one_row: Optional[bool] 
-        For place & route to place every op on one row of cores only. 
+    place_on_one_row: Optional[bool]
+        For place & route to place every op on one row of cores only.
 
-    enable_t_streaming: Optional[bool] 
+    enable_t_streaming: Optional[bool]
         Enable buffering optimization which reduces memory usage and latency.
 
-    manual_t_streaming: Optional[bool] 
+    manual_t_streaming: Optional[bool]
         Only respect override_t_stream_dir op overrides, otherwise no streaming.
         enable_t_streaming must also be true to take effect.
 
-    enable_consteval: Optional[bool] 
+    enable_consteval: Optional[bool]
         Use constant propagation to simplify the model.
 
     default_df_override: Optional[DataFormat], None default
         Set the default override for all node data formats, None means automatically inferred
 
     accumulate_df: Optional[DataFormat], Float16_b default
-        Set default accumulation format for all operations, if supported by the device. 
+        Set default accumulation format for all operations, if supported by the device.
 
     math_fidelity: Optional[MathFidelity], MathFidelity.HiFi3 default
         Set default math fidelity for all operations
@@ -460,7 +548,7 @@ def set_configuration_options(
 
     backend_cluster_descriptor_path: Optional[str]
         Set location for YAML file to load multi-device cluster descriptor
-    
+
     backend_runtime_params_path: Optional[str]
         Set location for YAML file to dump/load backend database configurations
 
@@ -494,7 +582,7 @@ def set_configuration_options(
     dram_placement_algorithm: Optional[pyplacer.DRAMPlacementAlgorithm]
         Set the algorithm to use for DRAM placement. Valid values are: ROUND_ROBIN, ROUND_ROBIN_FLIP_FLOP, GREATEST_CAPACITY, CLOSEST
     enable_forked_dram_inputs: Optional[bool]
-        Enable or Disable Forked Dram Optimization        
+        Enable or Disable Forked Dram Optimization
 
     device_config: Optional[str]
         Configure and Set runtime_param.yaml for offline WH compile based on the value.
@@ -526,7 +614,9 @@ def set_configuration_options(
     if backend_output_dir is not None:
         g_compiler_config.backend_output_dir = backend_output_dir
     if backend_device_descriptor_path is not None:
-        g_compiler_config.backend_device_descriptor_path = resolve_device_descriptor_path(backend_device_descriptor_path)
+        g_compiler_config.backend_device_descriptor_path = resolve_device_descriptor_path(
+            backend_device_descriptor_path
+        )
     if backend_cluster_descriptor_path is not None:
         g_compiler_config.backend_cluster_descriptor_path = backend_cluster_descriptor_path
     if backend_runtime_params_path is not None:
@@ -548,19 +638,22 @@ def set_configuration_options(
     if output_queues_on_host is not None:
         g_compiler_config.output_queues_on_host = output_queues_on_host
     if enable_auto_transposing_placement is not None:
-        g_compiler_config.enable_auto_transposing_placement = g_compiler_config.enable_auto_transposing_placement or enable_auto_transposing_placement
+        g_compiler_config.enable_auto_transposing_placement = (
+            g_compiler_config.enable_auto_transposing_placement or enable_auto_transposing_placement
+        )
     if use_interactive_placer is not None:
         g_compiler_config.use_interactive_placer = use_interactive_placer
     if enable_enumerate_u_kt is not None:
         g_compiler_config.enable_enumerate_u_kt = enable_enumerate_u_kt
     if op_intermediates_to_save is not None:
-        g_compiler_config.op_intermediates_to_save = op_intermediates_to_save 
+        g_compiler_config.op_intermediates_to_save = op_intermediates_to_save
     if enable_device_tilize is not None:
         g_compiler_config.enable_device_tilize = enable_device_tilize
     if chip_placement_policy is not None:
         g_compiler_config.chip_placement_policy = chip_placement_policy
     if enable_forked_dram_inputs is not None:
-        g_compiler_config.enable_forked_dram_inputs = enable_forked_dram_inputs 
+        g_compiler_config.enable_forked_dram_inputs = enable_forked_dram_inputs
+
 
 def set_epoch_break(op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]):
     """
@@ -574,6 +667,7 @@ def set_epoch_break(op_names: Union[str, query.NodePredicateBuilder, List[Union[
     global g_compiler_config
     g_compiler_config.place_on_new_epoch(op_names)
 
+
 def set_chip_break(op_names: Union[str, query.NodePredicateBuilder, List[Union[str, query.NodePredicateBuilder]]]):
     """
     Instruct place & route to start placing ops on the next chip in the pipeline.
@@ -586,7 +680,10 @@ def set_chip_break(op_names: Union[str, query.NodePredicateBuilder, List[Union[s
     global g_compiler_config
     g_compiler_config.place_on_new_chip(op_names)
 
-def override_dram_queue_placement(dram_queue: str, *, chip_id: Optional[int] = None, channel: Optional[int] = None) -> None:
+
+def override_dram_queue_placement(
+    dram_queue: str, *, chip_id: Optional[int] = None, channel: Optional[int] = None
+) -> None:
     """
     Override automatic dram placement with manual specification of chip and dram channel location
 
@@ -602,9 +699,11 @@ def override_dram_queue_placement(dram_queue: str, *, chip_id: Optional[int] = N
     global g_compiler_config
     g_compiler_config.place_queue_to_chip_dram(dram_queue, chip_id=chip_id, channel=channel)
 
+
 def _balancer_op_override(op_name: str, attribute: str, value):
     global g_compiler_config
     g_compiler_config.balancer_op_override(op_name, attribute, value)
+
 
 def override_dram_parameters(op_name: str, force_dram_parameters: bool):
     """
@@ -622,6 +721,7 @@ def override_dram_parameters(op_name: str, force_dram_parameters: bool):
     """
     _balancer_op_override(op_name, "force_dram_parameters", force_dram_parameters)
 
+
 def override_op_size(op_name: str, grid_size: Tuple[int, int]):
     """
     Override automatic op sizing with given grid size.
@@ -636,6 +736,7 @@ def override_op_size(op_name: str, grid_size: Tuple[int, int]):
 
     """
     _balancer_op_override(op_name, "grid_shape", grid_size)
+
 
 def override_t_stream_dir(op_name: str, direction: str):
     """
@@ -655,8 +756,9 @@ def override_t_stream_dir(op_name: str, direction: str):
 
     """
     if direction is None:
-        direction = 'n'
+        direction = "n"
     _balancer_op_override(op_name, "t_stream_dir", direction.lower())
+
 
 def override_t_stream_shape(op_name: str, shape: Tuple[int, int]):
     """
@@ -673,6 +775,7 @@ def override_t_stream_shape(op_name: str, shape: Tuple[int, int]):
     """
     _balancer_op_override(op_name, "t_stream_shape", shape)
 
+
 def override_fracture_factor(op_name: str, fracture_factor: int):
     """
     Override fracture factor
@@ -688,6 +791,7 @@ def override_fracture_factor(op_name: str, fracture_factor: int):
     """
     _balancer_op_override(op_name, "fracture_factor", fracture_factor)
 
+
 def override_u_kt(op_name: str, u_kt: int):
     """
     Override u_kt
@@ -702,6 +806,7 @@ def override_u_kt(op_name: str, u_kt: int):
 
     """
     _balancer_op_override(op_name, "u_kt", u_kt)
+
 
 def override_input_buffer_multiplier(op_name: str, operand_index: int, *, multiplier: int):
     """
@@ -721,6 +826,7 @@ def override_input_buffer_multiplier(op_name: str, operand_index: int, *, multip
     """
     _balancer_op_override(op_name, "input_buffer_multiplier", {operand_index: multiplier})
 
+
 def internal_override_output_buffer_multiplier(op_name: str, *, multiplier: int):
     """
     Override u_kt
@@ -734,7 +840,9 @@ def internal_override_output_buffer_multiplier(op_name: str, *, multiplier: int)
         buffer multiplier value to set
 
     """
-    logger.warning("internal_override_output_buffer_multiplier is an internal API and may result in hangs. Use at your own risk.")
+    logger.warning(
+        "internal_override_output_buffer_multiplier is an internal API and may result in hangs. Use at your own risk."
+    )
     _balancer_op_override(op_name, "output_buffer_multiplier", multiplier)
 
 
@@ -755,15 +863,17 @@ def override_multi_op_fracture_factor(op_name: str, multi_op_fracture_factor: in
     global g_compiler_config
     g_compiler_config.conv_multi_op_fracture_factor_override[op_name] = multi_op_fracture_factor
 
+
 def add_cpu_fallback_ops(op_types: Union[str, List[str]]):
     """
-    Add one or more op types to CPU fallback list. These operation will be executed on the host. 
+    Add one or more op types to CPU fallback list. These operation will be executed on the host.
     """
     global g_compiler_config
     if isinstance(op_types, str):
         g_compiler_config.cpu_fallback_ops.add(op_types)
     else:
         g_compiler_config.cpu_fallback_ops.update(op_types)
+
 
 def remove_cpu_fallback_ops(op_types: Union[str, List[str]]):
     """
@@ -776,7 +886,11 @@ def remove_cpu_fallback_ops(op_types: Union[str, List[str]]):
         for op_type in op_types:
             g_compiler_config.cpu_fallback_ops.discard(op_type)
 
-def insert_fracture_group(nodes: List[Union[str, Tuple[str, Union[int, List[int]], Union[int, List[int]]]]], chip_ids: Union[List[int], Dict[str, List[int]]] = []):
+
+def insert_fracture_group(
+    nodes: List[Union[str, Tuple[str, Union[int, List[int]], Union[int, List[int]]]]],
+    chip_ids: Union[List[int], Dict[str, List[int]]] = [],
+):
     """
     Insert a fracture group, where a fracture group describes forge a subgraph
     to be fractured and along which dimension(s).
@@ -823,14 +937,14 @@ def insert_fracture_group(nodes: List[Union[str, Tuple[str, Union[int, List[int]
 
 
 def __insert_nop_impl(
-        src_op: str,
-        dest_ops: Union[str, List[str]],
-        *,
-        hoist_tms: bool = True,
-        nop_count: int = 1,
-        daisy_chain: bool = False,
-        is_fj_buffering = False,
-    ):
+    src_op: str,
+    dest_ops: Union[str, List[str]],
+    *,
+    hoist_tms: bool = True,
+    nop_count: int = 1,
+    daisy_chain: bool = False,
+    is_fj_buffering=False,
+):
 
     assert isinstance(src_op, str)
     if isinstance(dest_ops, str):
@@ -842,7 +956,7 @@ def __insert_nop_impl(
     buff_ind = 0
     for dest_idx, dest_op in enumerate(dest_ops):
         buff_ind += 1
-        request_merge = (dest_idx == len(dest_ops) -1)
+        request_merge = dest_idx == len(dest_ops) - 1
         nop_instr = NopInsertionInstruction(
             src=src_op,
             dest=dest_op,
@@ -854,12 +968,19 @@ def __insert_nop_impl(
             mergeable=merge_nops,
             daisy_chain=daisy_chain,
             request_merge=request_merge,
-            is_fj_buffering=is_fj_buffering
+            is_fj_buffering=is_fj_buffering,
         )
         g_compiler_config.buffering_nops_to_insert[nop_instr.unique_id()] = nop_instr
 
 
-def insert_nop(src_op: str, dest_ops: Union[str, List[str]], *, hoist_tms: bool = True, nop_count: int = 1, daisy_chain: bool = False):
+def insert_nop(
+    src_op: str,
+    dest_ops: Union[str, List[str]],
+    *,
+    hoist_tms: bool = True,
+    nop_count: int = 1,
+    daisy_chain: bool = False,
+):
     """
     Instruct forge compiler to insert a NOP instruction on the edge identified by the named src/dest pair.
 
@@ -892,7 +1013,14 @@ def insert_nop(src_op: str, dest_ops: Union[str, List[str]], *, hoist_tms: bool 
     )
 
 
-def _internal_insert_fj_buffering_nop(src_op: str, dest_ops: Union[str, List[str]], *, hoist_tms: bool = True, nop_count: int = 1, daisy_chain: bool = False):
+def _internal_insert_fj_buffering_nop(
+    src_op: str,
+    dest_ops: Union[str, List[str]],
+    *,
+    hoist_tms: bool = True,
+    nop_count: int = 1,
+    daisy_chain: bool = False,
+):
     """
     Instruct forge compiler to insert a fork-join buffering NOP instruction on the edge identified by the named src/dest pair.
     Note: Adding a fork-join buffering NOP instructions may lead to exceptions!
@@ -925,7 +1053,14 @@ def _internal_insert_fj_buffering_nop(src_op: str, dest_ops: Union[str, List[str
     )
 
 
-def insert_buffering_nop(src_op: str, dest_ops: Union[str, List[str]], *, hoist_tms: bool = True, nop_count: int = 1, daisy_chain: bool = False):
+def insert_buffering_nop(
+    src_op: str,
+    dest_ops: Union[str, List[str]],
+    *,
+    hoist_tms: bool = True,
+    nop_count: int = 1,
+    daisy_chain: bool = False,
+):
     """
     "DEPRECATION WARNING! Please use `insert_nop` instead of `insert_buffering_nop`. To add a buffering nop, use the \
     internal API `_internal_insert_fj_buffering_nop`."
@@ -952,15 +1087,13 @@ def insert_buffering_nop(src_op: str, dest_ops: Union[str, List[str]], *, hoist_
 
     """
 
-    logger.warning("DEPRECATION WARNING! Please use `insert_nop` instead of `insert_buffering_nop`. To add fork-join \
-                   buffering nop, use the internal API `_internal_insert_fj_buffering_nop`.")
+    logger.warning(
+        "DEPRECATION WARNING! Please use `insert_nop` instead of `insert_buffering_nop`. To add fork-join \
+                   buffering nop, use the internal API `_internal_insert_fj_buffering_nop`."
+    )
 
     _internal_insert_fj_buffering_nop(
-        src_op=src_op,
-        dest_ops=dest_ops,
-        hoist_tms=hoist_tms,
-        nop_count=nop_count,
-        daisy_chain=daisy_chain
+        src_op=src_op, dest_ops=dest_ops, hoist_tms=hoist_tms, nop_count=nop_count, daisy_chain=daisy_chain
     )
 
 
@@ -986,7 +1119,7 @@ def set_num_repeated_patterns(module_name: str, num_patterns: int):
     Parameters
     ----------
     module_name: str
-        Name of the module 
+        Name of the module
 
     num_patterns: int
         Number of repeated patterns in the module to scan through
@@ -1009,18 +1142,20 @@ def set_auto_transposing_placement(is_enabled: bool):
     global g_compiler_config
     g_compiler_config.enable_auto_transposing_placement = is_enabled
 
+
 def configure_mixed_precision(
     *,
-	op_type: Optional[str] = None,
-	epoch_type: Optional[str] = None,
-	output_df: Optional[DataFormat] = None,
-	intermediate_df: Optional[DataFormat] = None,
-	accumulate_df: Optional[DataFormat] = None,
-	math_fidelity: Optional[MathFidelity] = None,
-	name_regex: Optional[str] = None,
-	input_df: Optional[Union[Dict[int, Tuple[DataFormat, bool]], DataFormat]] = None,
-	is_gradient_op: Optional[bool] = None,
-    input_parameter_indices_to_optimize: Optional[List[int]] = None):
+    op_type: Optional[str] = None,
+    epoch_type: Optional[str] = None,
+    output_df: Optional[DataFormat] = None,
+    intermediate_df: Optional[DataFormat] = None,
+    accumulate_df: Optional[DataFormat] = None,
+    math_fidelity: Optional[MathFidelity] = None,
+    name_regex: Optional[str] = None,
+    input_df: Optional[Union[Dict[int, Tuple[DataFormat, bool]], DataFormat]] = None,
+    is_gradient_op: Optional[bool] = None,
+    input_parameter_indices_to_optimize: Optional[List[int]] = None,
+):
     """
 
     Configure mixed precision settings
@@ -1091,7 +1226,7 @@ def configure_mixed_precision(
             name_regex,
             input_df,
             is_gradient_op,
-            input_parameter_indices_to_optimize
+            input_parameter_indices_to_optimize,
         )
     )
 
@@ -1099,9 +1234,11 @@ def configure_mixed_precision(
 def _get_global_compiler_config() -> CompilerConfig:
     return g_compiler_config
 
+
 def _clear_global_compiler_config():
     global g_compiler_config
     g_compiler_config = CompilerConfig()
+
 
 def _set_global_compiler_config(config: CompilerConfig):
     global g_compiler_config
@@ -1110,11 +1247,15 @@ def _set_global_compiler_config(config: CompilerConfig):
 
 def _set_forge_override_veto(general_config_dict, environ_config_dict):
     import json
-    
-    env_dict = {key: value for key, value in os.environ.items() if key.startswith("FORGE_") and key != "FORGE_OVERRIDES_VETO"}
+
+    env_dict = {
+        key: value for key, value in os.environ.items() if key.startswith("FORGE_") and key != "FORGE_OVERRIDES_VETO"
+    }
     env_dict = {**env_dict, **environ_config_dict}
 
-    os.environ["FORGE_OVERRIDES_VETO"] = json.dumps({
-        "general_conf": general_config_dict,
-        "environ_conf": env_dict,
-    })
+    os.environ["FORGE_OVERRIDES_VETO"] = json.dumps(
+        {
+            "general_conf": general_config_dict,
+            "environ_conf": env_dict,
+        }
+    )

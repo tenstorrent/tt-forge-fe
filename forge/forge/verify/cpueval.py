@@ -17,13 +17,13 @@ from ..utils import detach_tensors
 import forge
 from forge.tvm_utils import map_tf_dtype_to_pt, map_pt_dtype_to_tf
 
+
 def cpueval_inference(
-        inputs: List[Tuple[torch.Tensor, ...]], 
-        parameters: List[Dict[str, torch.Tensor]],
-        sequential: bool) -> List[Tuple[torch.Tensor, ...]]:
+    inputs: List[Tuple[torch.Tensor, ...]], parameters: List[Dict[str, torch.Tensor]], sequential: bool
+) -> List[Tuple[torch.Tensor, ...]]:
     """
     Use CPU/Pytorch to run inference of the full pipeline of devices, equivalen to what run_inference would do.
-    This uses the initial graph for forge models, or pytorch for pytorch models. 
+    This uses the initial graph for forge models, or pytorch for pytorch models.
 
     Parameters
     ----------
@@ -48,42 +48,49 @@ def cpueval_inference(
     for input in inputs:
         data = to_pt_tensors(input)
         for d, params in zip(devices, parameters):
-            data = _run_command(d, sequential, Command.cpueval_forward(data, params, save_for_backward=False, targets=[]), response=True)["result"]
+            data = _run_command(
+                d, sequential, Command.cpueval_forward(data, params, save_for_backward=False, targets=[]), response=True
+            )["result"]
         ret.append(data)
 
     return ret
 
+
 class TrainingEvalData:
     """
-    Structure holding all golden data calculate from runnig training eval, to be compared with 
+    Structure holding all golden data calculate from runnig training eval, to be compared with
     data running on Tenstorrent device / model for verification
     """
+
     class GradData:
-        inputs: List[torch.Tensor] # Ordered input gradients
-        parameters: Dict[str, torch.Tensor] # Gradients for each parameter
+        inputs: List[torch.Tensor]  # Ordered input gradients
+        parameters: Dict[str, torch.Tensor]  # Gradients for each parameter
+
         def __init__(self, inputs: List[torch.Tensor], parameters: Dict[str, torch.Tensor] = {}):
             self.inputs = inputs
             self.parameters = parameters
 
     class DeviceData:
-        grad: List["TrainingEvalData.GradData"] # Gradients, one for each input
-        final_parameters: Dict[str, torch.Tensor] # final parameters, after step of training
+        grad: List["TrainingEvalData.GradData"]  # Gradients, one for each input
+        final_parameters: Dict[str, torch.Tensor]  # final parameters, after step of training
+
         def __init__(self):
             self.grad = []
             self.final_parameters = {}
 
-    devices: List["TrainingEvalData.DeviceData"] # One set of data for each device in pipeline
+    devices: List["TrainingEvalData.DeviceData"]  # One set of data for each device in pipeline
 
 
 def cpueval_training(
-        inputs: List[Tuple[torch.Tensor, ...]], 
-        parameters: List[Dict[str, torch.Tensor]], 
-        targets: List[Tuple[torch.Tensor, ...]],
-        sequential: bool,
-        scale_loss: float,
-        lr=None) -> TrainingEvalData:
+    inputs: List[Tuple[torch.Tensor, ...]],
+    parameters: List[Dict[str, torch.Tensor]],
+    targets: List[Tuple[torch.Tensor, ...]],
+    sequential: bool,
+    scale_loss: float,
+    lr=None,
+) -> TrainingEvalData:
     """
-    Use CPU/Pytorch to run training on the full pipeline of devices, similar to what run_training would do. 
+    Use CPU/Pytorch to run training on the full pipeline of devices, similar to what run_training would do.
     Inputs should contain a full batch of inputs, and optimizer will run once at the end. Return values include
     all input gradients (if any), gradients for each parameter, both for each input, as well as the final
     updated weights after optimizer.
@@ -94,7 +101,7 @@ def cpueval_training(
         A full batch of ordered inputs into the first device
 
     parameters: List[Dict[str, Tensor]]
-        Initial values for all parameters in the model, one per device. This needs to be a separate copy 
+        Initial values for all parameters in the model, one per device. This needs to be a separate copy
         of parameter tensors, to keep it separate from the real run which will adjust parameters through training.
 
     targets: List[Tuple[Tensor, ...]]
@@ -115,18 +122,25 @@ def cpueval_training(
         ret.devices.append(TrainingEvalData.DeviceData())
 
     for i, d in enumerate(devices):
-        optim = d.get_pytorch_optimizer(parameters[i], lr=lr) # Reinitialize learning rate if given
+        optim = d.get_pytorch_optimizer(parameters[i], lr=lr)  # Reinitialize learning rate if given
         if optim:
             optim.zero_grad()
 
     for input, target in zip(inputs, targets):
-        data = to_pt_tensors(input, convert_format=False) # TODO: convert for silicon runs to get more accurate comparison
+        data = to_pt_tensors(
+            input, convert_format=False
+        )  # TODO: convert for silicon runs to get more accurate comparison
         fw_outputs = []
         for i, d in enumerate(devices):
             logger.trace("Running forward on {}", d)
             detached_data = detach_tensors(data)
             device_targets = target if (d == devices[-1]) else []
-            data = _run_command(d, sequential, Command.cpueval_forward(detached_data, parameters[i], save_for_backward=True, targets=device_targets), response=True)["result"]
+            data = _run_command(
+                d,
+                sequential,
+                Command.cpueval_forward(detached_data, parameters[i], save_for_backward=True, targets=device_targets),
+                response=True,
+            )["result"]
             logger.trace("Forward out on {} is {}", d, data)
             fw_outputs.append(data)
 
@@ -143,14 +157,17 @@ def cpueval_training(
         if isinstance(d, forge.cpudevice.CPUDevice) and d.framework == "tensorflow":
             assert all([x.name in parameters[i] for x in d.modules[0].module.trainable_variables])
 
-            cpu_grads = [tf.Variable(grad.detach().numpy(), dtype=map_pt_dtype_to_tf(grad.dtype)) for grad in ret.devices[i].grad[0].parameters.values()]
-            params = [tf.Variable(param.detach().numpy(), dtype=map_pt_dtype_to_tf(param.dtype), name=name.split(":")[0]) for name,param in parameters[i].items()]
+            cpu_grads = [
+                tf.Variable(grad.detach().numpy(), dtype=map_pt_dtype_to_tf(grad.dtype))
+                for grad in ret.devices[i].grad[0].parameters.values()
+            ]
+            params = [
+                tf.Variable(param.detach().numpy(), dtype=map_pt_dtype_to_tf(param.dtype), name=name.split(":")[0])
+                for name, param in parameters[i].items()
+            ]
             d.optimizer.apply_gradients(zip(cpu_grads, params))
 
-            parameters[i] = {
-                param.name : torch.Tensor(param.numpy())
-                for param in params
-            }
+            parameters[i] = {param.name: torch.Tensor(param.numpy()) for param in params}
         else:
             optim = d.get_pytorch_optimizer(parameters[i])
             if optim:
@@ -159,4 +176,3 @@ def cpueval_training(
         ret.devices[i].final_parameters = parameters[i]
 
     return ret
-

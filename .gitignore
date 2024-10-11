@@ -33,7 +33,7 @@ forge/forge/*.so
 __pycache__
 forge/forge.egg-info/
 
-*.vcd 
+*.vcd
 
 run-log.yaml
 model_unit_tests

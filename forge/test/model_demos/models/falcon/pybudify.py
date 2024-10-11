@@ -55,15 +55,9 @@ class PyBudify(torch.nn.Module):
             os.environ["LOGURU_LEVEL"] = log_level
 
             # forge workarounds
-            os.environ[
-                "GOLDEN_WORMHOLE_B0"
-            ] = "1"  # golden should always simulate a B0 as that's all we use now
-            os.environ[
-                "FORGE_CONVERT_PARAMS_TO_TVM"
-            ] = "0"  # faster compile times... why would this ever be 1?
-            os.environ[
-                "TT_BACKEND_TIMEOUT"
-            ] = "0"  # default is too aggressive for large models?
+            os.environ["GOLDEN_WORMHOLE_B0"] = "1"  # golden should always simulate a B0 as that's all we use now
+            os.environ["FORGE_CONVERT_PARAMS_TO_TVM"] = "0"  # faster compile times... why would this ever be 1?
+            os.environ["TT_BACKEND_TIMEOUT"] = "0"  # default is too aggressive for large models?
 
             # os.environ["FORGE_ENABLE_BROADCAST_SPLITTING"] = "1"
             # os.environ["FORGE_DISABLE_FORK_JOIN_BUF"] = "1"
@@ -75,9 +69,7 @@ class PyBudify(torch.nn.Module):
             # os.environ["FORGE_PLACER_SNAKE"] = "1"
             # os.environ["FORGE_ETH_LINKS_NEBULA"] = "1"
 
-            forge = self.forge = __import__(
-                "forge"
-            )  # let us set log levels before importing forge
+            forge = self.forge = __import__("forge")  # let us set log levels before importing forge
 
         if device == "pytorch":
             pass
@@ -135,19 +127,13 @@ class PyBudify(torch.nn.Module):
 
             if fracture:
                 # Inner-dimension fracturing for Q proj and FF2
-                os.environ[
-                    "TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"
-                ] = "147456"  # "98304"#"49152"
+                os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "147456"  # "98304"#"49152"
 
                 q_offset = 70
                 h4h_offset = 70
                 for layer_num in range(len(self.bound_module.layers)):
-                    forge.config.insert_fracture_group(
-                        [(f"matmul_{26+layer_num*q_offset}", forge.k_dim, 2)]
-                    )
-                    forge.config.insert_fracture_group(
-                        [(f"matmul_{23+layer_num*h4h_offset}", forge.k_dim, 4)]
-                    )
+                    forge.config.insert_fracture_group([(f"matmul_{26+layer_num*q_offset}", forge.k_dim, 2)])
+                    forge.config.insert_fracture_group([(f"matmul_{23+layer_num*h4h_offset}", forge.k_dim, 4)])
 
             if padded_fracture:
                 offset = 73
@@ -164,10 +150,7 @@ class PyBudify(torch.nn.Module):
                         ]
                     )
 
-                    if (
-                        layer_num > 0
-                        and layer_num < len(self.bound_module.layers) - 1
-                    ):
+                    if layer_num > 0 and layer_num < len(self.bound_module.layers) - 1:
                         forge.set_epoch_break(f"multiply_{0+layer_num*offset}")
 
                 # 4 bit precision for fracturing required otherwise DRAM error occurs for 32 layers
@@ -203,10 +186,7 @@ class PyBudify(torch.nn.Module):
                             ]
                         )
 
-                    if (
-                        layer_num > 0
-                        and layer_num < len(self.bound_module.layers) - 1
-                    ):
+                    if layer_num > 0 and layer_num < len(self.bound_module.layers) - 1:
                         forge.set_epoch_break(f"multiply_{0+layer_num*offset}")
 
             # Running padded fracture full (Dragon's exploration)
@@ -300,14 +280,10 @@ class PyBudify(torch.nn.Module):
                     h4h_offset = 73
                     for layer_num in range(len(self.bound_module.layers)):
                         mlp_offset = layer_num * h4h_offset
-                        print(
-                            f"MLP Fracture: Layer: {layer_num}, matmul offset = {18+mlp_offset} & {23+mlp_offset}"
-                        )
+                        print(f"MLP Fracture: Layer: {layer_num}, matmul offset = {18+mlp_offset} & {23+mlp_offset}")
 
                         # Manual scheduling to support MLP fracture 2-chip on full size falcon-7B
-                        forge.set_epoch_break(
-                            f"softmax_{55+mlp_offset}.dc.reduce_max.0"
-                        )
+                        forge.set_epoch_break(f"softmax_{55+mlp_offset}.dc.reduce_max.0")
                         forge.config.override_op_placement(
                             f"concatenate_{48+mlp_offset}.dc.concatenate.2",
                             chip_id=1,
@@ -337,9 +313,7 @@ class PyBudify(torch.nn.Module):
                             ]
                         ]
                         exits = [f"add_{70 + mlp_offset}"]
-                        mlp_constr = self.add_sched(
-                            forge, entries, exits, ops, mlp_factor, mlp_constr
-                        )
+                        mlp_constr = self.add_sched(forge, entries, exits, ops, mlp_factor, mlp_constr)
                     forge.config.add_schedule_constraint(mlp_constr)
 
             perf_level = {
@@ -382,9 +356,7 @@ class PyBudify(torch.nn.Module):
                     names = "input__1420, input__1421, input__1422, input__1423, input__1424, input__1425, input__1426, input__1427, input__1428, input__1429, input__1430, input__1431, input__1432, input__1433, input__1434, input__1435, input__1436, input__1437, input__1438, input__1439, input__1440, input__1441, input__1442, input__1443, input__1444, input__1445, input__1446, input__1447, input__1448, input__1449, input__1450, input__1451, input__1452, input__1453, input__1454, input__1455, input__1456, input__1457, input__1458, input__1459, input__1460, input__1461, input__1462, input__1463, input__1464, input__1465, input__1466, input__1467, input__1468, input__1469, input__1470, input__1471, input__1472, input__1473, input__1474, input__1475, input__1476, input__1477, input__1478, input__1479, input__1480, input__1481, input__1482, input__1483"
                     # names = 'input__1418, input__1419, input__1420, input__1421, input__1422, input__1423, input__1424, input__1425, input__1426, input__1427, input__1428, input__1429, input__1430, input__1431, input__1432, input__1433, input__1434, input__1435, input__1436, input__1437, input__1438, input__1439, input__1440, input__1441, input__1442, input__1443, input__1444, input__1445, input__1446, input__1447, input__1448, input__1449, input__1450, input__1451, input__1452, input__1453, input__1454, input__1455, input__1456, input__1457, input__1458, input__1459, input__1460, input__1461, input__1462, input__1463, input__1464, input__1465, input__1466, input__1467, input__1468, input__1469, input__1470, input__1471, input__1472, input__1473, input__1474, input__1475, input__1476, input__1477, input__1478, input__1479, input__1480, input__1481'
                 else:
-                    raise Exception(
-                        "Unsupported num_layers. Please use either 1 or 32."
-                    )
+                    raise Exception("Unsupported num_layers. Please use either 1 or 32.")
                 names = names.split(", ")
                 # names = names[:2*num_layers]
                 print(f'names" {names}')
@@ -407,7 +379,7 @@ class PyBudify(torch.nn.Module):
 
             elif self.odkv:
                 # compiler_cfg.manual_t_streaming = True
-                
+
                 # forge.config.override_t_stream_dir(f"concatenate_50.dc.sparse_matmul.4.lc2", "c")
                 # forge.config.override_t_stream_dir(f"concatenate_67.dc.sparse_matmul.4.lc2", "c")
 
@@ -416,9 +388,7 @@ class PyBudify(torch.nn.Module):
                 elif num_layers == 32:
                     names = "input__1418, input__1419, input__1420, input__1421, input__1422, input__1423, input__1424, input__1425, input__1426, input__1427, input__1428, input__1429, input__1430, input__1431, input__1432, input__1433, input__1434, input__1435, input__1436, input__1437, input__1438, input__1439, input__1440, input__1441, input__1442, input__1443, input__1444, input__1445, input__1446, input__1447, input__1448, input__1449, input__1450, input__1451, input__1452, input__1453, input__1454, input__1455, input__1456, input__1457, input__1458, input__1459, input__1460, input__1461, input__1462, input__1463, input__1464, input__1465, input__1466, input__1467, input__1468, input__1469, input__1470, input__1471, input__1472, input__1473, input__1474, input__1475, input__1476, input__1477, input__1478, input__1479, input__1480, input__1481"
                 else:
-                    raise Exception(
-                        "Unsupported num_layers. Please use either 1 or 32."
-                    )
+                    raise Exception("Unsupported num_layers. Please use either 1 or 32.")
                 names = names.split(", ")
                 # names = names[:2*num_layers]
                 print(f'names" {names}')
@@ -475,22 +445,14 @@ class PyBudify(torch.nn.Module):
     def run_async(self, *args):
         """Send inputs to forge and run forward pass asynchronously.
         Outputs can be read from self.output_q."""
-        assert (
-            self.device != "pytorch"
-        ), "run_async() is only supported for forge devices"
+        assert self.device != "pytorch", "run_async() is only supported for forge devices"
         if self.odkv or self.masked_odkv:
             self.ensure_initialized(*args)
             # print(f'forge pushing data')
             self.forge.sync()
-            in_args = (
-                list(args[0]) + list(args[1]) + list(args[2]) + list(args[3])
-            )
-            self.tt0.push_to_inputs(
-                in_args
-            )  # don't pass in kv over and over again
-            self.forge.run_generate(
-                input_count=1, write_index=0
-            )  # , _sequential=True)
+            in_args = list(args[0]) + list(args[1]) + list(args[2]) + list(args[3])
+            self.tt0.push_to_inputs(in_args)  # don't pass in kv over and over again
+            self.forge.run_generate(input_count=1, write_index=0)  # , _sequential=True)
         else:
             self.ensure_initialized(*args)
             self.tt0.push_to_inputs(*args)
@@ -531,57 +493,27 @@ class PyBudify(torch.nn.Module):
             if self.masked_odkv:
                 # print('run_generate1')
                 self.forge.sync()
-                in_args = (
-                    list(args[0])
-                    + list(args[1])
-                    + list(args[2])
-                    + list(args[3])
-                    + list(args[4])
-                    + list(args[5])
-                )
-                self.tt0.push_to_inputs(
-                    in_args
-                )  # don't pass in kv over and over again
-                self.forge.run_generate(
-                    input_count=1, write_index=0, _sequential=True
-                )
+                in_args = list(args[0]) + list(args[1]) + list(args[2]) + list(args[3]) + list(args[4]) + list(args[5])
+                self.tt0.push_to_inputs(in_args)  # don't pass in kv over and over again
+                self.forge.run_generate(input_count=1, write_index=0, _sequential=True)
             elif self.odkv:
                 self.forge.sync()
-                in_args = (
-                    list(args[0])
-                    + list(args[1])
-                    + list(args[2])
-                    + list(args[3])
-                )
-                self.tt0.push_to_inputs(
-                    in_args
-                )  # don't pass in kv over and over again
-                self.forge.run_generate(
-                    input_count=1, write_index=0, _sequential=True
-                )
+                in_args = list(args[0]) + list(args[1]) + list(args[2]) + list(args[3])
+                self.tt0.push_to_inputs(in_args)  # don't pass in kv over and over again
+                self.forge.run_generate(input_count=1, write_index=0, _sequential=True)
             else:
                 self.tt0.push_to_inputs(*args)
                 self.forge.run_forward(input_count=1, _sequential=True)
             ys = self.output_q.get()
-            outputs = tuple(
-                [
-                    y.value().float()
-                    for y in ys
-                    if isinstance(y, self.forge.tensor.TensorFromPytorch)
-                ]
-            )
+            outputs = tuple([y.value().float() for y in ys if isinstance(y, self.forge.tensor.TensorFromPytorch)])
             if len(outputs) == 1:
                 outputs = outputs[0]
             if self.verify_cfg:
                 baseline = self.bound_module(*args, **kwargs)
                 if len(outputs) != len(baseline):
-                    print(
-                        f"Num outputs: {len(outputs)}, expected: {len(baseline)}"
-                    )
+                    print(f"Num outputs: {len(outputs)}, expected: {len(baseline)}")
                 for i, (real, expected) in enumerate(zip(outputs, baseline)):
-                    pcc = torch.corrcoef(
-                        torch.stack([real.reshape(-1), expected.reshape(-1)])
-                    )[0, 1]
+                    pcc = torch.corrcoef(torch.stack([real.reshape(-1), expected.reshape(-1)]))[0, 1]
                     print("PCC tensor %d: %.4f" % (i, pcc))
 
             result = outputs
@@ -596,19 +528,11 @@ class PyBudify(torch.nn.Module):
                     fop = f"fractured_{f}_{op}"
                     if i == 0:
                         if f == 0:
-                            print(
-                                f"[add_sched]: Override op temp. epoch: {fop}, chip {f}"
-                            )
-                            forge.config.override_op_placement(
-                                fop, chip_id=f, temporal_epoch_break=True
-                            )
+                            print(f"[add_sched]: Override op temp. epoch: {fop}, chip {f}")
+                            forge.config.override_op_placement(fop, chip_id=f, temporal_epoch_break=True)
                         else:
-                            print(
-                                f"[add_sched]: Override op spatial epoch: {fop}, chip {f}"
-                            )
-                            forge.config.override_op_placement(
-                                fop, chip_id=f, spatial_epoch_break=True
-                            )
+                            print(f"[add_sched]: Override op spatial epoch: {fop}, chip {f}")
+                            forge.config.override_op_placement(fop, chip_id=f, spatial_epoch_break=True)
                     constr.append(fop)
         # for elem in exits:
         # constr.append(elem)

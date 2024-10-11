@@ -32,9 +32,7 @@ def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:
         List of images, number of samples, filenames, image size, inference size, preprocessed images
     """
 
-    _, ims = (
-        (len(ims), list(ims)) if isinstance(ims, (list, tuple)) else (1, [ims])
-    )  # number, list of images
+    _, ims = (len(ims), list(ims)) if isinstance(ims, (list, tuple)) else (1, [ims])  # number, list of images
     shape0, shape1, files = [], [], []  # image and inference shapes, filenames
 
     for i, im in enumerate(ims):
@@ -43,9 +41,7 @@ def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:
         files.append(Path(f).with_suffix(".jpg").name)
         if im.shape[0] < 5:  # image in CHW
             im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
-        im = (
-            im[..., :3] if im.ndim == 3 else cv2.cvtColor(im, cv2.COLOR_GRAY2BGR)
-        )  # enforce 3ch input
+        im = im[..., :3] if im.ndim == 3 else cv2.cvtColor(im, cv2.COLOR_GRAY2BGR)  # enforce 3ch input
         s = im.shape[:2]  # HWC
         shape0.append(s)  # image shape
         g = max(size) / max(s)  # gain
@@ -53,9 +49,7 @@ def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:
         ims[i] = im if im.data.contiguous else np.ascontiguousarray(im)  # update
     shape1 = [size[0] for _ in np.array(shape1).max(0)]  # inf shape
     x = [letterbox(im, shape1, auto=False)[0] for im in ims]  # pad
-    x = np.ascontiguousarray(
-        np.array(x).transpose((0, 3, 1, 2))
-    )  # stack and BHWC to BCHW
+    x = np.ascontiguousarray(np.array(x).transpose((0, 3, 1, 2)))  # stack and BHWC to BCHW
     x = torch.from_numpy(x) / 255  # uint8 to fp16/32
     return x
 
@@ -205,37 +199,27 @@ def test_yolo_v5_640x640_onnx(test_device, variant):
         if variant in ["yolov5n", "yolov5s"]:
             if variant == "yolov5s":
                 os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{112*1024}"
-            compiler_cfg.balancer_op_override(
-                "concatenate_259.dc.concatenate.7", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("concatenate_259.dc.concatenate.7", "grid_shape", (1, 1))
 
         if variant == "yolov5m":
-            compiler_cfg.balancer_op_override(
-                "concatenate_332.dc.concatenate.7", "grid_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                "concatenate_332.dc.concatenate.7", "t_stream_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("concatenate_332.dc.concatenate.7", "grid_shape", (1, 1))
+            compiler_cfg.balancer_op_override("concatenate_332.dc.concatenate.7", "t_stream_shape", (1, 1))
             os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{112*1024}"
 
         if variant == "yolov5l":
             os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{112*1024}"
             os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
-            compiler_cfg.balancer_op_override(
-                "concatenate_405.dc.concatenate.7", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("concatenate_405.dc.concatenate.7", "grid_shape", (1, 1))
 
         if variant == "yolov5x":
-            compiler_cfg.balancer_op_override(
-                "concatenate_478.dc.concatenate.7", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("concatenate_478.dc.concatenate.7", "grid_shape", (1, 1))
             os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{150*1024}"
 
     elif test_device.arch == BackendDevice.Grayskull:
 
         compiler_cfg.enable_tm_cpu_fallback = True
 
-        if variant=="yolov5n":
+        if variant == "yolov5n":
             os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "4096"
 
         if variant == "yolov5l":

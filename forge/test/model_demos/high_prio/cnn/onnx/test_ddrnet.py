@@ -38,9 +38,7 @@ def test_ddrnet(variant, test_device):
     # STEP 2: # Create Forge module from onnx weights
     model_name = f"{variant}_onnx"
 
-    load_path = (
-        f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
-    )
+    load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
 
     model = onnx.load(load_path)
     tt_model = forge.OnnxModule(model_name, model, load_path)
@@ -69,12 +67,7 @@ def test_ddrnet(variant, test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            pcc=(
-                0.98
-                if test_device.arch == BackendDevice.Grayskull
-                and variant != "ddrnet23s"
-                else 0.99
-            ),
+            pcc=(0.98 if test_device.arch == BackendDevice.Grayskull and variant != "ddrnet23s" else 0.99),
         ),
     )
 

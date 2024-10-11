@@ -59,48 +59,28 @@ def test_retinanet(variant, test_device):
 
         if variant == "retinanet_rn18fpn":
             compiler_cfg.place_on_new_epoch("conv2d_357.dc.matmul.11")
-            compiler_cfg.balancer_op_override(
-                "conv2d_322.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                "conv2d_300.dc.matmul.11", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_322.dc.matmul.11", "t_stream_shape", (1, 1))
+            compiler_cfg.balancer_op_override("conv2d_300.dc.matmul.11", "grid_shape", (1, 1))
 
         elif variant == "retinanet_rn34fpn":
             compiler_cfg.place_on_new_epoch("conv2d_589.dc.matmul.11")
-            compiler_cfg.balancer_op_override(
-                "conv2d_554.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                "conv2d_532.dc.matmul.11", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_554.dc.matmul.11", "t_stream_shape", (1, 1))
+            compiler_cfg.balancer_op_override("conv2d_532.dc.matmul.11", "grid_shape", (1, 1))
 
         elif variant == "retinanet_rn50fpn":
             compiler_cfg.place_on_new_epoch("conv2d_826.dc.matmul.11")
-            compiler_cfg.balancer_op_override(
-                "conv2d_791.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                "conv2d_769.dc.matmul.11", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_791.dc.matmul.11", "t_stream_shape", (1, 1))
+            compiler_cfg.balancer_op_override("conv2d_769.dc.matmul.11", "grid_shape", (1, 1))
 
         elif variant == "retinanet_rn101fpn":
             compiler_cfg.place_on_new_epoch("conv2d_1557.dc.matmul.11")
-            compiler_cfg.balancer_op_override(
-                "conv2d_1522.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                "conv2d_1500.dc.matmul.11", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_1522.dc.matmul.11", "t_stream_shape", (1, 1))
+            compiler_cfg.balancer_op_override("conv2d_1500.dc.matmul.11", "grid_shape", (1, 1))
 
         elif variant == "retinanet_rn152fpn":
             compiler_cfg.place_on_new_epoch("conv2d_2288.dc.matmul.11")
-            compiler_cfg.balancer_op_override(
-                "conv2d_2253.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                "conv2d_2231.dc.matmul.11", "grid_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_2253.dc.matmul.11", "t_stream_shape", (1, 1))
+            compiler_cfg.balancer_op_override("conv2d_2231.dc.matmul.11", "grid_shape", (1, 1))
 
     if test_device.arch == BackendDevice.Grayskull:
         # Temp mitigations for net2pipe errors, should be removed.
@@ -110,35 +90,23 @@ def test_retinanet(variant, test_device):
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
 
         if variant == "retinanet_rn18fpn":
-            compiler_cfg.balancer_op_override(
-                "conv2d_322.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_322.dc.matmul.11", "t_stream_shape", (1, 1))
 
         elif variant == "retinanet_rn34fpn":
-            compiler_cfg.balancer_op_override(
-                "conv2d_554.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_554.dc.matmul.11", "t_stream_shape", (1, 1))
 
         elif variant == "retinanet_rn50fpn":
-            compiler_cfg.balancer_op_override(
-                "conv2d_791.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_791.dc.matmul.11", "t_stream_shape", (1, 1))
 
         elif variant == "retinanet_rn101fpn":
-            compiler_cfg.balancer_op_override(
-                "conv2d_1522.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_1522.dc.matmul.11", "t_stream_shape", (1, 1))
 
         elif variant == "retinanet_rn152fpn":
-            compiler_cfg.balancer_op_override(
-                "conv2d_2253.dc.matmul.11", "t_stream_shape", (1, 1)
-            )
+            compiler_cfg.balancer_op_override("conv2d_2253.dc.matmul.11", "t_stream_shape", (1, 1))
 
     # Prepare model
 
-    checkpoint_path = (
-        f"third_party/confidential_customer_models/cv_demos/retinanet/weights/{variant}.pth"
-    )
+    checkpoint_path = f"third_party/confidential_customer_models/cv_demos/retinanet/weights/{variant}.pth"
     model = Model.load(checkpoint_path)
     model.eval()
     tt_model = forge.PyTorchModule(f"pt_{variant}", model)

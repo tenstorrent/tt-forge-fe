@@ -50,13 +50,13 @@ def test_efficientnet_timm(variant, test_device):
             compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_225"] = 5
             compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_488"] = 5
             compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_541"] = 5
-            compiler_cfg.balancer_op_override("conv2d_68.dc.matmul.12", "t_stream_shape", (7,1))
+            compiler_cfg.balancer_op_override("conv2d_68.dc.matmul.12", "t_stream_shape", (7, 1))
             os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
 
     elif variant == "efficientnet_b4":
         if test_device.arch == BackendDevice.Wormhole_B0:
             compiler_cfg.amp_level = 1
-            compiler_cfg.default_df_override=forge.DataFormat.Float16_b
+            compiler_cfg.default_df_override = forge.DataFormat.Float16_b
             os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
             os.environ["FORGE_PAD_SPARSE_MM"] = "{13:16}"
             os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"
@@ -78,8 +78,10 @@ def test_efficientnet_timm(variant, test_device):
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)
-    except: 
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+    except:
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         img_tensor = torch.rand(1, 3, 224, 224)
 
     # Sanity run
@@ -120,14 +122,16 @@ variants = [
 def test_efficientnet_torchvision(variant, test_device):
     if test_device.arch == BackendDevice.Grayskull and variant == models.efficientnet_b4:
         pytest.skip("B4 hanging on GS since f0966d4000")
-        
+
     if test_device.arch == BackendDevice.Grayskull and variant == models.efficientnet_b0:
-        pytest.skip("Error! The overlay blob for chip_0__y_7__x_1 does not fit, the max size is 73600, however we tried to allocate 345716.")
-    
+        pytest.skip(
+            "Error! The overlay blob for chip_0__y_7__x_1 does not fit, the max size is 73600, however we tried to allocate 345716."
+        )
+
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.enable_auto_fusing = False # Until #844 is resolved
+    compiler_cfg.enable_auto_fusing = False  # Until #844 is resolved
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
 
     if variant == models.efficientnet_b0:
@@ -140,7 +144,7 @@ def test_efficientnet_torchvision(variant, test_device):
             compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_479"] = 5
             compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_531"] = 5
             os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
-        
+
     elif variant == models.efficientnet_b4:
         # Solves issue for bigger conv layers in the middle of the graph
         compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_311"] = 5
@@ -163,10 +167,9 @@ def test_efficientnet_torchvision(variant, test_device):
         compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_1451"] = 5
         compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_1503"] = 5
 
-        compiler_cfg.balancer_op_override("conv2d_1625.dc.matmul.8", "t_stream_shape", (1,1)) # PIPEGEN-ERROR
-        compiler_cfg.balancer_op_override("conv2d_104.dc.matmul.12", "t_stream_shape", (7,1)) # blobgen error
+        compiler_cfg.balancer_op_override("conv2d_1625.dc.matmul.8", "t_stream_shape", (1, 1))  # PIPEGEN-ERROR
+        compiler_cfg.balancer_op_override("conv2d_104.dc.matmul.12", "t_stream_shape", (7, 1))  # blobgen error
         os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
-
 
     # Load model
     framework_model = download_model(variant, pretrained=True)
@@ -185,8 +188,10 @@ def test_efficientnet_torchvision(variant, test_device):
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
-        img_tensor = torch.rand(1, 3, 224, 224) 
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
+        img_tensor = torch.rand(1, 3, 224, 224)
 
     # Sanity run
     # cpu_output = framework_model(img_tensor)

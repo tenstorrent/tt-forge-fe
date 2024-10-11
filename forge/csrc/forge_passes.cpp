@@ -17,7 +17,6 @@
 #include "passes/erase_consecutive_reshape.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/erase_unnecessary_4d_tm_sequence.hpp"
-#include "passes/mlir_compiler.hpp"
 #include "passes/explicate_unsqueeze.hpp"
 #include "passes/fuse_conv2d_bias.hpp"
 #include "passes/fuse_pad_conv2d.hpp"
@@ -31,6 +30,7 @@
 #include "passes/lower_concat_to_runtime_transform.hpp"
 #include "passes/lower_reinterpret_shape.hpp"
 #include "passes/lowering_context.hpp"
+#include "passes/mlir_compiler.hpp"
 #include "passes/move_requantize.hpp"
 #include "passes/move_select_after_matmul_optional.hpp"
 #include "passes/pad_output_buffer.hpp"
@@ -43,14 +43,14 @@
 #include "passes/replace_incommutable_patterns.hpp"
 #include "passes/set_tile_dim.hpp"
 #include "passes/squeeze_to_reshape.hpp"
-#include "passes/dataformat.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 
-namespace tt {
+namespace tt
+{
 
 using NodeType = graphlib::NodeType;
 using Edge = graphlib::Edge;
@@ -77,7 +77,8 @@ void lower_reshape(Graph *, graphlib::OpNode *node)
 
 // ********** Run post initial graph passes **********
 std::tuple<std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>>, passes::FractureChipIdAssignments>
-run_post_initial_graph_passes(graphlib::Graph *graph, py::object compiler_cfg_object, passes::FractureGroups const &fracture_groups)
+run_post_initial_graph_passes(
+    graphlib::Graph *graph, py::object compiler_cfg_object, passes::FractureGroups const &fracture_groups)
 {
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
 
@@ -102,8 +103,8 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
 
     passes::bypass_nop_tms(graph);
 
-    // Erase all inverse ops possible. 
-    // Then, if no inverse ops are erased, then attempt to insert inverse ops on the output. 
+    // Erase all inverse ops possible.
+    // Then, if no inverse ops are erased, then attempt to insert inverse ops on the output.
     // Then, if no inverse ops can be inserted on the output, then attempt to insert inverse ops on the input.
     // Then, if no inverse ops can be inserted on the input, then attempt to bypass nop reshapes.
     //        NOTE: The reason we try this last is because nop reshapes may end up being inverses of other ops
@@ -118,14 +119,16 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
 
         bool skip_erase_redundant = false;
         attempt_update = passes::erase_inverse_ops(graph);
-        if (not attempt_update) {
+        if (not attempt_update)
+        {
             attempt_update = passes::insert_inverse_on_outputs(graph);
             if (attempt_update)
                 skip_erase_redundant = true;
         }
         if (not attempt_update)
             attempt_update = passes::insert_inverse_on_inputs(graph);
-        if (not attempt_update) {
+        if (not attempt_update)
+        {
             attempt_update = passes::insert_inverse_on_downstream_tms(graph);
             if (attempt_update)
                 skip_erase_redundant = true;
@@ -136,7 +139,8 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
         // These passes erase tms for non-inverse reasons. Usually we are fine with this.
         // However, we might insert tms on top or under of other tms for the purpose of erasing other inverse ops.
         // Skip in that case
-        if (not skip_erase_redundant) {
+        if (not skip_erase_redundant)
+        {
             if (not attempt_update)
                 attempt_update = passes::erase_consecutive_reshape(graph, true);
 
@@ -172,7 +176,8 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_optimize_dec
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
 
     passes::print_graph(graph, "POST_OPTIMIZE");
-    auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose_post_optimize", compiler_cfg);
+    auto inserted_node_id_mapping =
+        decompose_tt_forge_graph(graph, "get_f_forge_decompose_post_optimize", compiler_cfg);
 
     return inserted_node_id_mapping;
 }
@@ -189,9 +194,7 @@ std::vector<std::pair<graphlib::NodeId, graphlib::NodeId>> run_post_autograd_gra
 }
 
 // ********** Run pre-lowering passes **********
-graphlib::Graph* run_pre_lowering_passes(
-    graphlib::Graph *graph,
-    const std::optional<DataFormat> default_df_override)
+graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::optional<DataFormat> default_df_override)
 {
     passes::print_graph(graph, "PRE_MLIR");
     // Recalculate shapes, and figure out implicit broadcasts that are missing
@@ -202,9 +205,10 @@ graphlib::Graph* run_pre_lowering_passes(
 
     // Fuse requantize into matmuls
     fuse_requantize(graph);
-    
+
     // Fuse gelu into matmuls
-    if (env_as<bool>("FORGE_FUSE_MATMUL_GELU")) {
+    if (env_as<bool>("FORGE_FUSE_MATMUL_GELU"))
+    {
         fuse_gelu(graph);
     }
 

@@ -13,6 +13,7 @@ import forge
 import forge.config
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
+
 def test_torch():
     class Add(nn.Module):
         def __init__(self):
@@ -35,6 +36,7 @@ def test_torch():
     print(f"output: {output}")
     if not torch.allclose(output[0], golden, rtol=1e-1):
         raise ValueError("Output does not match the golden output")
+
 
 def test_tf():
     class TFAdd(tf.keras.Model):
@@ -60,6 +62,7 @@ def test_tf():
     print(f"output: {output}")
     if not torch.allclose(output[0], golden, rtol=1e-1):
         raise ValueError("Output does not match the golden output")
+
 
 def test_forge():
     class ForgeAdd(forge.ForgeModule):

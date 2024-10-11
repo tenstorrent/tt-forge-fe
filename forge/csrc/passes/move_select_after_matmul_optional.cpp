@@ -7,10 +7,10 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "utils/logger.hpp"
-#include "passes/passes_utils.hpp"
 #include "passes/commute_utils.hpp"
+#include "passes/passes_utils.hpp"
 #include "reportify/reportify.hpp"
+#include "utils/logger.hpp"
 
 namespace tt::passes
 {
@@ -21,9 +21,9 @@ static bool is_large_aligned_select(graphlib::Node const *node, int threshold)
     if (op == nullptr or op->op_name() != "select")
         return false;
 
-    graphlib::OpType const& op_type = op->op_type();
+    graphlib::OpType const &op_type = op->op_type();
     int length = std::get<int>(op_type.attr[2]);
-    return  (length >= threshold); 
+    return (length >= threshold);
 }
 
 static bool is_vslice(graphlib::Node const *node)
@@ -37,8 +37,8 @@ static bool all_users_matmul(std::vector<graphlib::Node *> const &users)
     for (auto user : users)
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(user);
-    if (op->op_name() != "matmul")
-        return false;
+        if (op->op_name() != "matmul")
+            return false;
     }
 
     return true;
@@ -67,7 +67,7 @@ static bool shape_match(graphlib::Node const *node, graphlib::Shape const &sh, i
     {
         if (i == size_t(concat_dim))
             continue;
- 
+
         if (node_shape[i] != sh[i])
             return false;
     }
@@ -92,12 +92,13 @@ static bool have_consecutive_even_mm_as_src_nodes(graphlib::Graph *graph, graphl
 
         // skip if op-type is slice or stack
         auto op_name = op->op_name();
-        if (op_name == "hslice" or op_name == "hstack" or op_name == "vslice" or op_name == "vstack" or op_name == "reduce_max")
+        if (op_name == "hslice" or op_name == "hstack" or op_name == "vslice" or op_name == "vstack" or
+            op_name == "reduce_max")
         {
-            iter = operands[0]; 
+            iter = operands[0];
             continue;
         }
- 
+
         // something not matmul is the source nodes of the select op
         if (op_name != "sparse_matmul" and op_name != "matmul")
             break;
@@ -113,9 +114,9 @@ static bool have_consecutive_even_mm_as_src_nodes(graphlib::Graph *graph, graphl
 }
 
 static std::vector<graphlib::Node *> other_concat_operands_commutable(
-    graphlib::Graph *graph, 
-    graphlib::Node *concat_op, 
-    graphlib::Node *prev_node, 
+    graphlib::Graph *graph,
+    graphlib::Node *concat_op,
+    graphlib::Node *prev_node,
     std::vector<graphlib::Node *> const &path,
     std::vector<graphlib::Node *> &main_pending,
     int &main_r,
@@ -127,10 +128,10 @@ static std::vector<graphlib::Node *> other_concat_operands_commutable(
     graphlib::Shape select_input_shape = graph->data_operands(path[0])[0]->shape();
     auto concat_attrs = dynamic_cast<graphlib::OpNode const *>(concat_op)->op_attrs();
     int concat_dim = std::get<int>(concat_attrs[0]);
-    if (concat_dim < 0) 
-        concat_dim += concat_op->shape().size(); 
+    if (concat_dim < 0)
+        concat_dim += concat_op->shape().size();
 
-    // iterate through the concat's operands 
+    // iterate through the concat's operands
     std::vector<graphlib::Node *> concat_operands = graph->data_operands(concat_op);
     std::vector<graphlib::Node *> tmp_pending;
     int tmp_r_sum = 0, tmp_c_sum = 0;
@@ -140,13 +141,13 @@ static std::vector<graphlib::Node *> other_concat_operands_commutable(
         if (operand == prev_node)
             continue;
 
-        graphlib::Node * iter = operand; 
+        graphlib::Node *iter = operand;
         graphlib::OpNode *prev_op = nullptr;
         int tmp_c = 0, tmp_r = 0;
         while (true)
         {
             // check the op's output shape
-            if (shape_match(iter, select_input_shape, concat_dim)) 
+            if (shape_match(iter, select_input_shape, concat_dim))
             {
                 sub.push_back(iter);
                 break;
@@ -154,7 +155,7 @@ static std::vector<graphlib::Node *> other_concat_operands_commutable(
 
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(iter);
             if (not op)
-                return {};    
+                return {};
 
             // check #users
             std::vector<graphlib::Node *> op_users = graph->data_users(iter);
@@ -167,10 +168,10 @@ static std::vector<graphlib::Node *> other_concat_operands_commutable(
 
             // check operands
             graphlib::Node *op_operand;
-            std::vector<graphlib::Node *> op_operands = graph->data_operands(iter);        
+            std::vector<graphlib::Node *> op_operands = graph->data_operands(iter);
             if (op_operands.size() > 2)
             {
-                return {};     
+                return {};
             }
             else if (op_operands.size() == 2)
             {
@@ -178,12 +179,12 @@ static std::vector<graphlib::Node *> other_concat_operands_commutable(
                 if (not constant_operand or not constant_operand->is_constant())
                     constant_operand = dynamic_cast<graphlib::InputNode *>(op_operands[1]);
 
-                if (constant_operand and constant_operand->is_constant()) // one of them is const node
+                if (constant_operand and constant_operand->is_constant())  // one of them is const node
                     op_operand = (constant_operand == op_operands[0]) ? op_operands[1] : op_operands[0];
                 else
                     return {};
             }
-            else // # operands == 1
+            else  // # operands == 1
             {
                 if (is_elementwise(op) or is_vslice_select_vstack(op, prev_op))
                     op_operand = op_operands[0];
@@ -241,14 +242,16 @@ static std::vector<graphlib::Node *> other_concat_operands_commutable(
     main_c += ((concat_dim == 3) ? tmp_c_sum : 0);
     main_r += ((concat_dim == 2) ? tmp_r_sum : 0);
 
-    return sub; // all commutable
+    return sub;  // all commutable
 }
 
 static void commute_binary_op(graphlib::Graph *graph, graphlib::Node *op)
 {
     auto operand_edges = graph->operand_data_edges(op);
     graphlib::Shape shape = op->shape();
-    graphlib::Shape input_shape = (graph->data_operands(op)[0]->shape() != shape) ? graph->data_operands(op)[0]->shape() : graph->data_operands(op)[1]->shape(); 
+    graphlib::Shape input_shape = (graph->data_operands(op)[0]->shape() != shape)
+                                      ? graph->data_operands(op)[0]->shape()
+                                      : graph->data_operands(op)[1]->shape();
 
     // Check bcast
     for (auto op_edge : operand_edges)
@@ -277,18 +280,18 @@ static void commute_binary_op(graphlib::Graph *graph, graphlib::Node *op)
 }
 
 static void commute_concat_op(
-    graphlib::Graph *graph, 
-    std::vector<graphlib::Node *> &path, 
+    graphlib::Graph *graph,
+    std::vector<graphlib::Node *> &path,
     std::vector<graphlib::Node *> &subpath,
     int concat_index)
 {
-    graphlib::Node *concat_op = path[concat_index]; 
+    graphlib::Node *concat_op = path[concat_index];
 
-    // Look for vslice -> select -> vstack sequence if exists 
+    // Look for vslice -> select -> vstack sequence if exists
     for (auto init_op : subpath)
     {
-    graphlib::Node *iter = init_op;
-        graphlib::OpNode *vslice_op = nullptr, *select_op = nullptr, *vstack_op = nullptr; 
+        graphlib::Node *iter = init_op;
+        graphlib::OpNode *vslice_op = nullptr, *select_op = nullptr, *vstack_op = nullptr;
         while (iter != concat_op)
         {
             // Retrieve next op
@@ -309,18 +312,18 @@ static void commute_concat_op(
                 vslice_op = nullptr;
                 select_op = nullptr;
                 vstack_op = nullptr;
-            }             
+            }
 
             // Hoist another splice-seq on the other concat operand branchs
             if (vslice_op and select_op and vstack_op)
             {
                 auto old_edge = graph->user_data_edges(vstack_op)[0];
                 auto new_edge = graphlib::Edge(
-                      graph->data_operands(vslice_op)[0]->id(),
-                      0,
-                      old_edge.consumer_node_id,
-                      old_edge.consumer_input_port_id,
-                      old_edge.edge_type);
+                    graph->data_operands(vslice_op)[0]->id(),
+                    0,
+                    old_edge.consumer_node_id,
+                    old_edge.consumer_input_port_id,
+                    old_edge.edge_type);
                 graph->add_edge(new_edge);
                 graph->copy_edge_attributes(old_edge, new_edge);
                 graph->remove_edge(old_edge);
@@ -341,28 +344,27 @@ static void commute_concat_op(
 
                 // Re-calculate the op shape
                 graphlib::calculate_and_set_node_shape(graph, op);
-            } 
+            }
 
             // Move to next op
             iter = next;
-        } 
+        }
     }
 }
 
-static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib::Node *>>> find_path_from_select_to_matmul_op(
-    graphlib::Graph *graph,
-    graphlib::Node *initial_op)
+static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib::Node *>>>
+find_path_from_select_to_matmul_op(graphlib::Graph *graph, graphlib::Node *initial_op)
 {
-    std::vector<graphlib::Node *> path; 
+    std::vector<graphlib::Node *> path;
     std::vector<std::vector<graphlib::Node *>> subpath;
     std::vector<graphlib::Node *> pending_padding;
 
-    // path to find: vslice -> select -> vstack -> (...) -> matmul -> (random op)    
+    // path to find: vslice -> select -> vstack -> (...) -> matmul -> (random op)
     // vslice -> select is fixed and already checked
-    path.push_back(initial_op);     // vslice, already checked
+    path.push_back(initial_op);  // vslice, already checked
     graphlib::Node *next_node = graph->data_users(initial_op)[0];
-    path.push_back(next_node);        // select, already checked
- 
+    path.push_back(next_node);  // select, already checked
+
     // traverse the graph until bumping into matmul op
     graphlib::Node *iter = graph->data_users(next_node)[0];
     int org_shape_r = 0;
@@ -398,7 +400,7 @@ static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib
                     org_shape_c = 0;
                     pending_padding.push_back(op);
                 }
-                else 
+                else
                 {
                     path.clear();
                     break;
@@ -411,15 +413,15 @@ static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib
                     org_shape_r = 0;
                     pending_padding.push_back(op);
                 }
-                else 
+                else
                 {
                     path.clear();
                     break;
-                }        
+                }
             }
-            else 
+            else
             {
-                   path.push_back(op); 
+                path.push_back(op);
             }
         }
         else if (op_name == "narrow")
@@ -438,16 +440,16 @@ static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib
                 org_shape_r = std::get<int>(op->op_type().attr[2]);
                 pending_padding.push_back(op);
             }
-            else 
+            else
             {
-                path.push_back(op); 
+                path.push_back(op);
             }
-        } 
+        }
         else if (op_name == "concatenate")
         {
-            path.push_back(op);        
+            path.push_back(op);
         }
-        else 
+        else
         {
             path.clear();
             break;
@@ -463,8 +465,8 @@ static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib
                 break;
             }
         }
- 
-        graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(users[0]); 
+
+        graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(users[0]);
         if (user_op and user_op->op_name() == "concatenate")
         {
             std::vector<graphlib::Node *> sub = other_concat_operands_commutable(
@@ -504,7 +506,7 @@ static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib
     {
         for (graphlib::Node *padding_node : pending_padding)
         {
-            //graph->remove_node(padding_node);
+            // graph->remove_node(padding_node);
             graphlib::bypass_node(graph, padding_node, true);
         }
     }
@@ -513,9 +515,7 @@ static std::pair<std::vector<graphlib::Node *>, std::vector<std::vector<graphlib
 }
 
 static void commute(
-    graphlib::Graph *graph, 
-    std::vector<graphlib::Node *> &path,
-    std::vector<std::vector<graphlib::Node *>> &subpath)
+    graphlib::Graph *graph, std::vector<graphlib::Node *> &path, std::vector<std::vector<graphlib::Node *>> &subpath)
 {
     graphlib::OpNode *first_vslice = path.front()->as<graphlib::OpNode>();
     graphlib::Node *vslice_input = graph->data_operands(first_vslice)[0];
@@ -529,26 +529,28 @@ static void commute(
     // path would be changed to:  (vslice-input op) -> (...) -> matmul -> vslice -> select -> vstack -> (random op)
     // 1. Connect input of vslice op to the first op of (...) -> matmul sequence
     // 2. Update the shape of ops in (...) to vslice-input
-    // 3. Update the output shape of matmul op to reflect the op-shape before select op  # (1, 1, 5344, 80) --> (1,1,6144,80)
-    // 4. Connect vslice -> select -> vstack sequence to the output of the matmul op, and update the output shape accordingly
+    // 3. Update the output shape of matmul op to reflect the op-shape before select op  # (1, 1, 5344, 80) -->
+    // (1,1,6144,80)
+    // 4. Connect vslice -> select -> vstack sequence to the output of the matmul op, and update the output shape
+    // accordingly
 
     // Re-Connect vslice's input op to the first subseuqent op(s)
     graphlib::OpNode *first_subsequent_op = path[3]->as<graphlib::OpNode>();
-    std::vector<graphlib::Edge> to_matmul_edges = graph->user_data_edges(path[path_length-2]);
+    std::vector<graphlib::Edge> to_matmul_edges = graph->user_data_edges(path[path_length - 2]);
     bool need_multiple_edges = (to_matmul_edges.size() > 1) and (path_length == 4);
     auto old_edge = graph->operand_data_edges(first_subsequent_op)[0];
     auto new_edge = graphlib::Edge(
-            vslice_input->id(),
-            0,
-            first_subsequent_op->id(),
-            (first_subsequent_op->is_matmul()) ? ((matmul->is_sparse_matmul()) ? 1 : 0) : 0,
-            old_edge.edge_type);
+        vslice_input->id(),
+        0,
+        first_subsequent_op->id(),
+        (first_subsequent_op->is_matmul()) ? ((matmul->is_sparse_matmul()) ? 1 : 0) : 0,
+        old_edge.edge_type);
     graph->add_edge(new_edge);
     graph->copy_edge_attributes(old_edge, new_edge);
     graph->remove_edge(old_edge);
 
     // Update the shape of ops in (...) sequence
-    for (size_t i = 3; i < path_length-1; ++i)
+    for (size_t i = 3; i < path_length - 1; ++i)
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(path[i]);
         if (op and op->op_name() == "concatenate")
@@ -568,12 +570,12 @@ static void commute(
         if (need_multiple_edges and matmul_op != first_subsequent_op)
         {
             auto _new_edge = graphlib::Edge(
-                    vslice_input->id(),
-                    0,
-                    matmul_op->id(),
-                    0, //(matmul_op->is_sparse_matmul()) ? 1 : 0,
-                    graphlib::EdgeType::kData);
-                graph->add_edge(_new_edge);
+                vslice_input->id(),
+                0,
+                matmul_op->id(),
+                0,  //(matmul_op->is_sparse_matmul()) ? 1 : 0,
+                graphlib::EdgeType::kData);
+            graph->add_edge(_new_edge);
             graph->remove_edge(to_matmul_edge);
         }
 
@@ -584,24 +586,26 @@ static void commute(
         {
             // Clone nodes
             graphlib::Node *vslice_clone = graph->add_node(
-                path[0]->clone(path[0]->name() + "_splice_commute_clone" + matmul_op->name() + std::to_string(matmul_user_edge.edge_creation_id)),
+                path[0]->clone(
+                    path[0]->name() + "_splice_commute_clone" + matmul_op->name() +
+                    std::to_string(matmul_user_edge.edge_creation_id)),
                 graph->get_subgraph_id_for_node(matmul_op->id()));
             graphlib::Node *select_clone = graph->add_node(
-                path[1]->clone(path[1]->name() + "_splice_commute_clone" + matmul_op->name() + std::to_string(matmul_user_edge.edge_creation_id)),
+                path[1]->clone(
+                    path[1]->name() + "_splice_commute_clone" + matmul_op->name() +
+                    std::to_string(matmul_user_edge.edge_creation_id)),
                 graph->get_subgraph_id_for_node(matmul_op->id()));
             graphlib::Node *vstack_clone = graph->add_node(
-                path[2]->clone(path[2]->name() + "_splice_commute_clone" + matmul_op->name() + std::to_string(matmul_user_edge.edge_creation_id)),
+                path[2]->clone(
+                    path[2]->name() + "_splice_commute_clone" + matmul_op->name() +
+                    std::to_string(matmul_user_edge.edge_creation_id)),
                 graph->get_subgraph_id_for_node(matmul_op->id()));
 
             // Connect output of the matmul to vslice
-            auto new_edge = graphlib::Edge(
-                matmul_op->id(),
-                0,
-                vslice_clone->id(),
-                0,
-                matmul_user_edge.edge_type);
+            auto new_edge = graphlib::Edge(matmul_op->id(), 0, vslice_clone->id(), 0, matmul_user_edge.edge_type);
             graph->add_edge(new_edge);
-            graph->get_edge_attributes(new_edge)->set_ublock_order(graph->get_edge_attributes(matmul_user_edge)->get_ublock_order());
+            graph->get_edge_attributes(new_edge)->set_ublock_order(
+                graph->get_edge_attributes(matmul_user_edge)->get_ublock_order());
             graphlib::calculate_and_set_node_shape(graph, vslice_clone);
 
             // Connect middle nodes
@@ -617,7 +621,8 @@ static void commute(
                 matmul_user_edge.consumer_input_port_id,
                 matmul_user_edge.edge_type);
             graph->add_edge(new_edge);
-            graph->get_edge_attributes(new_edge)->set_ublock_order(graph->get_edge_attributes(matmul_user_edge)->get_ublock_order());
+            graph->get_edge_attributes(new_edge)->set_ublock_order(
+                graph->get_edge_attributes(matmul_user_edge)->get_ublock_order());
             graph->remove_edge(matmul_user_edge);
 
             // Recalculate shape
@@ -633,16 +638,18 @@ static void commute(
 
 // temporarily apply the pass only inside of moving-splice pass (it seems some tests intentionally use identical ops)
 // TODO: remove the same pass from forge_pass.cpp for now
-static void internal_merge_identical_user_ops(graphlib::Graph *graph) {
+static void internal_merge_identical_user_ops(graphlib::Graph *graph)
+{
     std::unordered_set<graphlib::Node *> removed_nodes;
-    for (auto *node : graphlib::topological_sort(*graph)) {
+    for (auto *node : graphlib::topological_sort(*graph))
+    {
         if (removed_nodes.find(node) != removed_nodes.end())
             continue;
 
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
         if (not op)
             continue;
- 
+
         std::vector<graphlib::Node *> users = graph->data_users(node);
         if (users.size() > 1)
         {
@@ -652,7 +659,7 @@ static void internal_merge_identical_user_ops(graphlib::Graph *graph) {
                 graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
                 if (not user_op)
                     continue;
- 
+
                 std::string user_key = user_op->op_type().as_string();
                 auto identical_op = seen_users.find(user_key);
                 if (identical_op == seen_users.end())
@@ -722,6 +729,5 @@ void move_select_after_matmul_optional(graphlib::Graph *graph)
             break;
         }
     }
-
 }
 }  // namespace tt::passes

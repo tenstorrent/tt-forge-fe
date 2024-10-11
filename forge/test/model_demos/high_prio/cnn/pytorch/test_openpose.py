@@ -37,9 +37,7 @@ def get_image_tensor(sample_path):
 def transfer(model, model_weights):
     transfered_model_weights = {}
     for weights_name in model.state_dict().keys():
-        transfered_model_weights[weights_name] = model_weights[
-            ".".join(weights_name.split(".")[1:])
-        ]
+        transfered_model_weights[weights_name] = model_weights[".".join(weights_name.split(".")[1:])]
     return transfered_model_weights
 
 
@@ -238,9 +236,7 @@ class OpenPoseHandModel(nn.Module):
             ]
         )
 
-        block1_1 = OrderedDict(
-            [("conv6_1_CPM", [128, 512, 1, 1, 0]), ("conv6_2_CPM", [512, 22, 1, 1, 0])]
-        )
+        block1_1 = OrderedDict([("conv6_1_CPM", [128, 512, 1, 1, 0]), ("conv6_2_CPM", [512, 22, 1, 1, 0])])
 
         blocks = {}
         blocks["block1_0"] = block1_0
@@ -292,10 +288,11 @@ variants = [
     "hand_basic",
 ]
 
+
 def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Init config
     compiler_cfg = forge.config._get_global_compiler_config()
-    
+
     if test_device.arch == BackendDevice.Grayskull:
         # Limit to BE Golden verify as hang occures due to the fork-join buffering
         # tenstorrent/forge#880
@@ -305,7 +302,7 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
         # Possibilities of finding out better way of handling extra blob gen size
         # tenstorrent/forge#881
         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{12*1024}"
-        
+
     if variant == "hand_basic" and test_device.arch == BackendDevice.Wormhole_B0:
         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{96*1024}"
 
@@ -328,16 +325,12 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     if variant == "body_basic":
         model_path = "third_party/confidential_customer_models/model_2/pytorch/openpose/weights/body_pose_model.pth"
         framework_model = OpenPoseBodyModel()
-        sample_path = (
-            "third_party/confidential_customer_models/model_2/pytorch/openpose/samples/body.jpeg"
-        )
+        sample_path = "third_party/confidential_customer_models/model_2/pytorch/openpose/samples/body.jpeg"
 
     elif variant == "hand_basic":
         model_path = "third_party/confidential_customer_models/model_2/pytorch/openpose/weights/hand_pose_model.pth"
         framework_model = OpenPoseHandModel()
-        sample_path = (
-            "third_party/confidential_customer_models/model_2/pytorch/openpose/samples/hand.jpeg"
-        )
+        sample_path = "third_party/confidential_customer_models/model_2/pytorch/openpose/samples/hand.jpeg"
     framework_model_dict = transfer(framework_model, torch.load(model_path))
     framework_model.load_state_dict(framework_model_dict)
     forge_model = forge.PyTorchModule("open_pose_" + variant + "_pt", framework_model)
@@ -347,7 +340,7 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
 
     # Sanity run
     cpu_out = framework_model(img_tensor)
-    
+
     return forge_model, [img_tensor], {}
 
 
@@ -355,7 +348,8 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
 @pytest.mark.skip(reason="Not needed for release")
 def test_openpose_basic(variant, test_device):
     model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
-        test_device, variant,
+        test_device,
+        variant,
     )
 
     # Verify
@@ -368,23 +362,19 @@ def test_openpose_basic(variant, test_device):
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
             pcc=0.9,
         ),
     )
 
 
 def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
-    if (
-        test_device.arch == BackendDevice.Grayskull
-        and variant == "lwopenpose2d_mobilenet_cmupan_coco"
-    ):
+    if test_device.arch == BackendDevice.Grayskull and variant == "lwopenpose2d_mobilenet_cmupan_coco":
         pytest.skip("Grayskull failing with data mismatch PCC = 0.5567322296627039")
 
-    if (
-        test_device.arch == BackendDevice.Grayskull
-        and variant == "lwopenpose3d_mobilenet_cmupan_coco"
-    ):
+    if test_device.arch == BackendDevice.Grayskull and variant == "lwopenpose3d_mobilenet_cmupan_coco":
         pytest.skip("Grayskull failing with data mismatch PCC = 0.7433900704259362")
 
     # Configurations
@@ -404,7 +394,7 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
 
     # Sanity run
     cpu_out = framework_model(img_tensor)
-    
+
     return forge_model, [img_tensor], {}
 
 
@@ -417,7 +407,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_openpose_osmr(variant, test_device):
     model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
-        test_device, variant,
+        test_device,
+        variant,
     )
 
     # Verify

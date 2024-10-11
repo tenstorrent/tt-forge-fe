@@ -19,7 +19,7 @@ Network-on-Chip
 
 L1
 ---
-Local memory storage (SRAM) in Tensix is commonly referred to as L1 memory. 
+Local memory storage (SRAM) in Tensix is commonly referred to as L1 memory.
 
 FPU
 ---
@@ -41,11 +41,11 @@ Hardware unit that copies data from destination registers in FPU to L1 local mem
 Op
 ---
 A Buda op (*operation*) is a single math operation, such as matrix multiply, convolution, or pool, performed on one or more tensor operands. If you have ever written a model in PyTorch or
-TensorFlow, a Buda op is analogous to an operation in those frameworks. 
+TensorFlow, a Buda op is analogous to an operation in those frameworks.
 
 Epoch
 -----
-A collection of ops that fits onto one chip. In a typical workflow, epoch code will be copied onto a chip which will then compute a batch of one or more tensors before moving on to the next epoch. 
+A collection of ops that fits onto one chip. In a typical workflow, epoch code will be copied onto a chip which will then compute a batch of one or more tensors before moving on to the next epoch.
 
 Buffer
 ------
@@ -53,7 +53,7 @@ A reserved location in local memory, DRAM, or host memory. Buffers are used eith
 
 Pipe
 ----
-A pipe is a connection between two or more buffers. Once established, a pipe will automatically copy data from source buffers into destination buffers, as space allows. 
+A pipe is a connection between two or more buffers. Once established, a pipe will automatically copy data from source buffers into destination buffers, as space allows.
 
 Tile
 ----
@@ -70,7 +70,7 @@ A blocking operation is one that requires a block of tiles to be calculated. Mat
 
 Block
 -----
-A group of tiles on which a :ref:`blocking operation<blocking op>` is performed. 
+A group of tiles on which a :ref:`blocking operation<blocking op>` is performed.
 
 TM op
 -----
@@ -104,7 +104,7 @@ LLK
 ---
 Low-Level Kernels are implementations of low-level Tensix and NOC API used in :ref:`HLKs<HLK>`. They use a mix of C++ and assembly to provide highly optimized and performant functionality, such
 as data :ref:`unpacking<unpacker>`, :ref:`packing<packer>`, running math primitives, and so on. These are typically written by Tenstorrent as they require in-depth knowledge of Tenstorrent
-hardware and low-level programming requirements. 
+hardware and low-level programming requirements.
 
 HLKC
 ----

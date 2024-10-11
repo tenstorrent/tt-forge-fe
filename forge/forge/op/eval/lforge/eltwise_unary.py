@@ -19,9 +19,9 @@ from forge._C.backend_api import get_op_model_execution_cycles
 
 from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
 
-M_2_SQRTPI  = 1.12837916709551257390	# 2/sqrt(pi) 
-M_SQRT2     = 1.41421356237309504880	# sqrt(2) 
-M_SQRT1_2   = 0.7071067811865476
+M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
+M_SQRT2 = 1.41421356237309504880  # sqrt(2)
+M_SQRT1_2 = 0.7071067811865476
 
 # Reference implementation is at pytorch/aten/src/ATen/native/cpu/Activation.cpp
 # https://github.com/pytorch/pytorch/blob/4f8b986e28736b59bc46cd0873a0f36fdaa6f5b8/aten/src/ATen/native/cpu/Activation.cpp
@@ -37,20 +37,22 @@ def gelu_derivative(x, approximate):
     else:
         raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
 
+
 def gelu_forward(x, approximate):
     if approximate == "none":
         return torch.nn.functional.gelu(x)
     elif approximate == "tanh":
         import math
+
         return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
     else:
-         raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
+        raise RuntimeError(f"Gelu does not support {approximate} approximation mode.")
 
 
 def eval(type, attr, ops):
     assert len(ops) == 1, "Eltwise unary should have one input"
     # assert (type != "ethernet_datacopy" or (len(attr) == 1 or len(attr) == 2)), f"Ethernet datacopy must only have 1 or 2 attributes. Attrs = {attr}" tenstorrent/forge#1085
-    
+
     t_ops = to_torch_operands(*ops)
 
     # Some ops don't support non-fp32 in pytorch
@@ -76,7 +78,7 @@ def eval(type, attr, ops):
             ret = i[0].squeeze(0).split(z)
             ret = [torch.max(s, dim=0)[0] for s in ret]
             ret = torch.stack(ret).unsqueeze(0)
-        return  ret
+        return ret
 
     if type == "dropout":
         p, training, seed, r_pad, c_pad, t_stream_r, t_stream_c, is_r_major, is_z_major = attr
@@ -118,13 +120,13 @@ def eval(type, attr, ops):
         "exp": lambda i: torch.exp(i[0]),
         "sqrt": lambda i: torch.sqrt(i[0]),
         "lrelu": lambda i: torch.nn.functional.leaky_relu(i[0], attr[0]),
-        "gelu": lambda i : gelu_forward(i[0], approximate=attr[0]),
-        "gelu_derivative": lambda i : gelu_derivative(i[0], approximate=attr[0]),
+        "gelu": lambda i: gelu_forward(i[0], approximate=attr[0]),
+        "gelu_derivative": lambda i: gelu_derivative(i[0], approximate=attr[0]),
         "nop": lambda i: i[0],
         "ethernet_datacopy": lambda i: i[0],
         "buffer": lambda i: i[0],
-        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10), # add epsilon to avoid infinity
-        "log": lambda i: torch.log(i[0] + 1e-10), # add epsilon to avoid nan
+        "reciprocal": lambda i: torch.reciprocal(i[0] + 1e-10),  # add epsilon to avoid infinity
+        "log": lambda i: torch.log(i[0] + 1e-10),  # add epsilon to avoid nan
         "sigmoid": lambda i: torch.sigmoid(i[0]),
         "clip": lambda i: torch.clip(i[0], min=attr[0], max=attr[1]),
         "reduce": eval_reduce,
@@ -133,7 +135,7 @@ def eval(type, attr, ops):
         "cosine": lambda i: torch.cos(i[0]),
         "sine": lambda i: torch.sin(i[0]),
         "power": lambda i: torch.pow(i[0], attr[0]),
-        "tilizer": lambda i: i[0]
+        "tilizer": lambda i: i[0],
     }
 
     assert type in f, f"{type} not defined in eval map for eltwise unary ops."
@@ -145,6 +147,7 @@ def eval(type, attr, ops):
 
     return ret
 
+
 def shape(op_type, attr, ops, tile_height, tile_width):
     assert len(ops) == 1, "Eltwise unary should have one input"
 
@@ -154,7 +157,7 @@ def shape(op_type, attr, ops, tile_height, tile_width):
         if dim >= 0:
             dim -= len(ops[0])
         shape = ops[0]
-        if dim >= -2: # last 2 dims, column or row
+        if dim >= -2:  # last 2 dims, column or row
             shape[dim] = align_up_tile(1)
         else:
             shape[dim] = ops[0][-3] // z
@@ -200,7 +203,7 @@ def input_ublock_order(type, attr, num_operands):
             return [UBlockOrder.C]
         if dim == 3:
             return [UBlockOrder.R]
-        
+
     if type == "tilizer":
         return [UBlockOrder.R]
     return None
@@ -220,7 +223,9 @@ def execution_cycles(type, arch_name, op_model) -> int:
     if (use_legacy_path or type == "power" or type == "ethernet_datacopy") and not type == "reduce":
         tile_weight = get_op_model_param(op_model_desc, "tile_weight")
         output_shape = op_model.op_shape.outputs[0]
-        num_tiles = (output_shape.z * output_shape.rt * output_shape.ct) / (op_model.grid_shape.r * op_model.grid_shape.c)
+        num_tiles = (output_shape.z * output_shape.rt * output_shape.ct) / (
+            op_model.grid_shape.r * op_model.grid_shape.c
+        )
         cycle_count = tile_weight * num_tiles
         return min(int(cycle_count), 1 << 30)
 

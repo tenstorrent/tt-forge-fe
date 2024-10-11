@@ -5,27 +5,31 @@
 #include "graph_lib/node_types.hpp"
 
 #include <memory>
-#include <vector>
 #include <string>
 #include <tuple>
+#include <vector>
 
-#include "utils/assert.hpp"
-#include "graph_lib/utils.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/python_bindings.hpp"
+#include "graph_lib/utils.hpp"
+#include "utils/assert.hpp"
 
-namespace tt {
-
-namespace graphlib {
-
-template<> const TaggedNode* Node::as<TaggedNode>() const
+namespace tt
 {
-    const TaggedNode* tagged_node = dynamic_cast<TaggedNode const *>(this);
+
+namespace graphlib
+{
+
+template <>
+const TaggedNode *Node::as<TaggedNode>() const
+{
+    const TaggedNode *tagged_node = dynamic_cast<TaggedNode const *>(this);
     TT_ASSERT(tagged_node != nullptr);
     return tagged_node;
 }
-template<> const OpNode* Node::as<OpNode>() const
+template <>
+const OpNode *Node::as<OpNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kPyOp || this->node_type() == NodeType::kForgeOp);
     return dynamic_cast<OpNode const *>(this);
@@ -52,9 +56,10 @@ const ForgeNaryTMNode *Node::as<ForgeNaryTMNode>() const
     return dynamic_cast<ForgeNaryTMNode const *>(this);
 }
 
-template<> TaggedNode* Node::as<TaggedNode>()
+template <>
+TaggedNode *Node::as<TaggedNode>()
 {
-    TaggedNode* tagged_node = dynamic_cast<TaggedNode *>(this);
+    TaggedNode *tagged_node = dynamic_cast<TaggedNode *>(this);
     TT_ASSERT(tagged_node != nullptr);
     return dynamic_cast<TaggedNode *>(this);
 }
@@ -87,103 +92,117 @@ ForgeNaryTMNode *Node::as<ForgeNaryTMNode>()
     return dynamic_cast<ForgeNaryTMNode *>(this);
 }
 
-template<> InputNode* Node::as<InputNode>()
+template <>
+InputNode *Node::as<InputNode>()
 {
     TT_ASSERT(this->node_type() == NodeType::kInput);
     return dynamic_cast<InputNode *>(this);
 }
 
-template<> const InputNode* Node::as<InputNode>() const
+template <>
+const InputNode *Node::as<InputNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kInput);
     return dynamic_cast<InputNode const *>(this);
 }
 
-template<> ConstantInputNode* Node::as<ConstantInputNode>()
+template <>
+ConstantInputNode *Node::as<ConstantInputNode>()
 {
     TT_ASSERT(this->as<InputNode>()->is_constant());
     return dynamic_cast<ConstantInputNode *>(this);
 }
 
-template<> const ConstantInputNode* Node::as<ConstantInputNode>() const
+template <>
+const ConstantInputNode *Node::as<ConstantInputNode>() const
 {
     TT_ASSERT(this->as<InputNode>()->is_constant());
     return dynamic_cast<ConstantInputNode const *>(this);
 }
 
-template<> OutputNode* Node::as<OutputNode>()
+template <>
+OutputNode *Node::as<OutputNode>()
 {
     TT_ASSERT(this->node_type() == NodeType::kOutput);
     return dynamic_cast<OutputNode *>(this);
 }
 
-template<> const OutputNode* Node::as<OutputNode>() const
+template <>
+const OutputNode *Node::as<OutputNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kOutput);
     return dynamic_cast<OutputNode const *>(this);
 }
 
-template<> QueueNode* Node::as<QueueNode>()
+template <>
+QueueNode *Node::as<QueueNode>()
 {
     TT_ASSERT(
-        (this->node_type() == NodeType::kQueue) || 
-        (this->node_type() == NodeType::kInput) || 
+        (this->node_type() == NodeType::kQueue) || (this->node_type() == NodeType::kInput) ||
         (this->node_type() == NodeType::kOutput));
     return dynamic_cast<QueueNode *>(this);
 }
 
-template<> const QueueNode* Node::as<QueueNode>() const
+template <>
+const QueueNode *Node::as<QueueNode>() const
 {
     TT_ASSERT(
-        (this->node_type() == NodeType::kQueue) || 
-        (this->node_type() == NodeType::kInput) || 
+        (this->node_type() == NodeType::kQueue) || (this->node_type() == NodeType::kInput) ||
         (this->node_type() == NodeType::kOutput));
     return dynamic_cast<QueueNode const *>(this);
 }
 
-template<> EpochToEpochQueueNode* Node::as<EpochToEpochQueueNode>()
+template <>
+EpochToEpochQueueNode *Node::as<EpochToEpochQueueNode>()
 {
     TT_ASSERT(this->node_type() == NodeType::kQueue);
     TT_ASSERT(this->as<QueueNode>()->is_epoch_to_epoch());
     return dynamic_cast<EpochToEpochQueueNode *>(this);
 }
 
-template<> const EpochToEpochQueueNode* Node::as<EpochToEpochQueueNode>() const
+template <>
+const EpochToEpochQueueNode *Node::as<EpochToEpochQueueNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kQueue);
     TT_ASSERT(this->as<QueueNode>()->is_epoch_to_epoch());
     return dynamic_cast<EpochToEpochQueueNode const *>(this);
 }
 
-
-template<> BufferingQueueNode* Node::as<BufferingQueueNode>()
+template <>
+BufferingQueueNode *Node::as<BufferingQueueNode>()
 {
     TT_ASSERT(this->node_type() == NodeType::kQueue);
     TT_ASSERT(this->as<QueueNode>()->is_buffering());
     return dynamic_cast<BufferingQueueNode *>(this);
 }
 
-template<> const BufferingQueueNode* Node::as<BufferingQueueNode>() const
+template <>
+const BufferingQueueNode *Node::as<BufferingQueueNode>() const
 {
     TT_ASSERT(this->node_type() == NodeType::kQueue);
     TT_ASSERT(this->as<QueueNode>()->is_buffering());
     return dynamic_cast<BufferingQueueNode const *>(this);
 }
 
-bool is_permute_xy_order(const std::vector<int>& order) {
+bool is_permute_xy_order(const std::vector<int> &order)
+{
     const int rank = (int)order.size();
-    for (int i = 0; i < rank - 2; ++i) {
-        if (order[i] != i) {
+    for (int i = 0; i < rank - 2; ++i)
+    {
+        if (order[i] != i)
+        {
             return false;
         }
     }
     return order[rank - 2] == rank - 1 && order[rank - 1] == rank - 2;
 }
 
-std::vector<int> create_permute_xy_order(const int rank) {
+std::vector<int> create_permute_xy_order(const int rank)
+{
     std::vector<int> order = {};
     order.reserve(rank);
-    for (auto i = 0; i < rank - 2; ++i) {
+    for (auto i = 0; i < rank - 2; ++i)
+    {
         order[i] = i;
     }
     order[rank - 2] = rank - 1;
@@ -191,7 +210,8 @@ std::vector<int> create_permute_xy_order(const int rank) {
     return order;
 }
 
-std::unique_ptr<Node> ForgeOpNode::clone(std::string const& name) const {
+std::unique_ptr<Node> ForgeOpNode::clone(std::string const &name) const
+{
     std::unique_ptr<ForgeOpNode> node = create_node<ForgeOpNode>(this->name(), this->op_type());
     node->Node::clone(this, name);
     node->set_gradient_op(this->is_gradient_op());
@@ -208,7 +228,7 @@ void ForgeOpNode::copy_lowered_op_attributes(PyOpNode *node)
     epoch_type_ = node->get_epoch_type();
     set_gradient_op(node->is_gradient_op());
     set_output_df(node->output_df());
-    set_intermediate_df(node->output_df()); // by default, same as output
+    set_intermediate_df(node->output_df());  // by default, same as output
     // accumulate df will not be set here, we'll have an overall default
 
     // If there are golden transforms, they operate on forge shapes,
@@ -224,7 +244,8 @@ void ForgeOpNode::copy_lowered_op_attributes(PyOpNode *node)
             add_golden_transform(graphlib::OpType("narrow", {-1, 0, c, c}, {}));
     }
 
-    if (node->has_golden_id()) set_golden_id(node->golden_id());
+    if (node->has_golden_id())
+        set_golden_id(node->golden_id());
     this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
 }
 
@@ -243,7 +264,8 @@ void ForgeNaryTMNode::copy_lowered_op_attributes(PyOpNode *node)
     this->as<graphlib::TaggedNode>()->add_tags(node->as<graphlib::TaggedNode>()->get_tags());
 }
 
-std::unique_ptr<Node> PyOpNode::clone(std::string const& name) const {
+std::unique_ptr<Node> PyOpNode::clone(std::string const &name) const
+{
     std::unique_ptr<PyOpNode> node = create_node<PyOpNode>(this->name(), this->op_type());
     node->Node::clone(this, name);
     node->set_gradient_op(this->is_gradient_op());
@@ -271,7 +293,8 @@ bool OpNode::is_tm() const
 void OpNode::set_output_df_from_operands(const Graph *graph)
 {
     auto operands = graph->data_operands(this);
-    if (operands.size() == 1) {
+    if (operands.size() == 1)
+    {
         set_output_df(operands[0]->output_df());
         return;
     }
@@ -322,11 +345,14 @@ py::function OpNode::py_attr(char const *attr_name) const { return op_type().py_
 py::function OpNode::py_attr(char const *attr_name) { return op_type().py_attr(attr_name, get_ir_level()); }
 
 InputNode::InputNode(const std::string &name, InputNodeType input_type, bool requires_grad) :
-    QueueNode(name, QueueNodeType::Input, NodeType::kInput), input_type_(input_type), requires_grad_(requires_grad) {}
+    QueueNode(name, QueueNodeType::Input, NodeType::kInput), input_type_(input_type), requires_grad_(requires_grad)
+{
+}
 
 InputNode::~InputNode() = default;
 
-std::unique_ptr<Node> InputNode::clone(std::string const& name) const {
+std::unique_ptr<Node> InputNode::clone(std::string const &name) const
+{
     std::unique_ptr<InputNode> node = create_node<InputNode>(this->name(), this->input_type(), this->requires_grad());
     node->Node::clone(this, name);
     if (consteval_graph_)
@@ -337,16 +363,17 @@ std::unique_ptr<Node> InputNode::clone(std::string const& name) const {
     return node;
 }
 
-void InputNode::clone_consteval_graph_from(Node* original)
+void InputNode::clone_consteval_graph_from(Node *original)
 {
-    graphlib::InputNode* original_input = original->as<graphlib::InputNode>();
+    graphlib::InputNode *original_input = original->as<graphlib::InputNode>();
     if (original_input->get_consteval_graph())
     {
         this->consteval_graph_ = original_input->get_consteval_graph()->clone(this, this->name());
     }
 }
 
-std::unique_ptr<Node> QueueNode::clone(std::string const& name) const {
+std::unique_ptr<Node> QueueNode::clone(std::string const &name) const
+{
     std::unique_ptr<QueueNode> node = create_node<QueueNode>(this->name(), queue_type_);
     node->Node::clone(this, name);
     node->entries_ = entries_;
@@ -354,23 +381,26 @@ std::unique_ptr<Node> QueueNode::clone(std::string const& name) const {
     return node;
 }
 
-std::unique_ptr<Node> EpochToEpochQueueNode::clone(std::string const& name) const {
-    std::unique_ptr<EpochToEpochQueueNode> node = create_node<EpochToEpochQueueNode>(this->name(), cross_epoch_type_, cross_chip_type_);
+std::unique_ptr<Node> EpochToEpochQueueNode::clone(std::string const &name) const
+{
+    std::unique_ptr<EpochToEpochQueueNode> node =
+        create_node<EpochToEpochQueueNode>(this->name(), cross_epoch_type_, cross_chip_type_);
     node->Node::clone(this, name);
     node->entries_ = entries_;
     node->add_tags(this->as<TaggedNode>()->get_tags());
     return node;
 }
 
-
-std::unique_ptr<Node> BufferingQueueNode::clone(std::string const& name) const {
+std::unique_ptr<Node> BufferingQueueNode::clone(std::string const &name) const
+{
     std::unique_ptr<BufferingQueueNode> node = create_node<BufferingQueueNode>(this->name(), this->get_num_entries());
     node->Node::clone(this, name);
     node->add_tags(this->as<TaggedNode>()->get_tags());
     return node;
 }
 
-std::unique_ptr<Node> OutputNode::clone(std::string const& name) const {
+std::unique_ptr<Node> OutputNode::clone(std::string const &name) const
+{
     std::unique_ptr<OutputNode> node = create_node<OutputNode>(this->name());
     node->Node::clone(this, name);
     node->requires_grad_ = requires_grad_;
@@ -399,9 +429,11 @@ py::function OpType::py_attr(char const *name, IRLevel ir_level)
     return instance.attr(name);
 }
 
-std::unique_ptr<Node> ConstantInputNode::clone(std::string const& name) const {
+std::unique_ptr<Node> ConstantInputNode::clone(std::string const &name) const
+{
     std::unique_ptr<ConstantInputNode> node;
-    switch (this->node_type_) {
+    switch (this->node_type_)
+    {
         case ConstantInputNodeType::SingleValue:
             node = create_node<ConstantInputNode>(this->name(), this->constant_value_);
             break;
@@ -423,12 +455,14 @@ std::unique_ptr<Node> ConstantInputNode::clone(std::string const& name) const {
 
 bool ConstantInputNode::equivalent(const ConstantInputNode *other) const
 {
-    if (node_type_ != other->node_type_) return false;
+    if (node_type_ != other->node_type_)
+        return false;
 
     if (is_single_value())
         return constant_value() == other->constant_value();
 
-    if (is_single_tile()) {
+    if (is_single_tile())
+    {
         return tile_value() == other->tile_value();
     }
 
@@ -441,35 +475,37 @@ bool EdgeAttributes::has_broadcast_dims() const
     return std::find_if(tms.begin(), tms.end(), [](const OpType &o) { return o.op == "broadcast"; }) != tms.end();
 }
 
-void EdgeAttributes::clear_broadcast_dims() 
-{ 
+void EdgeAttributes::clear_broadcast_dims()
+{
     tms.erase(std::remove_if(tms.begin(), tms.end(), [](const OpType &o) { return o.op == "broadcast"; }), tms.end());
 }
 
 void EdgeAttributes::remove_broadcast_dim(int dim)
 {
-    auto filter = [=](const OpType &o) { 
-        return o.op == "broadcast" && std::get<int>(o.attr[0]) == dim; 
-    };
+    auto filter = [=](const OpType &o) { return o.op == "broadcast" && std::get<int>(o.attr[0]) == dim; };
     tms.erase(std::remove_if(tms.begin(), tms.end(), filter), tms.end());
 }
 
-
-/*static*/ std::shared_ptr<EdgeAttributes> EdgeAttributes::create(EdgeType edge_type) {
-    if (edge_type == EdgeType::kControlLoop) {
+/*static*/ std::shared_ptr<EdgeAttributes> EdgeAttributes::create(EdgeType edge_type)
+{
+    if (edge_type == EdgeType::kControlLoop)
+    {
         return std::make_shared<LoopEdgeAttributes>(edge_type);
     }
     return std::make_shared<EdgeAttributes>(edge_type);
 }
 
-
-/*static*/ template<> const std::shared_ptr<LoopEdgeAttributes> EdgeAttributes::as<LoopEdgeAttributes>(const std::shared_ptr<EdgeAttributes>& base)
+/*static*/ template <>
+const std::shared_ptr<LoopEdgeAttributes> EdgeAttributes::as<LoopEdgeAttributes>(
+    const std::shared_ptr<EdgeAttributes> &base)
 {
     TT_ASSERT(base->edge_type() == EdgeType::kControlLoop);
-    return std::static_pointer_cast<LoopEdgeAttributes>(base);;
+    return std::static_pointer_cast<LoopEdgeAttributes>(base);
+    ;
 }
 
-/*static*/ template<> std::shared_ptr<LoopEdgeAttributes>  EdgeAttributes::as<LoopEdgeAttributes>(std::shared_ptr<EdgeAttributes>& base)
+/*static*/ template <>
+std::shared_ptr<LoopEdgeAttributes> EdgeAttributes::as<LoopEdgeAttributes>(std::shared_ptr<EdgeAttributes> &base)
 {
     TT_ASSERT(base->edge_type() == EdgeType::kControlLoop);
     return std::static_pointer_cast<LoopEdgeAttributes>(base);
@@ -477,7 +513,7 @@ void EdgeAttributes::remove_broadcast_dim(int dim)
 
 std::string QueueNode::queue_type_string() const
 {
-    switch (queue_type_) 
+    switch (queue_type_)
     {
         case QueueNodeType::EpochToEpoch: return "epoch_to_epoch";
         case QueueNodeType::GradAccumulator: return "grad_accumulator";
@@ -486,18 +522,16 @@ std::string QueueNode::queue_type_string() const
         case QueueNodeType::Buffering: return "buffering";
     }
     return "unknown";
-
 }
 
 std::string QueueNode::memory_access_type_string() const
 {
     switch (this->memory_access_type_)
     {
-        case MemoryAccessType::FIFO: return "FIFO"; // using 'queue' for backend integration
+        case MemoryAccessType::FIFO: return "FIFO";  // using 'queue' for backend integration
         case MemoryAccessType::RAM: return "RAM";
     }
     return "unknown";
-
 }
 
 std::string InputNode::input_type_string() const
@@ -515,22 +549,26 @@ std::string InputNode::input_type_string() const
     return "unknown";
 }
 
-ConstEvalGraph *InputNode::get_consteval_graph(Graph* graph, bool create, bool promote_input)
+ConstEvalGraph *InputNode::get_consteval_graph(Graph *graph, bool create, bool promote_input)
 {
-    if (create and !consteval_graph_) {
+    if (create and !consteval_graph_)
+    {
         TT_ASSERT(graph, "Runtime Graph must be provided to create consteval graph");
         consteval_graph_ = std::make_unique<ConstEvalGraph>(
             this->name() + ".consteval_graph", this, promote_input, graph->get_subgraph_id_for_node(this->id()));
     }
     return consteval_graph_.get();
 }
-void InputNode::clear_consteval_graph() {
-    if (consteval_graph_) {
+void InputNode::clear_consteval_graph()
+{
+    if (consteval_graph_)
+    {
         consteval_graph_.reset();
     }
 }
 
-std::ostream &operator<<(std::ostream &out, const OpType &op_type) {
+std::ostream &operator<<(std::ostream &out, const OpType &op_type)
+{
     out << op_type.as_string();
     return out;
 }
@@ -551,39 +589,25 @@ std::ostream &operator<<(std::ostream &out, InputNodeType t)
     return out;
 }
 
-std::ostream &operator<<(std::ostream &out, const UBlockOrder &ublock_order) {
-    switch (ublock_order) {
-        case UBlockOrder::R:
-        out << "UBlockOrder::R";
-        break;
+std::ostream &operator<<(std::ostream &out, const UBlockOrder &ublock_order)
+{
+    switch (ublock_order)
+    {
+        case UBlockOrder::R: out << "UBlockOrder::R"; break;
         case UBlockOrder::C: out << "UBlockOrder::C"; break;
     }
     return out;
 }
-    
-bool TaggedNode::has_tag(const std::string &tag) const
-{
-    return this->hints.find(tag) != this->hints.end(); 
-}
 
-void TaggedNode::tag(const std::string &tag, const TagValue& tag_value)
-{
-    this->hints[tag] = tag_value;
-}
+bool TaggedNode::has_tag(const std::string &tag) const { return this->hints.find(tag) != this->hints.end(); }
 
-TagValue TaggedNode::tag_value(const std::string &tag) const
-{
-    return this->hints.at(tag);
-}
+void TaggedNode::tag(const std::string &tag, const TagValue &tag_value) { this->hints[tag] = tag_value; }
 
-void TaggedNode::add_tags(const TagHints& other_tags)
-{
-    this->hints.insert(other_tags.begin(), other_tags.end());
-}
+TagValue TaggedNode::tag_value(const std::string &tag) const { return this->hints.at(tag); }
 
-const TagHints& TaggedNode::get_tags() const {
-    return this->hints;
-}
+void TaggedNode::add_tags(const TagHints &other_tags) { this->hints.insert(other_tags.begin(), other_tags.end()); }
+
+const TagHints &TaggedNode::get_tags() const { return this->hints; }
 
 }  // namespace graphlib
 }  // namespace tt

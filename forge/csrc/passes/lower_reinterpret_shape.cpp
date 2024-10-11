@@ -73,4 +73,4 @@ void lower_reinterpret_shape(graphlib::Graph *graph)
         }
     }
 }
-}  // namespace tt
+}  // namespace tt::passes

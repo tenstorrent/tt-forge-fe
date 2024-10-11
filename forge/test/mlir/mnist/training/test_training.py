@@ -11,6 +11,7 @@ from forge.op.eval.common import compare_with_golden
 
 from loguru import logger
 
+
 def test_mnist_training():
     torch.manual_seed(0)
 
@@ -21,13 +22,13 @@ def test_mnist_training():
 
     # Limit number of batches to run - quicker test
     limit_num_batches = 1000
-    
+
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
 
     # Load TensorBoard writer (for logging)
     writer = load_tb_writer()
-    
+
     # Define model and instruct it to compile and run on TT device
     framework_model = MNISTLinear()
 
@@ -36,7 +37,9 @@ def test_mnist_training():
 
     # Define optimizer and instruct it to compile and run on TT device
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
-    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, 784)], loss=loss_fn, optimizer=framework_optimizer)
+    tt_model = forge.compile(
+        framework_model, sample_inputs=[torch.rand(batch_size, 784)], loss=loss_fn, optimizer=framework_optimizer
+    )
 
     logger.info("Starting training loop... (logger will be disabled)")
     logger.disable("")
@@ -63,10 +66,10 @@ def test_mnist_training():
 
             golden_loss = loss_fn(golden_pred, target)
             compare_with_golden(golden_loss, loss)
-            
+
             # Run backward pass on device
             loss.backward()
-            
+
             tt_model.backward(pred.grad)
 
             if batch_idx >= limit_num_batches:

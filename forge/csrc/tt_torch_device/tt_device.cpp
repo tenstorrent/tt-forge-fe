@@ -76,19 +76,24 @@ static torch::ScalarType dt_to_torch_scalar_type(target::DataType df)
     log_fatal(LogTTDevice, "Unhandled dtype {}", target::EnumNameDataType(df));
 }
 
-void pad_to_forge_shape(torch::Tensor & tensor)
+void pad_to_forge_shape(torch::Tensor& tensor)
 {
     auto tt_device = tensor.device();
     auto cpu_tensor = tensor.to(torch::kCPU);
-    if (cpu_tensor.sizes().size() > 4) {
+    if (cpu_tensor.sizes().size() > 4)
+    {
         throw std::runtime_error("Tensor has more than 4 dimensions");
-    } else if (cpu_tensor.sizes().size() < 4) {
+    }
+    else if (cpu_tensor.sizes().size() < 4)
+    {
         auto tensor_impl = cpu_tensor.unsafeGetTensorImpl();
         std::vector<int64_t> new_shape;
-        for (size_t i = 0; i < cpu_tensor.sizes().size(); i++) {
+        for (size_t i = 0; i < cpu_tensor.sizes().size(); i++)
+        {
             new_shape.push_back(cpu_tensor.sizes()[i]);
         }
-        while (new_shape.size() < 4) {
+        while (new_shape.size() < 4)
+        {
             new_shape.insert(new_shape.begin(), 1);
         }
         tensor_impl->Reshape(new_shape);
@@ -96,18 +101,18 @@ void pad_to_forge_shape(torch::Tensor & tensor)
     auto new_shape = cpu_tensor.sizes();
     namespace F = torch::nn::functional;
     cpu_tensor = torch::nn::functional::pad(
-        cpu_tensor, 
+        cpu_tensor,
         F::PadFuncOptions(
-            {0, align_up_tile(new_shape[3]) - new_shape[3],
-             0, align_up_tile(new_shape[2]) - new_shape[2]}
-        ).mode(torch::kConstant));
+            {0, align_up_tile(new_shape[3]) - new_shape[3], 0, align_up_tile(new_shape[2]) - new_shape[2]})
+            .mode(torch::kConstant));
 
     cpu_tensor.unsafeGetTensorImpl()->set_size(2, align_up_tile(new_shape[2]));
     cpu_tensor.unsafeGetTensorImpl()->set_size(3, align_up_tile(new_shape[3]));
 
     int64_t curr_stride = 1;
 
-    for (int i = 3; i >= 0; i--) {
+    for (int i = 3; i >= 0; i--)
+    {
         cpu_tensor.unsafeGetTensorImpl()->set_stride(i, curr_stride);
         curr_stride *= cpu_tensor.sizes()[i];
     }
@@ -118,8 +123,7 @@ void pad_to_forge_shape(torch::Tensor & tensor)
 std::vector<std::uint32_t> fromIntArrayRef(torch::IntArrayRef arr)
 {
     std::vector<std::uint32_t> vec;
-    for (auto i : arr)
-        vec.push_back(i);
+    for (auto i : arr) vec.push_back(i);
     return vec;
 }
 
@@ -142,8 +146,7 @@ std::vector<std::int64_t> asInt64Vec(std::vector<T> const& v)
 {
     std::vector<std::int64_t> result;
     result.reserve(v.size());
-    for (auto const& i : v)
-        result.push_back(i);
+    for (auto const& i : v) result.push_back(i);
     return result;
 }
 
@@ -157,13 +160,13 @@ std::vector<torch::Tensor> dispatch(
     int input_idx = 0;
     std::vector<runtime::Tensor> rt_inputs;
     rt_inputs.reserve(workload->inputs.at(program_idx).size());
-    for ([[ maybe_unused ]] auto const& desc : workload->inputs.at(program_idx))
+    for ([[maybe_unused]] auto const& desc : workload->inputs.at(program_idx))
     {
-        torch::Tensor & input = inputs.at(input_idx);
+        torch::Tensor& input = inputs.at(input_idx);
         auto impl = input.unsafeGetTensorImpl();
-        TTMetaData *input_meta = dynamic_cast<TTMetaData*>(impl->get_backend_meta());
+        TTMetaData* input_meta = dynamic_cast<TTMetaData*>(impl->get_backend_meta());
 
-        TT_ASSERT (input_meta != nullptr);
+        TT_ASSERT(input_meta != nullptr);
         if (!input_meta->runtime_transformed and !input_meta->created_on_device)
         {
             std::string runtime_transform = device.input_runtime_transforms.at(program_idx).at(input_idx);
@@ -208,9 +211,9 @@ std::vector<torch::Tensor> dispatch(
     const auto& subgraph_outputs = workload->outputs.at(program_idx);
     for (auto const& output : outputs)
     {
-        TTForgeTensorDesc const& desc = subgraph_outputs.at(output_idx );
+        TTForgeTensorDesc const& desc = subgraph_outputs.at(output_idx);
 
-        std::string runtime_transform = device.output_runtime_transforms.at(program_idx).at(output_idx );
+        std::string runtime_transform = device.output_runtime_transforms.at(program_idx).at(output_idx);
         // auto impl = output.unsafeGetTensorImpl();
         // auto output_tensor_uid = dynamic_cast<TTMetaData*>(impl->get_backend_meta())->unique_output_id;
 
@@ -218,26 +221,26 @@ std::vector<torch::Tensor> dispatch(
         //     register_output_runtime_transform(output, runtime_transform);
         //     device.subgraph_to_tensor_uid_on_device[program_idx].push_back(output_tensor_uid);
         //     outputs.emplace_back(output);
-        // } else 
+        // } else
         {
-            PyGILState_STATE gstate=PyGILState_Ensure();
+            PyGILState_STATE gstate = PyGILState_Ensure();
             auto tt_device_ = output.device();
             // Move tensor to CPU because torch::narrow is only supported on CPU for now
-            torch::Tensor cpu_output = output.to(
-            torch::kCPU, output.scalar_type(), false, true);
+            torch::Tensor cpu_output = output.to(torch::kCPU, output.scalar_type(), false, true);
             register_output_runtime_transform(output, runtime_transform);
 
             for (size_t i = 0; i < cpu_output.sizes().size(); i++)
             {
-                if (cpu_output.sizes()[i] != desc.shape[i]) {
+                if (cpu_output.sizes()[i] != desc.shape[i])
+                {
                     log_trace(LogTorchDevice, "narrowing dim[{}] start[{}] length[{}]", i, 0, desc.shape[i]);
                     cpu_output = torch::narrow(cpu_output, i, 0, desc.shape[i]);
                 }
             }
             // Move tensor back to TT device
             // (TODO: this is a workaround, we should be able to do this without calling contiguous, which makes a copy)
-            torch::Tensor tt_output_ = cpu_output.contiguous().to(
-                tt_device_, cpu_output.scalar_type(), false, false/* copy */);
+            torch::Tensor tt_output_ =
+                cpu_output.contiguous().to(tt_device_, cpu_output.scalar_type(), false, false /* copy */);
             PyGILState_Release(gstate);
             outputs.emplace_back(tt_output_);
         }
@@ -246,7 +249,7 @@ std::vector<torch::Tensor> dispatch(
     return outputs;
 }
 
-std::string get_device_cluster_yaml(TTDevice const&) { return "";} //TODO }
+std::string get_device_cluster_yaml(TTDevice const&) { return ""; }  // TODO }
 
 std::string to_string(TTDevice const& d)
 {
@@ -255,35 +258,33 @@ std::string to_string(TTDevice const& d)
 
 torch::Device torch_device(TTDevice const& d) { return torch_device_at_index(d.index); }
 
-TTContext::~TTContext() {;}
+TTContext::~TTContext() { ; }
 
 torch::Tensor eval_runtime_transform(
-    const torch::Tensor& tensor,
-    std::string transform,
-    std::vector<int> &tile_bcast_dims)
+    const torch::Tensor& tensor, std::string transform, std::vector<int>& tile_bcast_dims)
 {
     py::object py_tensor = py::reinterpret_steal<py::object>(THPVariable_Wrap(tensor));
 
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     auto module = py::module_::import("forge.tensor");
     py::function eval_transform = module.attr("eval_runtime_transform");
     py::tuple py_result = eval_transform(transform, py_tensor, tile_bcast_dims);
     PyGILState_Release(gstate);
-    torch::Tensor torch_tensor = THPVariable_Unpack(static_cast<PyObject *>(py_result[0].ptr()));
+    torch::Tensor torch_tensor = THPVariable_Unpack(static_cast<PyObject*>(py_result[0].ptr()));
     return torch_tensor;
 }
 
 torch::Tensor narrow_to_pytorch(const torch::Tensor& tensor, std::string transform)
 {
-    //TODO
+    // TODO
     py::object py_tensor = py::reinterpret_steal<py::object>(THPVariable_Wrap(tensor));
 
-    PyGILState_STATE gstate=PyGILState_Ensure();
+    PyGILState_STATE gstate = PyGILState_Ensure();
     auto module = py::module_::import("forge.tensor");
-    py::function eval_transform = module.attr("eval_runtime_transform"); //TODO: update
+    py::function eval_transform = module.attr("eval_runtime_transform");  // TODO: update
     py::object py_result = eval_transform(transform, py_tensor);
     PyGILState_Release(gstate);
-    torch::Tensor torch_tensor = THPVariable_Unpack(static_cast<PyObject *>(py_result.ptr()));
+    torch::Tensor torch_tensor = THPVariable_Unpack(static_cast<PyObject*>(py_result.ptr()));
     return torch_tensor;
 }
 
@@ -301,8 +302,7 @@ std::vector<size_t> original_shape(const torch::Tensor& tensor)
     TTMetaData* meta = dynamic_cast<TTMetaData*>(impl->get_backend_meta());
     TT_ASSERT(meta != nullptr);
     std::vector<size_t> shape;
-    for (auto s : meta->original_shape)
-        shape.push_back(s);
+    for (auto s : meta->original_shape) shape.push_back(s);
 
     return shape;
 }

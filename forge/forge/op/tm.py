@@ -8,10 +8,8 @@ from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 
 import torch
 
-def HSlice(
-        name: str, 
-        operandA: Tensor,
-        slices: int) -> Tensor:
+
+def HSlice(name: str, operandA: Tensor, slices: int) -> Tensor:
 
     """
     Slice along horizontal axis into given number of pieces.
@@ -37,10 +35,8 @@ def HSlice(
     assert hdim % slices == 0, f"Tensor must be evenly divisible by the number of slices."
     return op("hslice", name, operandA, attrs=(slices,)).get_tensor()
 
-def HStack(
-        name: str, 
-        operandA: Tensor,
-        slices: int = -1) -> Tensor:
+
+def HStack(name: str, operandA: Tensor, slices: int = -1) -> Tensor:
 
     """
     Stack Z dimension along horizontal dimension.
@@ -65,10 +61,8 @@ def HStack(
         slices = operandA.shape.z
     return op("hstack", name, operandA, attrs=(slices,)).get_tensor()
 
-def VSlice(
-        name: str, 
-        operandA: Tensor,
-        slices: int) -> Tensor:
+
+def VSlice(name: str, operandA: Tensor, slices: int) -> Tensor:
 
     """
     Slice along vertical axis into given number of pieces.
@@ -94,10 +88,8 @@ def VSlice(
     assert vdim % slices == 0, f"Tensor must be evenly divisible by the number of slices."
     return op("vslice", name, operandA, attrs=(slices,)).get_tensor()
 
-def VStack(
-        name: str, 
-        operandA: Tensor,
-        slices: int = -1) -> Tensor:
+
+def VStack(name: str, operandA: Tensor, slices: int = -1) -> Tensor:
 
     """
     Stack Z dimension along vertical dimension.
@@ -122,13 +114,10 @@ def VStack(
         slices = operandA.shape.z
     return op("vstack", name, operandA, attrs=(slices,)).get_tensor()
 
+
 def Transpose(
-        name: str, 
-        operandA: Tensor,
-        dim0: int,
-        dim1: int,
-        z_dim_slice: int = -1,
-        out_dtype: torch.dtype = torch.float32) -> Tensor:
+    name: str, operandA: Tensor, dim0: int, dim1: int, z_dim_slice: int = -1, out_dtype: torch.dtype = torch.float32
+) -> Tensor:
 
     """
     Tranpose X and Y (i.e. rows and columns) dimensions.
@@ -161,12 +150,12 @@ def Transpose(
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, attrs=(dim0, dim1, z_dim_slice), dim0=dim0, dim1=dim1).get_tensor(out_df=pytorch_dtype_to_forge_dataformat(out_dtype))
+    return op("transpose", name, operandA, attrs=(dim0, dim1, z_dim_slice), dim0=dim0, dim1=dim1).get_tensor(
+        out_df=pytorch_dtype_to_forge_dataformat(out_dtype)
+    )
 
-def Reshape(
-        name: str, 
-        operandA: Tensor,
-        shape: Tuple[int, ...]) -> Tensor:
+
+def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
     """
     TM
 
@@ -205,13 +194,8 @@ def Reshape(
 
     return op("reshape", name, operandA, attrs=shape, shape=shape).get_tensor()
 
-def Index(
-        name: str,
-        operandA: Tensor,
-        dim: int,
-        start: int,
-        stop: int = None,
-        stride: int = 1) -> Tensor:
+
+def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, stride: int = 1) -> Tensor:
     """
     TM
 
@@ -259,11 +243,11 @@ def Index(
 
 
 def AdvIndex(
-        name: str,
-        operandA: Tensor,
-        operandB: Tensor,
-        dim: int = 0,
-    ) -> Tensor:
+    name: str,
+    operandA: Tensor,
+    operandB: Tensor,
+    dim: int = 0,
+) -> Tensor:
     """
     TM
 
@@ -289,12 +273,7 @@ def AdvIndex(
     return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
 
-def Select(
-        name: str,
-        operandA: Tensor,
-        dim: int,
-        index: Union[int, Tuple[int, int]],
-        stride: int = 0) -> Tensor:
+def Select(name: str, operandA: Tensor, dim: int, index: Union[int, Tuple[int, int]], stride: int = 0) -> Tensor:
     """
     TM
 
@@ -334,9 +313,15 @@ def Select(
         stride = operandA.shape.get_pytorch_shape()[dim]
 
     start, length = index
-    assert start < operandA.shape.get_pytorch_shape()[dim], f"start = {start} should be < operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
-    assert (start + length) <= operandA.shape.get_pytorch_shape()[dim], f"(start = {start} + length = {length}) should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
-    assert stride <= operandA.shape.get_pytorch_shape()[dim], f"stride = {stride} should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
+    assert (
+        start < operandA.shape.get_pytorch_shape()[dim]
+    ), f"start = {start} should be < operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
+    assert (start + length) <= operandA.shape.get_pytorch_shape()[
+        dim
+    ], f"(start = {start} + length = {length}) should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
+    assert (
+        stride <= operandA.shape.get_pytorch_shape()[dim]
+    ), f"stride = {stride} should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
     assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
@@ -344,11 +329,12 @@ def Select(
 
 
 def Pad(
-        name: str,
-        operandA: Tensor,
-        pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
-        mode: str = "constant",
-        channel_last: bool = False) -> Tensor:
+    name: str,
+    operandA: Tensor,
+    pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
+    mode: str = "constant",
+    channel_last: bool = False,
+) -> Tensor:
     """
     TM
 
@@ -368,24 +354,31 @@ def Pad(
     Tensor
         Forge tensor
     """
-    assert len(pad) == 2 or len(pad) == 4, "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
-    assert mode in ["constant", "replicate", "reflect"], "Currently pad op only supports constant/replicate/reflect mode"
+    assert (
+        len(pad) == 2 or len(pad) == 4
+    ), "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
+    assert mode in [
+        "constant",
+        "replicate",
+        "reflect",
+    ], "Currently pad op only supports constant/replicate/reflect mode"
 
     mode_index = {
-        "constant"  : 0,
-        "replicate" : 1,
-        "reflect"   : 2,
+        "constant": 0,
+        "replicate": 1,
+        "reflect": 2,
     }
 
     attrs = list(pad) + [mode_index[mode], channel_last]
-    return op("pad", name, operandA, attrs=attrs,).get_tensor()
+    return op(
+        "pad",
+        name,
+        operandA,
+        attrs=attrs,
+    ).get_tensor()
 
 
-def PadTile(
-        name: str,
-        operandA: Tensor,
-        dim: int,
-        original_length: int) -> Tensor:
+def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
     """
     TM
 
@@ -412,11 +405,7 @@ def PadTile(
     return op("pad_tile", name, operandA, attrs=(dim, original_length)).get_tensor()
 
 
-def Broadcast(
-        name: str,
-        operandA: Tensor,
-        dim: int,
-        shape: int) -> Tensor:
+def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     """
     TM
 
@@ -429,24 +418,21 @@ def Broadcast(
         Input operand A
 
     dim: int
-        Dimension to broadcast 
+        Dimension to broadcast
 
     shape: int
-        Output length of dim 
+        Output length of dim
 
     Returns
     -------
     Tensor
         Forge tensor
     """
-  
+
     return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
 
 
-def Repeat(
-        name: str,
-        operandA: Tensor,
-        factors: List[int]) -> Tensor:
+def Repeat(name: str, operandA: Tensor, factors: List[int]) -> Tensor:
     """
     TM
 
@@ -469,10 +455,8 @@ def Repeat(
     assert len(operandA.shape) == len(factors)
     return op("repeat", name, operandA, attrs=factors).get_tensor()
 
-def Unsqueeze(
-        name: str,
-        operandA: Tensor,
-        dim: int) -> Tensor:
+
+def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
     """
     TM
 
@@ -485,20 +469,18 @@ def Unsqueeze(
         Input operand A
 
     dim: int
-        Dimension to broadcast 
+        Dimension to broadcast
 
     Returns
     -------
     Tensor
         Forge tensor
     """
-  
+
     return op("unsqueeze", name, operandA, attrs=(dim, len(operandA.shape)), dim=dim).get_tensor()
 
-def Squeeze(
-        name: str,
-        operandA: Tensor,
-        dim: int) -> Tensor:
+
+def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
     """
     TM
 
@@ -511,24 +493,18 @@ def Squeeze(
         Input operand A
 
     dim: int
-        Dimension to broadcast 
+        Dimension to broadcast
 
     Returns
     -------
     Tensor
         Forge tensor
     """
-  
+
     return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
 
 
-def Narrow(
-        name: str,
-        operandA: Tensor,
-        dim: int,
-        start: int,
-        length: int,
-        original_length: int) -> Tensor:
+def Narrow(name: str, operandA: Tensor, dim: int, start: int, length: int, original_length: int) -> Tensor:
     """
     TM
 
@@ -561,13 +537,10 @@ def Narrow(
     return op("narrow", name, operandA, attrs=(dim, start, length, original_length)).get_tensor()
 
 
-def PixelShuffle(
-        name: str,
-        operandA: Tensor,
-        upscale_factor: int) -> Tensor:
+def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     """
     Pixel shuffle operation.
-    
+
     Parameters
     ----------
     name: str
@@ -584,11 +557,7 @@ def PixelShuffle(
     return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,)).get_tensor()
 
 
-def ForgePad(
-        name: str,
-        operandA: Tensor,
-        paddings: Tuple[int, int],
-        value: float) -> Tensor:
+def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
     """
     Pad operation that expands a given tensor with arbitrary number of tiles by any dimension.
 
@@ -609,19 +578,15 @@ def ForgePad(
     return op("forge_pad", name, operandA, attrs=(paddings[0], paddings[1], value)).get_tensor()
 
 
-def ForgeUnpad(
-        name: str,
-        operandA: Tensor,
-        original_length: Tuple[int, ...],
-        paddings: Tuple[int, int]) -> Tensor:
+def ForgeUnpad(name: str, operandA: Tensor, original_length: Tuple[int, ...], paddings: Tuple[int, int]) -> Tensor:
     """
     Unpad operation that removes arbitrary number of tiles by any dimension.
-    
+
     Parameters
     ----------
     name: str
         Op name, unique to the module, or leave blank to autoset
-        
+
     operandA: Tensor
         First operand
 
@@ -631,4 +596,6 @@ def ForgeUnpad(
     paddings: Tuple[int, int]
         Tuple of paddings for R and C dimensions
     """
-    return op("forge_unpad", name, operandA, attrs=(paddings[0], paddings[1], original_length[0], original_length[1])).get_tensor()
+    return op(
+        "forge_unpad", name, operandA, attrs=(paddings[0], paddings[1], original_length[0], original_length[1])
+    ).get_tensor()

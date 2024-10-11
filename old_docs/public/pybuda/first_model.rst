@@ -39,10 +39,9 @@ Multiple modules can be placed onto one device, and they will run sequentially, 
 in this simple example.
 
 Each device contains input queues which can be accesses using the `push_to_inputs` call. In this example, we push
-a single random tensor into the device input queue. 
+a single random tensor into the device input queue.
 
-Finally, we're ready to run the device. Using the `run_inference` call, we tell PyBuda to compile the modules, 
+Finally, we're ready to run the device. Using the `run_inference` call, we tell PyBuda to compile the modules,
 start up the processes and devices, and run the given number of iterations through the inputs - a single one, in
 this case. Since we didn't provide an explicit output queue for the outputs to be fed into asynchronously, this
 call will block until all outputs are available, and will return them in an array of tensors.
-  

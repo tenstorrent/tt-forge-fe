@@ -11,9 +11,18 @@ from forge.verify.config import TestKind, NebulaGalaxy
 import os
 
 import forge
-from transformers import DPRContextEncoder, DPRContextEncoderTokenizer, DPRReader, DPRReaderTokenizer, DPRQuestionEncoder, DPRQuestionEncoderTokenizer
+from transformers import (
+    DPRContextEncoder,
+    DPRContextEncoderTokenizer,
+    DPRReader,
+    DPRReaderTokenizer,
+    DPRQuestionEncoder,
+    DPRQuestionEncoderTokenizer,
+)
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
+
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_context_encoder_pytorch(variant, test_device):
 
@@ -23,7 +32,7 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     tokenizer = download_model(DPRContextEncoderTokenizer.from_pretrained, model_ckpt)
     model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Load data sample
@@ -40,19 +49,30 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
 
     verify_module(
         forge.PyTorchModule("pt_dpr_context_encoder", model),
-        input_shapes=[(input_tokens['input_ids'].shape, input_tokens['attention_mask'].shape, input_tokens['token_type_ids'].shape)],
-        inputs=[(input_tokens['input_ids'], input_tokens['attention_mask'], input_tokens['token_type_ids'])],
+        input_shapes=[
+            (
+                input_tokens["input_ids"].shape,
+                input_tokens["attention_mask"].shape,
+                input_tokens["token_type_ids"].shape,
+            )
+        ],
+        inputs=[(input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"])],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             pcc=0.98,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
-    
+
+
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
+
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(variant, test_device):
     # Load Bert tokenizer and model from HuggingFace
@@ -61,7 +81,7 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     tokenizer = download_model(DPRQuestionEncoderTokenizer.from_pretrained, model_ckpt)
     model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # Load data sample
@@ -78,18 +98,29 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
 
     verify_module(
         forge.PyTorchModule("pt_dpr_question_encoder", model),
-        input_shapes=[(input_tokens['input_ids'].shape, input_tokens['attention_mask'].shape, input_tokens['token_type_ids'].shape)],
-        inputs=[(input_tokens['input_ids'], input_tokens['attention_mask'], input_tokens['token_type_ids'])],
+        input_shapes=[
+            (
+                input_tokens["input_ids"].shape,
+                input_tokens["attention_mask"].shape,
+                input_tokens["token_type_ids"].shape,
+            )
+        ],
+        inputs=[(input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"])],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )
 
+
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
+
+
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(variant, test_device):
     # Load Bert tokenizer and model from HuggingFace
@@ -98,12 +129,12 @@ def test_dpr_reader_pytorch(variant, test_device):
     tokenizer = download_model(DPRReaderTokenizer.from_pretrained, model_ckpt)
     model = download_model(DPRReader.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     if test_device.arch == BackendDevice.Wormhole_B0:
         os.environ["FORGE_LEGACY_KERNEL_BROADCAST"] = "1"
- 
+
     # Data preprocessing
     input_tokens = tokenizer(
         questions=["What is love?"],
@@ -117,14 +148,21 @@ def test_dpr_reader_pytorch(variant, test_device):
 
     verify_module(
         forge.PyTorchModule("pt_dpr_reader", model),
-        input_shapes=[(input_tokens['input_ids'].shape, input_tokens['attention_mask'].shape,)],
-        inputs=[(input_tokens['input_ids'], input_tokens['attention_mask'])],
+        input_shapes=[
+            (
+                input_tokens["input_ids"].shape,
+                input_tokens["attention_mask"].shape,
+            )
+        ],
+        inputs=[(input_tokens["input_ids"], input_tokens["attention_mask"])],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
             enabled=False,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
-        )
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
+        ),
     )

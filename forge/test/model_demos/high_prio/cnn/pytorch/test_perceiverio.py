@@ -74,9 +74,7 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
             compiler_cfg.enable_auto_fusing = False
 
         if variant == "deepmind/vision-perceiver-fourier":
-            compiler_cfg.balancer_op_override(
-                "hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 2)
-            )
+            compiler_cfg.balancer_op_override("hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 2))
             if test_device.devtype == forge.BackendType.Silicon:
                 pcc_value = 0.97
 
@@ -104,9 +102,7 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
             os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
 
         if variant == "deepmind/vision-perceiver-fourier":
-            compiler_cfg.balancer_op_override(
-                "hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 7)
-            )
+            compiler_cfg.balancer_op_override("hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 7))
 
     # Sample Image
     pixel_values = get_sample_data(variant)
@@ -126,9 +122,7 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     model.eval()
 
-    tt_model = forge.PyTorchModule(
-        "pt_" + str(variant.split("/")[-1].replace("-", "_")), model
-    )
+    tt_model = forge.PyTorchModule("pt_" + str(variant.split("/")[-1].replace("-", "_")), model)
 
     # Run inference on Tenstorrent device
     verify_module(

@@ -41,7 +41,7 @@ def eval(type, attr, ops):
             orig_z = attr[1]
             orig_r = attr[2]
             orig_c = attr[3]
-            ret = t_ops[0][:,:,:orig_r,:orig_c]
+            ret = t_ops[0][:, :, :orig_r, :orig_c]
         else:
             assert len(t_ops[0].shape) == 5
             orig_v = attr[0]
@@ -49,7 +49,7 @@ def eval(type, attr, ops):
             orig_z = attr[2]
             orig_r = attr[3]
             orig_c = attr[4]
-            ret = t_ops[0][:,:,:,:orig_r,:orig_c]
+            ret = t_ops[0][:, :, :, :orig_r, :orig_c]
 
         attr_len = len(attr) - len(t_ops[0].shape)
         w = attr[-4]
@@ -189,8 +189,8 @@ def eval(type, attr, ops):
             new_weights[
                 :,
                 :,
-                i*section.shape[-2]: (i+1) * section.shape[-2],
-                i*section.shape[-1]: (i+1) * section.shape[-1],
+                i * section.shape[-2] : (i + 1) * section.shape[-2],
+                i * section.shape[-1] : (i + 1) * section.shape[-1],
             ] = section
 
         weights = new_weights.unsqueeze(-3)
@@ -200,7 +200,7 @@ def eval(type, attr, ops):
         elif len(attr) == 5:
             weights = weights.transpose(1, 2)
             weights = weights.transpose(2, 3)
-            weights = weights.reshape(w,1, align_up_tile(attr[0] * cin), -1)
+            weights = weights.reshape(w, 1, align_up_tile(attr[0] * cin), -1)
         return weights
 
     if type == "conv2d_grouped_weights_bw":
@@ -217,14 +217,12 @@ def eval(type, attr, ops):
             weights = weights.transpose(2, 3)
             weights = weights.reshape(w, z, -1, TILE_DIM, TILE_DIM)
         elif len(attr) == 5:
-            weights = weights.reshape(
-                w, align_up_tile(cout) // TILE_DIM, TILE_DIM, -1, TILE_DIM
-            )
+            weights = weights.reshape(w, align_up_tile(cout) // TILE_DIM, TILE_DIM, -1, TILE_DIM)
             weights = weights.transpose(2, 3)
             weights = weights.transpose(1, 2)
             weights = weights.reshape(w, z, -1, TILE_DIM, TILE_DIM)
         weights = weights.diagonal(dim1=-2, dim2=-1)
-        weights = weights.reshape(w, z, 1, -1)[:,:,:,:cout]
+        weights = weights.reshape(w, z, 1, -1)[:, :, :, :cout]
         return weights
 
     if type == "conv2d_prestride_act":
@@ -236,7 +234,14 @@ def eval(type, attr, ops):
         prestrided_activations = []
         for y in range(stride_height):
             for x in range(stride_width):
-                prestrided_activations.append(act[:, :, y:align_up(original_y, stride_height):stride_height, x:align_up(original_x, stride_width):stride_width])
+                prestrided_activations.append(
+                    act[
+                        :,
+                        :,
+                        y : align_up(original_y, stride_height) : stride_height,
+                        x : align_up(original_x, stride_width) : stride_width,
+                    ]
+                )
 
         prestrided_activations = torch.cat(prestrided_activations, dim=-3)
 
@@ -249,12 +254,14 @@ def eval(type, attr, ops):
         c = prestrided_activations.shape[-1]
         pad_r = align_up_tile(r) - r
         pad_c = align_up_tile(c) - c
-        prestrided_activations = torch.nn.functional.pad(prestrided_activations, (0, pad_c, 0, pad_r)) 
+        prestrided_activations = torch.nn.functional.pad(prestrided_activations, (0, pad_c, 0, pad_r))
 
         return prestrided_activations
 
     if type == "forge_pad":
-        assert len(attr) == 3, "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
+        assert (
+            len(attr) == 3
+        ), "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
         r_tiles, c_tiles, value = attr
         operand = t_ops[0]
         shape = operand.shape
@@ -274,13 +281,14 @@ def eval(type, attr, ops):
         operand = t_ops[0]
         if r_tiles > 0:
             assert operand.shape[-2] == orig_r + r_tiles * TILE_DIM
-        if c_tiles > 0: 
+        if c_tiles > 0:
             assert operand.shape[-1] == orig_c + c_tiles * TILE_DIM
         result = torch.index_select(operand, -2, torch.arange(orig_r))
         result = torch.index_select(result, -1, torch.arange(orig_c))
         return result
 
     assert False, f"{type} not defined in tensor manipulations"
+
 
 def shape(type, attr, ops, tile_height, tile_width):
     assert len(ops) == 1, "Tensor manipulation ops should have one input"
@@ -294,7 +302,7 @@ def shape(type, attr, ops, tile_height, tile_width):
         b = shape[dim1]
         shape[dim0] = b
         shape[dim1] = a
- 
+
         if attr[0] < 0:
             attr[0] = attr[0] + len(shape)
 
@@ -446,7 +454,9 @@ def shape(type, attr, ops, tile_height, tile_width):
         return tuple(reshape_shape), []
 
     if type == "forge_pad":
-        assert len(attr) == 3, "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
+        assert (
+            len(attr) == 3
+        ), "Forge pad should have three attributes. The paddings for R and C dimensions and the value to pad with."
         r_tiles, c_tiles, value = attr
         shape = ops[0]
         # Padding is always given in tiles, so we need to recompute the padding in the original dimension
@@ -472,11 +482,14 @@ def shape(type, attr, ops, tile_height, tile_width):
 
     assert False, f"{type} not defined in tensor manipulations"
 
+
 def parallelization(type, attr, op_shape, fracture_factor):
     return None
 
+
 def input_ublock_order(type, attr, num_operands):
     return None
+
 
 def execution_cycles(type, arch_name, op_model) -> int:
     if type == "reshape":
@@ -496,4 +509,3 @@ def execution_cycles(type, arch_name, op_model) -> int:
         return 0
     else:
         assert False, "Only reshape should be a tm op in forge at this point"
-    

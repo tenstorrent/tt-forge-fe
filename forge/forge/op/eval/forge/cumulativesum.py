@@ -45,9 +45,7 @@ class CumulativeSum(PyEltwiseUnaryOp):
         assert len(inputs) == 1, "Cumulative Sum should have one input"
         assert operand == 0, "Invalid operand index"
         dim = self.axis
-        assert (
-            dim == 0
-        ), "Unsupported dim different then 0 for cumulative sum backward pass"
+        assert dim == 0, "Unsupported dim different then 0 for cumulative sum backward pass"
         if dim == 0:
             return ac.op(Nop.create(), (grad,))
 

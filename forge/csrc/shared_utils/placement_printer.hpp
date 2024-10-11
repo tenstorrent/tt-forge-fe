@@ -3,18 +3,20 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include "utils/assert.hpp"
-
 #include <numeric>
 #include <string>
 #include <vector>
 
+#include "utils/assert.hpp"
 
-namespace tt::utils {
+namespace tt::utils
+{
 
-class PlacementPrinter {
-public:
-    enum class DeviceType {
+class PlacementPrinter
+{
+   public:
+    enum class DeviceType
+    {
         Grayskull,
         Wormhole
     };
@@ -36,8 +38,7 @@ public:
                 this->height = 10;
                 this->width = 8;
                 break;
-            default:
-                TT_ASSERT(false, "Unsupported DeviceType");
+            default: TT_ASSERT(false, "Unsupported DeviceType");
         }
 
         this->totalEpochsCount = std::accumulate(epochsPerEpochType.begin(), epochsPerEpochType.end(), 0);
@@ -50,7 +51,7 @@ public:
     void fillRectangle(uint epoch, uint chip, uint top, uint left, uint bottom, uint right, int val);
     std::string generatePlacementString();
 
-private:
+   private:
     DeviceType device;
     uint nodeEpochTypesCnt;
     std::vector<uint> epochsPerEpochType;
@@ -65,4 +66,4 @@ private:
     std::vector<int> linearMap;
 };
 
-}  // namespace utils
+}  // namespace tt::utils

@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-#   Test 1 
+#   Test 1
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -25,16 +25,10 @@ class ForgeReduceTest(ForgeModule):
                       This name test uses to generate names of operation nodes in a graph/model.
     """
 
-    def __init__(
-        self, 
-        operator, 
-        opname,
-        shape,
-        dim,
-        keepdim):
+    def __init__(self, operator, opname, shape, dim, keepdim):
         super().__init__("Forge Test 1")
 
-        assert hasattr(shape, '__iter__'), "Shape must be iterable"
+        assert hasattr(shape, "__iter__"), "Shape must be iterable"
         assert dim < len(shape), "Dimension out of the shape"
         assert dim >= 0, "Dimension cant' be negative"
 
@@ -44,14 +38,14 @@ class ForgeReduceTest(ForgeModule):
         self.shape = shape
         self.dim = dim
         self.keepdim = keepdim
-        
+
         self.train_param = forge.Parameter(*self.shape, requires_grad=True)
 
         self.inputs = [Tensor.create_from_torch(torch.rand(*self.shape))]
         self.set_parameter("train_param", torch.rand(*self.shape, requires_grad=True))
 
     def forward(self, x):
-        
+
         # Layer 2
         mul1 = forge.op.Multiply("mul1", x, self.train_param)
 
@@ -69,4 +63,4 @@ class ForgeReduceTest(ForgeModule):
         return mul3
 
     def values(self):
-        return [item.value() for item in self.inputs]   
+        return [item.value() for item in self.inputs]

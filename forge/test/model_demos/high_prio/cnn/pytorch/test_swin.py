@@ -20,13 +20,13 @@ image = Image.open(requests.get(url, stream=True).raw)
 
 
 def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
-    pytest.skip() # Working on it
+    pytest.skip()  # Working on it
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()    
+    compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.retain_tvm_python_files = True
     compiler_cfg.enable_tvm_constant_prop = True
-    os.environ["TVM_BACKTRACE"]="1" 
-    
+    os.environ["TVM_BACKTRACE"] = "1"
+
     # STEP 2: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained("microsoft/swin-tiny-patch4-window7-224")
     # model = SwinForImageClassification.from_pretrained("microsoft/swin-tiny-patch4-window7-224", torchscript=True)
@@ -38,10 +38,10 @@ def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     print(img_tensor.shape)
     # from pthflops import count_ops
     # flops = count_ops(model, img_tensor)
-    #output = model(img_tensor).logits 
+    # output = model(img_tensor).logits
     output_q = forge.run_inference(tt_model, inputs=([img_tensor]))
-    output = output_q.get()[0].value().detach().float().numpy()  
-        
+    output = output_q.get()[0].value().detach().float().numpy()
+
     predicted_class_idx = output.argmax(-1).item()
     print("Predicted class:", predicted_class_idx)
     print(model.config.id2label[predicted_class_idx])

@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-#   Test 1 
+#   Test 1
 #   LeakyRelu operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -20,7 +20,7 @@ from forge import ForgeModule, Tensor
 
 class ForgeLeakyReluTest(ForgeModule):
     """
-        Forge Test 1
+    Forge Test 1
 
     """
 
@@ -32,27 +32,23 @@ class ForgeLeakyReluTest(ForgeModule):
     WEIGHTS_RANGE_MAX = 1.0
     WEIGHTS_DISTRIBUTION = Normal
 
-    def __init__(
-        self,
-        shape,
-        alpha
-    ):
+    def __init__(self, shape, alpha):
         super().__init__("Forge Test 1")
 
         self.testname = "Operator LeakyRelu, Test 1"
         self.shape = shape
         self.alpha = alpha
-        
+
         self.train_param = forge.Parameter(*self.shape, requires_grad=True)
 
         input = ForgeLeakyReluTest.INPUTS_DISTRIBUTION(
-            ForgeLeakyReluTest.INPUTS_RANGE_MIN, 
-            ForgeLeakyReluTest.INPUTS_RANGE_MAX).sample(self.shape)
+            ForgeLeakyReluTest.INPUTS_RANGE_MIN, ForgeLeakyReluTest.INPUTS_RANGE_MAX
+        ).sample(self.shape)
         self.inputs = [Tensor.create_from_torch(input)]
 
         weights = ForgeLeakyReluTest.WEIGHTS_DISTRIBUTION(
-            ForgeLeakyReluTest.WEIGHTS_RANGE_MIN, 
-            ForgeLeakyReluTest.WEIGHTS_RANGE_MAX).sample(self.shape)
+            ForgeLeakyReluTest.WEIGHTS_RANGE_MIN, ForgeLeakyReluTest.WEIGHTS_RANGE_MAX
+        ).sample(self.shape)
         weights.requires_grad = True
         self.set_parameter("train_param", weights)
 

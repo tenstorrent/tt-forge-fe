@@ -3,15 +3,20 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/pad_output_buffer.hpp"
 
-
-#include "graph_lib/utils.hpp"
 #include "graph_lib/node_types.hpp"
+#include "graph_lib/utils.hpp"
 #include "passes/passes_utils.hpp"
 
 namespace tt::passes
 {
 // Insert forge_pad op on specified edge
-void insert_forge_pad(graphlib::Graph *graph, graphlib::Edge edge, int rt_pad_amount, int ct_pad_amount, graphlib::Shape original_output_shape, graphlib::Node *output_node)
+void insert_forge_pad(
+    graphlib::Graph *graph,
+    graphlib::Edge edge,
+    int rt_pad_amount,
+    int ct_pad_amount,
+    graphlib::Shape original_output_shape,
+    graphlib::Node *output_node)
 {
     // Get node from edge
     graphlib::Node *node = graph->node_by_id(edge.consumer_node_id);
@@ -28,7 +33,6 @@ void insert_forge_pad(graphlib::Graph *graph, graphlib::Edge edge, int rt_pad_am
     output_node->as<graphlib::OutputNode>()->set_runtime_tensor_transform(runtime_tensor_transform);
 }
 
-
 void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config)
 {
     bool pad_output_buffer = env_as<bool>("FORGE_PAD_OUTPUT_BUFFER");
@@ -38,12 +42,11 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
 
     std::vector<graphlib::Node *> padded_inputs;
     // Pad all outputs to the nearest multiple of the grid size
-    for (graphlib::Node *output_node: graph->nodes_by_type(graphlib::NodeType::kOutput))
+    for (graphlib::Node *output_node : graph->nodes_by_type(graphlib::NodeType::kOutput))
     {
         // Skip partial data copy edges (past-cache link between producers/consumers)
-        auto is_partial_datacopy_edge = [](graphlib::Edge e) {
-            return (e.edge_type == graphlib::EdgeType::kPartialDataCopy);
-        };
+        auto is_partial_datacopy_edge = [](graphlib::Edge e)
+        { return (e.edge_type == graphlib::EdgeType::kPartialDataCopy); };
         std::vector<graphlib::Edge> partial_datacopy_edges = graph->user_edges(output_node, is_partial_datacopy_edge);
         if (not partial_datacopy_edges.empty())
             continue;
@@ -59,8 +62,12 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
         if ((original_output_rt * original_output_ct) < pad_threshold)
             continue;
 
-        int rt_pad_amount = original_output_rt < available_grid_r ? 0 : (available_grid_r - (original_output_rt % available_grid_r)) % available_grid_r;
-        int ct_pad_amount = original_output_ct < available_grid_c ? 0 : (available_grid_c - (original_output_ct % available_grid_c)) % available_grid_c;
+        int rt_pad_amount = original_output_rt < available_grid_r
+                                ? 0
+                                : (available_grid_r - (original_output_rt % available_grid_r)) % available_grid_r;
+        int ct_pad_amount = original_output_ct < available_grid_c
+                                ? 0
+                                : (available_grid_c - (original_output_ct % available_grid_c)) % available_grid_c;
 
         // No padding needed
         if (rt_pad_amount == 0 and ct_pad_amount == 0)
@@ -101,7 +108,6 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
                         padded_inputs.push_back(graph->data_operands(producer)[0]);
                 }
             }
-
         }
         // Reset C pad if matmul second operand is already padded
         if (padded_ct)
@@ -120,7 +126,7 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
     for (graphlib::Node *input : padded_inputs)
     {
         bool constevaled = true;
-        while(constevaled) 
+        while (constevaled)
         {
             constevaled = try_consteval_input_no_operand_forks(graph, input->as<graphlib::InputNode>(), true);
         }
@@ -128,4 +134,4 @@ void pad_output_buffer(graphlib::Graph *graph, const DeviceConfig &device_config
 
     return;
 }
-} // namespace tt::passes
+}  // namespace tt::passes

@@ -12,9 +12,9 @@ Debugging Buda (C++) while running PyBuda
    {
         "name": "python gdb debug",
         "type": "cppdbg",
-        "request": "launch",            
+        "request": "launch",
         "program": "${workspaceFolder}/build/python_env/bin/python",
-        "args": ["foo.py"], 
+        "args": ["foo.py"],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
         "environment": [],
@@ -32,4 +32,3 @@ Debugging Buda (C++) while running PyBuda
         ],
         "miDebuggerPath": "/usr/bin/gdb"
    }
-

@@ -63,6 +63,7 @@ def comment_test_info(net) -> str:
         net.append_comment(f"pytest {current_test}")
     else:
         import sys
+
         net.append_comment(f"{' '.join(sys.argv)}")
 
 
@@ -83,21 +84,20 @@ def create_symlink(target_path: str, symlink_path: str, *, remove_existing: bool
                 shutil.rmtree(symlink)
             elif symlink.is_dir():
                 raise ValueError(f"Directory exists at {symlink_path}, cannot create symlink")
-            
-            symlink.parent.mkdir(parents=True, exist_ok=True) # ensure parent directory exists
+
+            symlink.parent.mkdir(parents=True, exist_ok=True)  # ensure parent directory exists
             symlink.symlink_to(target)
-            logger.info(f'Symlink created from {symlink_path} to {target_path}')
-        
+            logger.info(f"Symlink created from {symlink_path} to {target_path}")
+
         except Exception as e:
-            logger.warning(f'Failed to create symlink: {e}')
+            logger.warning(f"Failed to create symlink: {e}")
+
 
 def initialize_output_build_directory(backend_output_directory: str):
     clear_test_output_build_directory(backend_output_directory)
     create_test_output_build_directory(backend_output_directory)
 
-    logger.info(
-        f"Forge output build directory for compiled artifacts: {backend_output_directory}"
-    )
+    logger.info(f"Forge output build directory for compiled artifacts: {backend_output_directory}")
     if not enabled():
         create_symlink(
             os.path.abspath(backend_output_directory),
@@ -111,9 +111,7 @@ def write_netlist(net, netlist_filename: str) -> str:
         f.write(net.dump_to_yaml())
 
 
-def write_netlist_and_forge_envs_config(
-    net, graph_name: str, default_directory: str
-) -> str:
+def write_netlist_and_forge_envs_config(net, graph_name: str, default_directory: str) -> str:
     comment_test_info(net)
     netlist_dir = default_directory if not enabled() else get_netlist_dir()
     netlist_name = graph_name + "_netlist.yaml"

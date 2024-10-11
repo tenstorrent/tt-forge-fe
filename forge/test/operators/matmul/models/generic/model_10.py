@@ -5,7 +5,7 @@
 #   Test 10
 #   Matmul operator defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -17,10 +17,10 @@ from forge import ForgeModule, Tensor
 
 class ForgeMatmulTest(ForgeModule):
     """
-        Forge Test 10
+    Forge Test 10
 
-        In this test we have 22 operations, and 3 input tensors and 9 trainable variables.
-        One operand represents input and the other one is trainable paramater.
+    In this test we have 22 operations, and 3 input tensors and 9 trainable variables.
+    One operand represents input and the other one is trainable paramater.
     """
 
     def __init__(self, shape):
@@ -34,7 +34,7 @@ class ForgeMatmulTest(ForgeModule):
         self.train_param4 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param5 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param6 = forge.Parameter(*self.shape, requires_grad=True)
-        
+
         self.train_param7 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param8 = forge.Parameter(*self.shape, requires_grad=True)
         self.train_param9 = forge.Parameter(*self.shape, requires_grad=True)
@@ -44,7 +44,7 @@ class ForgeMatmulTest(ForgeModule):
             self.set_parameter("train_param" + str(i + 1), torch.rand(*self.shape, requires_grad=True))
 
     def forward(self, x1, x2, x3):
-        
+
         # Layer 2
         tr1 = forge.op.Transpose("tr1", self.train_param1, -1, -2)
         mm1 = forge.op.Matmul("mm1", x1, tr1)
@@ -66,7 +66,7 @@ class ForgeMatmulTest(ForgeModule):
         tr6 = forge.op.Transpose("tr6", self.train_param6, -1, -2)
         mm9 = forge.op.Matmul("mm9", mm6, tr6)
 
-        # Layer 
+        # Layer
         mm10 = forge.op.Matmul("mm10", mm2, self.train_param4)
 
         # Layer 6

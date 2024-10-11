@@ -27,12 +27,12 @@ MODELS_PATH = "./forge/test/operators/reduce/models_4d/"
 SHAPE_NO = 1
 SHAPE_SIZE = 4
 SHAPE_DIM_MIN = 1
-SHAPE_DIM_MAX = 2 ** 5
+SHAPE_DIM_MAX = 2**5
 
 SHAPE_WDIM_MIN = 2
-SHAPE_WDIM_MAX = 2 ** 3
+SHAPE_WDIM_MAX = 2**3
 SHAPE_ZDIM_MIN = 2
-SHAPE_ZDIM_MAX = 2 ** 3
+SHAPE_ZDIM_MAX = 2**3
 
 WDIM_FIXED = True
 
@@ -51,12 +51,7 @@ for _ in range(SHAPE_NO):
 @pytest.mark.parametrize("operation", ["ReduceSum", "ReduceAvg", "ReduceMax"])
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_PATH) if "model" in item])
 @pytest.mark.parametrize("op_test_kind", [TestKind.INFERENCE])
-def test_reduce(
-    op_test_kind,
-    operation,
-    model,
-    shape
-):
+def test_reduce(op_test_kind, operation, model, shape):
 
     test_kind = op_test_kind
 
@@ -67,20 +62,21 @@ def test_reduce(
         pytest.skip("Matmul with gradient accumulate must have t=1")
 
     if model in ["model_1", "model_5"]:
-        pytest.skip("These models return intermediate nodes. That's not supported today." 
-                    "Autograd is trying to do backward pass twice for the same subpath in the graph and that's not correct. ")
+        pytest.skip(
+            "These models return intermediate nodes. That's not supported today."
+            "Autograd is trying to do backward pass twice for the same subpath in the graph and that's not correct. "
+        )
 
-    architecture = f'models_4d.{model}.ForgeReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    architecture = (
+        f'models_4d.{model}.ForgeReduceTest(operator=forge.op.{operation}, opname="{operation}", shape={shape})'
+    )
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
-        compiler_cfg=CompilerConfig(
-                        enable_training=test_kind.is_training(),
-                        enable_recompute=test_kind.is_recompute()
-                     ), 
-        verify_cfg=VerifyConfig()
+        tt0,
+        model.testname,
+        *model.inputs,
+        compiler_cfg=CompilerConfig(enable_training=test_kind.is_training(), enable_recompute=test_kind.is_recompute()),
+        verify_cfg=VerifyConfig(),
     )

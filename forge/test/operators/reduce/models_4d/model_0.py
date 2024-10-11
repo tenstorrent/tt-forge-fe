@@ -5,7 +5,7 @@
 #   Test 0
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -40,7 +40,7 @@ class ForgeReduceTest(ForgeModule):
         mul = forge.op.Multiply("mul", x, self.train_param)
         #         # (W, Z, R, C) * (W, Z, R, C) --> (W, Z, R, C)
         red = self.operator(self.opname, mul, 2)
-                # (W, Z, R, C) --> (W, Z, 1, C)
+        # (W, Z, R, C) --> (W, Z, 1, C)
         # red2 = self.operator(self.opname + "2", mul, 3)
         #         # (W, Z, R, C) --> (W, Z, R, 1)
         # mm = forge.op.Matmul("mm", red2, red1)

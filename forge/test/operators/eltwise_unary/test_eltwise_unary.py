@@ -23,12 +23,12 @@ SHAPE_NO = 2
 SHAPE_SIZE_MIN = 2
 SHAPE_SIZE_MAX = 4
 
-SHAPE_DIM_MIN = 2 ** 3
-SHAPE_DIM_MAX = 2 ** 5
+SHAPE_DIM_MIN = 2**3
+SHAPE_DIM_MAX = 2**5
 SHAPE_WDIM_MIN = 1
-SHAPE_WDIM_MAX = 2 ** 2
+SHAPE_WDIM_MAX = 2**2
 SHAPE_ZDIM_MIN = 1
-SHAPE_ZDIM_MAX = 2 ** 2
+SHAPE_ZDIM_MAX = 2**2
 
 SHAPE_FIXED = True
 WDIM_FIXED = True
@@ -36,7 +36,10 @@ WDIM_FIXED = True
 np.random.seed(1)
 
 # tensors of arbitrarily shape
-shape = [np.random.randint(SHAPE_DIM_MIN, SHAPE_DIM_MAX, np.random.randint(SHAPE_SIZE_MIN, SHAPE_SIZE_MAX)).tolist() for _ in range(SHAPE_NO)]
+shape = [
+    np.random.randint(SHAPE_DIM_MIN, SHAPE_DIM_MAX, np.random.randint(SHAPE_SIZE_MIN, SHAPE_SIZE_MAX)).tolist()
+    for _ in range(SHAPE_NO)
+]
 # 4-dimensional tensors
 if SHAPE_FIXED:
     size = 4
@@ -50,15 +53,31 @@ if SHAPE_FIXED:
 
 
 @pytest.mark.parametrize("shape", shape, ids=[f"shape{'x'.join([str(jtem) for jtem in item])}" for item in shape])
-@pytest.mark.parametrize("operation", ["Abs", "LeakyRelu", "Exp", "Identity", "Reciprocal", "Sigmoid", "Sqrt", "Gelu", "Log", "Relu", "Buffer", "Tanh", "Dropout", "Sine", "Cosine", "Argmax", "Clip"])
+@pytest.mark.parametrize(
+    "operation",
+    [
+        "Abs",
+        "LeakyRelu",
+        "Exp",
+        "Identity",
+        "Reciprocal",
+        "Sigmoid",
+        "Sqrt",
+        "Gelu",
+        "Log",
+        "Relu",
+        "Buffer",
+        "Tanh",
+        "Dropout",
+        "Sine",
+        "Cosine",
+        "Argmax",
+        "Clip",
+    ],
+)
 @pytest.mark.parametrize("model", [item.split(".")[0] for item in os.listdir(MODELS_PATH) if "model" in item])
 @pytest.mark.parametrize("op_test_kind", [TestKind.INFERENCE])
-def test_eltwise_unary(
-    op_test_kind,
-    operation,
-    model,
-    shape
-):
+def test_eltwise_unary(op_test_kind, operation, model, shape):
     test_kind = op_test_kind
 
     if model == "model_9" and operation == "Reciprocal":
@@ -67,31 +86,31 @@ def test_eltwise_unary(
     kwargs = {}
     pcc = 0.99
     if operation == "LeakyRelu":
-        kwargs['alpha'] = np.random.rand()
+        kwargs["alpha"] = np.random.rand()
         if test_kind.is_training():
             pcc = 0.95
     if operation == "Clip":
-        kwargs['min'] = np.random.rand()
-        kwargs['max'] = np.random.rand()
-        
-    architecture = f'models.{model}.ForgeElementWiseUnaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}'
+        kwargs["min"] = np.random.rand()
+        kwargs["max"] = np.random.rand()
+
+    architecture = (
+        f'models.{model}.ForgeElementWiseUnaryTest(operator=forge.op.{operation}, opname="{operation}", shape={shape}'
+    )
     for k, v in kwargs.items():
-        architecture = f'{architecture}, {k}={v}'
-    architecture = f'{architecture})'
-    
+        architecture = f"{architecture}, {k}={v}"
+    architecture = f"{architecture})"
+
     model = eval(architecture)
     tt0 = TTDevice("tt0", devtype=BackendType.Golden)
     tt0.place_module(model)
 
-    #Fusing disabled due to tenstorrent/forge#784
+    # Fusing disabled due to tenstorrent/forge#784
     forge_compile(
-        tt0, 
-        model.testname, 
-        *model.inputs, 
+        tt0,
+        model.testname,
+        *model.inputs,
         compiler_cfg=CompilerConfig(
-                        enable_training=test_kind.is_training(),
-                        enable_recompute=test_kind.is_recompute(),
-                        enable_auto_fusing=False
-                     ), 
-        verify_cfg=VerifyConfig(pcc=pcc)
+            enable_training=test_kind.is_training(), enable_recompute=test_kind.is_recompute(), enable_auto_fusing=False
+        ),
+        verify_cfg=VerifyConfig(pcc=pcc),
     )

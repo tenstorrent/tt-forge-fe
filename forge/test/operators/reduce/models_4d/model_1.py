@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-#   Test 1 
+#   Test 1
 #   Reduce operators defined by Forge API
 #   These kinds of tests test only single specific operator through different Forge architectures
-# 
+#
 
 
 import torch
@@ -38,13 +38,13 @@ class ForgeReduceTest(ForgeModule):
 
     def forward(self, x):
         mul = forge.op.Multiply("mul", x, self.train_param)
-                # (W, Z, R, C) * (W, Z, R, C) --> (W, Z, R, C)
+        # (W, Z, R, C) * (W, Z, R, C) --> (W, Z, R, C)
         red1 = self.operator(self.opname + "1", mul, 2)
-                # (W, Z, R, C) --> (W, Z, 1, C)
+        # (W, Z, R, C) --> (W, Z, 1, C)
         red2 = self.operator(self.opname + "2", mul, 3)
-                # (W, Z, R, C) --> (W, Z, R, 1)
+        # (W, Z, R, C) --> (W, Z, R, 1)
         mm = forge.op.Matmul("mm", red2, red1)
-                # (W, Z, R, 1) x (W, Z, 1, C) --> (W, Z, R, C)
+        # (W, Z, R, 1) x (W, Z, 1, C) --> (W, Z, R, C)
         return red1, red2, mm
 
     def values(self):

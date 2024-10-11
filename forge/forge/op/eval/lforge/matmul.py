@@ -17,7 +17,15 @@ from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, align_up
 from forge._C.graph import UBlockOrder
 
-from ..common import to_torch_operands, cast_for_cpu_eval, math_fidelity_to_multiplier, data_format_to_int, op_model_to_desc, get_compiler_cached_cycles
+from ..common import (
+    to_torch_operands,
+    cast_for_cpu_eval,
+    math_fidelity_to_multiplier,
+    data_format_to_int,
+    op_model_to_desc,
+    get_compiler_cached_cycles,
+)
+
 
 class CycleNet(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
@@ -35,8 +43,9 @@ class CycleNet(torch.nn.Module):
         out = self.fc2(out)
         out = self.relu2(out)
         out = self.fc3(out)
-        out = self.relu3(out) # makes no sense to have negative cycles
+        out = self.relu3(out)  # makes no sense to have negative cycles
         return out
+
 
 def get_u_kt_bits(u_kt):
     u_kt_bits = 1
@@ -49,10 +58,15 @@ def get_u_kt_bits(u_kt):
 def get_hash_sum_prod(vector, modulo_factor=997):
     hash_sum = 0
     hash_product = 1
-    [hash_sum:= (hash_sum + v) % modulo_factor for v in vector]
-    [hash_product:= (((hash_product * v) % modulo_factor) * (i // 32 + 1) * (i % 32 + 1)) % modulo_factor for (i, v) in enumerate(vector) if v != 0]
+    [hash_sum := (hash_sum + v) % modulo_factor for v in vector]
+    [
+        hash_product := (((hash_product * v) % modulo_factor) * (i // 32 + 1) * (i % 32 + 1)) % modulo_factor
+        for (i, v) in enumerate(vector)
+        if v != 0
+    ]
 
     return hash_sum, hash_product
+
 
 def strip_ident_matmul(
     sparse_tiles_tensor,
@@ -68,7 +82,7 @@ def strip_ident_matmul(
     inner_c,
     batch_cnt,
 ):
-    if (sparse_tiles_tensor.dtype == torch.int8 or act.dtype == torch.int8):
+    if sparse_tiles_tensor.dtype == torch.int8 or act.dtype == torch.int8:
         target_dtype = torch.int32
         sparse_tiles_tensor, act = sparse_tiles_tensor.float(), act.float()
     else:
@@ -85,6 +99,7 @@ def strip_ident_matmul(
     def to_int16(i):
         as_bytes = list(int.to_bytes(i, byteorder="little", length=4, signed=True))
         return [(as_bytes[1] << 8) | as_bytes[0], (as_bytes[3] << 8) | as_bytes[2]]
+
     ublock_tile_index_bits = 16 - sparse_tile_ptr_bits
     encodings_tile = -1  # pointer to current encoding tile
     tile_bin = None
@@ -101,7 +116,11 @@ def strip_ident_matmul(
                 encodings_tile += 1
 
                 print(f"tile[{encodings_tile}] ") if print_indices else None
-                tile_int32 = encodings[0, 0, encodings_tile * TILE_DIM: (encodings_tile + 1) * TILE_DIM, :].reshape(TILE_DIM * TILE_DIM).tolist()
+                tile_int32 = (
+                    encodings[0, 0, encodings_tile * TILE_DIM : (encodings_tile + 1) * TILE_DIM, :]
+                    .reshape(TILE_DIM * TILE_DIM)
+                    .tolist()
+                )
                 tile_bin = [i for l in list(map(to_int16, tile_int32)) for i in l]
                 curr_strip_ptr = 0
 
@@ -109,12 +128,16 @@ def strip_ident_matmul(
             last_out = bool(last_row_tile_strip_index & (1 << 30))
             last_strip_in_tile = bool(last_row_tile_strip_index & (1 << 31))
             strip_index = last_row_tile_strip_index & ((1 << 30) - 1)
-            assert strip_index >= prev_strip_index, f"Strip index goes backward in t: strip_index[{strip_index}] prev_strip_index[{prev_strip_index}]"
+            assert (
+                strip_index >= prev_strip_index
+            ), f"Strip index goes backward in t: strip_index[{strip_index}] prev_strip_index[{prev_strip_index}]"
             prev_strip_index = strip_index
             nz_ublocks_in_strip = tile_bin[curr_strip_ptr + 2]
             oid = strip_index
             out_batch = len(rets)
-            print(f"  t[{out_batch}] oid[{oid}] strip_ptr[0x{curr_strip_ptr*2:04x}] strip_info_struct{{ .strip_index = {strip_index}, nz_ublocks = {nz_ublocks_in_strip}, .last_strip_in_row = {last_out}, .last_strip_in_tile = {last_strip_in_tile} }}") if print_indices else None
+            print(
+                f"  t[{out_batch}] oid[{oid}] strip_ptr[0x{curr_strip_ptr*2:04x}] strip_info_struct{{ .strip_index = {strip_index}, nz_ublocks = {nz_ublocks_in_strip}, .last_strip_in_row = {last_out}, .last_strip_in_tile = {last_strip_in_tile} }}"
+            ) if print_indices else None
             print(f"~~~~ si: {strip_index}") if print_debug else None
             print(f"~~~~ + last_strip_in_row: {last_out}") if print_debug else None
             print(f"~~~~ + last_strip_in_tile: {last_strip_in_tile}") if print_debug else None
@@ -135,8 +158,10 @@ def strip_ident_matmul(
                     ublock_start_index = current_index
                     if ublock_cntr >= nz_ublocks_in_strip:
                         break
-                    current_ublock_index = tile_bin[curr_strip_ptr + current_index + 3] & ((1 << sparse_ublock_idx_bits) - 1)
-                    left_ublock_zero = (current_ublock_index != out_r)
+                    current_ublock_index = tile_bin[curr_strip_ptr + current_index + 3] & (
+                        (1 << sparse_ublock_idx_bits) - 1
+                    )
+                    left_ublock_zero = current_ublock_index != out_r
                     if not left_ublock_zero:
                         ublock_cntr += 1
                     else:
@@ -145,7 +170,7 @@ def strip_ident_matmul(
 
                     print(f"~~~~~~~~ ublock_index: {current_ublock_index}") if print_debug else None
 
-                    for out_c in range (outer_c):
+                    for out_c in range(outer_c):
                         # DEST reload here
 
                         if not left_ublock_zero:
@@ -155,14 +180,16 @@ def strip_ident_matmul(
                             current_ublock_index = encoded & ((1 << sparse_ublock_idx_bits) - 1)
                             nz_tiles_in_ublock = encoded >> sparse_ublock_idx_bits
                             nz_tiles_in_ublock_bits = 16 - sparse_ublock_idx_bits
-                            nz_tiles_in_ublock = (1 << nz_tiles_in_ublock_bits) if nz_tiles_in_ublock == 0 else nz_tiles_in_ublock
+                            nz_tiles_in_ublock = (
+                                (1 << nz_tiles_in_ublock_bits) if nz_tiles_in_ublock == 0 else nz_tiles_in_ublock
+                            )
                             print(f"~~~~~~~~ num_matmuls: {nz_tiles_in_ublock}") if print_debug and out_c == 0 else None
                             first_tile_index = current_index
 
                             dst_index = 0
 
                             out_of_tile_range = False
-                            for in_r in range (inner_r):
+                            for in_r in range(inner_r):
                                 for in_d in range(inner_d):
                                     if out_of_tile_range:
                                         break
@@ -174,8 +201,12 @@ def strip_ident_matmul(
                                     # left_tile_zero = in1 != (in_r * inner_d + in_d) or out_of_tile_range
                                     if not left_tile_zero:
                                         in0_index = encoded >> ublock_tile_index_bits
-                                        print(f"~~~~~~~~~~ in0_index: {in0_index}") if print_debug and out_c == 0 else None
-                                        print(f"~~~~~~~~~~ in1_index: {in1_rt}, {in1_ct}") if print_debug and out_c == 0 else None
+                                        print(
+                                            f"~~~~~~~~~~ in0_index: {in0_index}"
+                                        ) if print_debug and out_c == 0 else None
+                                        print(
+                                            f"~~~~~~~~~~ in1_index: {in1_rt}, {in1_ct}"
+                                        ) if print_debug and out_c == 0 else None
                                         current_index += 1
                                         dst_index = in_r * inner_c
                                         for in_c in range(inner_c):
@@ -184,8 +215,15 @@ def strip_ident_matmul(
                                             # Matmul here
                                             r_idx_r = strip_index * inner_d + in_d
                                             r_idx_c = out_c * inner_c + in_c
-                                            left = sparse_tiles_tensor[0, 0, :, in0_index * TILE_DIM: (in0_index + 1) * TILE_DIM]
-                                            right = act[0, 0, r_idx_r * TILE_DIM: (r_idx_r + 1) * TILE_DIM, r_idx_c * TILE_DIM: (r_idx_c + 1) * TILE_DIM]
+                                            left = sparse_tiles_tensor[
+                                                0, 0, :, in0_index * TILE_DIM : (in0_index + 1) * TILE_DIM
+                                            ]
+                                            right = act[
+                                                0,
+                                                0,
+                                                r_idx_r * TILE_DIM : (r_idx_r + 1) * TILE_DIM,
+                                                r_idx_c * TILE_DIM : (r_idx_c + 1) * TILE_DIM,
+                                            ]
 
                                             ret_idx_r = out_r * inner_r + in_r
                                             ret_idx_c = out_c * inner_c + in_c
@@ -193,20 +231,44 @@ def strip_ident_matmul(
                                             ret[ret_idx_r, ret_idx_c] += tile_res
 
                                             if print_debug:
-                                                print(f"~~~~~~~~~~~~ in0[{in0_index}]") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~ act[{oid * inner_d + in_d}, {r_idx_c}]") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~ out[{out_batch}, {ret_idx_r}, {ret_idx_c}]") if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~ in0[{in0_index}]"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~ act[{oid * inner_d + in_d}, {r_idx_c}]"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~ out[{out_batch}, {ret_idx_r}, {ret_idx_c}]"
+                                                ) if print_debug and out_c == 0 else None
 
-                                                in0_sum, in0_prod = get_hash_sum_prod(left.flatten().numpy().view(np.uint32).tolist())
-                                                in1_sum, in1_prod = get_hash_sum_prod(right.flatten().numpy().view(np.uint32).tolist())
-                                                out_sum, out_prod = get_hash_sum_prod(tile_res.flatten().numpy().view(np.uint32).tolist())
+                                                in0_sum, in0_prod = get_hash_sum_prod(
+                                                    left.flatten().numpy().view(np.uint32).tolist()
+                                                )
+                                                in1_sum, in1_prod = get_hash_sum_prod(
+                                                    right.flatten().numpy().view(np.uint32).tolist()
+                                                )
+                                                out_sum, out_prod = get_hash_sum_prod(
+                                                    tile_res.flatten().numpy().view(np.uint32).tolist()
+                                                )
 
-                                                print(f"~~~~~~~~~~~~~~ in0_hash_sum = {in0_sum}") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~~~ in0_hash_prod = {in0_prod}") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~~~ in1_hash_sum = {in1_sum}") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~~~ in1_hash_prod = {in1_prod}") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~~~ out_hash_sum = {out_sum}") if print_debug and out_c == 0 else None
-                                                print(f"~~~~~~~~~~~~~~ out_hash_prod = {out_prod}") if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~~~ in0_hash_sum = {in0_sum}"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~~~ in0_hash_prod = {in0_prod}"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~~~ in1_hash_sum = {in1_sum}"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~~~ in1_hash_prod = {in1_prod}"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~~~ out_hash_sum = {out_sum}"
+                                                ) if print_debug and out_c == 0 else None
+                                                print(
+                                                    f"~~~~~~~~~~~~~~ out_hash_prod = {out_prod}"
+                                                ) if print_debug and out_c == 0 else None
 
                                         if current_index - first_tile_index == nz_tiles_in_ublock:
                                             out_of_tile_range = True
@@ -220,14 +282,15 @@ def strip_ident_matmul(
                 curr_strip_ptr += 3 + current_index
 
             if last_out:
-                rets.append(ret.transpose(1, 2).reshape(1, 1, outer_r * inner_r * TILE_DIM, outer_c * inner_c * TILE_DIM))
+                rets.append(
+                    ret.transpose(1, 2).reshape(1, 1, outer_r * inner_r * TILE_DIM, outer_c * inner_c * TILE_DIM)
+                )
                 ret = torch.zeros((outer_r * inner_r, outer_c * inner_c, TILE_DIM, TILE_DIM))
 
     assert len(rets) == batch_cnt, f"Expected to get {batch_cnt} result(s) from sparse matmul, instead got {len(rets)}"
 
     rets = [x.to(target_dtype) for x in rets]
     return rets
-
 
 
 def eval(type, attr, ops):
@@ -249,18 +312,34 @@ def eval(type, attr, ops):
             result = result + t_ops[2][:, :, 0:1, :]
     elif type == "matmul" and is_sparse:
         assert len(attr) == 15, f"Unexpected number of attrs for sparse matmul: {len(attr)}"
-        _, _, sparse_tile_ptr_bits, wdim, zdim, rdim, cdim, fracture_factor, u_rt, u_kt, u_ct, grid_c, t_stream_factor_r, t_stream_factor_c, sparse_ublock_idx_bits = attr
+        (
+            _,
+            _,
+            sparse_tile_ptr_bits,
+            wdim,
+            zdim,
+            rdim,
+            cdim,
+            fracture_factor,
+            u_rt,
+            u_kt,
+            u_ct,
+            grid_c,
+            t_stream_factor_r,
+            t_stream_factor_c,
+            sparse_ublock_idx_bits,
+        ) = attr
         sparse_tensor, activations, encodings = t_ops
 
         # Inputs 0 & 2 are tm broadcasted by a factor of (grid_c / fracture_factor)
         # Here we undo the tm broadcast to make the math below easier
-        sparse_tensor = sparse_tensor[..., :sparse_tensor.shape[-1] // (grid_c // fracture_factor)]
-        encodings = encodings[..., :encodings.shape[-1] // (grid_c // fracture_factor)]
+        sparse_tensor = sparse_tensor[..., : sparse_tensor.shape[-1] // (grid_c // fracture_factor)]
+        encodings = encodings[..., : encodings.shape[-1] // (grid_c // fracture_factor)]
 
         # If fractured, activations will be broadcast in C by fracture_factor, so we undo it here
         activations = activations.detach()
         activations.requires_grad_(False)
-        activations = activations[..., :activations.shape[-1] // fracture_factor]
+        activations = activations[..., : activations.shape[-1] // fracture_factor]
 
         inner_r = u_rt
         inner_d = u_kt
@@ -286,8 +365,12 @@ def eval(type, attr, ops):
             r_results = []
             for g_r in range(grid_r):
                 # TODO: Do we want to simulate c dim as well?
-                r_sparse_tensor = sparse_tensor[:, :, g_r * TILE_DIM: (g_r + 1) * TILE_DIM, f * sparse_width_f: (f + 1) * sparse_width_f]
-                r_encodings = encodings[g_r, f * encodings_width_f_t: (f + 1) * encodings_width_f_t, :, :].view(1, 1, -1, TILE_DIM)
+                r_sparse_tensor = sparse_tensor[
+                    :, :, g_r * TILE_DIM : (g_r + 1) * TILE_DIM, f * sparse_width_f : (f + 1) * sparse_width_f
+                ]
+                r_encodings = encodings[g_r, f * encodings_width_f_t : (f + 1) * encodings_width_f_t, :, :].view(
+                    1, 1, -1, TILE_DIM
+                )
                 r_results.append(
                     strip_ident_matmul(
                         r_sparse_tensor,
@@ -340,10 +423,15 @@ def shape(type, attr, ops, tile_height, tile_width):
 
         # C dim should be multiplied by fracture_factor, but since we're doing a broadcast(C, fracture_factor), we also
         # need to divide C dim by fracture_factor, so they end up cancelling each other out
-        return (w, t_factor_r * t_factor_c * z, align_up_tile(r) // t_factor_r // fracture_factor, align_up_tile(ops[1][3])), []
+        return (
+            w,
+            t_factor_r * t_factor_c * z,
+            align_up_tile(r) // t_factor_r // fracture_factor,
+            align_up_tile(ops[1][3]),
+        ), []
 
     broadcast = []
-    #assert ops[0][0] == ops[1][0] # Relax this for now, although we really can't do W != 1 anyway.. so that needs fixing
+    # assert ops[0][0] == ops[1][0] # Relax this for now, although we really can't do W != 1 anyway.. so that needs fixing
     if ops[0][-3] != ops[1][-3]:
         if ops[0][-3] == 1:
             broadcast.append((0, 1, ops[1][-3]))
@@ -395,9 +483,8 @@ def execution_cycles(type, arch_name, op_model, theoretical) -> int:
     if op_model.is_sparse_matmul:
         # Calculate cycles per core
         #
-        if (
-            os.environ.get("FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS", False)
-            and os.environ.get("FORGE_TEMP_SPARSE_ESTIMATE_ARGS_PER_CORE", False)
+        if os.environ.get("FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS", False) and os.environ.get(
+            "FORGE_TEMP_SPARSE_ESTIMATE_ARGS_PER_CORE", False
         ):
             cycles_to_return = 0
             for r in range(op_model.grid_shape.r):
@@ -454,10 +541,24 @@ def execution_cycles(type, arch_name, op_model, theoretical) -> int:
     if is_cyclenet:
         input0_df = data_format_to_int(op_model.input_buffers[0].data_format)
         output_df = data_format_to_int(op_model.output_buffers[0].data_format)
-        x = [input0_df,output_df,math_fid,t,mblock_m,mblock_n,ublock_rt,ublock_ct,m_k,u_kt,mblock_executions,ublock_executions,0]
+        x = [
+            input0_df,
+            output_df,
+            math_fid,
+            t,
+            mblock_m,
+            mblock_n,
+            ublock_rt,
+            ublock_ct,
+            m_k,
+            u_kt,
+            mblock_executions,
+            ublock_executions,
+            0,
+        ]
         cycle_count = cyclenet_execution_cycles(type, torch.tensor(x, dtype=torch.float32))
     elif theoretical:
-        tile_weight = 32 if arch_name == 'grayskull' else 16
+        tile_weight = 32 if arch_name == "grayskull" else 16
         cycle_count = t * ublock_executions * math_fid * tile_weight  # based on max throughput for the chip
     else:
         cycle_count = get_op_model_execution_cycles(op_model_desc)
@@ -484,6 +585,7 @@ def execution_cycles(type, arch_name, op_model, theoretical) -> int:
                 cycle_count += get_op_model_execution_cycles(op_model_desc)
 
     return cycle_count
+
 
 def cyclenet_execution_cycles(type, X) -> int:
     filepath = os.path.abspath(__file__)

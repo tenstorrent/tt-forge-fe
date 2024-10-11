@@ -12,24 +12,25 @@ from .tm import eval as tm_eval
 from forge.forgeglobal import TILE_DIM
 from forge._C.graph import UBlockOrder, Shape
 
+
 class Sqrt(ForgeEltwiseUnaryOp):
     @classmethod
     def create(cls):
         self = cls("sqrt")
         return self
-    
+
     def eval(self, tensors):
         assert len(tensors) == 1, "Sqrt should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-        
+
         ret = torch.sqrt(tensors[0])
 
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
 
         return ret
-    
+
     def shape(self, tensor_shapes, tile_height, tile_width):
         assert len(tensor_shapes) == 1, "Sqrt should have one input"
         shape = tensor_shapes[0]
@@ -41,13 +42,13 @@ class Sqrt(ForgeEltwiseUnaryOp):
             raise RuntimeError(f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}")
 
         return shape, []
-    
+
     def parallelization(self, op_shape, fracture_factor):
         return (op_shape.outputs[0].rt, op_shape.outputs[0].ct)
 
     def input_ublock_order(self, num_operands):
         return None
-    
+
     def execution_cycles(self, arch_name, op_model) -> int:
         op_model_desc = op_model_to_desc("sqrt", arch_name, op_model)
 
@@ -57,12 +58,13 @@ class Sqrt(ForgeEltwiseUnaryOp):
 
         use_legacy_path = bool(int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0")))
 
-        if (use_legacy_path ): 
+        if use_legacy_path:
             tile_weight = get_op_model_param(op_model_desc, "tile_weight")
             output_shape = op_model.op_shape.outputs[0]
-            num_tiles = (output_shape.z * output_shape.rt * output_shape.ct) / (op_model.grid_shape.r * op_model.grid_shape.c)
+            num_tiles = (output_shape.z * output_shape.rt * output_shape.ct) / (
+                op_model.grid_shape.r * op_model.grid_shape.c
+            )
             cycle_count = tile_weight * num_tiles
             return min(int(cycle_count), 1 << 30)
 
         return get_op_model_execution_cycles(op_model_desc)
-    

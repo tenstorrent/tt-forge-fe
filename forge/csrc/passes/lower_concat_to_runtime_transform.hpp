@@ -10,8 +10,8 @@ class Graph;
 class OpNode;
 class Node;
 class Shape;
-}
-namespace tt::passes 
+}  // namespace tt::graphlib
+namespace tt::passes
 {
 void lower_concat_to_runtime_transform(graphlib::Graph *graph);
-} // namespace tt:passes
+}  // namespace tt::passes

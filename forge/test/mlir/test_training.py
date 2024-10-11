@@ -9,6 +9,7 @@ import forge
 import forge.config
 from forge.op.eval.common import compare_with_golden_pcc
 
+
 def test_torch_training():
     class MatmulParam(nn.Module):
         def __init__(self):
@@ -49,7 +50,7 @@ def test_torch_training():
         print(f"epoch: {epoch} loss: {loss}")
         print(f"epoch: {epoch} golden_loss: {golden_loss}")
         print(f"output.grad: {output[0].grad}")
-        
+
         loss_grad = output[0].grad
         assert loss_grad is not None
         grad = tt_model.backward(loss_grad)

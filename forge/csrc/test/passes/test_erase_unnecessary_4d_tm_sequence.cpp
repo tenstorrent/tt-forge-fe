@@ -12,22 +12,24 @@ struct EraseUnnecessary4DSeq : testing::Test
 {
     graphlib::Graph *graph;
 
-    //template <int NumOperands = NumOperands>
+    // template <int NumOperands = NumOperands>
     EraseUnnecessary4DSeq()
     {
         // Initialize graph
         graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE);
 
         // Graph definition
-        auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, NumOperands*58, 64, 64})); 
+        auto input_0 = create_input(*graph, "input_0", graphlib::Shape::create({1, NumOperands * 58, 64, 64}));
 
-        auto reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {NumOperands, 58, 64, 64}, {input_0});
+        auto reshape_0 =
+            add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {NumOperands, 58, 64, 64}, {input_0});
         auto transpose_0 = add_node<graphlib::PyOpNode>(
             *graph,
             "transpose_0",
             graphlib::OpType("transpose", {}, {}, {{"dim0", -4}, {"dim1", -3}, {"z_dim_slice", -1}}),
             {reshape_0});
-        auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, NumOperands*58, 64, 64}, {transpose_0});
+        auto reshape_1 =
+            add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, NumOperands * 58, 64, 64}, {transpose_0});
 
         create_output(*graph, "output_0", reshape_1);
     }
@@ -72,9 +74,9 @@ TEST_F(EraseUnnecessary4DSeqThreeOps, three_operands)
 
 TEST_F(EraseUnnecessary4DSeqTwoOps, na1)
 {
-    // Extend base test - add another reshape op before the last reshape 
+    // Extend base test - add another reshape op before the last reshape
     graphlib::Node *transpose_0 = graph->get_node_by_name("transpose_0");
-    add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {58,4,32,64}, {transpose_0}, {0, 0});
+    add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {58, 4, 32, 64}, {transpose_0}, {0, 0});
 
     // Run stack/slice fuse pass
     passes::erase_unnecessary_4d_tm_sequence(graph);
@@ -93,7 +95,7 @@ TEST_F(EraseUnnecessary4DSeqTwoOps, na1)
 
 TEST_F(EraseUnnecessary4DSeqTwoOps, na2)
 {
-    // Extend base test - add another reshape op before the last reshape 
+    // Extend base test - add another reshape op before the last reshape
     graphlib::Node *transpose_0 = graph->get_node_by_name("transpose_0");
     auto add_0 = add_node<graphlib::PyOpNode>(*graph, "add_0", "add", {}, {transpose_0, transpose_0});
     create_output(*graph, "output_1", add_0);
@@ -112,4 +114,3 @@ TEST_F(EraseUnnecessary4DSeqTwoOps, na2)
     }
     EXPECT_EQ(graph->nodes().size(), 7);
 }
-

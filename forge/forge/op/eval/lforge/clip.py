@@ -15,7 +15,7 @@ from forge._C.graph import UBlockOrder, Shape
 
 class Clip(ForgeEltwiseUnaryOp):
     @classmethod
-    def create(cls, min=float('-inf'), max=float('inf')):
+    def create(cls, min=float("-inf"), max=float("inf")):
         self = cls("clip")
         self.min = min
         self.max = max
@@ -39,9 +39,7 @@ class Clip(ForgeEltwiseUnaryOp):
         elif tile_height < TILE_DIM:
             shape[-2] = tile_height
         else:
-            raise RuntimeError(
-                f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}"
-            )
+            raise RuntimeError(f"Tile height {tile_height} is larger than max allowed TILE_DIM {TILE_DIM}")
 
         return shape, []
 
@@ -58,9 +56,7 @@ class Clip(ForgeEltwiseUnaryOp):
         if compiler_cache_cycles is not None:
             return compiler_cache_cycles
 
-        use_legacy_path = bool(
-            int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0"))
-        )
+        use_legacy_path = bool(int(os.environ.get("FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY", "0")))
 
         if use_legacy_path:
             tile_weight = get_op_model_param(op_model_desc, "tile_weight")

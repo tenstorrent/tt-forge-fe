@@ -5,7 +5,7 @@
 # This file incorporates work covered by the following copyright and permission notice:
 # SPDX-FileCopyrightText: Copyright (c) 2016 Facebook, Inc
 # SPDX-License-Identifier: BSD-3-Clause
-# https://github.com/pytorch/pytorch/blob/main/LICENSE 
+# https://github.com/pytorch/pytorch/blob/main/LICENSE
 
 from typing import Dict, List, Optional, Tuple, Iterable
 
@@ -13,21 +13,22 @@ import torch
 import numpy as np
 
 
-
-def adam_no_bias_correction(params: List[torch.Tensor],
-         grads: List[torch.Tensor],
-         exp_avgs: List[torch.Tensor],
-         exp_avg_sqs: List[torch.Tensor],
-         max_exp_avg_sqs: List[torch.Tensor],
-         state_steps: List[int],
-         *,
-         amsgrad: bool,
-         beta1: float,
-         beta2: float,
-         lr: float,
-         weight_decay: float,
-         eps: float,
-         enable_adam_w: bool):
+def adam_no_bias_correction(
+    params: List[torch.Tensor],
+    grads: List[torch.Tensor],
+    exp_avgs: List[torch.Tensor],
+    exp_avg_sqs: List[torch.Tensor],
+    max_exp_avg_sqs: List[torch.Tensor],
+    state_steps: List[int],
+    *,
+    amsgrad: bool,
+    beta1: float,
+    beta2: float,
+    lr: float,
+    weight_decay: float,
+    eps: float,
+    enable_adam_w: bool,
+):
     r"""Functional API that performs Adam algorithm computation.
 
     See :class:`~torch.optim.Adam` for details.
@@ -68,8 +69,10 @@ class AdamNoBiasCorrection(torch.optim.Optimizer):
     """
     Implements Adam algorithm without bias correction.
     """
-    def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8,
-                 weight_decay=0, amsgrad=False, enable_adam_w=False):
+
+    def __init__(
+        self, params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, amsgrad=False, enable_adam_w=False
+    ):
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= eps:
@@ -80,8 +83,7 @@ class AdamNoBiasCorrection(torch.optim.Optimizer):
             raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         if not 0.0 <= weight_decay:
             raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
-        defaults = dict(lr=lr, betas=betas, eps=eps,
-                        weight_decay=weight_decay, amsgrad=amsgrad)
+        defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay, amsgrad=amsgrad)
         super(AdamNoBiasCorrection, self).__init__(params, defaults)
         self.enable_adam_w = enable_adam_w
 
@@ -105,52 +107,55 @@ class AdamNoBiasCorrection(torch.optim.Optimizer):
             exp_avg_sqs = []
             max_exp_avg_sqs = []
             state_steps = []
-            beta1, beta2 = group['betas']
+            beta1, beta2 = group["betas"]
 
-            for p in group['params']:
+            for p in group["params"]:
                 if p.grad is not None:
                     params_with_grad.append(p)
                     if p.grad.is_sparse:
-                        raise RuntimeError('Adam does not support sparse gradients, please consider SparseAdam instead')
+                        raise RuntimeError("Adam does not support sparse gradients, please consider SparseAdam instead")
                     grads.append(p.grad)
 
                     state = self.state[p]
                     # Lazy state initialization
                     if len(state) == 0:
-                        state['step'] = 0
+                        state["step"] = 0
                         # Exponential moving average of gradient values
-                        state['exp_avg'] = torch.zeros_like(p, memory_format=torch.preserve_format)
+                        state["exp_avg"] = torch.zeros_like(p, memory_format=torch.preserve_format)
                         # Exponential moving average of squared gradient values
-                        state['exp_avg_sq'] = torch.zeros_like(p, memory_format=torch.preserve_format)
-                        if group['amsgrad']:
+                        state["exp_avg_sq"] = torch.zeros_like(p, memory_format=torch.preserve_format)
+                        if group["amsgrad"]:
                             # Maintains max of all exp. moving avg. of sq. grad. values
-                            state['max_exp_avg_sq'] = torch.zeros_like(p, memory_format=torch.preserve_format)
+                            state["max_exp_avg_sq"] = torch.zeros_like(p, memory_format=torch.preserve_format)
 
-                    exp_avgs.append(state['exp_avg'])
-                    exp_avg_sqs.append(state['exp_avg_sq'])
+                    exp_avgs.append(state["exp_avg"])
+                    exp_avg_sqs.append(state["exp_avg_sq"])
 
-                    if group['amsgrad']:
-                        max_exp_avg_sqs.append(state['max_exp_avg_sq'])
+                    if group["amsgrad"]:
+                        max_exp_avg_sqs.append(state["max_exp_avg_sq"])
 
                     # update the steps for each param group update
-                    state['step'] += 1
+                    state["step"] += 1
                     # record the step after step update
-                    state_steps.append(state['step'])
+                    state_steps.append(state["step"])
 
-            adam_no_bias_correction(params_with_grad,
-                   grads,
-                   exp_avgs,
-                   exp_avg_sqs,
-                   max_exp_avg_sqs,
-                   state_steps,
-                   amsgrad=group['amsgrad'],
-                   beta1=beta1,
-                   beta2=beta2,
-                   lr=group['lr'],
-                   weight_decay=group['weight_decay'],
-                   eps=group['eps'],
-                   enable_adam_w=self.enable_adam_w)
+            adam_no_bias_correction(
+                params_with_grad,
+                grads,
+                exp_avgs,
+                exp_avg_sqs,
+                max_exp_avg_sqs,
+                state_steps,
+                amsgrad=group["amsgrad"],
+                beta1=beta1,
+                beta2=beta2,
+                lr=group["lr"],
+                weight_decay=group["weight_decay"],
+                eps=group["eps"],
+                enable_adam_w=self.enable_adam_w,
+            )
         return loss
+
 
 # SPDX-FileCopyrightText: Copyright (c) 2019 cybertronai
 #
@@ -164,24 +169,15 @@ class LAMB(torch.optim.Optimizer):
     Args:
         params (iterable): Parameters to optimize
         lr (float): Learning rate
-        betas (Tuple[float, float]): coefficients used for computing 
+        betas (Tuple[float, float]): coefficients used for computing
             mean and variance for gradient
         eps (float): coefficient used to stabilize "trust ratio"
         weight_decay (float): weight decay
         corection(bool): Correct mean and variance or not.
         clip_value(tuple[int]): Min and max value of parameters.
     """
-    
-    def __init__(
-        self,
-        params,
-        lr,
-        betas,
-        eps,
-        weight_decay,
-        correction = False,
-        clip_value = (0.0, 10.0)
-    ):
+
+    def __init__(self, params, lr, betas, eps, weight_decay, correction=False, clip_value=(0.0, 10.0)):
         if not 0.0 <= lr:
             raise ValueError(f"Invalid learning rate: {lr}")
         if not 0.0 <= betas[0] < 1.0:
@@ -198,18 +194,13 @@ class LAMB(torch.optim.Optimizer):
             raise ValueError(f"Invalid lower clip value: {clip_value[0]}")
         if not 0.0 < clip_value[1] <= 20.0:
             raise ValueError(f"Invalid higher clip value: {clip_value[1]}")
-        
-        defaults = dict(
-            lr=lr,
-            betas=betas,
-            eps=eps,
-            weight_decay=weight_decay
-        )
+
+        defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
 
         super(LAMB, self).__init__(params, defaults)
         self.correction = correction
         self.clip_value = clip_value
-        
+
     @torch.no_grad()
     def step(self, closure=None):
         """Performs a single optimization step.
@@ -223,72 +214,73 @@ class LAMB(torch.optim.Optimizer):
             loss = closure()
 
         for group in self.param_groups:
-            for param in group['params']:
+            for param in group["params"]:
                 if param.grad is None:
                     continue
                 grad = param.grad.data
                 if grad.is_sparse:
-                    raise RuntimeError('Lamb does not support sparse gradients, consider SparseAdam instead.')
+                    raise RuntimeError("Lamb does not support sparse gradients, consider SparseAdam instead.")
 
                 state = self.state[param]
-                
+
                 # State initialization
                 if len(state) == 0:
-                    state['step'] = 0
-                    state['mean'] = torch.zeros_like(param.data, memory_format=torch.preserve_format)
-                    state['var'] = torch.zeros_like(param.data, memory_format=torch.preserve_format)
+                    state["step"] = 0
+                    state["mean"] = torch.zeros_like(param.data, memory_format=torch.preserve_format)
+                    state["var"] = torch.zeros_like(param.data, memory_format=torch.preserve_format)
 
-                mean, var = state['mean'], state['var']
-                beta1, beta2 = group['betas']
+                mean, var = state["mean"], state["var"]
+                beta1, beta2 = group["betas"]
 
-                state['step'] += 1
-                
+                state["step"] += 1
+
                 # Decay mean and variance
                 # m(t) = m(t - 1) * beta1 + grad * (1 - beta2)
                 mean *= beta1
                 mean += grad * (1 - beta1)
-                
+
                 # v(t) = v(t - 1) * beta2 + grad * grad * (1 - beta2)
                 var *= beta2
                 var += grad * grad * (1 - beta2)
-                
-                learning_rate = group['lr']
+
+                learning_rate = group["lr"]
 
                 if self.correction:
-                    bias_correction1 = 1 - beta1 ** state['step']
-                    bias_correction2 = 1 - beta2 ** state['step']
+                    bias_correction1 = 1 - beta1 ** state["step"]
+                    bias_correction2 = 1 - beta2 ** state["step"]
                     learning_rate *= np.sqrt(bias_correction2) / bias_correction1
 
                 # L2 normaliztion of weights
-                phi = param.data ** 2
+                phi = param.data**2
                 phi = torch.sum(phi)
                 phi = torch.sqrt(phi)
-                    
-                epsilon = group['eps']
-                weight_decay = group['weight_decay']
+
+                epsilon = group["eps"]
+                weight_decay = group["weight_decay"]
 
                 # adam ratio, ratio of corrected mean and corrected variance stabilized with epsilon, or
                 adam_ratio = mean / (torch.sqrt(var) + epsilon)
-                
+
                 if weight_decay != 0:
                     adam_ratio += param.data * weight_decay
-                adam_ratio_norm = adam_ratio ** 2
+                adam_ratio_norm = adam_ratio**2
                 adam_ratio_norm = torch.sum(adam_ratio_norm)
                 adam_ratio_norm = torch.sqrt(adam_ratio_norm)
-                
+
                 if phi != 0 and adam_ratio_norm != 0:
                     trust_ratio = phi / adam_ratio_norm
                 else:
                     trust_ratio = torch.tensor([1.0])
                 trust_ratio = torch.clamp(trust_ratio, self.clip_value[0], self.clip_value[1])
-                    
-                state['phi'] = phi
-                state['adam_ratio_norm'] = adam_ratio_norm
-                state['trust_ratio'] = trust_ratio
-                
+
+                state["phi"] = phi
+                state["adam_ratio_norm"] = adam_ratio_norm
+                state["trust_ratio"] = trust_ratio
+
                 param.data += adam_ratio * (-learning_rate * trust_ratio)
 
         return loss
+
 
 # SPDX-FileCopyrightText: Copyright (c) 2019 Kakao Brain
 #
@@ -299,17 +291,7 @@ class LARS(torch.optim.Optimizer):
     Implements LARS optimization algorithm.
     """
 
-    def __init__(
-        self,
-        params,
-        lr,
-        momentum,
-        nesterov = False,
-        dampening = 0,
-        lars_coeff = 1e-3,
-        weight_decay = 0,
-        eps = 1e-8
-    ):
+    def __init__(self, params, lr, momentum, nesterov=False, dampening=0, lars_coeff=1e-3, weight_decay=0, eps=1e-8):
         if not 0.0 <= lr:
             raise ValueError(f"Invalid learning rate: {lr}")
         if not 0.0 <= momentum:
@@ -322,7 +304,7 @@ class LARS(torch.optim.Optimizer):
             raise ValueError(f"Invalid weight decay: {weight_decay}")
         if not 0.0 <= eps:
             raise ValueError(f"Invalid epsilon: {eps}")
-        
+
         defaults = dict(
             lr=lr,
             momentum=momentum,
@@ -330,11 +312,10 @@ class LARS(torch.optim.Optimizer):
             eps=eps,
             weight_decay=weight_decay,
             nesterov=nesterov,
-            dampening=dampening
+            dampening=dampening,
         )
 
         super(LARS, self).__init__(params, defaults)
-
 
     @torch.no_grad()
     def step(self, closure=None):
@@ -350,20 +331,20 @@ class LARS(torch.optim.Optimizer):
                 loss = closure()
 
         for group in self.param_groups:
-            lr = group['lr']
-            momentum = group['momentum']
-            lars_coeff = group['lars_coeff']
-            eps = group['eps']
-            weight_decay = group['weight_decay']
-            dampening = group['dampening']
-            nesterov = group['nesterov']
+            lr = group["lr"]
+            momentum = group["momentum"]
+            lars_coeff = group["lars_coeff"]
+            eps = group["eps"]
+            weight_decay = group["weight_decay"]
+            dampening = group["dampening"]
+            nesterov = group["nesterov"]
 
-            for param in group['params']:
+            for param in group["params"]:
                 if param.grad is None:
                     continue
 
-                weight_norm = torch.sqrt(torch.sum(param.data ** 2))
-                gradient_norm = torch.sqrt(torch.sum(param.grad.data ** 2))
+                weight_norm = torch.sqrt(torch.sum(param.data**2))
+                gradient_norm = torch.sqrt(torch.sum(param.grad.data**2))
 
                 if weight_norm == 0 or gradient_norm == 0:
                     local_lr = 1
@@ -378,8 +359,8 @@ class LARS(torch.optim.Optimizer):
 
                 if momentum != 0:
                     param_state = self.state[param]
-                    if 'momentum' in param_state:
-                        buf = param_state['momentum']
+                    if "momentum" in param_state:
+                        buf = param_state["momentum"]
                         buf *= momentum
                         updated_momentum += buf
 

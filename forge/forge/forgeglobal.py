@@ -14,11 +14,11 @@ import queue
 from loguru import logger
 
 
-devices = []     # Ordered list of devices running in a pipeline
+devices = []  # Ordered list of devices running in a pipeline
 modules = []
 
 # Tile dimension in forge. All dimensions must be divisible by this.
-TILE_DIM = 32 
+TILE_DIM = 32
 
 # CoreGrid type
 CoreGrid = Tuple[int, int]
@@ -33,6 +33,7 @@ g_tracing = False
 g_unique_node_id = -1
 
 from pyinstrument import Profiler
+
 profiler = Profiler() if "FORGE_PROFILE" in os.environ else None
 
 # If true, various defaults will revert to development mode - like, debug logging,
@@ -40,40 +41,48 @@ profiler = Profiler() if "FORGE_PROFILE" in os.environ else None
 def FORGE_DEVMODE():
     return "FORGE_DEVMODE" in os.environ
 
+
 def set_device_pipeline(devs: Tuple["Device"]):
     """
-    Devices are placed in a pipeline in the order of their creation. To create a specific order, use 
+    Devices are placed in a pipeline in the order of their creation. To create a specific order, use
     `set_device_pipeline` and provide the ordered list.
     """
     global devices
     devices = []
 
     from .device import Device
+
     for d in devs:
         if not isinstance(d, Device):
             raise RuntimeError("Only Device types are allowed. Got: " + str(type(d)))
         devices.append(d)
     set_state_changed()
 
+
 def register_device(d: "Device"):
     global devices
     devices.append(d)
     set_state_changed()
+
 
 def register_module(m: "Module"):
     global modules
     modules.append(m)
     set_state_changed()
 
+
 def get_devices():
     return devices
 
+
 def get_tenstorrent_device():
     from forge.ttdevice import TTDevice
+
     for device in devices:
         if isinstance(device, TTDevice):
             return device
     return None
+
 
 def forge_reset():
     """
@@ -85,16 +94,19 @@ def forge_reset():
 
     devices = []
     modules = []
-    
+
     from forge.config import _clear_global_compiler_config
+
     _clear_global_compiler_config()
     set_state_changed()
+
 
 def state_changed() -> bool:
     """
     Return false if no new modules or devices, or changes to any, have occured since the last run
     """
     return g_state_changed
+
 
 def set_state_changed():
     """
@@ -103,6 +115,7 @@ def set_state_changed():
     global g_state_changed
     g_state_changed = True
 
+
 def clear_state_changed():
     """
     Indicate that a run has started, and state is clean
@@ -110,11 +123,13 @@ def clear_state_changed():
     global g_state_changed
     g_state_changed = False
 
+
 def tracing() -> bool:
     """
     Has a graph trace has started, and unique op names should be generated
     """
     return g_tracing
+
 
 def start_tracing():
     """
@@ -123,12 +138,14 @@ def start_tracing():
     global g_tracing
     g_tracing = True
 
+
 def stop_tracing():
     """
     Indicate that a graph trace has ended, forge graph can be forwarded without generating unique names
     """
     global g_tracing
     g_tracing = False
+
 
 def get_unique_node_id():
     """
@@ -137,6 +154,7 @@ def get_unique_node_id():
     global g_unique_node_id
     g_unique_node_id += 1
     return g_unique_node_id
+
 
 def reset_unique_node_id():
     """
@@ -152,24 +170,29 @@ def lazy_trace_data(data):
     """
     logger.opt(lazy=True).trace("{x}", x=lambda: data)
 
+
 def is_silicon():
     """
     Returns true if the device is a "silicon-like" - i.e. a silicon device or versim
     """
-    #return devtype in [BackendType.Versim, BackendType.Silicon]
+    # return devtype in [BackendType.Versim, BackendType.Silicon]
     return False
+
 
 def align_up_tile(v):
     v -= 1
     return v - (v % TILE_DIM) + TILE_DIM
 
+
 def round_up_div(n, d):
     return (n + d - 1) // d
+
 
 def is_tile_dim_aligned(t):
     return t.shape[-1] % TILE_DIM == 0 and t.shape[-2] % TILE_DIM == 0
 
-def create_queue(mp_context = None) -> queue.Queue:
+
+def create_queue(mp_context=None) -> queue.Queue:
     """
     Create a multi-processing queue, or if force sequential is set, a regular queue
     """
@@ -180,4 +203,3 @@ def create_queue(mp_context = None) -> queue.Queue:
         return q
 
     return queue.Queue()
-

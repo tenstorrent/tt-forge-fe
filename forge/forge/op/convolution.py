@@ -46,7 +46,7 @@ def Conv2d(
     if isinstance(stride, int):
         stride = [stride] * 2
     if isinstance(dilation, int):
-        dilation = [dilation]*2
+        dilation = [dilation] * 2
 
     padding = conv2d_padding_to_canonical(padding, (weights.shape[2], weights.shape[3]))
 
@@ -176,7 +176,7 @@ def Conv3d(
     if isinstance(stride, int):
         stride = [stride] * 3
 
-    padding = conv3d_padding_to_canonical(padding, (weights.shape[2],weights.shape[3],weights.shape[4]))
+    padding = conv3d_padding_to_canonical(padding, (weights.shape[2], weights.shape[3], weights.shape[4]))
 
     inputs = [activations, weights]
     if bias is not None:
@@ -189,5 +189,3 @@ def Conv3d(
         *inputs,
         attrs=attrs,
     ).get_tensor()
-
-

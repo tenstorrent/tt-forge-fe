@@ -40,7 +40,9 @@ template CoreCoord DeviceConfig::get<CoreCoord>(std::string const &, const bool)
 template std::vector<int> DeviceConfig::get<std::vector<int>>(std::string const &, const bool) const;
 template std::unordered_map<uint32_t, EthCoord> DeviceConfig::get<std::unordered_map<uint32_t, EthCoord>>(
     std::string const &, const bool) const;
-template std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::tuple<uint32_t, uint32_t>>> DeviceConfig::get<std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::tuple<uint32_t, uint32_t>>>>(std::string const &, const bool) const;
+template std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::tuple<uint32_t, uint32_t>>>
+DeviceConfig::get<std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::tuple<uint32_t, uint32_t>>>>(
+    std::string const &, const bool) const;
 
 // temporarily added, until FE consumes a commit that includes equivalent parsing in BBE
 std::unordered_map<std::string, std::string> load_cached_sys_param(std::string yaml_file)
@@ -51,5 +53,9 @@ std::unordered_map<std::string, std::string> load_cached_sys_param(std::string y
 
 void DeviceConfig::load_system_level_params() { TT_ASSERT(false); }
 
-std::unordered_map<std::uint32_t, std::uint32_t> DeviceConfig::get_harvested_cfg() const { TT_ASSERT(false); return {}; }
+std::unordered_map<std::uint32_t, std::uint32_t> DeviceConfig::get_harvested_cfg() const
+{
+    TT_ASSERT(false);
+    return {};
+}
 }  // namespace tt

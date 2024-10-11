@@ -63,7 +63,7 @@ Block Floating Point
 BFP Breakdown
 -------------
 
-Block Floating Point (BFP) support different element sizes by varying the # bits used for the mantissa, BFP8/4/2 support 8b/4b/2b elements respectively. 
+Block Floating Point (BFP) support different element sizes by varying the # bits used for the mantissa, BFP8/4/2 support 8b/4b/2b elements respectively.
 
 The exponent is always shared across all elements in a block of 16 elements. Shared exponent supports A (5b padded to 8b) and B (8b) formats. The reason for an A format is to support compatibility with other 5b exponent formats such as Float16.
 
@@ -98,7 +98,7 @@ Exponent section overhead remains the same across BFP8, BFP4, BFP2. Data section
 Math Fidelity
 *************
 
-Math Fidelity defines the number of phases being used to compute a high-precision multiplication using four low-precision multiplications. The higher the math fidelity, the more accuracte the result, but also the more compute cycles that are required. The supported fidelity phases range from lowest to highest: `MathFidelity.LoFi`, `MathFidelity.HiFi2`, `MathFidelity.HiFi3`, `MathFidelity.HiFi4`. 
+Math Fidelity defines the number of phases being used to compute a high-precision multiplication using four low-precision multiplications. The higher the math fidelity, the more accuracte the result, but also the more compute cycles that are required. The supported fidelity phases range from lowest to highest: `MathFidelity.LoFi`, `MathFidelity.HiFi2`, `MathFidelity.HiFi3`, `MathFidelity.HiFi4`.
 
 These fidelity phases map to the order that the mantissa bits are consumed from the inputs on SrcA and SrcB from Most Significant Bit (MSB) to Least Significant Bit (LSB):
 

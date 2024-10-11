@@ -44,40 +44,86 @@ class TestKind(Enum):
 
 
 class NebulaGalaxy:
-    chip_ids = [0, 11, 10, 9, 8, 7, 19, 20, 21, 22, 23, 24, 6, 5, 14, 13, 12, 16, 15, 3, 4, 26, 25, 32, 31, 30, 29, 28, 27, 1, 2, 18, 17] # CI
+    chip_ids = [
+        0,
+        11,
+        10,
+        9,
+        8,
+        7,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        6,
+        5,
+        14,
+        13,
+        12,
+        16,
+        15,
+        3,
+        4,
+        26,
+        25,
+        32,
+        31,
+        30,
+        29,
+        28,
+        27,
+        1,
+        2,
+        18,
+        17,
+    ]  # CI
 
 
 @dataclass_json
 @dataclass
 class VerifyConfig:
-    graph_name: str = "graph"     # name of the graph/test
+    graph_name: str = "graph"  # name of the graph/test
     enabled: bool = True
     intermediates: bool = True
     rtol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
     atol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
-    relative_atol: float = 0.1    # set atol at 10% of the max value in tensor
-    pcc: Optional[float] = None   # use Pearson Coefficient Check instead of allclose
-    dump_tensors_path: str = ""   # dump nodes at final graph evaluation in a format that can be read in Backend
-    run_golden: bool = "FORGE_VERIFY_GOLDEN" in os.environ and os.environ["FORGE_VERIFY_GOLDEN"] == '1' # run on back-end golden - Legacy, to be replaced by the path below
-    run_net2pipe: bool = False    # run netlist through net2pipe
-    golden_ignore_df_precision: bool = True # When running golden, run at full FP32 and ignore actual netlist types
+    relative_atol: float = 0.1  # set atol at 10% of the max value in tensor
+    pcc: Optional[float] = None  # use Pearson Coefficient Check instead of allclose
+    dump_tensors_path: str = ""  # dump nodes at final graph evaluation in a format that can be read in Backend
+    run_golden: bool = (
+        "FORGE_VERIFY_GOLDEN" in os.environ and os.environ["FORGE_VERIFY_GOLDEN"] == "1"
+    )  # run on back-end golden - Legacy, to be replaced by the path below
+    run_net2pipe: bool = False  # run netlist through net2pipe
+    golden_ignore_df_precision: bool = True  # When running golden, run at full FP32 and ignore actual netlist types
     chip_ids: Union[List[int], List[Tuple[int]]] = None  # chip IDs to run on
-    num_chips: int = None # number of chips to run on
-    verify_each_forge_pass: bool = False # Whether or not to verify tvm outputs after each forge pass
-    golden_compare_callback: Optional[Callable[[object, object], bool]] = None # Supply additional golden compare function
+    num_chips: int = None  # number of chips to run on
+    verify_each_forge_pass: bool = False  # Whether or not to verify tvm outputs after each forge pass
+    golden_compare_callback: Optional[
+        Callable[[object, object], bool]
+    ] = None  # Supply additional golden compare function
 
-    verify_tvm_compile: bool = False         # Should tvm run forward and verify the results
-    verify_pipeline_result_vs_framework: bool = False # Compare Framework output on CPU vs module pipline outputs
-    verify_forge_codegen_vs_framework: bool = False # Compare Framework output on CPU vs forge codegen from TVM json graphs
+    verify_tvm_compile: bool = False  # Should tvm run forward and verify the results
+    verify_pipeline_result_vs_framework: bool = False  # Compare Framework output on CPU vs module pipline outputs
+    verify_forge_codegen_vs_framework: bool = (
+        False  # Compare Framework output on CPU vs forge codegen from TVM json graphs
+    )
 
-    verify_all: bool = "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == '1' # Whether or not to verify after every compile stage
-    verify_last: bool = True # Whether or not to verify after the final stage (overriden by disabled())
-    verify_post_autograd_passes: bool = "FORGE_VERIFY_POST_AUTOGRAD_PASSES" in os.environ and os.environ["FORGE_VERIFY_POST_AUTOGRAD_PASSES"] == '1'# Whether or not to force verification at post autograd passes (overridden by disabled())
-    verify_post_placer: bool = "FORGE_VERIFY_POST_PLACER" in os.environ and os.environ["FORGE_VERIFY_POST_PLACER"] == '1' # Whether or not to force verification at post placer (overidden by disabled())
+    verify_all: bool = (
+        "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
+    )  # Whether or not to verify after every compile stage
+    verify_last: bool = True  # Whether or not to verify after the final stage (overriden by disabled())
+    verify_post_autograd_passes: bool = (
+        "FORGE_VERIFY_POST_AUTOGRAD_PASSES" in os.environ and os.environ["FORGE_VERIFY_POST_AUTOGRAD_PASSES"] == "1"
+    )  # Whether or not to force verification at post autograd passes (overridden by disabled())
+    verify_post_placer: bool = (
+        "FORGE_VERIFY_POST_PLACER" in os.environ and os.environ["FORGE_VERIFY_POST_PLACER"] == "1"
+    )  # Whether or not to force verification at post placer (overidden by disabled())
 
     # names of parameters for which gradient error will not fail the test. Some gradients are so small that
     # atol/rtol/pcc will never be good enough to pass
-    waive_gradient_errors: Set[str] = field(default_factory=lambda: set()) 
+    waive_gradient_errors: Set[str] = field(default_factory=lambda: set())
 
     override_module_outptus = None
 
@@ -85,15 +131,17 @@ class VerifyConfig:
     sequential: bool = True
     test_kind: TestKind = field(default=TestKind.INFERENCE, metadata=as_json(TestKind))
     scale_loss: float = 50.0  # Loss-scaling to make gradients bigger and easier to verify
-    optimizer: Optional[Dict[str, Any]] = field(default_factory=lambda : {"type": "sgd", "params": {"learning_rate": 50.0 } })
+    optimizer: Optional[Dict[str, Any]] = field(
+        default_factory=lambda: {"type": "sgd", "params": {"learning_rate": 50.0}}
+    )
     scheduler: Optional[Dict] = None
-    epochs: int = 1               # training input counts
-    steps: int = 1         
-    accumulation_steps: int = 1         
-    microbatch_count: int = 1    # this is also the number of inputs for inference
-    epoch_breaks: List[str] = field(default_factory=lambda: []) # list of epoch breaks to apply to the model
+    epochs: int = 1  # training input counts
+    steps: int = 1
+    accumulation_steps: int = 1
+    microbatch_count: int = 1  # this is also the number of inputs for inference
+    epoch_breaks: List[str] = field(default_factory=lambda: [])  # list of epoch breaks to apply to the model
     fp32_fallback: DataFormat = field(default=DataFormat.Float16_b, metadata=as_json(DataFormat))
-    skip_shutdown: bool = False # skip explicit shutdown after verification, leave compiled data around
+    skip_shutdown: bool = False  # skip explicit shutdown after verification, leave compiled data around
     tti_path: str = None
 
     # Optional training queues for verification data
@@ -104,7 +152,9 @@ class VerifyConfig:
     _input_gradient_queue: Optional[torch.multiprocessing.Queue] = None
     _parameter_gradient_queue: Optional[torch.multiprocessing.Queue] = None
 
-    if "FORGE_VERIFY_RESULTS_OFF_BY_DEFAULT" in os.environ and not ("FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == '1'):
+    if "FORGE_VERIFY_RESULTS_OFF_BY_DEFAULT" in os.environ and not (
+        "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
+    ):
         intermediates = False
         run_golden = False
         verify_all = False
@@ -125,27 +175,21 @@ class VerifyConfig:
         # set defaults if not set explicitly by user. Relax under silicon, focus on pcc more.
         if isinstance(self.rtol, (int, float)):
             # User set one value, instead of dict
-            self.rtol = {
-                torch.float32: self.rtol,
-                torch.float16: self.rtol,
-                torch.bfloat16: self.rtol}
+            self.rtol = {torch.float32: self.rtol, torch.float16: self.rtol, torch.bfloat16: self.rtol}
 
         if isinstance(self.atol, (int, float)):
             # User set one value, instead of dict
-            self.atol = {
-                torch.float32: self.atol,
-                torch.float16: self.atol,
-                torch.bfloat16: self.atol}
+            self.atol = {torch.float32: self.atol, torch.float16: self.atol, torch.bfloat16: self.atol}
 
         rtol_defaults = {
-                torch.float32: None,
-                torch.float16: None,
-                torch.bfloat16: None,
+            torch.float32: None,
+            torch.float16: None,
+            torch.bfloat16: None,
         }
         atol_defaults = {
-                torch.float32: None,
-                torch.float16: None,
-                torch.bfloat16: None,
+            torch.float32: None,
+            torch.float16: None,
+            torch.bfloat16: None,
         }
         for dt in [torch.float32, torch.float16, torch.bfloat16]:
             if not dt in self.rtol:
@@ -158,7 +202,6 @@ class VerifyConfig:
 
         if "TT_BACKEND_GOLDEN_QUANTIZE" in os.environ:
             self.golden_ignore_df_precision = False
-
 
     @classmethod
     def disabled(cls) -> "VerifyConfig":
@@ -180,18 +223,19 @@ def should_waive_gradient(param_name, verify_cfg):
     return any([waive_name in param_name for waive_name in verify_cfg.waive_gradient_errors])
 
 
-
 # Global verify configutation
 g_verify_config: VerifyConfig = VerifyConfig()
 
+
 def _get_global_verify_config() -> VerifyConfig:
     return g_verify_config
+
 
 def _clear_global_verify_config():
     global g_verify_config
     g_verify_config = VerifyConfig()
 
+
 def _set_global_verify_config(config: VerifyConfig):
     global g_compiler_config
     g_compiler_config = config
-

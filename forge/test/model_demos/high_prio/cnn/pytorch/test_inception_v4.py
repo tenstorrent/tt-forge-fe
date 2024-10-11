@@ -17,7 +17,8 @@ from torchvision import transforms
 import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-torch.multiprocessing.set_sharing_strategy("file_system") 
+
+torch.multiprocessing.set_sharing_strategy("file_system")
 
 import forge
 from forge.verify.backend import verify_module
@@ -34,46 +35,49 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(test_device, variant):
     os.environ["FORGE_PAD_SPARSE_MM"] = "{694:704, 676:704, 167:182, 158:160, 39:48}"
     os.environ["FORGE_MANUAL_SPLICE_DECOMP_TH"] = "158"
     os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
-    compiler_cfg.balancer_op_override("_fused_op_4", "t_stream_shape", (158,1)) # TM error
-    compiler_cfg.balancer_op_override("_fused_op_7", "t_stream_shape", (158,1)) # TM error
+    compiler_cfg.balancer_op_override("_fused_op_4", "t_stream_shape", (158, 1))  # TM error
+    compiler_cfg.balancer_op_override("_fused_op_7", "t_stream_shape", (158, 1))  # TM error
     if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.balancer_op_override("conv2d_551.dc.sparse_matmul.10.dc.sparse_matmul.1.lc2", "grid_shape", (1,4))
+        compiler_cfg.balancer_op_override("conv2d_551.dc.sparse_matmul.10.dc.sparse_matmul.1.lc2", "grid_shape", (1, 4))
         # Temp mitigations for net2pipe errors, should be removed.
         #
         os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
         os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
     elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.balancer_op_override("_fused_op_2", "t_stream_shape", (676,1)) # TM error (ref forge#1527)
+        compiler_cfg.balancer_op_override("_fused_op_2", "t_stream_shape", (676, 1))  # TM error (ref forge#1527)
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     forge_model = forge.PyTorchModule("pt_inception_v4_osmr", framework_model)
- 
+
     # Load and pre-process image
     img_tensor = get_image()
 
     # Compile & Verify
     pcc = 0.91 if test_device.arch == BackendDevice.Grayskull else 0.97
-    
+
     return forge_model, [img_tensor], {"pcc": pcc}
 
 
 def preprocess_timm_model(model_name):
-   model = timm.create_model(model_name, pretrained=True)
-   model.eval()
-   try:
-       config = resolve_data_config({}, model=model)
-       transform = create_transform(**config)
-       url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-       urllib.request.urlretrieve(url, filename)
-       img = Image.open(filename).convert('RGB')
-       img_tensor = transform(img).unsqueeze(0) # transform and add batch dimension 
-   except:
-       logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
-       img_tensor = torch.rand(1, 3, 299, 299)
-   return model, img_tensor
- 
+    model = timm.create_model(model_name, pretrained=True)
+    model.eval()
+    try:
+        config = resolve_data_config({}, model=model)
+        transform = create_transform(**config)
+        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
+        urllib.request.urlretrieve(url, filename)
+        img = Image.open(filename).convert("RGB")
+        img_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
+    except:
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
+        img_tensor = torch.rand(1, 3, 299, 299)
+    return model, img_tensor
+
+
 def get_image():
     try:
         if not os.path.exists("dog.jpg"):
@@ -84,22 +88,23 @@ def get_image():
                 transforms.Resize(299),
                 transforms.CenterCrop(299),
                 transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ]
         )
         img_tensor = preprocess(input_image)
         img_tensor = img_tensor.unsqueeze(0)
     except:
-        logger.warning("Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date")
+        logger.warning(
+            "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
+        )
         img_tensor = torch.rand(1, 3, 299, 299)
     return img_tensor
 
 
 def test_inception_v4_osmr_pytorch(test_device):
     model, inputs, other = generate_model_inceptionV4_imgcls_osmr_pytorch(
-        test_device, "inceptionv4",
+        test_device,
+        "inceptionv4",
     )
 
     verify_module(
@@ -115,9 +120,12 @@ def test_inception_v4_osmr_pytorch(test_device):
             # padding overrides cause tensor size mismatch during verification: tenstorrent/forge#627
             verify_post_autograd_passes=False,
             verify_post_placer=False,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
         ),
     )
+
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(test_device, variant):
     # Configurations
@@ -127,17 +135,17 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(test_device, variant):
     os.environ["FORGE_PAD_SPARSE_MM"] = "{694:704, 676:704, 167:182, 158:160, 39:48}"
     os.environ["FORGE_MANUAL_SPLICE_DECOMP_TH"] = "158"
     os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
-    compiler_cfg.balancer_op_override("_fused_op_4", "t_stream_shape", (158,1)) # TM error
-    compiler_cfg.balancer_op_override("_fused_op_7", "t_stream_shape", (158,1)) # TM error
+    compiler_cfg.balancer_op_override("_fused_op_4", "t_stream_shape", (158, 1))  # TM error
+    compiler_cfg.balancer_op_override("_fused_op_7", "t_stream_shape", (158, 1))  # TM error
     if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.balancer_op_override("conv2d_551.dc.sparse_matmul.10.dc.sparse_matmul.1.lc2", "grid_shape", (1,4))
+        compiler_cfg.balancer_op_override("conv2d_551.dc.sparse_matmul.10.dc.sparse_matmul.1.lc2", "grid_shape", (1, 4))
         # Temp mitigations for net2pipe errors, should be removed.
         #
         os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
         os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
     elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.balancer_op_override("_fused_op_2", "t_stream_shape", (676,1)) # TM error (ref forge#1527)
+        compiler_cfg.balancer_op_override("_fused_op_2", "t_stream_shape", (676, 1))  # TM error (ref forge#1527)
 
     # Load model & Preprocess image
     framework_model, img_tensor = download_model(preprocess_timm_model, variant)
@@ -145,13 +153,14 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(test_device, variant):
 
     # Compile & Verify
     pcc = 0.96 if test_device.arch == BackendDevice.Grayskull else 0.97
-    
+
     return forge_model, [img_tensor], {}
 
 
 def test_inception_v4_timm_pytorch(test_device):
     model, inputs, _ = generate_model_inceptionV4_imgcls_timm_pytorch(
-        test_device, 'inception_v4',
+        test_device,
+        "inception_v4",
     )
 
     verify_module(
@@ -167,6 +176,8 @@ def test_inception_v4_timm_pytorch(test_device):
             # padding overrides cause tensor size mismatch during verification: tenstorrent/forge#627
             verify_post_autograd_passes=False,
             verify_post_placer=False,
-            chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+            chip_ids=NebulaGalaxy.chip_ids
+            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
+            else [0],
         ),
     )

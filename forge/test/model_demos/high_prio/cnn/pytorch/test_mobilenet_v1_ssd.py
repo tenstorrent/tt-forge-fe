@@ -19,13 +19,11 @@ from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
 def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip()
-    
+
     os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = (
-        forge.config._get_global_compiler_config()
-    )  # load global compiler config object
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_102"] = -1
@@ -37,7 +35,9 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
     number_of_classes = len(class_names)
 
     # STEP 2: Create Forge module from PyTorch model
-    model_path = "third_party/confidential_customer_models/model_2/pytorch/mobilenetv1_ssd/models/mobilenet-v1-ssd-mp-0_675.pth"
+    model_path = (
+        "third_party/confidential_customer_models/model_2/pytorch/mobilenetv1_ssd/models/mobilenet-v1-ssd-mp-0_675.pth"
+    )
     net = create_mobilenetv1_ssd(number_of_classes)
     net.load(model_path)
     net.eval()
@@ -49,11 +49,13 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
     # STEP 3: Run inference on Tenstorrent device
     verify_module(
         tt_model,
-        input_shapes=[input_shape,],
+        input_shapes=[
+            input_shape,
+        ],
         verify_cfg=VerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
             test_kind=TestKind.INFERENCE,
-        )
+        ),
     )

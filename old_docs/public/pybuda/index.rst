@@ -14,8 +14,8 @@ PyBuda provides a set of operations and classes for describing ML models that sh
 with access into the compiled model database, allowing users to query and tune the compiled design's performance, pipeline balance, placement, routing, and other parameters. This
 gives the user complete control over the low-level performance of their model, allowing them to get the most of the available hardware.
 
-In current version of PyBuda, CPU devices in the pipeline can execute PyTorch modules, and Tenstorrent devices can execute modules 
-written in PyBuda. In the near future, both kinds of modules will be able to run on either device. 
+In current version of PyBuda, CPU devices in the pipeline can execute PyTorch modules, and Tenstorrent devices can execute modules
+written in PyBuda. In the near future, both kinds of modules will be able to run on either device.
 
 To learn more PyBuda, select one of the pages below:
 
@@ -25,4 +25,3 @@ To learn more PyBuda, select one of the pages below:
    first_model
    training
    debug
-

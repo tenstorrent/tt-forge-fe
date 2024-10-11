@@ -4,21 +4,24 @@
 #pragma once
 #include <cassert>
 #include <functional>
+#include <string>
 
 #include "defines.hpp"
 #include "utils/hash_combine.hpp"
-#include <string>
 
-namespace tt {
+namespace tt
+{
 
-namespace graphlib {
+namespace graphlib
+{
 
-enum class EdgeType {
+enum class EdgeType
+{
     kData = 0,
-    kControl = 1,  // deprecated?
-    kDataLoopback = 2,  // data edge with write into queue (param update)
-    kAutogradFwdToBwd = 3,  // symbolic, fwd node -> bwd nodes created from it
-    kAutogradFwdToGradient = 4,  // symbolic, fwd node -> propagated error (bwd node) (at max 1 edge from any fwd node)
+    kControl = 1,                 // deprecated?
+    kDataLoopback = 2,            // data edge with write into queue (param update)
+    kAutogradFwdToBwd = 3,        // symbolic, fwd node -> bwd nodes created from it
+    kAutogradFwdToGradient = 4,   // symbolic, fwd node -> propagated error (bwd node) (at max 1 edge from any fwd node)
     kAutogradFwdToOptimizer = 5,  // symbolic, fwd node (param) -> opt nodes created for its update
     kAutogradFwdToRecompute = 6,
     kControlLoop = 7,  // probably from subgraph's output to its input
@@ -30,7 +33,8 @@ enum class EdgeType {
 using EdgeUniqueId = std::tuple<NodeId, PortId, NodeId, PortId, EdgeType>;
 using EdgeCreationId = std::int64_t;
 
-struct Edge {
+struct Edge
+{
     static std::uint64_t last_assigned_edge_creation_id;
 
     // the edge_creation_id is a property used to preserve insertion
@@ -45,8 +49,9 @@ struct Edge {
 
     EdgeType edge_type = EdgeType::kData;
 
-    EdgeUniqueId unique_id() const {
-        // intentionally exclude edge_creation_id from the tuple hash since 
+    EdgeUniqueId unique_id() const
+    {
+        // intentionally exclude edge_creation_id from the tuple hash since
         // it's unrelated to Edge identity
         return std::make_tuple(
             static_cast<NodeId>(this->producer_node_id),
@@ -77,7 +82,8 @@ inline bool operator<(const Edge& lhs, const Edge& rhs) { return lhs.unique_id()
 inline std::string edge_type_to_string(const EdgeType& edge_type)
 {
     std::string retstring;
-    switch (edge_type) {
+    switch (edge_type)
+    {
         case EdgeType::kData: retstring = "Data"; break;
         case EdgeType::kControl: retstring = "Control"; break;
         case EdgeType::kDataLoopback: retstring = "DataLoopback"; break;
@@ -98,10 +104,13 @@ inline std::string edge_type_to_string(const EdgeType& edge_type)
 }  // namespace graphlib
 }  // namespace tt
 
-namespace std {
+namespace std
+{
 template <>
-struct hash<tt::graphlib::Edge> {
-    std::size_t operator()(const tt::graphlib::Edge& edge) const {
+struct hash<tt::graphlib::Edge>
+{
+    std::size_t operator()(const tt::graphlib::Edge& edge) const
+    {
         std::size_t seed = 0;
         // intentionally exclude edge_creation_id from the hash
         tt::hash_combine(seed, static_cast<std::size_t>(edge.producer_node_id));

@@ -29,7 +29,7 @@ class DecomposingContext
     std::vector<graphlib::PyOpNode*> inserted_nodes;
 
     std::shared_ptr<void> compiler_cfg;
-    
+
     unsigned int subgraph_idx;
 
    public:

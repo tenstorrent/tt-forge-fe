@@ -34,7 +34,7 @@ def test_mobilenet_ssd_1x1(test_device):
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.enable_tvm_constant_prop = True
     compiler_cfg.graph_solver_self_cut_type = "FastCut"
-    compiler_cfg.default_df_override=forge.DataFormat.Float16_b
+    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
     compiler_cfg.cpu_fallback_ops = set(["concatenate"])
 
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/ssd_mobilenet_v2.tflite"

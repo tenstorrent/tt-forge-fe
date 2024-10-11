@@ -5,9 +5,8 @@ from typing import Union, Tuple
 from ..tensor import Tensor
 from .common import ForgeOp as op
 
-def Abs(
-        name: str,
-        operandA: Tensor) -> Tensor:
+
+def Abs(name: str, operandA: Tensor) -> Tensor:
     """
     Sigmoid
 
@@ -27,9 +26,8 @@ def Abs(
 
     return op("abs", name, operandA).get_tensor()
 
-def Exp(
-        name: str, 
-        operandA: Tensor) -> Tensor:
+
+def Exp(name: str, operandA: Tensor) -> Tensor:
 
     """
     Exponent operation.
@@ -50,9 +48,8 @@ def Exp(
 
     return op("exp", name, operandA).get_tensor()
 
-def Log(
-        name: str,
-        operandA: Tensor) -> Tensor:
+
+def Log(name: str, operandA: Tensor) -> Tensor:
 
     """
     Log operation: natural logarithm of the elements of `operandA`
@@ -75,10 +72,7 @@ def Log(
     return op("log", name, operandA).get_tensor()
 
 
-def Pow(
-        name: str,
-        operandA: Tensor,
-        exponent: Union[int, float]) -> Tensor:
+def Pow(name: str, operandA: Tensor, exponent: Union[int, float]) -> Tensor:
 
     """
     Pow operation: `operandA` to the power of `exponent`
@@ -101,11 +95,7 @@ def Pow(
     return op("pow", name, operandA, attrs=(exponent,)).get_tensor()
 
 
-def Identity(
-        name: str, 
-        operandA: Tensor,
-        unsqueeze : str =  None,
-        unsqueeze_dim : int = None) -> Tensor:
+def Identity(name: str, operandA: Tensor, unsqueeze: str = None, unsqueeze_dim: int = None) -> Tensor:
 
     """
     Identity operation.
@@ -130,15 +120,13 @@ def Identity(
         Forge tensor
     """
 
-    if unsqueeze==None and unsqueeze_dim==None:
+    if unsqueeze == None and unsqueeze_dim == None:
         return op("nop", name, operandA).get_tensor()
     else:
         return op("nop", name, operandA, unsqueeze=unsqueeze, unsqueeze_dim=unsqueeze_dim).get_tensor()
 
 
-def Buffer(
-        name: str, 
-        operandA: Tensor) -> Tensor:
+def Buffer(name: str, operandA: Tensor) -> Tensor:
 
     """
     Identity operation. One key difference is a Buffer op will not get
@@ -162,9 +150,7 @@ def Buffer(
     return op("buffer", name, operandA).get_tensor()
 
 
-def Reciprocal(
-        name: str, 
-        operandA: Tensor) -> Tensor:
+def Reciprocal(name: str, operandA: Tensor) -> Tensor:
 
     """
     Reciprocal operation.
@@ -185,9 +171,8 @@ def Reciprocal(
 
     return op("reciprocal", name, operandA).get_tensor()
 
-def Sqrt(
-        name: str, 
-        operandA: Tensor) -> Tensor:
+
+def Sqrt(name: str, operandA: Tensor) -> Tensor:
 
     """
     Square root.
@@ -208,11 +193,8 @@ def Sqrt(
 
     return op("sqrt", name, operandA).get_tensor()
 
-def Relu(
-        name: str, 
-        operandA: Tensor,
-        threshold=0.0,
-        mode="min") -> Tensor:
+
+def Relu(name: str, operandA: Tensor, threshold=0.0, mode="min") -> Tensor:
 
     """
     ReLU
@@ -231,14 +213,12 @@ def Relu(
         Forge tensor
     """
     if threshold == 0.0 and mode == "min":
-        return op("relu", name, operandA).get_tensor() # avoid threshold < 0.0 error due to FP arithmetics
+        return op("relu", name, operandA).get_tensor()  # avoid threshold < 0.0 error due to FP arithmetics
     else:
         return op("relu", name, operandA, attrs=(threshold, mode)).get_tensor()
 
-def LeakyRelu(
-        name: str, 
-        operandA: Tensor,
-        alpha: int) -> Tensor:
+
+def LeakyRelu(name: str, operandA: Tensor, alpha: int) -> Tensor:
 
     """
     Leaky ReLU
@@ -262,10 +242,8 @@ def LeakyRelu(
 
     return op("leaky_relu", name, operandA, attrs=(alpha,)).get_tensor()
 
-def Gelu(
-        name: str, 
-        operandA: Tensor,
-        approximate="none") -> Tensor:
+
+def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
 
     """
     GeLU
@@ -290,9 +268,8 @@ def Gelu(
 
     return op("gelu", name, operandA, attrs=(approximate,)).get_tensor()
 
-def Sigmoid(
-        name: str,
-        operandA: Tensor) -> Tensor:
+
+def Sigmoid(name: str, operandA: Tensor) -> Tensor:
     """
     Sigmoid
 
@@ -312,10 +289,8 @@ def Sigmoid(
 
     return op("sigmoid", name, operandA).get_tensor()
 
-def Argmax(
-        name: str,
-        operandA: Tensor,
-        dim: int = None) -> Tensor:
+
+def Argmax(name: str, operandA: Tensor, dim: int = None) -> Tensor:
     """
     Argmax
 
@@ -333,16 +308,13 @@ def Argmax(
         Forge tensor
     """
 
-    if  dim is not None:
-        return op("argmax", name, operandA, dim=dim ).get_tensor()
+    if dim is not None:
+        return op("argmax", name, operandA, dim=dim).get_tensor()
     else:
         return op("argmax", name, operandA).get_tensor()
 
-def Clip(
-        name: str,
-        operandA: Tensor,
-        min: float,
-        max: float) -> Tensor:
+
+def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
     """
     Clips tensor values between min and max
 
@@ -368,9 +340,8 @@ def Clip(
 
     return op("clip", name, operandA, min=min, max=max).get_tensor()
 
-def Sine(
-        name: str,
-        operandA: Tensor) -> Tensor:
+
+def Sine(name: str, operandA: Tensor) -> Tensor:
     """
     Elementwise sine
 
@@ -396,9 +367,8 @@ def Sine(
 
     return op("sine", name, operandA).get_tensor()
 
-def Cosine(
-        name: str,
-        operandA: Tensor) -> Tensor:
+
+def Cosine(name: str, operandA: Tensor) -> Tensor:
     """
     Elementwise cosine
 
@@ -424,9 +394,8 @@ def Cosine(
 
     return op("cosine", name, operandA).get_tensor()
 
-def Tanh(
-        name: str,
-        operandA: Tensor) -> Tensor:
+
+def Tanh(name: str, operandA: Tensor) -> Tensor:
 
     """
     Tanh operation.
@@ -448,11 +417,7 @@ def Tanh(
     return op("tanh", name, operandA).get_tensor()
 
 
-def CumSum(
-        name: str,
-        operandA: Tensor,
-        axis: int,
-        exclusive: bool = False) -> Tensor:
+def CumSum(name: str, operandA: Tensor, axis: int, exclusive: bool = False) -> Tensor:
 
     """
     Cumulative sum operation.
@@ -464,16 +429,16 @@ def CumSum(
 
     operandA: Tensor
         First operand
-    
+
     exclusive: bool
-        Perform exclusive cumulative sum which includes (or not) the 
+        Perform exclusive cumulative sum which includes (or not) the
         first operand. For example:
         x: [2, 4, 6, 8]
-        
-        cumsum(x, exclusive=False) 
+
+        cumsum(x, exclusive=False)
         [2, 6, 12, 20]
-        
-        cumsum(x, exclusive=True) 
+
+        cumsum(x, exclusive=True)
         [0,  2,  6, 12]
 
     Returns
@@ -481,15 +446,13 @@ def CumSum(
     Tensor
         Forge tensor
     """
-    
-    assert not exclusive, "Currently not supported"        
+
+    assert not exclusive, "Currently not supported"
 
     return op("cumsum", name, operandA, axis=axis, exclusive=exclusive).get_tensor()
 
 
-def LogicalNot(
-        name: str,
-        operandA: Tensor) -> Tensor:
+def LogicalNot(name: str, operandA: Tensor) -> Tensor:
 
     """
     Logical not operation.
@@ -511,12 +474,7 @@ def LogicalNot(
     return op("logical_not", name, operandA).get_tensor()
 
 
-def Dropout(
-        name: str,
-        operandA: Tensor,
-        p: float = 0.5,
-        training: bool = True,
-        seed: int = 0) -> Tensor:
+def Dropout(name: str, operandA: Tensor, p: float = 0.5, training: bool = True, seed: int = 0) -> Tensor:
     """
     Dropout
 
@@ -545,9 +503,8 @@ def Dropout(
 
     return op("dropout", name, operandA, attrs=(p, training, seed)).get_tensor()
 
-def Tilize(
-        name: str, 
-        operandA: Tensor) -> Tensor:
+
+def Tilize(name: str, operandA: Tensor) -> Tensor:
 
     """
     Tilize operation.

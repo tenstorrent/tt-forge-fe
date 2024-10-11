@@ -12,17 +12,16 @@
 namespace tt::passes
 {
 
-
 void generate_initial_flops_estimate(graphlib::Graph *graph)
 {
     long total_flops = 0;
     int total_ops = 0;
-    std::map<std::string, std::tuple<long, int>> macs_per_op; 
+    std::map<std::string, std::tuple<long, int>> macs_per_op;
     for (auto *node : graphlib::topological_sort(*graph))
     {
         graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
         if (not op)
-            continue; 
+            continue;
 
         std::vector<std::vector<std::uint32_t>> operand_tuples;
         std::vector<graphlib::Shape> inputs;
@@ -32,8 +31,7 @@ void generate_initial_flops_estimate(graphlib::Graph *graph)
             inputs.push_back(data_operand->shape());
         }
         py::object eval_module = py::module_::import("forge.op.eval.forge");
-        py::function initial_flops_estimate =
-            eval_module.attr("get_f_forge_initial_flops_estimate")(op->op_type_ptr());
+        py::function initial_flops_estimate = eval_module.attr("get_f_forge_initial_flops_estimate")(op->op_type_ptr());
         py::object ret = initial_flops_estimate(operand_tuples);
 
         long flops;
@@ -45,18 +43,18 @@ void generate_initial_flops_estimate(graphlib::Graph *graph)
         {
             flops = ret.cast<long>();
         }
-        
+
         if (macs_per_op.find(op->op_type().op) == macs_per_op.end())
         {
             macs_per_op[op->op_type().op] = std::make_pair(flops, 1);
-        } 
+        }
         else
-        {            
-            macs_per_op[op->op_type().op] = std::make_pair(std::get<0>(macs_per_op[op->op_type().op]) + flops, std::get<1>(macs_per_op[op->op_type().op]) + 1);
+        {
+            macs_per_op[op->op_type().op] = std::make_pair(
+                std::get<0>(macs_per_op[op->op_type().op]) + flops, std::get<1>(macs_per_op[op->op_type().op]) + 1);
         }
         total_flops += flops;
         total_ops += 1;
-
     }
 
     log_trace(LogGraphCompiler, "Initial FLOPs Estimate:");
@@ -66,9 +64,10 @@ void generate_initial_flops_estimate(graphlib::Graph *graph)
         log_trace(LogGraphCompiler, "{}, {}, {}", p.first, std::get<1>(p.second), std::get<0>(p.second));
     }
     if (env_as<bool>("FORGE_SHOW_FLOPS_ESTIMATE"))
-        log_info(LogGraphCompiler, "Initial flops estimate from Forge: {}B, total_ops: {}", total_flops / 1e9, total_ops);
+        log_info(
+            LogGraphCompiler, "Initial flops estimate from Forge: {}B, total_ops: {}", total_flops / 1e9, total_ops);
     else
-        log_trace(LogGraphCompiler, "Initial flops estimate from Forge: {}B, total_ops: {}", total_flops / 1e9, total_ops);
-
+        log_trace(
+            LogGraphCompiler, "Initial flops estimate from Forge: {}B, total_ops: {}", total_flops / 1e9, total_ops);
 }
 }  // namespace tt::passes

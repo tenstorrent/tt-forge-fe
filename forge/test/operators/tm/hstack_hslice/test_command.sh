@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# 
+#
 # Commands for running hstack and hslice tests
-# 
+#
 
 # Run single test
-# 
+#
 # To run using default parameters
 # model,     --tmh_model     --> model_1, Note: for tm horizontal ops we have 5 models, model_[1-5]
 # training,  --tmh_train     --> True

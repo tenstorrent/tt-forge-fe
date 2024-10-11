@@ -7,15 +7,15 @@ from .eltwise_unary import Exp, Log, Abs
 from .eltwise_binary import Subtract, Multiply
 from .constant import Constant
 
+
 class CrossEntropyLoss(ForgeModule):
     """
     Cross-Entropy Loss
     """
+
     def forward(self, predictions, labels):
         exponential_predicted = Exp("exp", predictions)
-        reduced_exponential_predicted = ReduceSum(
-            "reduce_sum", exponential_predicted, dim=-1
-        )
+        reduced_exponential_predicted = ReduceSum("reduce_sum", exponential_predicted, dim=-1)
         ln_reduced_exponential_predicted = Log("log", reduced_exponential_predicted)
         output_minus_ln_reduced_exponential_predicted = Subtract(
             "subtract", predictions, ln_reduced_exponential_predicted
@@ -46,7 +46,7 @@ class L1Loss(ForgeModule):
     L1Loss is abs(labels - prediction), optionally reduced using ReduceAvg(default) or ReduceSum.
     """
 
-    def __init__(self, name: str, reduction:str  = "avg"):
+    def __init__(self, name: str, reduction: str = "avg"):
         super().__init__(name)
         self.reduction = reduction
 
@@ -68,4 +68,3 @@ class L1Loss(ForgeModule):
             return c_reduce
 
         raise RuntimeError("Unsupported reduce type: " + self.reduction)
-

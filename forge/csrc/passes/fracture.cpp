@@ -219,11 +219,15 @@ static graphlib::Node* create_slice(
 }
 
 static std::unique_ptr<graphlib::PyOpNode> create_gather(
-    graphlib::Node* op, graphlib::Shape operand_shape, int dim, int factor, std::string new_op_name, std::uint32_t fracture_group_id)
+    graphlib::Node* op,
+    graphlib::Shape operand_shape,
+    int dim,
+    int factor,
+    std::string new_op_name,
+    std::uint32_t fracture_group_id)
 {
-    graphlib::OpType gather_op = (dim == NDSlice::k_dim)
-                                     ? graphlib::OpType("add", {}, {})
-                                     : graphlib::OpType("concatenate", {dim}, {});
+    graphlib::OpType gather_op =
+        (dim == NDSlice::k_dim) ? graphlib::OpType("add", {}, {}) : graphlib::OpType("concatenate", {dim}, {});
 
     graphlib::Shape shape = operand_shape;
     if (gather_op.op == "concatenate")
@@ -268,9 +272,8 @@ static void tag_top_bottom_nodes(graphlib::Graph* graph, std::vector<graphlib::N
     // tag each node in the bottom row as "bottom"
     for (auto node : bottom_row)
     {
-       node->as<graphlib::TaggedNode>()->tag("fracture_bottom", true);
+        node->as<graphlib::TaggedNode>()->tag("fracture_bottom", true);
     }
-
 }
 
 static void assign_chip_ids(
@@ -292,12 +295,12 @@ static void assign_chip_ids(
 
     // gathers need to be on the same chip as their last operand,
     // for parity with scheduling
-    if ((node_ids.size() == 1) and (graph->node_by_id(node_ids[0])->as<graphlib::TaggedNode>()->has_tag("fracture_gather")))
+    if ((node_ids.size() == 1) and
+        (graph->node_by_id(node_ids[0])->as<graphlib::TaggedNode>()->has_tag("fracture_gather")))
     {
         chip_id_assignments[graph->node_by_id(node_ids[0])->name()] = op_chip_ids.back();
         return;
     }
-
 
     for (std::size_t i = 0; i < node_ids.size(); ++i)
     {
@@ -380,8 +383,7 @@ static void assign_chip_ids(
                         continue;
                     if (chip_id_assignments.find(operand->name()) == chip_id_assignments.end())
                     {
-                        log_debug(LogFracture, "Skipping chip_id assignment for fractured node: {}",
-                                    related->name());
+                        log_debug(LogFracture, "Skipping chip_id assignment for fractured node: {}", related->name());
                         all_operands_assigned = false;
                         break;
                     }
@@ -471,7 +473,7 @@ static NDSlice get_node_nd_slice(
     }
 
     auto group_lookup =
-            std::find_if(group.begin(), group.end(), [node](auto const& f) { return node->name() == std::get<0>(f); });
+        std::find_if(group.begin(), group.end(), [node](auto const& f) { return node->name() == std::get<0>(f); });
     if (group_lookup == group.end())
     {
         // If not is not part of the group, return empty NDSlice, (e.g. we are gathering to this node)
@@ -579,9 +581,12 @@ static FracturedNodes gather(
             graphlib::PyOpNode* gather_op =
                 graph->has_node_with_name(gather_name)
                     ? graph->get_node_by_name(gather_name)->as<graphlib::PyOpNode>()
-                    : graph->add_node(
-                        create_gather(op, pre_gather.get_shape(op->shape()), dim, factor, gather_name, fracture_group_id),
-                        graph->get_subgraph_id_for_node(op->id()))->as<graphlib::PyOpNode>();
+                    : graph
+                          ->add_node(
+                              create_gather(
+                                  op, pre_gather.get_shape(op->shape()), dim, factor, gather_name, fracture_group_id),
+                              graph->get_subgraph_id_for_node(op->id()))
+                          ->as<graphlib::PyOpNode>();
 
             graph->add_edge(graphlib::Edge(
                 fractured_ops.at(pre_gather_slice.total_index),
@@ -903,8 +908,8 @@ static FracturedNodes fracture_writeback(
 
     auto [producer_nd_slice, unused] = node_to_fractured_nodes.at(producer->id());
     auto [consumer_nd_slice, fractured_consumers] = node_to_fractured_nodes.at(consumer->id());
-    auto [output_nd_slice, fractured_producers] =
-        gather(graph, producer->as<graphlib::PyOpNode>(), node_to_fractured_nodes, fracture_group_id, consumer_nd_slice);
+    auto [output_nd_slice, fractured_producers] = gather(
+        graph, producer->as<graphlib::PyOpNode>(), node_to_fractured_nodes, fracture_group_id, consumer_nd_slice);
     TT_ASSERT(fractured_producers.size() == fractured_consumers.size());
     TT_ASSERT(output_nd_slice.volume() == (int)fractured_consumers.size());
 
@@ -913,10 +918,11 @@ static FracturedNodes fracture_writeback(
     std::vector<graphlib::NodeId> fractured_outputs;
     for (auto slice : output_nd_slice.get_slices())
     {
-        graphlib::OutputNode* fractured_output =
-            graph->add_node(
-                output->clone(fractured_name(output, slice.total_index)),
-                graph->get_subgraph_id_for_node(output->id()))->as<graphlib::OutputNode>();
+        graphlib::OutputNode* fractured_output = graph
+                                                     ->add_node(
+                                                         output->clone(fractured_name(output, slice.total_index)),
+                                                         graph->get_subgraph_id_for_node(output->id()))
+                                                     ->as<graphlib::OutputNode>();
         fractured_output->set_shape(graph->node_by_id(fractured_producers.at(slice.total_index))->shape());
         handle_writeback_golden_transforms(output, fractured_output, slice);
 
@@ -997,7 +1003,8 @@ static void fracture_group(
     std::vector<graphlib::OutputNode*> outputs = graphlib::sorted<graphlib::OutputNode>(graph, group_nodes);
     for (auto* output : outputs)
     {
-        node_to_fractured_nodes[output->id()] = fracture_writeback(graph, output, node_to_fractured_nodes, group, fracture_group_id);
+        node_to_fractured_nodes[output->id()] =
+            fracture_writeback(graph, output, node_to_fractured_nodes, group, fracture_group_id);
     }
 
     //
@@ -1010,7 +1017,8 @@ static void fracture_group(
             bool user_fractured = node_to_fractured_nodes.find(user.consumer_node_id) != node_to_fractured_nodes.end();
             if (user_fractured)
                 continue;
-            node_to_fractured_nodes[user.producer_node_id] = gather(graph, op, node_to_fractured_nodes, fracture_group_id);
+            node_to_fractured_nodes[user.producer_node_id] =
+                gather(graph, op, node_to_fractured_nodes, fracture_group_id);
             auto const& [nd_slice, fractured_node_ids] = node_to_fractured_nodes[user.producer_node_id];
             user.producer_node_id = fractured_node_ids.front();
             graph->add_edge(user);
@@ -1022,14 +1030,11 @@ static void fracture_group(
     //
     // Cleanup
     //
-    for (auto param : params)
-        graph->remove_node(param);
+    for (auto param : params) graph->remove_node(param);
 
-    for (auto* op : ops)
-        graph->remove_node(op);
+    for (auto* op : ops) graph->remove_node(op);
 
-    for (auto* output : outputs)
-        graph->remove_node(output);
+    for (auto* output : outputs) graph->remove_node(output);
 }
 
 static void assert_valid_group(

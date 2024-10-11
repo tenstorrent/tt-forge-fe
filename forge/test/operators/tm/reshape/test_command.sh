@@ -2,10 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # Commands for running reshape tests
-# 
+#
 
 # Run single test
-# 
+#
 # To run using default parameters
 # model,     --resh_model     --> model_1, Note: for reshape ops we have 5 models, model_[1-5]
 # training,  --resh_train     --> True

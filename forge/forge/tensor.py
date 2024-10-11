@@ -26,7 +26,9 @@ from .utils import align_up
 from forge.tvm_utils import map_tf_dtype_to_pt, map_pt_dtype_to_tf
 
 import forge
+
 SomeTensor = Union[torch.Tensor, "Tensor", np.ndarray]
+
 
 class TensorShape:
     """
@@ -41,7 +43,7 @@ class TensorShape:
         """
         Alias for `rows`
         """
-        assert(len(self.dims) >= 2)
+        assert len(self.dims) >= 2
         return self.dims[-2]
 
     @property
@@ -49,7 +51,7 @@ class TensorShape:
         """
         Alias for `cols`
         """
-        assert(len(self.dims) >= 1)
+        assert len(self.dims) >= 1
         return self.dims[-1]
 
     @property
@@ -64,7 +66,7 @@ class TensorShape:
         """
         W dim
         """
-        assert(len(self.dims) >= 4)
+        assert len(self.dims) >= 4
         return self.dims[-4]
 
     @property
@@ -72,7 +74,7 @@ class TensorShape:
         """
         Z dim
         """
-        assert(len(self.dims) >= 3)
+        assert len(self.dims) >= 3
         return self.dims[-3]
 
     @property
@@ -93,7 +95,7 @@ class TensorShape:
         Return this shape as a tuple used by pytorch/numpy - (w, z, r, c)
         """
         return self.dims
-    
+
     @classmethod
     def from_pytorch_tuple(cls, w, z, r, c):
         """
@@ -112,6 +114,7 @@ class TensorShape:
 
     def __getitem__(self, i):
         return self.dims[i]
+
 
 class TensorBase:
     def _create_const_tensor(self, value):
@@ -144,10 +147,12 @@ class TensorBase:
     def __rmul__(self, other):
         return self._handle_binary_op(other, forge.op.Multiply, is_r=True)
 
+
 class Tensor(TensorBase):
     """
     Common API for various Tensor versions - pytorch, traced tensor, tensor descriptor
     """
+
     def __init__(self):
         self.src_op = None
         self.src_layer = None
@@ -157,14 +162,14 @@ class Tensor(TensorBase):
         return self
 
     def detach(self) -> "Tensor":
-        return self # by default, nothing to do. Children that have pytorch values will detach.
+        return self  # by default, nothing to do. Children that have pytorch values will detach.
 
     def to_pytorch(self) -> torch.Tensor:
         return to_pt_tensors(self.value())[0]
 
     def to_tensorflow(self) -> tf.Tensor:
         return to_tf_tensors(self.value())[0]
-    
+
     def to_jax(self) -> jnp.ndarray:
         return to_jax_tensors(self.value())[0]
 
@@ -238,7 +243,6 @@ class Tensor(TensorBase):
         """
         raise RuntimeError("Children should override")
 
-
     def clone(self) -> "Tensor":
         """
         Create a copy of the tensor, along with any underlying torch tensors.
@@ -253,7 +257,9 @@ class Tensor(TensorBase):
         raise RuntimeError("Children should override")
 
     @classmethod
-    def create_from_torch(cls, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat] = None, constant: bool = False) -> "TensorFromPytorch":
+    def create_from_torch(
+        cls, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat] = None, constant: bool = False
+    ) -> "TensorFromPytorch":
         """
         Create tensor from pytorch tensor, and set value
         """
@@ -273,6 +279,7 @@ class Tensor(TensorBase):
     #     """
     #     return TensorFromDescriptor(descriptor)
 
+
 class TensorFromPytorch(Tensor):
     """
     Tensor wrapper created from a conrete pytorch tensor
@@ -281,7 +288,9 @@ class TensorFromPytorch(Tensor):
     def __init__(self, torch_tensor: torch.Tensor, dev_data_format: Optional[DataFormat], constant: bool):
         super().__init__()
         self._value = torch_tensor
-        self._data_format: DataFormat = dev_data_format if dev_data_format is not None else pytorch_dtype_to_forge_dataformat(self._value.dtype)
+        self._data_format: DataFormat = (
+            dev_data_format if dev_data_format is not None else pytorch_dtype_to_forge_dataformat(self._value.dtype)
+        )
         self._constant: bool = constant
 
     def has_value(self) -> bool:
@@ -301,14 +310,17 @@ class TensorFromPytorch(Tensor):
         self._value.requires_grad = requires_grad
 
     def to_forge_shape(
-            self, tile_broadcast_dims: List[int],
-            reinterpret_shape: Optional[List[int]] = None,
-            clone: bool = False, squeeze: bool = False,
-            microbatch = 1,
-            tile_r = TILE_DIM,
-            tile_c = TILE_DIM) -> "Tensor":
+        self,
+        tile_broadcast_dims: List[int],
+        reinterpret_shape: Optional[List[int]] = None,
+        clone: bool = False,
+        squeeze: bool = False,
+        microbatch=1,
+        tile_r=TILE_DIM,
+        tile_c=TILE_DIM,
+    ) -> "Tensor":
         """
-        Returns a Tensor padded to 4d / tiles used by Forge. 
+        Returns a Tensor padded to 4d / tiles used by Forge.
         """
         if clone:
             value = self._value.clone()
@@ -321,8 +333,7 @@ class TensorFromPytorch(Tensor):
             if reinterpret_shape[0] == 1:
                 reinterpret_shape[0] = microbatch
             value = value.view(reinterpret_shape)
-        new_tensor = pad_pytorch_tensor_to_forge(
-            value, tile_broadcast_dims, squeeze, microbatch, tile_r, tile_c)
+        new_tensor = pad_pytorch_tensor_to_forge(value, tile_broadcast_dims, squeeze, microbatch, tile_r, tile_c)
         return Tensor.create_from_torch(new_tensor)
 
     # def to_tensor_desc(self) -> "PytorchTensorDesc":
@@ -355,16 +366,19 @@ class TensorFromPytorch(Tensor):
 
     def detach(self) -> Tensor:
         from .utils import detach_tensors
+
         new_t = detach_tensors([self.value()])
         return Tensor.create_from_torch(new_t[0])
 
     def to_framework(self, framework: str) -> "Tensor":
         return super().to_framework(framework)
 
+
 class TensorFromTrace(Tensor):
     """
     Tensor wrapper created by tracing model graph
     """
+
     def __init__(self, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat):
         super().__init__()
         self.tensor_shape = TensorShape(*shape)
@@ -377,7 +391,9 @@ class TensorFromTrace(Tensor):
         return self._value is not None
 
     def set_value(self, value: torch.Tensor):
-        assert self.tensor_shape.get_pytorch_shape() == value.shape, f"Setting a tensor value of incorrect shape: {self.tensor_shape.get_pytorch_shape()} vs {value.shape}"
+        assert (
+            self.tensor_shape.get_pytorch_shape() == value.shape
+        ), f"Setting a tensor value of incorrect shape: {self.tensor_shape.get_pytorch_shape()} vs {value.shape}"
 
         self._value = value
 
@@ -393,12 +409,13 @@ class TensorFromTrace(Tensor):
         raise RuntimeError("Trying to get Tensor value where there isn't one")
 
     def clone(self) -> "TensorFromTrace":
-        t: TensorFromTrace = Tensor.create_from_trace(self.src_op, self.tensor_shape.get_pytorch_shape(), self._data_format)
+        t: TensorFromTrace = Tensor.create_from_trace(
+            self.src_op, self.tensor_shape.get_pytorch_shape(), self._data_format
+        )
         t.requires_grad = self.requires_grad
         if self._value:
             t.set_value(self._value.clone())
         return t
-
 
     @property
     def pt_data_format(self) -> torch.dtype:
@@ -441,10 +458,11 @@ class TensorFromTrace(Tensor):
     def detach(self) -> Tensor:
         if self.has_value():
             from .utils import detach_tensors
+
             new_t = detach_tensors([self.value()])
             return Tensor.create_from_torch(new_t[0])
 
-        return self # nothing to detach
+        return self  # nothing to detach
 
     def create_pt_zeros(self) -> torch.Tensor:
         # Return pt tensor of the right format, shape, and requires grad, if no value has been set
@@ -458,6 +476,7 @@ class TensorFromTrace(Tensor):
     def to_framework(self, framework: str) -> "Tensor":
         return super().to_framework(framework)
 
+
 # class TensorFromDescriptor(Tensor):
 #     """
 #     Tensor wrapper created from tensor descriptor
@@ -468,9 +487,9 @@ class TensorFromTrace(Tensor):
 #         self.requires_grad = False
 
 #     # Cloning a tensor from descriptor creates a pytorch tensor
-#     def clone(self) -> "TensorFromTorch": 
+#     def clone(self) -> "TensorFromTorch":
 #         return Tensor.create_from_torch(self.value(clone=True))
-    
+
 #     def has_value(self) -> bool:
 #         return True
 
@@ -513,7 +532,7 @@ class TensorFromTrace(Tensor):
 #             new_tensor = narrow_forge_tensor_to_pytorch(tensor, new_shape, has_microbatch_dim=has_microbatch_dim)
 
 #         new_tensor = new_tensor.reshape(original_shape)
-        
+
 #         # Reshape the rest
 #         return Tensor.create_from_torch(new_tensor)
 
@@ -542,7 +561,7 @@ class TensorFromTrace(Tensor):
 
 
 # def verify_tile_dims(data, msg = "Dim check"):
-#     """ 
+#     """
 #     Verify that data tensor, or all tensors in data list have rows and columns divisible with tile dimensions
 #     """
 #     if isinstance(data, (list, tuple)):
@@ -555,6 +574,7 @@ class TensorFromTrace(Tensor):
 
 #     if data.shape[-2] % TILE_DIM != 0:
 #         raise RuntimeError(f"{msg}: Shape {data.shape}: Row of {data.shape[-2]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
+
 
 def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optional[DataFormat] = None) -> DataFormat:
 
@@ -583,14 +603,13 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
 
     if dtype == torch.bool:
         return DataFormat.Bfp2_b
-    
+
     if dtype == torch.int32:
         return DataFormat.Int32
 
     if dtype == torch.int64:
         logger.warning("Parameter is int64. Setting to int32, since int64 is not supported .")
         return DataFormat.Int32
-    
 
     raise RuntimeError("Unsupported torch dtype " + str(dtype))
 
@@ -618,7 +637,7 @@ def forge_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
 
     if data_format == DataFormat.RawUInt32:
         return torch.int
-    
+
     if data_format == DataFormat.UInt16:
         return torch.int
 
@@ -626,6 +645,7 @@ def forge_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
         return torch.int32
 
     raise RuntimeError("Unsupported DataFormat for conversion to torch dtype: " + str(data_format))
+
 
 def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
     """
@@ -645,6 +665,7 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
         return pt_df == torch.int8
 
     return False
+
 
 # def pytorch_tensor_to_tensor_desc(t: torch.Tensor, df: DataFormat = None, element_size=None) -> "PytorchTensorDesc":
 #     if isinstance(t, PytorchTensorDesc) or isinstance(t, TilizedTensorDesc):
@@ -673,11 +694,11 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
 #     else:
 #         # If we already know dataformat, don't infer
 #         format = df
-        
-#         # Before we push the tensors to the queue, we need to make sure that the 
-#         # tensors are in the right format and aligned between Forge and PyTorch. 
-#         # If this isn't the case, expected shapes on the queues will be invalid 
-#         # and the runtime will crash. 
+
+#         # Before we push the tensors to the queue, we need to make sure that the
+#         # tensors are in the right format and aligned between Forge and PyTorch.
+#         # If this isn't the case, expected shapes on the queues will be invalid
+#         # and the runtime will crash.
 #         #
 #         # Therefore, when we know the data format, we should check if the tensor
 #         # is appropriate/supported PyTorch format. If that isn't the case, we should
@@ -737,11 +758,11 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
 
 #     t = torch.frombuffer(desc, dtype=dtype)
 #     t = torch.reshape(t, desc.shape)
-    
+
 #     return t
 
 # def buffer_to_pytorch_tensor(buf_ptr:int, shape: Tuple, format: DataFormat) -> "PytorchTensorDesc":
-#     """ 
+#     """
 #     Convert buffer point to pytorch tensor, given shape and data format.
 #     The assumption is that the buffer is in row-major format.
 #     """
@@ -786,20 +807,28 @@ def pad_sparse_pytorch_tensor_to_forge(sparse: torch.Tensor) -> torch.Tensor:
     sparse_c = align_up_tile(sparse.shape[-1])
     sparse = sparse.coalesce()
     return torch.sparse_coo_tensor(
-            sparse.indices(),
-            sparse.values(),
-            (sparse.shape[0], sparse.shape[1], sparse_r, sparse_c),
-            dtype=sparse.dtype,
-        )
+        sparse.indices(),
+        sparse.values(),
+        (sparse.shape[0], sparse.shape[1], sparse_r, sparse_c),
+        dtype=sparse.dtype,
+    )
 
-def is_forge_shape(tensor: torch.Tensor, min_dim = -1) -> bool:
+
+def is_forge_shape(tensor: torch.Tensor, min_dim=-1) -> bool:
     dim_ok = len(tensor.shape) >= min_dim if min_dim > 0 else len(tensor.shape) == 4
     if not dim_ok or len(tensor.shape) > 4:
         return False
-    return (tensor.shape[-1] % TILE_DIM == 0 and tensor.shape[-2] % TILE_DIM == 0)
+    return tensor.shape[-1] % TILE_DIM == 0 and tensor.shape[-2] % TILE_DIM == 0
+
 
 def pad_pytorch_tensor_to_forge(
-        tensor: torch.Tensor, tile_broadcast_dims: List[int], squeeze: bool = False, microbatch = 1, tile_r = TILE_DIM, tile_c = TILE_DIM) -> torch.Tensor:
+    tensor: torch.Tensor,
+    tile_broadcast_dims: List[int],
+    squeeze: bool = False,
+    microbatch=1,
+    tile_r=TILE_DIM,
+    tile_c=TILE_DIM,
+) -> torch.Tensor:
     """
     Pad pytorch tensor to 4D tile-snapped dimensions. Broadcast given dims to tile size.
     """
@@ -822,10 +851,10 @@ def pad_pytorch_tensor_to_forge(
 
     if new_tensor.shape[0] < microbatch:
         new_tensor = new_tensor.broadcast_to([microbatch, *new_tensor.shape[1:]]).contiguous()
-    
+
     if is_forge_shape(new_tensor):
         new_tensor = new_tensor.detach().contiguous()
-        return new_tensor # done after adjusting number of dims
+        return new_tensor  # done after adjusting number of dims
 
     if new_tensor.is_sparse:
         return pad_sparse_pytorch_tensor_to_forge(new_tensor)
@@ -851,7 +880,6 @@ def pad_pytorch_tensor_to_forge(
     if mode_bottom == "replicate":
         assert dim_r == 1, "Trying to broadcast to tile dim a dimension that's not 1"
 
-
     # Torch pad needs at least 3d, and float32
     original_type = new_tensor.dtype
     if original_type != torch.float32:
@@ -867,12 +895,14 @@ def pad_pytorch_tensor_to_forge(
     if ret.dtype != original_type:
         ret = ret.type(original_type)
 
-
     ret = ret.detach()
     ret.requires_grad = tensor.requires_grad
     return ret
 
-def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_microbatch_dim: bool = False) -> torch.Tensor:
+
+def narrow_forge_tensor_to_pytorch(
+    tensor: torch.Tensor, shape: List[int], has_microbatch_dim: bool = False
+) -> torch.Tensor:
     """
     Narrow 4D / tile-snapped tensor to original pytorch shape
     """
@@ -883,23 +913,24 @@ def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_m
         if len(tensor.shape) > 2 and len(shape) == 2:
             if all([all([i == 0] for i in idxes) for idxes in indices[:-2]]):
                 indices = indices[-2:]
-        
+
         return torch.sparse_coo_tensor(
-                indices,
-                values,
-                (shape),
-                dtype=tensor.dtype,
-            )
+            indices,
+            values,
+            (shape),
+            dtype=tensor.dtype,
+        )
 
     new_tensor = tensor
-    
+
     def volume(shape):
-        return (reduce(mul, shape))
+        return reduce(mul, shape)
+
     # case with 0D shape implies this is a scalar that we padded to tile shape
     if len(shape) == 0:
         new_tensor = new_tensor.narrow(-1, 0, 1).narrow(-2, 0, 1).squeeze()
         return new_tensor
-    
+
     # case with 1D shape implies we have a vector that we padded to tile shape
     elif len(shape) == 1:
         if len(new_tensor.shape) == 1:
@@ -922,7 +953,7 @@ def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_m
         if transpose_before_tile_narrow:
             new_tensor = new_tensor.transpose(-3, -2)
 
-        # If we are narrowing an activation, we assume index 0 is the batch dimension, 
+        # If we are narrowing an activation, we assume index 0 is the batch dimension,
         # so we of course do not want to narrow that. If we are narrowing a parameter,
         # then index 0 is of course not a batch dimension, so we don't care if
         # we have to narrow that
@@ -930,7 +961,7 @@ def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_m
             shape_ = shape[1:]
         else:
             shape_ = shape
-        
+
         # Remove the padding along the 'height' dimension
         if len(shape_) == 1:
             new_tensor = new_tensor.narrow(-2, 0, 1)
@@ -939,7 +970,7 @@ def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_m
 
         # Remove the padding along the 'width' dimension
         new_tensor = new_tensor.narrow(-1, 0, shape_[-1])
-        
+
         # Transpose to the original shape
         if transpose_before_tile_narrow:
             new_tensor = new_tensor.transpose(-3, -2)
@@ -949,6 +980,7 @@ def narrow_forge_tensor_to_pytorch(tensor: torch.Tensor, shape: List[int], has_m
 
     return new_tensor
 
+
 def change_rank(tensor: torch.Tensor, rank: int):
     while len(tensor.shape) > rank:
         assert tensor.shape[0] == 1
@@ -957,32 +989,41 @@ def change_rank(tensor: torch.Tensor, rank: int):
         tensor = tensor.unsqueeze(0)
     return tensor
 
-def to_tf_variables(tensors: Tuple[Union[torch.Tensor, Tensor], ...], convert_format: bool = False) -> Tuple[tf.Variable, ...]:
+
+def to_tf_variables(
+    tensors: Tuple[Union[torch.Tensor, Tensor], ...], convert_format: bool = False
+) -> Tuple[tf.Variable, ...]:
     """
     Take a tuple of either pytorch, TF or forge tensors, and return TF Variables.
     """
     tf_variables = []
     if not isinstance(tensors, (list, tuple)):
-        tensors = (tensors, )
+        tensors = (tensors,)
     for t in tensors:
         if isinstance(t, torch.Tensor):
-            tf_variables.append(tf.Variable(
-                tf.convert_to_tensor(
-                value=t.detach().numpy(),
-                dtype=map_pt_dtype_to_tf(t.dtype),
-                ),
-                trainable=t.requires_grad))
+            tf_variables.append(
+                tf.Variable(
+                    tf.convert_to_tensor(
+                        value=t.detach().numpy(),
+                        dtype=map_pt_dtype_to_tf(t.dtype),
+                    ),
+                    trainable=t.requires_grad,
+                )
+            )
         elif isinstance(t, Tensor):
             pt_value = t.value() if t.has_value() else t.create_pt_zeros()
-            #TODO: Generalize
+            # TODO: Generalize
             if pt_value.dtype == torch.bfloat16:
                 pt_value = copy.deepcopy(pt_value.detach()).float()
-            tf_variables.append(tf.Variable(
-                tf.convert_to_tensor(
-                value=pt_value.detach().numpy(),
-                dtype=map_pt_dtype_to_tf(pt_value.dtype),
-                ),
-                trainable=t.value().requires_grad))
+            tf_variables.append(
+                tf.Variable(
+                    tf.convert_to_tensor(
+                        value=pt_value.detach().numpy(),
+                        dtype=map_pt_dtype_to_tf(pt_value.dtype),
+                    ),
+                    trainable=t.value().requires_grad,
+                )
+            )
         elif isinstance(t, tf.Tensor):
             tf_variables.append(tf.Variable(t))
         elif isinstance(t, tf.Variable):
@@ -995,17 +1036,25 @@ def to_tf_variables(tensors: Tuple[Union[torch.Tensor, Tensor], ...], convert_fo
     return tuple(tf_variables)
 
 
-def to_tf_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]], convert_format: bool = False, force_float32: bool = False) -> Tuple[torch.Tensor, ...]:
+def to_tf_tensors(
+    tensors: Union[
+        Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]
+    ],
+    convert_format: bool = False,
+    force_float32: bool = False,
+) -> Tuple[torch.Tensor, ...]:
     """
     Take a tuple of either tensorflow or forge tensors, and return pytorch tensors. Generate zero-tensors
     if no value exists.
     """
     tf_tensors = []
     if not isinstance(tensors, (list, tuple)):
-        tensors = (tensors, )
+        tensors = (tensors,)
     for t in tensors:
         if isinstance(t, (tf.Tensor, tf.Variable)):
-            assert not convert_format, "Can't convert format of raw pytorch tensor - don't know what the target format is"
+            assert (
+                not convert_format
+            ), "Can't convert format of raw pytorch tensor - don't know what the target format is"
             tf_tensors.append(t)
         elif isinstance(t, torch.Tensor):
             # TODO: do we always set 'requires grad'? requires_grad will be set true if the type is differentiable
@@ -1013,12 +1062,15 @@ def to_tf_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
             if force_float32:
                 t = t.float() if t.dtype.is_floating_point else t
 
-            tensor = tf.convert_to_tensor(t.detach().float().numpy() if t.dtype == torch.bfloat16 else t.detach().numpy(), map_pt_dtype_to_tf(t.dtype))
+            tensor = tf.convert_to_tensor(
+                t.detach().float().numpy() if t.dtype == torch.bfloat16 else t.detach().numpy(),
+                map_pt_dtype_to_tf(t.dtype),
+            )
             tensor.requires_grad = requires_grad
             tf_tensors.append(tensor)
         elif isinstance(t, Tensor):
             if convert_format:
-                t = t.to_format(t.data_format) 
+                t = t.to_format(t.data_format)
             if t.has_value():
                 tf_tensors.append(t.value())
             else:
@@ -1026,10 +1078,10 @@ def to_tf_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
         elif t is None:
             tf_tensors.append(None)
         elif isinstance(t, (list, tuple)):
-             tf_tensors.append(to_tf_tensors(t))
+            tf_tensors.append(to_tf_tensors(t))
         elif isinstance(t, dict):
             tf_tensor_list = to_tf_tensors(list(t.values()))
-            tf_dict = {k:v for (k, _), v, in zip(t.items(), tf_tensor_list)}
+            tf_dict = {k: v for (k, _), v, in zip(t.items(), tf_tensor_list)}
             tf_tensors.append(tf_dict)
         else:
             raise RuntimeError("Unknown type of tensor")
@@ -1038,7 +1090,12 @@ def to_tf_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
     return ret
 
 
-def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]], convert_format: bool = False) -> Tuple[torch.Tensor, ...]:
+def to_pt_tensors(
+    tensors: Union[
+        Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]
+    ],
+    convert_format: bool = False,
+) -> Tuple[torch.Tensor, ...]:
     """
     Take a tuple of either pytorch or forge tensors, and return pytorch tensors. Generate zero-tensors
     if no value exists.
@@ -1046,18 +1103,24 @@ def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
     pytorch_tensors = []
 
     if not isinstance(tensors, (list, tuple)):
-        tensors = (tensors, )
+        tensors = (tensors,)
     for t in tensors:
         if isinstance(t, torch.Tensor):
-            assert not convert_format, "Can't convert format of raw pytorch tensor - don't know what the target format is"
+            assert (
+                not convert_format
+            ), "Can't convert format of raw pytorch tensor - don't know what the target format is"
             pytorch_tensors.append(t)
         elif isinstance(t, (tf.Tensor, tf.Variable)):
-            pt = torch.Tensor(t.numpy() if t.dtype != tf.bfloat16 else tf.cast(t, tf.float32).numpy()).type(map_tf_dtype_to_pt(t.dtype))
-            pt.requires_grad = t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
+            pt = torch.Tensor(t.numpy() if t.dtype != tf.bfloat16 else tf.cast(t, tf.float32).numpy()).type(
+                map_tf_dtype_to_pt(t.dtype)
+            )
+            pt.requires_grad = (
+                t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
+            )
             pytorch_tensors.append(pt)
         elif isinstance(t, Tensor):
             if convert_format:
-                t = t.to_format(t.data_format) 
+                t = t.to_format(t.data_format)
             if t.has_value():
                 pytorch_tensors.append(t.value())
             else:
@@ -1068,7 +1131,7 @@ def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
             pytorch_tensors.append(to_pt_tensors(t))
         elif isinstance(t, dict):
             pt_tensor_list = to_pt_tensors(list(t.values()))
-            pt_dict = {k:v for (k, _), v, in zip(t.items(), pt_tensor_list)}
+            pt_dict = {k: v for (k, _), v, in zip(t.items(), pt_tensor_list)}
             pytorch_tensors.append(pt_dict)
 
         elif isinstance(t, np.ndarray):
@@ -1081,7 +1144,13 @@ def to_pt_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], .
     ret = tuple(pytorch_tensors) if isinstance(tensors, (tuple, list)) else (pytorch_tensors,)
     return ret
 
-def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]], convert_format: bool = False) -> Tuple[torch.Tensor, ...]:
+
+def to_jax_tensors(
+    tensors: Union[
+        Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]
+    ],
+    convert_format: bool = False,
+) -> Tuple[torch.Tensor, ...]:
     """
     Take a tuple of either pytorch or forge tensors, and return pytorch tensors. Generate zero-tensors
     if no value exists.
@@ -1089,17 +1158,19 @@ def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], 
     jax_tensors = []
 
     if not isinstance(tensors, (list, tuple)):
-        tensors = (tensors, )
+        tensors = (tensors,)
     for t in tensors:
         if isinstance(t, torch.Tensor):
-            assert not convert_format, "Can't convert format of raw pytorch tensor - don't know what the target format is"
+            assert (
+                not convert_format
+            ), "Can't convert format of raw pytorch tensor - don't know what the target format is"
             jax_tensors.append(jnp.asarray(t.detach().numpy()))
         elif isinstance(t, (tf.Tensor, tf.Variable)):
             jax_tensor = jnp.asarray(t.numpy())
             jax_tensors.append(jax_tensor)
         elif isinstance(t, Tensor):
             if convert_format:
-                t = t.to_format(t.data_format) 
+                t = t.to_format(t.data_format)
             if t.has_value():
                 jax_tensors.append(t.value().detach().numpy())
             else:
@@ -1110,7 +1181,7 @@ def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], 
             jax_tensors.append(to_jax_tensors(t))
         elif isinstance(t, dict):
             jax_tensor_list = to_jax_tensors(list(t.values()))
-            jax_dict = {k:v for (k, _), v, in zip(t.items(), jax_tensor_list)}
+            jax_dict = {k: v for (k, _), v, in zip(t.items(), jax_tensor_list)}
             jax_tensors.append(jax_dict)
 
         elif isinstance(t, np.ndarray):
@@ -1122,6 +1193,7 @@ def to_jax_tensors(tensors: Union[Tuple[Union[torch.Tensor, Tensor, tf.Tensor], 
 
     ret = tuple(jax_tensors) if isinstance(tensors, (tuple, list)) else (jax_tensors,)
     return ret
+
 
 def to_forge_tensors(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[Tensor, ...]:
     """
@@ -1135,7 +1207,9 @@ def to_forge_tensors(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[
             forge_tensors.append(t)
         elif isinstance(t, (tf.Tensor, tf.Variable)):
             pt = torch.Tensor(t.numpy()).type(map_tf_dtype_to_pt(t.dtype))
-            pt.requires_grad = t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
+            pt.requires_grad = (
+                t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
+            )
             forge_tensors.append(Tensor.create_from_torch(pt))
         elif t is None:
             continue
@@ -1143,12 +1217,13 @@ def to_forge_tensors(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[
             forge_tensors.append(to_forge_tensors(t))
         elif isinstance(t, dict):
             tensor_list = list(t.values())
-            pb_dict = {k:v for (k, _), v, in zip(t.items(), to_forge_tensors(tensor_list))}
+            pb_dict = {k: v for (k, _), v, in zip(t.items(), to_forge_tensors(tensor_list))}
             forge_tensors.append(pb_dict)
         else:
             raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
     return tuple(forge_tensors)
+
 
 def remove_microbatch(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple[torch.Tensor, ...]:
     out = []
@@ -1162,28 +1237,29 @@ def remove_microbatch(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple
             out.append(remove_microbatch(input))
         elif isinstance(input, dict):
             tensor_list = list(input.values())
-            out_dict = {k:v for (k, _), v, in zip(input.items(), remove_microbatch(tensor_list))}
+            out_dict = {k: v for (k, _), v, in zip(input.items(), remove_microbatch(tensor_list))}
             out.append(out_dict)
         else:
-            out.append(Tensor.create_from_torch(torch.narrow(input.value().clone(), 0, 0, 1), dev_data_format=input.data_format))
+            out.append(
+                Tensor.create_from_torch(
+                    torch.narrow(input.value().clone(), 0, 0, 1), dev_data_format=input.data_format
+                )
+            )
 
     return tuple(out)
 
+
 def get_constant_inputs(
-    constant_nodes,
-    device_constant_and_parameters,
-    consteval_trace,
-    name: str,
-    is_forge: bool,
-    epoch_type: str
+    constant_nodes, device_constant_and_parameters, consteval_trace, name: str, is_forge: bool, epoch_type: str
 ) -> Dict[str, torch.Tensor]:
 
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:
         if name in constant_nodes:
-            return { name: get_constant_input_value(constant_nodes[name], is_forge) }
-        return { name: device_constant_and_parameters[name] }
+            return {name: get_constant_input_value(constant_nodes[name], is_forge)}
+        return {name: device_constant_and_parameters[name]}
+
     def is_node_in_epoch(node):
         return consteval_graph["nodes"][node]["epoch_type"] == epoch_type
 
@@ -1197,12 +1273,9 @@ def get_constant_inputs(
                 values[node_name] = device_constant_and_parameters[node_name]
     return values
 
+
 def consteval_tensor(
-    consteval_trace,
-    name: str,
-    inputs: Dict[str, torch.Tensor],
-    is_forge: bool,
-    epoch_type: str
+    consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool, epoch_type: str
 ) -> torch.Tensor:
     import forge.op.eval.forge as eval_module
 
@@ -1210,8 +1283,10 @@ def consteval_tensor(
 
     if consteval_graph is None:
         return inputs[name]
+
     def is_node_in_epoch(node):
         return consteval_graph["nodes"][node]["epoch_type"] == epoch_type
+
     def get_loss_node():
         for name, node in consteval_graph["nodes"].items():
             if node["type"] == "Input::loss":
@@ -1224,7 +1299,7 @@ def consteval_tensor(
 
     logger.debug("ConstEval graph: {}", name)
     node_to_tensor: Dict[str, torch.Tensor] = {}
-    output: Optional[torch.Tensor] = None 
+    output: Optional[torch.Tensor] = None
     tile_r, tile_c = (TILE_DIM, TILE_DIM)
 
     if epoch_type == "Backward":
@@ -1237,7 +1312,9 @@ def consteval_tensor(
             input_value = inputs[node_name]
 
             if is_forge:
-                input_value = narrow_forge_tensor_to_pytorch(input_value, node["cache"]["shape"], has_microbatch_dim=False)
+                input_value = narrow_forge_tensor_to_pytorch(
+                    input_value, node["cache"]["shape"], has_microbatch_dim=False
+                )
 
             node_to_tensor[node_name] = input_value
         elif node["opcode"] in {"ForgeOp", "ForgeOp"}:
@@ -1261,40 +1338,35 @@ def consteval_tensor(
     return output
 
 
-def consteval_input(
-    consteval_trace,
-    name: str,
-    inputs: Dict[str, torch.Tensor],
-    is_forge: bool
-) -> torch.Tensor:
+def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
     return consteval_tensor(consteval_trace, name, inputs, is_forge, "Forward")
+
 
 def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
     consteval_graph = compiled_graph_state.consteval_trace.get(name, None)
     if consteval_graph is None:
         return tensor.shape
+
     def is_node_in_fwd(node):
         return consteval_graph["nodes"][node]["epoch_type"] == "Forward"
+
     for node_name in filter(is_node_in_fwd, consteval_graph["topological_sorted_nodes"]):
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Output":
             return node["cache"]["shape"]
     assert False, "No output node found in consteval graph"
 
+
 def consteval_input_bw(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool) -> torch.Tensor:
     inputs = {name: tensor}
     return consteval_tensor(compiled_graph_state.consteval_trace, name, inputs, is_forge, "Backward")
+
 
 def compare_tensors(t0, t1):
     return torch.equal(t0, t1)
 
 
-def const_eval_tensor(
-    inputs,
-    consteval_trace,
-    input_name,
-    is_forge = True
-):
+def const_eval_tensor(inputs, consteval_trace, input_name, is_forge=True):
     contains_recorded_operations = consteval_trace[input_name]
     if contains_recorded_operations:
         value = consteval_input(
@@ -1312,7 +1384,9 @@ def const_eval_tensor(
     return value
 
 
-def get_device_constant_and_parameters(device, *, constant_to_tensor=None, updated_parameter_values=None) -> Dict[str, torch.Tensor]:
+def get_device_constant_and_parameters(
+    device, *, constant_to_tensor=None, updated_parameter_values=None
+) -> Dict[str, torch.Tensor]:
     inputs = {}
     if updated_parameter_values is None:
         for p in device.get_parameters(ignore_unused_parameters=False):
@@ -1330,23 +1404,17 @@ def get_device_constant_and_parameters(device, *, constant_to_tensor=None, updat
     return inputs
 
 
-def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval_trace, ordered_input_names, is_forge=True) -> Dict[str, torch.Tensor]:
+def get_post_const_eval_tensors(
+    graph, device_constant_and_parameters, consteval_trace, ordered_input_names, is_forge=True
+) -> Dict[str, torch.Tensor]:
     post_const_eval_constants: Dict[str, torch.Tensor] = {}
 
-    constant_nodes = {
-        node.name: node
-        for node in graph.get_constant_nodes(recurse=True)
-    }
+    constant_nodes = {node.name: node for node in graph.get_constant_nodes(recurse=True)}
 
     for input_name in ordered_input_names:
         # Load input constant tensors for consteval
         inputs = get_constant_inputs(
-            constant_nodes,
-            device_constant_and_parameters,
-            consteval_trace,
-            input_name,
-            is_forge,
-            "Forward"
+            constant_nodes, device_constant_and_parameters, consteval_trace, input_name, is_forge, "Forward"
         )
 
         post_const_eval_constants[input_name] = detach_tensors(
@@ -1362,6 +1430,7 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
         )[0]
 
     return post_const_eval_constants
+
 
 # def _embedding_index(tensor: torch.Tensor, original_shape: Tuple[int, ...], queue: DramIODesc):
 #     assert queue.data_format in [DataFormat.RawUInt8, DataFormat.RawUInt16, DataFormat.RawUInt32]
@@ -1402,8 +1471,9 @@ def get_post_const_eval_tensors(graph, device_constant_and_parameters, consteval
 #     stride_desc = StrideDescriptor()
 #     stride_desc.stride = stride
 #     stride_desc.xy_offsets = [(x, y) for y in range(stride) for x in range(stride)]
-#     queue.s_descriptor = stride_desc 
+#     queue.s_descriptor = stride_desc
 #     return tensor, queue
+
 
 def do_runtime_transform(transform, tensor, q, tile_bcast_dims):
     assert False
@@ -1417,6 +1487,7 @@ def do_runtime_transform(transform, tensor, q, tile_bcast_dims):
         return _prestride_shape(tensor, transform.stride_height, transform.stride_width, q)
     else:
         assert False, f"Unsupported runtime transform type: {transform.type}"
+
 
 def eval_runtime_transform(transform, inp, q, tile_bcast_dims):
     if isinstance(transform, str):

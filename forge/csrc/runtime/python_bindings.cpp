@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "runtime/python_bindings.hpp"
+
 #include "runtime/runtime.hpp"
 #include "tt/runtime/types.h"
 
-namespace tt {
+namespace tt
+{
 
 void RuntimeModule(py::module &m_runtime)
 {
@@ -16,4 +18,4 @@ void RuntimeModule(py::module &m_runtime)
     m_runtime.def("run_binary", tt::run_binary);
 }
 
-} // namespace tt
+}  // namespace tt

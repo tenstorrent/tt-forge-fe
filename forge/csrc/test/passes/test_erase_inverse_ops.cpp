@@ -68,7 +68,6 @@ TEST_F(EraseInverseOps, erase_transpose)
 // Two transposes feeding into eltwise which has a fork to another tranpose but also a fork-join buffer
 TEST_F(EraseInverseOps, erase_transpose_fork)
 {
-
     // fork after add into a transpose and a buffer
     graphlib::Node *add = graph->get_node_by_name("add");
     auto buffer = add_node<graphlib::PyOpNode>(*graph, "buffer", "nop", {}, {add});
@@ -79,11 +78,13 @@ TEST_F(EraseInverseOps, erase_transpose_fork)
     while (attempt_update)
     {
         attempt_update = passes::erase_inverse_ops(graph);
-        if (not attempt_update) {
-           attempt_update = passes::insert_inverse_on_outputs(graph);
-           if (not attempt_update) {
+        if (not attempt_update)
+        {
+            attempt_update = passes::insert_inverse_on_outputs(graph);
+            if (not attempt_update)
+            {
                 attempt_update = passes::insert_inverse_on_inputs(graph);
-           }
+            }
         }
     }
 
@@ -102,7 +103,8 @@ TEST_F(EraseInverseOps, erase_transpose_fork)
     EXPECT_EQ(graph->nodes().size(), 11);
 }
 
-// Two transposes feeding into eltwise which has a fork to another tranpose but also a fork-join buffer. Eventually they are joined.
+// Two transposes feeding into eltwise which has a fork to another tranpose but also a fork-join buffer. Eventually they
+// are joined.
 TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
 {
     // fork after add into a transpose and a buffer
@@ -126,11 +128,13 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
     while (attempt_update)
     {
         attempt_update = passes::erase_inverse_ops(graph);
-        if (not attempt_update) {
-           attempt_update = passes::insert_inverse_on_outputs(graph);
-           if (not attempt_update) {
+        if (not attempt_update)
+        {
+            attempt_update = passes::insert_inverse_on_outputs(graph);
+            if (not attempt_update)
+            {
                 attempt_update = passes::insert_inverse_on_inputs(graph);
-           }
+            }
         }
     }
 
@@ -148,7 +152,6 @@ TEST_F(EraseInverseOps, erase_inverse_ops_transpose_fork_join)
 
     EXPECT_EQ(graph->nodes().size(), 13);
 }
-
 
 TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
 {
@@ -171,11 +174,13 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     while (attempt_update)
     {
         attempt_update = passes::erase_inverse_ops(graph);
-        if (not attempt_update) {
-           attempt_update = passes::insert_inverse_on_outputs(graph);
-           if (not attempt_update) {
+        if (not attempt_update)
+        {
+            attempt_update = passes::insert_inverse_on_outputs(graph);
+            if (not attempt_update)
+            {
                 attempt_update = passes::insert_inverse_on_inputs(graph);
-           }
+            }
         }
     }
 
@@ -208,13 +213,15 @@ TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
     auto reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {256, 320}, {post_transpose});
     auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {256, 320}, {post_transpose});
     auto reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {256, 320}, {post_transpose});
-    auto concat = add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
-    
+    auto concat =
+        add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
+
     graph->remove_node(graph->get_node_by_name("out0"));
     create_output(*graph, "out0", concat);
 
-    passes::replace_incommutable_patterns(graph); // Should insert inverses under each reshape and a single clone after the concat
-    passes::erase_inverse_ops(graph); // Should erase all inverses, leaving just the clone after he concat
+    passes::replace_incommutable_patterns(
+        graph);                        // Should insert inverses under each reshape and a single clone after the concat
+    passes::erase_inverse_ops(graph);  // Should erase all inverses, leaving just the clone after he concat
 
     int reshape_count = 0;
     for (auto node : graph->nodes())

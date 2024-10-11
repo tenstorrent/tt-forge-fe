@@ -7,7 +7,7 @@ namespace tt::graphlib
 {
 class Graph;
 class Node;
-}
+}  // namespace tt::graphlib
 
 namespace tt::passes
 {
