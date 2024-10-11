@@ -94,8 +94,8 @@ def test_mnist_training():
     print(f"Test (total) loss: {test_loss}")
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16])
-@pytest.mark.parametrize("in_features", [256])
-@pytest.mark.parametrize("out_features", [20])
+@pytest.mark.parametrize("in_features", [784])
+@pytest.mark.parametrize("out_features", [10])
 def test_batch_size(batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):
@@ -103,21 +103,28 @@ def test_batch_size(batch_size, in_features, out_features):
             self.linear = nn.Linear(in_features, out_features)
 
         def forward(self, x):
-            return self.linear(x)
+            y = self.linear(x)
+            return nn.functional.softmax(y, dim=-1)
     
     in_data = torch.rand(batch_size, in_features)
     out_data = torch.randint(0, out_features, (batch_size,))
+    target = nn.functional.one_hot(out_data, num_classes=out_features).float()
 
     model = SimpleModel()
+
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
-
-    tt_model = forge.compile(model, sample_inputs=[in_data], loss=loss_fn, optimizer=optimizer)
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(batch_size, in_features)], loss=loss_fn, optimizer=optimizer)
 
     optimizer.zero_grad()
+    
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    loss = loss_fn(pred, out_data)
-    golden_loss = loss_fn(golden_pred, out_data)
-    tt_model.backward(pred.grad)
+    compare_with_golden(golden_pred, pred)
+
+    loss = loss_fn(pred, target)
+    golden_loss = loss_fn(golden_pred, target)
     compare_with_golden(golden_loss, loss)
+    
+    loss.backward()
+    tt_model.backward(pred.grad)
