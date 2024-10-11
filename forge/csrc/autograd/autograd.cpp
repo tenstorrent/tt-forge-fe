@@ -484,6 +484,11 @@ Graph *autograd_engine::run()
     create_backward_graph(requires_grad_map);
     create_optimizer_graph();
 
+    if (config.recompute)
+    {
+        insert_recompute_ops();
+    }
+
     return graph;
 }
 
@@ -717,6 +722,157 @@ NodeContext autograd_engine::create_input(
     tag_disable_consteval(disable_consteval, node);
 
     return NodeContext(node);
+}
+
+// From the node in the forward graph, create a recompute node for the backward graph.
+// This will also connect the newly created recompute node to its operands (based on the operands of the fwd node).
+// NOTE: it is expected that the create_recompute_op() is called in topological order.
+static Node *create_recompute_op(
+    graphlib::Graph *graph, Node *fwd_node, std::unordered_map<Node *, Node *> &fwd_to_recompute)
+{
+    TT_ASSERT(fwd_node->is_forward(), "Expected a forward node");
+    TT_ASSERT(fwd_node->node_type() == graphlib::NodeType::kPyOp, "Expected a PyOp node");
+
+    auto cloned_node = fwd_node->clone(fwd_node->name() + "_recompute");
+    cloned_node->set_epoch_type(graphlib::NodeEpochType::Backward);
+
+    auto recompute_node = graph->add_node(std::move(cloned_node), graph->get_subgraph_id_for_node(fwd_node->id()));
+
+    std::unordered_map<graphlib::NodeId, graphlib::NodeId> producer_remap;
+
+    fwd_to_recompute[fwd_node] = recompute_node;
+
+    // Hook up Recompute Node to its operands
+    for (const Edge &edge : graph->operand_data_edges(fwd_node))
+    {
+        Node *fwd_operand = graph->node_by_id(edge.producer_node_id);
+        bool same_epoch = (fwd_operand->is_forward() && fwd_operand->node_type() != graphlib::NodeType::kInput);
+
+        TT_ASSERT(
+            !same_epoch || fwd_to_recompute.find(fwd_operand) != fwd_to_recompute.end(),
+            "Expected to find the analog recompute node for the operand");
+        graphlib::NodeId producer_id = same_epoch ? fwd_to_recompute.at(fwd_operand)->id() : fwd_operand->id();
+
+        if (producer_remap.find(producer_id) != producer_remap.end())
+        {
+            producer_id = producer_remap.at(producer_id);
+        }
+
+        Edge recompute_edge = Edge(
+            producer_id,
+            edge.producer_output_port_id,
+            recompute_node->id(),
+            edge.consumer_input_port_id,
+            edge.edge_type);
+
+        graph->add_edge(recompute_edge);
+
+        auto fwd_edge_attr = graph->get_edge_attributes(edge);
+        auto recompute_edge_attr = graph->get_edge_attributes(recompute_edge);
+        recompute_edge_attr->copy_from(*fwd_edge_attr);
+    }
+
+    return recompute_node;
+}
+
+static void add_edges_for_recompute_op(
+    graphlib::Graph *graph, const graphlib::Edge &fwd_to_bwd_edge, std::unordered_map<Node *, Node *> &fwd_to_recompute)
+{
+    Node *fwd_node = graph->node_by_id(fwd_to_bwd_edge.producer_node_id);
+
+    if (fwd_to_recompute.find(fwd_node) == fwd_to_recompute.end())
+    {
+        return;
+    }
+
+    Node *recompute_node = fwd_to_recompute.at(fwd_node);
+
+    // Replace the original FWD->BWD edge with RECOMPUTE->BWD instead.
+    graph->add_edge(
+        Edge(
+            recompute_node->id(),
+            fwd_to_bwd_edge.producer_output_port_id,
+            fwd_to_bwd_edge.consumer_node_id,
+            fwd_to_bwd_edge.consumer_input_port_id,
+            fwd_to_bwd_edge.edge_type),
+        graph->get_edge_attributes(fwd_to_bwd_edge));
+    graph->remove_edge(fwd_to_bwd_edge);
+}
+
+void autograd_engine::insert_recompute_ops()
+{
+    TT_ASSERT(config.recompute, "Recompute is not enabled");
+
+    std::unordered_map<Node *, Node *> forward_to_recompute;
+    std::vector<Node *> topo_order = graphlib::topological_sort(*graph);
+
+    // We loop through only the backward nodes and look for operand nodes that are marked
+    // as FWD. Each instance is an opportunity to perform a potential recompute on the original
+    // FWD op.
+    //
+    // TODO(#395): extend this to support configurable op-specific recompute; rather than an all-or-nothing sort-of
+    // deal.
+    std::deque<std::string> recompute_node_names;
+
+    for (Node *node : topo_order)
+    {
+        if (node->is_forward() && node->node_type() == graphlib::NodeType::kPyOp)
+        {
+            Node *recompute_node = create_recompute_op(graph, node, forward_to_recompute);
+            recompute_node_names.push_back(recompute_node->name());
+        }
+    }
+
+    for (Node *bwd_node : topo_order)
+    {
+        if (!bwd_node->is_backward())
+        {
+            continue;
+        }
+
+        std::vector<Edge> bwd_operand_data_edges = graph->operand_data_edges(bwd_node);
+        for (const Edge &operand_edge : bwd_operand_data_edges)
+        {
+            add_edges_for_recompute_op(graph, operand_edge, forward_to_recompute);
+        }
+    }
+
+    std::unordered_map<Node *, std::string> forward_to_recompute_name;
+    for (const auto [fwd_node, recompute_node] : forward_to_recompute)
+    {
+        forward_to_recompute_name[fwd_node] = recompute_node->name();
+    }
+
+    // Remove any recompute nodes that do not have any users; also removes chains of recompute nodes,
+    // e.g. add_recompute -> mul_recompute -> nothing (both add and mul recompute nodes will be removed)
+    while (not recompute_node_names.empty())
+    {
+        std::string recompute_node_name = recompute_node_names.front();
+        recompute_node_names.pop_front();
+
+        if (graph->has_node_with_name(recompute_node_name))
+        {
+            Node *recompute_node = graph->get_node_by_name(recompute_node_name);
+            if (graph->num_users(recompute_node->id()) == 0)
+            {
+                for (Node *operand : graph->data_operands(recompute_node))
+                {
+                    recompute_node_names.push_back(operand->name());
+                }
+                graph->remove_node(recompute_node);
+            }
+        }
+    }
+
+    for (const auto &[fwd_node, recompute_node_name] : forward_to_recompute_name)
+    {
+        if (graph->has_node_with_name(recompute_node_name))
+        {
+            graph->add_edge(
+                fwd_node, graph->get_node_by_name(recompute_node_name), graphlib::EdgeType::kAutogradFwdToRecompute);
+        }
+    }
+    return;
 }
 
 }  // namespace autograd
