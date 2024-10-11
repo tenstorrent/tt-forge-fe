@@ -60,3 +60,9 @@ reports/report.xml
 
 # Python stubs
 *.pyi
+
+# Infra generated files
+generated
+infra/.coverage
+infra/pytest.xml
+pipeline_*.json

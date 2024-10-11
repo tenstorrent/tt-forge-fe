@@ -28,12 +28,26 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
+
+    - name: Install jq and curl
+      run: |
+        apt-get update
+        apt-get install -y jq curl # TODO move to Dockerfile
+
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
+        JOB_ID=$(curl -s -H "Authorization: token ${{ github.token }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
+          jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id')
+
+        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
+        echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -79,7 +93,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        pytest 2>&1 | tee pytest.log
+        pytest --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
@@ -91,11 +105,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-reports-${{ matrix.build.runs-on }}
-        path: reports/report.xml
+        path: ${{ steps.strings.outputs.test_report_path }}
 
     - name: Show Test Report
       uses: mikepenz/action-junit-report@v4
       if: success() || failure()
       with:
-        report_paths: reports/report.xml
+        report_paths: ${{ steps.strings.outputs.test_report_path }}
         check_name: TT-Forge-FE Tests
