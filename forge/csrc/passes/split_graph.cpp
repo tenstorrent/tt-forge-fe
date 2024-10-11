@@ -189,9 +189,11 @@ std::unique_ptr<Graph> extract_backward_graph(
         bwd_intermediate_inputs.push_back(added_node->id());
     }
 
-    // For all inputs for the forward graph that have users in the backward graph,
+    // For all inputs/params/consts for the forward graph that have users in the backward graph,
     // clone them and add them to the backward graph.
-    for (auto input : graph->ordered_module_inputs())
+    auto all_inputs =
+        graph->nodes([](const graphlib::Node *node) { return node->node_type() == graphlib::NodeType::kInput; });
+    for (auto input : all_inputs)
     {
         if (input->is_forward())
         {

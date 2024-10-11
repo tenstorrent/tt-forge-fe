@@ -81,8 +81,6 @@ bool is_relu_in_forge_attrs(const ForgeOpAttrs& forge_attrs);
     
 bool has_hoistable_relu(graphlib::Graph *graph, Node* node);
 
-void insert_recompute_ops(graphlib::Graph *graph);
-
 void insert_user_defined_queues(
     graphlib::Graph *graph, const std::vector<std::tuple<std::string, std::string, int>> &insert_queues);
 }
