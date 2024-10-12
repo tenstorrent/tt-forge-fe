@@ -35,6 +35,12 @@ FrameworkModelType = Union[
 
 class ShapeUtils:
     @staticmethod
+    def switch_last_two(t):
+        if len(t) < 2:
+            return t  # If tuple has less than 2 elements, return it as is
+        return t[:-2] + (t[-1], t[-2])
+
+    @staticmethod
     def reduce_microbatch_size(shape: TensorShape) -> TensorShape:
         """
         Reduce microbatch dimension of a shape to 1
