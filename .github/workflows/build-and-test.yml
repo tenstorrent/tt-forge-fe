@@ -29,11 +29,6 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
 
-    - name: Install jq and curl
-      run: |
-        apt-get update
-        apt-get install -y jq curl # TODO move to Dockerfile
-
     - name: Set reusable strings
       id: strings
       shell: bash
@@ -44,7 +39,8 @@ jobs:
         # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
         JOB_ID=$(curl -s -H "Authorization: token ${{ github.token }}" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
-          jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id')
+          jq -r '.jobs[] | select(.name | contains("${{ github.job }}")) | .id')
+        echo "Current job id: $JOB_ID"
 
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
         echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
@@ -93,6 +89,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        set -o pipefail # Ensures that the exit code reflects the first command that fails
         pytest --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
 
     - name: Upload Test Log
