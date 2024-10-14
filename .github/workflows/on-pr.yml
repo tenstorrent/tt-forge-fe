@@ -12,6 +12,6 @@ jobs:
   pre-commit:
     uses: ./.github/workflows/pre-commit.yml
     secrets: inherit
-  build-and-test:
+  docker-build:
     uses: ./.github/workflows/build-and-test.yml
     secrets: inherit
