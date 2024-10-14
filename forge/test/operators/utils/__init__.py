@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+from .datatypes import ValueRanges
 from .utils import ShapeUtils
 from .utils import InputSourceFlag, InputSourceFlags
 from .utils import CompilerUtils
@@ -24,6 +25,7 @@ from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
 
 __all__ = [
+    "ValueRanges",
     "ShapeUtils",
     "InputSourceFlag",
     "InputSourceFlags",
