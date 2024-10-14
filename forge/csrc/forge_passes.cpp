@@ -201,7 +201,10 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     recalculate_shapes(graph);
 
     // Fuse bias into matmuls
-    fuse_bias(graph);
+    if (env_as<bool>("FORGE_FUSE_MATMUL_BIAS"))
+    {
+        fuse_bias(graph);
+    }
 
     // Fuse requantize into matmuls
     fuse_requantize(graph);

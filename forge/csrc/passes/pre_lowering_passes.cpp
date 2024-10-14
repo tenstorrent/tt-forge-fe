@@ -318,9 +318,6 @@ static bool has_fusable_upstream_matmul(graphlib::Graph *graph, graphlib::PyOpNo
 
 void fuse_bias(Graph *graph)
 {
-    if (env_as<bool>("FORGE_NO_FUSE_MATMUL_BIAS"))
-        return;
-
     // Find matmul + bias, and merge bias into the matmul
     for (Node *node : graphlib::topological_sort(*graph))
     {
