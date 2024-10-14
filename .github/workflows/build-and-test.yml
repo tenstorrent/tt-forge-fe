@@ -44,7 +44,7 @@ jobs:
         # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
         JOB_ID=$(curl -s -H "Authorization: token ${{ github.token }}" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" | \
-          jq -r '.jobs[] | select(.name | startswith("${{ github.job }}")) | .id')        
+          jq -r '.jobs[] | select(.name | contains("${{ github.job }}")) | .id')        
         echo "Current job id: $JOB_ID"
 
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
