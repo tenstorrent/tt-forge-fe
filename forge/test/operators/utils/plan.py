@@ -20,6 +20,7 @@ from typing import Callable, Generator, Optional, List, Dict, Union, Tuple, Type
 from forge import MathFidelity, DataFormat
 from forge.op_repo import TensorShape
 
+from .datatypes import OperatorParameterTypes
 from .pytest import PytestParamsUtils
 
 
@@ -28,13 +29,6 @@ class InputSource(Enum):
     FROM_HOST = 2
     FROM_DRAM_QUEUE = 3
     CONST_EVAL_PASS = 4
-
-
-class OperatorParameterTypes:
-    SingleValue: TypeAlias = Union[int, float]
-    RangeValue: TypeAlias = Tuple[SingleValue, SingleValue]
-    Value: TypeAlias = Union[SingleValue, RangeValue]
-    Kwargs: TypeAlias = Dict[str, Value]
 
 
 @dataclass

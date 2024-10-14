@@ -24,6 +24,7 @@ from forge.config import _get_global_compiler_config
 from forge._C import MathFidelity
 
 from .compat import TestDevice, verify_module
+from .datatypes import ValueRanges
 
 
 # All supported framework model types
@@ -114,6 +115,7 @@ class VerifyUtils:
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
         math_fidelity: forge.MathFidelity = None,
+        value_range: Optional[ValueRanges] = None,
         warm_reset: bool = False,
     ):
         """Perform Forge verification on the model
@@ -127,6 +129,7 @@ class VerifyUtils:
             input_source_flag: Input source flag
             dev_data_format: Data format
             math_fidelity: Math fidelity
+            value_range: Value range of input tensors
             warm_reset: Warm reset the device before verification
         """
 
@@ -154,6 +157,7 @@ class VerifyUtils:
             # input_params=[input_params],
             pcc=pcc,
             dev_data_format=dev_data_format,
+            value_range=value_range,
         )
 
 
