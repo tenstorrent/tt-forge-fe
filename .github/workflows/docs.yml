@@ -55,13 +55,6 @@ jobs:
         create-symlink: true
         key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
 
-    - name: Build
-      shell: bash
-      run: |
-        source env/activate
-        cmake -G Ninja -B build .
-        cmake --build build
-
     - name: Install mdBook
       shell: bash
       run: |
@@ -78,8 +71,8 @@ jobs:
       run: |
         source env/activate
         export PATH="/github/home/.cargo/bin:$PATH"
+        cmake -G Ninja -B build .
         cmake --build build -- docs
-        # cmake --build build -- doxygen
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
