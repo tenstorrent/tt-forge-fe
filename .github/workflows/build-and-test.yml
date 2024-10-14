@@ -94,6 +94,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        set -o pipefail # Ensures that the exit code reflects the first command that fails
         pytest --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
 
     - name: Upload Test Log
