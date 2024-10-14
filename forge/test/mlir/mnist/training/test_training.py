@@ -60,14 +60,14 @@ def test_mnist_training():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            compare_with_golden(golden_pred, pred)
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)
             total_loss += loss.item()
 
             golden_loss = loss_fn(golden_pred, target)
-            compare_with_golden(golden_loss, loss)
+            assert torch.allclose(loss, golden_loss, rtol=1e-2)
 
             # Run backward pass on device
             loss.backward()
@@ -97,7 +97,8 @@ def test_mnist_training():
 @pytest.mark.parametrize("batch_size", [1, 2, 16])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
-def test_batch_size(batch_size, in_features, out_features):
+@pytest.mark.parametrize("enable_training", [True, False])
+def test_batch_size(batch_size, in_features, out_features, enable_training):
     class SimpleModel(nn.Module):
         def __init__(self):
             super(SimpleModel, self).__init__()
@@ -113,19 +114,24 @@ def test_batch_size(batch_size, in_features, out_features):
 
     model = SimpleModel()
 
-    loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+
+    loss_fn = torch.nn.CrossEntropyLoss() if enable_training else None
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001) if enable_training else None
     tt_model = forge.compile(model, sample_inputs=[torch.rand(batch_size, in_features)], loss=loss_fn, optimizer=optimizer)
 
-    optimizer.zero_grad()
+    if enable_training:
+        optimizer.zero_grad()
     
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    compare_with_golden(golden_pred, pred)
+    assert compare_with_golden(golden_pred, pred, pcc=0.95)
+
+    if not enable_training:
+        return
 
     loss = loss_fn(pred, target)
     golden_loss = loss_fn(golden_pred, target)
-    compare_with_golden(golden_loss, loss)
+    assert torch.allclose(loss, golden_loss, rtol=1e-2)
     
     loss.backward()
     tt_model.backward(pred.grad)
