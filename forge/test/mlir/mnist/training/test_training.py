@@ -72,7 +72,7 @@ def test_mnist_training():
             # Run backward pass on device
             loss.backward()
 
-            tt_model.backward(pred.grad)
+            tt_model.backward()
 
             if batch_idx >= limit_num_batches:
                 break
