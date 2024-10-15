@@ -24,20 +24,22 @@ MNIIST_INPUT_SIZE_FACTORS = [1, 3, 5, 7]
 MNIST_HIDDEN_SIZE_EXP_RANGE = [5, 7]
 MNIIST_HIDDEN_SIZE_FACTORS = [1, 3]
 
-MNIST_INPUT_FEATURE_SIZE = 784  # 784 = 28 * 28, default size of MNIST image 
+MNIST_INPUT_FEATURE_SIZE = 784  # 784 = 28 * 28, default size of MNIST image
 MNIST_OUTPUT_FEATURE_SIZE = 10  # 10 classes in MNIST, default output size
-MNIIST_HIDDEN_SIZE = 256        # Hidden layer size, default size
+MNIIST_HIDDEN_SIZE = 256  # Hidden layer size, default size
 
-BATCH_SIZE = [2 ** i for i in range(MNIST_BATCH_SIZE_EXP_RANGE)]    # Batch size, sizes will be 1, 2, 4, 8, 16, 32, 64, etc.
-INPUT_SIZE = [     # Input size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 5 * 2^5 = 160, 7 * 2^5 = 224, etc.
-    factor * hidden 
-    for factor in MNIIST_INPUT_SIZE_FACTORS 
-    for hidden in [2 ** i for i in range(MNIIST_INPUT_SIZE_EXP_RANGE[0], MNIIST_INPUT_SIZE_EXP_RANGE[1])]
+BATCH_SIZE = [
+    2**i for i in range(MNIST_BATCH_SIZE_EXP_RANGE)
+]  # Batch size, sizes will be 1, 2, 4, 8, 16, 32, 64, etc.
+INPUT_SIZE = [  # Input size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 5 * 2^5 = 160, 7 * 2^5 = 224, etc.
+    factor * hidden
+    for factor in MNIIST_INPUT_SIZE_FACTORS
+    for hidden in [2**i for i in range(MNIIST_INPUT_SIZE_EXP_RANGE[0], MNIIST_INPUT_SIZE_EXP_RANGE[1])]
 ]
-HIDDEN_SIZE = [     # Hidden layer size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 1 * 2^6 = 64, 3 * 2^6 = 192, etc.
-    factor * hidden 
-    for factor in MNIIST_HIDDEN_SIZE_FACTORS 
-    for hidden in [2 ** i for i in range(MNIST_HIDDEN_SIZE_EXP_RANGE[0], MNIST_HIDDEN_SIZE_EXP_RANGE[1])]
+HIDDEN_SIZE = [  # Hidden layer size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 1 * 2^6 = 64, 3 * 2^6 = 192, etc.
+    factor * hidden
+    for factor in MNIIST_HIDDEN_SIZE_FACTORS
+    for hidden in [2**i for i in range(MNIST_HIDDEN_SIZE_EXP_RANGE[0], MNIST_HIDDEN_SIZE_EXP_RANGE[1])]
 ]
 ARCH = []
 DATAFORMAT = []
@@ -46,12 +48,8 @@ MATH_FIDELITY = []
 
 # Model definition
 class MNISTLinear(nn.Module):
-
     def __init__(
-        self, 
-        input_size=MNIST_INPUT_FEATURE_SIZE, 
-        output_size=MNIST_OUTPUT_FEATURE_SIZE, 
-        hidden_size=MNIIST_HIDDEN_SIZE
+        self, input_size=MNIST_INPUT_FEATURE_SIZE, output_size=MNIST_OUTPUT_FEATURE_SIZE, hidden_size=MNIIST_HIDDEN_SIZE
     ):
 
         super(MNISTLinear, self).__init__()
@@ -66,7 +64,6 @@ class MNISTLinear(nn.Module):
         x = self.l2(x)
 
         return nn.functional.softmax(x)
-
 
 
 # @TODO - For now, we are skipping these parameters, because we are not supporting them
@@ -105,8 +102,12 @@ def test_mnist_linear(
     co_out = [co.to("cpu") for co in co_out]
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
 
-    short_hash = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
-    date = subprocess.check_output(['git', 'show', '-s', '--format=%cd', "--date=format:%y-%m-%d", 'HEAD']).decode('ascii').strip()
+    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
+    date = (
+        subprocess.check_output(["git", "show", "-s", "--format=%cd", "--date=format:%y-%m-%d", "HEAD"])
+        .decode("ascii")
+        .strip()
+    )
     machine_name = socket.gethostname()
     total_time = end - start
 
@@ -158,12 +159,12 @@ def test_mnist_linear(
 
 def mnist_linear_benchmark(config: dict):
 
-    training = config['training']
-    batch_size = config['batch_size']
-    output_file = config['output']
+    training = config["training"]
+    batch_size = config["batch_size"]
+    output_file = config["output"]
 
-    input_size = MNIST_INPUT_FEATURE_SIZE if config['input_size'] is None else config['input_size']
-    hidden_size = MNIIST_HIDDEN_SIZE if config['hidden_size'] is None else config['hidden_size']
+    input_size = MNIST_INPUT_FEATURE_SIZE if config["input_size"] is None else config["input_size"]
+    hidden_size = MNIIST_HIDDEN_SIZE if config["hidden_size"] is None else config["hidden_size"]
 
     result = test_mnist_linear(
         training=training,
@@ -175,7 +176,7 @@ def mnist_linear_benchmark(config: dict):
     if not output_file:
         output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
 
-    result["output"] = output_file 
+    result["output"] = output_file
 
     # Save the results to a file
     with open(output_file, "w") as f:
