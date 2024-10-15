@@ -14,8 +14,7 @@ from test.mlir.llama.utils.utils import load_model
 def test_llama_inference():
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
-    framework_model = load_model(model_path)
-    tokenizer = LlamaTokenizer.from_pretrained(model_path)
+    framework_model, tokenizer = load_model(model_path)
 
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
@@ -39,8 +38,7 @@ def test_llama_inference_no_cache_cpu():
     """
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
-    framework_model = load_model(model_path)
-    tokenizer = LlamaTokenizer.from_pretrained(model_path)
+    framework_model, tokenizer = load_model(model_path)
 
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"
@@ -83,9 +81,7 @@ def test_llama_inference_cache_cpu():
     """
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
-    framework_model = load_model(model_path, use_cache=True)
-    tokenizer = LlamaTokenizer.from_pretrained(model_path)
-
+    framework_model, tokenizer = load_model(model_path)
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids

@@ -23,7 +23,7 @@ def test_llama_self_attn():
             return hidden_states
 
     # Load Llama 3B model and tokenizer
-    framework_model = load_model()
+    framework_model, _ = load_model()
     framework_model = SelfAttention(framework_model.model.layers[0].self_attn)
 
     # Input samples
