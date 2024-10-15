@@ -98,6 +98,12 @@ jobs:
         name: test-log-${{ matrix.build.runs-on }}
         path: pytest.log
 
+    - name: Run Perf Benchmark
+      shell: bash
+      run: |
+        source env/activate
+        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -o forge-benchmark-e2e-mnist.json
+
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
       with:
