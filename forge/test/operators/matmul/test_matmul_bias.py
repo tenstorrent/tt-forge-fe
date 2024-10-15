@@ -1,29 +1,34 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import os
+
 import pytest
 import numpy as np
-
 import torch
 from torch import nn
 
 import forge
 from forge.op.eval.common import compare_with_golden_pcc
 
-import os
+INPUT_FEATURES = 784
+OUTPUT_DIM = 10
 
-
-@pytest.mark.parametrize("dims", [(1, 784), (4, 784), (16, 784), (32, 784), (64, 784)])
-def test_matmul_bias_fusion(dims):
+# if batch is >16 fuse_matmul is applied
+@pytest.mark.parametrize("batch_size", [1, 4, 16, 32, 64])
+def test_matmul_bias(batch_size):
     class Linear(nn.Module):
         def __init__(self):
             super().__init__()
-            self.l1 = nn.Linear(784, 10, bias=True)
+            self.l1 = nn.Linear(INPUT_FEATURES, OUTPUT_DIM, bias=True)
 
         def forward(self, a):
             return self.l1(a)
 
-    inputs = [torch.rand(dims)]
+    # global param for fuse_bias
+    os.environ["FORGE_FUSE_MATMUL_BIAS"] = "1"
+
+    inputs = [torch.rand(batch_size, INPUT_FEATURES)]
 
     framework_model = Linear()
     fw_out = framework_model(*inputs)
