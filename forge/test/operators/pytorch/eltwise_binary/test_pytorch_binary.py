@@ -65,13 +65,13 @@
 # pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_failed
 # pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_not_implemented
 # pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_data_mismatch
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_fatal
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_df
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_df_fatal
 # pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_inconsistency_order1
 # pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_inconsistency_order2
 
 # Collect fatal test ids
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_fatal --collect-only
+# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_df_fatal --collect-only
 
 # Run fatal tests
 # pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
@@ -265,7 +265,18 @@ class TestParamsData:
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
         if test_vector.operator in TestCollectionData.alpha.operators:
+            if (test_vector.operator == "sub" and test_vector.dev_data_format == forge.DataFormat.Bfp2_b):
+                # E    RuntimeError: Subtraction, the `-` operator, with two bool tensors is not supported. Use the `^` or `logical_xor()` operator instead.
+                # boolean type for sub doesn't make sense
+                # returning empty list for kwargs results in skipping the test vector completely
+                return []
             if test_vector.dev_data_format in TestCollectionData.add_int.dev_data_formats:
+                return [
+                    {"alpha": 1},
+                    {"alpha": 37},
+                    {},
+                ]
+            elif test_vector.dev_data_format in TestCollectionData.add_bool.dev_data_formats:
                 return [
                     {"alpha": 1},
                     {"alpha": 37},
@@ -280,7 +291,9 @@ class TestParamsData:
                     {},
                 ]
         elif test_vector.operator in TestCollectionData.rounding_mode.operators:
-            if not (test_vector.operator == "div" and test_vector.dev_data_format == forge.DataFormat.Bfp2):
+            #  E     RuntimeError: "div_trunc_cpu" not implemented for 'Bool'
+            #  E     RuntimeError: "div_floor_cpu" not implemented for 'Bool'
+            if not (test_vector.operator == "div" and test_vector.dev_data_format in TestCollectionData.div_bool.dev_data_formats):
                 return [
                     {"rounding_mode": "trunc"},
                     {"rounding_mode": "floor"},
@@ -420,6 +433,12 @@ class TestCollectionData:
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
+    add_bool = TestCollection(
+        dev_data_formats=[
+            forge.DataFormat.Bfp2_b,  # TODO div process as bool but add as float
+        ],
+    )
+
     add_int = TestCollection(
         dev_data_formats=[
             forge.DataFormat.Bfp2,
@@ -434,13 +453,13 @@ class TestCollectionData:
 
     div_bool = TestCollection(
         dev_data_formats=[
-            forge.DataFormat.Bfp2,  # TODO div process as bool but add as float
+            forge.DataFormat.Bfp2_b,  # TODO div process as bool but add as float
         ],
     )
 
     div_int = TestCollection(
         dev_data_formats=[
-            # forge.DataFormat.Bfp2,
+            forge.DataFormat.Bfp2,
             forge.DataFormat.Int8,
             # forge.DataFormat.Lf8,
             forge.DataFormat.RawUInt16,
@@ -729,7 +748,7 @@ TestParamsData.test_plan = TestPlan(
             ],  # probably fails for other sources but it's not tested
             dev_data_formats=TestCollectionData.add_int.dev_data_formats,
             criteria=lambda test_vector: test_vector.kwargs is not None
-            and "alpha" in test_vector.kwargs,  # and test_vector.kwargs["alpha"] > 0,
+            and "alpha" in test_vector.kwargs and test_vector.kwargs["alpha"] > 0 and test_vector.kwargs["alpha"] != 1,
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
         TestCollection(
@@ -836,7 +855,8 @@ TestParamsData.test_plan = TestPlan(
         # Unsupported datatypes
         TestCollection(
             dev_data_formats=[
-                forge.DataFormat.Bfp2,
+                # forge.DataFormat.Bfp2,
+                forge.DataFormat.Bfp2_b,
                 forge.DataFormat.Bfp4,
                 forge.DataFormat.Bfp8,
                 forge.DataFormat.Float16,
@@ -939,7 +959,7 @@ def test_skipped(test_vector: TestVector, test_device):
         )
     ),
 )
-def test_unsupported_fatal(test_vector: TestVector, test_device):
+def test_unsupported_df_fatal(test_vector: TestVector, test_device):
     TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
 
 
@@ -953,7 +973,7 @@ def test_unsupported_fatal(test_vector: TestVector, test_device):
         )
     ),
 )
-def test_unsupported(test_vector: TestVector, test_device):
+def test_unsupported_df(test_vector: TestVector, test_device):
     TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
 
 

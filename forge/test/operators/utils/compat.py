@@ -26,8 +26,8 @@ class TestTensorsUtils:
 
     dev_data_format_to_dtype = {
         # forge.DataFormat.Bfp2: torch.float16,
-        forge.DataFormat.Bfp2: torch.bool,  # mapped
-        forge.DataFormat.Bfp2_b: torch.bfloat16,
+        forge.DataFormat.Bfp2: torch.bfloat16,
+        forge.DataFormat.Bfp2_b: torch.bool,  # mapped
         forge.DataFormat.Bfp4: torch.float16,
         forge.DataFormat.Bfp4_b: torch.bfloat16,
         forge.DataFormat.Bfp8: torch.float16,
@@ -37,10 +37,10 @@ class TestTensorsUtils:
         forge.DataFormat.Float32: torch.float32,  # mapped
         forge.DataFormat.Int8: torch.int8,  # mapped
         forge.DataFormat.Lf8: torch.float16,
-        forge.DataFormat.RawUInt16: torch.uint8,
-        forge.DataFormat.RawUInt32: torch.uint8,
-        forge.DataFormat.RawUInt8: torch.uint8,
-        forge.DataFormat.UInt16: torch.uint8,
+        forge.DataFormat.RawUInt16: torch.int8,
+        forge.DataFormat.RawUInt32: torch.int8,
+        forge.DataFormat.RawUInt8: torch.int8,
+        forge.DataFormat.UInt16: torch.int8,
         forge.DataFormat.Int32: torch.int32,  # mapped
     }
 
@@ -57,9 +57,6 @@ class TestTensorsUtils:
                 dtype = cls.dev_data_format_to_dtype[dev_data_format]
             else:
                 raise ValueError(f"Unsupported dtype for dev data format: {dev_data_format}")
-
-            if dtype in (torch.uint8,):
-                dtype = torch.int8
 
         return dtype
 
