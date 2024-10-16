@@ -37,10 +37,11 @@ void AutogradModule(py::module &m_autograd)
                std::vector<tt::autograd::NodeContext> operands,
                std::vector<graphlib::OpType::Attr> attributes,
                ForgeOpAttrs named_attrs = {})
-            {                
-                graphlib::OpType op_type = std::holds_alternative<std::string>(type)
-                                               ? graphlib::OpType(std::get<std::string>(type), attributes, {}, named_attrs)
-                                               : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
+            {
+                graphlib::OpType op_type =
+                    std::holds_alternative<std::string>(type)
+                        ? graphlib::OpType(std::get<std::string>(type), attributes, {}, named_attrs)
+                        : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
                 if (std::holds_alternative<std::string>(type))
                     TT_LOG_ASSERT(
