@@ -32,7 +32,7 @@ def test_llama_rotary_emb():
             return query_states, key_states
 
     # Load the model
-    llama_model = load_model()
+    llama_model, _ = load_model()
     framework_model = Llama_Rotary_Embedding(llama_model)
     framework_model.eval()
 

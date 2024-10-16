@@ -11,7 +11,7 @@ from forge.op.eval.common import compare_with_golden_pcc
 
 def test_llama_lm_head():
     # Load Llama 3B model and tokenizer
-    framework_model = load_model()
+    framework_model, _ = load_model()
     framework_model = framework_model.model.norm
 
     # Input samples

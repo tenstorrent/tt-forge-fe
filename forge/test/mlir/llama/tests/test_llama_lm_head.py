@@ -12,7 +12,7 @@ from forge.op.eval.common import compare_with_golden_pcc
 @pytest.mark.xfail()
 def test_llama_lm_head():
     # Load Llama 3B model and tokenizer
-    framework_model = load_model()
+    framework_model, _ = load_model()
     framework_model = framework_model.lm_head
 
     # Input samples

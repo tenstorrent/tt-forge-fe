@@ -12,7 +12,7 @@ from forge.op.eval.common import compare_with_golden_pcc
 @pytest.mark.xfail()
 def test_llama_embedding():
     # Load Llama 3B model and tokenizer
-    framework_model = load_model()
+    framework_model, _ = load_model()
     vocab_size = framework_model.config.vocab_size
     framework_model = framework_model.model.embed_tokens
 
