@@ -35,11 +35,13 @@ void AutogradModule(py::module &m_autograd)
             [](tt::autograd::autograd_context &self,
                std::variant<std::string, py::object> const &type,
                std::vector<tt::autograd::NodeContext> operands,
-               std::vector<graphlib::OpType::Attr> attributes)
+               std::vector<graphlib::OpType::Attr> attributes,
+               ForgeOpAttrs named_attrs = {})
             {
-                graphlib::OpType op_type = std::holds_alternative<std::string>(type)
-                                               ? graphlib::OpType(std::get<std::string>(type), attributes)
-                                               : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
+                graphlib::OpType op_type =
+                    std::holds_alternative<std::string>(type)
+                        ? graphlib::OpType(std::get<std::string>(type), attributes, {}, named_attrs)
+                        : std::get<py::object>(type).attr("op_type").cast<graphlib::OpType>();
 
                 if (std::holds_alternative<std::string>(type))
                     TT_LOG_ASSERT(
@@ -61,7 +63,8 @@ void AutogradModule(py::module &m_autograd)
             },
             py::arg("type"),
             py::arg("operands"),
-            py::arg("attributes") = std::vector<graphlib::OpType::Attr>())
+            py::arg("attributes") = std::vector<graphlib::OpType::Attr>(),
+            py::arg("named_attrs") = ForgeOpAttrs())
         .def(
             "create_optimizer_op",
             [](tt::autograd::autograd_context &self,
