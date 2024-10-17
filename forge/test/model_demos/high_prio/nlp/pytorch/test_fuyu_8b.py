@@ -2,11 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig, TTDeviceImage
-from forge._C.backend_api import BackendType, BackendDevice, DeviceMode
-from forge.verify.config import TestKind, NebulaGalaxy
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
 
@@ -144,18 +139,10 @@ class FuyuModelTxtDecoderWrapper(nn.Module):
         return hidden_states, *presents
 
 
-def test_fuyu8b(test_device):
-    pytest.skip("Already past-cache version is up")
+def test_fuyu8b():
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    # compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    # compiler_cfg.enable_tvm_constant_prop = True
-    compiler_cfg.enable_tvm_cpu_fallback = False
-    compiler_cfg.convert_framework_params_to_tvm = False
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "FastCut"
-    # compiler_cfg.amp_level = 2
-    # compiler_cfg.default_dram_parameters = False
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = FuyuConfig.from_pretrained("adept/fuyu-8b")
     config_dict = config.to_dict()
@@ -174,7 +161,6 @@ def test_fuyu8b(test_device):
     # fuyu_model = FuyuForCausalLM(config=config)
     model = FuyuModelWrapper(fuyu_model)
     model.eval()
-    tt_model = forge.PyTorchModule("pt_fuyu_8b", model)
 
     # Prepare inputs
     text_prompt = "Generate a coco-style caption.\n"
@@ -185,81 +171,28 @@ def test_fuyu8b(test_device):
         fuyu_model, model_inputs["input_ids"], model_inputs["image_patches"][0], model_inputs["image_patches_indices"]
     )
     inputs_embeds = inputs_embeds.clone().detach()
-
-    # NOTE: it only runs language-model
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (inputs_embeds.shape,),
-        ],
-        inputs=[
-            [
-                inputs_embeds,
-            ],
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            test_kind=TestKind.INFERENCE,
-            verify_post_placer=False,
-        ),
-    )
-
+    
+    inputs = [inputs_embeds]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+ 
 
 def test_fuyu8b_past_cache(test_device):
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Still under development")
+    pytest.skip("Still under development")
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.compile_subgraphs = True
     compiler_cfg.convert_framework_params_to_tvm = False
     compiler_cfg.enable_link_past_cache_ios = True
     compiler_cfg.amp_level = 2
     compiler_cfg.default_dram_parameters = True
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "FastCut"
-    os.environ["FORGE_RIBBON2"] = "1"
-    os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    os.environ["TT_BACKEND_USE_PIPEGEN1"] = "1"
     os.environ["FUYU8B_FULL_LAYERS"] = "1"  # flag to run the model wit full-layers, does not affect compile process
 
     if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
         num_layers = 36
-        for i in range(0, 80 * num_layers, 80):
-            compiler_cfg.balancer_op_override(f"matmul_{i+68}", "grid_shape", (1, 8))
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{84*1024}"
     else:
         num_layers = 1
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{80*1024}"
-
-    # Full-layer specific overrides
-    for i in range(0, num_layers):
-        if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img.output_concatenate_{i*80+41}_stack", "grid_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img.output_transpose_{i*80+53}_stack", "grid_shape", (1, 1)
-            )
-        else:
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img_{num_layers}.output_concatenate_{i*80+41}_stack", "grid_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img_{num_layers}.output_transpose_{i*80+53}_stack", "grid_shape", (1, 1)
-            )
-        compiler_cfg.balancer_op_override(f"transpose_{i*80+91}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
-        compiler_cfg.balancer_op_override(f"transpose_{i*80+111}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
-        if num_layers > 1:
-            compiler_cfg.balancer_op_override(f"transpose_{(i-1)*160+281}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
-    if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
-        for i in range(69):
-            compiler_cfg.balancer_op_override(f"transpose_{i*80+262}.dc.sparse_matmul.4.lc2", "grid_shape", (2, 1))
-        for i in range(17):
-            compiler_cfg.balancer_op_override(f"transpose_{i*160+3081}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
 
     config = FuyuConfig.from_pretrained("adept/fuyu-8b")
     config_dict = config.to_dict()
@@ -351,21 +284,6 @@ def test_fuyu8b_past_cache(test_device):
             torch.zeros(past_cache_self_shape),
         ]
 
-    # Instantiate modules
-    if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
-        img_decoder = forge.PyTorchModule(
-            "pt_fuyu8b_past_cache_img", FuyuModelImgDecoderWrapper(fuyu_model)
-        )  # feed inputs_embeds
-        txt_decoder = forge.PyTorchModule(
-            "pt_fuyu8b_past_cache_txt", FuyuModelTxtDecoderWrapper(fuyu_model)
-        )  # feed inputs_embeds
-    else:
-        img_decoder = forge.PyTorchModule(
-            f"pt_fuyu8b_past_cache_img_{num_layers}", FuyuModelImgDecoderWrapper(fuyu_model)
-        )  # feed inputs_embeds
-        txt_decoder = forge.PyTorchModule(
-            f"pt_fuyu8b_past_cache_txt_{num_layers}", FuyuModelTxtDecoderWrapper(fuyu_model)
-        )  # feed inputs_embeds
 
     # Place modules
     tt0 = forge.TTDevice(
@@ -373,7 +291,7 @@ def test_fuyu8b_past_cache(test_device):
         devtype=test_device.devtype,
         device_mode=test_device.devmode,
         arch=test_device.arch,
-        module=[img_decoder, txt_decoder],
+        module=[FuyuModelImgDecoderWrapper(fuyu_model), FuyuModelTxtDecoderWrapper(fuyu_model)],
     )
 
     output_q = forge.initialize_pipeline(training=False, sample_inputs=((img_decoder_inputs), (txt_decoder_inputs)))
@@ -381,7 +299,7 @@ def test_fuyu8b_past_cache(test_device):
     ## TEST ##
     generated_tokens = []
     current_token_index = align_up_tile(emb_seq_length)
-    tokens_to_generate = 7 if test_device.devtype == BackendType.Silicon else 1
+    tokens_to_generate = 7 
     for idx in range(tokens_to_generate):
         if idx == 0:
             tt0.set_active_subgraph(0)

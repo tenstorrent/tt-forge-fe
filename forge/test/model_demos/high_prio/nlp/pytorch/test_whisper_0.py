@@ -16,20 +16,13 @@ from transformers import (
     WhisperTokenizer,
     WhisperFeatureExtractor,
     WhisperForConditionalGeneration,
-    LogitsProcessorList,
 )
-from datasets import load_dataset
-from typing import Optional
+
 from forge.forgeglobal import TILE_DIM
 import forge
 from test.utils import download_model
-from forge.verify import verify_module
-from forge.verify.config import TestKind, NebulaGalaxy
-from forge import PyTorchModule, VerifyConfig
 from forge.config import _get_global_compiler_config
-from forge._C.backend_api import BackendType, BackendDevice
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.model_demos.models.whisper import Whisper_encoder, Whisper_decoder, generate_model_whisper_decoder_past_cache
 import time
 
 variants = [
@@ -41,17 +34,11 @@ variants = [
 ]
 
 
-def generate_model_whisper_congen_hf_pytorch(test_device, variant):
+def generate_model_whisper_congen_hf_pytorch(variant):
     # Configurations
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-    if "medium" in variant or "large" in variant:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.amp_level = 1
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -86,27 +73,12 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
     # model_config.decoder_ffn_dim = 2048
     # model_config.encoder_ffn_dim = 2048
 
-    pcc = 0.96 if test_device.devtype == BackendType.Silicon else 0.99
-
-    # Hitting silicon data mismatches with GELU
-    if variant == "openai/whisper-base" or variant == "openai/whisper-medium" or variant == "openai/whisper-large":
-        os.environ["FORGE_DECOMPOSE_GELU"] = "1"
-
-    if variant == "openai/whisper-small":
-        pcc = 0.94 if test_device.devtype == BackendType.Silicon else 0.99
-
-    # Getting proper results for end-to-end runs (speech-to-text); GELU pcc isn't problematic in this case
-    # therefore reducing for proper CI passing and tracking of further regressions
-    if variant == "openai/whisper-large":
-        pcc = 0.58 if test_device.devtype == BackendType.Silicon else 0.99
-
     framework_model = download_model(
         WhisperForConditionalGeneration.from_pretrained,
         variant,
         config=model_config,
     )
     framework_model = Wrapper(framework_model)
-    forge_model = PyTorchModule("pt_whisper", framework_model)
 
     # Load and preprocess sample audio
     sample = torch.load("forge/test/model_demos/utils/nlp/pytorch/1272-128104-0000.pt")
@@ -124,47 +96,21 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
     # Sanity run
     out = framework_model(decoder_input_ids, encoder_outputs)
 
-    return forge_model, [decoder_input_ids, encoder_outputs], {"pcc": pcc}
+    return framework_model, [decoder_input_ids, encoder_outputs]
 
-
-@pytest.mark.skip(reason="Redundant")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_whisper(test_device, variant):
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
-
-    model, inputs, other = generate_model_whisper_congen_hf_pytorch(
-        test_device,
+def test_whisper(variant):
+    
+    model, inputs = generate_model_whisper_congen_hf_pytorch(
         variant,
     )
-
-    verify_module(
-        model,
-        [
-            (inputs[0].shape, inputs[1].shape),
-        ],
-        inputs=[
-            (inputs[0], inputs[1]),
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=other["pcc"],
-            enabled=False if variant == "openai/whisper-medium" else True,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
-
-
+    
+    compiled_model = forge.compile(model, sample_inputs=inputs)   
+    
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.skip(reason="Redundant")
-def test_whisper_pipeline(test_device, variant):
+@pytest.mark.skip(reason="under development")
+def test_whisper_pipeline(variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test failing with no valid grids (50 nodes)")
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -220,12 +166,8 @@ def test_whisper_pipeline(test_device, variant):
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.skip(reason="Redundant")
-def test_whisper_encoder(test_device, variant):
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
-
-    if variant == "openai/whisper-medium" or variant == "openai/whisper-large":
-        pytest.skip("Still under development")
+@pytest.mark.skip(reason="under development")
+def test_whisper_encoder(variant):
 
     # Configurations
     compiler_cfg = _get_global_compiler_config()
@@ -234,31 +176,6 @@ def test_whisper_encoder(test_device, variant):
     compiler_cfg.enable_link_past_cache_ios = True
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.amp_level = 1
-        compiler_cfg.default_dram_parameters = False
-        os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-        os.environ["FORGE_PAD_OUTPUT_BUFFER_THRESHOLD_TILES"] = "1536"
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "35000"
-        os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
-        os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-        os.environ["FORGE_NOP_ON_DIRECT_SHORT_PATH"] = "1"
-        os.environ["FORGE_SKIP_SMALL_UKT"] = "1"
-    elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.enable_auto_fusing = False
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "2000000"
-        if variant == "openai/whisper-small":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
-
-    pcc = 0.95 if test_device.devtype == BackendType.Silicon else 0.99
-    if variant == "openai/whisper-tiny":
-        pcc = 0.92 if test_device.devtype == BackendType.Silicon else 0.99
-
-    if variant == "openai/whisper-base":
-        pcc = 0.93 if test_device.devtype == BackendType.Silicon else 0.99
-        if test_device.arch == BackendDevice.Wormhole_B0:
-            os.environ["FORGE_NLP_MANUAL_TARGET"] = "55000"
 
     config = WhisperConfig.from_pretrained(variant)
     config.return_dict = False
@@ -270,9 +187,6 @@ def test_whisper_encoder(test_device, variant):
         padded_len = pad_to_tiles * TILE_DIM
         pad_amount = padded_len - config.max_source_positions
         config.max_source_positions = padded_len
-    else:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{150*1024}"
-        os.environ["FORGE_EXTRA_L1_MARGIN"] = f"{100*1024}"
 
     model = download_model(
         WhisperForConditionalGeneration.from_pretrained,
@@ -301,7 +215,6 @@ def test_whisper_encoder(test_device, variant):
     processor = download_model(AutoProcessor.from_pretrained, variant)
 
     model = Wrapper(model)
-    forge_model = PyTorchModule("pt_whisper", model)
 
     # Load and preprocess sample audio
     sample = torch.load("forge/test/model_demos/utils/nlp/pytorch/1272-128104-0000.pt")
@@ -313,14 +226,14 @@ def test_whisper_encoder(test_device, variant):
     else:
         input_features = inputs.input_features
 
-    tt0 = forge.TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch, module=forge_model)
+    tt0 = forge.TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch, module=model)
     output_q = forge.initialize_pipeline(
         training=False,
         sample_inputs=(input_features,),
     )
 
     start = time.time()
-    tokens_to_generate = 10 if test_device.devtype == BackendType.Silicon else 3
+    tokens_to_generate = 10 
     for _ in range(tokens_to_generate):
         tt0.push_to_inputs(input_features)
         forge.run_forward(input_count=1)

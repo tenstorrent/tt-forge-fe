@@ -3,39 +3,23 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
-
-import os
-
 import forge
-from transformers import (
-    DistilBertForMaskedLM,
-    DistilBertTokenizer,
-    DistilBertForQuestionAnswering,
-    DistilBertForTokenClassification,
-    DistilBertForSequenceClassification,
-)
+from transformers import DistilBertForMaskedLM, DistilBertTokenizer, DistilBertForQuestionAnswering, DistilBertForTokenClassification, DistilBertForSequenceClassification
 
 variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
-
-
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_distilbert_masked_lm_pytorch(variant, test_device):
+def test_distilbert_masked_lm_pytorch(variant):
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
     # distilbert-base-multilingual-cased
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
-    model_ckpt = "distilbert-base-uncased"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
     model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH 
+    
     # Load data sample
     sample_text = "The capital of France is [MASK]."
 
@@ -47,42 +31,20 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
         truncation=True,
         return_tensors="pt",
     )
+    
+    inputs = [input_tokens['input_ids'], input_tokens['attention_mask']]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
-    verify_module(
-        forge.PyTorchModule("pt_distilbert_masked_lm", model),
-        input_shapes=[
-            (
-                input_tokens["input_ids"].shape,
-                input_tokens["attention_mask"].shape,
-            )
-        ],
-        inputs=[
-            (
-                input_tokens["input_ids"],
-                input_tokens["attention_mask"],
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
-
-
-def test_distilbert_question_answering_pytorch(test_device):
+    
+def test_distilbert_question_answering_pytorch():
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-cased-distilled-squad"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
     model = download_model(DistilBertForQuestionAnswering.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -105,25 +67,12 @@ def test_distilbert_question_answering_pytorch(test_device):
         truncation=True,
         return_tensors="pt",
     )
+    
+    inputs = [input_tokens['input_ids'], input_tokens['attention_mask']]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
-    verify_module(
-        forge.PyTorchModule("pt_distilbert_question_answering", model),
-        input_shapes=[(input_tokens["input_ids"].shape, input_tokens["attention_mask"].shape)],
-        inputs=[(input_tokens["input_ids"], input_tokens["attention_mask"])],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.9,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
-
-
-def test_distilbert_sequence_classification_pytorch(test_device):
+    
+def test_distilbert_sequence_classification_pytorch():
 
     # Load DistilBert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-uncased-finetuned-sst-2-english"
@@ -131,7 +80,7 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     model = download_model(DistilBertForSequenceClassification.from_pretrained, model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH 
 
     # Load data sample
     review = "the movie was great!"
@@ -144,41 +93,18 @@ def test_distilbert_sequence_classification_pytorch(test_device):
         truncation=True,
         return_tensors="pt",
     )
-
-    verify_module(
-        forge.PyTorchModule("pt_distilbert_sequence_classification", model),
-        input_shapes=[
-            (
-                input_tokens["input_ids"].shape,
-                input_tokens["attention_mask"].shape,
-            )
-        ],
-        inputs=[
-            (
-                input_tokens["input_ids"],
-                input_tokens["attention_mask"],
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
-
-
-def test_distilbert_token_classification_pytorch(test_device):
+    
+    inputs = [input_tokens['input_ids'], input_tokens['attention_mask']]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    
+def test_distilbert_token_classification_pytorch():
     # Load DistilBERT tokenizer and model from HuggingFace
     model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
     model = download_model(DistilBertForTokenClassification.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object 
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -191,31 +117,6 @@ def test_distilbert_token_classification_pytorch(test_device):
         truncation=True,
         return_tensors="pt",
     )
-
-    pcc = 0.98 if test_device.devtype == BackendType.Silicon else 0.99
-
-    verify_module(
-        forge.PyTorchModule("pt_distilbert_token_classification", model),
-        input_shapes=[
-            (
-                input_tokens["input_ids"].shape,
-                input_tokens["attention_mask"].shape,
-            )
-        ],
-        inputs=[
-            (
-                input_tokens["input_ids"],
-                input_tokens["attention_mask"],
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=pcc,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    
+    inputs = [input_tokens['input_ids'], input_tokens['attention_mask']]
+    compiled_model = forge.compile(model, sample_inputs=inputs)

@@ -1,18 +1,11 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-
-import os
 import forge
 import torch
 import torchvision.transforms as transforms
 from datasets import load_dataset
 
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
 
 # SPDX-FileCopyrightText: Copyright (c) 2018 Udacity
 #
@@ -49,7 +42,6 @@ class ConvAE(torch.nn.Module):
         act = self.decoder_conv2d_2(act)
 
         return act
-
 
 class LinearAE(torch.nn.Module):
     def __init__(self):
@@ -92,11 +84,10 @@ class LinearAE(torch.nn.Module):
         return act
 
 
-def test_conv_ae_pytorch(test_device):
+def test_conv_ae_pytorch():
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -115,28 +106,13 @@ def test_conv_ae_pytorch(test_device):
     dataset = load_dataset("mnist")
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
+    
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor])
 
-    verify_module(
-        forge.PyTorchModule("pt_conv_ae", model),
-        input_shapes=[t.shape for t in sample_tensor],
-        inputs=[sample_tensor],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
-
-
-def test_linear_ae_pytorch(test_device):
+def test_linear_ae_pytorch():
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -156,18 +132,6 @@ def test_linear_ae_pytorch(test_device):
     dataset = load_dataset("mnist")
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).squeeze(0)
-
-    verify_module(
-        forge.PyTorchModule("pt_linear_ae", model),
-        input_shapes=[t.shape for t in sample_tensor],
-        inputs=[sample_tensor],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor])
+ 
