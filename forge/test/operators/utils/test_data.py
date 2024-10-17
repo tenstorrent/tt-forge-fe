@@ -1,0 +1,256 @@
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
+# SPDX-License-Identifier: Apache-2.0
+
+# Test data for various test cases
+
+import pytest
+import forge
+
+from forge import MathFidelity, DataFormat
+
+from . import InputSource
+from . import TestCollection
+
+
+class TestCollectionCommon:
+    """
+    Shared test collection for all operators. Defined here to avoid duplication of test data.
+    Contains a single test case and a collection of all test cases.
+    """
+
+    __test__ = False  # Avoid collecting TestCollectionCommon as a pytest test
+
+    single = TestCollection(
+        input_sources=[
+            InputSource.FROM_HOST,
+        ],
+        input_shapes=[
+            (1, 2, 3, 4),
+        ],
+        dev_data_formats=[
+            forge.DataFormat.Float16_b,
+        ],
+        math_fidelities=[
+            forge.MathFidelity.HiFi4,
+        ],
+    )
+
+    all = TestCollection(
+        operators=None,
+        input_sources=[
+            InputSource.FROM_ANOTHER_OP,
+            InputSource.FROM_HOST,
+            InputSource.FROM_DRAM_QUEUE,
+            InputSource.CONST_EVAL_PASS,
+        ],
+        input_shapes=[
+            # 2-dimensional shape, microbatch_size = 1:
+            pytest.param(
+                (1, 4), marks=pytest.mark.run_in_pp
+            ),  #            #00      # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (1, 17), marks=pytest.mark.slow
+            ),  #                #01      # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (1, 23), marks=pytest.mark.slow
+            ),  #                #02      # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (1, 1), marks=pytest.mark.slow
+            ),  #                 #03      # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (1, 100), marks=pytest.mark.slow
+            ),  #               #04      # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1, 500), marks=pytest.mark.slow
+            ),  #               #05      # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1, 1000), marks=pytest.mark.slow
+            ),  #              #06      # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (1, 1920), marks=pytest.mark.slow
+            ),  #              #07      # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (1, 10000), marks=pytest.mark.slow
+            ),  #             #08      # 4.4 Extreme ratios between height/width
+            pytest.param((1, 64), marks=pytest.mark.run_in_pp),  #           #09      # 4.1 Divisible by 32
+            pytest.param((1, 96), marks=pytest.mark.slow),  #                #10      # 4.1 Divisible by 32
+            pytest.param((1, 41), marks=pytest.mark.slow),  #                #11      # 4.2 Prime numbers
+            pytest.param((1, 3), marks=pytest.mark.slow),  #                 #12      # 4.2 Prime numbers
+            # 2-dimensional shape, microbatch_size > 1:
+            pytest.param(
+                (3, 4), marks=pytest.mark.run_in_pp
+            ),  #            #13      # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (45, 17), marks=pytest.mark.slow
+            ),  #               #14      # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (64, 1), marks=pytest.mark.slow
+            ),  #                #15      # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (100, 100), marks=pytest.mark.slow
+            ),  #             #16      # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1000, 100), marks=pytest.mark.slow
+            ),  #            #17      # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (10, 1000), marks=pytest.mark.slow
+            ),  #             #18      # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (9920, 1), marks=pytest.mark.slow
+            ),  #              #19      # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (10000, 1), marks=pytest.mark.slow
+            ),  #             #20      # 4.4 Extreme ratios between height/width
+            pytest.param((32, 64), marks=pytest.mark.slow),  #               #21      # 4.1 Divisible by 32
+            pytest.param((160, 96), marks=pytest.mark.slow),  #              #22      # 4.1 Divisible by 32
+            pytest.param((17, 41), marks=pytest.mark.run_in_pp),  #          #23      # 4.2 Prime numbers
+            pytest.param((89, 3), marks=pytest.mark.slow),  #                #24      # 4.2 Prime numbers
+            # 3-dimensional shape, microbatch_size = 1:
+            pytest.param(
+                (1, 3, 4), marks=pytest.mark.run_in_pp
+            ),  #         #25     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (1, 45, 17), marks=pytest.mark.slow
+            ),  #            #26     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (1, 1, 23), marks=pytest.mark.slow
+            ),  #             #27     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (1, 64, 1), marks=pytest.mark.slow
+            ),  #             #28     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (1, 100, 100), marks=pytest.mark.slow
+            ),  #          #29     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1, 1000, 100), marks=pytest.mark.slow
+            ),  #         #30     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1, 10, 1000), marks=pytest.mark.slow
+            ),  #          #31     # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (1, 9920, 1), marks=pytest.mark.slow
+            ),  #           #32     # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (1, 10000, 1), marks=pytest.mark.slow
+            ),  #          #33     # 4.4 Extreme ratios between height/width
+            pytest.param((1, 32, 64), marks=pytest.mark.run_in_pp),  #       #34     # 4.1 Divisible by 32
+            pytest.param((1, 160, 96), marks=pytest.mark.slow),  #           #35     # 4.1 Divisible by 32
+            pytest.param((1, 17, 41), marks=pytest.mark.slow),  #            #36     # 4.2 Prime numbers
+            pytest.param((1, 89, 3), marks=pytest.mark.slow),  #             #37     # 4.2 Prime numbers
+            # 3-dimensional shape, microbatch_size > 1:
+            pytest.param(
+                (2, 3, 4), marks=pytest.mark.run_in_pp
+            ),  #         #38     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (11, 45, 17), marks=pytest.mark.slow
+            ),  #           #39     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (11, 1, 23), marks=pytest.mark.slow
+            ),  #            #40     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (11, 64, 1), marks=pytest.mark.slow
+            ),  #            #41     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (100, 100, 100), marks=pytest.mark.slow
+            ),  #        #42     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (10, 1000, 100), marks=pytest.mark.slow
+            ),  #        #43     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (10, 10000, 1), marks=pytest.mark.slow
+            ),  #         #44     # 4.4 Extreme ratios between height/width
+            pytest.param((32, 32, 64), marks=pytest.mark.slow),  #           #45     # 4.1 Divisible by 32
+            pytest.param((64, 160, 96), marks=pytest.mark.slow),  #          #46     # 4.1 Divisible by 32
+            pytest.param((11, 17, 41), marks=pytest.mark.run_in_pp),  #      #47     # 4.2 Prime numbers
+            pytest.param((13, 89, 3), marks=pytest.mark.slow),  #            #48     # 4.2 Prime numbers
+            # 4-dimensional shape, microbatch_size = 1:
+            pytest.param(
+                (1, 2, 3, 4), marks=pytest.mark.run_in_pp
+            ),  #      #49     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (1, 11, 45, 17), marks=pytest.mark.slow
+            ),  #        #50     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (1, 11, 1, 23), marks=pytest.mark.slow
+            ),  #         #51     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (1, 11, 64, 1), marks=pytest.mark.slow
+            ),  #         #52     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (1, 100, 100, 100), marks=pytest.mark.slow
+            ),  #     #53     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1, 10, 1000, 100), marks=pytest.mark.slow
+            ),  #     #54     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (1, 1, 10, 1000), marks=pytest.mark.slow
+            ),  #       #55     # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (1, 1, 9920, 1), marks=pytest.mark.slow
+            ),  #        #56     # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (1, 10, 10000, 1), marks=pytest.mark.slow
+            ),  #      #57     # 4.4 Extreme ratios between height/width
+            pytest.param((1, 32, 32, 64), marks=pytest.mark.run_in_pp),  #   #58     # 4.1 Divisible by 32
+            pytest.param((1, 64, 160, 96), marks=pytest.mark.slow),  #       #59     # 4.1 Divisible by 32
+            pytest.param((1, 11, 17, 41), marks=pytest.mark.slow),  #        #60     # 4.2 Prime numbers
+            pytest.param((1, 13, 89, 3), marks=pytest.mark.slow),  #         #61     # 4.2 Prime numbers
+            # 4-dimensional shape, microbatch_size > 1:
+            pytest.param(
+                (3, 11, 45, 17), marks=pytest.mark.run_in_pp
+            ),  #  #62     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (2, 2, 3, 4), marks=pytest.mark.slow
+            ),  #          #63     # 3.1 Full tensor (i.e. full expected shape)
+            pytest.param(
+                (4, 11, 1, 23), marks=pytest.mark.slow
+            ),  #        #64     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (5, 11, 64, 1), marks=pytest.mark.slow
+            ),  #        #65     # 3.2 Tensor reduce on one or more dims to 1
+            pytest.param(
+                (6, 100, 100, 100), marks=pytest.mark.slow
+            ),  #    #66     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (7, 10, 1000, 100), marks=pytest.mark.slow
+            ),  #    #67     # 4.3 Very large (thousands, 10s of thousands)
+            pytest.param(
+                (8, 1, 10, 1000), marks=pytest.mark.slow
+            ),  #      #68     # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (9, 1, 9920, 1), marks=pytest.mark.slow
+            ),  #       #69     # 4.4 Extreme ratios between height/width
+            pytest.param(
+                (10, 10, 10000, 1), marks=pytest.mark.slow
+            ),  #    #70     # 4.4 Extreme ratios between height/width
+            pytest.param((11, 32, 32, 64), marks=pytest.mark.slow),  #      #71     # 4.1 Divisible by 32
+            pytest.param((12, 64, 160, 96), marks=pytest.mark.slow),  #     #72     # 4.1 Divisible by 32
+            pytest.param((13, 11, 17, 41), marks=pytest.mark.run_in_pp),  # #73     # 4.2 Prime numbers
+            pytest.param((14, 13, 89, 3), marks=pytest.mark.slow),  #       #74     # 4.2 Prime numbers
+        ],
+        dev_data_formats=[
+            pytest.param(forge.DataFormat.Bfp2, id="Bfp2"),
+            pytest.param(forge.DataFormat.Bfp2_b, id="Bfp2_b"),
+            pytest.param(forge.DataFormat.Bfp4, id="Bfp4"),
+            pytest.param(forge.DataFormat.Bfp4_b, id="Bfp4_b"),
+            pytest.param(forge.DataFormat.Bfp8, id="Bfp8"),
+            pytest.param(forge.DataFormat.Bfp8_b, id="Bfp8_b"),
+            pytest.param(forge.DataFormat.Float16, id="Float16"),
+            pytest.param(forge.DataFormat.Float16_b, id="Float16_b"),
+            pytest.param(forge.DataFormat.Float32, id="Float32"),
+            pytest.param(forge.DataFormat.Lf8, id="Lf8"),
+            pytest.param(forge.DataFormat.RawUInt8, id="RawUInt8"),
+            pytest.param(forge.DataFormat.RawUInt16, id="RawUInt16"),
+            pytest.param(forge.DataFormat.RawUInt32, id="RawUInt32"),
+            pytest.param(forge.DataFormat.Int8, id="Int8"),
+            pytest.param(forge.DataFormat.UInt16, id="UInt16"),
+            pytest.param(forge.DataFormat.Int32, id="Int32"),
+        ],
+        math_fidelities=[
+            forge.MathFidelity.LoFi,
+            forge.MathFidelity.HiFi2,
+            forge.MathFidelity.HiFi3,
+            forge.MathFidelity.HiFi4,
+        ],
+    )
