@@ -7,7 +7,7 @@ import torch.nn as nn
 
 import forge
 import forge.config
-from forge.op.eval.common import compare_with_golden_pcc
+from forge.op.eval.common import compare_with_golden
 
 
 def test_torch_training():
@@ -39,7 +39,7 @@ def test_torch_training():
         output = tt_model(inputs)
 
         output = [co.to("cpu") for co in output]
-        assert compare_with_golden_pcc(golden=golden, calculated=output[0], pcc=0.99)
+        assert compare_with_golden(golden=golden, calculated=output[0])
 
         optimizer.zero_grad()
 
@@ -53,7 +53,7 @@ def test_torch_training():
 
         loss_grad = output[0].grad
         assert loss_grad is not None
-        grad = tt_model.backward(loss_grad)
+        grad = tt_model.backward()
 
         # HACK to run the optimizer step
         # i'm not sure what's the right way to tie the torch optimizer to our params,

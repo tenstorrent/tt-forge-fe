@@ -136,6 +136,7 @@ std::unique_ptr<Graph> extract_forward_graph(const Graph *graph, const std::vect
             intermediate_output->set_intermediate(true);
             intermediate_output->set_shape(node->shape());
             intermediate_output->set_output_df(node->output_df());
+            intermediate_output->set_output_type(graphlib::OutputType::Internal);
 
             auto intermediate_output_node = fwd_graph->add_node(std::move(intermediate_output), 0 /*subgraph_id=*/);
             fwd_graph->add_edge(fwd_graph->get_node_by_name(node->name()), intermediate_output_node);
@@ -228,6 +229,7 @@ std::unique_ptr<Graph> extract_backward_graph(
             auto operand = graph->data_operands(queue_node)[0];
 
             auto output_node = graphlib::create_node<graphlib::OutputNode>(queue_node->name() + "_grad_accumulator");
+            output_node->set_output_type(graphlib::OutputType::Internal);
             output_node->set_shape(queue_node->shape());
             output_node->set_output_df(queue_node->output_df());
             auto grad_out = bwd_graph->add_node(std::move(output_node), 0 /*subgraph_id=*/);
