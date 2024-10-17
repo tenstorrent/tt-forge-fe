@@ -5,6 +5,7 @@
 # Operator test utilities
 
 import random
+import os
 import sys
 import forge
 import torch
@@ -91,6 +92,15 @@ class CompilerUtils:
         compiler_cfg.default_math_fidelity = math_fidelity
 
 
+class DeviceUtils:
+    """Utility functions for Forge verification"""
+
+    @staticmethod
+    def warm_reset():
+        reset_command = "/home/software/syseng/wh/tt-smi -lr all wait -er"
+        os.system(reset_command)
+
+
 class VerifyUtils:
     """Utility functions for Forge verification"""
 
@@ -104,6 +114,7 @@ class VerifyUtils:
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
         math_fidelity: forge.MathFidelity = None,
+        warm_reset: bool = False,
     ):
         """Perform Forge verification on the model
 
@@ -116,7 +127,11 @@ class VerifyUtils:
             input_source_flag: Input source flag
             dev_data_format: Data format
             math_fidelity: Math fidelity
+            warm_reset: Warm reset the device before verification
         """
+
+        if warm_reset:
+            DeviceUtils.warm_reset()
 
         if input_source_flag:
             CompilerUtils.set_input_source(input_source_flag.value)
