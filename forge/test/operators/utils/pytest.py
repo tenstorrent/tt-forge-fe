@@ -7,6 +7,8 @@
 import _pytest
 import _pytest.reports
 
+from _pytest.mark import ParameterSet
+
 
 class PyTestUtils:
     @classmethod
@@ -26,3 +28,15 @@ class PyTestUtils:
             return xfail_reason
 
         return None
+
+
+class PytestParamsUtils:
+    @classmethod
+    def strip_param_set(cls, value):
+        if isinstance(value, ParameterSet):
+            value = value[0][0]
+        return value
+
+    @classmethod
+    def strip_param_sets(cls, values):
+        return [cls.strip_param_set(value) for value in values]
