@@ -114,7 +114,7 @@ def test_batch_size_inference(batch_size, in_features, out_features):
 
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    assert compare_with_golden(golden_pred, pred, pcc=0.95)
+    assert compare_with_golden(golden_pred, pred, pcc=0.95)  # 0.95 is the minimum value for which the test passes
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
@@ -146,11 +146,11 @@ def test_batch_size_training(batch_size, in_features, out_features):
 
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    assert compare_with_golden(golden_pred, pred, pcc=0.95)
+    assert compare_with_golden(golden_pred, pred, pcc=0.95)  # 0.95 is the minimum value for which the test passes
 
     loss = loss_fn(pred, target)
     golden_loss = loss_fn(golden_pred, target)
-    assert torch.allclose(loss, golden_loss, rtol=1e-2)
+    assert torch.allclose(loss, golden_loss, rtol=1e-2)  # 1e-2 is the minimum value for which the test passes
 
     loss.backward()
     tt_model.backward(pred.grad)
