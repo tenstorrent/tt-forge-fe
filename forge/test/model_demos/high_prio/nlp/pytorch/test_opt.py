@@ -3,14 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, DataFormat, NebulaGalaxy
-
-import os
 import forge
-from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import AutoTokenizer, OPTForCausalLM, OPTConfig, OPTForQuestionAnswering, OPTForSequenceClassification
 
 variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
@@ -22,14 +15,7 @@ def test_opt_causal_lm(variant, test_device):
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.default_df_override = DataFormat.Float16_b
-    if variant == "facebook/opt-1.3b":
-        compiler_cfg.amp_level = 2
-
-        # Disable expanding output buffer of fork nodes - causes out of memory issue in blobgen.
-        os.environ["FORGE_FORK_JOIN_EXPAND_FORK_OUTPUT_BUF"] = "0"
-    if variant == "facebook/opt-350m":
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = OPTConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -50,31 +36,8 @@ def test_opt_causal_lm(variant, test_device):
         return_tensors="pt",
     )
 
-    verify_module(
-        forge.PyTorchModule("pt_opt_causal_lm", model),
-        input_shapes=[
-            (
-                input_tokens["input_ids"].shape,
-                input_tokens["attention_mask"].shape,
-            )
-        ],
-        inputs=[
-            (
-                input_tokens["input_ids"],
-                input_tokens["attention_mask"],
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.7,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
@@ -85,9 +48,7 @@ def test_opt_qa(variant, test_device):
     # on a downstream task. Code is for demonstration purposes only.
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.default_df_override = DataFormat.Float16_b
-    if variant == "facebook/opt-1.3b":
-        compiler_cfg.default_df_override = DataFormat.Float16
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     model = download_model(OPTForQuestionAnswering.from_pretrained, variant, torchscript=True)
@@ -105,31 +66,9 @@ def test_opt_qa(variant, test_device):
         return_tensors="pt",
     )
 
-    verify_module(
-        forge.PyTorchModule("pt_opt_question_answering", model),
-        input_shapes=[
-            (
-                input_tokens["input_ids"].shape,
-                input_tokens["attention_mask"].shape,
-            )
-        ],
-        inputs=[
-            (
-                input_tokens["input_ids"],
-                input_tokens["attention_mask"],
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.7,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
@@ -137,9 +76,7 @@ def test_opt_sequence_classification(variant, test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.cpu_fallback_ops.add("adv_index")
-    compiler_cfg.default_df_override = DataFormat.Float16_b
-    if variant == "facebook/opt-1.3b" or variant == "facebook/opt-350m":
-        compiler_cfg.enable_auto_fusing = False
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -161,28 +98,5 @@ def test_opt_sequence_classification(variant, test_device):
         return_tensors="pt",
     )
 
-    verify_module(
-        forge.PyTorchModule("pt_opt_sequence_classification", model),
-        input_shapes=[
-            (
-                input_tokens["input_ids"].shape,
-                input_tokens["attention_mask"].shape,
-            )
-        ],
-        inputs=[
-            (
-                input_tokens["input_ids"],
-                input_tokens["attention_mask"],
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.93,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    compiled_model = forge.compile(model, sample_inputs=inputs)

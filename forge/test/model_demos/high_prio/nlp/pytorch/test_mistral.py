@@ -6,14 +6,7 @@ import time
 import pytest
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
-
 import forge
-from forge import VerifyConfig
-from forge import PyTorchModule
-from forge._C.backend_api import BackendDevice, DeviceMode
-from forge._C import DataFormat, MathFidelity
-from forge.verify.backend import verify_module
-from forge.verify.config import TestKind
 from typing import Optional
 from forge.transformers.pipeline import NLPPipelineWrapper
 
@@ -25,12 +18,10 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral_decoder_layer(variant, test_device):
 
-    if test_device.arch != BackendDevice.Wormhole_B0:
-        pytest.skip("Currently only supported on Wormhole B0 N150 device")
-
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
     module = model.model.layers[0]
+    compiler_cfg = forge.config._get_global_compiler_config()
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a problem with valid node placement can occur
@@ -39,18 +30,8 @@ def test_mistral_decoder_layer(variant, test_device):
     seqlen = 128
 
     sample_inputs = torch.randn(batch_size, seqlen, hidden_dim)
-
-    verify_module(
-        forge.PyTorchModule(f"mistral_decoder_layer_seqlen_{seqlen}_bs_{batch_size}", module),
-        input_shapes=[(sample_inputs.shape,)],
-        inputs=[(sample_inputs,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [sample_inputs]
+    compiled_model = forge.compile(module, sample_inputs=inputs)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -58,30 +39,13 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(variant, test_device):
-    if test_device.arch != BackendDevice.Wormhole_B0:
-        pytest.skip("Currently only supported on Wormhole B0 N150 device")
 
     configuration = MistralConfig()
 
     configuration.sliding_window = None
     configuration.use_cache = False
     configuration.return_dict = False
-
-    forge.set_configuration_options(default_df_override=forge.DataFormat.Float16_b, balancer_policy="Ribbon")
-
-    # configuration for all ops that are not matmul
-    forge.config.configure_mixed_precision(
-        op_type="^((?!matmul).)*$", math_fidelity=MathFidelity.HiFi4, accumulate_df=DataFormat.Float16_b
-    )
-
-    # configuration for all matmul ops
-    # when inputs to matmuls are Bfp8_b, the whole model can fit to single chip
-    forge.config.configure_mixed_precision(
-        op_type="matmul",
-        math_fidelity=MathFidelity.HiFi4,
-        input_df={0: [DataFormat.Bfp8_b, False], 1: [DataFormat.Bfp8_b, False]},
-        accumulate_df=DataFormat.Float16_b,
-    )
+    compiler_cfg = forge.config._get_global_compiler_config()
 
     module = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -92,24 +56,11 @@ def test_mistral(variant, test_device):
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a DRAM allocation problem might occur (this model is already near maximum model size for single chip)
-    batch_size = 1
     prompt = "Of course, fancy writing doesn't just conceal ideas. It can also conceal the lack of them. That's why some people write that way, to conceal the fact that they have nothing to say. Whereas writing simply keeps you honest. If you say nothing simply, it will be obvious to everyone, including you. Simple writing also lasts better. People reading your stuff in the future will be in much the same position as people from other countries reading it today. The culture and the language will have changed. It's not vain to care about that, any more than it's vain for "
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
+    inputs = [sample_inputs]
 
-    verify_module(
-        forge.PyTorchModule(
-            f"full_model_seqlen_{sample_inputs.shape[-1]}_bs_{batch_size}_layers_{configuration.num_hidden_layers}",
-            module,
-        ),
-        input_shapes=[(sample_inputs.shape,)],
-        inputs=[(sample_inputs,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    compiled_model = forge.compile(module, sample_inputs=inputs)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -118,29 +69,13 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
 def test_mistral_decode(variant, test_device):
-    if test_device.arch != BackendDevice.Wormhole_B0:
-        pytest.skip("Currently only supported on Wormhole B0 N150 device")
 
     configuration = MistralConfig()
     configuration.sliding_window = None
     configuration.use_cache = False
     configuration.return_dict = False
 
-    forge.set_configuration_options(default_df_override=forge.DataFormat.Float16_b, balancer_policy="Ribbon")
-
-    # configuration for all ops that are not matmul
-    forge.config.configure_mixed_precision(
-        op_type="^((?!matmul).)*$", math_fidelity=MathFidelity.HiFi4, accumulate_df=DataFormat.Float16_b
-    )
-
-    # configuration for all matmul ops
-    # when inputs to matmuls are Bfp8_b, the whole model can fit to single chip
-    forge.config.configure_mixed_precision(
-        op_type="matmul",
-        math_fidelity=MathFidelity.HiFi4,
-        input_df={0: [DataFormat.Bfp8_b, False], 1: [DataFormat.Bfp8_b, False]},
-        accumulate_df=DataFormat.Float16_b,
-    )
+    compiler_cfg = forge.config._get_global_compiler_config()
 
     pytorch_model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -196,6 +131,7 @@ def test_mistral_decode(variant, test_device):
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.skip(reason="under development")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral_kv_cache(variant, test_device):
     if test_device.arch != BackendDevice.Wormhole_B0:

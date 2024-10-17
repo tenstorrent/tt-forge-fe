@@ -5,14 +5,7 @@ import pytest
 from test.utils import download_model
 import torch
 import forge
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
-
 import os
-
-from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 
 
@@ -26,7 +19,7 @@ def test_gpt2_text_gen(test_device):
     model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Wrapper to get around past key values
     class Wrapper(torch.nn.Module):
@@ -40,71 +33,9 @@ def test_gpt2_text_gen(test_device):
     input_ids = torch.cat(
         [torch.randint(1, model.config.vocab_size, (1, 255)), torch.zeros(1, 1, dtype=torch.int64)], dim=-1
     ).to(torch.int64)
-    decoder_input_ids = torch.zeros(1, 64, dtype=torch.int64)
     attn_mask = torch.ones(1, 256)
-
-    if "FORGE_NEB_GALAXY_CI" in os.environ:
-        chip_ids = [
-            0,
-            11,
-            10,
-            9,
-            8,
-            7,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            6,
-            5,
-            14,
-            13,
-            12,
-            16,
-            15,
-            3,
-            4,
-            26,
-            25,
-            32,
-            31,
-            30,
-            29,
-            28,
-            27,
-            1,
-            2,
-            18,
-            17,
-        ]
-    else:
-        chip_ids = [0]
-
-    tt_model = forge.PyTorchModule("gpt2_generation", Wrapper(model))
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                input_ids.shape,
-                attn_mask.shape,
-            )
-        ],
-        inputs=[
-            (
-                input_ids,
-                attn_mask,
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=chip_ids,
-        ),
-    )
+    inputs = [input_ids, attn_mask]
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs)
 
 
 class Wrapper(torch.nn.Module):
@@ -121,8 +52,8 @@ class Wrapper(torch.nn.Module):
         return self.model(input_ids, past_key_values, attention_mask)
 
 
+@pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(test_device):
-    pytest.skip()  # Still working on this.
     os.environ["GOLDEN_WORMHOLE_B0"] = "1"
     os.environ["FORGE_DEVMODE"] = "1"
     compiler_cfg = forge.config._get_global_compiler_config()

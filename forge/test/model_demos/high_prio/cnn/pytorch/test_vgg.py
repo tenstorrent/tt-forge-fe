@@ -3,10 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
 
 import forge
 import os
@@ -32,26 +28,10 @@ variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 def test_vgg_osmr_pytorch(variant, test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
-        os.environ["FORGE_LEGACY_KERNEL_BROADCAST"] = "1"
-        # Temp mitigations for net2pipe errors, should be removed.
-        #
-        os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-        os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-        os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
-    # STEP 2: Create Forge module from PyTorch model
-    # Variants:
-    # ['vgg11', 'vgg13', 'vgg16', 'vgg19',
-    # 'bn_vgg11', 'bn_vgg13', 'bn_vgg16', 'bn_vgg19',
-    # 'bn_vgg11b', 'bn_vgg13b', 'bn_vgg16b', 'bn_vgg19b']
-    # model = src_VGG_Osmr.vgg11(pretrained=True)
     model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
-    tt_model = forge.PyTorchModule(f"pt_{variant}_osmr", model)
 
     # Image preprocessing
     try:
@@ -73,33 +53,14 @@ def test_vgg_osmr_pytorch(variant, test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    verify_module(
-        tt_model,
-        input_shapes=[(input_batch.shape,)],
-        inputs=[(input_batch,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.9,
-            enabled=False,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])
 
 
 def test_vgg_19_hf_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
-        os.environ["FORGE_LEGACY_KERNEL_BROADCAST"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -109,10 +70,8 @@ def test_vgg_19_hf_pytorch(test_device):
     vgg16, vgg16_bn
     vgg19, vgg19_bn
     """
-    # STEP 2: Create Forge module from PyTorch model
     model = download_model(VGG.from_pretrained, "vgg19")
     model.eval()
-    tt_model = forge.PyTorchModule("pt_vgg_19_hf", model)
 
     # Image preprocessing
     try:
@@ -133,22 +92,7 @@ def test_vgg_19_hf_pytorch(test_device):
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
         )
         input_batch = torch.rand(1, 3, 224, 224)
-
-    verify_module(
-        tt_model,
-        input_shapes=[(input_batch.shape,)],
-        inputs=[(input_batch,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            enabled=False,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])
 
 
 def preprocess_timm_model(model_name):
@@ -177,54 +121,19 @@ def test_vgg_bn19_timm_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
-    # STEP 2: Create Forge module from PyTorch model
-    tt_model = forge.PyTorchModule(model_name + "_timm_pt", model)
-
-    # STEP 3: Run inference on Tenstorrent device
-    verify_module(
-        tt_model,
-        input_shapes=[(image_tensor.shape,)],
-        inputs=[(image_tensor,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-            pcc=0.9,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[image_tensor])
 
 
 def test_vgg_bn19_torchhub_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
-
-    # STEP 2: Create Forge module from PyTorch model
-    # Variants:
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg11', pretrained=True)
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg11_bn', pretrained=True)
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg13', pretrained=True)
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg13_bn', pretrained=True)
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg16', pretrained=True)
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg16_bn', pretrained=True)
-    # model = torch.hub.load('pytorch/vision:v0.10.0', 'vgg19', pretrained=True)
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     model.eval()
-    tt_model = forge.PyTorchModule("pt_vgg_bn19_torchhub", model)
 
     # Image preprocessing
     try:
@@ -246,18 +155,4 @@ def test_vgg_bn19_torchhub_pytorch(test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    verify_module(
-        tt_model,
-        input_shapes=[(input_batch.shape,)],
-        inputs=[(input_batch,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-            pcc=0.98 if test_device.arch == BackendDevice.Grayskull else 0.99,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])

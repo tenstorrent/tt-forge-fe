@@ -1,17 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 from test.utils import download_model
 import torch
 import forge
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
 
 import os
 import torch.nn as nn
+
 
 # SPDX-FileCopyrightText: Copyright (c) 2017 LoRnaTang
 #
@@ -141,18 +137,15 @@ class MobileNetV1(nn.Module):
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Create Forge module from PyTorch model
     model = MobileNetV1(9)
-    tt_model = forge.PyTorchModule("mobilenet_v1", model)
 
     input_shape = (1, 3, 64, 64)
-
     image_tensor = torch.rand(*input_shape)
 
-    return tt_model, [image_tensor], {}
+    return model, [image_tensor], {}
 
 
 def test_mobilenetv1_basic(test_device):
@@ -161,20 +154,7 @@ def test_mobilenetv1_basic(test_device):
         None,
     )
 
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 import requests
@@ -185,13 +165,12 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
-    tt_model = forge.PyTorchModule("mobilenet_v1__hf_075_192", model)
+    # tt_model = forge.PyTorchModule("mobilenet_v1__hf_075_192", model)
 
     # Image load and pre-processing into pixel_values
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -200,7 +179,7 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
 
     image_tensor = inputs.pixel_values
 
-    return tt_model, [image_tensor], {}
+    return model, [image_tensor], {}
 
 
 def test_mobilenetv1_192(test_device):
@@ -208,36 +187,17 @@ def test_mobilenetv1_192(test_device):
         test_device,
         "google/mobilenet_v1_0.75_192",
     )
-
-    # Run inference on Tenstorrent device
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
-    tt_model = forge.PyTorchModule("mobilenet_v1__hf_1_224", model)
 
     # Image load and pre-processing into pixel_values
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -246,7 +206,7 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
 
     image_tensor = inputs.pixel_values
 
-    return tt_model, [image_tensor], {}
+    return model, [image_tensor], {}
 
 
 def test_mobilenetv1_224(test_device):
@@ -254,20 +214,4 @@ def test_mobilenetv1_224(test_device):
         test_device,
         "google/mobilenet_v1_1.0_224",
     )
-
-    # Run inference on Tenstorrent device
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.95,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=inputs)

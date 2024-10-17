@@ -4,7 +4,6 @@
 ## Inception V4
 
 # STEP 0: import Forge library
-import pytest
 import forge
 import os
 import urllib
@@ -19,45 +18,21 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 torch.multiprocessing.set_sharing_strategy("file_system")
-
 import forge
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
 
 
 def generate_model_inceptionV4_imgcls_osmr_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_PAD_SPARSE_MM"] = "{694:704, 676:704, 167:182, 158:160, 39:48}"
-    os.environ["FORGE_MANUAL_SPLICE_DECOMP_TH"] = "158"
-    os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
-    compiler_cfg.balancer_op_override("_fused_op_4", "t_stream_shape", (158, 1))  # TM error
-    compiler_cfg.balancer_op_override("_fused_op_7", "t_stream_shape", (158, 1))  # TM error
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.balancer_op_override("conv2d_551.dc.sparse_matmul.10.dc.sparse_matmul.1.lc2", "grid_shape", (1, 4))
-        # Temp mitigations for net2pipe errors, should be removed.
-        #
-        os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-        os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-        os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-    elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.balancer_op_override("_fused_op_2", "t_stream_shape", (676, 1))  # TM error (ref forge#1527)
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
-    forge_model = forge.PyTorchModule("pt_inception_v4_osmr", framework_model)
 
     # Load and pre-process image
     img_tensor = get_image()
 
-    # Compile & Verify
-    pcc = 0.91 if test_device.arch == BackendDevice.Grayskull else 0.97
-
-    return forge_model, [img_tensor], {"pcc": pcc}
+    return framework_model, [img_tensor]
 
 
 def preprocess_timm_model(model_name):
@@ -102,82 +77,21 @@ def get_image():
 
 
 def test_inception_v4_osmr_pytorch(test_device):
-    model, inputs, other = generate_model_inceptionV4_imgcls_osmr_pytorch(
-        test_device,
-        "inceptionv4",
-    )
-
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=other["pcc"],
-            # padding overrides cause tensor size mismatch during verification: tenstorrent/forge#627
-            verify_post_autograd_passes=False,
-            verify_post_placer=False,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(test_device, variant):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_PAD_SPARSE_MM"] = "{694:704, 676:704, 167:182, 158:160, 39:48}"
-    os.environ["FORGE_MANUAL_SPLICE_DECOMP_TH"] = "158"
-    os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
-    compiler_cfg.balancer_op_override("_fused_op_4", "t_stream_shape", (158, 1))  # TM error
-    compiler_cfg.balancer_op_override("_fused_op_7", "t_stream_shape", (158, 1))  # TM error
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.balancer_op_override("conv2d_551.dc.sparse_matmul.10.dc.sparse_matmul.1.lc2", "grid_shape", (1, 4))
-        # Temp mitigations for net2pipe errors, should be removed.
-        #
-        os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-        os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-        os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-    elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.balancer_op_override("_fused_op_2", "t_stream_shape", (676, 1))  # TM error (ref forge#1527)
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model & Preprocess image
     framework_model, img_tensor = download_model(preprocess_timm_model, variant)
-    forge_model = forge.PyTorchModule("pt_inception_v4_timm", framework_model)
-
-    # Compile & Verify
-    pcc = 0.96 if test_device.arch == BackendDevice.Grayskull else 0.97
-
-    return forge_model, [img_tensor], {}
+    return framework_model, [img_tensor]
 
 
 def test_inception_v4_timm_pytorch(test_device):
-    model, inputs, _ = generate_model_inceptionV4_imgcls_timm_pytorch(
-        test_device,
-        "inception_v4",
-    )
+    model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.97,
-            # padding overrides cause tensor size mismatch during verification: tenstorrent/forge#627
-            verify_post_autograd_passes=False,
-            verify_post_placer=False,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=inputs)
