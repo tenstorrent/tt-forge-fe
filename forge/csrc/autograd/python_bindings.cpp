@@ -64,7 +64,7 @@ void AutogradModule(py::module &m_autograd)
             py::arg("type"),
             py::arg("operands"),
             py::arg("attributes") = std::vector<graphlib::OpType::Attr>(),
-            py::arg("named_attrs") = std::map<std::string, ForgeOpAttr>())
+            py::arg("named_attrs") = ForgeOpAttrs())
         .def(
             "create_optimizer_op",
             [](tt::autograd::autograd_context &self,

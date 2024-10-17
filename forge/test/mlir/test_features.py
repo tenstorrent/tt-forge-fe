@@ -92,7 +92,7 @@ def test_matmul_bias(batch_size, linear_features):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-@pytest.mark.parametrize("batch_size", [1, 2, 16])
+@pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
 def test_batch_size_inference(batch_size, in_features, out_features):
@@ -117,7 +117,7 @@ def test_batch_size_inference(batch_size, in_features, out_features):
     assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
 
-@pytest.mark.parametrize("batch_size", [1, 2, 16])
+@pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
 def test_batch_size_training(batch_size, in_features, out_features):
