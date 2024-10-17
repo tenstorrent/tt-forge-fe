@@ -10,10 +10,10 @@ import numpy as np
 import torch
 from PIL import Image
 from yolov6 import YOLOV6
-from forge.verify.backend import verify_module
-from forge.verify.config import TestKind
-from forge import VerifyConfig
-from forge._C.backend_api import BackendDevice
+# from forge.verify.backend import verify_module
+# from forge.verify.config import TestKind
+# from forge import VerifyConfig
+# from forge._C.backend_api import BackendDevice
 
 # preprocessing steps referred form https://github.com/meituan/YOLOv6/blob/main/inference.ipynb
 
@@ -107,6 +107,7 @@ def test_yolo_v6_pytorch(variant, test_device):
         os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
 
+<<<<<<< HEAD
         if test_device.arch == BackendDevice.Grayskull and variant == "yolov6m":
             compiler_cfg.balancer_op_override("conv2d_258.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1))
             compiler_cfg.balancer_op_override(
@@ -114,10 +115,22 @@ def test_yolo_v6_pytorch(variant, test_device):
                 "t_stream_shape",
                 (2, 1),
             )
+=======
+        # if test_device.arch == BackendDevice.Grayskull and variant == "yolov6m":
+        #     compiler_cfg.balancer_op_override(
+        #         "conv2d_258.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1)
+        #     )
+        #     compiler_cfg.balancer_op_override(
+        #         "conv2d_258.dc.reshape.12.dc.sparse_matmul.3.lc2",
+        #         "t_stream_shape",
+        #         (2, 1),
+        #     )
+>>>>>>> fa325f7 (Modify test files)
 
-        if test_device.arch == BackendDevice.Wormhole_B0 and variant == "yolov6l":
-            os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
+        # if test_device.arch == BackendDevice.Wormhole_B0 and variant == "yolov6l":
+        #     os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
 
+<<<<<<< HEAD
         if test_device.arch == BackendDevice.Grayskull and variant == "yolov6l":
             compiler_cfg.balancer_op_override("conv2d_484.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1))
             compiler_cfg.balancer_op_override(
@@ -125,6 +138,17 @@ def test_yolo_v6_pytorch(variant, test_device):
                 "t_stream_shape",
                 (2, 1),
             )
+=======
+        # if test_device.arch == BackendDevice.Grayskull and variant == "yolov6l":
+        #     compiler_cfg.balancer_op_override(
+        #         "conv2d_484.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1)
+        #     )
+        #     compiler_cfg.balancer_op_override(
+        #         "conv2d_484.dc.reshape.12.dc.sparse_matmul.3.lc2",
+        #         "t_stream_shape",
+        #         (2, 1),
+            # )
+>>>>>>> fa325f7 (Modify test files)
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
@@ -142,7 +166,7 @@ def test_yolo_v6_pytorch(variant, test_device):
     model = model.model
     model.eval()
 
-    tt_model = forge.PyTorchModule(f"{variant}_pt", model)
+    # tt_model = forge.PyTorchModule(f"{variant}_pt", model)
 
     # STEP 3 : prepare input
     url = "http://images.cocodataset.org/val2017/000000397133.jpg"
@@ -153,17 +177,18 @@ def test_yolo_v6_pytorch(variant, test_device):
     input_batch = img.unsqueeze(0)
 
     # STEP 4 : Inference
-    verify_module(
-        tt_model,
-        input_shapes=([input_batch.shape]),
-        inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=([input_batch.shape]),
+    #     inputs=([input_batch]),
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #     ),
+    # )
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

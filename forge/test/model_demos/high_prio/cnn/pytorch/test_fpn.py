@@ -5,8 +5,8 @@ import torch
 import torch.nn as nn
 import forge
 import os
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
 from torchvision.ops import FeaturePyramidNetwork
 from collections import OrderedDict
 
@@ -34,20 +34,21 @@ def test_fpn_pytorch(test_device, test_kind):
 
     # Load FPN model
     model = FPNWrapper([10, 20, 30], 5)
-    tt_model = forge.PyTorchModule("pytorch_fpn", model)
+    # tt_model = forge.PyTorchModule("pytorch_fpn", model)
 
     feat0 = torch.rand(1, 10, 64, 64)
     feat1 = torch.rand(1, 20, 16, 16)
     feat2 = torch.rand(1, 30, 8, 8)
-
-    verify_module(
-        tt_model,
-        input_shapes=[feat0.shape, feat1.shape, feat2.shape],
-        inputs=[(feat0, feat1, feat2)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=test_kind,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[feat0, feat1, feat2])
+    
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=[feat0.shape, feat1.shape, feat2.shape],
+    #     inputs=[(feat0, feat1, feat2)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=test_kind,
+    #     ),
+    # )

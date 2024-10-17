@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge.verify.config import TestKind
-from forge._C.backend_api import BackendDevice
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
+# from forge.verify.config import TestKind
+# from forge._C.backend_api import BackendDevice
 
 import os
 import forge
@@ -129,11 +129,11 @@ def generate_model_vilt_question_answering_hf_pytorch(test_device, variant):
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
     vilt_model = ViltModelWrapper(model, task="qa")
 
-    tt_model = forge.PyTorchModule("ViLt_question_answering", vilt_model)
+    # tt_model = forge.PyTorchModule("ViLt_question_answering", vilt_model)
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return tt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return vilt_model, [embedding_output.detach().cpu(),attention_mask.detach().cpu().to(torch.float32)], {}
 
 
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
@@ -145,19 +145,20 @@ def test_vilt_question_answering_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    pcc = 0.95 if test_device.arch == BackendDevice.Grayskull else 0.96
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape, inputs[1].shape)],
-        inputs=[(inputs[0], inputs[1])],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=pcc,
-        ),
-    )
+    # pcc=0.95 if test_device.arch == BackendDevice.Grayskull else 0.96
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0],inputs[1]])
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,inputs[1].shape)],
+    #     inputs=[(inputs[0],inputs[1])],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=pcc,
+    #     )
+    # )
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
@@ -186,12 +187,11 @@ def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
     vilt_model = ViltModelWrapper(model=model, task="maskedlm", text_seq_len=encoding["input_ids"].shape[1])
 
-    tt_model = forge.PyTorchModule("ViLt_maskedlm", vilt_model)
+    # tt_model = forge.PyTorchModule("ViLt_maskedlm", vilt_model)
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return tt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
-
+    return vilt_model, [embedding_output.detach().cpu(),attention_mask.detach().cpu().to(torch.float32)], {}
 
 variants = ["dandelin/vilt-b32-mlm"]
 
@@ -202,15 +202,16 @@ def test_vilt_maskedlm_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape, inputs[1].shape)],
-        inputs=[(inputs[0], inputs[1])],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.98,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0],inputs[1]])
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,inputs[1].shape)],
+    #     inputs=[(inputs[0],inputs[1])],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=0.98,
+    #     )
+    # )

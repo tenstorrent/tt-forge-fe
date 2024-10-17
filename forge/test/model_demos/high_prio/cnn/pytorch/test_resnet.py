@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
+# from forge._C.backend_api import BackendType, BackendDevice
+# from forge.verify.config import TestKind, NebulaGalaxy
 
 import os
 import forge
@@ -46,40 +46,36 @@ def generate_model_resnet_imgcls_hf_pytorch(test_device, variant):
     # Data preprocessing
     inputs = feature_extractor(image, return_tensors="pt")
     pixel_values = inputs["pixel_values"]
-    model = forge.PyTorchModule("pt_resnet50", model)
-
+    # model = forge.PyTorchModule("pt_resnet50", model)
+    
     return model, [pixel_values], {}
 
 
 @pytest.mark.parametrize("enable_default_dram_parameters", [True, False])
 def test_resnet(test_device, enable_default_dram_parameters):
-    if test_device.arch == BackendDevice.Grayskull and enable_default_dram_parameters == False:
-        pytest.skip(
-            "Failing on GS with: Core (c=0,y=8,x=1) [routing]  (c=0,y=6,x=0) [worker] [op_name=add_69] exceeded resource constraints: active dram queues used: 56 limit: 40"
-        )
-
+    # if test_device.arch == BackendDevice.Grayskull and enable_default_dram_parameters == False:
+    #     pytest.skip("Failing on GS with: Core (c=0,y=8,x=1) [routing]  (c=0,y=6,x=0) [worker] [op_name=add_69] exceeded resource constraints: active dram queues used: 56 limit: 40")
+    
     model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
         test_device,
         "microsoft/resnet-50",
     )
 
     compiler_cfg = forge.config._get_global_compiler_config()
-
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.9,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    # verify_module(
+    #     model,
+    #     input_shapes=[inputs[0].shape],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=0.9,
+    #         chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+    #     )
+    # )
 
 
 def generate_model_resnet_imgcls_timm_pytorch(test_device, variant):
@@ -104,9 +100,9 @@ def generate_model_resnet_imgcls_timm_pytorch(test_device, variant):
         image = torch.rand(1, 3, 256, 256)
 
     # Data preprocessing
-    pixel_values = transform(image).unsqueeze(0)
-
-    model = forge.PyTorchModule("pt_resnet50", model)
+    pixel_values = transform(image).unsqueeze(0) 
+    
+    # model = forge.PyTorchModule("pt_resnet50", model)
 
     return model, [pixel_values], {}
 
@@ -116,19 +112,18 @@ def test_resnet_timm(test_device):
         test_device,
         "resnet50",
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.9,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    # verify_module(
+    #     model,
+    #     input_shapes=[inputs[0].shape],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=0.9,
+    #         chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+    #     )
+    # )

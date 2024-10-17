@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
+# from forge._C.backend_api import BackendType, BackendDevice
+# from forge.verify.config import TestKind, NebulaGalaxy
 
 
 import os
@@ -27,12 +27,14 @@ def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    if test_device.arch == BackendDevice.Grayskull:
-        os.environ["FORGE_RIBBON2"] = "1"
+    # if test_device.arch == BackendDevice.Grayskull:
+    #     os.environ["FORGE_RIBBON2"] = "1"
 
     # Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
-    tt_model = forge.PyTorchModule("mobilenet_v3_large_pt", model)
+    model = download_model(torch.hub.load,
+        "pytorch/vision:v0.10.0", variant, pretrained=True
+    )
+    # tt_model = forge.PyTorchModule("mobilenet_v3_large_pt", model)
 
     # Run inference on Tenstorrent device
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -40,8 +42,8 @@ def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
     # TODO : Choose image preprocessor from torchvision, to make a compatible postprocessing of the predicted class
     preprocessor = AutoImageProcessor.from_pretrained("google/mobilenet_v2_1.0_224")
     image_tensor = preprocessor(images=image, return_tensors="pt").pixel_values
-
-    return tt_model, [image_tensor], {}
+    
+    return model, [image_tensor], {}
 
 
 variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
@@ -53,22 +55,21 @@ def test_mobilenetv3_basic(variant, test_device):
         test_device,
         variant,
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-            enabled=False,  # TODO: small variant has very low PCC, large variant has high PCC
-        ),
-    )
+    # verify_module(
+    #     model,
+    #     input_shapes=[inputs[0].shape],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+    #         enabled=False # TODO: small variant has very low PCC, large variant has high PCC
+    #     )
+    # )
 
 
 def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
@@ -83,9 +84,11 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
     if variant == "mobilenetv3_small_100":
         model = download_model(timm.create_model, f"hf_hub:timm/mobilenetv3_small_100.lamb_in1k", pretrained=True)
     else:
-        model = download_model(timm.create_model, f"hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True)
-
-    tt_model = forge.PyTorchModule(variant, model)
+        model = download_model(timm.create_model,
+            f"hf_hub:timm/mobilenetv3_large_100.ra_in1k", pretrained=True
+        )
+        
+    # tt_model = forge.PyTorchModule(variant, model)
 
     # Image load and pre-processing into pixel_values
     try:
@@ -104,7 +107,8 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
         )
         image_tensor = torch.rand(1, 3, 224, 224)
 
-    return tt_model, [image_tensor], {}
+    
+    return model, [image_tensor], {}
 
 
 variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
@@ -118,22 +122,21 @@ def test_mobilenetv3_timm(variant, test_device):
     )
 
     os.environ["FORGE_LEGACY_KERNEL_BROADCAST"] = "1"
-
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-            enabled=False,  # TODO: small variant has very low PCC, large variant has high PCC
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    
+    # verify_module(
+    #     model,
+    #     input_shapes=[inputs[0].shape],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+    #         enabled=False # TODO: small variant has very low PCC, large variant has high PCC
+    #     )
+    # )
 
 
 variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
@@ -149,16 +152,17 @@ def test_mobilenetv3_timm_1x1(variant, test_device):
         test_device,
         variant,
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            enabled=False,  # TODO: small variant has very low PCC, large variant has high PCC
-        ),
-    )
+    # verify_module(
+    #     model,
+    #     input_shapes=[inputs[0].shape],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         enabled=False # TODO: small variant has very low PCC, large variant has high PCC
+    #     )
+    # )

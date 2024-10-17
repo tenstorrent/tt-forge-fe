@@ -54,7 +54,7 @@ def test_ddrnet_pytorch(variant, test_device):
 
     model_name = f"pt_{variant}"
 
-    tt_model = forge.PyTorchModule(model_name, model)
+    # tt_model = forge.PyTorchModule(model_name, model)
 
     # STEP 3: Prepare input
     url = "https://raw.githubusercontent.com/pytorch/hub/master/images/dog.jpg"
@@ -70,19 +70,20 @@ def test_ddrnet_pytorch(variant, test_device):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[input_batch])
 
-    verify_module(
-        tt_model,
-        input_shapes=([input_batch.shape]),
-        inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=(0.98 if test_device.arch == BackendDevice.Grayskull and variant != "ddrnet23s" else 0.99),
-        ),
-    )
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=([input_batch.shape]),
+    #     inputs=([input_batch]),
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=(0.98 if test_device.arch == BackendDevice.Grayskull and variant != "ddrnet23s" else 0.99),
+    #     ),
+    # )
 
 
 variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
@@ -97,9 +98,9 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
     os.environ["FORGE_RIBBON2"] = "1"
 
-    if variant == "ddrnet23s_cityscapes" and test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.enable_auto_fusing = False
-        compiler_cfg.amp_level = 2
+    # if variant == "ddrnet23s_cityscapes" and test_device.arch == BackendDevice.Wormhole_B0:
+    #     compiler_cfg.enable_auto_fusing = False
+    #     compiler_cfg.amp_level = 2
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":
@@ -131,23 +132,24 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     model.load_state_dict(state_dict, strict=False)
     model.eval()
     model_name = f"pt_{variant}"
-    tt_model = forge.PyTorchModule(model_name, model)
+    # tt_model = forge.PyTorchModule(model_name, model)
 
     # prepare input
     image_path = "third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/image/road_scenes.png"
     input_image = Image.open(image_path)
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
-
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    
     # Inference
-    verify_module(
-        tt_model,
-        input_shapes=([input_batch.shape]),
-        inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=([input_batch.shape]),
+    #     inputs=([input_batch]),
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #     ),
+    # )

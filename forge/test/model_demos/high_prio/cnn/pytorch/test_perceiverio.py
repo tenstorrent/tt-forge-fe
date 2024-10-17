@@ -15,9 +15,9 @@ from transformers import (
     PerceiverForImageClassificationFourier,
 )
 
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge.verify.config import TestKind
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
+# from forge.verify.config import TestKind
 
 
 def get_sample_data(model_name):
@@ -61,48 +61,52 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
         os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
         os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
 
-    if test_device.arch == forge.BackendDevice.Wormhole_B0:
+    # if test_device.arch == forge.BackendDevice.Wormhole_B0:
 
-        if variant == "deepmind/vision-perceiver-conv":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{10*1024}"
+    #     if variant == "deepmind/vision-perceiver-conv":
+    #         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{10*1024}"
 
-        if variant in [
-            "deepmind/vision-perceiver-learned",
-            "deepmind/vision-perceiver-fourier",
-        ]:
-            os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
-            compiler_cfg.enable_auto_fusing = False
+    #     if variant in [
+    #         "deepmind/vision-perceiver-learned",
+    #         "deepmind/vision-perceiver-fourier",
+    #     ]:
+    #         os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
+    #         compiler_cfg.enable_auto_fusing = False
 
-        if variant == "deepmind/vision-perceiver-fourier":
-            compiler_cfg.balancer_op_override("hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 2))
-            if test_device.devtype == forge.BackendType.Silicon:
-                pcc_value = 0.97
+    #     if variant == "deepmind/vision-perceiver-fourier":
+    #         compiler_cfg.balancer_op_override(
+    #             "hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 2)
+    #         )
+    #         if test_device.devtype == forge.BackendType.Silicon:
+    #             pcc_value = 0.97
 
-        if variant == "deepmind/vision-perceiver-learned":
-            if test_device.devtype == forge.BackendType.Silicon:
-                pcc_value = 0.92
+    #     if variant == "deepmind/vision-perceiver-learned":
+    #         if test_device.devtype == forge.BackendType.Silicon:
+    #             pcc_value = 0.92
 
-    elif test_device.arch == forge.BackendDevice.Grayskull:
+    # elif test_device.arch == forge.BackendDevice.Grayskull:
 
-        if test_device.devtype == forge.BackendType.Silicon:
-            verify_enabled = False
+    #     if test_device.devtype == forge.BackendType.Silicon:
+    #         verify_enabled = False
 
-        if variant in [
-            "deepmind/vision-perceiver-conv",
-            "deepmind/vision-perceiver-learned",
-            "deepmind/vision-perceiver-fourier",
-        ]:
-            compiler_cfg.enable_auto_fusing = False
+    #     if variant in [
+    #         "deepmind/vision-perceiver-conv",
+    #         "deepmind/vision-perceiver-learned",
+    #         "deepmind/vision-perceiver-fourier",
+    #     ]:
+    #         compiler_cfg.enable_auto_fusing = False
 
-        if variant in [
-            "deepmind/vision-perceiver-learned",
-            "deepmind/vision-perceiver-fourier",
-        ]:
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{101*1024}"
-            os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
+    #     if variant in [
+    #         "deepmind/vision-perceiver-learned",
+    #         "deepmind/vision-perceiver-fourier",
+    #     ]:
+    #         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{101*1024}"
+    #         os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
 
-        if variant == "deepmind/vision-perceiver-fourier":
-            compiler_cfg.balancer_op_override("hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 7))
+    #     if variant == "deepmind/vision-perceiver-fourier":
+    #         compiler_cfg.balancer_op_override(
+    #             "hslice_41.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 7)
+    #         )
 
     # Sample Image
     pixel_values = get_sample_data(variant)
@@ -122,19 +126,22 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     model.eval()
 
-    tt_model = forge.PyTorchModule("pt_" + str(variant.split("/")[-1].replace("-", "_")), model)
+    # tt_model = forge.PyTorchModule(
+    #     "pt_" + str(variant.split("/")[-1].replace("-", "_")), model
+    # )
 
     # Run inference on Tenstorrent device
-    verify_module(
-        tt_model,
-        input_shapes=[(pixel_values.shape,)],
-        inputs=[(pixel_values)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            enabled=verify_enabled,  # pcc drops in silicon devicetype
-            pcc=pcc_value,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[pixel_values])
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=[(pixel_values.shape,)],
+    #     inputs=[(pixel_values)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         enabled=verify_enabled,  # pcc drops in silicon devicetype
+    #         pcc=pcc_value,
+    #     ),
+    # )

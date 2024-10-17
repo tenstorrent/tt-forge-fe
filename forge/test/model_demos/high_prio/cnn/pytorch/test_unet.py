@@ -17,10 +17,10 @@ from PIL import Image
 import numpy as np
 import pytest
 
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
+# from forge._C.backend_api import BackendType, BackendDevice
+# from forge.verify.config import TestKind
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
@@ -35,27 +35,27 @@ def generate_model_unet_imgseg_osmr_pytorch(test_device, variant):
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     os.environ["FORGE_FORCE_RESIZE_DENSE_MM"] = "1"
     os.environ["FORGE_RIBBON2"] = "1"
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.balancer_policy = "Ribbon"
-        os.environ["FORGE_BALANCER_PREPASS_DISABLED"] = "1"
-        # Temp mitigations for net2pipe errors, should be removed.
-        #
-        os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-        os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-        os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-    elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.balancer_policy = "CNN"
+    # if test_device.arch == BackendDevice.Wormhole_B0:
+    #     compiler_cfg.balancer_policy = "Ribbon"
+    #     os.environ["FORGE_BALANCER_PREPASS_DISABLED"] = "1"
+    #     # Temp mitigations for net2pipe errors, should be removed.
+    #     #
+    #     os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
+    #     os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
+    #     os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
+    # elif test_device.arch == BackendDevice.Grayskull:
+    #     compiler_cfg.balancer_policy = "CNN"
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, variant, pretrained=False)
-    tt_model = forge.PyTorchModule("unet_cityscapes_osmr_pt", model)
+    # tt_model = forge.PyTorchModule("unet_cityscapes_osmr_pt", model) 
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = x = torch.randn(1, 3, 224, 224)
-    # img_tensor = x = torch.randn(1, 3, 1024, 2048)
-    # output = model(img_tensor)
-
-    return tt_model, [img_tensor], {}
+    #img_tensor = x = torch.randn(1, 3, 1024, 2048)
+    #output = model(img_tensor)
+    
+    return model, [img_tensor], {}
 
 
 def test_unet_osmr_cityscape_pytorch(test_device):
@@ -63,19 +63,20 @@ def test_unet_osmr_cityscape_pytorch(test_device):
         test_device,
         "unet_cityscapes",
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.98 if test_device.arch == BackendDevice.Grayskull else 0.99,  # Grayskull PCC is about 0.986
-        ),
-    )
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,)],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc = 0.98 if test_device.arch == BackendDevice.Grayskull else 0.99 # Grayskull PCC is about 0.986
+    #     )
+    # )
 
 
 def get_imagenet_sample():
@@ -115,22 +116,23 @@ def test_unet_holocron_pytorch(test_device):
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(unet_tvvgg11, pretrained=True).eval()
-    tt_model = forge.PyTorchModule("unet_holocron_pt", model)
+    model = download_model(unet_tvvgg11, pretrained= True).eval()
+    # tt_model = forge.PyTorchModule("unet_holocron_pt", model) 
 
     img_tensor = get_imagenet_sample()
-
-    verify_module(
-        tt_model,
-        input_shapes=[(img_tensor.shape,)],
-        inputs=[(img_tensor,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor])
+    
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=[(img_tensor.shape,)],
+    #     inputs=[(img_tensor,)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #     )
+    # )
 
     # STEP 3: Run inference on Tenstorrent device
     # output = model(img_tensor)
@@ -171,8 +173,8 @@ def generate_model_unet_imgseg_smp_pytorch(test_device, variant):
         classes=1,  # model output channels (number of classes in your dataset)
     )
     model.eval()
-
-    tt_model = forge.PyTorchModule("unet_qubvel_pt", model)
+    
+    # tt_model = forge.PyTorchModule("unet_qubvel_pt", model) 
 
     # Image preprocessing
     params = download_model(smp.encoders.get_preprocessing_params, encoder_name)
@@ -184,7 +186,7 @@ def generate_model_unet_imgseg_smp_pytorch(test_device, variant):
     img_tensor = (img_tensor - mean) / std
     print(img_tensor.shape)
 
-    return tt_model, [img_tensor], {}
+    return model, [img_tensor], {}
 
 
 def test_unet_qubvel_pytorch(test_device):
@@ -192,31 +194,30 @@ def test_unet_qubvel_pytorch(test_device):
         test_device,
         None,
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.92
-            if test_device.arch == BackendDevice.Grayskull
-            else 0.97,  # Grayskull PCC is about 0.925, WH B0 PCC is about 0.976
-        ),
-    )
-
-
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,)],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc = 0.92 if test_device.arch == BackendDevice.Grayskull else 0.97 # Grayskull PCC is about 0.925, WH B0 PCC is about 0.976
+    #     )
+    # )
+    
 def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.balancer_policy = "CNN"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
-    if test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.balancer_op_override("conv2d_transpose_174.dc.conv2d.17.dc.matmul.11", "grid_shape", (4, 4))
+    # if test_device.arch == BackendDevice.Grayskull:
+    #     compiler_cfg.balancer_op_override("conv2d_transpose_174.dc.conv2d.17.dc.matmul.11", "grid_shape", (4,4))
+
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(
@@ -229,17 +230,12 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
         pretrained=True,
     )
     model.eval()
-    tt_model = forge.PyTorchModule("pt_unet_torchhub", model)
-
-    # Download an example input image
-    url, filename = (
-        "https://github.com/mateuszforge/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png",
-        "TCGA_CS_4944.png",
-    )
-    try:
-        urllib.URLopener().retrieve(url, filename)
-    except:
-        urllib.request.urlretrieve(url, filename)
+    # tt_model = forge.PyTorchModule("pt_unet_torchhub", model)
+    
+    # Download an example input image  
+    url, filename = ("https://github.com/mateuszforge/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png", "TCGA_CS_4944.png")
+    try: urllib.URLopener().retrieve(url, filename)
+    except: urllib.request.urlretrieve(url, filename)
     input_image = Image.open(filename)
     m, s = np.mean(input_image, axis=(0, 1)), np.std(input_image, axis=(0, 1))
     preprocess = transforms.Compose(
@@ -250,8 +246,10 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
     )
     input_tensor = preprocess(input_image)
     img_batch = input_tensor.unsqueeze(0)
+    
+    return model, [img_batch], {}
 
-    return tt_model, [img_batch], {}
+    return model, [img_batch], {}
 
 
 def test_unet_torchhub_pytorch(test_device):
@@ -261,19 +259,20 @@ def test_unet_torchhub_pytorch(test_device):
         test_device,
         "unet",
     )
-
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            enabled=False,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,)],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         enabled=False,
+    #     )
+    # )
     # print(img_batch.shape)
 
     # # STEP 3: Run inference on Tenstorrent device

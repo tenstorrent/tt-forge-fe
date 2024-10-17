@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import forge
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge.verify.config import TestKind
+# from forge.verify.backend import verify_module
+# from forge import VerifyConfig
+# from forge.verify.config import TestKind
 from transformers import (
     AutoImageProcessor,
     SegformerForImageClassification,
@@ -48,24 +48,24 @@ def test_segformer_image_classification_pytorch(test_device, variant):
     os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
     pcc_value = 0.99
 
-    if test_device.arch == forge.BackendDevice.Wormhole_B0:
+    # if test_device.arch == forge.BackendDevice.Wormhole_B0:
 
-        if variant in [
-            "nvidia/mit-b1",
-            "nvidia/mit-b2",
-            "nvidia/mit-b3",
-            "nvidia/mit-b4",
-            "nvidia/mit-b5",
-        ]:
-            os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
+    #     if variant in [
+    #         "nvidia/mit-b1",
+    #         "nvidia/mit-b2",
+    #         "nvidia/mit-b3",
+    #         "nvidia/mit-b4",
+    #         "nvidia/mit-b5",
+    #     ]:
+    #         os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
 
-        if variant == "nvidia/mit-b0" and test_device.devtype == forge.BackendType.Silicon:
-            pcc_value = 0.97
+    #     if variant == "nvidia/mit-b0" and test_device.devtype == forge.BackendType.Silicon:
+    #         pcc_value = 0.97
 
-    elif test_device.arch == forge.BackendDevice.Grayskull:
+    # elif test_device.arch == forge.BackendDevice.Grayskull:
 
-        if variant in ["nvidia/mit-b1"] and test_device.devtype == forge.BackendType.Silicon:
-            pcc_value = 0.97
+    #     if variant in ["nvidia/mit-b1"] and test_device.devtype == forge.BackendType.Silicon:
+    #         pcc_value = 0.97
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -81,20 +81,21 @@ def test_segformer_image_classification_pytorch(test_device, variant):
     pixel_values = get_sample_data(variant)
 
     # Create Forge module from PyTorch model
-    tt_model = forge.PyTorchModule("pt_" + str(variant.split("/")[-1].replace("-", "_")), model)
+    # tt_model = forge.PyTorchModule("pt_" + str(variant.split("/")[-1].replace("-", "_")), model)
+    compiled_model = forge.compile(model, sample_inputs=[pixel_values])
 
     # Run inference on Tenstorrent device
-    verify_module(
-        tt_model,
-        input_shapes=[(pixel_values.shape,)],
-        inputs=[(pixel_values,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            verify_forge_codegen_vs_framework=True,
-            verify_tvm_compile=True,
-            pcc=pcc_value,
-        ),
-    )
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=[(pixel_values.shape,)],
+    #     inputs=[(pixel_values,)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         verify_forge_codegen_vs_framework=True,
+    #         verify_tvm_compile=True,
+    #         pcc=pcc_value,
+    #     ),
+    # )

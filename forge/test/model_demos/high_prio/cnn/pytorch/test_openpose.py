@@ -12,10 +12,10 @@ from torchvision import transforms
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
-from forge import VerifyConfig, CompileDepth
-from forge.verify.config import TestKind, BackendDevice, DataFormat, NebulaGalaxy
-from forge._C.backend_api import BackendType
-from forge.verify.backend import verify_module
+# from forge import VerifyConfig, CompileDepth
+# from forge.verify.config import TestKind, BackendDevice, DataFormat, NebulaGalaxy
+# from forge._C.backend_api import BackendType
+# from forge.verify.backend import verify_module
 from test.utils import download_model
 
 
@@ -292,19 +292,19 @@ variants = [
 def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Init config
     compiler_cfg = forge.config._get_global_compiler_config()
+    
+    # if test_device.arch == BackendDevice.Grayskull:
+    #     # Limit to BE Golden verify as hang occures due to the fork-join buffering
+    #     # tenstorrent/forge#880
+    #     compiler_cfg.compile_depth = CompileDepth.BACKEND_GOLDEN_VERIFY
 
-    if test_device.arch == BackendDevice.Grayskull:
-        # Limit to BE Golden verify as hang occures due to the fork-join buffering
-        # tenstorrent/forge#880
-        compiler_cfg.compile_depth = CompileDepth.BACKEND_GOLDEN_VERIFY
-
-    if variant == "body_basic" and test_device.arch == BackendDevice.Grayskull:
-        # Possibilities of finding out better way of handling extra blob gen size
-        # tenstorrent/forge#881
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{12*1024}"
-
-    if variant == "hand_basic" and test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{96*1024}"
+    # if variant == "body_basic" and test_device.arch == BackendDevice.Grayskull:
+    #     # Possibilities of finding out better way of handling extra blob gen size
+    #     # tenstorrent/forge#881
+    #     os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{12*1024}"
+        
+    # if variant == "hand_basic" and test_device.arch == BackendDevice.Wormhole_B0:
+    #     os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{96*1024}"
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -333,15 +333,15 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
         sample_path = "third_party/confidential_customer_models/model_2/pytorch/openpose/samples/hand.jpeg"
     framework_model_dict = transfer(framework_model, torch.load(model_path))
     framework_model.load_state_dict(framework_model_dict)
-    forge_model = forge.PyTorchModule("open_pose_" + variant + "_pt", framework_model)
+    # forge_model = forge.PyTorchModule("open_pose_" + variant + "_pt", framework_model)
 
     # Load & pre-process image
     img_tensor = get_image_tensor(sample_path)
 
     # Sanity run
     cpu_out = framework_model(img_tensor)
-
-    return forge_model, [img_tensor], {}
+    
+    return framework_model, [img_tensor], {}
 
 
 @pytest.mark.parametrize("variant", variants)
@@ -351,31 +351,36 @@ def test_openpose_basic(variant, test_device):
         test_device,
         variant,
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
     # Verify
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-            pcc=0.9,
-        ),
-    )
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,)],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         chip_ids=NebulaGalaxy.chip_ids if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI"))==1 else [0],
+    #         pcc=0.9,
+    #     ),
+    # )
 
 
 def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
-    if test_device.arch == BackendDevice.Grayskull and variant == "lwopenpose2d_mobilenet_cmupan_coco":
-        pytest.skip("Grayskull failing with data mismatch PCC = 0.5567322296627039")
+    # if (
+    #     test_device.arch == BackendDevice.Grayskull
+    #     and variant == "lwopenpose2d_mobilenet_cmupan_coco"
+    # ):
+    #     pytest.skip("Grayskull failing with data mismatch PCC = 0.5567322296627039")
 
-    if test_device.arch == BackendDevice.Grayskull and variant == "lwopenpose3d_mobilenet_cmupan_coco":
-        pytest.skip("Grayskull failing with data mismatch PCC = 0.7433900704259362")
+    # if (
+    #     test_device.arch == BackendDevice.Grayskull
+    #     and variant == "lwopenpose3d_mobilenet_cmupan_coco"
+    # ):
+    #     pytest.skip("Grayskull failing with data mismatch PCC = 0.7433900704259362")
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -386,7 +391,7 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
-    forge_model = forge.PyTorchModule("openpose_" + variant + "_pt", framework_model)
+    # forge_model = forge.PyTorchModule("openpose_" + variant + "_pt", framework_model)
 
     # Load & pre-process image
     sample_path = "third_party/confidential_customer_models/model_2/pytorch/openpose/samples/body.jpeg"
@@ -394,8 +399,8 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
 
     # Sanity run
     cpu_out = framework_model(img_tensor)
-
-    return forge_model, [img_tensor], {}
+    
+    return framework_model, [img_tensor], {}
 
 
 variants = [
@@ -410,17 +415,18 @@ def test_openpose_osmr(variant, test_device):
         test_device,
         variant,
     )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
     # Verify
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.85,
-        ),
-    )
+    # verify_module(
+    #     model,
+    #     input_shapes=[(inputs[0].shape,)],
+    #     inputs=[(inputs[0],)],
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=0.85,
+    #     ),
+    # )

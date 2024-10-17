@@ -1,68 +1,34 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
-# SPDX-License-Identifier: Apache-2.0
-
-import os
-
 import forge
 # from forge.verify.backend import verify_module
 # from forge import VerifyConfig
 # from forge.verify import TestKind
-# from forge._C.backend_api import BackendDevice
+import os
 import requests
-import pytest
 import torchvision.transforms as transforms
 from PIL import Image
-
-from test.model_demos.models.dla import (
-    dla34,
-    dla46_c,
-    dla46x_c,
-    dla60x_c,
-    dla60,
-    dla60x,
-    dla102,
-    dla102x,
-    dla102x2,
-    dla169,
-)
+from test.model_demos.models.monodle import CenterNet3D
 
 
-variants_func = {
-    "dla34": dla34,
-    "dla46_c": dla46_c,
-    "dla46x_c": dla46x_c,
-    "dla60x_c": dla60x_c,
-    "dla60": dla60,
-    "dla60x": dla60x,
-    "dla102": dla102,
-    "dla102x": dla102x,
-    "dla102x2": dla102x2,
-    "dla169": dla169,
-}
-variants = list(variants_func.keys())
-
-
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dla_pytorch(variant, test_device):
-    # Forge configuration parameters
+def test_monodle_pytorch(test_device):
+    # PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg.enable_auto_fusing = False
     compiler_cfg.default_df_override = forge._C.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
-
-    func = variants_func[variant]
-    model_name = f"dla_{variant}_pytorch"
+    os.environ["PYBUDA_RIBBON2"] = "1"
 
     pcc = 0.99
-    # if test_device.arch == BackendDevice.Wormhole_B0:
-    #     if variant == ("dla60", "dla60x"):
-    #         compiler_cfg.place_on_new_epoch("concatenate_776.dc.concatenate.0")
-    # elif test_device.arch == BackendDevice.Grayskull:
-    #     if func.__name__ in ("dla102x2", "dla169"):
-    #         os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
-    #     if func.__name__ == "dla46_c":
-    #         pcc = 0.97
+    # if test_device.arch == forge.BackendDevice.Wormhole_B0:
+    #     os.environ["PYBUDA_DISABLE_CONSTANT_FOLDING"] = "1"
+    #     os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{88*1024}"
+    #     pcc = 0.98
+    # elif test_device.arch == forge.BackendDevice.Grayskull:
+    #     os.environ["PYBUDA_DISABLE_CONSTANT_FOLDING"] = "1"
+    #     pcc = 0.93
+    # elif test_device.arch == forge.BackendDevice.Blackhole:
+    #     pcc = 0.97
+
+    model_name = "monodle_pytorch"
 
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -79,10 +45,9 @@ def test_dla_pytorch(variant, test_device):
     )
     img_tensor = transform(image).unsqueeze(0)
 
-    pytorch_model = func(pretrained="imagenet")
+    pytorch_model = CenterNet3D(backbone="dla34")
     pytorch_model.eval()
 
-    # Create forge.PyTorchModule using the loaded Pytorch model
     # tt_model = forge.PyTorchModule(model_name, pytorch_model)
     compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor])
 

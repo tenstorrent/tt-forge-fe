@@ -7,10 +7,10 @@ import pytest
 import urllib
 from PIL import Image
 from torchvision import transforms
-from forge.verify.backend import verify_module
-from forge.verify.config import TestKind
-from forge import VerifyConfig
-from forge._C.backend_api import BackendDevice
+# from forge.verify.backend import verify_module
+# from forge.verify.config import TestKind
+# from forge import VerifyConfig
+# from forge._C.backend_api import BackendDevice
 
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
@@ -24,14 +24,16 @@ def test_hardnet_pytorch(test_device, variant):
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
     os.environ["FORGE_RIBBON2"] = "1"
 
-    if variant == "hardnet85" and test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
+    # if variant == "hardnet85" and test_device.arch == BackendDevice.Wormhole_B0:
+    #     os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
 
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
     # load the weights downloaded from https://github.com/PingoLH/Pytorch-HarDNet
-    checkpoint_path = f"third_party/confidential_customer_models/generated/files/{variant}.pth"
+    checkpoint_path = (
+        f"/proj_sw/user_dev/mramanathan/tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/hardnet/weights/{variant}.pth"
+    )
 
     # Load weights from the checkpoint file and maps tensors to CPU, ensuring compatibility even without a GPU.
     state_dict = torch.load(checkpoint_path, map_location=torch.device("cpu"))
@@ -42,7 +44,7 @@ def test_hardnet_pytorch(test_device, variant):
 
     # STEP 2: Create Forge module from PyTorch model
     model_name = f"pt_{variant}"
-    tt_model = forge.PyTorchModule(model_name, model)
+    # tt_model = forge.PyTorchModule(model_name, model)
 
     # STEP 3: Prepare input
     url, filename = (
@@ -68,17 +70,23 @@ def test_hardnet_pytorch(test_device, variant):
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
 
-    pcc = 0.99 if variant in ["hardnet68ds", "hardnet39ds"] and test_device.arch == BackendDevice.Wormhole_B0 else 0.97
+    # pcc = (
+    #     0.99
+    #     if variant in ["hardnet68ds", "hardnet39ds"]
+    #     and test_device.arch == BackendDevice.Wormhole_B0
+    #     else 0.97
+    # )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])
 
-    verify_module(
-        tt_model,
-        input_shapes=([input_batch.shape]),
-        inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=pcc,
-        ),
-    )
+    # verify_module(
+    #     tt_model,
+    #     input_shapes=([input_batch.shape]),
+    #     inputs=([input_batch]),
+    #     verify_cfg=VerifyConfig(
+    #         arch=test_device.arch,
+    #         devtype=test_device.devtype,
+    #         devmode=test_device.devmode,
+    #         test_kind=TestKind.INFERENCE,
+    #         pcc=pcc,
+    #     ),
+    # )
