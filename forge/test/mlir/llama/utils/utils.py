@@ -9,7 +9,7 @@ import forge
 
 def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     # Default config values
-    config = LlamaConfig()
+    config = LlamaConfig.from_pretrained(model_path)
     config.hidden_size = 3200
     config.intermediate_size = 8640
     config.num_hidden_layers = 26
