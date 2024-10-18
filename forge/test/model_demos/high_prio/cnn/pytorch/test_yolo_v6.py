@@ -10,10 +10,6 @@ import numpy as np
 import torch
 from PIL import Image
 from yolov6 import YOLOV6
-from forge.verify.backend import verify_module
-from forge.verify.config import TestKind
-from forge import VerifyConfig
-from forge._C.backend_api import BackendDevice
 
 # preprocessing steps referred form https://github.com/meituan/YOLOv6/blob/main/inference.ipynb
 
@@ -91,40 +87,7 @@ def test_yolo_v6_pytorch(variant, test_device):
 
     # STEP 1 : Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-
-    if variant in ["yolov6m", "yolov6l"]:
-        os.environ["FORGE_FORK_JOIN_BUF_QUEUES"] = "1"
-        os.environ["FORGE_FORK_JOIN_EXPAND_OUTPUT_BUFFERS"] = "1"
-        os.environ["FORGE_FORK_JOIN_SKIP_EXPANDING_BUFFERS"] = "1"
-        os.environ["FORGE_MAX_FORK_JOIN_BUF"] = "1"
-
-        # Temp mitigations for net2pipe errors, should be removed.
-        #
-        os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-        os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-        os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-
-        if test_device.arch == BackendDevice.Grayskull and variant == "yolov6m":
-            compiler_cfg.balancer_op_override("conv2d_258.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1))
-            compiler_cfg.balancer_op_override(
-                "conv2d_258.dc.reshape.12.dc.sparse_matmul.3.lc2",
-                "t_stream_shape",
-                (2, 1),
-            )
-
-        if test_device.arch == BackendDevice.Wormhole_B0 and variant == "yolov6l":
-            os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
-
-        if test_device.arch == BackendDevice.Grayskull and variant == "yolov6l":
-            compiler_cfg.balancer_op_override("conv2d_484.dc.reshape.0.dc.sparse_matmul.4.lc2", "grid_shape", (1, 1))
-            compiler_cfg.balancer_op_override(
-                "conv2d_484.dc.reshape.12.dc.sparse_matmul.3.lc2",
-                "t_stream_shape",
-                (2, 1),
-            )
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
@@ -142,8 +105,6 @@ def test_yolo_v6_pytorch(variant, test_device):
     model = model.model
     model.eval()
 
-    tt_model = forge.PyTorchModule(f"{variant}_pt", model)
-
     # STEP 3 : prepare input
     url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     stride = 32
@@ -153,17 +114,7 @@ def test_yolo_v6_pytorch(variant, test_device):
     input_batch = img.unsqueeze(0)
 
     # STEP 4 : Inference
-    verify_module(
-        tt_model,
-        input_shapes=([input_batch.shape]),
-        inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

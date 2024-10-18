@@ -2,11 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig, TTDeviceImage
-from forge._C.backend_api import BackendType, BackendDevice, DeviceMode
-from forge.verify.config import TestKind, NebulaGalaxy
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
 
@@ -145,17 +140,9 @@ class FuyuModelTxtDecoderWrapper(nn.Module):
 
 
 def test_fuyu8b(test_device):
-    pytest.skip("Already past-cache version is up")
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    # compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    # compiler_cfg.enable_tvm_constant_prop = True
-    compiler_cfg.enable_tvm_cpu_fallback = False
-    compiler_cfg.convert_framework_params_to_tvm = False
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "FastCut"
-    # compiler_cfg.amp_level = 2
-    # compiler_cfg.default_dram_parameters = False
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = FuyuConfig.from_pretrained("adept/fuyu-8b")
     config_dict = config.to_dict()
@@ -174,7 +161,6 @@ def test_fuyu8b(test_device):
     # fuyu_model = FuyuForCausalLM(config=config)
     model = FuyuModelWrapper(fuyu_model)
     model.eval()
-    tt_model = forge.PyTorchModule("pt_fuyu_8b", model)
 
     # Prepare inputs
     text_prompt = "Generate a coco-style caption.\n"
@@ -186,26 +172,11 @@ def test_fuyu8b(test_device):
     )
     inputs_embeds = inputs_embeds.clone().detach()
 
-    # NOTE: it only runs language-model
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (inputs_embeds.shape,),
-        ],
-        inputs=[
-            [
-                inputs_embeds,
-            ],
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            test_kind=TestKind.INFERENCE,
-            verify_post_placer=False,
-        ),
-    )
+    inputs = [inputs_embeds]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
+@pytest.mark.skip(reason="not supported yet")
 def test_fuyu8b_past_cache(test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Still under development")

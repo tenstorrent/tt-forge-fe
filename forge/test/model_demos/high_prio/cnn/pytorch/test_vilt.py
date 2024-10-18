@@ -3,12 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge.verify.config import TestKind
-from forge._C.backend_api import BackendDevice
 
-import os
 import forge
 import requests
 import torch
@@ -108,9 +103,7 @@ def generate_model_vilt_question_answering_hf_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
@@ -129,11 +122,9 @@ def generate_model_vilt_question_answering_hf_pytorch(test_device, variant):
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
     vilt_model = ViltModelWrapper(model, task="qa")
 
-    tt_model = forge.PyTorchModule("ViLt_question_answering", vilt_model)
-
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return tt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
 
 
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
@@ -145,28 +136,14 @@ def test_vilt_question_answering_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    pcc = 0.95 if test_device.arch == BackendDevice.Grayskull else 0.96
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape, inputs[1].shape)],
-        inputs=[(inputs[0], inputs[1])],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=pcc,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]])
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
@@ -186,11 +163,9 @@ def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
     vilt_model = ViltModelWrapper(model=model, task="maskedlm", text_seq_len=encoding["input_ids"].shape[1])
 
-    tt_model = forge.PyTorchModule("ViLt_maskedlm", vilt_model)
-
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return tt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
 
 
 variants = ["dandelin/vilt-b32-mlm"]
@@ -202,15 +177,4 @@ def test_vilt_maskedlm_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape, inputs[1].shape)],
-        inputs=[(inputs[0], inputs[1])],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.98,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]])

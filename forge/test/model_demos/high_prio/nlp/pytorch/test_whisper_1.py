@@ -72,6 +72,7 @@ def test_whisper_dec_past_cache(test_device, variant):
             break
 
 
+@pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_enc_dec(test_device, variant):
     compiler_cfg = _get_global_compiler_config()

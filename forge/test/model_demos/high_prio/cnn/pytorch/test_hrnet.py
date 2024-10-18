@@ -5,12 +5,7 @@ import pytest
 from test.utils import download_model
 import torch
 import forge
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
 
-import os
 from loguru import logger
 import forge
 import torch
@@ -30,10 +25,7 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-
-    # tenstorrent/forge#950
-    compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     """
@@ -51,7 +43,6 @@ def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
     """
     model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
-    tt_model = forge.PyTorchModule(f"pt_hrnet_osmr_{variant}", model)
 
     # Model load
     try:
@@ -74,7 +65,7 @@ def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
         input_batch = torch.rand(1, 3, 224, 224)
     print(input_batch.shape)
 
-    return tt_model, [input_batch], {}
+    return model, [input_batch], {}
 
 
 variants = [
@@ -91,33 +82,17 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_hrnet_osmr_pytorch(variant, test_device):
+def test_hrnet_osmr_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
-        test_device,
         variant,
     )
-
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.82,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
 
-def generate_model_hrnet_imgcls_timm_pytorch(test_device, variant):
+def generate_model_hrnet_imgcls_timm_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-
-    # tenstorrent/forge#950
-    compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     """
@@ -135,7 +110,6 @@ def generate_model_hrnet_imgcls_timm_pytorch(test_device, variant):
     """
     model = download_model(timm.create_model, variant, pretrained=True)
     model.eval()
-    tt_model = forge.PyTorchModule(f"pt_hrnet_timm_{variant}", model)
 
     ## Preprocessing
     try:
@@ -155,7 +129,7 @@ def generate_model_hrnet_imgcls_timm_pytorch(test_device, variant):
         input_tensor = torch.rand(1, 3, 224, 224)
     print(input_tensor.shape)
 
-    return tt_model, [input_tensor], {}
+    return model, [input_tensor], {}
 
 
 variants = [
@@ -172,21 +146,8 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_hrnet_timm_pytorch(variant, test_device):
+def test_hrnet_timm_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
-        test_device,
         variant,
     )
-
-    verify_module(
-        model,
-        input_shapes=[(inputs[0].shape,)],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.94,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])

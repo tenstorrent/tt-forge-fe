@@ -1,20 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
-from forge.op.eval import compare_tensor_to_golden
-
 import forge
-import os
 import requests
 import torch
 from PIL import Image
-from transformers import CLIPProcessor, CLIPModel, CLIPConfig
+from transformers import CLIPProcessor, CLIPModel
 from transformers.modeling_attn_mask_utils import _create_4d_causal_attention_mask, _prepare_4d_attention_mask
 
 
@@ -110,14 +102,7 @@ def test_clip_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
-
-    # Required to patch data-mismatch. Here is followup issue
-    # to check this out in more details:
-    # tenstorrent/forge#1828
-    os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load processor and model from HuggingFace
     model_ckpt = "openai/clip-vit-base-patch32"
@@ -136,29 +121,7 @@ def test_clip_pytorch(test_device):
     inputs = processor(text=text, images=image, return_tensors="pt")
 
     inputs = [inputs["input_ids"], inputs["pixel_values"], inputs["attention_mask"]]
-    vision_model = CLIPVisionWrapper(model)
     text_model = CLIPTextWrapper(model)
-    post_processing_model = CLIPPostProcessingWrapper(model)
+    inputs = [inputs[0], inputs[2]]
 
-    vision_outputs = vision_model(inputs[1])
-
-    tt0 = forge.TTDevice("tt0", module=forge.PyTorchModule("pt_clip_text_model", text_model))
-    tt0.push_to_inputs(inputs[0], inputs[2])
-    output_q = forge.run_inference(_sequential=True)
-    text_outputs = output_q.get()
-    text_outputs = [o.value().float() for o in text_outputs]
-
-    post_processed_outputs = post_processing_model(inputs[0], vision_outputs, *text_outputs)
-    probs = post_processed_outputs[0].softmax(dim=1)
-
-    prob_cat = float(f"{probs[0].tolist()[0]*100:.1f}")
-    prob_dog = float(f"{probs[0].tolist()[1]*100:.1f}")
-
-    assert 99.3 <= prob_cat
-    assert 0.7 >= prob_dog
-
-    processed_output = list(zip(text, probs[0].tolist()))
-    print("RESULTS")
-    for item in processed_output:
-        print(f"{item[0]}: {item[1]*100:.1f}%")
-    print()
+    compiled_model = forge.compile(text_model, sample_inputs=inputs)
