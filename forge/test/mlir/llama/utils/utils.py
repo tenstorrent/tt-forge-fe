@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
+from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer, AutoTokenizer
 
 import forge
 
@@ -27,3 +27,25 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     tokenizer = LlamaTokenizer.from_pretrained(model_path)
 
     return framework_model, tokenizer
+
+
+def load_llama32(model_id: str = "meta-llama/Llama-3.2-1B", **kwargs):
+
+    # Default token
+    token = kwargs.get("token", "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")
+
+    # Load the config
+    config = LlamaForCausalLM.config_class.from_pretrained(model_id, token=token)
+    config.return_dict = kwargs.get("return_dict", False)
+    config.use_cache = kwargs.get("use_cache", False)
+    config.output_attentions = kwargs.get("output_attentions", False)
+    config.output_hidden_states = kwargs.get("output_hidden_states", False)
+
+    # Load the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(model_id, token=token, use_fast=True)
+
+    # Load the model
+    model = LlamaForCausalLM.from_pretrained(model_id, token=token, config=config)
+    model.eval()
+
+    return model, tokenizer
