@@ -1128,6 +1128,19 @@ std::vector<std::string> Graph::get_ordered_output_names() const
     return ordered_outputs;
 }
 
+std::vector<std::string> Graph::get_ordered_external_output_names() const
+{
+    std::vector<std::string> ordered_outputs;
+    for (auto output_node_id : this->ordered_module_output_node_ids_)
+    {
+        if (this->node_by_id(output_node_id)->as<OutputNode>()->output_type() == OutputType::External)
+        {
+            ordered_outputs.push_back(this->node_by_id(output_node_id)->name());
+        }
+    }
+    return ordered_outputs;
+}
+
 bool Graph::contains_nodes_of_epoch_type(NodeEpochType node_epoch_type) const
 {
     // Cache if it starts getting slow?

@@ -355,8 +355,6 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         bwd_compiled_graph_state,
         context.compiled_binary,
         context.modules[0],
-        loss_module=context.loss_module,
-        optimizer=context.optimizer,
     )
 
     logger.info("Compilation completed.")

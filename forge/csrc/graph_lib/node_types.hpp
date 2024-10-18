@@ -304,6 +304,16 @@ class ConstantInputNode : public InputNode
     bool equivalent(const ConstantInputNode *other) const;
 };
 
+enum class OutputType
+{
+    // Internal is used for outputs that are not exposed directly to the user, but used and handled internally for i/o
+    // between different graphs, e.g. passing intermediate values from forward graph to the backward graph.
+    Internal,
+
+    // Outputs which are defined by/exposed to the user, e.g. result of the forward pass.
+    External,
+};
+
 class OutputNode : public QueueNode
 {
    protected:
@@ -315,6 +325,7 @@ class OutputNode : public QueueNode
     // The golden info is needed if we fractured the output and need to reconstruct it for golden comparison
     std::optional<int> partial_datacopy_golden_output_index;
     std::vector<OpType> golden_transforms;
+    OutputType output_type_;
 
    public:
     OutputNode(std::string name) :
@@ -322,17 +333,20 @@ class OutputNode : public QueueNode
         requires_grad_(false),
         is_loss_output_(false),
         is_intermediate_(false),
-        untilize_(true)
+        untilize_(true),
+        output_type_(OutputType::External)
     {
     }
     bool requires_grad() const { return requires_grad_; }
     bool is_loss_output() const { return is_loss_output_; }
     bool is_intermediate() const { return is_intermediate_; }
     bool untilize() const { return untilize_; }
+    OutputType output_type() const { return output_type_; }
     void set_requires_grad(bool requires_grad) { requires_grad_ = requires_grad; }
     void set_loss_output() { is_loss_output_ = true; }
     void set_intermediate(bool intermediate) { is_intermediate_ = intermediate; }
     void set_untilize(bool should_untilize) { untilize_ = should_untilize; }
+    void set_output_type(OutputType output_type) { output_type_ = output_type; }
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
 
     void set_runtime_tensor_transform(RuntimeTensorTransform transform) { this->runtime_tensor_transform = transform; }
