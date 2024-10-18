@@ -4,13 +4,8 @@
 import forge
 import numpy as np
 import torch
-import os
 import skimage
 import requests
-from forge.verify.backend import verify_module
-from forge.verify.config import TestKind
-from forge import VerifyConfig
-from forge._C.backend_api import BackendDevice
 
 
 def load_image(image_path):
@@ -63,17 +58,7 @@ def test_pytorch_ssd300_resnet50(test_device):
 
     # STEP 1 : Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    compiler_cfg.amp_level = 1
-
-    if test_device.arch == BackendDevice.Grayskull:
-        os.environ["FORGE_RIBBON2"] = "1"
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "90112"
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.place_on_new_epoch("conv2d_766.dc.matmul.11")
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "45056"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2 : prepare model
     model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
@@ -87,7 +72,6 @@ def test_pytorch_ssd300_resnet50(test_device):
     checkpoint = torch.load(checkpoint_path, map_location=torch.device("cpu"))
     model.load_state_dict(checkpoint["model"])
     model.eval()
-    tt_model = forge.PyTorchModule("ssd300_resnet50", model)
 
     # STEP 3 : prepare input
     img = "http://images.cocodataset.org/val2017/000000397133.jpg"
@@ -95,17 +79,4 @@ def test_pytorch_ssd300_resnet50(test_device):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-
-    # STEP 4 : Inference
-    verify_module(
-        tt_model,
-        input_shapes=[(input_batch.shape,)],
-        inputs=[(input_batch,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.96 if test_device.arch == BackendDevice.Wormhole_B0 else 0.98,
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[input_batch])

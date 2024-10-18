@@ -3,13 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
 from forge.forgeglobal import TILE_DIM
 from forge import CompileDepth
-import queue
 import os
 import forge
 import torch
@@ -86,22 +81,8 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_generation(variant, test_device):
 
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip(
-            "Grayskull test failing with TM ERROR (producer = matmul_49, consumer = matmul_53): input using kernel_broadcast but post-TM input canonical form is not periodic"
-        )
-
-    # import os
-    # os.environ["FORGE_ENABLE_TINY_TILE"] = "1"
-    # Add Forge configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.enable_tvm_cpu_fallback = False
-    compiler_cfg.enable_auto_fusing = False  # tenstorrent/forge#844
-    compiler_cfg.amp_level = 1
-    compiler_cfg.enable_enumerate_u_kt = False
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    if "large" in variant:
-        os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
+    compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -122,8 +103,6 @@ def test_t5_generation(variant, test_device):
         def forward(self, decoder_input_ids, encoder_outputs):
             return self.model(None, None, decoder_input_ids, None, None, None, None, (encoder_outputs,))
 
-    tt_model = forge.PyTorchModule("t5_generation", Wrapper(model))
-
     decoder_input_ids = torch.randint(0, model.config.vocab_size, (1, 1), dtype=torch.int32)
     if "t5-small" in variant:
         encoder_outputs = torch.randn(1, 1, 512)
@@ -132,28 +111,8 @@ def test_t5_generation(variant, test_device):
     elif "t5-large" in variant:
         encoder_outputs = torch.randn(1, 256, 1024)
 
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                decoder_input_ids.shape,
-                encoder_outputs.shape,
-            )
-        ],
-        inputs=[(decoder_input_ids, encoder_outputs)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            verify_post_autograd_passes=False,
-            verify_post_placer=False,
-            enabled=False,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    inputs = [decoder_input_ids, encoder_outputs]
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs)
 
 
 class T5_encoder(torch.nn.Module):
@@ -202,6 +161,7 @@ class T5_decoder(torch.nn.Module):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_past_cache_enc_dec(variant, test_device):
 

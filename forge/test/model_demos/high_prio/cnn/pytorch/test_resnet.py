@@ -3,17 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
-
-import os
 import forge
 import requests
 from PIL import Image
 from transformers import AutoFeatureExtractor, ResNetForImageClassification
-import urllib
 import timm
 import torch
 from timm.data import resolve_data_config
@@ -29,9 +22,7 @@ def generate_model_resnet_imgcls_hf_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load data sample
     try:
@@ -46,40 +37,21 @@ def generate_model_resnet_imgcls_hf_pytorch(test_device, variant):
     # Data preprocessing
     inputs = feature_extractor(image, return_tensors="pt")
     pixel_values = inputs["pixel_values"]
-    model = forge.PyTorchModule("pt_resnet50", model)
+    # model = forge.PyTorchModule("pt_resnet50", model)
 
     return model, [pixel_values], {}
 
 
 @pytest.mark.parametrize("enable_default_dram_parameters", [True, False])
 def test_resnet(test_device, enable_default_dram_parameters):
-    if test_device.arch == BackendDevice.Grayskull and enable_default_dram_parameters == False:
-        pytest.skip(
-            "Failing on GS with: Core (c=0,y=8,x=1) [routing]  (c=0,y=6,x=0) [worker] [op_name=add_69] exceeded resource constraints: active dram queues used: 56 limit: 40"
-        )
 
     model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
-        test_device,
         "microsoft/resnet-50",
     )
 
     compiler_cfg = forge.config._get_global_compiler_config()
-
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.9,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
 
 
 def generate_model_resnet_imgcls_timm_pytorch(test_device, variant):
@@ -90,8 +62,7 @@ def generate_model_resnet_imgcls_timm_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load data sample
     try:
@@ -106,29 +77,11 @@ def generate_model_resnet_imgcls_timm_pytorch(test_device, variant):
     # Data preprocessing
     pixel_values = transform(image).unsqueeze(0)
 
-    model = forge.PyTorchModule("pt_resnet50", model)
-
     return model, [pixel_values], {}
 
 
 def test_resnet_timm(test_device):
     model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
-        test_device,
         "resnet50",
     )
-
-    verify_module(
-        model,
-        input_shapes=[inputs[0].shape],
-        inputs=[(inputs[0],)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.9,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])

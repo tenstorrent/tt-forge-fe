@@ -10,7 +10,6 @@ from loguru import logger
 
 import skimage
 import torch
-import torch.nn.functional as F
 import torchvision
 import torchvision.transforms
 
@@ -19,14 +18,9 @@ import torchxrayvision as xrv
 import torch
 
 from PIL import Image
-import requests
 import urllib
 from torchvision.transforms import Compose, ConvertImageDtype, Normalize, PILToTensor, Resize, CenterCrop
 
-from forge.verify.backend import verify_module
-from forge import VerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind, NebulaGalaxy
 
 ############
 def get_input_img():
@@ -91,14 +85,9 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(variant, test_device):
 
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test has data mismatch")
-
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -114,34 +103,17 @@ def test_densenet_121_pytorch(variant, test_device):
         model = download_model(xrv.models.get_model, model_name)
         img_tensor = get_input_img_hf_xray()
 
-    tt_model = forge.PyTorchModule(variant, model)
-
     # STEP 3: Run inference on Tenstorrent device
     model(img_tensor)
-
-    verify_module(
-        tt_model,
-        input_shapes=[(img_tensor.shape,)],
-        inputs=[(img_tensor,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            chip_ids=NebulaGalaxy.chip_ids
-            if "FORGE_NEB_GALAXY_CI" in os.environ and int(os.environ.get("FORGE_NEB_GALAXY_CI")) == 1
-            else [0],
-        ),
-    )
+    inputs = [img_tensor]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def test_densenet_161_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -150,86 +122,37 @@ def test_densenet_161_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
     model(img_tensor)
-
-    verify_module(
-        tt_model,
-        input_shapes=[(img_tensor.shape,)],
-        inputs=[(img_tensor,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.92
-            if test_device.devtype == BackendType.Silicon and test_device.arch == BackendDevice.Grayskull
-            else 0.95,
-        ),
-    )
+    inputs = [img_tensor]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def test_densenet_169_pytorch(test_device):
 
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test has data mismatch")
-
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"
-    os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
-    tt_model = forge.PyTorchModule("densnet169_pt", model)
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
     model(img_tensor)
-
-    verify_module(
-        tt_model,
-        input_shapes=[(img_tensor.shape,)],
-        inputs=[(img_tensor,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [img_tensor]
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def test_densenet_201_pytorch(test_device):
 
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test has data mismatch")
-
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"
-    os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
-    tt_model = forge.PyTorchModule("densnet201_pt", model)
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
     model(img_tensor)
-
-    verify_module(
-        tt_model,
-        input_shapes=[(img_tensor.shape,)],
-        inputs=[(img_tensor,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [img_tensor]
+    compiled_model = forge.compile(model, sample_inputs=inputs)

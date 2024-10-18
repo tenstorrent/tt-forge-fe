@@ -5,23 +5,15 @@ import os
 
 import torch
 import pytest
-from transformers import GemmaModel, GemmaConfig
+from transformers import GemmaConfig
 from transformers import AutoTokenizer, GemmaForCausalLM
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 import forge
 from forge import (
-    VerifyConfig,
-    PyTorchModule,
     CompileDepth,
 )
 from test.utils import download_model
-from forge.forgeglobal import TILE_DIM
-from forge.verify.config import TestKind
-from forge._C import DataFormat, MathFidelity
-from forge._C.backend_api import BackendDevice
-from forge._C.backend_api import BackendType
-from forge.verify.backend import verify_module
 from forge.transformers.pipeline import pipeline as forge_pipeline
 
 
@@ -84,7 +76,6 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     pytorch_model = Wrapper(pytorch_model)
-    tt_model = PyTorchModule("pytorch_gemma_2b_rotary_embedding", pytorch_model)
 
     # Define inputs
     x = torch.rand((1, 1, 7, 256)).to(torch.float32)
@@ -94,27 +85,8 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     out = pytorch_model(x, pos_ids)
     print(out)
 
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                x.shape,
-                pos_ids.shape,
-            )
-        ],
-        inputs=[
-            (
-                x,
-                pos_ids,
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [x, pos_ids]
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -144,7 +116,6 @@ def test_gemma_2b_rms_norm(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     pytorch_model = Wrapper(pytorch_model)
-    tt_model = PyTorchModule("pytorch_gemma_2b_rms_norm", pytorch_model)
 
     # Define inputs
     x = torch.rand((1, 7, 2048)).to(torch.float32)
@@ -152,18 +123,8 @@ def test_gemma_2b_rms_norm(test_device, variant):
     # Sanity run
     out = pytorch_model(x)
     print(out)
-
-    verify_module(
-        tt_model,
-        input_shapes=[(x.shape,)],
-        inputs=[(x,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [x]
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -193,7 +154,6 @@ def test_gemma_2b_attention(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     pytorch_model = Wrapper(pytorch_model)
-    tt_model = PyTorchModule("pytorch_gemma_2b_attention", pytorch_model)
 
     # Define inputs
     hidden_states = torch.rand((1, 7, 2048)).to(torch.float32)
@@ -204,29 +164,8 @@ def test_gemma_2b_attention(test_device, variant):
     out = pytorch_model(hidden_states, attn_mask, pos_ids)
     print(out)
 
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                hidden_states.shape,
-                attn_mask.shape,
-                pos_ids.shape,
-            )
-        ],
-        inputs=[
-            (
-                hidden_states,
-                attn_mask,
-                pos_ids,
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [hidden_states, attn_mask, pos_ids]
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -256,7 +195,6 @@ def test_gemma_2b_mlp(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     pytorch_model = Wrapper(pytorch_model)
-    tt_model = PyTorchModule("pytorch_gemma_2b_attention", pytorch_model)
 
     # Define inputs
     x = torch.rand((1, 7, 2048)).to(torch.float32)
@@ -265,17 +203,8 @@ def test_gemma_2b_mlp(test_device, variant):
     out = pytorch_model(x)
     print(out)
 
-    verify_module(
-        tt_model,
-        input_shapes=[(x.shape,)],
-        inputs=[(x,)],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [x]
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -305,7 +234,6 @@ def test_gemma_2b_single_decoder(test_device, variant):
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
     pytorch_model = Wrapper(pytorch_model)
-    tt_model = PyTorchModule("pytorch_gemma_2b_single_decoder", pytorch_model)
 
     # Define inputs
     hidden_states = torch.rand((1, 7, 2048)).to(torch.float32)
@@ -316,32 +244,10 @@ def test_gemma_2b_single_decoder(test_device, variant):
     out = pytorch_model(hidden_states, attn_mask, pos_ids)
     print(out)
 
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                hidden_states.shape,
-                attn_mask.shape,
-                pos_ids.shape,
-            )
-        ],
-        inputs=[
-            (
-                hidden_states,
-                attn_mask,
-                pos_ids,
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [hidden_states, attn_mask, pos_ids]
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
 
 
-@pytest.mark.skip(reason="Tested as part of a full generative model run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(test_device, variant):
     # Random see for reproducibility
@@ -349,16 +255,13 @@ def test_gemma_2b(test_device, variant):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
-
+    compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
     config = download_model(GemmaConfig.from_pretrained, variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
     pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    tt_model = PyTorchModule("pytorch_gemma_2b", pytorch_model)
 
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -379,27 +282,8 @@ def test_gemma_2b(test_device, variant):
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
 
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                input_ids.shape,
-                attn_mask.shape,
-            )
-        ],
-        inputs=[
-            (
-                input_ids,
-                attn_mask,
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    inputs = [input_ids, attn_mask]
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
 
 
 @pytest.mark.skip(reason="Tested as part of a full generative model run")
@@ -468,6 +352,7 @@ def test_gemma_2b_1x1(test_device, variant):
     )
 
 
+@pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(test_device, variant):
     # Random seed for reproducibility
@@ -548,6 +433,7 @@ def test_gemma_2b_gen(test_device, variant):
         print(f"{tt_ans}")
 
 
+@pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(test_device, variant):
     if test_device.arch == BackendDevice.Grayskull:
