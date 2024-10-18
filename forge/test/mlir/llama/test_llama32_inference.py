@@ -2,24 +2,16 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import torch
-from transformers import pipeline, AutoTokenizer, LlamaForCausalLM
+import pytest
+from transformers import AutoTokenizer, LlamaForCausalLM, LlamaTokenizer
 
 import forge
+from test.mlir.llama.utils.utils import load_llama32
 
 
+@pytest.mark.skip(reason="No need to run in CI for now")
 def test_llama_inference():
-
-    model_id = "meta-llama/Llama-3.2-1B"
-    token = "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"
-
-    model = LlamaForCausalLM.from_pretrained(
-        model_id,
-        token=token,
-        torch_dtype=torch.bfloat16,
-    )
-    model.eval()
-
-    tokenizer = AutoTokenizer.from_pretrained(model_id, token=token, use_fast=True)
+    model, tokenizer = load_llama32()
 
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
