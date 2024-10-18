@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-
 import pytest
 import tensorflow as tf
 import numpy as np
@@ -44,42 +43,42 @@ def test_resnet_example():
     # Load ResNet50 model
     framework_model = tf.keras.applications.ResNet50(weights="imagenet")
 
-    cow_image = tf.keras.utils.load_img("forge/test/mlir/resnet/cow.jpg", target_size = (224, 224))
-    cow_preprocessed = tf.expand_dims(
+    pizza_image = tf.keras.utils.load_img("forge/test/mlir/resnet/pizza.jpg", target_size = (224, 224))
+    pizza_preprocessed = tf.expand_dims(
         tf.cast(
-            tf.keras.applications.resnet.preprocess_input(np.array(cow_image)),
+            tf.keras.applications.resnet.preprocess_input(np.array(pizza_image)),
             dtype=tf.bfloat16),
         0
     )
 
-    dog_image = tf.keras.utils.load_img("forge/test/mlir/resnet/dog.png", target_size = (224, 224))
-    dog_preprocessed = tf.expand_dims(
+    hammer_image = tf.keras.utils.load_img("forge/test/mlir/resnet/hammer.jpeg", target_size = (224, 224))
+    hammer_preprocessed = tf.expand_dims(
         tf.cast(
-            tf.keras.applications.resnet.preprocess_input(np.array(dog_image)),
+            tf.keras.applications.resnet.preprocess_input(np.array(hammer_image)),
             dtype=tf.bfloat16),
         0
     )
     # Get golden predictions
-    tf_cow_logits = to_pt_tensors(framework_model(cow_preprocessed))[0].detach()
-    tf_dog_logits = to_pt_tensors(framework_model(dog_preprocessed))[0].detach()
+    tf_pizza_logits = to_pt_tensors(framework_model(pizza_preprocessed))[0].detach()
+    tf_hammer_logits = to_pt_tensors(framework_model(hammer_preprocessed))[0].detach()
     
-    tf_cow_pred = tf.keras.applications.resnet.decode_predictions(tf_cow_logits.to(torch.float32).numpy(), top=1)
-    tf_dog_pred = tf.keras.applications.resnet.decode_predictions(tf_dog_logits.to(torch.float32).numpy(), top=1)
+    tf_pizza_pred = tf.keras.applications.resnet.decode_predictions(tf_pizza_logits.to(torch.float32).numpy(), top=1)
+    tf_hammer_pred = tf.keras.applications.resnet.decode_predictions(tf_hammer_logits.to(torch.float32).numpy(), top=1)
 
-    # Compile the model
-    compiled_model = forge.compile(framework_model, cow_preprocessed)
+    # Compile the model                           Sample input for trace
+    compiled_model = forge.compile(framework_model, pizza_preprocessed)
 
     # Execute on device - note that the outputs here will be pytorch tensors
-    cow_logits = compiled_model(cow_preprocessed, force_dtype=torch.bfloat16)[0]
-    dog_logits = compiled_model(dog_preprocessed, force_dtype=torch.bfloat16)[0]
+    pizza_logits = compiled_model(pizza_preprocessed, force_dtype=torch.bfloat16)[0]
+    hammer_logits = compiled_model(hammer_preprocessed, force_dtype=torch.bfloat16)[0]
 
-    cow_pred = tf.keras.applications.resnet.decode_predictions(cow_logits.to(torch.float32).numpy(), top=1)
-    dog_pred = tf.keras.applications.resnet.decode_predictions(dog_logits.to(torch.float32).numpy(), top=1)
+    pizza_pred = tf.keras.applications.resnet.decode_predictions(pizza_logits.to(torch.float32).numpy(), top=1)
+    hammer_pred = tf.keras.applications.resnet.decode_predictions(hammer_logits.to(torch.float32).numpy(), top=1)
 
     print("TENSORFLOW PREDICTION:")
-    print(f"For the cow image, predicted: \"{tf_cow_pred[0][0][1]}\" with confidence {tf_cow_pred[0][0][2]}")
-    print(f"For the dog image, predicted: \"{tf_dog_pred[0][0][1]}\" with confidence {tf_dog_pred[0][0][2]}")
+    print(f"For the pizza image, predicted: \"{tf_pizza_pred[0][0][1]}\" with confidence {tf_pizza_pred[0][0][2]}")
+    print(f"For the hammer image, predicted: \"{tf_hammer_pred[0][0][1]}\" with confidence {tf_hammer_pred[0][0][2]}")
     print()
     print("TENSTORRENT PREDICTION:")
-    print(f"For the cow image, predicted: \"{cow_pred[0][0][1]}\" with confidence {cow_pred[0][0][2]}")
-    print(f"For the dog image, predicted: \"{dog_pred[0][0][1]}\" with confidence {dog_pred[0][0][2]}")
+    print(f"For the pizza image, predicted: \"{pizza_pred[0][0][1]}\" with confidence {pizza_pred[0][0][2]}")
+    print(f"For the hammer image, predicted: \"{hammer_pred[0][0][1]}\" with confidence {hammer_pred[0][0][2]}")
