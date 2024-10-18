@@ -2,6 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import pytest
+
 import torch
 from torch import nn
 
@@ -58,14 +60,14 @@ def test_mnist_training():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            compare_with_golden(golden_pred, pred)
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)
             total_loss += loss.item()
 
             golden_loss = loss_fn(golden_pred, target)
-            compare_with_golden(golden_loss, loss)
+            assert torch.allclose(loss, golden_loss, rtol=1e-2)
 
             # Run backward pass on device
             loss.backward()
