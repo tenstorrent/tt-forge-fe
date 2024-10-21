@@ -76,7 +76,7 @@ def test_resnet_example():
     pizza_pred = tf.keras.applications.resnet.decode_predictions(pizza_logits.to(torch.float32).numpy(), top=5)
     hammer_pred = tf.keras.applications.resnet.decode_predictions(hammer_logits.to(torch.float32).numpy(), top=5)
 
-    table = [['TENSORFLOW PREDICTION', 'TENSTORRENT PREDICTION']]
+    table = [['TENSORFLOW TOP 5', 'TENSTORRENT TOP 5']]
     tab = PrettyTable(table[0])
     tab.add_row(['Pizza image', 'Pizza Image'], divider=True)
 
