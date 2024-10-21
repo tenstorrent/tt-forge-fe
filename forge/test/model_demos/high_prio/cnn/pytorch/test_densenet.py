@@ -87,18 +87,19 @@ def test_densenet_121_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
         model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
         img_tensor = get_input_img()
+        print("inside if")
     else:
-        compiler_cfg.enable_tm_cpu_fallback = True
+        print("inside else")
+        # compiler_cfg.enable_tm_cpu_fallback = True
         # Does constant prop on TVM side
-        compiler_cfg.enable_tvm_constant_prop = True
         # Fallbacks adv_index to CPU. Used to normalize outputs using threshold extracted as model param (part of output normalization).
-        compiler_cfg.cpu_fallback_ops.add("adv_index")
+        # compiler_cfg.cpu_fallback_ops.add("adv_index")
         model_name = "densenet121-res224-all"
         model = download_model(xrv.models.get_model, model_name)
         img_tensor = get_input_img_hf_xray()

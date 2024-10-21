@@ -76,7 +76,7 @@ variants = [
 def test_efficientnet_torchvision(variant, test_device):
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
     framework_model = download_model(variant, pretrained=True)

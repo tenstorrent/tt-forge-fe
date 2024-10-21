@@ -126,7 +126,7 @@ def test_unet_qubvel_pytorch(test_device):
 def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     model = download_model(
         torch.hub.load,
@@ -162,7 +162,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
     return model, [img_batch], {}
 
 
-@pytest.mark.skip(reason="Hang")
+@pytest.mark.skip(reason="")
 def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         test_device,

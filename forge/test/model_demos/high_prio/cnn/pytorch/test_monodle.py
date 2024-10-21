@@ -12,7 +12,7 @@ from test.model_demos.models.monodle import CenterNet3D
 def test_monodle_pytorch(test_device):
     # PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     model_name = "monodle_pytorch"
 

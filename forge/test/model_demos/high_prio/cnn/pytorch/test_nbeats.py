@@ -16,7 +16,7 @@ from nbeats.scripts import (
 
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -30,11 +30,12 @@ def test_nbeats_with_seasonality_basis(test_device):
     )
     pytorch_model.eval()
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask])
+    co_out = compiled_model(x, x_mask)
 
 
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -42,11 +43,13 @@ def test_nbeats_with_generic_basis(test_device):
     pytorch_model.eval()
 
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask])
+    co_out = compiled_model(x, x_mask)
+    
 
 
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -61,3 +64,5 @@ def test_nbeats_with_trend_basis(test_device):
     pytorch_model.eval()
 
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask])
+    co_out = compiled_model(x, x_mask)
+    

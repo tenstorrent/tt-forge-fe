@@ -142,7 +142,7 @@ class FuyuModelTxtDecoderWrapper(nn.Module):
 def test_fuyu8b(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = FuyuConfig.from_pretrained("adept/fuyu-8b")
     config_dict = config.to_dict()

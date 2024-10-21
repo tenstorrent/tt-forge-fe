@@ -13,6 +13,10 @@ from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCa
 
 variants = ["meta-llama/Meta-Llama-3-8B", "meta-llama/Meta-Llama-3-8B-Instruct"]
 
+from huggingface_hub import login
+
+login(token="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")
+
 
 # Monkey Patching Casual Mask Update
 def _update_causal_mask(
@@ -151,7 +155,7 @@ def test_llama3_sequence_classification(variant, test_device):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
