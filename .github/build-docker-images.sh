@@ -5,9 +5,9 @@
 
 set -e
 
-REPO=tenstorrent/tt-xla
-BASE_IMAGE_NAME=ghcr.io/$REPO/tt-xla-base-ubuntu-22-04
-CI_IMAGE_NAME=ghcr.io/$REPO/tt-xla-ci-ubuntu-22-04
+REPO=tenstorrent/tt-forge-fe
+BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ubuntu-22-04
+CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ci-ubuntu-22-04
 BASE_IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ird-ubuntu-22-04
 IRD_IMAGE_NAME=ghcr.io/$$REPO/tt-forge-fe-ird-ubuntu-22-04
 
