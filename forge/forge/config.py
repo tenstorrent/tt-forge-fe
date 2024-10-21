@@ -287,16 +287,19 @@ class CompilerConfig:
 
         if "FORGE_COMPILE_DEPTH" in os.environ:
             self.compile_depth = {
-                "full": CompileDepth.FULL,
                 "init_compile": CompileDepth.INIT_COMPILE,
                 "generate_initial_graph": CompileDepth.GENERATE_INITIAL_GRAPH,
                 "post_initial_graph_pass": CompileDepth.POST_INITIAL_GRAPH_PASS,
-                "pre_lowering_pass": CompileDepth.PRE_LOWERING_PASS,
-                "forge_graph_pre_placer": CompileDepth.FORGE_GRAPH_PRE_PLACER,
-                "balancer_pass": CompileDepth.BALANCER_PASS,
-                "generate_netlist": CompileDepth.GENERATE_NETLIST,
+                "consteval_graph": CompileDepth.CONSTEVAL_GRAPH,
                 "post_pattern_matcher": CompileDepth.POST_PATTERN_MATCHER,
-                "backend_golden_verify": CompileDepth.BACKEND_GOLDEN_VERIFY,
+                "optimized_graph": CompileDepth.OPTIMIZED_GRAPH,
+                "autograd": CompileDepth.AUTOGRAD,
+                "post_autograd_pass": CompileDepth.POST_AUTOGRAD_PASS,
+                "pre_lowering_pass": CompileDepth.PRE_LOWERING_PASS,
+                "split_graph": CompileDepth.SPLIT_GRAPH,
+                "run_mlir_compiler": CompileDepth.RUN_MLIR_COMPILER,
+                "finish_compile": CompileDepth.FINISH_COMPILE,
+                "full": CompileDepth.FULL,
             }[os.environ["FORGE_COMPILE_DEPTH"].lower()]
 
         if "FORGE_ENABLE_INPUT_QUEUES_ON_HOST" in os.environ:
