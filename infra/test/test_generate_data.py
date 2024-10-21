@@ -4,6 +4,7 @@
 
 from generate_data import create_pipeline_json
 import os
+import json
 
 
 def test_create_pipeline_json():
@@ -18,5 +19,9 @@ def test_create_pipeline_json():
         workflow_outputs_dir="test/data",
     )
 
-    assert pipeline is not None
     assert os.path.exists(filename)
+
+    # assert pipeline json file has the correct
+    with open(filename, "r") as file:
+        data = json.load(file)
+        assert data["jobs"][0]["card_type"] == "N300"
