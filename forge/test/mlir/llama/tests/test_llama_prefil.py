@@ -6,7 +6,7 @@ import pytest
 from transformers import LlamaTokenizer
 
 import forge
-from test.mlir.llama.utils.utils import load_model
+from test.mlir.llama.utils.utils import load_model, load_llama32
 from forge.op.eval.common import compare_with_golden
 
 
@@ -48,16 +48,19 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
     return input_ids, output_logits
 
 
-@pytest.mark.xfail()
-def test_llama_prefil_on_device_decode_on_cpu():
+@pytest.mark.parametrize("llama_ver", ["llama 3B", "llama 3.2 1B"])
+@pytest.mark.xfail(reason="Waiting for the transformers version to be upgraded")
+def test_llama_prefil_on_device_decode_on_cpu(llama_ver):
     """
     This function tests the inference of the Llama 3B model split into two parts:
     - The first part is the prefilling of the model on the device.
     - The second part is the decoding of the model on the CPU without KV cache.
     """
-    # Load Llama 3B model and tokenizer
-    model_path = "openlm-research/open_llama_3b"
-    model, tokenizer = load_model(model_path, use_cache=False, return_dict=True)
+    # Load Llama model and tokenizer
+    if llama_ver == "llama 3B":
+        model, tokenizer = load_model(return_dict=True)
+    elif llama_ver == "llama 3.2 1B":
+        model, tokenizer = load_llama32(return_dict=True)
 
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"

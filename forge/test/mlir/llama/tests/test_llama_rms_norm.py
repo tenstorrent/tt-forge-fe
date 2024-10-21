@@ -5,18 +5,24 @@ import torch
 import pytest
 
 import forge
-from test.mlir.llama.utils.utils import load_model
+from test.mlir.llama.utils.utils import load_model, load_llama32
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-def test_llama_lm_head():
-    # Load Llama 3B model and tokenizer
-    framework_model, _ = load_model()
+@pytest.mark.parametrize("llama_ver", ["llama 3B", "llama 3.2 1B"])
+@pytest.mark.xfail(reason="Waiting for the transformers version to be upgraded")
+def test_llama_lm_head(llama_ver):
+    # Load Llama model and tokenizer
+    if llama_ver == "llama 3B":
+        framework_model, _ = load_model()
+    elif llama_ver == "llama 3.2 1B":
+        framework_model, _ = load_llama32()
     framework_model = framework_model.model.norm
+    input_features = framework_model.weight.shape[0]
 
     # Input samples
     inputs = [
-        torch.rand((1, 12, 3200)),  # Hidden states
+        torch.rand((1, 12, input_features)),  # Hidden states
     ]
 
     # Sanity run

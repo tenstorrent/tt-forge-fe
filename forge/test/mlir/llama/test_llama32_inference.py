@@ -9,7 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_llama32
 
 
-@pytest.mark.skip(reason="No need to run in CI for now")
+@pytest.mark.skip(reason="Waiting for the transformers version to be upgraded")
 def test_llama_inference():
     model, tokenizer = load_llama32()
 
