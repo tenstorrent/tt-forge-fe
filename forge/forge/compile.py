@@ -26,6 +26,7 @@ from forge._C import (
     run_post_autograd_graph_passes,
     run_pre_lowering_passes,
     dump_graph,
+    extract_unique_op_configuration,
 )
 from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
@@ -645,6 +646,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
     if context.compiler_cfg.enable_link_past_cache_ios:
         # move index ops to weights if applicable
         move_index_to_mm_weights(context.graph)
@@ -706,6 +708,7 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
 
     dump_graph(graph, graph_name, "decomposed_graph")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     next_stage = CompileDepth.OPTIMIZED_GRAPH
     if should_run_consteval(context):
@@ -739,6 +742,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
 
     run_consteval_graph_pass(graph)
     dump_graph(graph, graph_name, "consteval_graph")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     next_stage = CompileDepth.OPTIMIZED_GRAPH
     if compiler_cfg.match_subgraph_patterns:
@@ -795,6 +799,7 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
 
     inserted_node_id_mapping = run_post_optimize_decompose_graph_passes(graph, compiler_cfg)
     dump_graph(graph, graph_name, "decomposed_optimized_graph")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
         if original_node_id in intermediate_tensors:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
@@ -831,6 +836,7 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
 
     graph = autograd_engine.run()
     dump_graph(graph, graph_name, "post_autograd")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     # GOLDEN:
     # context.losses = calculate_grads(outputs, dev, intermediate_tensors, False, context.losses)
@@ -872,6 +878,7 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
 
     dump_graph(graph, graph_name, "post_autograd_passes")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
     # TODO: training is dependent on TTDevice.py which is removed
     if compiler_cfg.enable_training:
         calculate_grads(outputs, dev, intermediate_tensors, False, losses)
@@ -898,6 +905,7 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
 
     graph = run_pre_lowering_passes(graph, compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
+    extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     context.final_graph = graph
     return CompileDepth.SPLIT_GRAPH
