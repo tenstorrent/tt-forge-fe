@@ -7,7 +7,7 @@ on:
 jobs:
 
   build-image:
-    runs-on: ubuntu-latest
+    runs-on: builder
     outputs:
       docker-image: ${{ steps.build.outputs.docker-image }}
     steps:
