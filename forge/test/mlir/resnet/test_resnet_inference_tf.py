@@ -13,6 +13,7 @@ from forge.tensor import to_pt_tensors
 from forge.op.eval.common import compare_with_golden_pcc
 from forge.config import _get_global_compiler_config
 from forge._C import DataFormat
+from prettytable import PrettyTable
 
 from keras.preprocessing import image
 
@@ -62,8 +63,8 @@ def test_resnet_example():
     tf_pizza_logits = to_pt_tensors(framework_model(pizza_preprocessed))[0].detach()
     tf_hammer_logits = to_pt_tensors(framework_model(hammer_preprocessed))[0].detach()
     
-    tf_pizza_pred = tf.keras.applications.resnet.decode_predictions(tf_pizza_logits.to(torch.float32).numpy(), top=1)
-    tf_hammer_pred = tf.keras.applications.resnet.decode_predictions(tf_hammer_logits.to(torch.float32).numpy(), top=1)
+    tf_pizza_pred = tf.keras.applications.resnet.decode_predictions(tf_pizza_logits.to(torch.float32).numpy(), top=5)
+    tf_hammer_pred = tf.keras.applications.resnet.decode_predictions(tf_hammer_logits.to(torch.float32).numpy(), top=5)
 
     # Compile the model                           Sample input for trace
     compiled_model = forge.compile(framework_model, pizza_preprocessed)
@@ -72,13 +73,35 @@ def test_resnet_example():
     pizza_logits = compiled_model(pizza_preprocessed, force_dtype=torch.bfloat16)[0]
     hammer_logits = compiled_model(hammer_preprocessed, force_dtype=torch.bfloat16)[0]
 
-    pizza_pred = tf.keras.applications.resnet.decode_predictions(pizza_logits.to(torch.float32).numpy(), top=1)
-    hammer_pred = tf.keras.applications.resnet.decode_predictions(hammer_logits.to(torch.float32).numpy(), top=1)
+    pizza_pred = tf.keras.applications.resnet.decode_predictions(pizza_logits.to(torch.float32).numpy(), top=5)
+    hammer_pred = tf.keras.applications.resnet.decode_predictions(hammer_logits.to(torch.float32).numpy(), top=5)
 
-    print("TENSORFLOW PREDICTION:")
-    print(f"For the pizza image, predicted: \"{tf_pizza_pred[0][0][1]}\" with confidence {tf_pizza_pred[0][0][2]}")
-    print(f"For the hammer image, predicted: \"{tf_hammer_pred[0][0][1]}\" with confidence {tf_hammer_pred[0][0][2]}")
-    print()
-    print("TENSTORRENT PREDICTION:")
-    print(f"For the pizza image, predicted: \"{pizza_pred[0][0][1]}\" with confidence {pizza_pred[0][0][2]}")
-    print(f"For the hammer image, predicted: \"{hammer_pred[0][0][1]}\" with confidence {hammer_pred[0][0][2]}")
+    table = [['TENSORFLOW PREDICTION', 'TENSTORRENT PREDICTION']]
+    tab = PrettyTable(table[0])
+    tab.add_row(['Pizza image', 'Pizza Image'], divider=True)
+
+    tf_pizza_pred_str = []
+    for pred in tf_pizza_pred[0]:
+        tf_pizza_pred_str.append(f"{pred[1]}: {pred[2]}")
+    tf_pizza_pred_str = "\n".join(tf_pizza_pred_str)
+
+    pizza_pred_str = []
+    for pred in pizza_pred[0]:
+        pizza_pred_str.append(f"{pred[1]}: {pred[2]}")
+    pizza_pred_str = "\n".join(pizza_pred_str)
+    tab.add_row([tf_pizza_pred_str, pizza_pred_str], divider=True)
+
+    tab.add_row(["Hammer image", "Hammer image"], divider=True)
+
+    tf_hammer_pred_str = []
+    for pred in tf_hammer_pred[0]:
+        tf_hammer_pred_str.append(f"{pred[1]}: {pred[2]}")
+    tf_hammer_pred_str = "\n".join(tf_hammer_pred_str)
+
+    hammer_pred_str = []
+    for pred in hammer_pred[0]:
+        hammer_pred_str.append(f"{pred[1]}: {pred[2]}")
+    hammer_pred_str = "\n".join(hammer_pred_str)
+    tab.add_row([tf_hammer_pred_str, hammer_pred_str])
+
+    print(tab)

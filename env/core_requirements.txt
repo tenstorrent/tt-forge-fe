@@ -32,7 +32,7 @@ onnxruntime>=1.16.3
 opencv-python-headless==4.6.0.66
 # This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
 pandas==1.5.3
-prettytable==3.0.0
+prettytable==3.11.0
 protobuf==3.20.3
 pybind11==2.6.2
 pyinstrument>=4.1.1
