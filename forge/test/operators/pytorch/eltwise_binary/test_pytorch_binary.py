@@ -52,56 +52,9 @@
 # (/) Reuse inputs for selected operators
 
 
-# Run single test
-#
-# To run single test use following parameters
-# id         --test_id       --> None
-
-# Examples
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'
-
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_plan
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_skipped
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_failed
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_not_implemented
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_data_mismatch
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_df
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_df_fatal
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_inconsistency_order1
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_inconsistency_order2
-
-# Collect fatal test ids
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_unsupported_df_fatal --collect-only
-
-# Run fatal tests
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-add-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-div-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-mul-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-sub-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Bfp4-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Bfp8-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Float16-HiFi4'
-# pytest -svv forge/test/operators/pytorch/eltwise_binary/test_pytorch_binary.py::test_single  --test_id='no_device-ge-FROM_HOST-None-(1, 2, 3, 4)-Lf8-HiFi4'
-
-
-import pytest
-
-from typing import List, Dict, Optional
+from typing import List, Dict, Union
 from loguru import logger
 
-import os
 import torch
 
 from test.operators.utils import DeviceUtils
@@ -112,8 +65,8 @@ from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestCollection
 from test.operators.utils import TestPlanUtils
-from test.operators.utils import TestParamsFilter
 from test.operators.utils import TestPlan
+from test.operators.utils import TestSuite
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
@@ -240,21 +193,9 @@ class TestParamsData:
 
     __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
-    test_plan: TestPlan = None
-
-    @classmethod
-    def get_params_test_plan(cls, filter: Optional[TestParamsFilter] = None):
-        return TestPlanUtils.generate_params(cls.test_plan, filter)
-
-    @classmethod
-    def get_params_from_id_file(cls, test_ids_file: str, filter: Optional[TestParamsFilter] = None):
-        test_plan_ids = TestPlanUtils.build_test_plan_from_id_file(test_ids_file, cls.test_plan)
-        return TestPlanUtils.generate_params(test_plan_ids, filter)
-
-    @classmethod
-    def get_params_from_id_list(cls, test_ids: List[str], filter: Optional[TestParamsFilter] = None):
-        test_plan_ids = TestPlanUtils.build_test_plan_from_id_list(test_ids, cls.test_plan)
-        return TestPlanUtils.generate_params(test_plan_ids, filter)
+    test_plan_implemented: TestPlan = None
+    test_plan_not_implemented: TestPlan = None
+    test_suite: TestSuite = None
 
     no_kwargs = [
         None,
@@ -294,14 +235,6 @@ class TestParamsData:
             return cls.kwargs_rounding_modes
         else:
             return cls.no_kwargs
-
-    # TODO move to TestPlanUtils
-    @classmethod
-    def warm_reset(cls, test_vector: TestVector, warm_reset_collection: TestCollection):
-        """Perform warm reset if required for the test vector"""
-        if TestPlanUtils.test_vector_in_collection(test_vector, warm_reset_collection):
-            logger.warning(f"Test vector {test_vector.get_id()} requires warm reset")
-            DeviceUtils.warm_reset()
 
 
 class TestCollectionData:
@@ -420,7 +353,37 @@ class TestCollectionData:
     )
 
 
-TestParamsData.test_plan = TestPlan(
+TestParamsData.test_plan_not_implemented = TestPlan(
+    verify=TestVerification.verify,
+    collections=[
+        # Unimplemented operators
+        TestCollection(
+            operators=TestCollectionData.not_implemented.operators,
+            input_sources=TestCollectionData.all.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+        ),
+    ],
+    failing_rules=[
+        # Not implemented operators
+        TestCollection(
+            operators=TestCollectionData.not_implemented.operators,
+            failing_reason=FailingReasons.NOT_IMPLEMENTED,
+        ),
+        # Not implemented operators for CONST_EVAL_PASS
+        # 10 operators are implemented for CONST_EVAL_PASS the are not for other input sources
+        TestCollection(
+            operators=TestCollectionData.implemented_const_eval.operators,
+            input_sources=[
+                InputSource.CONST_EVAL_PASS,
+            ],
+            failing_reason=None,
+        ),
+    ],
+)
+
+
+TestParamsData.test_plan_implemented = TestPlan(
+    verify=TestVerification.verify,
     collections=[
         # Test plan:
         # 2. Operand source(s):
@@ -451,12 +414,6 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
-        ),
-        # Unimplemented operators
-        TestCollection(
-            operators=TestCollectionData.not_implemented.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
         ),
     ],
     failing_rules=[
@@ -736,226 +693,19 @@ TestParamsData.test_plan = TestPlan(
             dev_data_formats=TestCollectionCommon.int.dev_data_formats,
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
-        # Not implemented operators
-        TestCollection(
-            operators=TestCollectionData.not_implemented.operators,
-            failing_reason=FailingReasons.NOT_IMPLEMENTED,
-        ),
-        # Not implemented operators for CONST_EVAL_PASS
-        # 10 operators are implemented for CONST_EVAL_PASS the are not for other input sources
-        TestCollection(
-            operators=TestCollectionData.implemented_const_eval.operators,
-            input_sources=[
-                InputSource.CONST_EVAL_PASS,
-            ],
-            failing_reason=None,
-        ),
     ],
 )
 
 
-DRY_RUN = False
-# DRY_RUN = True
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            # Define filter criteria
-        )
-    ),
-)
-def test_plan(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-# 1480 passed, 20 xfailed, 2 warnings in 529.46s (0:08:49)
-# 4 failed, 1352 passed, 212 xfailed, 115 xpassed, 2 warnings in 590.56s (0:09:50)
-# 1 failed, 4041 passed, 20 skipped, 321 xfailed, 2 warnings in 1510.10s (0:25:10)
-# 3894 passed, 108 skipped, 444 xfailed, 252 xpassed, 2 warnings in 1719.04s (0:28:39)
-# 3834 passed, 60 skipped, 372 xfailed, 252 xpassed, 2 warnings in 1511.94s (0:25:11)
-# 10 failed, 3442 passed, 59 skipped, 1030 xfailed, 1 xpassed, 2 warnings in 1787.61s (0:29:47)
-# 12 failed, 3443 passed, 59 skipped, 1028 xfailed, 2 warnings in 1716.62s (0:28:36
-# 10 failed, 3443 passed, 59 skipped, 1027 xfailed, 2 warnings in 1819.59s (0:30:19)
-# 5 failed, 3443 passed, 59 skipped, 1032 xfailed, 2 warnings in 1715.26s (0:28:35)
-# 3443 passed, 59 skipped, 1037 xfailed, 2 warnings in 1726.30s (0:28:46)
-# 8 failed, 3432 passed, 59 skipped, 1028 xfailed, 8 xpassed in 1591.84s (0:26:31)
-# 3440 passed, 59 skipped, 1035 xfailed in 1587.97s (0:26:27)
-# 3500 passed, 1056 xfailed in 1668.66s (0:27:48)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            allow=lambda test_vector: test_vector.failing_result is not None
-            and test_vector.failing_result.failing_reason is not None
-            and test_vector.failing_result.skip_reason is None,
-        )
-    ),
-)
-def test_failed(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            allow=lambda test_vector: test_vector.failing_result is not None
-            and test_vector.failing_result.skip_reason is not None,
-        )
-    ),
-)
-def test_skipped(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            allow=lambda test_vector: test_vector.failing_result is not None
-            and test_vector.failing_result.failing_reason == FailingReasons.UNSUPPORTED_DATA_FORMAT
-            and test_vector.failing_result.skip_reason == FailingReasons.FATAL_ERROR,
-        )
-    ),
-)
-def test_unsupported_df_fatal(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            allow=lambda test_vector: test_vector.failing_result is not None
-            and test_vector.failing_result.failing_reason == FailingReasons.UNSUPPORTED_DATA_FORMAT
-            and test_vector.failing_result.skip_reason is None,
-        )
-    ),
-)
-def test_unsupported_df(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            allow=lambda test_vector: test_vector.failing_result is not None
-            and test_vector.failing_result.failing_reason == FailingReasons.NOT_IMPLEMENTED
-            and test_vector.failing_result.skip_reason is None,
-        )
-    ),
-)
-def test_not_implemented(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_test_plan(
-        filter=TestParamsFilter(
-            allow=lambda test_vector: test_vector.failing_result is not None
-            and test_vector.failing_result.failing_reason == FailingReasons.DATA_MISMATCH
-            and test_vector.failing_result.skip_reason is None,
-        )
-    ),
-)
-def test_data_mismatch(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-test_ids_inconsistency = [
-    "div-CONST_EVAL_PASS-{}-(13, 89, 3)-None-None",
-    "mul-CONST_EVAL_PASS-{}-(2, 3, 4)-None-None",
-    "mul-CONST_EVAL_PASS-{}-(11, 45, 17)-None-None",
-]
-
-
-# The collection defines test vectors that triggers a warm reset of the device before verification
-# It allows specifying individual test vectors that should trigger a warm reset and skip warn reset for others
-warm_reset_collection_inconsistency = TestCollection(
-    criteria=lambda test_vector: test_vector.get_id()
-    in [
-        "div-CONST_EVAL_PASS-{}-(13, 89, 3)-None-None",
-        "mul-CONST_EVAL_PASS-{}-(2, 3, 4)-None-None",  # Uncomment the second example from test_ids_inconsistency to cause halt on step 'Running model forward on device...'
-        "mul-CONST_EVAL_PASS-{}-(11, 45, 17)-None-None",
-    ],
+TestParamsData.test_suite = TestSuite(
+    test_plans=[
+        TestParamsData.test_plan_implemented,
+        TestParamsData.test_plan_not_implemented,
+    ]
 )
 
 
-# The fixture is used to setup warm reset before the test, based on the warm_reset_collection_inconsistency collection
-@pytest.fixture
-def warm_reset_inconsistency(test_vector):
-    TestParamsData.warm_reset(test_vector, warm_reset_collection_inconsistency)
-    yield
-
-
-# The fixture is used to setup warm reset before each test
-@pytest.fixture
-def warm_reset_all():
-    DeviceUtils.warm_reset()
-    yield
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_from_id_list(
-        test_ids_inconsistency,
-        filter=TestParamsFilter(
-            # reversed=True,
-            log=True,
-        ),
-    ),
-)
-def test_inconsistency_order1(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_from_id_list(
-        test_ids_inconsistency,
-        filter=TestParamsFilter(
-            reversed=True,
-            log=True,
-        ),
-    ),
-)
-def test_inconsistency_order2(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_from_id_list(
-        test_ids_inconsistency,
-        filter=TestParamsFilter(
-            # reversed=True,
-            log=True,
-        ),
-    ),
-)
-# @pytest.mark.usefixtures("warm_reset_inconsistency")
-def test_inconsistency_with_reset(test_vector: TestVector, test_device, warm_reset_inconsistency):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
-
-
-test_id_single = os.getenv("TEST_ID", None)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestParamsData.get_params_from_id_list(
-        [test_id_single] if test_id_single else [],
-        filter=TestParamsFilter(
-            # reversed=True,
-            # log=True,
-        ),
-    ),
-)
-def test_single(test_vector: TestVector, test_device):
-    TestVerification.verify(test_device=test_device, test_vector=test_vector, dry_run=DRY_RUN)
+def get_test_plans() -> List[Union[TestPlan, TestSuite]]:
+    return [
+        TestParamsData.test_suite,
+    ]
