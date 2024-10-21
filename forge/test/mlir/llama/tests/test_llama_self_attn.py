@@ -5,12 +5,13 @@ import torch
 import pytest
 
 import forge
-from test.mlir.llama.utils.utils import load_model
+from test.mlir.llama.utils.utils import load_model, load_llama32
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.xfail()
-def test_llama_self_attn():
+@pytest.mark.parametrize("llama_ver", ["llama 3B", "llama 3.2 1B"])
+@pytest.mark.xfail(reason="Waiting for the transformers version to be upgraded")
+def test_llama_self_attn(llama_ver):
     # Define wrapper function
     class SelfAttention(torch.nn.Module):
         def __init__(self, model):
@@ -22,15 +23,21 @@ def test_llama_self_attn():
 
             return hidden_states
 
-    # Load Llama 3B model and tokenizer
-    framework_model, _ = load_model()
+    # Load Llama model and tokenizer
+    if llama_ver == "llama 3B":
+        framework_model, _ = load_model()
+    elif llama_ver == "llama 3.2 1B":
+        framework_model, _ = load_llama32()
     framework_model = SelfAttention(framework_model.model.layers[0].self_attn)
+
+    # Get hidden dimension
+    hidden_size = framework_model.model.config.hidden_size
 
     # Input samples
     inputs = [
-        torch.rand((1, 12, 3200)),  # Hidden states
+        torch.rand((1, 12, hidden_size)),  # Hidden states
         torch.ones((1, 1, 12, 12)),  # Attention mask
-        torch.arange(12).unsqueeze(0),  # Position IDs
+        torch.arange(12).unsqueeze(0).float(),  # Position IDs
     ]
 
     # Sanity run
