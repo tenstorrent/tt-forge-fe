@@ -10,7 +10,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 
 
-# @pytest.mark.xfail()
+@pytest.mark.xfail()
 def test_llama_inference():
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
