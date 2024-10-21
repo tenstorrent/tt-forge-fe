@@ -9,6 +9,12 @@ import pytest
 import forge
 import re
 
+import os
+import importlib
+import inspect
+from types import ModuleType
+from itertools import chain
+
 from _pytest.mark import Mark
 from _pytest.mark import ParameterSet
 
@@ -22,6 +28,7 @@ from forge.op_repo import TensorShape
 
 from .datatypes import OperatorParameterTypes
 from .pytest import PytestParamsUtils
+from .compat import TestDevice
 
 
 class InputSource(Enum):
@@ -81,10 +88,21 @@ class TestVector:
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
     pcc: Optional[float] = None
     failing_result: Optional[TestResultFailing] = None
+    test_plan: Optional["TestPlan"] = None  # Needed for verification
 
-    def get_id(self) -> str:
+    def get_id(self, fields: Optional[List[str]] = None) -> str:
         """Get test vector id"""
-        return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}-{self.dev_data_format.name if self.dev_data_format else None}-{self.math_fidelity.name if self.math_fidelity else None}"
+        if fields is None:
+            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}-{self.dev_data_format.name if self.dev_data_format else None}-{self.math_fidelity.name if self.math_fidelity else None}"
+        else:
+            attr = [
+                (getattr(self, field).name if getattr(self, field) is not None else None)
+                if field in ("input_source", "dev_data_format", "math_fidelity")
+                else getattr(self, field)
+                for field in fields
+            ]
+            attr = [str(a) for a in attr]
+            return "-".join(attr)
 
     def get_marks(self) -> List[Mark]:
         """Get marks for the test vector"""
@@ -94,6 +112,10 @@ class TestVector:
     def to_param(self) -> ParameterSet:
         """Convert test vector to pytest parameter set"""
         return pytest.param(self, marks=self.get_marks(), id=self.get_id())
+
+    def verify(self, test_device: "TestDevice"):
+        """Verify the test vector"""
+        self.test_plan.verify(test_device=test_device, test_vector=self)
 
 
 @dataclass
@@ -143,6 +165,150 @@ class TestCollection:
         if self.kwargs is not None and not isinstance(self.kwargs, types.FunctionType):
             self.kwargs = PytestParamsUtils.strip_param_sets(self.kwargs)
 
+    def __contains__(self, item):
+        if isinstance(item, TestVector):
+            return TestPlanUtils.test_vector_in_collection(item, self)
+        raise ValueError(f"Unsupported type: {type(item)} while checking if object is in TestCollection")
+
+
+@dataclass
+class TestQuery:
+    """
+    Dataclass for specifying test vectors queries
+
+    Args:
+        test_vectors: Test vectors
+    """
+
+    test_vectors: Generator[TestVector, None, None]
+
+    def _filter_allowed(self, *filters: Callable[[TestVector], bool]) -> Generator[TestVector, None, None]:
+        for test_vector in self.test_vectors:
+            if all([filter(test_vector) for filter in filters]):
+                yield test_vector
+
+    def _filter_skiped(self, *filters: Callable[[TestVector], bool]) -> Generator[TestVector, None, None]:
+        for test_vector in self.test_vectors:
+            if any([not filter(test_vector) for filter in filters]):
+                yield test_vector
+
+    def _filter_indices(
+        self, indices: Union[int, Tuple[int, int], List[int]] = None, allow_or_skip=True
+    ) -> Generator[TestVector, None, None]:
+        index = 0
+        for test_vector in self.test_vectors:
+            found = False
+            if isinstance(indices, tuple):
+                # logger.info(f"Tuple type indices: {indices}")
+                range_min, range_max = indices
+                if range_min <= index < range_max:
+                    found = True
+            elif isinstance(indices, list):
+                # logger.info(f"List type indices: {indices}")
+                if index in indices:
+                    found = True
+            else:
+                logger.error(f"Invalid indices: {indices}")
+
+            index += 1
+            if allow_or_skip == found:
+                yield test_vector
+
+    def _filter_group_limit(self, groups: List[str], limit: int) -> Generator[TestVector, None, None]:
+        groups_count = {}
+        for test_vector in self.test_vectors:
+            test_vector_group = test_vector.get_id(fields=groups)
+            if test_vector_group not in groups_count:
+                groups_count[test_vector_group] = 0
+            groups_count[test_vector_group] += 1
+            if groups_count[test_vector_group] <= limit:
+                yield test_vector
+
+    def _calculate_failing_result(self) -> Generator[TestVector, None, None]:
+        for test_vector in self.test_vectors:
+            test_vector.failing_result = test_vector.test_plan.check_test_failing(test_vector)
+            yield test_vector
+
+    def _reverse(self) -> Generator[TestVector, None, None]:
+        test_vectors = list(self.test_vectors)
+        test_vectors = test_vectors[::-1]
+        for test_vector in test_vectors:
+            yield test_vector
+
+    def _log(self) -> Generator[TestVector, None, None]:
+        test_vectors = list(self.test_vectors)
+        print("\nParameters:")
+        for test_vector in test_vectors:
+            print(f"{test_vector.get_id()}")
+            yield test_vector
+        print(f"Count: {len(test_vectors)}\n")
+
+    def filter(self, *filters: Callable[[TestVector], bool]) -> "TestQuery":
+        """Filter test vectors based on the filter functions"""
+        return TestQuery(self._filter_allowed(*filters))
+
+    def skip(self, filters: Callable[[TestVector], bool]) -> "TestQuery":
+        """Skip test vectors based on the filter functions"""
+        return TestQuery(self._filter_skiped(*filters))
+
+    def index(self, *args: int) -> "TestQuery":
+        """Filter test vectors based on the indices"""
+        indices = list(args)
+        return TestQuery(self._filter_indices(indices, allow_or_skip=True))
+
+    def range(self, start_index: int, end_index: int) -> "TestQuery":
+        """Filter test vectors based on the range of indices"""
+        return TestQuery(self._filter_indices((start_index, end_index), allow_or_skip=True))
+
+    def index_skip(self, *args: int) -> "TestQuery":
+        """Skip test vectors based on the indices"""
+        indices = list(args)
+        return TestQuery(self._filter_indices(indices, allow_or_skip=False))
+
+    def group_limit(self, groups: List[str], limit: int) -> "TestQuery":
+        """Limit the number of test vectors per group"""
+        return TestQuery(self._filter_group_limit(groups, limit))
+
+    def range_skip(self, start_index: int, end_index: int) -> "TestQuery":
+        """Skip test vectors based on the range of indices"""
+        return TestQuery(self._filter_indices((start_index, end_index), allow_or_skip=False))
+
+    def calculate_failing_result(self) -> "TestQuery":
+        """Calculate and set the failing result based on the test plan"""
+        return TestQuery(self._calculate_failing_result())
+
+    def reverse(self) -> "TestQuery":
+        """Reverse the order of test vectors"""
+        return TestQuery(self._reverse())
+
+    def log(self) -> "TestQuery":
+        """Log the test vectors"""
+        return TestQuery(self._log())
+
+    def to_params(self) -> Generator[ParameterSet, None, None]:
+        """Convert test vectors to pytest parameter sets"""
+        test_vectors = self.test_vectors
+        for test_vector in test_vectors:
+            yield test_vector.to_param()
+
+    @classmethod
+    def all(cls, test_plan: Union["TestPlan", "TestSuite"]) -> "TestQuery":
+        test_vectors = test_plan.generate()
+        query = TestQuery(test_vectors)
+        return query.calculate_failing_result()
+
+    @classmethod
+    def query_from_id_file(cls, test_plan: Union["TestPlan", "TestSuite"], test_ids_file: str) -> "TestQuery":
+        test_vectors = test_plan.load_test_vectors_from_id_file(test_ids_file)
+        query = TestQuery(test_vectors)
+        return query.calculate_failing_result()
+
+    @classmethod
+    def query_from_id_list(cls, test_plan: Union["TestPlan", "TestSuite"], test_ids: List[str]) -> "TestQuery":
+        test_vectors = test_plan.load_test_vectors_from_id_list(test_ids)
+        query = TestQuery(test_vectors)
+        return query.calculate_failing_result()
+
 
 @dataclass
 class TestPlan:
@@ -158,8 +324,9 @@ class TestPlan:
 
     collections: Optional[List[TestCollection]] = None
     failing_rules: Optional[List[TestCollection]] = None
+    verify: Optional[Callable[[TestVector, TestDevice], None]] = None
 
-    def _check_test_failing(
+    def check_test_failing(
         self,
         test_vector: TestVector,
     ) -> Optional[TestResultFailing]:
@@ -172,7 +339,7 @@ class TestPlan:
         failing_result = None
 
         for failing_rule in self.failing_rules:
-            if TestPlanUtils.test_vector_in_collection(test_vector, failing_rule):
+            if test_vector in failing_rule:
                 if failing_rule.failing_reason is not None or failing_rule.skip_reason is not None:
                     failing_result = TestResultFailing(failing_rule.failing_reason, failing_rule.skip_reason)
                 else:
@@ -204,7 +371,8 @@ class TestPlan:
                         for dev_data_format in dev_data_formats:
                             for math_fidelity in math_fidelities:
 
-                                test_vector = TestVector(
+                                test_vector_no_kwargs = TestVector(
+                                    test_plan=self,  # Set the test plan to support verification
                                     operator=input_operator,
                                     input_source=input_source,
                                     input_shape=input_shape,
@@ -214,14 +382,15 @@ class TestPlan:
                                 )
 
                                 # filter collection based on criteria
-                                if test_collection.criteria is None or test_collection.criteria(test_vector):
+                                if test_collection.criteria is None or test_collection.criteria(test_vector_no_kwargs):
 
                                     if isinstance(test_collection.kwargs, types.FunctionType):
-                                        kwargs_list = test_collection.kwargs(test_vector)
+                                        kwargs_list = test_collection.kwargs(test_vector_no_kwargs)
 
                                     for kwargs in kwargs_list:
-                                        # instantiate a new test vector to avoid mutating the original test_vector
+                                        # instantiate a new test vector to avoid mutating the original test_vector_no_kwargs
                                         test_vector = TestVector(
+                                            test_plan=self,  # Set the test plan to support verification
                                             operator=input_operator,
                                             input_source=input_source,
                                             input_shape=input_shape,
@@ -231,26 +400,82 @@ class TestPlan:
                                             kwargs=kwargs,
                                         )
 
-                                        test_vector.failing_result = self._check_test_failing(test_vector)
                                         yield test_vector
+
+    def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
+        test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
+
+        return self.load_test_vectors_from_id_list(test_ids)
+
+    def load_test_vectors_from_id_list(self, test_ids: List[str]) -> List[TestVector]:
+        test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
+
+        for test_vector in test_vectors:
+            if test_vector.operator not in self.collections[0].operators:
+                raise ValueError(f"Operator {test_vector.operator} not found in test plan")
+            test_vector.test_plan = self
+
+        return test_vectors
+
+    def query_all(self) -> TestQuery:
+        return TestQuery.all(self)
+
+    def query_from_id_file(self, test_ids_file: str) -> TestQuery:
+        return TestQuery.query_from_id_file(self, test_ids_file)
+
+    def query_from_id_list(self, test_ids: List[str]) -> TestQuery:
+        return TestQuery.query_from_id_list(self, test_ids)
 
 
 @dataclass
-class TestParamsFilter:
-    """
-    Dataclass for specifying test parameters filter
+class TestSuite:
 
-    Args:
-        allow: Allow function
-        indices: Indices to filter
-        reversed: Reverse the order
-        log: Log the parameters
-    """
+    __test__ = False  # Avoid collecting TestSuite as a pytest test
 
-    allow: Optional[Callable[[TestVector], bool]] = lambda test_vector: True
-    indices: Optional[Union[int, Tuple[int, int], List[int]]] = None
-    reversed: bool = False
-    log: bool = False
+    test_plans: List[TestPlan] = None
+    indices: Optional[Dict[str, TestPlan]] = None  # TODO remove optional
+
+    @staticmethod
+    def get_test_plan_index(test_plans: List[TestPlan]) -> Dict[str, TestPlan]:
+        indices = {}
+        for test_plan in test_plans:
+            for operator in test_plan.collections[0].operators:
+                if operator not in indices:
+                    indices[operator] = test_plan
+        return indices
+
+    def __post_init__(self):
+        self.indices = self.get_test_plan_index(self.test_plans)
+        logger.trace(f"Test suite indices: {self.indices.keys()} test_plans: {len(self.test_plans)}")
+
+    def generate(self) -> Generator[TestVector, None, None]:
+        """Generate test vectors based on the test plan"""
+        generators = [test_plan.generate() for test_plan in self.test_plans]
+        return chain(*generators)
+
+    def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
+        test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
+
+        return self.load_test_vectors_from_id_list(test_ids)
+
+    def load_test_vectors_from_id_list(self, test_ids: List[str]) -> List[TestVector]:
+        test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
+
+        for test_vector in test_vectors:
+            if test_vector.operator not in self.indices:
+                raise ValueError(f"Operator {test_vector.operator} not found in test suite")
+            test_vector.test_plan = self.indices[test_vector.operator]
+
+        return test_vectors
+
+    def query_all(self) -> TestQuery:
+        return TestQuery.all(self)
+
+    def query_from_id_file(self, test_ids_file: str) -> TestQuery:
+        return TestQuery.query_from_id_file(self, test_ids_file)
+
+    def query_from_id_list(self, test_ids: List[str]) -> TestQuery:
+        return TestQuery.query_from_id_list(self, test_ids)
 
 
 class TestPlanUtils:
@@ -404,119 +629,82 @@ class TestPlanUtils:
         )
 
     @classmethod
-    def test_vector_to_test_collection(cls, test_vector: TestVector) -> TestCollection:
-
-        return TestCollection(
-            operators=[test_vector.operator],
-            input_sources=[test_vector.input_source],
-            input_shapes=[test_vector.input_shape],
-            kwargs=[test_vector.kwargs],
-            dev_data_formats=[test_vector.dev_data_format],
-            math_fidelities=[test_vector.math_fidelity],
-        )
-
-    @classmethod
     def test_ids_to_test_vectors(cls, test_ids: List[str]) -> List[TestVector]:
         return [cls.test_id_to_test_vector(test_id) for test_id in test_ids]
 
-    @classmethod
-    def test_vectors_to_test_collections(cls, test_vectors: List[TestVector]) -> List[TestCollection]:
-        return [cls.test_vector_to_test_collection(test_vector) for test_vector in test_vectors]
+
+class TestPlanScanner:
+
+    METHOD_COLLECT_TEST_PLANS = "get_test_plans"
 
     @classmethod
-    def build_test_plan_from_id_list(
-        cls, test_ids: List[str], test_plan_failing: Optional[TestPlan] = None
-    ) -> TestPlan:
-        test_plan = TestPlan(
-            collections=cls.test_vectors_to_test_collections(cls.test_ids_to_test_vectors(test_ids)),
-            failing_rules=test_plan_failing.failing_rules if test_plan_failing is not None else [],
-        )
-
-        return test_plan
-
-    @classmethod
-    def build_test_plan_from_id_file(cls, test_ids_file: str, test_plan_failing: TestPlan) -> TestPlan:
-        test_ids = cls.load_test_ids_from_file(test_ids_file)
-
-        test_plan = cls.build_test_plan_from_id_list(test_ids, test_plan_failing)
-
-        return test_plan
+    def find_modules_in_directory(cls, directory: str) -> List[str]:
+        """Search for all modules in the directory and subdirectories."""
+        modules = []
+        for root, _, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".py") and not file.startswith("__init__"):
+                    # Convert file path to Python module path
+                    module_path = os.path.relpath(os.path.join(root, file), directory)
+                    module_name = module_path[:-3].replace(os.sep, ".")
+                    modules.append(module_name)
+        return modules
 
     @classmethod
-    def generate_params(
-        cls, test_plan: TestPlan, filter: Optional[TestParamsFilter] = None
-    ) -> Generator[ParameterSet, None, None]:
-        test_vectors = test_plan.generate()
-
-        test_vectors = cls.process_filter(test_vectors, filter)
-
-        for test_vector in test_vectors:
-            yield test_vector.to_param()
-
-    @classmethod
-    def yield_test_vectors(
-        cls, test_vector: Union[TestVector, List[TestVector], Generator[TestVector, None, None]]
-    ) -> Generator[TestVector, None, None]:
-        if test_vector is None:
-            pass
-        elif isinstance(test_vector, TestVector):
-            yield test_vector
-        elif isinstance(test_vector, types.GeneratorType):
-            return test_vector
-        elif isinstance(test_vector, list):
-            for item in test_vector:
-                yield item
+    def find_and_call_method(cls, module: ModuleType, method_name: str) -> Generator:
+        """Find and call all method functions."""
+        for name, func in inspect.getmembers(module, inspect.isfunction):
+            if name == method_name and not inspect.isclass(func.__qualname__.split(".")[0]):
+                logger.trace(f"Calling {method_name} from function: {name} in module: {module.__name__}")
+                try:
+                    results: List[Union[TestPlan, TestSuite], None, None] = func()  # Call the function
+                    for result in results:
+                        yield result
+                except Exception as e:
+                    logger.error(f"Error calling {name} in {module.__name__}: {e}")
+                    raise e
+        # return functions_called
 
     @classmethod
-    def filter_allowed(
-        cls, test_params: Generator[TestVector, None, None], filter: TestParamsFilter
-    ) -> Generator[TestVector, None, None]:
-        index = 0
-        for p in test_params:
-            allowed = False
-            if filter.allow is None:
-                allowed = True
-            elif filter.allow(p):
-                if filter.indices is None:
-                    allowed = True
-                else:
-                    if isinstance(filter.indices, int):
-                        # logger.info(f"Int type filter.indices: {filter.indices}")
-                        if filter.indices == index:
-                            allowed = True
-                    elif isinstance(filter.indices, tuple):
-                        # logger.info(f"Tuple type filter.indices: {filter.indices}")
-                        range_min, range_max = filter.indices
-                        if range_min <= index <= range_max:
-                            allowed = True
-                    elif isinstance(filter.indices, list):
-                        # logger.info(f"List type filter.indices: {filter.indices}")
-                        if index in filter.indices:
-                            allowed = True
-                    else:
-                        logger.error(f"Invalid filter.indices: {filter.indices}")
+    def scan_and_invoke(cls, directory: str, method_name: str) -> Generator:
+        """Scan the directory and invoke all method functions."""
+        modules = cls.find_modules_in_directory(directory)
 
-            index += 1
-            if allowed:
-                yield p
+        for module_name in modules:
+            try:
+                logger.trace(f"Loading module: {module_name}")
+                # Dynamic module loading
+                module = importlib.import_module(module_name)
+                results = cls.find_and_call_method(module, method_name)
+                for result in results:
+                    yield result
+            except Exception as e:
+                logger.error(f"Problem loading module {module_name}: {e}")
+                raise e
 
     @classmethod
-    def process_filter(
-        cls, test_params: Generator[TestVector, None, None], filter: Optional[TestParamsFilter] = None
-    ) -> Generator[TestVector, None, None]:
-        if filter is not None:
-            test_params = cls.filter_allowed(test_params, filter)
+    def collect_test_plans(cls, result: Union[TestPlan, TestSuite]) -> Generator[TestPlan, None, None]:
+        if isinstance(result, TestSuite):
+            test_suite = result
+            for test_plan in test_suite.test_plans:
+                yield test_plan
+        elif isinstance(result, TestPlan):
+            test_plan = result
+            yield test_plan
+        else:
+            raise ValueError(f"Unsupported suite/plan type: {type(result)}")
 
-            if filter.reversed == True:
+    @classmethod
+    def get_all_test_plans(cls, current_directory: str) -> Generator[TestPlan, None, None]:
+        """Get all test suites from the current directory."""
+        results = cls.scan_and_invoke(current_directory, cls.METHOD_COLLECT_TEST_PLANS)
+        for result in results:
+            for test_plan in cls.collect_test_plans(result):
+                yield test_plan
+        return results
 
-                if not isinstance(test_params, list):
-                    test_params = list(test_params)
-
-                test_params = test_params[::-1]
-
-        if filter is not None and filter.log == True:
-            logger.info("Parameters:")
-        for p in test_params:
-            if filter is not None and filter.log == True:
-                logger.info(f"{p.get_id()}")
-            yield p
+    @classmethod
+    def build_test_suite(cls, current_directory: str) -> TestSuite:
+        test_plans = TestPlanScanner.get_all_test_plans(current_directory)
+        test_plans = list(test_plans)
+        return TestSuite(test_plans=test_plans)
