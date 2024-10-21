@@ -15,7 +15,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 def test_alexnet_torchhub(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
@@ -47,7 +47,7 @@ def test_alexnet_torchhub(test_device):
 def test_alexnet_osmr(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)

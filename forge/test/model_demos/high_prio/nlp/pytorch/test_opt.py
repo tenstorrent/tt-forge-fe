@@ -15,7 +15,7 @@ def test_opt_causal_lm(variant, test_device):
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = OPTConfig.from_pretrained(variant)
     config_dict = config.to_dict()
