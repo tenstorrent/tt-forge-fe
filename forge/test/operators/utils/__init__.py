@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+from .datatypes import ValueRanges
 from .utils import ShapeUtils
 from .utils import InputSourceFlag, InputSourceFlags
 from .utils import CompilerUtils
@@ -15,8 +16,10 @@ from .plan import TestVector
 from .plan import TestCollection
 from .plan import TestResultFailing
 from .plan import TestPlan
+from .plan import TestSuite
+from .plan import TestQuery
 from .plan import TestPlanUtils
-from .plan import TestParamsFilter
+from .plan import TestPlanScanner
 from .test_data import TestCollectionCommon
 from .failing_reasons import FailingReasons
 from .failing_reasons import FailingReasonsValidation
@@ -24,6 +27,7 @@ from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
 
 __all__ = [
+    "ValueRanges",
     "ShapeUtils",
     "InputSourceFlag",
     "InputSourceFlags",
@@ -38,8 +42,10 @@ __all__ = [
     "TestCollection",
     "TestResultFailing",
     "TestPlan",
+    "TestSuite",
+    "TestQuery",
     "TestPlanUtils",
-    "TestParamsFilter",
+    "TestPlanScanner",
     "TestCollectionCommon",
     "FailingReasons",
     "FailingReasonsValidation",
