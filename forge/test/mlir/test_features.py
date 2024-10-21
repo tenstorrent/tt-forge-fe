@@ -153,4 +153,4 @@ def test_batch_size_training(batch_size, in_features, out_features):
     assert torch.allclose(loss, golden_loss, rtol=1e-2)  # 1e-2 is the minimum value for which the test passes
 
     loss.backward()
-    tt_model.backward(pred.grad)
+    tt_model.backward()
