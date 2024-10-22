@@ -5,18 +5,19 @@ import torch
 import pytest
 
 import forge
-from test.mlir.llama.utils.utils import load_model, load_llama32
+from test.mlir.llama.utils.utils import load_model
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.parametrize("llama_ver", ["llama 3B", "llama 3.2 1B"])
-@pytest.mark.xfail(reason="Waiting for the transformers version to be upgraded")
-def test_llama_mlp(llama_ver):
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.xfail()
+def test_llama_mlp(model_path):
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
     # Load Llama model and tokenizer
-    if llama_ver == "llama 3B":
-        framework_model, _ = load_model()
-    elif llama_ver == "llama 3.2 1B":
-        framework_model, _ = load_llama32()
+    framework_model, _ = load_model(model_path)
+
     framework_model = framework_model.model.layers[0].mlp
     hidden_dim = framework_model.hidden_size
 

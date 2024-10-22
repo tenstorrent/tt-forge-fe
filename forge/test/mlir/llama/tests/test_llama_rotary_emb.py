@@ -5,14 +5,14 @@ import torch
 import pytest
 
 import forge
-from test.mlir.llama.utils.utils import load_model, load_llama32
+from test.mlir.llama.utils.utils import load_model
 from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-@pytest.mark.parametrize("llama_ver", ["llama 3B", "llama 3.2 1B"])
-@pytest.mark.xfail(reason="Waiting for the transformers version to be upgraded")
-def test_llama_rotary_emb(llama_ver):
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.xfail()
+def test_llama_rotary_emb(model_path):
     class Llama_Rotary_Embedding(torch.nn.Module):
         def __init__(self, model):
             super().__init__()
@@ -31,11 +31,12 @@ def test_llama_rotary_emb(llama_ver):
             query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin)
             return query_states, key_states
 
-    # Load the model
-    if llama_ver == "llama 3B":
-        llama_model, _ = load_model()
-    elif llama_ver == "llama 3.2 1B":
-        llama_model, _ = load_llama32()
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # Load Llama Model
+    llama_model, _ = load_model(model_path)
+
     framework_model = Llama_Rotary_Embedding(llama_model)
     framework_model.eval()
 
