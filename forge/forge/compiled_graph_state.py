@@ -61,6 +61,7 @@ class CompiledGraphState:
     graph: Graph
     ordered_input_names: List[str]
     ordered_output_names: List[str]
+    ordered_external_output_names: List[str]
     ordered_target_names: List[str]
     ordered_constant_node_names: List[str]
     ordered_parameter_node_names: List[str]
@@ -86,8 +87,10 @@ class CompiledGraphState:
     def from_compiled_graph(module: Module, graph: Graph) -> "CompiledGraphState":
         ordered_input_names = graph.get_ordered_input_names()
         ordered_output_names = graph.get_ordered_output_names()
+        ordered_external_output_names = graph.get_ordered_external_output_names()
         ordered_target_names = graph.get_ordered_target_names()
         ordered_intermediate_names = graph.get_ordered_intermediate_names()
+        ordered_output_requires_grad = graph.get_ordered_output_requires_grad()
         ordered_constant_node_names = [constant_node.name for constant_node in graph.get_constant_nodes()]
         ordered_parameter_node_names = [parameter_node.name for parameter_node in graph.get_parameter_nodes()]
 
@@ -122,6 +125,7 @@ class CompiledGraphState:
             graph=graph,
             ordered_input_names=ordered_input_names,
             ordered_output_names=ordered_output_names,
+            ordered_external_output_names=ordered_external_output_names,
             ordered_target_names=ordered_target_names,
             ordered_constant_node_names=ordered_constant_node_names,
             ordered_parameter_node_names=ordered_parameter_node_names,
@@ -166,35 +170,54 @@ class ProgramId(IntEnum):
 
 class CompiledModel:
     """
-    Callable object for running inference on the compiled model.
+    Callable object for running the compiled model on the device(s).
+
+    If the model is compiled for inference, only forward pass can be executed.
+    In case of training - forward, backward, loss and optimizer steps can be executed - depending on which of these
+    is compiled for the device, and which are set up to be ran separately on the CPU.
     """
 
     fwd_compiled_graph_state: CompiledGraphState
     bwd_compiled_graph_state: Optional[CompiledGraphState]
+
+    # Compiled flatbuffer binary composed of programs which execute compiled graphs (e.g., forward, backward, etc.)
     compiled_binary: Binary
+
     inputs: List[torch.Tensor]
+    outputs: Dict[str, torch.Tensor]
     intermediates: List[torch.Tensor]
+
+    # Original user-defined module.
     framework_module: AnyModule
-    loss_module: Optional[Module]
-    optimizer: Optional[torch.optim.Optimizer]
+
+    # Gradients coming from the loss.backward() - only used when loss is computed on CPU.
+    loss_grad: List[Optional[torch.Tensor]]
 
     def __init__(
         self,
         fwd_compiled_graph_state: CompiledGraphState,
-        bwd_compiled_graph_state: CompiledGraphState,
+        bwd_compiled_graph_state: Optional[CompiledGraphState],
         compiled_binary: Binary,
         framework_module: AnyModule,
-        loss_module: Optional[Module] = None,
-        optimizer: Optional[torch.optim.Optimizer] = None,
     ):
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
         self.compiled_binary = compiled_binary
         self.inputs = []
         self.framework_module = framework_module
-        self.loss_module = loss_module
-        self.optimizer = optimizer
         self.intermediates = []
+        self.loss_grad = [None] * len(fwd_compiled_graph_state.ordered_external_output_names)
+        self.outputs = {}
+
+    def tie_grad_fn(self, grad_id: int, grad: torch.Tensor):
+        """
+        Hook function to tie the gradients produced by torch as inputs to the backward pass which will be ran on the
+        TT device.
+
+        NOTE: Should be used only when loss is computed on CPU (outside of our runtime).
+        """
+        assert len(self.loss_grad) > grad_id, "More gradients than expected."
+        self.loss_grad[grad_id] = grad
 
     def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         """
@@ -222,29 +245,32 @@ class CompiledModel:
             inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
 
         logger.info(f"Running model {self.fwd_compiled_graph_state.graph.get_name()} on device...")
-        model_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
+        all_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
 
         self.intermediates = []
+
+        # The model_outputs will contain outputs that we need to return to the user, i.e. external outputs.
+        model_outputs = []
         for idx, output_name in enumerate(self.fwd_compiled_graph_state.ordered_output_names):
+            output = all_outputs[idx]
             if output_name in self.fwd_compiled_graph_state.ordered_intermediate_names:
-                self.intermediates.append(model_outputs[idx])
-
-        self.outputs = {}
-        self.outputs[self.fwd_compiled_graph_state.ordered_output_names[0]] = model_outputs[0]
-
-        model_outputs = [model_outputs[0]]
+                self.intermediates.append(output)
+            if output_name in self.fwd_compiled_graph_state.ordered_external_output_names:
+                self.outputs[output_name] = output
+                model_outputs.append(output)
 
         if self.fwd_compiled_graph_state.graph.training():
             # For executing loss and its backward graph on CPU, we need to tell torch to compute gradients.
-            for output in model_outputs:
+            for idx, output in enumerate(model_outputs):
                 output.requires_grad = True
+                output.register_hook(lambda grad: self.tie_grad_fn(idx, grad))
 
         return model_outputs
 
     def forward(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         return self(inputs)
 
-    def backward(self, loss_grad: torch.Tensor) -> List[torch.Tensor]:
+    def backward(self) -> List[torch.Tensor]:
         assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
         consts_and_params = [
@@ -252,15 +278,14 @@ class CompiledModel:
             *self.bwd_compiled_graph_state.get_ordered_parameter_tensors(),
         ]
 
-        # Make a list from gradients passed from loss function.
-        if not isinstance(loss_grad, list):
-            loss_grad = [loss_grad]
+        for grad in self.loss_grad:
+            assert grad is not None, "Gradients not provided for backward pass."
 
         logger.info(f"Running backward pass on model {self.bwd_compiled_graph_state.graph.get_name()} on device...")
         grads = run_binary(
             self.compiled_binary,
             int(ProgramId.BACKWARD),
-            [*loss_grad, *self.intermediates, *self.inputs, *consts_and_params],
+            [*self.loss_grad, *self.intermediates, *self.inputs, *consts_and_params],
         )
 
         for name, param in self.framework_module.module.named_parameters():

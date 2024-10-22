@@ -255,6 +255,7 @@ class Graph
     std::vector<std::string> get_ordered_input_names() const;
     std::vector<std::string> get_ordered_intermediate_names() const;
     std::vector<std::string> get_ordered_output_names() const;
+    std::vector<std::string> get_ordered_external_output_names() const;
     std::vector<std::string> get_ordered_input_gradient_names() const;
     std::vector<std::string> get_ordered_output_gradient_names() const;
     std::vector<unsigned int> get_ordered_input_subgraph_indices() const;
