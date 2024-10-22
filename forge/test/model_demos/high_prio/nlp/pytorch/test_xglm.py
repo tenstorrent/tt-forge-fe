@@ -15,8 +15,6 @@ def test_xglm_causal_lm(variant, test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    compiler_cfg.cpu_fallback_ops.add("take")
-    compiler_cfg.enable_enumerate_u_kt = False
 
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()

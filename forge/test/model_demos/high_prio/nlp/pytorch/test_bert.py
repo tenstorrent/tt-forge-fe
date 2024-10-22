@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 from test.utils import download_model
 
-import os
-
 import forge
 from transformers import (
     BertForMaskedLM,
@@ -15,7 +13,7 @@ from transformers import (
 )
 
 
-def generate_model_bert_maskedlm_hf_pytorch(test_device, variant):
+def generate_model_bert_maskedlm_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = variant
     tokenizer = BertTokenizer.from_pretrained(model_ckpt)
@@ -39,15 +37,13 @@ def generate_model_bert_maskedlm_hf_pytorch(test_device, variant):
     return model, [input_tokens["input_ids"]], {}
 
 
-def test_bert_masked_lm_pytorch():
-    model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch(
-        "bert-base-uncased",
-    )
+def test_bert_masked_lm_pytorch(test_device):
+    model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch("bert-base-uncased")
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
-def generate_model_bert_qa_hf_pytorch(test_device, variant):
+def generate_model_bert_qa_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = variant
     tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
@@ -81,15 +77,13 @@ def generate_model_bert_qa_hf_pytorch(test_device, variant):
     return model, [input_tokens["input_ids"]], {}
 
 
-def test_bert_question_answering_pytorch():
-    model, inputs, _ = generate_model_bert_qa_hf_pytorch(
-        "bert-large-cased-whole-word-masking-finetuned-squad",
-    )
+def test_bert_question_answering_pytorch(test_device):
+    model, inputs, _ = generate_model_bert_qa_hf_pytorch("bert-large-cased-whole-word-masking-finetuned-squad")
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
-def generate_model_bert_seqcls_hf_pytorch(test_device, variant):
+def generate_model_bert_seqcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = variant
     tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
@@ -113,7 +107,7 @@ def generate_model_bert_seqcls_hf_pytorch(test_device, variant):
     return model, [input_tokens["input_ids"]], {}
 
 
-def test_bert_sequence_classification_pytorch():
+def test_bert_sequence_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(
         "textattack/bert-base-uncased-SST-2",
     )
@@ -121,7 +115,7 @@ def test_bert_sequence_classification_pytorch():
     compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
-def generate_model_bert_tkcls_hf_pytorch(test_device, variant):
+def generate_model_bert_tkcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = variant
     tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
@@ -145,9 +139,7 @@ def generate_model_bert_tkcls_hf_pytorch(test_device, variant):
     return model, [input_tokens["input_ids"]], {}
 
 
-def test_bert_token_classification_pytorch():
-    model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(
-        "dbmdz/bert-large-cased-finetuned-conll03-english",
-    )
+def test_bert_token_classification_pytorch(test_device):
+    model, inputs, _ = generate_model_bert_tkcls_hf_pytorch("dbmdz/bert-large-cased-finetuned-conll03-english")
 
     compiled_model = forge.compile(model, sample_inputs=inputs)

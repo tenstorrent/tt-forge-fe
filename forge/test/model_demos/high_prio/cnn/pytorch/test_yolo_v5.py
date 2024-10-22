@@ -16,8 +16,8 @@ def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
 
     input_shape = (1, 3, 320, 320)
-
-    return model, [input_shape], {}
+    input_tensor = torch.rand(input_shape)
+    return model, [input_tensor], {}
 
 
 size = ["n", "s", "m", "l", "x"]
@@ -30,7 +30,8 @@ def test_yolov5_320x320(test_device, size):
         "ultralytics/yolov5",
         size=size,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    ouputs = model(inputs[0])
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -42,8 +43,8 @@ def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
 
     input_shape = (1, 3, 640, 640)
-
-    return model, [input_shape], {}
+    input_tensor = torch.rand(input_shape)
+    return model, [input_tensor], {}
 
 
 size = ["n", "s", "m", "l", "x"]
@@ -57,7 +58,8 @@ def test_yolov5_640x640(test_device, size):
         "ultralytics/yolov5",
         size=size,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    ouputs = model(inputs[0])
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -67,8 +69,8 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
     input_shape = (1, 3, 480, 480)
-
-    return model, [input_shape], {}
+    input_tensor = torch.rand(input_shape)
+    return model, [input_tensor], {}
 
 
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
@@ -79,18 +81,19 @@ def test_yolov5_480x480(test_device, size):
         "ultralytics/yolov5",
         size=size,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    ouputs = model(inputs[0])
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
 
-@pytest.mark.skip(reason="Not supported")
 def test_yolov5_1280x1280(test_device):
-    # env vars needed to support 640x640 yolov5 working
-    compiler_cfg.paddings = {
-        "concatenate_19.dc.concatenate.4": True,
-        "concatenate_46.dc.concatenate.4": True,
-        "concatenate_139.dc.concatenate.4": True,
-        "concatenate_152.dc.concatenate.4": True,
-    }
+
+    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     model = download_model(torch.hub.load, "ultralytics/yolov5", "yolov5s", pretrained=True)
-    compiled_model = forge.compile(model, sample_inputs=[input_shape])
+
+    input_shape = (1, 3, 1280, 1280)
+    input_tensor = torch.rand(input_shape)
+    inputs = [input_tensor]
+    ouputs = model(inputs[0])
+    compiled_model = forge.compile(model, sample_inputs=inputs)
