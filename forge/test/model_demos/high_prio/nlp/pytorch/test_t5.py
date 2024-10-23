@@ -727,6 +727,7 @@ def test_t5_forge_pipeline(variant, test_device):
     print(answer)
 
 
+@pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip(

@@ -162,7 +162,9 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
     return model, [img_batch], {}
 
 
-@pytest.mark.skip(reason="Hang")
+@pytest.mark.skip(
+    reason="Failed to download the model after multiple retries."
+)  # https://github.com/tenstorrent/tt-forge-fe/issues/515
 def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         test_device,

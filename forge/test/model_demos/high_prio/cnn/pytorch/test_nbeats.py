@@ -16,7 +16,7 @@ from nbeats.scripts import (
 
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -34,7 +34,7 @@ def test_nbeats_with_seasonality_basis(test_device):
 
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -46,7 +46,7 @@ def test_nbeats_with_generic_basis(test_device):
 
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     x, x_mask = get_electricity_dataset_input()
 
