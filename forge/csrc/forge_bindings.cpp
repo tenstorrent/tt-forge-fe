@@ -23,6 +23,7 @@ namespace py = pybind11;
 #include "lower_to_forge/common.hpp"
 #include "passes/amp.hpp"
 #include "passes/consteval.hpp"
+#include "passes/extract_unique_op_configuration.hpp"
 #include "passes/fracture.hpp"
 #include "passes/link_past_cache_ios.hpp"
 #include "passes/mlir_compiler.hpp"
@@ -211,6 +212,13 @@ PYBIND11_MODULE(_C, m)
     m.def("run_mlir_compiler", &passes::run_mlir_compiler);
     m.def("split_graph", &passes::split_graph);
 
+    m.def(
+        "extract_unique_op_configuration",
+        [](tt::graphlib::Graph *graph, std::string stage, const std::optional<std::vector<std::string>> &supported_ops)
+        { tt::passes::extract_unique_op_configuration(graph, stage, supported_ops); },
+        py::arg("graph"),
+        py::arg("stage"),
+        py::arg("supported_ops") = std::nullopt);
     m.def(
         "dump_graph",
         [](const tt::graphlib::Graph *graph, std::string test_name, std::string graph_name)
