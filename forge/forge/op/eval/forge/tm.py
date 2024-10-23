@@ -763,9 +763,9 @@ def lower(type, attr, lc, ops, outputs):
         assert attr[1] >= 0 and attr[1] <= 3, f"Invalid transpose dim after lowering: {attr[0]}"
 
         if attr[0] == 2 and attr[1] == 3:
-            lc.tm("transpose", ops[0], attr, named_attrs={"dim0": attr[0], "dim1": attr[1], "z_dim_slice": attr[2]})
+            lc.tm("transpose", ops[0], attr, named_attrs={"dim0": attr[0], "dim1": attr[1]})
         else:
-            lc.op("transpose", ops, attr, {"dim0": attr[0], "dim1": attr[1], "z_dim_slice": attr[2]})
+            lc.op("transpose", ops, attr, {"dim0": attr[0], "dim1": attr[1]})
 
     elif type == "broadcast":
         if attr[0] < 0:
@@ -1021,14 +1021,14 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             ret = ac.op("reduce_sum", (grad,), (attr[0],), {"keep_dim": True})
         else:
             ret = ac.op(
-                TransposeTM.create(attr[0], -2, z_dim_slice=grad.shape[-2]),
+                TransposeTM.create(attr[0], -2),
                 [
                     grad,
                 ],
             )
             ret = ac.op("reduce_sum", (ret,), (-2,), {"keep_dim": True})
             ret = ac.op(
-                TransposeTM.create(attr[0], -2, z_dim_slice=ret.shape[-2]),
+                TransposeTM.create(attr[0], -2),
                 [
                     ret,
                 ],

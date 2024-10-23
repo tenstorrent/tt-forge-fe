@@ -18,11 +18,9 @@ struct OpTypeItem
     OpTypeItem(OpType const& op_type, bool check_attrs) :
         op_name(op_type.op),
         attrs(
-            op_type.op == "transpose" ? std::vector<OpType::Attr>(
-                                            {op_type.get_attr_as<int>("dim0"),
-                                             op_type.get_attr_as<int>("dim1"),
-                                             op_type.get_attr_as<int>("z_dim_slice")})
-                                      : op_type.attr),
+            op_type.op == "transpose"
+                ? std::vector<OpType::Attr>({op_type.get_attr_as<int>("dim0"), op_type.get_attr_as<int>("dim1")})
+                : op_type.attr),
         check_attrs(check_attrs)
     {
     }
@@ -34,14 +32,10 @@ struct OpTypeItem
 
     OpType as_op_type() const
     {
-        return op_name == "transpose" ? graphlib::OpType(
-                                            op_name,
-                                            {},
-                                            {},
-                                            {{"dim0", std::get<int>(attrs[0])},
-                                             {"dim1", std::get<int>(attrs[1])},
-                                             {"z_dim_slice", std::get<int>(attrs[1])}})
-                                      : graphlib::OpType(op_name, attrs);
+        return op_name == "transpose"
+                   ? graphlib::OpType(
+                         op_name, {}, {}, {{"dim0", std::get<int>(attrs[0])}, {"dim1", std::get<int>(attrs[1])}})
+                   : graphlib::OpType(op_name, attrs);
     }
 };
 
@@ -51,31 +45,31 @@ using TMPatternPairs = std::vector<std::pair<TMPattern, TMPattern>>;
 // PreDefine TM sequence pattern
 static TMPattern pattern_0 = {
     OpTypeItem("vslice", {}, false),
-    OpTypeItem("transpose", {-3, -1, -1}, true),
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-3, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
     OpTypeItem("reshape", {}, false),
 };
 
 static TMPattern replace_0 = {
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
 };
 
 static TMPattern pattern_1 = {
     OpTypeItem("reshape", {}, false),
-    OpTypeItem("transpose", {-3, -1, -1}, true),
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-3, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
     OpTypeItem("reshape", {}, false),
 };
 
 static TMPattern replace_1 = {
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
 };
 
 static TMPattern pattern_2 = {
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
     OpTypeItem("reshape", {}, false),
-    OpTypeItem("transpose", {-3, -2, -1}, true),
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-3, -2}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
     OpTypeItem("reshape", {}, false),
 };
 
@@ -144,10 +138,10 @@ static TMPattern replace_2_15 = {
 };
 
 static TMPattern pattern_3 = {
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
     OpTypeItem("reshape", {}, false),
-    OpTypeItem("transpose", {-4, -2, -1}, true),
-    OpTypeItem("transpose", {-3, -1, -1}, true),
+    OpTypeItem("transpose", {-4, -2}, true),
+    OpTypeItem("transpose", {-3, -1}, true),
     OpTypeItem("reshape", {}, false),
 };
 
@@ -192,10 +186,10 @@ static TMPattern replace_3_9 = {
 };
 
 static TMPattern pattern_4 = {
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
     OpTypeItem("reshape", {}, false),
-    OpTypeItem("transpose", {-3, -2, -1}, true),
-    OpTypeItem("transpose", {-2, -1, -1}, true),
+    OpTypeItem("transpose", {-3, -2}, true),
+    OpTypeItem("transpose", {-2, -1}, true),
 };
 
 static TMPatternPairs pattern_map = {

@@ -105,12 +105,17 @@ def test_reshape(source_and_target_shape):
         ((8, 1, 16, 32, 32), -4),
         ((8, 16, 1, 32, 32), -3),
         ([1, 12, 3200], 0),
+        ([1, 1, 2048, 1], [-3, -4]),
+        ([1, 64, 1, 1], [-1, -4]),
+        ([1, 1, 1, 128], [-2, -4]),
+        ([1, 1, 32, 1], [-1, -3]),
+        ([1, 1, 1, 64], [-4, -3]),
     ],
 )
 def test_squeeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
-    if input_shape == [1, 12, 3200]:
+    if input_shape == [1, 12, 3200] or isinstance(dim, list) and len(dim) > 1 and all(d < 0 for d in dim):
         pytest.xfail("TTNN: Tensor layout issues with non tile dim aligned shapes")
 
     class Squeeze(nn.Module):

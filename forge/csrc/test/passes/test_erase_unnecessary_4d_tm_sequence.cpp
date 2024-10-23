@@ -24,10 +24,7 @@ struct EraseUnnecessary4DSeq : testing::Test
         auto reshape_0 =
             add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {NumOperands, 58, 64, 64}, {input_0});
         auto transpose_0 = add_node<graphlib::PyOpNode>(
-            *graph,
-            "transpose_0",
-            graphlib::OpType("transpose", {}, {}, {{"dim0", -4}, {"dim1", -3}, {"z_dim_slice", -1}}),
-            {reshape_0});
+            *graph, "transpose_0", graphlib::OpType("transpose", {}, {}, {{"dim0", -4}, {"dim1", -3}}), {reshape_0});
         auto reshape_1 =
             add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, NumOperands * 58, 64, 64}, {transpose_0});
 

@@ -190,7 +190,7 @@ def process_transpose(node, forge_op_name):
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    named_attrs = {"dim0": dim0, "dim1": dim1, "z_dim_slice": -1}
+    named_attrs = {"dim0": dim0, "dim1": dim1}
 
     return ForgeNode(
         OpType(forge_op_name, named_attrs=named_attrs),

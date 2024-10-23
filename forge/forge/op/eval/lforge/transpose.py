@@ -7,11 +7,10 @@ from ..interface import ForgeTM
 
 class TransposeTM(ForgeTM):
     @classmethod
-    def create(cls, dim0, dim1, z_dim_slice=-1):
+    def create(cls, dim0, dim1):
         self = cls("transpose")
         self.dim0 = dim0
         self.dim1 = dim1
-        self.z_dim_slice = z_dim_slice
         return self
 
     def eval(self, tensors):

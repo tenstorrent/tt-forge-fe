@@ -42,7 +42,7 @@ class TransposeTM(PyTM):
 
         if self.dim0 == -2 and self.dim1 == -1:
             lc.tm(
-                ForgeTransposeTM.create(self.dim0, self.dim1, z_dim_slice=self.z_dim_slice),
+                ForgeTransposeTM.create(self.dim0, self.dim1),
                 tensors[0],
             )
         else:
@@ -58,7 +58,7 @@ class TransposeTM(PyTM):
                 self.dim1 -= inputs[0].shape.len()
             dc.fuse(
                 dc.op(
-                    TransposeTM.create(self.dim0, self.dim1, z_dim_slice=self.z_dim_slice),
+                    TransposeTM.create(self.dim0, self.dim1),
                     inputs,
                 )
             )
