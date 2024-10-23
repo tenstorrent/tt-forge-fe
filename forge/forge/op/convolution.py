@@ -135,6 +135,16 @@ def Conv2dTranspose(
         name,
         *inputs,
         attrs=attrs,
+        stride_height=stride[0],
+        stride_width=stride[1],
+        dilation_height=dilation,
+        dilation_width=dilation,
+        groups=groups,
+        padding_left=padding[0],
+        padding_right=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        channel_last=channel_last,
     ).get_tensor()
 
 
