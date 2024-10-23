@@ -1,8 +1,11 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+# SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
+#
+# SPDX-License-Identifier: Apache-2.0
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import forge
+import torch
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
@@ -27,4 +30,5 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
     net.eval()
 
     input_shape = (1, 3, 300, 300)
-    compiled_model = forge.compile(net, sample_inputs=[input_shape])
+    inputs = [torch.rand(input_shape)]
+    compiled_model = forge.compile(net, sample_inputs=inputs)

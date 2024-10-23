@@ -37,7 +37,6 @@ variants = [
 def generate_model_whisper_congen_hf_pytorch(test_device, variant):
     # Configurations
     compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     class Wrapper(torch.nn.Module):
@@ -100,9 +99,10 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_whisper(variant):
+def test_whisper(test_device, variant):
 
     model, inputs = generate_model_whisper_congen_hf_pytorch(
+        test_device,
         variant,
     )
 
