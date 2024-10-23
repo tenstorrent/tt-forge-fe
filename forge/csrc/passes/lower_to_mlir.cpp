@@ -21,6 +21,7 @@
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/Value.h"
 #include "mlir/IR/ValueRange.h"
+#include "passes/extract_unique_op_configuration.hpp"
 #include "utils/logger.hpp"
 
 // MLIR headers
@@ -63,6 +64,28 @@ class MLIRGenerator
         // Emit MLIR functions for each graph in the module.
         for (auto graph : module.graphs())
         {
+            // Verifies if any unsupported operations exist in the graph.
+            // If found, an error is thrown, listing all unsupported operations
+            // along with their unique configurations within the graph.
+            std::vector<std::string> supported_ops;
+            std::transform(
+                lowering_handler_map.begin(),
+                lowering_handler_map.end(),
+                std::back_inserter(supported_ops),
+                [](const std::pair<std::string, HandlerType> &ttir_op_pair) { return ttir_op_pair.first; });
+
+            auto unsupported_op_shapes_attrs = tt::passes::extract_unique_op_configuration(graph, supported_ops);
+
+            if (!unsupported_op_shapes_attrs.empty())
+            {
+                log_error(
+                    "Found Unsupported operations while lowering from TTForge to TTIR in {} graph", graph->name());
+                tt::passes::print_unique_op_configuration(
+                    unsupported_op_shapes_attrs, "Unsupported Ops at: RUN_MLIR_COMPILER stage");
+                throw std::runtime_error(
+                    "Found Unsupported operations while lowering from TTForge to TTIR in " + graph->name() + " graph");
+            }
+
             emit_mlir_function(graph, graph->name());
         }
 
