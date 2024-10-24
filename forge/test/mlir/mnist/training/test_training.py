@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import time
 
 import torch
 from torch import nn
@@ -27,9 +28,6 @@ def test_mnist_training():
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
-
-    # Load TensorBoard writer (for logging)
-    writer = load_tb_writer()
 
     # Define model and instruct it to compile and run on TT device
     framework_model = MNISTLinear()
@@ -138,3 +136,94 @@ def test_forge_vs_torch_gradients():
     # Compare gradients for each parameter
     for name in reversed(list(torch_grads.keys())):
         assert compare_with_golden(torch_grads[name], forge_grads[name])
+
+
+# For bfloat16, the following line should be added to the test_forge_vs_torch function:
+# In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
+# That sets relu threshold to bfloat16 tensor.
+# And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
+@pytest.mark.skip(reason="Need to be tested with bfloat16")
+def test_forge_vs_torch():
+    torch.manual_seed(0)
+
+    batch_size = 64
+    learning_rate = 1e-2
+    epochs = 10
+    verobse = True
+
+    dtype = torch.float32
+
+    torch_model = MNISTLinear(dtype=dtype)
+    forge_model = MNISTLinear(dtype=dtype)
+
+    copy_params(torch_model, forge_model)
+
+    torch_writer = load_tb_writer("torch")
+    forge_writer = load_tb_writer("forge")
+
+    loss_fn = nn.CrossEntropyLoss()
+    torch_optimizer = torch.optim.SGD(torch_model.parameters(), lr=learning_rate)
+    forge_optimizer = torch.optim.SGD(forge_model.parameters(), lr=learning_rate)
+
+    tt_model = forge.compile(
+        forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], loss=loss_fn, optimizer=forge_optimizer
+    )
+
+    test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
+    step = 0
+
+    earlyStop = EarlyStopping(patience=3)
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+    for i in range(epochs):
+        start_time = time.time()
+        torch_loop = train_loop(
+            train_loader,
+            torch_model,
+            loss_fn,
+            torch_optimizer,
+            batch_size,
+            torch_model.named_parameters,
+            isTT=False,
+            verbose=verobse,
+        )
+        forge_loop = train_loop(
+            train_loader,
+            tt_model,
+            loss_fn,
+            forge_optimizer,
+            batch_size,
+            forge_model.named_parameters,
+            isTT=True,
+            verbose=verobse,
+        )
+        for torch_data, forge_data in zip(torch_loop, forge_loop):
+            step += 1
+
+            torch_loss, torch_pred, torch_grads = torch_data
+            forge_loss, forge_pred, forge_grads = forge_data
+
+            if step % 100 == 0:
+                torch_val_loss, torch_val_acc = validation_loop(
+                    test_loader, torch_model, loss_fn, batch_size, isTT=False
+                )
+                forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, isTT=True)
+
+                torch_writer.add_scalar("train_loss", torch_loss.float(), step)
+                forge_writer.add_scalar("train_loss", forge_loss.float(), step)
+                torch_writer.add_scalar("validation_acc", torch_val_acc, step)
+                forge_writer.add_scalar("validation_acc", forge_val_acc, step)
+
+                torch_writer.flush()
+                forge_writer.flush()
+
+        if verobse:
+            print(f"Epoch {i} took {time.time() - start_time} seconds")
+
+        if earlyStop(forge_val_acc):
+            torch.save(torch_model.state_dict(), "runs/models/torch_model.pth")
+            torch.save(forge_model, "runs/models/forge_model.pth")
+
+        if earlyStop.early_stop:
+            break

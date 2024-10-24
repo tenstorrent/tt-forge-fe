@@ -29,6 +29,29 @@ class MNISTLinear(nn.Module):
         return logits
 
 
+class EarlyStopping:
+    def __init__(self, patience=3):
+        self.patience = patience
+        self.counter = 0
+        self.best_score = None
+        self.early_stop = False
+
+    def __call__(self, val_metric):
+        is_current_best = False
+        if self.best_score is None:
+            self.best_score = val_metric
+        elif val_metric < self.best_score:
+            self.counter += 1
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            is_current_best = True
+            self.best_score = val_metric
+            self.counter = 0
+
+        return is_current_best
+
+
 def load_tb_writer(model):
     """
     Load TensorBoard writer for logging
@@ -82,3 +105,50 @@ def copy_params(src, dst):
 def write_grads(writer, named_params, step):
     for name in named_params:
         writer.add_histogram(name, named_params[name].flatten().float(), step)
+
+
+def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, isTT=False, verbose=False):
+    size = len(dataloader.dataset)
+    for batch, (X, y) in enumerate(dataloader):
+        optimizer.zero_grad()
+        pred = model(X)
+        pred = pred[0] if isTT else pred
+
+        y = nn.functional.one_hot(y.long(), num_classes=10).to(pred.dtype)
+        loss = loss_fn(pred, y)
+
+        if isTT:
+            loss.backward()
+            model.backward(pred.grad)
+        else:
+            loss.backward()
+
+        yield loss, pred, get_param_grads(named_params)
+
+        optimizer.step()
+        optimizer.zero_grad()
+
+        if verbose and batch % 100 == 0:
+            loss, current = loss.item(), batch * batch_size + len(X)
+            print(f"{'Forge' if isTT else 'Torch'} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+
+def validation_loop(dataloader, model, loss_fn, batch_size, isTT=False, verbose=False):
+    size = len(dataloader.dataset)
+    test_loss, correct = 0, 0
+
+    with torch.no_grad():
+        for X, y in dataloader:
+            pred = model(X)
+            pred = pred[0] if isTT else pred
+            y = nn.functional.one_hot(y.long(), num_classes=10).to(pred.dtype)
+            test_loss += loss_fn(pred, y).item()
+            correct += (pred.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
+
+    test_loss /= size
+    correct /= size
+    if verbose:
+        print(
+            f"{'Forge' if isTT else 'Torch'} Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n"
+        )
+    return test_loss, correct
