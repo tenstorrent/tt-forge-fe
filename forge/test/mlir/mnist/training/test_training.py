@@ -130,7 +130,7 @@ def test_forge_vs_torch_gradients():
     forge_pred = tt_model(X)[0]
     forge_loss = loss_fn(forge_pred, y)
     forge_loss.backward()
-    tt_model.backward(forge_pred.grad)
+    tt_model.backward()
     forge_grads = get_param_grads(forge_model.named_parameters)
 
     # Compare gradients for each parameter
