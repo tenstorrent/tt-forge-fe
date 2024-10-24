@@ -31,7 +31,7 @@ def test_mistral_decoder_layer(variant, test_device):
 
     sample_inputs = torch.randn(batch_size, seqlen, hidden_dim)
     inputs = [sample_inputs]
-    compiled_model = forge.compile(module, sample_inputs=inputs)
+    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral_decoder")
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -46,6 +46,7 @@ def test_mistral(variant, test_device):
     configuration.use_cache = False
     configuration.return_dict = False
     compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     module = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -60,7 +61,7 @@ def test_mistral(variant, test_device):
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
     inputs = [sample_inputs]
 
-    compiled_model = forge.compile(module, sample_inputs=inputs)
+    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral")
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]

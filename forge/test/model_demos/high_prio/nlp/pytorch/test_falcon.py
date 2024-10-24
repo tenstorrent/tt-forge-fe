@@ -33,4 +33,4 @@ def test_falcon(test_device):
     output = model(input_tokens["input_ids"], input_tokens["attention_mask"])
 
     # Forge inference
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_falcon")

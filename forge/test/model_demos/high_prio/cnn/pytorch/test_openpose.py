@@ -313,22 +313,20 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
 
 
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Not needed for release")
+@pytest.mark.skip(reason="dependent on CCM repo")
 def test_openpose_basic(variant, test_device):
     model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
 
 
 def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "CNN"
-    compiler_cfg.enable_auto_fusing = False
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -356,4 +354,4 @@ def test_openpose_osmr(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")

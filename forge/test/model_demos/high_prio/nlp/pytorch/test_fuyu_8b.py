@@ -22,6 +22,7 @@ from transformers import (
     LogitsProcessorList,
 )
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
+import requests
 
 
 def generate_fuyu_embedding(model, input_ids, image_patches, image_patches_indices):
@@ -164,7 +165,14 @@ def test_fuyu8b(test_device):
 
     # Prepare inputs
     text_prompt = "Generate a coco-style caption.\n"
+
+    url = "https://huggingface.co/adept-hf-collab/fuyu-8b/resolve/main/bus.png"
+    response = requests.get(url)
+    with open("bus.png", "wb") as file:
+        file.write(response.content)
+
     image_path = "bus.png"  # https://huggingface.co/adept-hf-collab/fuyu-8b/blob/main/bus.png
+
     image_pil = Image.open(image_path)
     model_inputs = processor(text=text_prompt, images=[image_pil], device="cpu", return_tensor="pt")
     inputs_embeds = generate_fuyu_embedding(
@@ -173,7 +181,8 @@ def test_fuyu8b(test_device):
     inputs_embeds = inputs_embeds.clone().detach()
 
     inputs = [inputs_embeds]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fuyu_8b")
+    os.remove("bus.png")
 
 
 @pytest.mark.skip(reason="not supported yet")

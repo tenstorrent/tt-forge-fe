@@ -17,7 +17,6 @@ import forge
 from test.utils import download_model
 from forge.forgeglobal import TILE_DIM
 from forge.config import _get_global_compiler_config
-from forge._C.backend_api import BackendType, BackendDevice
 
 
 class Whisper_encoder(torch.nn.Module):

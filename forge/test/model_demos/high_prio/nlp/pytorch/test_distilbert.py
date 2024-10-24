@@ -41,7 +41,7 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_masked_lm")
 
 
 def test_distilbert_question_answering_pytorch(test_device):
@@ -76,7 +76,7 @@ def test_distilbert_question_answering_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_question_answering")
 
 
 def test_distilbert_sequence_classification_pytorch(test_device):
@@ -102,7 +102,7 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_sequence_classification")
 
 
 def test_distilbert_token_classification_pytorch(test_device):
@@ -127,4 +127,4 @@ def test_distilbert_token_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_token_classification")

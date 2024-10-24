@@ -36,4 +36,6 @@ def test_xglm_causal_lm(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_"))
+    )

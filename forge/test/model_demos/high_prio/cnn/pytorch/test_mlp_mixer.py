@@ -56,4 +56,4 @@ def test_mlp_mixer_timm_pytorch(variant, test_device):
         image = torch.rand(1, 3, 256, 256)
     pixel_values = transform(image).unsqueeze(0)
     inputs = [pixel_values]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + variant)

@@ -53,7 +53,9 @@ def test_phi3_causal_lm(variant, test_device):
 
     inputs = [input_ids, attn_mask]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
+    )
 
 
 @pytest.mark.parametrize("variant", variants)
@@ -84,7 +86,9 @@ def test_phi3_token_classification(variant, test_device):
 
     inputs = [inputs["input_ids"]]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
+    )
 
 
 @pytest.mark.parametrize("variant", variants)
@@ -114,4 +118,6 @@ def test_phi3_sequence_classification(variant, test_device):
     inputs = tokenizer(input_prompt, return_tensors="pt")
     inputs = [inputs["input_ids"]]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
+    )

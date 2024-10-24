@@ -112,7 +112,8 @@ def test_t5_generation(variant, test_device):
         encoder_outputs = torch.randn(1, 256, 1024)
 
     inputs = [decoder_input_ids, encoder_outputs]
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs)
+    variant_name = variant.replace("-", "_").replace("/", "_")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
 
 
 class T5_encoder(torch.nn.Module):

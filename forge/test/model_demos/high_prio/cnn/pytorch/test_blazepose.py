@@ -36,7 +36,7 @@ def test_blazepose_detector_pytorch(test_device):
     _, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(pose_detector, sample_inputs=[img2])
+    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name="pt_blazepose_detector")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -48,50 +48,14 @@ def test_blazepose_regressor_pytorch(test_device):
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
     img2 = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(pose_regressor, sample_inputs=[img2])
+    compiled_model = forge.compile(pose_regressor, sample_inputs=[img2], module_name="pt_blazepose_regressor")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
-def test_blazepose_detector_pytorch_1x1(test_device):
+def test_blaze_palm_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-
-    # Load BlazePose Detector
-    pose_detector = BlazePose()
-    pose_detector.load_weights("mediapipepytorch/blazepose.pth")
-    pose_detector.load_anchors("mediapipepytorch/anchors_pose.npy")
-
-    # Load data sample
-    orig_image = cv2.imread("forge/test/model_demos/utils/cnn/pytorch/images/girl.png")
-
-    # Preprocess for BlazePose Detector
-    _, img2, scale, pad = resize_pad(orig_image)
-    img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
-    img2 = img2.float() / 255.0
-    compiled_model = forge.compile(pose_detector, sample_inputs=[img2])
-
-
-@pytest.mark.skip(reason="dependent on CCM repo")
-def test_blazepose_regressor_pytorch_1x1(test_device):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-
-    # Load BlazePose Landmark Regressor
-    pose_regressor = BlazePoseLandmark()
-    pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
-
-    img2 = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(pose_regressor, sample_inputs=[img2])
-
-
-@pytest.mark.skip(reason="dependent on CCM repo")
-def test_blaze_palm_pytorch_1x1(test_device):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.cpu_fallback_ops = set(["concatenate"])
 
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
@@ -106,11 +70,11 @@ def test_blaze_palm_pytorch_1x1(test_device):
     img1, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(palm_detector, sample_inputs=[img2])
+    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name="pt_palm_detector")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
-def test_blaze_hand_pytorch_1x1(test_device):
+def test_blaze_hand_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -120,4 +84,4 @@ def test_blaze_hand_pytorch_1x1(test_device):
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
     sample_tensor = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(hand_regressor, sample_inputs=[sample_tensor])
+    compiled_model = forge.compile(hand_regressor, sample_inputs=[sample_tensor], module_name="pt_hand_regressor")

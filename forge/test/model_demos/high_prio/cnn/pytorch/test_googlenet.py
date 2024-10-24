@@ -40,4 +40,4 @@ def test_googlenet_pytorch(test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
     input_batch_list = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=input_batch_list)
+    compiled_model = forge.compile(model, sample_inputs=input_batch_list, module_name="pt_googlenet")

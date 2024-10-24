@@ -22,7 +22,7 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 #############
 
 
-def generate_model_hrnet_imgcls_osmr_pytorch(test_device, variant):
+def generate_model_hrnet_imgcls_osmr_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
@@ -86,7 +86,7 @@ def test_hrnet_osmr_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_osmr_{variant}")
 
 
 def generate_model_hrnet_imgcls_timm_pytorch(variant):
@@ -150,4 +150,4 @@ def test_hrnet_timm_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_timm_{variant}")

@@ -40,7 +40,7 @@ def test_unet_osmr_cityscape_pytorch(test_device):
         test_device,
         "unet_cityscapes",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_cityscapes_osmr")
 
 
 def get_imagenet_sample():
@@ -70,7 +70,7 @@ def get_imagenet_sample():
     return img_tensor
 
 
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="Model script not found")
 def test_unet_holocron_pytorch(test_device):
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -81,7 +81,7 @@ def test_unet_holocron_pytorch(test_device):
     model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor])
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_unet_holocron")
 
 
 def generate_model_unet_imgseg_smp_pytorch(test_device, variant):
@@ -120,7 +120,7 @@ def test_unet_qubvel_pytorch(test_device):
         test_device,
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_qubvel_pt")
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
@@ -170,4 +170,4 @@ def test_unet_torchhub_pytorch(test_device):
         test_device,
         "unet",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_torchhub")

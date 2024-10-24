@@ -7,7 +7,7 @@ from forge.config import _get_global_compiler_config
 import forge
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_lite_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/pose_landmark_lite.tflite"
@@ -16,7 +16,7 @@ def test_pose_landmark_lite_1x1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_heavy_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/pose_landmark_heavy.tflite"
@@ -25,8 +25,7 @@ def test_pose_landmark_heavy_1x1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_lite(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/pose_landmark_lite.tflite"
@@ -34,8 +33,7 @@ def test_pose_landmark_lite(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_heavy(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/pose_landmark_heavy.tflite"

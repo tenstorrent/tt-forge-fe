@@ -31,7 +31,8 @@ def test_yolov5_320x320(test_device, size):
         size=size,
     )
     ouputs = model(inputs[0])
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    name = "yolov5" + size
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_320x320")
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -59,7 +60,8 @@ def test_yolov5_640x640(test_device, size):
         size=size,
     )
     ouputs = model(inputs[0])
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    name = "yolov5" + size
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_640x640")
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -82,7 +84,8 @@ def test_yolov5_480x480(test_device, size):
         size=size,
     )
     ouputs = model(inputs[0])
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    name = "yolov5" + size
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_480x480")
 
 
 def test_yolov5_1280x1280(test_device):
@@ -96,4 +99,4 @@ def test_yolov5_1280x1280(test_device):
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor]
     ouputs = model(inputs[0])
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_yolov5s_1280x1280")

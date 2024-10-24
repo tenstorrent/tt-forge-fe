@@ -143,7 +143,11 @@ def test_llama3_causal_lm(variant, test_device):
 
     inputs = [input_ids, attn_mask]
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm",
+    )
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
@@ -168,4 +172,8 @@ def test_llama3_sequence_classification(variant, test_device):
 
     inputs = [input_ids]
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls",
+    )

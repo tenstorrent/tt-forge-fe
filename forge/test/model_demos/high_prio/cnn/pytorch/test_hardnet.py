@@ -55,4 +55,4 @@ def test_hardnet_pytorch(test_device, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")

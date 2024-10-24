@@ -37,7 +37,8 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
     model(**input_tokens)
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    varaint_name = model_ckpt.replace("-", "_")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_masked_lm")
 
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
@@ -75,4 +76,5 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
     model(**input_tokens)
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    varaint_name = model_ckpt.replace("-", "_")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_token_cls")

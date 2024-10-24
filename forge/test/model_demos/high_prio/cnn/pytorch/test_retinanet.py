@@ -73,7 +73,7 @@ def test_retinanet(variant, test_device):
     # Prepare input
     input_batch = img_preprocess()
     inputs = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)

@@ -40,4 +40,4 @@ def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
 
     print("type(image_tensor)", type(image_tensor))
     inputs = image_tensor
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_tri_basic_2_semseg")

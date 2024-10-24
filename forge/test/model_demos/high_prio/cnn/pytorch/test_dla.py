@@ -60,4 +60,4 @@ def test_dla_pytorch(variant, test_device):
 
     pytorch_model = func(pretrained="imagenet")
     pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor])
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}")
