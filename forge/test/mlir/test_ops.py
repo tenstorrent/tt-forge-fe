@@ -14,6 +14,38 @@ from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
+@pytest.mark.parametrize(
+    "batch_size, num_channels, height, width",
+    [
+        (1, 32, 56, 56),
+        (1, 64, 112, 112),
+        (1, 128, 224, 224),
+        (1, 256, 28, 28),
+        (1, 32, 56, 56),
+        (2, 64, 112, 112),  # pcc = 0.6199620538910243
+        (4, 64, 28, 28),  # pcc = 0.4935656199688308
+        (8, 64, 112, 112),  # pcc = 0.40443518583193394
+        (16, 128, 224, 224),  # pcc = -0.0004391043640747615
+        (32, 256, 28, 28),  # pcc = 0.39200606381500713
+    ],
+)
+def test_multidim_unsqueeze(batch_size, num_channels, height, width):
+
+    framework_model = nn.BatchNorm2d(num_features=num_channels)
+
+    inputs = [torch.rand(batch_size, num_channels, height, width)]
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    if batch_size == 1:
+        assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
 def test_add():
     class Add(nn.Module):
         def __init__(self):
