@@ -20,6 +20,7 @@ from .clip import Clip
 from .cumulativesum import CumulativeSum
 from .argmax import Argmax
 from .convolution import Conv2d
+from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
 
 op_to_module_map = {
@@ -106,7 +107,7 @@ op_to_module_map = {
     "reduce_max": "reduce",
     "grouped_reduce_avg": "reduce",
     "conv2d": Conv2d,
-    "conv2d_transpose": "convolution",
+    "conv2d_transpose": Conv2dTranspose,
     "conv3d": "convolution",
     "max_pool1d": "pooling",
     "max_pool2d": MaxPool2d,
