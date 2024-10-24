@@ -93,3 +93,48 @@ def test_mnist_training():
             break
 
     print(f"Test (total) loss: {test_loss}")
+
+
+def test_forge_vs_torch_gradients():
+    logger.disable("")
+    torch.manual_seed(0)
+    batch_size = 64
+
+    dtype = torch.float32
+    torch.set_printoptions(precision=10)
+
+    in_features = 28 * 28
+    out_features = 10
+
+    torch_model = MNISTLinear(dtype=dtype, bias=True)
+
+    forge_model = MNISTLinear(dtype=dtype, bias=True)
+
+    copy_params(torch_model, forge_model)
+
+    loss_fn = nn.CrossEntropyLoss()
+
+    sample_inputs = [torch.ones(batch_size, in_features, dtype=dtype)]
+
+    tt_model = forge.compile(forge_model, sample_inputs=sample_inputs, loss=loss_fn)
+
+    X = torch.ones(batch_size, in_features, dtype=dtype)
+    y = torch.zeros(batch_size, out_features, dtype=dtype)
+
+    torch_pred = torch_model(X)
+    torch_loss = loss_fn(torch_pred, y)
+    torch_loss.backward()
+    torch_grads = get_param_grads(torch_model.named_parameters)
+
+    X = torch.ones(batch_size, in_features, dtype=dtype)
+    y = torch.zeros(batch_size, out_features, dtype=dtype)
+
+    forge_pred = tt_model(X)[0]
+    forge_loss = loss_fn(forge_pred, y)
+    forge_loss.backward()
+    tt_model.backward(forge_pred.grad)
+    forge_grads = get_param_grads(forge_model.named_parameters)
+
+    # Compare gradients for each parameter
+    for name in reversed(list(torch_grads.keys())):
+        assert compare_with_golden(torch_grads[name], forge_grads[name])
