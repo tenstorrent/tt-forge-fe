@@ -61,19 +61,20 @@ class MLIRGenerator
             mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
+        // Collect all the supported TTIR operations
+        std::vector<std::string> supported_ops;
+        std::transform(
+            lowering_handler_map.begin(),
+            lowering_handler_map.end(),
+            std::back_inserter(supported_ops),
+            [](const std::pair<std::string, HandlerType> &ttir_op_pair) { return ttir_op_pair.first; });
+
         // Emit MLIR functions for each graph in the module.
         for (auto graph : module.graphs())
         {
             // Verifies if any unsupported operations exist in the graph.
             // If found, an error is thrown, listing all unsupported operations
             // along with their unique configurations within the graph.
-            std::vector<std::string> supported_ops;
-            std::transform(
-                lowering_handler_map.begin(),
-                lowering_handler_map.end(),
-                std::back_inserter(supported_ops),
-                [](const std::pair<std::string, HandlerType> &ttir_op_pair) { return ttir_op_pair.first; });
-
             auto unsupported_op_shapes_attrs = tt::passes::extract_unique_op_configuration(graph, supported_ops);
 
             if (!unsupported_op_shapes_attrs.empty())
