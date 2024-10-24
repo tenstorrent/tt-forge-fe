@@ -142,7 +142,7 @@ def test_forge_vs_torch_gradients():
 # In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
 # That sets relu threshold to bfloat16 tensor.
 # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
-@pytest.mark.skip(reason="Need to be tested with bfloat16")
+@pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
 def test_forge_vs_torch():
     torch.manual_seed(0)
 
@@ -172,7 +172,7 @@ def test_forge_vs_torch():
     test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
     step = 0
 
-    earlyStop = EarlyStopping(patience=3)
+    earlyStop = EarlyStopping(patience=1)
 
     logger.info("Starting training loop... (logger will be disabled)")
     logger.disable("")
