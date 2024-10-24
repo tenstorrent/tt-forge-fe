@@ -1264,12 +1264,6 @@ def populate_transpose_args(graph, nid, compiler_cfg):
     args.append(("dim0", f"{transpose_axes[0]}"))
     args.append(("dim1", f"{transpose_axes[1]}"))
 
-    # If transpose unpadded Z dim, record the original shape
-    if (transpose_axes[0] == -3 and transpose_axes[1] != -4) or (transpose_axes[0] == -4 and transpose_axes[1] != -3):
-        args.append(("z_dim_slice", f"{transpose_shape[transpose_axes[0]]}"))
-    elif (transpose_axes[1] == -3 and transpose_axes[0] != -4) or (transpose_axes[1] == -4 and transpose_axes[0] != -3):
-        args.append(("z_dim_slice", f"{transpose_shape[transpose_axes[1]]}"))
-
     args.append(("out_dtype", "torch." + node["attrs"]["dtype"][0][0]))
 
     return args

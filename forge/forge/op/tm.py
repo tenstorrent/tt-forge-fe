@@ -115,9 +115,7 @@ def VStack(name: str, operandA: Tensor, slices: int = -1) -> Tensor:
     return op("vstack", name, operandA, attrs=(slices,)).get_tensor()
 
 
-def Transpose(
-    name: str, operandA: Tensor, dim0: int, dim1: int, z_dim_slice: int = -1, out_dtype: torch.dtype = torch.float32
-) -> Tensor:
+def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int, out_dtype: torch.dtype = torch.float32) -> Tensor:
 
     """
     Tranpose X and Y (i.e. rows and columns) dimensions.
@@ -150,7 +148,7 @@ def Transpose(
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, attrs=(dim0, dim1, z_dim_slice), dim0=dim0, dim1=dim1).get_tensor(
+    return op("transpose", name, operandA, attrs=(dim0, dim1), dim0=dim0, dim1=dim1).get_tensor(
         out_df=pytorch_dtype_to_forge_dataformat(out_dtype)
     )
 

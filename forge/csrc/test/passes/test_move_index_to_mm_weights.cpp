@@ -31,7 +31,7 @@ struct Gpt2Split : testing::Test
         auto transpose_1_1 = add_node<graphlib::PyOpNode>(
             *graph,
             "transpose_1_1",
-            graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}, {"z_dim_slice", -1}}),
+            graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}}),
             {reshape_1_1});
         create_output(*graph, "output_1_1", transpose_1_1);
 
@@ -40,7 +40,7 @@ struct Gpt2Split : testing::Test
         auto transpose_1_2 = add_node<graphlib::PyOpNode>(
             *graph,
             "transpose_1_2",
-            graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}, {"z_dim_slice", -1}}),
+            graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}}),
             {reshape_1_2});
         create_output(*graph, "output_1_2", transpose_1_2);
 
@@ -49,7 +49,7 @@ struct Gpt2Split : testing::Test
         auto transpose_1_3 = add_node<graphlib::PyOpNode>(
             *graph,
             "transpose_1_3",
-            graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}, {"z_dim_slice", -1}}),
+            graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}}),
             {reshape_1_3});
         create_output(*graph, "output_1_3", transpose_1_3);
     }
@@ -112,10 +112,7 @@ struct Fuyu8bSplit : testing::Test
 
         // path 1
         auto transpose_1 = add_node<graphlib::PyOpNode>(
-            *graph,
-            "transpose_1",
-            graphlib::OpType("transpose", {}, {}, {{"dim0", -2}, {"dim1", -1}, {"z_dim_slice", -1}}),
-            {weight});
+            *graph, "transpose_1", graphlib::OpType("transpose", {}, {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto reshape_1_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_1_0", "reshape", {32, 4096}, {in_1});
         auto matmul_1 = add_node<graphlib::PyOpNode>(*graph, "matmul_1", "matmul", {}, {reshape_1_0, transpose_1});
         auto reshape_1_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1_1", "reshape", {1, 32, 12288}, {matmul_1});
@@ -133,10 +130,7 @@ struct Fuyu8bSplit : testing::Test
 
         // path 2
         auto transpose_2 = add_node<graphlib::PyOpNode>(
-            *graph,
-            "transpose_2",
-            graphlib::OpType("transpose", {}, {}, {{"dim0", -2}, {"dim1", -1}, {"z_dim_slice", -1}}),
-            {weight});
+            *graph, "transpose_2", graphlib::OpType("transpose", {}, {}, {{"dim0", -2}, {"dim1", -1}}), {weight});
         auto reshape_2_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_2_0", "reshape", {416, 4096}, {in_2});
         auto matmul_2 = add_node<graphlib::PyOpNode>(*graph, "matmul_2", "matmul", {}, {reshape_2_0, transpose_2});
         auto reshape_2_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_2_1", "reshape", {1, 32, 12288}, {matmul_2});

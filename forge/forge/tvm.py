@@ -296,11 +296,10 @@ def populate_transpose_attrs(graph, nid, attrs):
     else:
         attrs.append(-1)
 
-    dim0, dim1, z_dim_slice = attrs
+    dim0, dim1 = attrs
     return {
         "dim0": dim0,
         "dim1": dim1,
-        "z_dim_slice": z_dim_slice,
     }
 
 
