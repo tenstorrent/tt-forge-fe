@@ -225,14 +225,19 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             for i in range(len(shapes[operand])):
                 if shapes[operand][i] < grad_shape[i]:
                     # Negative indexing for reduce axis
-                    grad = ac.op("reduce_sum", (grad,), (i - grad_shape_len,), {"keep_dim": True})
+                    grad = ac.op(
+                        "reduce_sum",
+                        (grad,),
+                        (i - grad_shape_len,),
+                        {"keep_dim": True, "dim_arg": [i - grad_shape_len]},
+                    )
         return ac.op(Nop.create(), (grad,))  # pass gradient through
 
     elif op_type == "subtract":
         if inputs[operand].shape != grad.shape:
             for i in range(len(shapes[operand])):
                 if shapes[operand][i] < grad.shape[i]:
-                    grad = ac.op("reduce_sum", (grad,), (i,), {"keep_dim": True})
+                    grad = ac.op("reduce_sum", (grad,), (i,), {"keep_dim": True, "dim_arg": [i]})
         if operand == 0:
             return ac.op(Nop.create(), (grad,))
         else:
@@ -243,7 +248,12 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         if inputs[operand].shape != grad.shape:
             for i in range(len(shapes[operand])):
                 if shapes[operand][i] < grad_shape[i]:
-                    op_grad = ac.op("reduce_sum", (op_grad,), (i - grad_shape_len,), {"keep_dim": True})
+                    op_grad = ac.op(
+                        "reduce_sum",
+                        (op_grad,),
+                        (i - grad_shape_len,),
+                        {"keep_dim": True, "dim_arg": [i - grad_shape_len]},
+                    )
         return op_grad
 
     elif op_type == "maximum":
