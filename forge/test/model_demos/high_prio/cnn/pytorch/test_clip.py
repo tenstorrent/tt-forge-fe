@@ -124,4 +124,4 @@ def test_clip_pytorch(test_device):
     text_model = CLIPTextWrapper(model)
     inputs = [inputs[0], inputs[2]]
 
-    compiled_model = forge.compile(text_model, sample_inputs=inputs)
+    compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name="pt_clip_text_model")

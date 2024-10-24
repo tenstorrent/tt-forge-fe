@@ -154,7 +154,7 @@ def test_mobilenetv1_basic(test_device):
         None,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_basic")
 
 
 import requests
@@ -187,7 +187,7 @@ def test_mobilenetv1_192(test_device):
         test_device,
         "google/mobilenet_v1_0.75_192",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_192")
 
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
@@ -214,4 +214,4 @@ def test_mobilenetv1_224(test_device):
         test_device,
         "google/mobilenet_v1_1.0_224",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_224")

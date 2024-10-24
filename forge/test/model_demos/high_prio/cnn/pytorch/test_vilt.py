@@ -136,7 +136,9 @@ def test_vilt_question_answering_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]])
+    compiled_model = forge.compile(
+        model, sample_inputs=[inputs[0], inputs[1]], module_name="pt_ViLt_question_answering"
+    )
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
@@ -177,4 +179,4 @@ def test_vilt_maskedlm_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]], module_name="pt_ViLt_maskedlm")

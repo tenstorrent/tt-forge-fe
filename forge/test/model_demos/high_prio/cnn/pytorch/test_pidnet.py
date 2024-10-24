@@ -47,4 +47,4 @@ def test_pidnet_pytorch(variant, test_device):
     model.load_state_dict(model_dict)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image])
+    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=f"pt_{variant}")

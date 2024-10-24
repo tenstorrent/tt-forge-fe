@@ -43,7 +43,7 @@ def test_mobilenetv3_basic(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
 
 
 def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
@@ -88,20 +88,4 @@ def test_mobilenetv3_timm(variant, test_device):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
-
-
-variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
-
-
-@pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.skip(reason="Not supported")
-def test_mobilenetv3_timm_1x1(variant, test_device):
-    pytest.skip()
-    os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
-
-    model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
-        test_device,
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")

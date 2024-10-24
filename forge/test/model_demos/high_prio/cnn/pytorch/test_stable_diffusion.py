@@ -151,13 +151,13 @@ def denoising_loop(
             # noise_pred_0 = pipeline(latent_model_input.detach()[0:1],timestep_.detach()[0:1],prompt_embeds.detach()[0:1],)
 
             inputs = [latent_model_input.detach()[0:1], timestep_.detach()[0:1], prompt_embeds.detach()[0:1]]
-            compiled_model = forge.compile(pipeline, sample_inputs=inputs)
+            compiled_model = forge.compile(pipeline, sample_inputs=inputs, module_name=f"pt_stable_diffusion_1_{i}")
             noise_pred_0 = compiled_model(*inputs)
 
             # sanity
             # noise_pred_1 = pipeline(latent_model_input.detach()[1:2],timestep_.detach()[1:2],prompt_embeds.detach()[1:2],)
             inputs = [latent_model_input.detach()[1:2], timestep_.detach()[1:2], prompt_embeds.detach()[1:2]]
-            compiled_model = forge.compile(pipeline, sample_inputs=inputs)
+            compiled_model = forge.compile(pipeline, sample_inputs=inputs, module_name=f"pt_stable_diffusion_2_{i}")
             noise_pred_1 = compiled_model(*inputs)
 
             noise_pred = torch.cat([noise_pred_0[0].value().detach(), noise_pred_1[0].value().detach()], dim=0)

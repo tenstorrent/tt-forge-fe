@@ -114,7 +114,7 @@ def test_yolo_v6_pytorch(variant, test_device):
     input_batch = img.unsqueeze(0)
 
     # STEP 4 : Inference
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

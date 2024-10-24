@@ -14,7 +14,7 @@ from timm.data.transforms_factory import create_transform
 from loguru import logger
 
 
-def generate_model_resnet_imgcls_hf_pytorch(test_device, variant):
+def generate_model_resnet_imgcls_hf_pytorch(variant):
     # Load ResNet feature extractor and model checkpoint from HuggingFace
     model_ckpt = variant
     feature_extractor = download_model(AutoFeatureExtractor.from_pretrained, model_ckpt)
@@ -37,13 +37,11 @@ def generate_model_resnet_imgcls_hf_pytorch(test_device, variant):
     # Data preprocessing
     inputs = feature_extractor(image, return_tensors="pt")
     pixel_values = inputs["pixel_values"]
-    # model = forge.PyTorchModule("pt_resnet50", model)
 
     return model, [pixel_values], {}
 
 
-@pytest.mark.parametrize("enable_default_dram_parameters", [True, False])
-def test_resnet(test_device, enable_default_dram_parameters):
+def test_resnet(test_device):
 
     model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
         "microsoft/resnet-50",
@@ -51,10 +49,10 @@ def test_resnet(test_device, enable_default_dram_parameters):
 
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50")
 
 
-def generate_model_resnet_imgcls_timm_pytorch(test_device, variant):
+def generate_model_resnet_imgcls_timm_pytorch(variant):
     # Load ResNet50 feature extractor and model from TIMM
     model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
@@ -84,4 +82,4 @@ def test_resnet_timm(test_device):
     model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
         "resnet50",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50_timm")

@@ -53,7 +53,7 @@ def test_vgg_osmr_pytorch(variant, test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}_osmr")
 
 
 def test_vgg_19_hf_pytorch(test_device):
@@ -92,7 +92,7 @@ def test_vgg_19_hf_pytorch(test_device):
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
         )
         input_batch = torch.rand(1, 3, 224, 224)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_19_hf")
 
 
 def preprocess_timm_model(model_name):
@@ -123,7 +123,7 @@ def test_vgg_bn19_timm_pytorch(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
-    compiled_model = forge.compile(model, sample_inputs=[image_tensor])
+    compiled_model = forge.compile(model, sample_inputs=[image_tensor], module_name=f"pt_{model_name}_timm")
 
 
 def test_vgg_bn19_torchhub_pytorch(test_device):
@@ -155,4 +155,4 @@ def test_vgg_bn19_torchhub_pytorch(test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_bn19_torchhub")

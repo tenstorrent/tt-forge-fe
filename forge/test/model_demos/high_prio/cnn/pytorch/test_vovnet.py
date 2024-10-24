@@ -63,7 +63,7 @@ def test_vovnet_osmr_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
 
 
 # https://github.com/stigma0617/VoVNet.pytorch
@@ -108,7 +108,7 @@ def test_vovnet_v1_39_stigma_pytorch(test_device, enable_default_dram_parameters
     )
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_vovnet_39_stigma")
 
 
 from src_vovnet_stigma import vovnet57
@@ -130,7 +130,7 @@ def test_vovnet_v1_57_stigma_pytorch(test_device):
         test_device,
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"vovnet_57_stigma_pt")
 
 
 def preprocess_timm_model(model_name):
@@ -171,4 +171,4 @@ def test_vovnet_timm_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")

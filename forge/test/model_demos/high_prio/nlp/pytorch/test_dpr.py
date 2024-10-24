@@ -41,7 +41,9 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )
 
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
@@ -71,7 +73,9 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
@@ -100,4 +104,6 @@ def test_dpr_reader_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )

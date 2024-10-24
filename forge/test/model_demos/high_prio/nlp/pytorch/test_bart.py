@@ -50,4 +50,4 @@ def test_pt_bart_classifier(test_device):
     # Compile & feed data
     pt_mod = BartWrapper(model.model)
 
-    compiled_model = forge.compile(pt_mod, sample_inputs=inputs)
+    compiled_model = forge.compile(pt_mod, sample_inputs=inputs, module_name="pt_bart")

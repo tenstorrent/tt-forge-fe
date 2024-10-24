@@ -18,7 +18,7 @@ def test_wideresnet_pytorch(variant, test_device):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_hub")
 
 
 variants = ["wide_resnet50_2", "wide_resnet101_2"]
@@ -31,4 +31,4 @@ def test_wideresnet_timm(variant, test_device):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")

@@ -38,4 +38,4 @@ def test_fchardnet(test_device):
     model = fuse_bn_recursively(model)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image])
+    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name="fchardnet")

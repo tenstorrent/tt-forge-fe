@@ -44,4 +44,6 @@ def test_segformer_semantic_segmentation_pytorch(test_device, variant):
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    compiled_model = forge.compile(model, sample_inputs=[pixel_values])
+    compiled_model = forge.compile(
+        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )

@@ -31,7 +31,7 @@ def test_efficientnet_lite0(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite1(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/efficientnet-lite1-fp32.tflite"
@@ -39,7 +39,7 @@ def test_efficientnet_lite1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite2(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/efficientnet-lite2-fp32.tflite"
@@ -47,7 +47,7 @@ def test_efficientnet_lite2(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite3(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/efficientnet-lite3-fp32.tflite"
@@ -55,7 +55,7 @@ def test_efficientnet_lite3(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite4(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/efficientnet-lite4-fp32.tflite"

@@ -23,11 +23,7 @@ from typing import Optional
 from forge.forgeglobal import TILE_DIM
 import forge
 from test.utils import download_model
-from forge.verify import verify_module
-from forge.verify.config import TestKind
-from forge import PyTorchModule, VerifyConfig
 from forge.config import _get_global_compiler_config
-from forge._C.backend_api import BackendType, BackendDevice
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from test.model_demos.models.whisper import Whisper_encoder, Whisper_decoder, generate_model_whisper_decoder_past_cache
 

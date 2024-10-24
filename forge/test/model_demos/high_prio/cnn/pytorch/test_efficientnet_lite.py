@@ -46,7 +46,7 @@ def test_efficientnet_lite_0_pytorch():
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor)
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_0")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -66,7 +66,7 @@ def test_efficientnet_lite_1_pytorch(test_device):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = get_image_tensor(wh)
 
-    compiled_model = forge.compile(model, sample_inputs=img_tensor)
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_1")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -85,7 +85,7 @@ def test_efficientnet_lite_2_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor)
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_2")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -104,7 +104,7 @@ def test_efficientnet_lite_3_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor)
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -123,4 +123,4 @@ def test_efficientnet_lite_4_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor)
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")

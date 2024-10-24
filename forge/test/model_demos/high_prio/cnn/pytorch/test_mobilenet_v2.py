@@ -39,7 +39,7 @@ def test_mobilenetv2_basic(test_device):
         test_device,
         "pytorch/vision:v0.10.0",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_basic")
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
@@ -64,7 +64,7 @@ def test_mobilenetv2_96(test_device):
         test_device,
         "google/mobilenet_v2_0.35_96",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_96")
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
@@ -89,7 +89,7 @@ def test_mobilenetv2_160(test_device):
         test_device,
         "google/mobilenet_v2_0.75_160",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_160")
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
@@ -116,7 +116,7 @@ def test_mobilenetv2_224(test_device):
         test_device,
         "google/mobilenet_v2_1.0_224",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_224")
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
@@ -152,7 +152,7 @@ def test_mobilenetv2_timm(test_device):
         test_device,
         "mobilenetv2_100",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_timm")
 
 
 def generate_model_mobilenetV2_semseg_hf_pytorch(test_device, variant):
@@ -196,4 +196,4 @@ def test_mobilenetv2_deeplabv3(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_deeplabv3")

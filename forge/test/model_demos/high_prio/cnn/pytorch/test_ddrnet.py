@@ -61,7 +61,7 @@ def test_ddrnet_pytorch(variant, test_device):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
 
 
 variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
@@ -110,4 +110,4 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     input_image = Image.open(image_path)
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")

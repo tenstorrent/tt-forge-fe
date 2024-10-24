@@ -7,7 +7,7 @@ from forge.config import _get_global_compiler_config
 import forge
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.skip(reason="Not supported yet")
 def test_mobilenet_ssd_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
     tflite_path = "third_party/confidential_customer_models/model_2/tflite/ssd_mobilenet_v2.tflite"

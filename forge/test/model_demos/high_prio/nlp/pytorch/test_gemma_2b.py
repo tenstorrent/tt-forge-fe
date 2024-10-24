@@ -86,7 +86,7 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     print(out)
 
     inputs = [x, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rotary_embedding")
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -124,7 +124,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
     out = pytorch_model(x)
     print(out)
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rms_norm")
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -165,7 +165,7 @@ def test_gemma_2b_attention(test_device, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_attention")
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -204,7 +204,7 @@ def test_gemma_2b_mlp(test_device, variant):
     print(out)
 
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_mlp")
 
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
@@ -245,7 +245,7 @@ def test_gemma_2b_single_decoder(test_device, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_single_decoder")
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
@@ -283,73 +283,7 @@ def test_gemma_2b(test_device, variant):
     attn_mask = inputs["attention_mask"]
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs)
-
-
-@pytest.mark.skip(reason="Tested as part of a full generative model run")
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_1x1(test_device, variant):
-    pytest.xfail("Passing locally, failing on CI. Keeping as XFail to be able to track potential regressions.")
-
-    # Random see for reproducibility
-    torch.manual_seed(42)
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-
-    os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-
-    config = download_model(GemmaConfig.from_pretrained, variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    tt_model = PyTorchModule("pytorch_gemma_2b_1x1", pytorch_model)
-
-    # Load tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Sample input
-    prompt = "What is your favorite city?"
-    inputs = tokenizer(prompt, return_tensors="pt")
-
-    # Sanity run
-    generate_ids = pytorch_model.generate(inputs.input_ids, max_length=30)
-    generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[
-        0
-    ]
-
-    print(f"Sanity run generated text: {generated_text}")
-
-    input_ids = inputs["input_ids"]
-    attn_mask = inputs["attention_mask"]
-
-    verify_module(
-        tt_model,
-        input_shapes=[
-            (
-                input_ids.shape,
-                attn_mask.shape,
-            )
-        ],
-        inputs=[
-            (
-                input_ids,
-                attn_mask,
-            )
-        ],
-        verify_cfg=VerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
-    )
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b")
 
 
 @pytest.mark.skip(reason="Not supported yet")

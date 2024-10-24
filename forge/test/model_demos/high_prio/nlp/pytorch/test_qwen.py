@@ -42,7 +42,7 @@ def test_qwen1_5_causal_lm(test_device):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_causal_lm")
 
 
 def parse_chat_completion(text: str):
@@ -104,4 +104,4 @@ def test_qwen1_5_chat(test_device):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_chat")

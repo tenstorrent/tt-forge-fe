@@ -79,4 +79,4 @@ def test_pytorch_ssd300_resnet50(test_device):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-    compiled_model = forge.compile(model, sample_inputs=[input_batch])
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_ssd300_resnet50")

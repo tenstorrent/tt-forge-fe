@@ -15,4 +15,4 @@ def test_xception_timm(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")

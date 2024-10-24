@@ -21,7 +21,7 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 import forge
 
 
-def generate_model_inceptionV4_imgcls_osmr_pytorch(test_device, variant):
+def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
@@ -78,10 +78,10 @@ def get_image():
 
 def test_inception_v4_osmr_pytorch(test_device):
     model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_osmr_inception_v4")
 
 
-def generate_model_inceptionV4_imgcls_timm_pytorch(test_device, variant):
+def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
@@ -94,4 +94,4 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(test_device, variant):
 def test_inception_v4_timm_pytorch(test_device):
     model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_timm_inception_v4")

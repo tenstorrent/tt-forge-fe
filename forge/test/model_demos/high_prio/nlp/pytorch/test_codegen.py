@@ -59,4 +59,6 @@ def test_codegen(test_device, variant):
     out = framework_model(input_ids, attn_mask)
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )
