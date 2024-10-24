@@ -48,16 +48,19 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
     return input_ids, output_logits
 
 
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.xfail()
-def test_llama_prefil_on_device_decode_on_cpu():
+def test_llama_prefil_on_device_decode_on_cpu(model_path):
     """
-    This function tests the inference of the Llama 3B model split into two parts:
+    This function tests the inference of the Llama models split into two parts:
     - The first part is the prefilling of the model on the device.
     - The second part is the decoding of the model on the CPU without KV cache.
     """
-    # Load Llama 3B model and tokenizer
-    model_path = "openlm-research/open_llama_3b"
-    model, tokenizer = load_model(model_path, use_cache=False, return_dict=True)
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # Load Llama model and tokenizer
+    model, tokenizer = load_model(model_path, return_dict=True)
 
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"

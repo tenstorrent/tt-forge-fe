@@ -10,10 +10,13 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 
 
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.xfail()
-def test_llama_inference():
-    # Load Llama 3B model and tokenizer
-    model_path = "openlm-research/open_llama_3b"
+def test_llama_inference(model_path):
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path)
 
     prompt = "Q: What is the largest animal?\nA:"
@@ -27,8 +30,9 @@ def test_llama_inference():
     compiled_model = forge.compile(framework_model, input_ids)
 
 
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
-def test_llama_inference_no_cache_cpu():
+def test_llama_inference_no_cache_cpu(model_path):
     """
     This function tests the inference of the Llama 3B model without using a past-cache (KV cache).
     It generates text token by token, which can slow down over time as the model has to compute
@@ -36,8 +40,10 @@ def test_llama_inference_no_cache_cpu():
     and tokenizer, prepare an input prompt, and generate a sequence of tokens until a specified
     maximum number of new tokens is reached or an end-of-sequence token is encountered.
     """
-    # Load Llama 3B model and tokenizer
-    model_path = "openlm-research/open_llama_3b"
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # Load Llama model and tokenizer
     framework_model, tokenizer = load_model(model_path)
 
     # Prepare input sentence
@@ -61,8 +67,9 @@ def test_llama_inference_no_cache_cpu():
     print(generated_text)
 
 
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
-def test_llama_inference_cache_cpu():
+def test_llama_inference_cache_cpu(model_path):
     """
     This function tests the inference of the Llama 3B model using a past-cache (KV cache).
     By utilizing cached key-value (KV) pairs, the model can generate text more efficiently
@@ -79,9 +86,12 @@ def test_llama_inference_cache_cpu():
     5. Generate tokens iteratively, updating the past key-values and input IDs.
     6. Decode the generated tokens into text and print the result.
     """
-    # Load Llama 3B model and tokenizer
-    model_path = "openlm-research/open_llama_3b"
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # Load Llama model and tokenizer
     framework_model, tokenizer = load_model(model_path)
+
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
