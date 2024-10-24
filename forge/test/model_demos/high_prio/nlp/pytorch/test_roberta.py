@@ -28,7 +28,7 @@ def test_roberta_masked_lm(test_device):
     attention_mask[input_tokens != 1] = 1
 
     inputs = [input_tokens, attention_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_masked_lm")
 
 
 def test_roberta_sentiment_pytorch(test_device):
@@ -53,4 +53,4 @@ def test_roberta_sentiment_pytorch(test_device):
         return_tensors="pt",
     )
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_sentiment")

@@ -31,4 +31,4 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     input_shape = (1, 3, 300, 300)
     inputs = [torch.rand(input_shape)]
-    compiled_model = forge.compile(net, sample_inputs=inputs)
+    compiled_model = forge.compile(net, sample_inputs=inputs, module_name="pt_mobilenet_v1_ssd")

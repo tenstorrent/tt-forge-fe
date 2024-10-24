@@ -94,7 +94,7 @@ def test_yolox_pytorch(variant, test_device):
 
     inputs = [img_tensor]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
 
     # remove downloaded weights,image
     os.remove(weight_name)

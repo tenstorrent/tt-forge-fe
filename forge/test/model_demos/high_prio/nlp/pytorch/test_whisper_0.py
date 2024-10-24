@@ -106,7 +106,9 @@ def test_whisper(test_device, variant):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)

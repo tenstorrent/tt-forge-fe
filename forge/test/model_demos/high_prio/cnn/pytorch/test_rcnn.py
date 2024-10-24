@@ -67,7 +67,7 @@ def test_rcnn_pytorch(test_device):
 
         rect_transform = transform(rect_img)
         inputs = rect_transform.unsqueeze(0)
-        compiled_model = forge.compile(model, sample_inputs=[inputs])
+        compiled_model = forge.compile(model, sample_inputs=[inputs], module_name="pt_rcnn")
 
         break  # As generated proposals will be around 2000, halt inference after getting result from single proposal.
 

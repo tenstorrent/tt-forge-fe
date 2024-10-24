@@ -35,7 +35,7 @@ def test_gpt2_text_gen(test_device):
     ).to(torch.int64)
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs)
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name="pt_gpt2_generation")
 
 
 class Wrapper(torch.nn.Module):

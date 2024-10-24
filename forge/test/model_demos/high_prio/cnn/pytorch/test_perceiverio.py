@@ -66,4 +66,6 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     model.eval()
     # Run inference on Tenstorrent device
-    compiled_model = forge.compile(model, sample_inputs=[pixel_values])
+    compiled_model = forge.compile(
+        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )

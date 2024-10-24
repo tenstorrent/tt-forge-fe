@@ -101,7 +101,8 @@ def test_densenet_121_pytorch(variant, test_device):
     # STEP 3: Run inference on Tenstorrent device
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    variant_name = variant.replace("-", "_")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant_name}")
 
 
 def test_densenet_161_pytorch(test_device):
@@ -112,13 +113,12 @@ def test_densenet_161_pytorch(test_device):
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
-    tt_model = forge.PyTorchModule("densnet161_pt", model)
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_161")
 
 
 def test_densenet_169_pytorch(test_device):
@@ -134,7 +134,7 @@ def test_densenet_169_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_169")
 
 
 def test_densenet_201_pytorch(test_device):
@@ -150,4 +150,4 @@ def test_densenet_201_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_201")

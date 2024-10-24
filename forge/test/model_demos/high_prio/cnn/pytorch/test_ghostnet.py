@@ -11,4 +11,4 @@ variants = ["ghostnet_100"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_ghostnet_timm(variant, test_device):
     model, inputs = generate_model_ghostnet_imgcls_timm(variant)
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")

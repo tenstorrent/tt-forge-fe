@@ -31,4 +31,4 @@ def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     print(img_tensor.shape)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_swin_tiny_patch4_window7_224")

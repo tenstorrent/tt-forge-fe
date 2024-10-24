@@ -109,7 +109,7 @@ def test_conv_ae_pytorch(test_device):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
 
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor])
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_conv_ae")
 
 
 def test_linear_ae_pytorch(test_device):
@@ -139,7 +139,7 @@ def test_linear_ae_pytorch(test_device):
     fw_out = model(sample_tensor)
 
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor])
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_linear_ae")
     co_out = compiled_model(sample_tensor)
 
     co_out = [co.to("cpu") for co in co_out]

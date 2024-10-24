@@ -19,4 +19,6 @@ def test_vit_base_classify_224_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )

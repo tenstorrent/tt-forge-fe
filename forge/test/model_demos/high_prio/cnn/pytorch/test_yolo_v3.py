@@ -40,7 +40,7 @@ def test_yolov3_tiny_holli_pytorch(test_device):
         test_device,
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_tiny_holli")
 
 
 def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
@@ -71,13 +71,4 @@ def test_yolov3_holli_pytorch(test_device):
         None,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
-
-
-@pytest.mark.skip(reason="1x1 grid size not supported yet")
-def test_yolov3_holli_pytorch_1x1(test_device):
-    model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch(
-        test_device,
-        None,
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]])
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_holli")

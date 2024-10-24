@@ -63,4 +63,4 @@ def test_bts_pytorch(test_device, variant):
 
     inputs = [image]
 
-    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs)
+    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name="pt_" + str(variant))

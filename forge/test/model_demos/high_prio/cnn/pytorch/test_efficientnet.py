@@ -11,8 +11,10 @@ import torchvision.models as models
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from loguru import logger
-
 import forge
+from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4_Weights, EfficientNet_B0_Weights
+from torchvision.models._api import WeightsEnum
+from torch.hub import load_state_dict_from_url
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
@@ -56,22 +58,28 @@ def test_efficientnet_timm(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor])
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_timm")
 
+
+def get_state_dict(self, *args, **kwargs):
+    kwargs.pop("check_hash")
+    return load_state_dict_from_url(self.url, *args, **kwargs)
+
+
+WeightsEnum.get_state_dict = get_state_dict
 
 variants = [
-    models.efficientnet_b0,
+    "efficientnet_b0",
     # models.efficientnet_b1,
     # models.efficientnet_b2,
     # models.efficientnet_b3,
-    models.efficientnet_b4,
+    "efficientnet_b4",
     # models.efficientnet_b5,
     # models.efficientnet_b6,
     # models.efficientnet_b7,
 ]
 
 
-@pytest.mark.skip(reason="invalid hash value")
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(variant, test_device):
     # Configuration
@@ -79,7 +87,11 @@ def test_efficientnet_torchvision(variant, test_device):
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
-    framework_model = download_model(variant, pretrained=True)
+    if variant == "efficientnet_b0":
+        framework_model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1)
+    elif variant == "efficientnet_b4":
+        framework_model = efficientnet_b4(weights=EfficientNet_B4_Weights.IMAGENET1K_V1)
+
     framework_model.eval()
     # Load and pre-process image
     try:
@@ -98,4 +110,4 @@ def test_efficientnet_torchvision(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor])
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_torchvision")

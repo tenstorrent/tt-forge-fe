@@ -51,7 +51,9 @@ def test_phi2_clm(variant, test_device):
     attn_mask = inputs["attention_mask"].to(torch.float32)
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
+    )
 
 
 @pytest.mark.parametrize("variant", variants)
@@ -81,7 +83,9 @@ def test_phi2_token_classification(variant, test_device):
 
     inputs = [inputs["input_ids"]]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
+    )
 
 
 @pytest.mark.parametrize("variant", variants)
@@ -111,4 +115,6 @@ def test_phi2_sequence_classification(variant, test_device):
     inputs = tokenizer(input_prompt, return_tensors="pt")
 
     inputs = [inputs["input_ids"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
+    )
