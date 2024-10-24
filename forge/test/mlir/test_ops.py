@@ -735,3 +735,36 @@ def test_reduce_max(input_shape, dim):
 
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+
+@pytest.mark.xfail(reason="Shape Mismatch")
+@pytest.mark.parametrize(
+    "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode",
+    [
+        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros"),
+        (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros"),
+        (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros"),
+    ],
+)
+def test_convtranspose2d(in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode):
+    inputs = [torch.randn(20, 16, 50, 100)]
+
+    framework_model = torch.nn.ConvTranspose2d(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        groups=groups,
+        bias=bias,
+        dilation=dilation,
+        padding_mode=padding_mode,
+    )
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
