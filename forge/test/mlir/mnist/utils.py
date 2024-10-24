@@ -117,11 +117,9 @@ def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, 
         y = nn.functional.one_hot(y.long(), num_classes=10).to(pred.dtype)
         loss = loss_fn(pred, y)
 
+        loss.backward()
         if isTT:
-            loss.backward()
-            model.backward(pred.grad)
-        else:
-            loss.backward()
+            model.backward()
 
         yield loss, pred, get_param_grads(named_params)
 
