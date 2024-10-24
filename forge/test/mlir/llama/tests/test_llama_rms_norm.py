@@ -9,14 +9,20 @@ from test.mlir.llama.utils.utils import load_model
 from forge.op.eval.common import compare_with_golden_pcc
 
 
-def test_llama_lm_head():
-    # Load Llama 3B model and tokenizer
-    framework_model, _ = load_model()
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+def test_llama_lm_head(model_path):
+    if model_path == "meta-llama/Llama-3.2-1B":
+        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # Load Llama model and tokenizer
+    framework_model, _ = load_model(model_path)
+
     framework_model = framework_model.model.norm
+    input_features = framework_model.weight.shape[0]
 
     # Input samples
     inputs = [
-        torch.rand((1, 12, 3200)),  # Hidden states
+        torch.rand((1, 12, input_features)),  # Hidden states
     ]
 
     # Sanity run
