@@ -13,6 +13,7 @@
 #include "ttmlir/Dialect/TTIR/Transforms/Passes.h"
 #include "ttmlir/Dialect/TTNN/Pipelines/TTNNPipelines.h"
 #include "ttmlir/Dialect/TTNN/Transforms/Passes.h"
+
 #include "utils/logger.hpp"
 
 namespace tt::passes
@@ -25,7 +26,6 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
         // Register required passes
         mlir::tt::ttir::registerPasses();
         mlir::tt::ttnn::registerPasses();
-        mlir::tt::registerAllExtensions();
 
         // Register pass pipelines
         // This will internally register the pipelines in the MLIR pipeline registry. Then,

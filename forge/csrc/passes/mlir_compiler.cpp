@@ -32,6 +32,7 @@
 #include "ttmlir/Dialect/TTIR/IR/TTIR.h"
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
+#include "ttmlir/RegisterAll.h"
 
 namespace tt::passes
 {
@@ -49,6 +50,8 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
         mlir::func::FuncDialect,
         mlir::ml_program::MLProgramDialect,
         mlir::tensor::TensorDialect>();
+
+    mlir::tt::registerAllExtensions(registry);
 
     // Create a context with all registered dialects.
     mlir::MLIRContext context(registry);
