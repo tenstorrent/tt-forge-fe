@@ -289,9 +289,10 @@ def test_transpose(params):
         def forward(self, a):
             return torch.transpose(a, *self.dims)
 
-    # currently the lowering to TTNN is not supported for this case
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    if params[1][1] == -3:
+        # currently the lowering to TTNN is not supported for this case
+        compiler_cfg = forge.config._get_global_compiler_config()
+        compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     input_shape, dims = params
     inputs = [torch.rand(input_shape)]
@@ -300,12 +301,16 @@ def test_transpose(params):
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    # commented out as the compiled model is not lowered to TTNN
-    # co_out = compiled_model(*inputs)
 
-    # co_out = [co.to("cpu") for co in co_out]
-    # fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    # assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    if params[1][1] == -3:
+        # currently the lowering to TTNN is not supported for this case
+        return
+
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.parametrize(
