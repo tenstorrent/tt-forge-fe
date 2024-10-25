@@ -3,13 +3,15 @@ ARG FROM_TAG=latest
 FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci-build
 SHELL ["/bin/bash", "-c"]
 
+ARG FROM_TAG=latest
+
 # Set environment variables
 ENV PROJECT_NAME=tt-forge-fe
 ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
 
 # Create a directory for the build and toolchain
-ARG BUILD_DIR=/home/build
+ENV BUILD_DIR=/home/build
 RUN mkdir -p $BUILD_DIR && \
     mkdir -p $TTMLIR_TOOLCHAIN_DIR && \
     mkdir -p $TTFORGE_TOOLCHAIN_DIR
@@ -32,10 +34,6 @@ RUN source env/activate && \
     cmake -B env/build env && \
     cmake --build env/build
 
-# Build project to test the container
-RUN source env/activate && \
-    cmake -G Ninja -B build . && \
-    cmake --build build
 
 FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
 
