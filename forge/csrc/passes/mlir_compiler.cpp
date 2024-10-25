@@ -18,6 +18,7 @@
 
 // MLIR headers
 #include "mlir/IR/BuiltinOps.h"
+#include "mlir/Dialect/Func/Extensions/InlinerExtension.h"
 #include "utils/logger.hpp"
 
 #pragma clang diagnostic push
@@ -51,7 +52,8 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
         mlir::ml_program::MLProgramDialect,
         mlir::tensor::TensorDialect>();
 
-    mlir::tt::registerAllExtensions(registry);
+    mlir::func::registerInlinerExtension(registry);
+
 
     // Create a context with all registered dialects.
     mlir::MLIRContext context(registry);
