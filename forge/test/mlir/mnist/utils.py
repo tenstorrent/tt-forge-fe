@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from datetime import datetime
+import operator
 
 import torch
 from torch import nn
@@ -30,26 +31,37 @@ class MNISTLinear(nn.Module):
 
 
 class EarlyStopping:
-    def __init__(self, patience=3):
+    def __init__(self, patience=3, mode="max"):
+        assert mode in ["min", "max"]
+        if mode == "min":
+            self.better = operator.lt
+        elif mode == "max":
+            self.better = operator.gt
         self.patience = patience
         self.counter = 0
         self.best_score = None
         self.early_stop = False
+        self.is_current_best = False
 
     def __call__(self, val_metric):
-        is_current_best = False
         if self.best_score is None:
             self.best_score = val_metric
-        elif val_metric < self.best_score:
-            self.counter += 1
-            if self.counter >= self.patience:
-                self.early_stop = True
-        else:
-            is_current_best = True
+            self.is_current_best = True
+        elif self.better(val_metric, self.best_score):
+            self.is_current_best = True
             self.best_score = val_metric
             self.counter = 0
+        else:
+            self.is_current_best = False
+            self.counter += 1
+            if self.counter > self.patience:
+                self.early_stop = True
 
-        return is_current_best
+    def is_best(self):
+        return self.is_current_best
+
+    def is_early_stop(self):
+        return self.early_stop
 
 
 def load_tb_writer(model):

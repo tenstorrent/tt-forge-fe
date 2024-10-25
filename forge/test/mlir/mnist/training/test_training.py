@@ -172,7 +172,7 @@ def test_forge_vs_torch():
     test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
     step = 0
 
-    earlyStop = EarlyStopping(patience=1)
+    earlyStop = EarlyStopping(patience=1, mode="max")
 
     logger.info("Starting training loop... (logger will be disabled)")
     logger.disable("")
@@ -221,9 +221,12 @@ def test_forge_vs_torch():
         if verobse:
             print(f"Epoch {i} took {time.time() - start_time} seconds")
 
-        if earlyStop(forge_val_acc):
+        forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, is_tt=True)
+        earlyStop(forge_val_acc)
+
+        if earlyStop.is_best():
             torch.save(torch_model.state_dict(), "runs/models/torch_model.pth")
             torch.save(forge_model, "runs/models/forge_model.pth")
 
-        if earlyStop.early_stop:
+        if earlyStop.is_early_stop():
             break
