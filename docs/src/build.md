@@ -85,13 +85,13 @@ cmake --build build -- docs
 mdbook serve build/docs
 ```
 
-> **NOTE:** `mdbook serve` will by default create a local server at `http://localhost:3000`.
+> **Note:** `mdbook serve` will by default create a local server at `http://localhost:3000`.
 
 ## Build Cleanup
 
 To ensure a clean build environment, follow these steps to remove existing build artifacts:
 
-1. **Clean Forge FE build artifacts**:
+1. **Clean only Forge FE build artifacts**:
     ```sh
     rm -rf build
     ```
@@ -99,11 +99,18 @@ To ensure a clean build environment, follow these steps to remove existing build
 
 2. **Clean all Forge build artifacts**:
      ```sh
-     ./clean_all.sh
+     ./clean_build.sh
      ```
-   Note: This script executes a comprehensive cleanup, removing all build artifacts across the entire Forge project, ensuring a clean slate for subsequent builds.
+   > **Note:** This script executes a comprehensive cleanup, removing all build artifacts across the entire Forge project, ensuring a clean slate for subsequent builds.
 
-_Note: `clean_all.sh` script will not clean toolchain (LLVM) build artifacts and dependencies._
+   > **Note:** `clean_build.sh` script will not clean toolchain (LLVM) build artifacts and dependencies.
+
+3. **Clean everything (including environment):**
+    ```sh
+    ./clean_build.sh
+    rm -rf env/build third_party/tt-mlir/env/build
+    ```
+    > **Note:** This should rarely be needed, as it removes the entire build and environment (consequently entire toolchain will need to be rebuilt).
 
 ## Useful build environment variables
 1. `TTMLIR_TOOLCHAIN_DIR` - Specifies the directory where TTMLIR dependencies will be installed. Defaults to `/opt/ttmlir-toolchain` if not defined.
