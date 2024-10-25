@@ -289,11 +289,6 @@ def test_transpose(params):
         def forward(self, a):
             return torch.transpose(a, *self.dims)
 
-    if params[1][1] == -3:
-        # currently the lowering to TTNN is not supported for this case
-        compiler_cfg = forge.config._get_global_compiler_config()
-        compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
-
     input_shape, dims = params
     inputs = [torch.rand(input_shape)]
 
