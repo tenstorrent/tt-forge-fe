@@ -80,6 +80,23 @@ static std::vector<graphlib::Node *> find_path_to_inverse_op(
     if (not found_inverse)
         path.clear();
 
+    // Skip bypassing the node when binary ops involved in between
+    // Ex: transpose -> multiply -> add -> transpose
+    bool is_valid_path = true;
+    int path_len = path.size();
+    if (path_len > 2)
+    {
+        for (int idx = 1; idx < path_len - 1; idx++)
+        {
+            auto &node = path.at(idx);
+            graphlib::OpNode *op_node = dynamic_cast<graphlib::OpNode *>(node);
+            if (is_eltwise_unary(op_node) or is_eltwise_binary(op_node))
+                is_valid_path = false;
+        }
+    }
+    if (!is_valid_path)
+        path.clear();
+
     return path;
 }
 
