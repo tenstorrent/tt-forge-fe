@@ -119,18 +119,18 @@ def write_grads(writer, named_params, step):
         writer.add_histogram(name, named_params[name].flatten().float(), step)
 
 
-def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, isTT=False, verbose=False):
+def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, is_tt=False, verbose=False):
     size = len(dataloader.dataset)
     for batch, (X, y) in enumerate(dataloader):
         optimizer.zero_grad()
         pred = model(X)
-        pred = pred[0] if isTT else pred
+        pred = pred[0] if is_tt else pred
 
-        y = nn.functional.one_hot(y.long(), num_classes=10).to(pred.dtype)
+        y = nn.functional.one_hot(y, num_classes=10).to(pred.dtype)
         loss = loss_fn(pred, y)
 
         loss.backward()
-        if isTT:
+        if is_tt:
             model.backward()
 
         yield loss, pred, get_param_grads(named_params)
@@ -140,25 +140,25 @@ def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, 
 
         if verbose and batch % 100 == 0:
             loss, current = loss.item(), batch * batch_size + len(X)
-            print(f"{'Forge' if isTT else 'Torch'} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            print(f"{'Forge' if is_tt else 'Torch'} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
 
-def validation_loop(dataloader, model, loss_fn, batch_size, isTT=False, verbose=False):
+def validation_loop(dataloader, model, loss_fn, batch_size, is_tt=False, verbose=False):
     size = len(dataloader.dataset)
-    test_loss, correct = 0, 0
+    loss, accuracy = 0, 0
 
     with torch.no_grad():
         for X, y in dataloader:
             pred = model(X)
-            pred = pred[0] if isTT else pred
+            pred = pred[0] if is_tt else pred
             y = nn.functional.one_hot(y.long(), num_classes=10).to(pred.dtype)
-            test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
+            loss += loss_fn(pred, y).item()
+            accuracy += (pred.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
 
-    test_loss /= size
-    correct /= size
+    loss /= size
+    accuracy /= size
     if verbose:
         print(
-            f"{'Forge' if isTT else 'Torch'} Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n"
+            f"{'Forge' if is_tt else 'Torch'} Test Error: \n Accuracy: {(100*accuracy):>0.1f}%, Avg loss: {loss:>8f} \n"
         )
-    return test_loss, correct
+    return loss, accuracy

@@ -20,7 +20,7 @@ def test_mnist_training():
 
     # Config
     num_epochs = 3
-    batch_size = 1
+    batch_size = 2
     learning_rate = 0.001
 
     # Limit number of batches to run - quicker test
@@ -149,7 +149,7 @@ def test_forge_vs_torch():
     batch_size = 64
     learning_rate = 1e-2
     epochs = 10
-    verobse = True
+    verbose = True
 
     dtype = torch.float32
 
@@ -185,8 +185,8 @@ def test_forge_vs_torch():
             torch_optimizer,
             batch_size,
             torch_model.named_parameters,
-            isTT=False,
-            verbose=verobse,
+            is_tt=False,
+            verbose=verbose,
         )
         forge_loop = train_loop(
             train_loader,
@@ -195,8 +195,8 @@ def test_forge_vs_torch():
             forge_optimizer,
             batch_size,
             forge_model.named_parameters,
-            isTT=True,
-            verbose=verobse,
+            is_tt=True,
+            verbose=verbose,
         )
         for torch_data, forge_data in zip(torch_loop, forge_loop):
             step += 1
@@ -206,9 +206,9 @@ def test_forge_vs_torch():
 
             if step % 100 == 0:
                 torch_val_loss, torch_val_acc = validation_loop(
-                    test_loader, torch_model, loss_fn, batch_size, isTT=False
+                    test_loader, torch_model, loss_fn, batch_size, is_tt=False
                 )
-                forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, isTT=True)
+                forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, is_tt=True)
 
                 torch_writer.add_scalar("train_loss", torch_loss.float(), step)
                 forge_writer.add_scalar("train_loss", forge_loss.float(), step)
@@ -218,7 +218,7 @@ def test_forge_vs_torch():
                 torch_writer.flush()
                 forge_writer.flush()
 
-        if verobse:
+        if verbose:
             print(f"Epoch {i} took {time.time() - start_time} seconds")
 
         forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, is_tt=True)
