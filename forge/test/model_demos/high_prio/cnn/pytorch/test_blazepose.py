@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # BlazePose Demo Script - PyTorch
 
-import os
 import pytest
 import cv2
 import forge
 import torch
 import sys
+import os
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -23,6 +23,8 @@ import sys
 def test_blazepose_detector_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load BlazePose Detector
     pose_detector = BlazePose()
@@ -43,6 +45,8 @@ def test_blazepose_detector_pytorch(test_device):
 def test_blazepose_regressor_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
@@ -56,6 +60,8 @@ def test_blaze_palm_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
@@ -78,6 +84,8 @@ def test_blaze_hand_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load BlazePalm Detector
     hand_regressor = BlazeHandLandmark()

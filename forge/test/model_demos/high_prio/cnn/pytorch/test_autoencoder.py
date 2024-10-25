@@ -6,6 +6,7 @@ import torch
 import torchvision.transforms as transforms
 from datasets import load_dataset
 from forge.op.eval.common import compare_with_golden_pcc
+import os
 
 
 # SPDX-FileCopyrightText: Copyright (c) 2018 Udacity
@@ -89,7 +90,8 @@ class LinearAE(torch.nn.Module):
 def test_conv_ae_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -115,6 +117,7 @@ def test_conv_ae_pytorch(test_device):
 def test_linear_ae_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.

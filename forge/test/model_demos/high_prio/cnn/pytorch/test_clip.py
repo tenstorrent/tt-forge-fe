@@ -8,6 +8,7 @@ import torch
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
 from transformers.modeling_attn_mask_utils import _create_4d_causal_attention_mask, _prepare_4d_attention_mask
+import os
 
 
 class CLIPVisionWrapper(torch.nn.Module):
@@ -102,7 +103,8 @@ def test_clip_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.CONSTEVAL_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load processor and model from HuggingFace
     model_ckpt = "openai/clip-vit-base-patch32"

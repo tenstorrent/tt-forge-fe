@@ -20,6 +20,7 @@ from timm.data.transforms_factory import create_transform
 from test.utils import download_model
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+import os
 
 varaints = [
     "mixer_b16_224",
@@ -44,7 +45,8 @@ def test_mlp_mixer_timm_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     try:
         url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"

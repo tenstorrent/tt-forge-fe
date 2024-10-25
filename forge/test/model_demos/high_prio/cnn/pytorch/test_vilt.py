@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-
+import os
 import forge
 import requests
 import torch
@@ -104,6 +104,7 @@ def generate_model_vilt_question_answering_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
@@ -146,6 +147,7 @@ def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
