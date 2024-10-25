@@ -25,6 +25,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
         // Register required passes
         mlir::tt::ttir::registerPasses();
         mlir::tt::ttnn::registerPasses();
+        mlir::tt::registerAllExtensions();
 
         // Register pass pipelines
         // This will internally register the pipelines in the MLIR pipeline registry. Then,
