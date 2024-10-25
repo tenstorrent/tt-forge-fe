@@ -3,6 +3,7 @@ name: Build and Test
 on:
   workflow_dispatch:
   workflow_call:
+  push:
 
 jobs:
 
@@ -44,6 +45,7 @@ jobs:
       matrix:
         build:
           - runs-on: runner
+        test_group_id: [1]
 
     runs-on:
       - in-service
@@ -121,13 +123,22 @@ jobs:
       run: |
         source env/activate
         set -o pipefail # Ensures that the exit code reflects the first command that fails
-        pytest --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
+        pip install pytest-split
+        # pytest --splits 2 --group ${{ matrix.test_group_id }} --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
+        pytest --store-durations --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
+
+    - name: Upload Test Durations
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: test-durations-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
+        path: .test_durations
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: test-log-${{ matrix.build.runs-on }}
+        name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
         path: pytest.log
 
     - name: Run Perf Benchmark
@@ -140,7 +151,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: test-reports-${{ matrix.build.runs-on }}
+        name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
         path: ${{ steps.strings.outputs.test_report_path }}
 
     - name: Show Test Report
