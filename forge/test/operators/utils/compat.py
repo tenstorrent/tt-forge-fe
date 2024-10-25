@@ -240,14 +240,17 @@ def verify_module(
     verify_module_for_inputs(model, inputs, pcc, dev_data_format)
 
 
+# TODO move to class TestTensorsUtils
 def create_torch_inputs(
     input_shapes: List[TensorShape],
     dev_data_format: forge.DataFormat = None,
     value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
-    random_seed: int = 42,
+    random_seed: Optional[int] = None,
 ) -> List[torch.Tensor]:
 
-    # TODO configure manual seed
+    if random_seed is None:
+        # Set a default seed if not provided
+        random_seed = 42
     generator = torch.Generator().manual_seed(random_seed)
 
     dtype = TestTensorsUtils.get_dtype_for_df(dev_data_format)
