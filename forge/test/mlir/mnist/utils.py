@@ -151,7 +151,7 @@ def validation_loop(dataloader, model, loss_fn, batch_size, is_tt=False, verbose
         for X, y in dataloader:
             pred = model(X)
             pred = pred[0] if is_tt else pred
-            y = nn.functional.one_hot(y.long(), num_classes=10).to(pred.dtype)
+            y = nn.functional.one_hot(y, num_classes=10).to(pred.dtype)
             loss += loss_fn(pred, y).item()
             accuracy += (pred.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
 
