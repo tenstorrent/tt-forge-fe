@@ -45,7 +45,7 @@ jobs:
       matrix:
         build:
           - runs-on: runner
-        test_group_id: [1]
+        test_group_id: [1,2]
 
     runs-on:
       - in-service
@@ -124,15 +124,7 @@ jobs:
         source env/activate
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        # pytest --splits 2 --group ${{ matrix.test_group_id }} --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
-        pytest --store-durations --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
-
-    - name: Upload Test Durations
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-        name: test-durations-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
-        path: .test_durations
+        pytest --splits 2 --group ${{ matrix.test_group_id }} --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
