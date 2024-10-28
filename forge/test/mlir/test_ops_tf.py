@@ -49,6 +49,7 @@ from forge._C import DataFormat
 )
 @pytest.mark.parametrize("has_bias", [False, True], ids=["no_bias", "with_bias"])
 @pytest.mark.xfail(reason="TTNN fails to tilize during reshape after conv")
+@pytest.mark.push
 def test_conv2d(
     batch_size,
     output_channels,
@@ -102,6 +103,7 @@ def test_conv2d(
     assert compare_tensor_to_golden("conv2d", fw_out[0], co_out[0].reshape(fw_out[0].shape))
 
 
+@pytest.mark.push
 def test_dual_conv2d():
 
     tf.random.set_seed(0)
@@ -162,6 +164,7 @@ def test_dual_conv2d():
         (1, 128, 128, 128),
     ],
 )
+@pytest.mark.push
 def test_maxpool2d(
     act_shape,
 ):

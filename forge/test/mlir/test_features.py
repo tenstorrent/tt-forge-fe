@@ -13,6 +13,7 @@ import forge
 from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 
 
+@pytest.mark.push
 def test_multiple_inputs():
     class MultipleInputs(nn.Module):
         def __init__(self):
@@ -39,6 +40,7 @@ def test_multiple_inputs():
         ((1, 1, 32, 64), (1, 1, 64, 128), (1, 1, 128, 32)),
     ],
 )
+@pytest.mark.push
 def test_input_order(a_shape, b_shape, c_shape):
     class InputOrderWithConstants(nn.Module):
         def __init__(self):
@@ -68,6 +70,7 @@ def test_input_order(a_shape, b_shape, c_shape):
 
 @pytest.mark.parametrize("batch_size", [1, 4, 16, 32, 64])
 @pytest.mark.parametrize("linear_features", [(784, 10)])
+@pytest.mark.push
 def test_matmul_bias(batch_size, linear_features):
     input_features, output_dim = linear_features
 
@@ -95,6 +98,7 @@ def test_matmul_bias(batch_size, linear_features):
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
+@pytest.mark.push
 def test_batch_size_inference(batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):
@@ -120,6 +124,7 @@ def test_batch_size_inference(batch_size, in_features, out_features):
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
+@pytest.mark.push
 def test_batch_size_training(batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):

@@ -4,12 +4,13 @@
 
 import torch
 import torch.nn as nn
-
+import pytest
 import forge
 import forge.config
 from forge.op.eval.common import compare_with_golden
 
 
+@pytest.mark.push
 def test_torch_training():
     class MatmulParam(nn.Module):
         def __init__(self):

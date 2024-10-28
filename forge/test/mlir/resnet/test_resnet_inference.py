@@ -8,6 +8,7 @@ from torchvision.models.resnet import resnet50
 import forge
 
 
+@pytest.mark.push
 def test_resnet_inference():
     # Compiler configurations
     compiler_cfg = forge.config._get_global_compiler_config()
