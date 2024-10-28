@@ -42,18 +42,18 @@ class EarlyStopping:
         self.best_score = None
         self.early_stop = False
         self.is_current_best = False
-        self.best_id = None
+        self.best_model = None
 
-    def step(self, val_metric, id):
+    def step(self, val_metric, model_id):
         if self.best_score is None:
             self.best_score = val_metric
             self.is_current_best = True
-            self.best_id = id
+            self.best_model = model_id
         elif self.better(val_metric, self.best_score):
             self.is_current_best = True
             self.best_score = val_metric
             self.counter = 0
-            self.best_id = id
+            self.best_model = model_id
         else:
             self.is_current_best = False
             self.counter += 1
@@ -67,7 +67,7 @@ class EarlyStopping:
         return self.early_stop
 
     def get_best_model(self):
-        return self.best_id
+        return self.best_model
 
 
 def load_tb_writer(model):
