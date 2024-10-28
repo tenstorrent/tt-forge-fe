@@ -7,12 +7,14 @@ from test.utils import download_model
 import forge
 from PIL import Image
 from loguru import logger
+import os
 
 
 def test_googlenet_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Create Forge module from PyTorch model
     # Two ways to load the same model

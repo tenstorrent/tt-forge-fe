@@ -11,7 +11,7 @@ from torchvision import transforms
 
 ## https://github.com/RangiLyu/EfficientNet-Lite/
 from test.model_demos.utils.cnn.pytorch.saved.efficientnet_lite import src_efficientnet_lite as efflite
-
+import os
 
 #############
 def get_image_tensor(wh):
@@ -35,7 +35,8 @@ def get_image_tensor(wh):
 def test_efficientnet_lite_0_pytorch():
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
@@ -54,7 +55,8 @@ def test_efficientnet_lite_1_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -74,7 +76,8 @@ def test_efficientnet_lite_2_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
@@ -93,7 +96,8 @@ def test_efficientnet_lite_3_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
@@ -112,7 +116,8 @@ def test_efficientnet_lite_4_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"

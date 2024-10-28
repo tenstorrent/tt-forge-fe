@@ -2,17 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import forge
-import os
 import requests
 import torchvision.transforms as transforms
 from PIL import Image
 from test.model_demos.models.monodle import CenterNet3D
+import os
 
 
 def test_monodle_pytorch(test_device):
     # PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model_name = "monodle_pytorch"
 
