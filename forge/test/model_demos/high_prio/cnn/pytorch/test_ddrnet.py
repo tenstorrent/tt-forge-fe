@@ -24,7 +24,8 @@ def test_ddrnet_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
@@ -74,6 +75,7 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":

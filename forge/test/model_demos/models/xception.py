@@ -8,12 +8,14 @@ from PIL import Image
 import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+import os
 
 
 def generate_model_xception_imgcls_timm(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)

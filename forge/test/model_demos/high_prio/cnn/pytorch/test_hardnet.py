@@ -7,6 +7,7 @@ import pytest
 import urllib
 from PIL import Image
 from torchvision import transforms
+import os
 
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
@@ -17,7 +18,8 @@ def test_hardnet_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # STEP 0: import Forge library
 import forge
-
+import os
 from transformers import ViTImageProcessor
 import timm
 from test.utils import download_model
@@ -19,6 +19,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained("microsoft/swin-tiny-patch4-window7-224")

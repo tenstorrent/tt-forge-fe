@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 from test.utils import download_model
 import forge
 import requests
@@ -12,6 +11,7 @@ import torch
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from loguru import logger
+import os
 
 
 def generate_model_resnet_imgcls_hf_pytorch(variant):
@@ -22,7 +22,8 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load data sample
     try:
@@ -48,7 +49,8 @@ def test_resnet(test_device):
     )
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50")
 
 
@@ -60,7 +62,8 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load data sample
     try:
