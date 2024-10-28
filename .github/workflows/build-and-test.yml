@@ -67,28 +67,15 @@ jobs:
       shell: bash
       env:
         job-name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
-
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
 
-        # debug
-
-        curl -s -H "Authorization: token $GH_TOKEN" \
-          "https://api.github.com/repos/tenstorrent/tt-forge-fe/actions/runs/11514644813/jobs"
-
-        curl -s -H "Authorization: token $GH_TOKEN" \
-          "https://api.github.com/repos/tenstorrent/tt-forge-fe/actions/runs/11514644813/jobs" | jq .
-
-        curl -s -H "Authorization: token $GH_TOKEN" \
-          "https://api.github.com/repos/tenstorrent/tt-forge-fe/actions/runs/11514644813/jobs" | \
-          jq -r '.jobs[] | .name'
-
         # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
         echo "Expected job name: ${{ env.job-name }}"
-        # JOB_ID=$(curl -s -H "Authorization: token $GH_TOKEN" \
-        #   "https://api.github.com/repos/tenstorrent/tt-forge-fe/actions/runs/11514644813/jobs" | \
-        #   jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
+        JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          "https://api.github.com/repos/tenstorrent/tt-forge-fe/actions/runs/11514644813/jobs" | \
+          jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
         echo "Current job id: $JOB_ID"
 
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
