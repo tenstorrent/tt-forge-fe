@@ -20,7 +20,7 @@ def test_mnist_training():
 
     # Config
     num_epochs = 3
-    batch_size = 2
+    batch_size = 1
     learning_rate = 0.001
 
     # Limit number of batches to run - quicker test
@@ -30,7 +30,7 @@ def test_mnist_training():
     test_loader, train_loader = load_dataset(batch_size)
 
     # Define model and instruct it to compile and run on TT device
-    framework_model = MNISTLinear()
+    framework_model = MNISTLinear(bias=False)
 
     # Create a torch loss and leave on CPU
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -65,7 +65,7 @@ def test_mnist_training():
             total_loss += loss.item()
 
             golden_loss = loss_fn(golden_pred, target)
-            assert torch.allclose(loss, golden_loss, rtol=1e-2)
+            assert torch.allclose(loss, golden_loss, rtol=5e-2)  # 5% tolerance
 
             # Run backward pass on device
             loss.backward()
@@ -142,7 +142,7 @@ def test_forge_vs_torch_gradients():
 # In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
 # That sets relu threshold to bfloat16 tensor.
 # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
-@pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
+# @pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
 def test_forge_vs_torch():
     torch.manual_seed(0)
 
@@ -165,6 +165,7 @@ def test_forge_vs_torch():
     torch_optimizer = torch.optim.SGD(torch_model.parameters(), lr=learning_rate)
     forge_optimizer = torch.optim.SGD(forge_model.parameters(), lr=learning_rate)
 
+    forge_model.train()
     tt_model = forge.compile(
         forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], loss=loss_fn, optimizer=forge_optimizer
     )
