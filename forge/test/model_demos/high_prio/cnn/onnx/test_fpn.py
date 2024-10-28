@@ -9,6 +9,7 @@ from forge.verify.backend import verify_module
 from forge import VerifyConfig
 
 
+@pytest.mark.nightly
 def test_fpn_onnx(test_device, test_kind):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"

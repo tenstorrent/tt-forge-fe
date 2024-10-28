@@ -22,6 +22,7 @@ variants = [
 ]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_causal_lm(variant, test_device):
     # Set random seed for repeatability
@@ -74,6 +75,7 @@ variants = [
 ]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_sequence_classification(variant, test_device):
     # Load tokenizer and model from HuggingFace

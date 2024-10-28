@@ -49,6 +49,7 @@ def img_preprocess(scal_val=1):
 #########
 
 
+@pytest.mark.nightly
 def test_retinanet_r101_640x480_onnx(test_device):
     os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
     os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
@@ -120,6 +121,7 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_retinanet_onnx(variant, test_device):
 
     # Set Forge configuration parameters

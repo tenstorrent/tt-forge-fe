@@ -83,6 +83,7 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_yolo_v6_pytorch(variant, test_device):
 
     # STEP 1 : Set Forge configuration parameters

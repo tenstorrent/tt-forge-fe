@@ -12,6 +12,7 @@ from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
 def test_t5_loop_tiny_tile(test_device):
     import os
@@ -78,6 +79,7 @@ def test_t5_loop_tiny_tile(test_device):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_generation(variant, test_device):
 
@@ -168,6 +170,7 @@ class T5_decoder(torch.nn.Module):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_past_cache_enc_dec(variant, test_device):
@@ -352,6 +355,7 @@ def test_t5_past_cache_enc_dec(variant, test_device):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_past_cache_forge_pipeline(variant, test_device):
@@ -686,6 +690,7 @@ def test_t5_past_cache_forge_pipeline(variant, test_device):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_forge_pipeline(variant, test_device):
@@ -734,6 +739,7 @@ def test_t5_forge_pipeline(variant, test_device):
     print(answer)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(test_device):
     if test_device.arch == BackendDevice.Grayskull:

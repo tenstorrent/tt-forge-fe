@@ -32,6 +32,7 @@ def get_image_tensor(wh):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_efficientnet_lite_0_pytorch():
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -50,6 +51,7 @@ def test_efficientnet_lite_0_pytorch():
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_efficientnet_lite_1_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -70,6 +72,7 @@ def test_efficientnet_lite_1_pytorch(test_device):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_efficientnet_lite_2_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -89,6 +92,7 @@ def test_efficientnet_lite_2_pytorch(test_device):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_efficientnet_lite_3_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -108,6 +112,7 @@ def test_efficientnet_lite_3_pytorch(test_device):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_efficientnet_lite_4_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters

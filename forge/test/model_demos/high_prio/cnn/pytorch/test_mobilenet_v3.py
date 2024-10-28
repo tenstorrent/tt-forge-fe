@@ -37,6 +37,7 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_mobilenetv3_basic(variant, test_device):
     model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
         test_device,
@@ -81,6 +82,7 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_mobilenetv3_timm(variant, test_device):
     model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         test_device,

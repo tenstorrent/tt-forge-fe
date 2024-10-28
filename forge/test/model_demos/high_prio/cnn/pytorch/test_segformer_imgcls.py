@@ -35,6 +35,7 @@ variants_img_classification = [
 
 
 @pytest.mark.parametrize("variant", variants_img_classification)
+@pytest.mark.nightly
 def test_segformer_image_classification_pytorch(test_device, variant):
 
     # Set Forge configuration parameters

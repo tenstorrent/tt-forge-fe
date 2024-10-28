@@ -40,6 +40,7 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_retinanet(variant, test_device):
 
     # Set PyBuda configuration parameters

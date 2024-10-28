@@ -25,6 +25,7 @@ size = ["n", "s", "m", "l", "x"]
 
 
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
+@pytest.mark.nightly
 def test_yolov5_320x320(test_device, size):
     model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         test_device,
@@ -53,6 +54,7 @@ size = ["n", "s", "m", "l", "x"]
 
 
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
+@pytest.mark.nightly
 def test_yolov5_640x640(test_device, size):
 
     model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
@@ -77,6 +79,7 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size
 
 
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
+@pytest.mark.nightly
 def test_yolov5_480x480(test_device, size):
 
     model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
@@ -89,6 +92,7 @@ def test_yolov5_480x480(test_device, size):
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_480x480")
 
 
+@pytest.mark.nightly
 def test_yolov5_1280x1280(test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()

@@ -16,6 +16,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_mistral_decoder_layer(variant, test_device):
 
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
@@ -37,6 +38,7 @@ def test_mistral_decoder_layer(variant, test_device):
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(variant, test_device):
 
@@ -67,6 +69,7 @@ def test_mistral(variant, test_device):
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
 def test_mistral_decode(variant, test_device):
@@ -132,6 +135,7 @@ def test_mistral_decode(variant, test_device):
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="under development")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral_kv_cache(variant, test_device):

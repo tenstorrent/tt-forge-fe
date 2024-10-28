@@ -110,6 +110,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_llama3_causal_lm(variant, test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -151,6 +152,7 @@ def test_llama3_causal_lm(variant, test_device):
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_llama3_sequence_classification(variant, test_device):
 
     # Configurations

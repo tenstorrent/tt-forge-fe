@@ -33,6 +33,7 @@ def get_sample_data(model_name):
         "deepmind/vision-perceiver-fourier",
     ],
 )
+@pytest.mark.nightly
 def test_perceiver_for_image_classification_onnx(test_device, model_name):
 
     # Set Forge configuration parameters

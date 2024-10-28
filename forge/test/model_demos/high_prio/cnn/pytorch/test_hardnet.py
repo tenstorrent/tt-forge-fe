@@ -14,6 +14,7 @@ variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_hardnet_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters

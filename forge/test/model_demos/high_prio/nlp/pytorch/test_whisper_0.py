@@ -98,6 +98,7 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
     return framework_model, [decoder_input_ids, encoder_outputs]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(test_device, variant):
 
@@ -111,6 +112,7 @@ def test_whisper(test_device, variant):
     )
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_pipeline(test_device, variant):
@@ -171,6 +173,7 @@ def test_whisper_pipeline(test_device, variant):
     assert cpu_out["text"] == tt_out["text"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Not supported")
 def test_whisper_encoder(test_device, variant):

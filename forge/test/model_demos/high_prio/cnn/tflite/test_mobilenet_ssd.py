@@ -7,6 +7,7 @@ from forge.config import _get_global_compiler_config
 import forge
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_mobilenet_ssd_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
