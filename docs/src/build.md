@@ -71,6 +71,17 @@ cmake -G Ninja -B build
 cmake --build build
 ```
 
+### Incremental build
+If you have made changes to the C++ sources (of the `tt-forge-fe` compiler, `tt-mlir` or `tt-metal`), you might want to do an incremental build to save time. This can be done by running the following command:
+```sh
+# If you are not already inside the virtual environment, activate it
+source env/activate
+
+cmake --build build -- install_ttforge
+```
+
+This will build `tt-forge-fe` C++ sources and the dependencies (`tt-mlir`, `tt-metal`) and install them in the virtual environment.
+
 ## Build docs
 
 To build documentation `mdbook` is required, see the installation guide [here](./tools.md#mdbook).
