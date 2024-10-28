@@ -298,8 +298,7 @@ def test_transpose(params):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     if params[1][1] == -3:
-        # currently the lowering to TTNN is not supported for this case
-        return
+        pytest.xfail("Currently the lowering to TTNN is not supported for -3 dim")
 
     co_out = compiled_model(*inputs)
 
