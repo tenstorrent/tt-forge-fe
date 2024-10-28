@@ -88,6 +88,7 @@ def test_yolo_v6_pytorch(variant, test_device):
     # STEP 1 : Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"

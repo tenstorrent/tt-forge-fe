@@ -6,7 +6,7 @@ import requests
 import pytest
 import torchvision.transforms as transforms
 from PIL import Image
-
+import os
 from test.model_demos.models.dla import (
     dla34,
     dla46_c,
@@ -40,7 +40,8 @@ variants = list(variants_func.keys())
 def test_dla_pytorch(variant, test_device):
     # Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
     func = variants_func[variant]
 
     # Load data sample

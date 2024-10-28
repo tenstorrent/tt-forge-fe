@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 from collections import OrderedDict
 
@@ -13,6 +12,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
 from test.utils import download_model
+import os
 
 
 def get_image_tensor(sample_path):
@@ -288,7 +288,8 @@ variants = [
 def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Init config
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     if variant == "body_basic":
@@ -326,7 +327,8 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)

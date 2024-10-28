@@ -6,6 +6,7 @@
 import pytest
 import forge
 import torch
+import os
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
@@ -16,7 +17,8 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"

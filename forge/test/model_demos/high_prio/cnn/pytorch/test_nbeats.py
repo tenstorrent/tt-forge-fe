@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import forge
 import sys
+import os
 
 sys.path.append("forge/test/model_demos/models")
 
@@ -17,6 +18,7 @@ from nbeats.scripts import (
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -35,6 +37,7 @@ def test_nbeats_with_seasonality_basis(test_device):
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -47,6 +50,7 @@ def test_nbeats_with_generic_basis(test_device):
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     x, x_mask = get_electricity_dataset_input()
 

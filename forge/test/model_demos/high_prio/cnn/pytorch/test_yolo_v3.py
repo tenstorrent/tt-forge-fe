@@ -4,7 +4,7 @@
 import pytest
 
 from PIL import Image
-
+import os
 import torch
 import forge
 
@@ -20,6 +20,8 @@ import forge
 def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model = Yolov3Tiny(num_classes=80, use_wrong_previous_anchors=True)
     model.load_state_dict(torch.load("weights/yolov3_tiny_coco_01.h5"))
@@ -46,6 +48,8 @@ def test_yolov3_tiny_holli_pytorch(test_device):
 def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
     model = Yolov3(num_classes=80)
     model.load_state_dict(
         torch.load(

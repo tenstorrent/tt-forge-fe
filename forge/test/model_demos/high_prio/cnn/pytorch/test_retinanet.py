@@ -11,7 +11,6 @@ import pytest
 from test.model_demos.models.retinanet.model_implementation import Model
 import zipfile
 import shutil
-import forge
 
 
 def img_preprocess():
@@ -45,7 +44,7 @@ def test_retinanet(variant, test_device):
 
     # Set PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"

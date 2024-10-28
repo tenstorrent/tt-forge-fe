@@ -2,13 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import forge
-import os
 import torch
 import pytest
 import torch.nn.functional as F
 import numpy as np
 from PIL import Image
 import sys
+import os
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -18,7 +18,8 @@ import sys
 def test_fchardnet(test_device):
     # STEP 1: Set PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"

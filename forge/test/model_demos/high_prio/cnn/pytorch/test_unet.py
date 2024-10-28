@@ -2,17 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import forge
-import os
 import urllib
 from test.utils import download_model
 import torch
-import torch.nn as nn
-import torchvision
 from torchvision import transforms
 from torchvision.transforms import Compose, ConvertImageDtype, Normalize, PILToTensor, Resize, CenterCrop
-import requests
 from loguru import logger
-
+import os
 from PIL import Image
 import numpy as np
 import pytest
@@ -21,12 +17,13 @@ import segmentation_models_pytorch as smp
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
 
 
-def generate_model_unet_imgseg_osmr_pytorch(test_device, variant):
+def generate_model_unet_imgseg_osmr_pytorch(variant):
     # Also, golden test segfaults when pushing params to golden: tenstorrent/forge#637
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model = download_model(ptcv_get_model, variant, pretrained=False)
 
@@ -37,7 +34,6 @@ def generate_model_unet_imgseg_osmr_pytorch(test_device, variant):
 
 def test_unet_osmr_cityscape_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
-        test_device,
         "unet_cityscapes",
     )
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_cityscapes_osmr")
@@ -77,6 +73,7 @@ def test_unet_holocron_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model = download_model(unet_tvvgg11, pretrained=True).eval()
 
@@ -84,10 +81,11 @@ def test_unet_holocron_pytorch(test_device):
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_unet_holocron")
 
 
-def generate_model_unet_imgseg_smp_pytorch(test_device, variant):
+def generate_model_unet_imgseg_smp_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # encoder_name = "vgg19"
     encoder_name = "resnet101"
@@ -117,16 +115,16 @@ def generate_model_unet_imgseg_smp_pytorch(test_device, variant):
 
 def test_unet_qubvel_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
-        test_device,
         None,
     )
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_qubvel_pt")
 
 
-def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
+def generate_model_unet_imgseg_torchhub_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model = download_model(
         torch.hub.load,
@@ -167,7 +165,6 @@ def generate_model_unet_imgseg_torchhub_pytorch(test_device, variant):
 )  # https://github.com/tenstorrent/tt-forge-fe/issues/515
 def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
-        test_device,
         "unet",
     )
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_torchhub")

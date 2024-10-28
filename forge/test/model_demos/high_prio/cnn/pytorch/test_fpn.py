@@ -3,11 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 import torch.nn as nn
-import os
 import forge
-from torchvision.ops import FeaturePyramidNetwork
 from collections import OrderedDict
 from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
+import os
 
 
 class FPNWrapper(nn.Module):
@@ -28,7 +27,8 @@ class FPNWrapper(nn.Module):
 
 def test_fpn_pytorch(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load FPN model
     model = FPNWrapper()

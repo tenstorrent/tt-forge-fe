@@ -13,6 +13,7 @@ from transformers import (
     PerceiverForImageClassificationLearned,
     PerceiverForImageClassificationFourier,
 )
+import os
 
 
 def get_sample_data(model_name):
@@ -43,10 +44,8 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    if variant == "deepmind/vision-perceiver-fourier":
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    else:
-        compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Sample Image
     pixel_values = get_sample_data(variant)
