@@ -158,6 +158,9 @@ def test_forge_vs_torch():
 
     copy_params(torch_model, forge_model)
 
+    forge_model.linear_relu_stack[0].weight.requires_grad = False
+    forge_model.linear_relu_stack[0].bias.requires_grad = False
+
     torch_writer = load_tb_writer("torch")
     forge_writer = load_tb_writer("forge")
 
@@ -165,6 +168,7 @@ def test_forge_vs_torch():
     torch_optimizer = torch.optim.SGD(torch_model.parameters(), lr=learning_rate)
     forge_optimizer = torch.optim.SGD(forge_model.parameters(), lr=learning_rate)
 
+    forge_model.train()
     tt_model = forge.compile(
         forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], loss=loss_fn, optimizer=forge_optimizer
     )
