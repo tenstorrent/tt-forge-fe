@@ -74,7 +74,7 @@ jobs:
         # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
         echo "Expected job name: ${{ env.job-name }}"
         JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          "https://api.github.com/repos/tenstorrent/tt-forge-fe/actions/runs/11514644813/jobs" | \
+          "https://api.github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" | \
           jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
         echo "Current job id: $JOB_ID"
 
