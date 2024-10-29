@@ -275,6 +275,9 @@ def test_add():
         ((32, 128), (0, 1)),
         ((18, 65), (1, 0)),
         ((6, 33, 34), (-1, 1)),
+        ((1, 32, 64), (-2, -3)),
+        ((6, 33, 34), (-1, -3)),
+        ((32, 128, 24), (1, -3)),
     ],
 )
 def test_transpose(params):
@@ -293,6 +296,10 @@ def test_transpose(params):
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    if params[1][1] == -3:
+        pytest.xfail("Currently the lowering to TTNN is not supported for -3 dim")
+
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
