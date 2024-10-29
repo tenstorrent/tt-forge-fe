@@ -567,6 +567,12 @@ class MLIRGenerator
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;
         lowering_handler_map["max_pool2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MaxPool2dOp>;
+        lowering_handler_map["abs"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AbsOp>;
+        lowering_handler_map["exp"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ExpOp>;
+        lowering_handler_map["maximum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::MaximumOp>;
+        lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
+        lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
+        lowering_handler_map["not_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::NotEqualOp>;
     }
 };
 }  // namespace
