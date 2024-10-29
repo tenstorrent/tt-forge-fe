@@ -126,7 +126,11 @@ jobs:
         source env/activate
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        pytest --splits 2 --group ${{ matrix.test_group_id }} --junit-xml=${{ steps.strings.outputs.test_report_path }} 2>&1 | tee pytest.log
+        pytest --splits 2 \
+               --group ${{ matrix.test_group_id }} \
+               --splitting-algorithm least_duration \
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               2>&1 | tee pytest.log
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
