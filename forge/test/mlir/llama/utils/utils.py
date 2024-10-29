@@ -22,6 +22,7 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     framework_model.eval()
 
     # Using AutoTokenizer for default tokenizers for both openllama and llama 3.2
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    use_fast = kwargs.get("use_fast", True)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=use_fast)
 
     return framework_model, tokenizer

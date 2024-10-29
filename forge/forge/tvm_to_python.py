@@ -1234,6 +1234,14 @@ def populate_layernorm_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_cast_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+    args = []
+    dtype = node["attrs"]["dtype"][0][0]
+    args.append(("dtype", "torch." + f"{dtype}"))
+    return args
+
+
 def populate_transpose_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     axes = [int(axis) for axis in node["attrs"]["axes"][0]]
@@ -1690,7 +1698,7 @@ forge_op_to_function_name = {
     "avg_pool2d": "forge.op.AvgPool2d",
     "binary_stack": "forge.op.BinaryStack",
     "broadcast": "forge.op.Broadcast",
-    "cast": "forge.op.Identity",  # Datatype cast
+    "cast": "forge.op.Cast",  # Datatype cast
     "clip": "forge.op.Clip",
     "concatenate": "forge.op.Concatenate",
     "conv2d_transpose": "forge.op.Conv2dTranspose",
@@ -1767,6 +1775,7 @@ forge_ops_needing_arguments = {
     "avg_pool2d": populate_avgpool2d_args,
     "binary_stack": populate_binary_stack_args,
     "broadcast": populate_broadcast_args,
+    "cast": populate_cast_args,
     "clip": populate_clip_transpose_args,
     "concatenate": populate_concatenate_args,
     "conv2d_transpose": populate_conv2d_transpose_args,

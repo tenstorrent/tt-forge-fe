@@ -573,6 +573,7 @@ class MLIRGenerator
         lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
         lowering_handler_map["not_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::NotEqualOp>;
+        lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
     }
 };
 }  // namespace
