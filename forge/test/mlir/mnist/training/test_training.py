@@ -30,7 +30,7 @@ def test_mnist_training():
     test_loader, train_loader = load_dataset(batch_size)
 
     # Define model and instruct it to compile and run on TT device
-    framework_model = MNISTLinear(bias=False)
+    framework_model = MNISTLinear(bias=False)  # bias=False because batch_size=1 with bias=True is not supported
 
     # Create a torch loss and leave on CPU
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -226,7 +226,7 @@ def test_forge_vs_torch():
 
         if early_stop.is_best():
             torch.save(torch_model.state_dict(), f"runs/models/torch_model_{i}.pth")
-            torch.save(forge_model, f"runs/models/forge_model_{i}.pth")
+            torch.save(forge_model.state_dict(), f"runs/models/forge_model_{i}.pth")
 
         if early_stop.is_early_stop():
             break

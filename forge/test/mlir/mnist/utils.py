@@ -15,7 +15,9 @@ from torchvision.datasets import MNIST as mnist_dataset
 
 # Model definition
 class MNISTLinear(nn.Module):
-    def __init__(self, input_size=784, output_size=10, hidden_size=512, bias=True, dtype=torch.float32):
+    def __init__(
+        self, input_size=784, output_size=10, hidden_size=512, bias=True, dtype=torch.float32
+    ):  # changed hidden_size to 512 because matmul 256 x batch_size is not supported in ttnn
         super(MNISTLinear, self).__init__()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(input_size, hidden_size, bias=bias, dtype=dtype),
@@ -45,11 +47,7 @@ class EarlyStopping:
         self.best_model = None
 
     def step(self, val_metric, model_id):
-        if self.best_score is None:
-            self.best_score = val_metric
-            self.is_current_best = True
-            self.best_model = model_id
-        elif self.better(val_metric, self.best_score):
+        if self.best_score is None or self.better(val_metric, self.best_score):
             self.is_current_best = True
             self.best_score = val_metric
             self.counter = 0
