@@ -45,9 +45,12 @@ std::tuple<bool, int> can_commute_reshape_through_dim(
     {
         if (input_shape_vec[i] == output_shape_vec[dim])
         {
+            log_trace("output_shape_vec.size() = {}", output_shape_vec.size());
+            log_trace("i value = {}", i);
             // check whether volume above and below matching dim is the same
             if ((volume_above(input_shape_vec, i) == volume_above(output_shape_vec, dim)) and
-                (volume_below(input_shape_vec, i) == volume_below(output_shape_vec, dim)))
+                (volume_below(input_shape_vec, i) == volume_below(output_shape_vec, dim)) and
+                (i < output_shape_vec.size()))
             {
                 can_commute = true;
                 new_dim = i;

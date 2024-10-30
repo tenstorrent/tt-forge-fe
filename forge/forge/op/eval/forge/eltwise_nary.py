@@ -142,9 +142,13 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 
     elif type == "stack":
         axis = attr[0]
-
         output_shape = list(ops[0])
-        output_shape.insert(axis, len(ops))
+        if axis == -1:
+            output_shape.append(len(ops))
+        elif axis < 0:
+            output_shape.insert(axis + 1, len(ops))
+        else:
+            output_shape.insert(axis, len(ops))
         return output_shape, []
 
     elif type == "interleave":
@@ -246,11 +250,16 @@ def decompose(type, attr, dc, inputs):
         new_inputs = []
         for inp in inputs:
             inp_shape = inp.shape.as_list()
-            inp_shape.insert(axis, 1)
-            new_inp = dc.op("reshape", [inp], (*inp_shape,))
+            if axis == -1:
+                inp_shape.append(1)
+            elif axis < 0:
+                inp_shape.insert(axis + 1, 1)
+            else:
+                inp_shape.insert(axis, 1)
+            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)}, (*inp_shape,))
             new_inputs.append(new_inp)
 
-        output = dc.op("concatenate", new_inputs, (axis,))
+        output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)}, (axis,))
         dc.fuse(output)
 
     if type == "concatenate":
