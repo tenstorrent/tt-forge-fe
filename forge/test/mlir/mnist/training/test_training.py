@@ -93,7 +93,8 @@ def test_mnist_training():
     print(f"Test (total) loss: {test_loss}")
 
 
-def test_forge_vs_torch_gradients():
+@pytest.mark.parametrize("freeze_layer", [None, 0, 2, 4])
+def test_forge_vs_torch_gradients(freeze_layer):
     logger.disable("")
     torch.manual_seed(0)
     batch_size = 64
@@ -104,11 +105,17 @@ def test_forge_vs_torch_gradients():
     in_features = 28 * 28
     out_features = 10
 
-    torch_model = MNISTLinear(dtype=dtype, bias=True)
+    torch_model = MNISTLinear()
 
-    forge_model = MNISTLinear(dtype=dtype, bias=True)
+    forge_model = MNISTLinear()
 
     copy_params(torch_model, forge_model)
+
+    if freeze_layer is not None:
+        forge_model.linear_relu_stack[freeze_layer].weight.requires_grad = False
+        forge_model.linear_relu_stack[freeze_layer].bias.requires_grad = False
+        torch_model.linear_relu_stack[freeze_layer].weight.requires_grad = False
+        torch_model.linear_relu_stack[freeze_layer].bias.requires_grad = False
 
     loss_fn = nn.CrossEntropyLoss()
 
@@ -132,6 +139,10 @@ def test_forge_vs_torch_gradients():
     forge_loss.backward()
     tt_model.backward()
     forge_grads = get_param_grads(forge_model.named_parameters)
+
+    if freeze_layer is not None:
+        assert forge_model.linear_relu_stack[freeze_layer].weight.grad is None
+        assert forge_model.linear_relu_stack[freeze_layer].bias.grad is None
 
     # Compare gradients for each parameter
     for name in reversed(list(torch_grads.keys())):
