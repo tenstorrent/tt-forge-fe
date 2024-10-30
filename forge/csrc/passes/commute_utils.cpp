@@ -1008,6 +1008,24 @@ void restore_bcast_on_condition(
     }
 }
 
+// Updates broadcast dim after broadcast commutes through transpose.
+// By moving broadcasts after transpose we have to change broadcast dim
+// if it was included in transpose (if broadcast dim is -2 and transpose
+// is between -3 and -2 new broadcast dim becomes -3 because transpose
+// changed the axis we want to broadcast on...)
+int update_bcast_dim_commuted_through_transpose(int dim, graphlib::OpNode *op)
+{
+    TT_ASSERT(op->op_name() == "transpose", "Op has to be transpose");
+    int updated_bcast_dim = dim;
+    int transpose_dim_0 = std::get<int>(op->op_type().get_attr("dim0"));
+    int transpose_dim_1 = std::get<int>(op->op_type().get_attr("dim1"));
+    if (dim == transpose_dim_0)
+        updated_bcast_dim = transpose_dim_1;
+    else if (dim == transpose_dim_1)
+        updated_bcast_dim = transpose_dim_0;
+    return updated_bcast_dim;
+}
+
 bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *node)
 {
     graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
@@ -1267,8 +1285,8 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     }
     else if (op->op_name() == "transpose")
     {
-        auto &tms = graph->get_edge_attributes(operand_edge)->get_tms();
-        auto updated_shape = node->shape();
+        std::vector<graphlib::OpType> &tms = graph->get_edge_attributes(operand_edge)->get_tms();
+        graphlib::Shape updated_shape = node->shape();
 
         std::vector<int> erase_tms;
         for (int i = 0; i < (int)tms.size(); ++i)
@@ -1282,15 +1300,12 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 int operand_dim_size = operand->shape()[dim];
                 // Hoist the transpose before the bcasts
-                if (dim == -1 or dim == -2)
-                {
-                    erase_tms.push_back(i);
-                    dim = (dim == -1) ? -2 : -1;  // flip the dim
-                    updated_shape[dim] = operand_dim_size;
-                    std::get<int>(op_type.attr[0]) = dim;
-                    for (auto user_edge : graph->user_data_edges(op))
-                        graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
-                }
+                erase_tms.push_back(i);
+                int updated_bcast_dim = update_bcast_dim_commuted_through_transpose(dim, op);
+                updated_shape[updated_bcast_dim] = operand_dim_size;
+                std::get<int>(op_type.attr[0]) = updated_bcast_dim;
+                for (graphlib::Edge user_edge : graph->user_data_edges(op))
+                    graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
             }
         }
 
