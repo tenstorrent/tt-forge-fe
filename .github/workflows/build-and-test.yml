@@ -75,6 +75,7 @@ jobs:
 
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
         echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=reports/forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -134,7 +135,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -o forge-benchmark-e2e-mnist.json
+        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -o ${{ steps.strings.outputs.perf_report_path }}
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
@@ -142,6 +143,13 @@ jobs:
       with:
         name: test-reports-${{ matrix.build.runs-on }}
         path: ${{ steps.strings.outputs.test_report_path }}
+
+    - name: Upload Perf Report
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: perf-reports-${{ matrix.build.runs-on }}
+        path: ${{ steps.strings.outputs.perf_report_path }}
 
     - name: Show Test Report
       uses: mikepenz/action-junit-report@v4
