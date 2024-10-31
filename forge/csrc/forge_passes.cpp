@@ -28,7 +28,6 @@
 #include "passes/limit_to_4d_reshape.hpp"
 #include "passes/link_past_cache_ios.hpp"
 #include "passes/lower_concat_to_runtime_transform.hpp"
-#include "passes/lower_reinterpret_shape.hpp"
 #include "passes/lowering_context.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/move_requantize.hpp"
@@ -157,7 +156,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
 
     passes::hoist_transforms_to_inputs(graph);
     passes::erase_consecutive_reshape(graph, true);
-    passes::lower_reinterpret_shape(graph);
 
     passes::fuse_per_channel_ops(graph);
     if (not env_as<bool>("FORGE_DISABLE_CONSTANT_FOLDING"))
