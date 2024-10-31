@@ -8,6 +8,7 @@
 # =============================================================================
 
 import argparse
+import os
 
 
 # =============================================================================
@@ -29,7 +30,7 @@ class GithubManager:
 
     Parameters:
     -----------
-    repo_name: str
+    repo_url: str
         The name of the repository to access.
 
     token: str
@@ -43,16 +44,16 @@ class GithubManager:
 
     Attributes:
     -----------
-    repo_name: str
+    repo_url: str
         The name of the repository to access.
 
     token: str
         The github token to access the repository.
 
-    commit: str
+    commit: list[str]
         The commit hash that represent change for which we want to check results.
 
-    job: str
+    job: list[str]
         The job id that represent the job for which we want to check results.
 
     Exceptions:
@@ -65,44 +66,50 @@ class GithubManager:
 
     """
 
-    def __init__(self, repo_name: str, token: str, commit: str = None, job: str = None):
-        self.repo_name = repo_name
-        self.token = token
-        self.commit = commit
-        self.job = job
+    def __init__(self, repo_url: str, token: str, commit: list[str] = None, job: list[str] = None):
+
+        # Initialize the attributes
+        # All the attributes are private, also,
+        # repository name cannot be changed once set through the constructor.
+
+        self.__repo_url = repo_url
+        self.__token = token
+        self.__commit = commit
+        self.__job = job
 
     @property
-    def repo_name(self):
-        pass
+    def repo_url(self):
+        return self.__repo_url
 
     @property
     def token(self):
-        pass
+        return self.__token
 
     @token.setter
     def token(self, value):
-        pass
+        self.__token = value
 
     @property
     def commit(self):
-        pass
+        return self.__commit
 
     @commit.setter
     def commit(self, value):
-        pass
+        self.__commit = value
 
     @property
     def job(self):
-        pass
+        return self.__job
 
     @job.setter
     def job(self, value):
-        pass
+        self.__job = value
 
     def __str__(self):
 
         string = f"GithubManager\n"
         string += "====================\n"
+        string += f"repo_url: {self.repo_url}\n"
         string += f"token: {self.token}\n"
         if self.commit:
             string += f"commit={self.commit}\n"
@@ -111,38 +118,6 @@ class GithubManager:
         string += "====================\n"
 
         return string
-
-
-class BenchmarkManager:
-
-    """
-    Class to manipulate the benchmark results.
-
-    Parameters:
-    -----------
-
-    Attributes:
-    -----------
-
-    Exceptions:
-    -----------
-
-    Examples:
-    ---------
-
-    """
-
-    def __init__(self):
-        pass
-
-    def read():
-        pass
-
-    def extract():
-        pass
-
-    def __str__(self):
-        return "BenchmarkManager"
 
 
 class Benchmark:
@@ -188,6 +163,86 @@ class Benchmark:
         return f"Benchmark: {self.model}"
 
 
+class BenchmarkManager:
+
+    """
+    Class to manipulate the benchmark results.
+
+    Parameters:
+    -----------
+    github_manager: GithubManager
+        The github manager to access the repository.
+
+    Attributes:
+    -----------
+    github_manager: GithubManager
+        The github manager to access the repository.
+
+    benchmarks: list[Benchmark]
+        The list of objects of the Benchmark class. Benchmark class represents the benchmark results.
+
+    Exceptions:
+    -----------
+
+    Examples:
+    ---------
+
+    """
+
+    def __init__(self, github_manager: GithubManager):
+        self.__github_manager = github_manager
+        self.__benchmarks = []
+
+    @property
+    def github_manager(self):
+        return self.__github_manager
+
+    @property
+    def benchmarks(self):
+        return self.__benchmarks
+
+    def add(self, benchmark: Benchmark):
+        self.__benchmarks.append(benchmark)
+
+    def __add__(self, benchmark: Benchmark):
+        self.add(benchmark)
+
+    def read_commits():
+        """Read the commits from the github repository."""
+        pass
+
+    def read_jobs():
+        """Read the jobs from the github repository."""
+        pass
+
+    def extract():
+        pass
+
+    def compare():
+        pass
+
+    def print_results():
+        pass
+
+    def __str__(self):
+        """
+        Print the BenchmarkManager object.
+        It includes the github manager and the benchmarks.
+        Benchmark has its own __str__ method.
+        """
+
+        string = f"BenchmarkManager\n"
+        string += "=" * 20 + "\n"
+        string += f"github_manager: {self.github_manager}\n"
+        string += f"benchmarks: \n"
+        string += "-" * 20 + "\n"
+        for benchmark in self.benchmarks:
+            string += f"{benchmark}\n"
+        string += "=" * 20 + "\n"
+
+        return string
+
+
 # =============================================================================
 # Define the functions
 # =============================================================================
@@ -208,12 +263,18 @@ def read_args():
 
     Exceptions:
     -----------
+    ValueError
+        If the commits or jobs are empty.
 
     Examples:
     ---------
 
     """
 
+    # Initialize the parsed arguments
+    parsed_args = {}
+
+    # Read the arguments from the command line
     parser = argparse.ArgumentParser(description="Compare the benchmark results.")
     parser.add_argument(
         "-c",
@@ -229,9 +290,6 @@ def read_args():
     )
 
     args = parser.parse_args()
-
-    # Initialize the parsed arguments
-    parsed_args = {}
 
     if args.commits and args.jobs:
         print("\nPass only commits or jobs.\n\n")
@@ -269,64 +327,68 @@ def read_token():
 
     Returns:
     --------
+    token: str
+        The github token.
 
     Exceptions:
     -----------
+    ValueError
+        If the github token is not set in the environment variable
 
     Examples:
     ---------
 
     """
-    pass
 
+    # Extract the github token from the environment variable.
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
 
-def read_commit():
-    """
-    Read the commit hash from the command line.
+        # Try to read the token from the file.
+        try:
+            with open("github_token.txt", "r") as file:
+                token = file.read().strip()
+        except FileNotFoundError as e:
+            print("\nThe github token is not set in the environment variable GITHUB_TOKEN.\n")
+            raise ValueError("The github token is not set in the environment variable GITHUB_TOKEN")
 
-    Parameters:
-    -----------
+    else:
+        with open("github_token.txt", "w") as file:
+            file.write(token)
 
-    Returns:
-    --------
-
-    Exceptions:
-    -----------
-
-    Examples:
-    ---------
-
-    """
-    pass
-
-
-def read_job():
-    """
-    Read the job id from the command line.
-
-    Parameters:
-    -----------
-
-    Returns:
-    --------
-
-    Exceptions:
-    -----------
-
-    Examples:
-    ---------
-
-    """
-    pass
+    return token
 
 
 def main():
+    """
+    Main function for comparing the benchmark results.
+
+    Parameters:
+    -----------
+    None
+
+    Returns:
+    --------
+    None
+    """
+
+    # Read github token
+    token = read_token()
 
     # Read the arguments from the command line.
+    parsed_args = read_args()
 
     # Create the GithubManager.
+    github_manager = GithubManager(repo_url=GITHUB_REPO_URL_TT_FORGE_FE, token=token)
+    if parsed_args.get("commits"):
+        github_manager.commit = parsed_args["commits"]
+    if parsed_args.get("jobs"):
+        github_manager.job = parsed_args["jobs"]
+
+    print(github_manager)
 
     # Create the BenchmarkManager.
+    benchmark_manager = BenchmarkManager(github_manager=github_manager)
 
     # Create the Benchmark.
 
