@@ -478,15 +478,19 @@ def decompose(type, attr, dc, inputs):
         # If global average
         if y == kH and x == kW and ((stride[0] == kH and stride[1] == kW) or all(pad == 0 for pad in padding)):
             if channel_last:
-                result = dc.op("reshape", [activations], (w, 1, y * x, cin))
-                result = dc.op("reduce_avg", [result], (-2,))
-                result = dc.op("reshape", [result], (w, 1, 1, cin))
+                result = dc.op_with_named_attrs(
+                    "reshape", [activations], {"shape": (w, 1, y * x, cin)}, (w, 1, y * x, cin)
+                )
+                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": -2, "keep_dim": True}, (-2,))
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, 1, cin)}, (w, 1, 1, cin))
             else:
-                result = dc.op("reshape", [activations], (w, 1, cin, y * x))
+                result = dc.op_with_named_attrs(
+                    "reshape", [activations], {"shape": (w, 1, cin, y * x)}, (w, 1, cin, y * x)
+                )
                 result = dc.op(TransposeTM.create(2, 3), [result])
-                result = dc.op("reduce_avg", [result], (-2,))
+                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": -2, "keep_dim": True}, (-2,))
                 result = dc.op(TransposeTM.create(2, 3), [result])
-                result = dc.op("reshape", [result], (w, cin, 1, 1))
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, 1, 1)}, (w, cin, 1, 1))
             dc.fuse(result)
             return
 
