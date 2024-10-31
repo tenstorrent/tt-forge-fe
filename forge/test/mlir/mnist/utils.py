@@ -107,7 +107,7 @@ def load_dataset(batch_size, dtype=torch.float32):
 
 
 def get_param_grads(named_params):
-    return {name: param.grad.detach().clone() for name, param in named_params()}
+    return {name: param.grad.detach().clone() for name, param in named_params() if param.grad is not None}
 
 
 def copy_params(src, dst):
