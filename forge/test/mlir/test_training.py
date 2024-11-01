@@ -30,7 +30,7 @@ def test_torch_training():
     loss_fn = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
-    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], loss=loss_fn, optimizer=optimizer)
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], optimizer=optimizer)
 
     num_epochs = 20
 

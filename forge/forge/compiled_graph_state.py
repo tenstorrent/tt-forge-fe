@@ -15,7 +15,7 @@ import forge._C.graph as pygraph
 from forge._C.runtime import run_binary, Binary
 from forge.utils import list_as_json
 from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors
-from forge.module import Module
+from forge.module import Module, PyTorchModule
 from forge.typing import AnyTensor, AnyModule
 
 
@@ -60,6 +60,7 @@ class CompileResults:
 class CompiledGraphState:
     graph: Graph
     ordered_input_names: List[str]
+    ordered_input_gradient_names: List[str]
     ordered_output_names: List[str]
     ordered_external_output_names: List[str]
     ordered_target_names: List[str]
@@ -93,6 +94,7 @@ class CompiledGraphState:
         ordered_output_requires_grad = graph.get_ordered_output_requires_grad()
         ordered_constant_node_names = [constant_node.name for constant_node in graph.get_constant_nodes()]
         ordered_parameter_node_names = [parameter_node.name for parameter_node in graph.get_parameter_nodes()]
+        ordered_input_gradient_names = graph.get_ordered_input_gradient_names()
 
         # TODO: will be needed for training
         optimizer_param_info = {}
@@ -124,6 +126,7 @@ class CompiledGraphState:
         return CompiledGraphState(
             graph=graph,
             ordered_input_names=ordered_input_names,
+            ordered_input_gradient_names=ordered_input_gradient_names,
             ordered_output_names=ordered_output_names,
             ordered_external_output_names=ordered_external_output_names,
             ordered_target_names=ordered_target_names,
@@ -190,8 +193,12 @@ class CompiledModel:
     # Original user-defined module.
     framework_module: AnyModule
 
-    # Gradients coming from the loss.backward() - only used when loss is computed on CPU.
-    loss_grad: List[Optional[torch.Tensor]]
+    # Gradients to be passed into the backward pass.
+    # Used when CompiledModel.backward() is part of a chain of backward passes.
+    gradient_inputs: List[torch.Tensor]
+    gradient_outputs: List[torch.Tensor]
+
+    attached_module: Optional["CompiledModel"]
 
     def __init__(
         self,
@@ -199,6 +206,7 @@ class CompiledModel:
         bwd_compiled_graph_state: Optional[CompiledGraphState],
         compiled_binary: Binary,
         framework_module: AnyModule,
+        attached_module: Optional["CompiledModel"] = None,
     ):
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
@@ -206,8 +214,11 @@ class CompiledModel:
         self.inputs = []
         self.framework_module = framework_module
         self.intermediates = []
-        self.loss_grad = [None] * len(fwd_compiled_graph_state.ordered_external_output_names)
+        if self.bwd_compiled_graph_state is not None:
+            assert self.bwd_compiled_graph_state is not None
+            self.gradient_inputs = [None] * len(self.bwd_compiled_graph_state.ordered_input_gradient_names)
         self.outputs = {}
+        self.attached_module = attached_module
 
     def tie_grad_fn(self, grad_id: int, grad: torch.Tensor):
         """
@@ -216,8 +227,8 @@ class CompiledModel:
 
         NOTE: Should be used only when loss is computed on CPU (outside of our runtime).
         """
-        assert len(self.loss_grad) > grad_id, "More gradients than expected."
-        self.loss_grad[grad_id] = grad
+        assert len(self.gradient_inputs) > grad_id, "More gradients than expected."
+        self.gradient_inputs[grad_id] = grad
 
     def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         """
@@ -244,7 +255,9 @@ class CompiledModel:
             logger.info("Converting inputs and parameters to PyTorch tensors...")
             inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
 
-        logger.info(f"Running model {self.fwd_compiled_graph_state.graph.get_name()} on device...")
+        logger.info(
+            f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
+        )
         all_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
 
         self.intermediates = []
@@ -278,7 +291,7 @@ class CompiledModel:
             *self.bwd_compiled_graph_state.get_ordered_parameter_tensors(),
         ]
 
-        for grad in self.loss_grad:
+        for grad in self.gradient_inputs:
             assert grad is not None, "Gradients not provided for backward pass."
 
         # Inputs from forward pass are needed in backward pass only if
@@ -291,24 +304,41 @@ class CompiledModel:
             if name in self.bwd_compiled_graph_state.ordered_input_names
         ]
 
-        logger.info(f"Running backward pass on model {self.bwd_compiled_graph_state.graph.get_name()} on device...")
+        logger.info(
+            f"Running backward pass on model {self.framework_module.get_name()} {self.bwd_compiled_graph_state.graph.get_name()} on device..."
+        )
         grads = run_binary(
             self.compiled_binary,
             int(ProgramId.BACKWARD),
-            [*self.loss_grad, *self.intermediates, *inputs, *consts_and_params],
+            [*self.gradient_inputs, *self.intermediates, *inputs, *consts_and_params],
         )
 
-        for name, param in self.framework_module.module.named_parameters():
-            for idx, grad in enumerate(self.bwd_compiled_graph_state.ordered_output_names):
-                if name in grad:
-                    if param.shape != grads[idx].shape:
-                        # Our gradients for bias are 2D (of [1, N] shape) but PyTorch expects 1D - [N].
-                        assert (torch.squeeze(grads[idx], 0)).shape == param.shape
-                        grads[idx] = torch.squeeze(grads[idx], 0)
+        # Accumulate gradients in the PyTorch module
+        if isinstance(self.framework_module, PyTorchModule):
+            for name, param in self.framework_module.module.named_parameters():
+                for idx, grad in enumerate(self.bwd_compiled_graph_state.ordered_output_names):
+                    if name in grad:
+                        if param.shape != grads[idx].shape:
+                            # Our gradients for bias are 2D (of [1, N] shape) but PyTorch expects 1D - [N].
+                            assert (torch.squeeze(grads[idx], 0)).shape == param.shape
+                            grads[idx] = torch.squeeze(grads[idx], 0)
 
-                    if param.grad is not None:
-                        param.grad += grads[idx]
-                    else:
-                        param.grad = grads[idx]
+                        if param.grad is not None:
+                            param.grad += grads[idx]
+                        else:
+                            param.grad = grads[idx]
+
+        # Pass on the calculated gradients to the attached module
+        self.gradient_outputs = grads
+        if self.attached_module is not None:
+            # pass on the calculated gradients and call the attached module's backward pass
+            # HACK: we don't have a way to know which gradient outputs are tied to which gradient inputs
+            # of the attached module. For now, just attach the first one since we are doing this only for
+            # the loss module (which will have only one gradient output) and the model will need only one
+            # gradient output to be passed to the loss module.
+            assert len(self.gradient_outputs) == 1, "Passing gradients not properly implemented yet"
+            assert len(self.attached_module.gradient_inputs) == 1, "Passing gradients not properly implemented yet"
+            self.attached_module.gradient_inputs[0] = self.gradient_outputs[0]
+            self.attached_module.backward()
 
         return grads
