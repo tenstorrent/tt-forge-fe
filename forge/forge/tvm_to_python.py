@@ -2011,7 +2011,12 @@ def generate_forge_module(
             forge_mod.module.process_framework_parameters(framework_mod.module)
         else:
             forge_mod = TestClass(writer.module_name)
-            forge_mod.process_framework_parameters(framework_mod.module)
+
+            if isinstance(framework_mod, forge.module.PyTorchModule):
+                forge_mod.process_framework_parameters()
+            else:
+                forge_mod.process_framework_parameters(framework_mod.module)
+
             assert not any(
                 [param.value() is None for param in forge_mod.get_parameters()]
             ), f"Could not retrieve parameters from framework and tvm"
@@ -2623,8 +2628,24 @@ def compile_tvm_to_python(
             param_file_name = os.path.join(writer.module_directory, writer.module_name + "_params.pt")
             torch.save(params_from_tvm, param_file_name)
 
-        param_names.update(const_names)
-        writer.write_param_parser(param_names, param_file_name)
+        if framework == "pytorch":
+            # Store named parameters
+            names_params_file_name = os.path.join(writer.module_directory, writer.module_name + "_names_params.pt")
+            named_parameters = dict(framework_mod.module.state_dict().items())
+            torch.save(named_parameters, names_params_file_name)
+
+            # Store named buffers
+            named_buffers_file_name = os.path.join(writer.module_directory, writer.module_name + "_named_buffers.pt")
+            named_buffers = dict(framework_mod.module.named_buffers())
+            torch.save(named_buffers, named_buffers_file_name)
+
+            # Generate Forge module parameter parser
+            param_names.update(const_names)
+            writer.write_param_parser(param_names, param_file_name, names_params_file_name, named_buffers_file_name)
+        else:
+            param_names.update(const_names)
+            writer.write_param_parser(param_names, param_file_name)
+
         writer.close_file()
 
         modules.append(writer)
