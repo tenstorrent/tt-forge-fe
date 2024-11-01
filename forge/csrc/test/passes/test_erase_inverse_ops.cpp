@@ -1,7 +1,10 @@
 // SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
+#include "graph_lib/edge.hpp"
+#include "graph_lib/node_types.hpp"
 #include "gtest/gtest.h"
+#include "passes/commute_utils.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/insert_inverse_on_io.hpp"
 #include "passes/replace_incommutable_patterns.hpp"
@@ -222,4 +225,56 @@ TEST_F(EraseInverseOps, replace_x_y_change_concat_pattern)
     }
 
     EXPECT_EQ(reshape_count, 1);
+}
+
+struct CommuteBroadcastThroughTranspose : testing::Test
+{
+    graphlib::Graph *graph;
+
+    CommuteBroadcastThroughTranspose()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "CommuteBroadcastThroughTranspose");
+
+        graphlib::Shape shape = graphlib::Shape::create({64, 1, 1});
+        graphlib::Shape shapeT = graphlib::Shape::create({1, 112, 64, 112});
+
+        tt::graphlib::InputNode *in0_a = create_input(*graph, "in0_a", shape, graphlib::InputNodeType::Constant);
+        graphlib::PyOpNode *transpose = add_node<graphlib::PyOpNode>(
+            *graph, "transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", -3}, {"dim1", -2}}), {in0_a});
+
+        // There is only one edge between in0_a and transpose nodes.
+        graphlib::Edge edge_with_bcst = graph->get_edges(in0_a, transpose)[0];
+        // Add broadcast to the edge
+        graph->get_edge_attributes(edge_with_bcst)->set_broadcast_dim(-2, 112);
+        graph->get_edge_attributes(edge_with_bcst)->set_broadcast_dim(-1, 112);
+
+        tt::graphlib::InputNode *in1_b = create_input(*graph, "in1_b", shapeT);
+        graphlib::PyOpNode *multiply =
+            add_node<graphlib::PyOpNode>(*graph, "multiply", "multiply", {}, {transpose, in1_b});
+
+        create_output(*graph, "out0", multiply);
+    }
+};
+
+TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
+{
+    Node *transpose = graph->get_node_by_name("transpose");
+    Node *multiply = graph->get_node_by_name("multiply");
+
+    // Commute broadcast through transpose
+    graphlib::OpNode *op_node_transpose = dynamic_cast<graphlib::OpNode *>(transpose);
+    EXPECT_TRUE(op_node_transpose != nullptr);
+    bool commuted = passes::try_commute_bcast_through_clone(graph, op_node_transpose);
+    EXPECT_TRUE(commuted);
+
+    // Check if the broadcast dim is updated
+    graphlib::Edge edge = graph->get_edges(transpose, multiply)[0];
+    std::vector<graphlib::OpType> tms = graph->get_edge_attributes(edge)->get_tms();
+    EXPECT_EQ(tms.size(), 2);
+    EXPECT_EQ(tms[0].op, "broadcast");
+    EXPECT_EQ(tms[1].op, "broadcast");
+    // Broadcast along dimension -2 should become broadcast along -3
+    // after commuting through transpose.
+    EXPECT_EQ(std::get<int>(tms[1].attr[0]), -3);
+    EXPECT_EQ(std::get<int>(tms[1].attr[1]), 112);
 }
