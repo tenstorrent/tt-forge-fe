@@ -37,7 +37,6 @@ def test_efficientnet_timm(variant, test_device):
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -87,7 +86,6 @@ def test_efficientnet_torchvision(variant, test_device):
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     if variant == "efficientnet_b0":

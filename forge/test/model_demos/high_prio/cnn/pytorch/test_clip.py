@@ -104,7 +104,6 @@ def test_clip_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.CONSTEVAL_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load processor and model from HuggingFace
     model_ckpt = "openai/clip-vit-base-patch32"

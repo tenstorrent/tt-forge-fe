@@ -16,7 +16,6 @@ def generate_model_deit_imgcls_hf_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoFeatureExtractor.from_pretrained, variant)
