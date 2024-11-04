@@ -20,7 +20,6 @@ def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
 
@@ -50,7 +49,6 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Both options are good
     # model = timm.create_model('mobilenetv3_small_100', pretrained=True)

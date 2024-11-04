@@ -11,7 +11,6 @@ import os
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size):
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     name = "yolov5" + size
 
@@ -41,7 +40,6 @@ def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size
     # env vars needed to support 640x640 yolov5 working
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
@@ -70,7 +68,6 @@ def test_yolov5_640x640(test_device, size):
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
@@ -96,7 +93,6 @@ def test_yolov5_1280x1280(test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     model = download_model(torch.hub.load, "ultralytics/yolov5", "yolov5s", pretrained=True)
 

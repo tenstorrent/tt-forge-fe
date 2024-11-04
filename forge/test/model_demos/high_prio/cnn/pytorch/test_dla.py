@@ -41,7 +41,6 @@ def test_dla_pytorch(variant, test_device):
     # Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
     func = variants_func[variant]
 
     # Load data sample

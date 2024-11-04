@@ -20,7 +20,6 @@ def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
@@ -39,7 +38,6 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 def test_vit_classify_224_hf_pytorch(variant, test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
         test_device,
         variant,
