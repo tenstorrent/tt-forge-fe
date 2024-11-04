@@ -98,6 +98,8 @@ mdbook serve build/docs
 
 > **Note:** `mdbook serve` will by default create a local server at `http://localhost:3000`.
 
+> **Note:** For custom port, just specify `-p` attribute. <br><br> E.g. `mdbook serve build/docs -p 5005`, and visit `http://localhost:5005`.
+
 ## Build Cleanup
 
 To ensure a clean build environment, follow these steps to remove existing build artifacts:
