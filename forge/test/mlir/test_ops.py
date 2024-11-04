@@ -13,10 +13,10 @@ import forge
 from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
-shapes = [(1, 1, 256, 256), (1, 1, 1, 128), (1, 1, 1, 384), (1, 1, 32, 32), (1, 1, 6, 6), (1, 1, 29, 29)]
 
-
-@pytest.mark.parametrize("shape", shapes)
+@pytest.mark.parametrize(
+    "shape", [(1, 1, 256, 256), (1, 1, 1, 128), (1, 1, 1, 384), (1, 1, 32, 32), (1, 1, 6, 6), (1, 1, 29, 29)]
+)
 def test_abs(shape):
     class abs(nn.Module):
         def __init__(self):
@@ -38,18 +38,18 @@ def test_abs(shape):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-shapes = [
-    (1, 128, 28, 28),
-    (1, 64, 28, 28),
-    (1, 256, 28, 28),
-    (1, 128, 14, 14),
-    (1, 128, 56, 56),
-    (1, 32, 64, 64),
-    (1, 512, 7, 7),
-]
-
-
-@pytest.mark.parametrize("shape", shapes)
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 128, 28, 28),
+        (1, 64, 28, 28),
+        (1, 256, 28, 28),
+        (1, 128, 14, 14),
+        (1, 128, 56, 56),
+        (1, 32, 64, 64),
+        (1, 512, 7, 7),
+    ],
+)
 def test_exp(shape):
     class exp(nn.Module):
         def __init__(self):
@@ -71,17 +71,17 @@ def test_exp(shape):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-shapes = [
-    ((1, 12, 256, 256), (1,)),
-    ((1, 16, 256, 256), (1,)),
-    ((1, 32, 256, 256), (1,)),
-    ((1, 12, 32, 32), (1,)),
-    ((1, 16, 32, 32), (1,)),
-    ((1, 32, 32, 32), (1,)),
-]
-
-
-@pytest.mark.parametrize("shape_x, shape_y", shapes)
+@pytest.mark.parametrize(
+    "shape_x, shape_y",
+    [
+        ((1, 12, 256, 256), (1,)),
+        ((1, 16, 256, 256), (1,)),
+        ((1, 32, 256, 256), (1,)),
+        ((1, 12, 32, 32), (1,)),
+        ((1, 16, 32, 32), (1,)),
+        ((1, 32, 32, 32), (1,)),
+    ],
+)
 def test_maximum(shape_x, shape_y):
     class maximum(nn.Module):
         def __init__(self):
@@ -105,19 +105,19 @@ def test_maximum(shape_x, shape_y):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-shapes = [
-    ((1, 128, 28, 28), (1, 128, 28, 28)),
-    ((1, 64, 28, 28), (1, 64, 28, 28)),
-    ((1, 256, 28, 28), (1, 256, 28, 28)),
-    ((1, 128, 14, 14), (1, 128, 14, 14)),
-    ((1, 128, 56, 56), (1, 128, 56, 56)),
-    ((1, 32, 64, 64), (1, 32, 64, 64)),
-    ((1, 512, 7, 7), (1, 512, 7, 7)),
-    ((1, 32, 32, 32), (1, 32, 32, 32)),
-]
-
-
-@pytest.mark.parametrize("shape_x, shape_y", shapes)
+@pytest.mark.parametrize(
+    "shape_x, shape_y",
+    [
+        ((1, 128, 28, 28), (1, 128, 28, 28)),
+        ((1, 64, 28, 28), (1, 64, 28, 28)),
+        ((1, 256, 28, 28), (1, 256, 28, 28)),
+        ((1, 128, 14, 14), (1, 128, 14, 14)),
+        ((1, 128, 56, 56), (1, 128, 56, 56)),
+        ((1, 32, 64, 64), (1, 32, 64, 64)),
+        ((1, 512, 7, 7), (1, 512, 7, 7)),
+        ((1, 32, 32, 32), (1, 32, 32, 32)),
+    ],
+)
 def test_less(shape_x, shape_y):
     class less(nn.Module):
         def __init__(self):
@@ -141,20 +141,20 @@ def test_less(shape_x, shape_y):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-shapes = [
-    ((1, 128, 28, 28), (1, 128, 28, 28)),
-    ((1, 64, 28, 28), (1, 64, 28, 28)),
-    ((1, 256, 28, 28), (1, 256, 28, 28)),
-    ((1, 128, 14, 14), (1, 128, 14, 14)),
-    ((1, 128, 56, 56), (1, 128, 56, 56)),
-    ((1, 32, 64, 64), (1, 32, 64, 64)),
-    ((1, 512, 7, 7), (1, 512, 7, 7)),
-    ((1, 32, 32, 32), (1, 32, 32, 32)),
-]
-
-
-@pytest.mark.parametrize("shape_x, shape_y", shapes)
-def test_greater_op(shape_x, shape_y):
+@pytest.mark.parametrize(
+    "shape_x, shape_y",
+    [
+        ((1, 128, 28, 28), (1, 128, 28, 28)),
+        ((1, 64, 28, 28), (1, 64, 28, 28)),
+        ((1, 256, 28, 28), (1, 256, 28, 28)),
+        ((1, 128, 14, 14), (1, 128, 14, 14)),
+        ((1, 128, 56, 56), (1, 128, 56, 56)),
+        ((1, 32, 64, 64), (1, 32, 64, 64)),
+        ((1, 512, 7, 7), (1, 512, 7, 7)),
+        ((1, 32, 32, 32), (1, 32, 32, 32)),
+    ],
+)
+def test_greater(shape_x, shape_y):
     class greater(nn.Module):
         def __init__(self):
             super().__init__()
@@ -177,19 +177,19 @@ def test_greater_op(shape_x, shape_y):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-shapes = [
-    ((1, 128, 28, 28), (1, 128, 28, 28)),
-    ((1, 64, 28, 28), (1, 64, 28, 28)),
-    ((1, 256, 28, 28), (1, 256, 28, 28)),
-    ((1, 128, 14, 14), (1, 128, 14, 14)),
-    ((1, 128, 56, 56), (1, 128, 56, 56)),
-    ((1, 32, 64, 64), (1, 32, 64, 64)),
-    ((1, 512, 7, 7), (1, 512, 7, 7)),
-    ((1, 32, 32, 32), (1, 32, 32, 32)),
-]
-
-
-@pytest.mark.parametrize("shape_x, shape_y", shapes)
+@pytest.mark.parametrize(
+    "shape_x, shape_y",
+    [
+        ((1, 128, 28, 28), (1, 128, 28, 28)),
+        ((1, 64, 28, 28), (1, 64, 28, 28)),
+        ((1, 256, 28, 28), (1, 256, 28, 28)),
+        ((1, 128, 14, 14), (1, 128, 14, 14)),
+        ((1, 128, 56, 56), (1, 128, 56, 56)),
+        ((1, 32, 64, 64), (1, 32, 64, 64)),
+        ((1, 512, 7, 7), (1, 512, 7, 7)),
+        ((1, 32, 32, 32), (1, 32, 32, 32)),
+    ],
+)
 def test_not_equal(shape_x, shape_y):
     class not_equal(nn.Module):
         def __init__(self):

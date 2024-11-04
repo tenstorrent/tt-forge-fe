@@ -289,7 +289,6 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Init config
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     if variant == "body_basic":
@@ -328,7 +327,6 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)

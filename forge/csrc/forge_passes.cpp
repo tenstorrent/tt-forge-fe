@@ -117,8 +117,7 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
         passes::hoist_unsqueeze_squeeze_to_reshape(graph);
 
         bool skip_erase_redundant = false;
-        attempt_update =
-            !env_as<bool>("FORGE_DISABLE_ERASE_INVERSE_OPS_PASS") ? passes::erase_inverse_ops(graph) : false;
+        attempt_update = passes::erase_inverse_ops(graph);
         if (not attempt_update)
         {
             attempt_update = passes::insert_inverse_on_outputs(graph);

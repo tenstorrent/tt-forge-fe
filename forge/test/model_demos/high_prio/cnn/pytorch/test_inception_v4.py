@@ -25,7 +25,6 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -86,7 +85,6 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
-    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     # Load model & Preprocess image
     framework_model, img_tensor = download_model(preprocess_timm_model, variant)
