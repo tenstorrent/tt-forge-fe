@@ -132,6 +132,8 @@ class ForgeWriter(PythonWriter):
         self.wl("from loguru import logger")
 
         self.wl("import torch")
+        self.wl("from forge import Tensor, compile")
+        self.wl("from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden")
         if self.framework == "tensorflow":
             self.wl("import tensorflow as tf")
             self.wl("from forge.tvm_utils import map_tf_dtype_to_pt")
@@ -948,6 +950,46 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
         else:
             assert False, "TODO: Add other framework param parsers"
+
+    def write_pytest_function(self, module_name, input_shapes):
+        """
+        Generates a pytest function to test a module with given input shapes.
+
+        This function writes a pytest function that:
+        1. Creates input tensors based on the provided shapes.
+        2. Initializes the framework model with the specified module name.
+        3. Processes the framework parameters.
+        4. Runs the framework model with the created inputs.
+        5. Compiles the framework model.
+        6. Runs the compiled model with the same inputs.
+        7. Asserts that the outputs of the framework model and the compiled model are similar within a specified tolerance.
+
+        Args:
+            module_name (str): The name of the module to be tested.
+            input_shapes (list): A list of shapes for the input tensors.
+        """
+        self.wl("")
+        self.wl("")
+        self.wl("def test_module():")
+        self.indent += 1
+        self.wl("inputs = [")
+        self.indent += 1
+        for shape in input_shapes:
+            self.wl(f"Tensor.create_from_torch(torch.rand({shape})),")
+        self.indent -= 1
+        self.wl("]")
+        self.wl("")
+        self.wl(f"framework_model = {self.class_name}('{module_name}')")
+        self.wl("framework_model.process_framework_parameters()")
+        self.wl("fw_out = framework_model(*inputs)")
+        self.wl("")
+        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
+        self.wl("co_out = compiled_model(*inputs)")
+        self.wl("")
+        self.wl(
+            "assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])"
+        )
+        self.indent -= 1
 
 
 class PyTorchWriter(PythonWriter):
