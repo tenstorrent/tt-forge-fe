@@ -46,6 +46,7 @@ from .eltwise_unary import (
     Dropout,
     Pow,
     Tilize,
+    Cast,
 )
 from .reduce import ReduceSum, ReduceAvg, ReduceMax, GroupedReduceAvg
 from .tm import (

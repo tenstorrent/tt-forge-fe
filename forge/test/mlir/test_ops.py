@@ -14,6 +14,47 @@ from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
+@pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
+def test_cast(operand_and_cast_dtype):
+
+    operand_dtype = operand_and_cast_dtype[0]
+    cast_dtype = operand_and_cast_dtype[1]
+
+    class Cast(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return a.to(cast_dtype)
+
+    def get_input_tensor(dtype):
+        shape = (1, 32, 32)
+        if dtype in [torch.float32, torch.bfloat16]:
+            return torch.rand(shape, dtype=dtype)
+        elif dtype in [torch.int32]:
+            return torch.randint(high=torch.iinfo(dtype).max, size=shape, dtype=dtype)
+        else:
+            raise Exception("Unsupported datatype")
+
+    inputs = [
+        get_input_tensor(operand_dtype),
+    ]
+
+    framework_model = Cast()
+    framework_model.eval()
+
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([fo.dtype == co.dtype for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
 @pytest.mark.parametrize(
     "shape",
     [

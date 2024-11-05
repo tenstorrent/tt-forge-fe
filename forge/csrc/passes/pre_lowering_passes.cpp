@@ -184,27 +184,6 @@ void replace_with_broadcasted_const(
     graph->remove_node(constant);
 }
 
-void bypass_embedding_input_nops(Graph *graph)
-{
-    for (Node *node : graph->nodes())
-    {
-        if ((node->node_type() != NodeType::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "embedding"))
-            continue;
-
-        graphlib::PyOpNode *embedding = node->as<graphlib::PyOpNode>();
-
-        Node *input_ids = graph->data_operands(embedding)[0];
-        if (input_ids->node_type() == NodeType::kInput)
-            continue;
-
-        if (input_ids->node_type() == NodeType::kPyOp)
-        {
-            TT_ASSERT(input_ids->as<graphlib::PyOpNode>()->op_type().op == "nop");
-            graphlib::bypass_node(graph, input_ids, true);
-        }
-    }
-}
-
 bool safe_to_hoist_past(const Graph *graph, const Node *operand)
 {
     if (graph->user_data_edges(operand).size() > 1)
