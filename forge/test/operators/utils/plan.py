@@ -684,12 +684,20 @@ class TestPlanScanner:
         # return functions_called
 
     @classmethod
-    def scan_and_invoke(cls, directory: str, method_name: str) -> Generator:
-        """Scan the directory and invoke all method functions."""
+    def scan_and_invoke(cls, scan_file: str, scan_package: str, method_name: str) -> Generator:
+        """
+        Scan the directory and invoke all method functions.
+        Scan modules relative path to the current directory.
+        """
+
+        directory = os.path.relpath(os.path.dirname(scan_file))
+        logger.trace(f"Scan directory: {directory} for base package: {scan_package}")
+
         modules = cls.find_modules_in_directory(directory)
 
         for module_name in modules:
             try:
+                module_name = f"{scan_package}.{module_name}"
                 logger.trace(f"Loading module: {module_name}")
                 # Dynamic module loading
                 module = importlib.import_module(module_name)
@@ -713,16 +721,17 @@ class TestPlanScanner:
             raise ValueError(f"Unsupported suite/plan type: {type(result)}")
 
     @classmethod
-    def get_all_test_plans(cls, current_directory: str) -> Generator[TestPlan, None, None]:
+    def get_all_test_plans(cls, scan_file: str, scan_package: str) -> Generator[TestPlan, None, None]:
         """Get all test suites from the current directory."""
-        results = cls.scan_and_invoke(current_directory, cls.METHOD_COLLECT_TEST_PLANS)
+        results = cls.scan_and_invoke(scan_file, scan_package, cls.METHOD_COLLECT_TEST_PLANS)
         for result in results:
             for test_plan in cls.collect_test_plans(result):
                 yield test_plan
         return results
 
     @classmethod
-    def build_test_suite(cls, current_directory: str) -> TestSuite:
-        test_plans = TestPlanScanner.get_all_test_plans(current_directory)
+    def build_test_suite(cls, scan_file: str, scan_package: str) -> TestSuite:
+        """Build test suite from scaned test plans."""
+        test_plans = cls.get_all_test_plans(scan_file, scan_package)
         test_plans = list(test_plans)
         return TestSuite(test_plans=test_plans)

@@ -26,7 +26,7 @@ class TestParamsData:
 
     __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
-    test_suite = TestPlanScanner.build_test_suite(current_directory=os.path.dirname(__file__))
+    test_suite = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
 
 
 test_suite = TestParamsData.test_suite
