@@ -20,7 +20,8 @@ namespace tt::passes
 
 using OpShapesType = std::vector<graphlib::Shape>;
 using OpAttrsType = std::vector<graphlib::OpType>;
-using UniqueOpShapesAttrsType = std::map<std::string, std::vector<std::pair<OpShapesType, OpAttrsType>>>;
+using OpShapesAttrsType = std::pair<OpShapesType, OpAttrsType>;
+using UniqueOpShapesAttrsType = std::map<std::string, std::vector<OpShapesAttrsType>>;
 
 UniqueOpShapesAttrsType extract_unique_op_configuration(
     graphlib::Graph* graph, const std::optional<std::vector<std::string>>& supported_ops = std::nullopt);

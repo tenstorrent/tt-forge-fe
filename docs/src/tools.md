@@ -42,7 +42,7 @@ cargo install mdbook
 
 ## Gather Unique Ops Configuration
 
-The model's unique ops configuration can be gathered, and the results can either be printed to the console or saved as a CSV file.
+The model's unique ops configuration can be gathered, and the results can be printed to the console and saved as a CSV/XLSX file.
 
 1. **FORGE_EXTRACT_UNIQUE_OP_CONFIG_AT**
    - By setting this flag to one of the following options, the model's unique ops configuration can be extracted at a specific compilation stage or across all stages:
@@ -50,21 +50,25 @@ The model's unique ops configuration can be gathered, and the results can either
      - **`FORGE_EXTRACT_UNIQUE_OP_CONFIG_AT = ALL`**
        Extracts all the unique ops configurations present in the graph at every compilation stage.
 
-     - **`FORGE_EXTRACT_UNIQUE_OP_CONFIG_AT = {INITIAL_GRAPH / PRE_OPTIMIZE_GRAPH / POST_OPTIMIZE_GRAPH / POST_AUTOGRAD_GRAPH / PRE_LOWERING_GRAPH}`**
+     - **`FORGE_EXTRACT_UNIQUE_OP_CONFIG_AT = {GENERATE_INITIAL_GRAPH / POST_INITIAL_GRAPH_PASS / OPTIMIZED_GRAPH / AUTOGRAD / POST_AUTOGRAD_PASS / PRE_LOWERING_GRAPH}`**
        Extracts the unique ops configuration only at the specified compilation stage.
 
 2. **FORGE_PRINT_UNIQUE_OP_CONFIG**
    - By setting this flag to `1`, all unique configurations will be printed to the console.
 
-3. **FORGE_EXPORT_UNIQUE_OP_CONFIG_TO_CSV**
-   - By setting this flag to `1`, all unique configurations will be exported to a CSV file. The file can be saved to the default path (i.e., the current directory), or it can be saved to a specific path by setting the `FORGE_EXPORT_UNIQUE_OP_CONFIG_DIR_PATH` environment variable.
+3. **FORGE_EXPORT_UNIQUE_OP_CONFIG_FILE_TYPE**
+   - By setting this flag to `csv` or `xlsx`, all unique configurations will be exported as CSV or XLSX file. The file can be saved to the default path (i.e., the current directory), or it can be saved to a specific path by setting the `FORGE_EXPORT_UNIQUE_OP_CONFIG_DIR_PATH` environment variable.
+
+4. **FORGE_EXPORT_UNIQUE_OP_CONFIG_CSV_DELIMITER**
+   - The delimiter for the csv file can be set by using this flag. Default delimiter : slash (i.e `/`)
+
 
 > **Note:**
-> The delimiter used in the CSV file will be a hyphen (`-`) to avoid potential parsing issues. Commas (`,`) may appear in the op shapes and attributes, which could lead to misinterpretation of the data.
+> The delimiter used in the CSV file will be a slash (`/`) to avoid potential parsing issues. Commas (`,`) and hyphen (`-`) may appear in the op shapes and attributes, which could lead to misinterpretation of the data.
 
-## Cross Correlate Models and Ops
+## Cross Correlate Models and Ops and Export Model Variants Unique Op Configuration
 
-The models and ops can be cross-correlated by running the `scripts/export_models_ops_correlation.py` python script.
+The models and ops can be cross-correlated and model variants unique op configuration are exported as xlsx file by running the `scripts/export_models_ops_correlation.py` python script.
 
 The script will perform the following tasks:
 
@@ -95,10 +99,10 @@ python scripts/export_models_ops_correlation.py
 
 |                              **Option**                                   |                                                **Description**                                                   |
 | :-----------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------: |
-| `-f`, `--output_file_name`                                                | Specify the output file name for the xlsx/csv file.                                                              |
+| `--cross_correlation_output_file_name`                                    | Specify the output xlsx file name for saving the cross correation data between model variants and unique ops.    |
+| `--models_unique_op_configs_output_file_name`                             | Specify the output xlsx file name for saving the Models unique op configurations.                                |
 | `-o`, `--output_directory_path`                                           | Specify the output directory path for saving the xlsx/csv file.                                                  |
-| `-s`, `--do_save_xlsx`                                                    | Specify whether to save the output in xlsx format.                                                               |
-
+| `--export_unique_op_config_file_type` (csv, xlsx)                         | Specify the export unique op configuration file type                                                             |
 ### Example:
 
 ```sh

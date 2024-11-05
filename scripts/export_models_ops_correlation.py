@@ -7,7 +7,7 @@ import argparse
 from loguru import logger
 import pandas as pd
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, PatternFill, Side
+from openpyxl.styles import Alignment, Border, PatternFill, Side, Font
 
 test_to_skip = []
 
@@ -40,7 +40,9 @@ def collect_all_pytests(root_dir_path):
     return test_list
 
 
-def run_and_export_models_unique_ops_configuration(compilation_depth, pytest_directory_path):
+def run_and_export_models_unique_ops_configuration(
+    compilation_depth, pytest_directory_path, export_unique_op_config_file_type
+):
 
     # Collect all the pytests in the directory path by the user
     test_list = collect_all_pytests(pytest_directory_path)
@@ -69,7 +71,7 @@ def run_and_export_models_unique_ops_configuration(compilation_depth, pytest_dir
                     os.environ,
                     FORGE_COMPILE_DEPTH=compilation_depth,
                     FORGE_EXTRACT_UNIQUE_OP_CONFIG_AT=compilation_depth.upper(),
-                    FORGE_EXPORT_UNIQUE_OP_CONFIG_TO_CSV="1",
+                    FORGE_EXPORT_UNIQUE_OP_CONFIG_FILE_TYPE=export_unique_op_config_file_type,
                     FORGE_DISABLE_REPORTIFY_DUMP="1",
                     FORGE_EXPORT_UNIQUE_OP_CONFIG_DIR_PATH=os.getenv(
                         "FORGE_EXPORT_UNIQUE_OP_CONFIG_DIR_PATH", os.getcwd()
@@ -86,10 +88,129 @@ def run_and_export_models_unique_ops_configuration(compilation_depth, pytest_dir
 
 
 def create_sheet_from_exported_models_unique_op_configuration(
-    compilation_depth, output_directory_path, output_file_name, do_save_xlsx
+    compilation_depth, output_directory_path, output_file_name, export_unique_op_config_file_type
 ):
 
-    logger.info("Creating a sheet for model variants and unique op configuration...")
+    logger.info("Creating a sheet for model variants unique op configurations...")
+
+    # Get the exported models unique op config directory path
+    exported_unique_op_config_dir_path = os.getenv("FORGE_EXPORT_UNIQUE_OP_CONFIG_DIR_PATH", os.getcwd())
+    if "OpConfigs" not in exported_unique_op_config_dir_path:
+        exported_unique_op_config_dir_path = os.path.join(exported_unique_op_config_dir_path, "OpConfigs")
+
+    unique_ops_dict = dict()
+    models_list = os.listdir(exported_unique_op_config_dir_path)
+    for model_name in models_list:
+        model_path = os.path.join(exported_unique_op_config_dir_path, model_name)
+        dumped_op_configuration_files = os.listdir(model_path)
+        for dumped_op_configuration_file in dumped_op_configuration_files:
+
+            if not dumped_op_configuration_file.endswith(export_unique_op_config_file_type):
+                continue
+
+            if (
+                dumped_op_configuration_file.replace("." + export_unique_op_config_file_type, "").lower()
+                == compilation_depth.lower()
+            ):
+                dumped_op_configuration_file_path = os.path.join(model_path, dumped_op_configuration_file)
+
+                if export_unique_op_config_file_type == "csv":
+                    op_config_df = pd.read_csv(
+                        dumped_op_configuration_file_path,
+                        sep=os.getenv("FORGE_EXPORT_UNIQUE_OP_CONFIG_CSV_DELIMITER", "/"),
+                        header=0,
+                        usecols=["OpName", "Shape", "Attributes"],
+                    )
+
+                elif export_unique_op_config_file_type == "xlsx":
+                    op_config_df = pd.read_excel(
+                        dumped_op_configuration_file_path,
+                        header=0,
+                        usecols=["OpName", "Shape", "Attributes"],
+                    )
+
+                for index, row in op_config_df.iterrows():
+                    op_name = str(row.OpName)
+                    shape = str(row.Shape)
+                    attr = str(row.Attributes)
+
+                    shape = shape.replace("{", "[").replace("}", "]")
+                    if shape.endswith(",]"):
+                        shape = shape[:-2] + "]"
+                    if shape.endswith(", ]"):
+                        shape = shape[:-3] + "]"
+
+                    if op_name in unique_ops_dict.keys():
+                        if shape not in unique_ops_dict[op_name].keys():
+                            unique_ops_dict[op_name][shape] = {attr: 1}
+                        else:
+                            if attr not in unique_ops_dict[op_name][shape].keys():
+                                unique_ops_dict[op_name][shape][attr] = 1
+                            else:
+                                unique_ops_dict[op_name][shape][attr] = unique_ops_dict[op_name][shape][attr] + 1
+
+                    else:
+                        unique_ops_dict[op_name] = {shape: {attr: 1}}
+
+    # Convert Unique Op configuration to list of row for xlsx sheet
+    data = list()
+    for op_name, shape_attrs in unique_ops_dict.items():
+        for shape, attrs in shape_attrs.items():
+            for attr, num_ops in attrs.items():
+                if attr == "nan":
+                    attr = ""
+                data.append([op_name, shape, attr, num_ops])
+
+    max_column_width = max(len(str(item)) for row in data for item in row)
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = output_file_name
+
+    headers = ["OpName", "Shape", "Attributes", "NumOps"]
+    sheet.append(headers)
+
+    for row in data:
+        sheet.append(row)
+
+    blue_fill = PatternFill(start_color="6495ED", end_color="6495ED", fill_type="solid")
+    center_aligned = Alignment(horizontal="center", vertical="center")
+    side = Side(style="thin", color="000000")
+    thin_border = Border(left=side, right=side, top=side, bottom=side)
+
+    # Fill Header with blue color
+    for col in range(1, sheet.max_column + 1):
+        sheet.cell(row=1, column=col).fill = blue_fill
+        sheet.cell(row=1, column=col).font = Font(bold=True)
+
+    # Make thin border and center align the text for every cell
+    for row in range(1, sheet.max_row + 1):
+        for col in range(1, sheet.max_column + 1):
+            sheet.cell(row=row, column=col).border = thin_border
+            sheet.cell(row=row, column=col).alignment = center_aligned
+
+    # Set column width for cells
+    column_offset = 2
+    for col in sheet.columns:
+        column = col[0].column_letter
+        sheet.column_dimensions[column].width = max_column_width + column_offset
+
+    # Check if the output directory exists otherwise create the directory
+    if not os.path.exists(output_directory_path):
+        os.makedirs(output_directory_path)
+
+    workbook.save(os.path.join(output_directory_path, output_file_name + ".xlsx"))
+
+    logger.info(
+        f"Saved models unique op configuration to {os.path.join(output_directory_path,output_file_name+'.xlsx')}"
+    )
+
+
+def create_model_variants_and_ops_cross_correlation_sheet(
+    compilation_depth, output_directory_path, output_file_name, export_unique_op_config_file_type
+):
+
+    logger.info("Creating a sheet for cross correlation between model variants and unique op configuration...")
 
     # Get the exported models unique op config directory path
     exported_unique_op_config_dir_path = os.getenv("FORGE_EXPORT_UNIQUE_OP_CONFIG_DIR_PATH", os.getcwd())
@@ -112,15 +233,29 @@ def create_sheet_from_exported_models_unique_op_configuration(
         dumped_op_configuration_files = os.listdir(model_path)
         for dumped_op_configuration_file in dumped_op_configuration_files:
 
-            if dumped_op_configuration_file[:-4].lower() == compilation_depth.lower():
+            if not dumped_op_configuration_file.endswith(export_unique_op_config_file_type):
+                continue
+
+            if (
+                dumped_op_configuration_file.replace("." + export_unique_op_config_file_type, "").lower()
+                == compilation_depth.lower()
+            ):
 
                 dumped_op_configuration_file_path = os.path.join(model_path, dumped_op_configuration_file)
-                op_config_df = pd.read_csv(
-                    dumped_op_configuration_file_path,
-                    sep="-",
-                    header=0,
-                    usecols=["OpName", "Operands Shape", "Attributes"],
-                )
+
+                if export_unique_op_config_file_type == "csv":
+                    op_config_df = pd.read_csv(
+                        dumped_op_configuration_file_path,
+                        sep=os.getenv("FORGE_EXPORT_UNIQUE_OP_CONFIG_CSV_DELIMITER", "/"),
+                        header=0,
+                        usecols=["OpName", "Shape", "Attributes"],
+                    )
+                elif export_unique_op_config_file_type == "xlsx":
+                    op_config_df = pd.read_excel(
+                        dumped_op_configuration_file_path,
+                        header=0,
+                        usecols=["OpName", "Shape", "Attributes"],
+                    )
 
                 if model_name not in models_ops_dict.keys():
                     models_ops_dict[model_name] = op_config_df.OpName.tolist()
@@ -166,13 +301,6 @@ def create_sheet_from_exported_models_unique_op_configuration(
     # Check if the output directory exists otherwise create the directory
     if not os.path.exists(output_directory_path):
         os.makedirs(output_directory_path)
-
-    if not do_save_xlsx:
-        pivot_df.to_csv(os.path.join(output_directory_path, output_file_name + ".csv"))
-        logger.info(
-            f"Saved cross correlation details between model variants vs unique op configs to {os.path.join(output_directory_path,output_file_name+'.csv')}"
-        )
-        return
 
     # Create a new Excel writer object
     writer = pd.ExcelWriter(
@@ -241,7 +369,7 @@ def create_sheet_from_exported_models_unique_op_configuration(
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="Gather cross correlation details between model variants vs unique op configs"
+        description="Gather cross correlation details between model variants vs unique op configs and export model variants unique configuration to xlsx file"
     )
     parser.add_argument(
         "-c",
@@ -264,35 +392,49 @@ if __name__ == "__main__":
         help="Specify the directory path containing models to test.",
     )
     parser.add_argument(
-        "-f",
-        "--output_file_name",
+        "--cross_correlation_output_file_name",
         default="Models_Ops_cross_correlation_data",
         required=False,
-        help="Specify the output file name for the xlsx/csv file.",
+        help="Specify the output xlsx file name for saving the cross correation data between model variants and unique ops.",
+    )
+    parser.add_argument(
+        "--models_unique_op_configs_output_file_name",
+        default="Models_Unique_Op_Configurations",
+        required=False,
+        help="Specify the output xlsx file name for saving the Models unique op configurations.",
     )
     parser.add_argument(
         "-o",
         "--output_directory_path",
         default=os.getcwd(),
         required=False,
-        help="Specify the output directory path for saving the xlsx/csv file.",
+        help="Specify the output directory path for saving the xlsx file.",
     )
     parser.add_argument(
-        "-s",
-        "--do_save_xlsx",
-        default=True,
+        "--export_unique_op_config_file_type",
+        choices=["csv", "xlsx"],
+        default="csv",
         required=False,
-        help="Specify whether to save the output in xlsx format.",
+        help="Specify the export unique op configuration file type",
     )
     args = parser.parse_args()
 
     compilation_depth = args.compile_depth
     pytest_directory_path = args.pytest_directory_path
-    output_file_name = args.output_file_name
+    cross_correlation_output_file_name = args.cross_correlation_output_file_name
     output_directory_path = args.output_directory_path
-    do_save_xlsx = args.do_save_xlsx
+    models_unique_op_configs_output_file_name = args.models_unique_op_configs_output_file_name
+    export_unique_op_config_file_type = args.export_unique_op_config_file_type
 
-    run_and_export_models_unique_ops_configuration(compilation_depth, pytest_directory_path)
+    run_and_export_models_unique_ops_configuration(
+        compilation_depth, pytest_directory_path, export_unique_op_config_file_type
+    )
+    create_model_variants_and_ops_cross_correlation_sheet(
+        compilation_depth, output_directory_path, cross_correlation_output_file_name, export_unique_op_config_file_type
+    )
     create_sheet_from_exported_models_unique_op_configuration(
-        compilation_depth, output_directory_path, output_file_name, do_save_xlsx
+        compilation_depth,
+        output_directory_path,
+        models_unique_op_configs_output_file_name,
+        export_unique_op_config_file_type,
     )
