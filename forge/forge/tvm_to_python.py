@@ -1830,11 +1830,30 @@ class ModuleWrapper(ForgeModule):
 
 
 class Operation:
-    def __init__(self, function_name, output_name, node_name="", input_names=[], args=[], src_layer=None):
+    """
+    A class to store relevant code generation details about a specific operation.
+
+    Attributes:
+        function_name (str): The name of the function associated with the operation.
+        node_name (str): The name of the node in the computation graph.
+        output_name (str): The name of the output variable.
+        input_names (list): A list of input variable names.
+        input_shapes (list): A list of shapes corresponding to the input variables.
+        args (list): A list of arguments for the operation.
+        is_submodule_call (bool): A flag indicating if the operation is a submodule call (related to Torch 2.0).
+        inputs_to_delete (list): A list of inputs to delete.
+        loop_with (list): A list of loop variables.
+        src_layer (optional): The source layer associated with the operation.
+    """
+
+    def __init__(
+        self, function_name, output_name, node_name="", input_names=[], args=[], src_layer=None, input_shapes=[]
+    ):
         self.function_name = function_name
         self.node_name = node_name
         self.output_name = output_name
         self.input_names = input_names
+        self.input_shapes = input_shapes
         self.args = args
         self.is_submodule_call = False
         self.inputs_to_delete = []
@@ -2373,6 +2392,10 @@ def compile_tvm_to_python(
                     input_names=input_names,
                     args=args,
                     src_layer=span_to_src_layer(node),
+                    input_shapes=[
+                        graph["nodes"][node["inputs"][input_port][0]]["forge_shape"]
+                        for input_port in range(int(node["attrs"]["num_inputs"]))
+                    ],
                 )
 
         if any([input is None for input in forge_inputs]):
