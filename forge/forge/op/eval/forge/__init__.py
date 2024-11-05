@@ -22,9 +22,11 @@ from .argmax import Argmax
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
+from .cast import Cast
 
 op_to_module_map = {
     "add": "eltwise_binary",
+    "cast": Cast,
     "divide": "eltwise_binary",
     "subtract": "eltwise_binary",
     "multiply": "eltwise_binary",
