@@ -24,17 +24,7 @@ from forge._C import DataFormat
         (1, 256, 256, 28, 28, 3, 3, 2, 2),
         (1, 256, 256, 14, 14, 3, 3, 1, 1),
         (1, 64, 64, 8, 8, 3, 3, 1, 1),
-        (
-            1,
-            64,
-            64,
-            16,
-            16,
-            3,
-            3,
-            1,
-            1,
-        ),
+        (1, 64, 64, 16, 16, 3, 3, 1, 1),
         (1, 256, 256, 7, 7, 3, 3, 1, 1),
         (1, 256, 64, 56, 56, 1, 1, 2, 2),
     ),
@@ -58,6 +48,7 @@ from forge._C import DataFormat
     ],
 )
 @pytest.mark.parametrize("has_bias", [False, True], ids=["no_bias", "with_bias"])
+@pytest.mark.xfail(reason="TTNN fails to tilize during reshape after conv")
 def test_conv2d(
     batch_size,
     output_channels,
