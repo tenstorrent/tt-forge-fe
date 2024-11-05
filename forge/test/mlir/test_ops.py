@@ -371,6 +371,7 @@ def test_exp(shape):
         ((1, 32, 32, 32), (1,)),
     ],
 )
+@pytest.mark.xfail(reason="TTNN maximum op: unsupported broadcast")
 def test_maximum(shape_x, shape_y):
     class maximum(nn.Module):
         def __init__(self):
