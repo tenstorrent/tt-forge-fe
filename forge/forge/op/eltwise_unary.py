@@ -380,12 +380,6 @@ def Sine(name: str, operandA: Tensor) -> Tensor:
     operandA: Tensor
         First operand
 
-    min: float
-        Minimum value
-
-    max: float
-        Maximum value
-
     Returns
     -------
     Tensor
@@ -406,12 +400,6 @@ def Cosine(name: str, operandA: Tensor) -> Tensor:
 
     operandA: Tensor
         First operand
-
-    min: float
-        Minimum value
-
-    max: float
-        Maximum value
 
     Returns
     -------

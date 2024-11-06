@@ -61,7 +61,6 @@ def test_cast(operand_and_cast_dtype):
         (1, 7, 256),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 def test_sin(shape):
     class sin(nn.Module):
         def __init__(self):
@@ -89,7 +88,6 @@ def test_sin(shape):
         (1, 7, 256),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 def test_cosine(shape):
     class cosine(nn.Module):
         def __init__(self):
