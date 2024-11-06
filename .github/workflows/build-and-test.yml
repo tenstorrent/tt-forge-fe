@@ -110,6 +110,9 @@ jobs:
         create-symlink: true
         key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
 
+    - name: Collect Build Step Telemetry
+      uses: catchpoint/workflow-telemetry-action@v2
+
     - name: Build
       shell: bash
       run: |
@@ -128,6 +131,9 @@ jobs:
       run: |
         source env/activate
         cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+
+    - name: Collect Test Step Telemetry
+      uses: catchpoint/workflow-telemetry-action@v2
 
     - name: Run Test
       shell: bash
