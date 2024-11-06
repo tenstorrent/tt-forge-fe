@@ -34,6 +34,9 @@
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
 
+// Reportify headers
+#include "reportify/reportify.hpp"
+
 namespace tt::passes
 {
 /// Public API for lowering to MLIR, running MLIR passes and generate runtime binary.
@@ -72,6 +75,10 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
     mlir_module->dump();
+
+    // save what's dumped to a file named "{name}.mlir"
+    auto mlir_modulee = mlir_module.get();
+    reportify::dump_mlir("ttnn", &mlir_modulee);    
 
     // Generate binary from the MLIR module.
     auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());

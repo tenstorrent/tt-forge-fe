@@ -6,7 +6,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
-#include <ostream>
 #include <sstream>
 #include <string>
 
@@ -17,8 +16,13 @@
 #include "reportify/to_json.hpp"
 #include "utils/logger.hpp"
 
+// MLIR headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#include "mlir/IR/BuiltinOps.h"
+#pragma clang diagnostic pop
+
 using json = nlohmann::json;
-using tt::LogReportify;
 
 namespace tt
 {
@@ -403,6 +407,23 @@ json create_json_for_graph(const graphlib::Graph* graph, std::function<bool(grap
     return this_json;
 }
 
+json create_json_for_mlir(mlir::ModuleOp* module)
+{
+    json this_json;
+
+    this_json["module"] = module->getName()->str();
+
+    std::string outputString;
+    llvm::raw_string_ostream outStream(outputString);
+
+    // Put data into string
+    module->print(outStream);
+    outStream.flush();
+    this_json["content"] = outputString;
+
+    return this_json;
+}
+
 JsonNamePairs create_jsons_for_graph(
     const std::string& graph_prefix, const graphlib::Graph* graph, std::function<bool(graphlib::Node*)> node_filter)
 {
@@ -410,6 +431,18 @@ JsonNamePairs create_jsons_for_graph(
 
     json this_json = create_json_for_graph(graph, node_filter);
     std::string this_name = graph_prefix + ".forge";
+    JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
+    this_json_name_pairs.push_back(this_json_name_pair);
+
+    return this_json_name_pairs;
+}
+
+JsonNamePairs create_jsons_for_mlir(const std::string& name, mlir::ModuleOp* module)
+{
+    JsonNamePairs this_json_name_pairs;
+
+    json this_json = create_json_for_mlir(module);
+    std::string this_name = name + ".mlir";
     JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
     this_json_name_pairs.push_back(this_json_name_pair);
 
@@ -425,5 +458,31 @@ void dump_graph(
     std::string default_dir = get_default_reportify_path("");
     dump_graph(default_dir, test_name, graph_prefix, graph, report_path);
 }
+
+void dump_mlir(
+    const std::string& name,
+    mlir::ModuleOp* module)
+{
+       if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
+        return;
+
+    std::string path = get_default_reportify_path("");
+    std::string report_path = get_mlir_reports_relative_directory();
+
+    std::string full_report_path = build_report_path(path, module->getName()->str(), report_path);
+
+    JsonNamePairs json_pairs = create_jsons_for_mlir(name, module);
+    json root_json = json_pairs.back().first;
+
+    std::string root_json_name = json_pairs.back().second;
+    std::transform(root_json_name.begin(), root_json_name.end(), root_json_name.begin(), ::tolower);
+
+    std::string root_json_path = full_report_path + root_json_name;
+
+    std::filesystem::create_directories(std::filesystem::path(full_report_path));
+
+    write_json_to_file(root_json_path, root_json);
+}
+
 }  // namespace reportify
 }  // namespace tt
