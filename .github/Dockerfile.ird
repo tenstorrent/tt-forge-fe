@@ -12,7 +12,6 @@ ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     ssh \
-    sudo \
     wget \
     htop \
     vim
