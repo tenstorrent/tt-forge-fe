@@ -543,7 +543,7 @@ class MLIRGenerator
         return string_value;
     }
 
-    /// Initialize lowering handler map
+    /// Initialize lowering handler map, keep in lexicographical order
     void init_lowering_handler_map()
     {
         lowering_handler_map["abs"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AbsOp>;
