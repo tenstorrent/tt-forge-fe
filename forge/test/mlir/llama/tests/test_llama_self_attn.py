@@ -10,10 +10,14 @@ from forge.op.eval.common import compare_with_golden_pcc
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
+@pytest.mark.xfail("RuntimeError:  ttnn.concat doesn't support tile padding along concatenated dim")
 def test_llama_self_attn(model_path):
     if model_path == "meta-llama/Llama-3.2-1B":
         pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+
+    # RuntimeError: ttnn.concat fails when the concat dimension of the input tensors are not TILE aligned.
+    # tt-mlir issue: https://github.com/tenstorrent/tt-mlir/issues/795
+    # tt-metal issue: https://github.com/tenstorrent/tt-metal/issues/13667
 
     # Define wrapper function
     class SelfAttention(torch.nn.Module):

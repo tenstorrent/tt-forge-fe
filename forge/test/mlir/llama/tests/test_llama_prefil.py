@@ -49,7 +49,7 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
+@pytest.mark.xfail(reason="RuntimeError: ttnn.embedding op fails while validating the input_tensor layout")
 def test_llama_prefil_on_device_decode_on_cpu(model_path):
     """
     This function tests the inference of the Llama models split into two parts:
@@ -69,6 +69,9 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()
     compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
+
+    # RuntimeError: ttnn.embedding op fails while validating the input_tensor layout(i,e it is in ROW_MAJOR LAYOUT)
+    # tt-mlir issue: https://github.com/tenstorrent/tt-mlir/issues/679
 
     # Prefill Phase - Process the initial prompt on device
     transformer_outputs = compiled_decoder(input_ids)

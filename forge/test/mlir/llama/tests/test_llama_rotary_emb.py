@@ -11,8 +11,13 @@ from forge.op.eval.common import compare_with_golden_pcc
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
+@pytest.mark.xfail("RuntimeError: ttnn.concat doesn't support tile padding along concatenated dim")
 def test_llama_rotary_emb(model_path):
+
+    # RuntimeError: ttnn.concat fails when the concat dimension of the input tensors are not TILE aligned.
+    # tt-mlir issue: https://github.com/tenstorrent/tt-mlir/issues/795
+    # tt-metal issue: https://github.com/tenstorrent/tt-metal/issues/13667
+
     class Llama_Rotary_Embedding(torch.nn.Module):
         def __init__(self, model):
             super().__init__()

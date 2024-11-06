@@ -135,7 +135,9 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(run_on_tt_device):
 
         # Compile the model on TT
         compiled_model = forge.compile(framework_model, sample_inputs=[input_ids, attention_mask])
-        pytest.xfail("Found Unsupported operations while lowering from TTForge to TTIR in forward graph.")
+        pytest.xfail(
+            "Found Unsupported operations while lowering from TTForge to TTIR in forward graph: {Clip Op: input_shape:(1, 1, 58, 58), min=0.0, max=1.0}"
+        )
 
     # Run decode stage on TT device and generate tokens by appending predicted token into sequence of input tokens
     # untill the a specified maximum number of new tokens is reached or an end-of-sequence token is encountered.
@@ -247,7 +249,9 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(run_on_tt_device):
         compiled_model = forge.compile(
             framework_model, sample_inputs=[model_inputs[0], attention_mask, position_ids, model_inputs[1]]
         )
-        pytest.xfail("Found Unsupported operations while lowering from TTForge to TTIR in forward graph.")
+        pytest.xfail(
+            "Found Unsupported operations while lowering from TTForge to TTIR in forward graph: {Clip Op: input_shape:(1, 1, 1, 59), min=0.0, max=1.0}"
+        )
 
     # Run decode stage on TT device and generate tokens by passing the last predicted token and the past key values.
     # untill the a specified maximum number of new tokens is reached or an end-of-sequence token is encountered.
