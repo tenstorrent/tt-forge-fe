@@ -14,7 +14,7 @@ import os
 def generate_model_xception_imgcls_timm(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)

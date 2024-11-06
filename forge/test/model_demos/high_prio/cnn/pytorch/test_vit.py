@@ -36,8 +36,6 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classify_224_hf_pytorch(variant, test_device):
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
         test_device,
         variant,
