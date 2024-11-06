@@ -132,9 +132,6 @@ jobs:
         source env/activate
         cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
 
-    - name: Collect Test Step Telemetry
-      uses: catchpoint/workflow-telemetry-action@v2
-
     - name: Run Test
       shell: bash
       run: |
