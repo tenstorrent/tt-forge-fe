@@ -11,7 +11,6 @@ from test.mlir.llama.utils.utils import load_model
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
 def test_llama_inference(model_path):
     if model_path == "meta-llama/Llama-3.2-1B":
         pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
