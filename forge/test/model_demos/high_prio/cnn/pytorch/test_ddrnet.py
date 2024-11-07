@@ -75,7 +75,7 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":
