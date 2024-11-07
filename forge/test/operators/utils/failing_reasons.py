@@ -87,6 +87,8 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and f"{ex}" == "Unsupported data type",
             # lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:466: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and f"{ex}" == "Tensor 2 - data type mismatch: expected UInt32, got Float32",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
@@ -98,6 +100,8 @@ class FailingReasonsValidation:
         FailingReasons.NOT_IMPLEMENTED: [
             lambda ex: isinstance(ex, NotImplementedError)
             and f"{ex}".startswith("The following operators are not implemented:"),
+            lambda ex: isinstance(ex, RuntimeError)
+            and f"{ex}".startswith("Found Unsupported operations while lowering from TTForge to TTIR in forward graph"),
             lambda ex: isinstance(ex, RuntimeError)
             and f"{ex}".startswith("Unsupported operation for lowering from TTForge to TTIR:"),
             lambda ex: isinstance(ex, RuntimeError) and " not implemented for " in f"{ex}",
