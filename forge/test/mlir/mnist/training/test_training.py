@@ -15,6 +15,7 @@ from forge.op.eval.common import compare_with_golden
 from loguru import logger
 
 
+@pytest.mark.push
 def test_mnist_training():
     torch.manual_seed(0)
 
@@ -94,6 +95,7 @@ def test_mnist_training():
 
 
 @pytest.mark.parametrize("freeze_layer", [None, 0, 2, 4])
+@pytest.mark.push
 def test_forge_vs_torch_gradients(freeze_layer):
     logger.disable("")
     torch.manual_seed(0)
@@ -154,6 +156,7 @@ def test_forge_vs_torch_gradients(freeze_layer):
 # That sets relu threshold to bfloat16 tensor.
 # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
 @pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
+@pytest.mark.push
 def test_forge_vs_torch():
     torch.manual_seed(0)
 
