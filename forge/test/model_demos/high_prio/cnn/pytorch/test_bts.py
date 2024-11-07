@@ -22,6 +22,7 @@ variants = ["densenet161_bts", "densenet121_bts"]
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_bts_pytorch(test_device, variant):
 
     # Set PyBuda configuration parameters

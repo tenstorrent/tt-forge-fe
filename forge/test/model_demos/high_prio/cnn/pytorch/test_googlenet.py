@@ -10,6 +10,7 @@ from loguru import logger
 import os
 
 
+@pytest.mark.nightly
 def test_googlenet_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object

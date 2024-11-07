@@ -20,6 +20,7 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_ddrnet_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -69,6 +70,7 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
 
     # Set Forge configuration parameters

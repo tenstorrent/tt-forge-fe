@@ -15,6 +15,7 @@ import forge
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_phi2_clm(variant, test_device):
 
@@ -56,6 +57,7 @@ def test_phi2_clm(variant, test_device):
     )
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(variant, test_device):
 
@@ -88,6 +90,7 @@ def test_phi2_token_classification(variant, test_device):
     )
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(variant, test_device):
 

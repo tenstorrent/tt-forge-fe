@@ -15,6 +15,7 @@ import os
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_fchardnet(test_device):
     # STEP 1: Set PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

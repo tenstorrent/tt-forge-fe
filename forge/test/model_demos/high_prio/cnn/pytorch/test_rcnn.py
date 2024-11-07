@@ -10,6 +10,7 @@ import torchvision.transforms as transforms
 import os
 
 
+@pytest.mark.nightly
 def test_rcnn_pytorch(test_device):
 
     # Load Alexnet Model

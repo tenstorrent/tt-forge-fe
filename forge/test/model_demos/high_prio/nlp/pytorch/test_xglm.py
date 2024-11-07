@@ -10,6 +10,7 @@ from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(variant, test_device):
     # Set Forge configuration parameters

@@ -13,6 +13,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import os
 
 
+@pytest.mark.nightly
 def test_alexnet_torchhub(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -45,6 +46,7 @@ def test_alexnet_torchhub(test_device):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_torchhub")
 
 
+@pytest.mark.nightly
 def test_alexnet_osmr(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()

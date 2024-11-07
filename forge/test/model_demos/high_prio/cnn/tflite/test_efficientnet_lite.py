@@ -7,6 +7,7 @@ from forge.config import _get_global_compiler_config
 import forge
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_efficientnet_lite0_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -15,6 +16,7 @@ def test_efficientnet_lite0_1x1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_efficientnet_lite4_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -23,6 +25,7 @@ def test_efficientnet_lite4_1x1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_efficientnet_lite0(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -31,6 +34,7 @@ def test_efficientnet_lite0(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite1(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -39,6 +43,7 @@ def test_efficientnet_lite1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite2(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -47,6 +52,7 @@ def test_efficientnet_lite2(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite3(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -55,6 +61,7 @@ def test_efficientnet_lite3(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_efficientnet_lite4(test_device):
     compiler_cfg = _get_global_compiler_config()
