@@ -265,14 +265,30 @@ class ForgeWriter(PythonWriter):
         self.indent = 1
 
         if self.framework == "pytorch":
-            self.wl(f"def process_framework_parameters(self):")
-            self.indent += 1
-            self.wl(f"named_parameters = torch.load('{names_params_file_name}')")
-            if param_file_name is not None:
-                self.wl(f'serialized_params = torch.load("{param_file_name}")')
-                self.wl(f"named_parameters.update(serialized_params)")
-            self.wl(f"named_buffers = torch.load('{named_buffers_file_name}')")
-            self.wl("named_parameters.update(named_buffers)")
+            # Case 1: No parameter or buffer files provided. Extract parameters and buffers
+            # directly from the model.
+            if not names_params_file_name and not named_buffers_file_name:
+                self.wl(f"def process_framework_parameters(self, model):")
+                self.indent += 1
+                self.wl(f"named_parameters = dict(model.state_dict().items())")
+                if param_file_name is not None:
+                    self.wl(f'serialized_params = torch.load("{param_file_name}")')
+                    self.wl(f"named_parameters.update(serialized_params)")
+                self.wl("named_buffers = dict(model.named_buffers())")
+                self.wl("named_parameters.update(named_buffers)")
+            # Case 2: Parameter and buffer files provided. Load parameters and buffers from
+            # the serialized files.
+            elif names_params_file_name and named_buffers_file_name:
+                self.wl(f"def process_framework_parameters(self):")
+                self.indent += 1
+                self.wl(f"named_parameters = torch.load('{names_params_file_name}')")
+                if param_file_name is not None:
+                    self.wl(f'serialized_params = torch.load("{param_file_name}")')
+                    self.wl(f"named_parameters.update(serialized_params)")
+                self.wl(f"named_buffers = torch.load('{named_buffers_file_name}')")
+                self.wl("named_parameters.update(named_buffers)")
+            else:
+                assert False, "Invalid combination of param files (either both or none)"
 
             if len(param_names):
                 self.wl("flattened_to_hierarchical_map = {")
@@ -1251,7 +1267,7 @@ class PyTorchWriter(PythonWriter):
         self.indent = 1
 
         if self.framework == "pytorch":
-            self.wl(f"def process_framework_parameters(self):")
+            self.wl(f"def process_framework_parameters(self, model):")
             self.indent += 1
 
             self.wl("named_parameters = dict(model.named_parameters())")
