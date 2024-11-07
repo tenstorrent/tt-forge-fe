@@ -137,7 +137,7 @@ class MobileNetV1(nn.Module):
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # Create Forge module from PyTorch model
     model = MobileNetV1(9)
@@ -148,6 +148,7 @@ def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv1_basic(test_device):
     model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch(
         test_device,
@@ -165,7 +166,7 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
@@ -182,6 +183,7 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv1_192(test_device):
     model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(
         test_device,
@@ -193,7 +195,7 @@ def test_mobilenetv1_192(test_device):
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
@@ -209,6 +211,7 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv1_224(test_device):
     model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(
         test_device,

@@ -76,6 +76,7 @@ def get_image():
     return img_tensor
 
 
+@pytest.mark.nightly
 def test_inception_v4_osmr_pytorch(test_device):
     model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_osmr_inception_v4")
@@ -91,6 +92,7 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
     return framework_model, [img_tensor]
 
 
+@pytest.mark.nightly
 def test_inception_v4_timm_pytorch(test_device):
     model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 

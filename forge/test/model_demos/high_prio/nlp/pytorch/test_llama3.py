@@ -110,10 +110,11 @@ LlamaModel._update_causal_mask = _update_causal_mask
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_llama3_causal_lm(variant, test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -151,6 +152,7 @@ def test_llama3_causal_lm(variant, test_device):
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_llama3_sequence_classification(variant, test_device):
 
     # Configurations

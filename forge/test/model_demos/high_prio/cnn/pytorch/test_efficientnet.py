@@ -21,7 +21,7 @@ import os
 
 variants = [
     "efficientnet_b0",
-    # "efficientnet_b4",
+    "efficientnet_b4",
     # "hf_hub:timm/efficientnet_b0.ra_in1k",
     # "hf_hub:timm/efficientnet_b4.ra2_in1k",
     # "hf_hub:timm/efficientnet_b5.in12k_ft_in1k",
@@ -32,11 +32,12 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_efficientnet_timm(variant, test_device):
 
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -81,11 +82,12 @@ variants = [
 ]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(variant, test_device):
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # Load model
     if variant == "efficientnet_b0":

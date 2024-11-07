@@ -46,6 +46,7 @@ def preprocess(img):
 
 
 @pytest.mark.skip(reason="While loop in model, not supported yet")
+@pytest.mark.nightly
 def test_yolov3_tiny_onnx(test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
@@ -78,6 +79,7 @@ def test_yolov3_tiny_onnx(test_device):
 
 
 @pytest.mark.skip(reason="While loop in model, not supported yet")
+@pytest.mark.nightly
 def test_yolov3_onnx(test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object

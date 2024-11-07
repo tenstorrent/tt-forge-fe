@@ -87,6 +87,7 @@ class LinearAE(torch.nn.Module):
         return act
 
 
+@pytest.mark.nightly
 def test_conv_ae_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -113,6 +114,7 @@ def test_conv_ae_pytorch(test_device):
     compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_conv_ae")
 
 
+@pytest.mark.nightly
 def test_linear_ae_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

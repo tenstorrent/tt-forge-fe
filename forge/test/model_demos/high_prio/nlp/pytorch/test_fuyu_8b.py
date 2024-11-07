@@ -140,6 +140,7 @@ class FuyuModelTxtDecoderWrapper(nn.Module):
         return hidden_states, *presents
 
 
+@pytest.mark.nightly
 def test_fuyu8b(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -185,6 +186,7 @@ def test_fuyu8b(test_device):
     os.remove("bus.png")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_fuyu8b_past_cache(test_device):
     if test_device.arch == BackendDevice.Grayskull:

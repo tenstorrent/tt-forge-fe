@@ -13,6 +13,7 @@ import os
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     # STEP 1: Set Forge configuration parameters

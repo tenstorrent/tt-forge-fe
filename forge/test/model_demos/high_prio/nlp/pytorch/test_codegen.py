@@ -17,6 +17,7 @@ variants = [
 ]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(test_device, variant):
     # Configurations

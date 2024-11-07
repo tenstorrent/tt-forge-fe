@@ -14,7 +14,6 @@ import numpy as np
 import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
-from segmentation_models_pytorch.encoders import get_preprocessing_fn
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
@@ -31,6 +30,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
@@ -66,6 +66,7 @@ def get_imagenet_sample():
 
 
 @pytest.mark.skip(reason="Model script not found")
+@pytest.mark.nightly
 def test_unet_holocron_pytorch(test_device):
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -110,6 +111,7 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.nightly
 def test_unet_qubvel_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
@@ -124,7 +126,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
     model = download_model(
         torch.hub.load,
-        "mateuszforge/brain-segmentation-pytorch",
+        "mateuszbuda/brain-segmentation-pytorch",
         variant,
         in_channels=3,
         out_channels=1,
@@ -135,7 +137,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
     # Download an example input image
     url, filename = (
-        "https://github.com/mateuszforge/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png",
+        "https://github.com/mateuszbuda/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png",
         "TCGA_CS_4944.png",
     )
     try:
@@ -156,9 +158,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
     return model, [img_batch], {}
 
 
-@pytest.mark.skip(
-    reason="Failed to download the model after multiple retries."
-)  # https://github.com/tenstorrent/tt-forge-fe/issues/515
+@pytest.mark.nightly
 def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",

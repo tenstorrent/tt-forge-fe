@@ -7,6 +7,7 @@ from forge.config import _get_global_compiler_config
 import forge
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_lite_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -16,6 +17,7 @@ def test_pose_landmark_lite_1x1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_heavy_1x1(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -25,6 +27,7 @@ def test_pose_landmark_heavy_1x1(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_lite(test_device):
     compiler_cfg = _get_global_compiler_config()
@@ -33,6 +36,7 @@ def test_pose_landmark_lite(test_device):
     compiled_model = forge.compile(tflite_path, sample_inputs=sample_tensor)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 def test_pose_landmark_heavy(test_device):
     compiler_cfg = _get_global_compiler_config()

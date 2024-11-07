@@ -49,6 +49,7 @@ variants = [
 ]
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rotary_embedding(test_device, variant):
@@ -89,6 +90,7 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rotary_embedding")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rms_norm(test_device, variant):
@@ -127,6 +129,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rms_norm")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(test_device, variant):
@@ -168,6 +171,7 @@ def test_gemma_2b_attention(test_device, variant):
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_attention")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_mlp(test_device, variant):
@@ -207,6 +211,7 @@ def test_gemma_2b_mlp(test_device, variant):
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_mlp")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_single_decoder(test_device, variant):
@@ -248,6 +253,7 @@ def test_gemma_2b_single_decoder(test_device, variant):
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_single_decoder")
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(test_device, variant):
     # Random see for reproducibility
@@ -286,6 +292,7 @@ def test_gemma_2b(test_device, variant):
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(test_device, variant):
@@ -367,6 +374,7 @@ def test_gemma_2b_gen(test_device, variant):
         print(f"{tt_ans}")
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(test_device, variant):
