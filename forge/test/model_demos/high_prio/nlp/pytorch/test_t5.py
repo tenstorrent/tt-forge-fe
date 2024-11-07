@@ -82,7 +82,13 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 def test_t5_generation(variant, test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.POST_AUTOGRAD_PASS
+
+    if variant in ["t5-small", "t5-base", "t5-large"]:
+        compiler_cfg.compile_depth = CompileDepth.FINISH_COMPILE
+    elif variant in ["google/flan-t5-small", "google/flan-t5-base"]:
+        compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
+    else:
+        compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large

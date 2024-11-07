@@ -103,7 +103,7 @@ def test_clip_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.CONSTEVAL_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load processor and model from HuggingFace
     model_ckpt = "openai/clip-vit-base-patch32"
