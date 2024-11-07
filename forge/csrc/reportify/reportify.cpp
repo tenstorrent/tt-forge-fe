@@ -459,11 +459,9 @@ void dump_graph(
     dump_graph(default_dir, test_name, graph_prefix, graph, report_path);
 }
 
-void dump_mlir(
-    const std::string& name,
-    mlir::ModuleOp* module)
+void dump_mlir(const std::string& name, mlir::ModuleOp* module)
 {
-       if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
+    if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
         return;
 
     std::string path = get_default_reportify_path("");

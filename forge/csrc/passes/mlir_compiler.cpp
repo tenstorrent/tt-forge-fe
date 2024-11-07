@@ -78,7 +78,7 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
 
     // save what's dumped to a file named "{name}.mlir"
     auto mlir_modulee = mlir_module.get();
-    reportify::dump_mlir("ttnn", &mlir_modulee);    
+    reportify::dump_mlir("ttnn", &mlir_modulee);
 
     // Generate binary from the MLIR module.
     auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());

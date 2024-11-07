@@ -108,7 +108,6 @@ class MLIRGenerator
         // save what's dumped to a file named "{name}.mlir"
         reportify::dump_mlir("ttir", &graphModule_);
 
-
 #ifdef DEBUG
         // Create a string to store the output
         std::string moduleStr;

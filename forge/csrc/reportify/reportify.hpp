@@ -59,9 +59,7 @@ void dump_epoch_id_graphs(
     const graphlib::Graph* graph,
     const std::string& directory_path = get_default_reportify_path(""));
 
-void dump_mlir(
-    const std::string& name,
-    mlir::ModuleOp* module);
+void dump_mlir(const std::string& name, mlir::ModuleOp* module);
 
 }  // namespace reportify
 
