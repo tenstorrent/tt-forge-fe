@@ -9,6 +9,7 @@ from test.model_demos.models.monodle import CenterNet3D
 import os
 
 
+@pytest.mark.nightly
 def test_monodle_pytorch(test_device):
     # PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

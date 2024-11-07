@@ -15,6 +15,7 @@ from transformers import (
 variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_distilbert_masked_lm_pytorch(variant, test_device):
     # Load DistilBert tokenizer and model from HuggingFace
@@ -44,6 +45,7 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_masked_lm")
 
 
+@pytest.mark.nightly
 def test_distilbert_question_answering_pytorch(test_device):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-cased-distilled-squad"
@@ -79,6 +81,7 @@ def test_distilbert_question_answering_pytorch(test_device):
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_question_answering")
 
 
+@pytest.mark.nightly
 def test_distilbert_sequence_classification_pytorch(test_device):
 
     # Load DistilBert tokenizer and model from HuggingFace
@@ -105,6 +108,7 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_sequence_classification")
 
 
+@pytest.mark.nightly
 def test_distilbert_token_classification_pytorch(test_device):
     # Load DistilBERT tokenizer and model from HuggingFace
     model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"

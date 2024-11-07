@@ -314,6 +314,7 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_openpose_basic(variant, test_device):
     model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         test_device,
@@ -349,6 +350,7 @@ variants = [
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_openpose_osmr(variant, test_device):
     model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         test_device,

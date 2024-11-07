@@ -32,6 +32,7 @@ variants_semseg = [
 
 
 @pytest.mark.parametrize("variant", variants_semseg)
+@pytest.mark.nightly
 def test_segformer_semantic_segmentation_pytorch(test_device, variant):
 
     # Set Forge configuration parameters

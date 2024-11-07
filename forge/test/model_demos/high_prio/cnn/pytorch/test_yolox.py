@@ -53,6 +53,7 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_yolox_pytorch(variant, test_device):
 
     # Set PyBuda configuration parameters

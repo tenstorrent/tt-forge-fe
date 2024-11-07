@@ -16,6 +16,7 @@ variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_hardnet_onnx(variant, test_device):
 
     # Set Forge configuration parameters

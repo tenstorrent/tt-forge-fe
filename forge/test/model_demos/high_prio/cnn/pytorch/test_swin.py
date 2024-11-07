@@ -14,6 +14,7 @@ url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image = Image.open(requests.get(url, stream=True).raw)
 
 
+@pytest.mark.nightly
 def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     # pytest.skip() # Working on it
     # STEP 1: Set Forge configuration parameters

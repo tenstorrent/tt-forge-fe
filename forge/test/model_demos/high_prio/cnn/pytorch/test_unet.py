@@ -30,6 +30,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
@@ -65,6 +66,7 @@ def get_imagenet_sample():
 
 
 @pytest.mark.skip(reason="Model script not found")
+@pytest.mark.nightly
 def test_unet_holocron_pytorch(test_device):
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -109,6 +111,7 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.nightly
 def test_unet_qubvel_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
@@ -155,6 +158,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
     return model, [img_batch], {}
 
 
+@pytest.mark.nightly
 def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",

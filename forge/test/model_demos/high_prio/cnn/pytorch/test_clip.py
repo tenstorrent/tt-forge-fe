@@ -99,6 +99,7 @@ class CLIPPostProcessingWrapper(torch.nn.Module):
         return output
 
 
+@pytest.mark.nightly
 def test_clip_pytorch(test_device):
 
     # Set Forge configuration parameters

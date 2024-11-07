@@ -20,6 +20,7 @@ import os
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_blazepose_detector_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -41,6 +42,7 @@ def test_blazepose_detector_pytorch(test_device):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_blazepose_regressor_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -54,6 +56,7 @@ def test_blazepose_regressor_pytorch(test_device):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_blaze_palm_pytorch(test_device):
 
     # Set Forge configuration parameters
@@ -77,6 +80,7 @@ def test_blaze_palm_pytorch(test_device):
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
+@pytest.mark.nightly
 def test_blaze_hand_pytorch(test_device):
 
     # Set Forge configuration parameters

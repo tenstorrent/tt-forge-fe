@@ -37,6 +37,7 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
     return model, [input_tokens["input_ids"]], {}
 
 
+@pytest.mark.nightly
 def test_bert_masked_lm_pytorch(test_device):
     model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch("bert-base-uncased")
 
@@ -77,6 +78,7 @@ def generate_model_bert_qa_hf_pytorch(variant):
     return model, [input_tokens["input_ids"]], {}
 
 
+@pytest.mark.nightly
 def test_bert_question_answering_pytorch(test_device):
     model, inputs, _ = generate_model_bert_qa_hf_pytorch("bert-large-cased-whole-word-masking-finetuned-squad")
 
@@ -107,6 +109,7 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
     return model, [input_tokens["input_ids"]], {}
 
 
+@pytest.mark.nightly
 def test_bert_sequence_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(
         "textattack/bert-base-uncased-SST-2",
@@ -139,6 +142,7 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
     return model, [input_tokens["input_ids"]], {}
 
 
+@pytest.mark.nightly
 def test_bert_token_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_tkcls_hf_pytorch("dbmdz/bert-large-cased-finetuned-conll03-english")
 

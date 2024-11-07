@@ -13,6 +13,7 @@ variants = ["v1", "v2"]
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
+@pytest.mark.nightly
 def test_albert_masked_lm_pytorch(size, variant, test_device):
     model_ckpt = f"albert-{size}-{variant}"
 
@@ -47,6 +48,7 @@ variants = ["v1", "v2"]
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
+@pytest.mark.nightly
 def test_albert_token_classification_pytorch(size, variant, test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()

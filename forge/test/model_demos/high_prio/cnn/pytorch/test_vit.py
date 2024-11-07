@@ -35,6 +35,7 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_vit_classify_224_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
         test_device,

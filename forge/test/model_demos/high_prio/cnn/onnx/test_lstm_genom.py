@@ -14,6 +14,7 @@ from forge.verify.config import TestKind
 from test.utils import download_model
 
 
+@pytest.mark.nightly
 def test_lstm_genom_onnx(test_device):
     load_path = "third_party/confidential_customer_models/model_2/onnx/lstm_genom/lstm-genom-model.onnx"
     model = onnx.load(load_path)

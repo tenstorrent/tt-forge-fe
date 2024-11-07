@@ -32,6 +32,7 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_efficientnet_timm(variant, test_device):
 
     # Configuration
@@ -81,6 +82,7 @@ variants = [
 ]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(variant, test_device):
     # Configuration

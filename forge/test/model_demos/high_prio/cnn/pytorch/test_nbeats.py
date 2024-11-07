@@ -15,6 +15,7 @@ from nbeats.scripts import (
 )
 
 
+@pytest.mark.nightly
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
@@ -33,6 +34,7 @@ def test_nbeats_with_seasonality_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_seasonality")
 
 
+@pytest.mark.nightly
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
@@ -45,6 +47,7 @@ def test_nbeats_with_generic_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_generic")
 
 
+@pytest.mark.nightly
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
