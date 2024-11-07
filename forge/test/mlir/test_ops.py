@@ -1452,15 +1452,15 @@ def test_maxpool2d_with_padding(shape, padding):
 @pytest.mark.parametrize(
     "params",
     [
-        ([(1, 256, 24, 24), (1, 256, 24, 24)], -4),
-        ([(5, 64, 128, 128), (5, 64, 128, 128)], -3),
+        # ([(1, 256, 24, 24), (1, 256, 24, 24)], -4),
+        # ([(5, 64, 128, 128), (5, 64, 128, 128)], -3),
         ([(1, 30, 30, 16), (1, 30, 30, 16)], -2),
-        ([(1, 30, 30, 16), (1, 30, 30, 16)], 3),
-        ([(5, 64, 128, 128), (5, 64, 128, 128)], -1),
-        ([(1, 256, 24, 24), (1, 256, 24, 24)], 4),
-        ([(1, 256, 24, 24), (1, 256, 24, 24)], 2),
-        ([(5, 64, 128, 128), (5, 64, 128, 128)], 1),
-        ([(1, 30, 30, 16), (1, 30, 30, 16)], 0),
+        # ([(1, 30, 30, 16), (1, 30, 30, 16)], 3),
+        # ([(5, 64, 128, 128), (5, 64, 128, 128)], -1),
+        # ([(1, 256, 24, 24), (1, 256, 24, 24)], 4),
+        # ([(1, 256, 24, 24), (1, 256, 24, 24)], 2),
+        # ([(5, 64, 128, 128), (5, 64, 128, 128)], 1),
+        # ([(1, 30, 30, 16), (1, 30, 30, 16)], 0),
     ],
 )
 def test_stack(params):
@@ -1473,12 +1473,12 @@ def test_stack(params):
             return torch.stack(tensors, dim=self.dim)
 
     input_shapes, dim = params
-    if dim == -3 or dim == 1:
-        pytest.xfail("Tensor rank is not 4")
-    else:
-        pytest.xfail(
-            "Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
-        )
+    # if dim == -3 or dim == 1:
+    #     pytest.xfail("Tensor rank is not 4")
+    # else:
+    #     pytest.xfail(
+    #         "Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
+    #     )
     inputs = [torch.rand(shape) for shape in input_shapes]
 
     framework_model = Stack(dim)

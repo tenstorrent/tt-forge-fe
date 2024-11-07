@@ -29,6 +29,7 @@ int volume_below(std::vector<std::uint32_t> shape, int dim)
 std::tuple<bool, int> can_commute_reshape_through_dim(
     graphlib::Shape input_shape, graphlib::Shape output_shape, int dim, bool commute_up)
 {
+    log_info("can_commute_reshape_through_dim");
     bool can_commute = false;
     int new_dim = -1;
 
@@ -45,12 +46,11 @@ std::tuple<bool, int> can_commute_reshape_through_dim(
     {
         if (input_shape_vec[i] == output_shape_vec[dim])
         {
-            log_trace("output_shape_vec.size() = {}", output_shape_vec.size());
-            log_trace("i value = {}", i);
+            log_info("output_shape_vec.size() = {}", output_shape_vec.size());
+            log_info("i value = {}", i);
             // check whether volume above and below matching dim is the same
             if ((volume_above(input_shape_vec, i) == volume_above(output_shape_vec, dim)) and
-                (volume_below(input_shape_vec, i) == volume_below(output_shape_vec, dim)) and
-                (i < output_shape_vec.size()))
+                (volume_below(input_shape_vec, i) == volume_below(output_shape_vec, dim)))
             {
                 can_commute = true;
                 new_dim = i;
@@ -64,6 +64,7 @@ std::tuple<bool, int> can_commute_reshape_through_dim(
 std::tuple<bool, int> can_commute_through_dim(
     graphlib::OpNode *initial_op, graphlib::Graph *graph, int dim, bool commute_up)
 {
+    log_info("can_commute_through_dim");
     bool can_reduce = false;
     int new_dim = -1;
     if (initial_op->op_name() == "reshape")
