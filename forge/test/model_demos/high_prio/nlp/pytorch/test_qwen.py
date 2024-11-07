@@ -8,6 +8,7 @@ import torch
 import re
 
 
+@pytest.mark.nightly
 def test_qwen1_5_causal_lm(test_device):
 
     # Set PyBuda configurations
@@ -56,6 +57,7 @@ def parse_chat_completion(text: str):
     return messages
 
 
+@pytest.mark.nightly
 def test_qwen1_5_chat(test_device):
 
     # Set PyBuda configurations

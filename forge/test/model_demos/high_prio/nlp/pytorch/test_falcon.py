@@ -6,6 +6,7 @@ from transformers import AutoTokenizer, FalconForCausalLM
 import forge
 
 
+@pytest.mark.nightly
 def test_falcon(test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()

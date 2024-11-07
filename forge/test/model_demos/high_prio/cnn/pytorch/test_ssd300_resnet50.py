@@ -55,6 +55,7 @@ def prepare_input(img_uri):
     return img
 
 
+@pytest.mark.nightly
 def test_pytorch_ssd300_resnet50(test_device):
 
     # STEP 1 : Set Forge configuration parameters

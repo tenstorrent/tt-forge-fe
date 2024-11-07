@@ -17,6 +17,7 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_pidnet_pytorch(variant, test_device):
 
     # STEP 1: Set PyBuda configuration parameters

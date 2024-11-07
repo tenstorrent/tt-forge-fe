@@ -9,6 +9,7 @@ import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 
 
+@pytest.mark.nightly
 def test_gpt2_text_gen(test_device):
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained("gpt2")
@@ -52,6 +53,7 @@ class Wrapper(torch.nn.Module):
         return self.model(input_ids, past_key_values, attention_mask)
 
 
+@pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(test_device):
     os.environ["GOLDEN_WORMHOLE_B0"] = "1"

@@ -9,6 +9,7 @@ from loguru import logger
 
 import torch
 import numpy as np
+import pytest
 
 # import forge._C.pattern_matcher as pypattern_matcher
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
@@ -1830,11 +1831,30 @@ class ModuleWrapper(ForgeModule):
 
 
 class Operation:
-    def __init__(self, function_name, output_name, node_name="", input_names=[], args=[], src_layer=None):
+    """
+    A class to store relevant code generation details about a specific operation.
+
+    Attributes:
+        function_name (str): The name of the function associated with the operation.
+        node_name (str): The name of the node in the computation graph.
+        output_name (str): The name of the output variable.
+        input_names (list): A list of input variable names.
+        input_shapes (list): A list of shapes corresponding to the input variables.
+        args (list): A list of arguments for the operation.
+        is_submodule_call (bool): A flag indicating if the operation is a submodule call (related to Torch 2.0).
+        inputs_to_delete (list): A list of inputs to delete.
+        loop_with (list): A list of loop variables.
+        src_layer (optional): The source layer associated with the operation.
+    """
+
+    def __init__(
+        self, function_name, output_name, node_name="", input_names=[], args=[], src_layer=None, input_shapes=[]
+    ):
         self.function_name = function_name
         self.node_name = node_name
         self.output_name = output_name
         self.input_names = input_names
+        self.input_shapes = input_shapes
         self.args = args
         self.is_submodule_call = False
         self.inputs_to_delete = []
@@ -2020,7 +2040,12 @@ def generate_forge_module(
             forge_mod.module.process_framework_parameters(framework_mod.module)
         else:
             forge_mod = TestClass(writer.module_name)
-            forge_mod.process_framework_parameters(framework_mod.module)
+
+            if isinstance(framework_mod, forge.module.PyTorchModule):
+                forge_mod.process_framework_parameters()
+            else:
+                forge_mod.process_framework_parameters(framework_mod.module)
+
             assert not any(
                 [param.value() is None for param in forge_mod.get_parameters()]
             ), f"Could not retrieve parameters from framework and tvm"
@@ -2373,6 +2398,10 @@ def compile_tvm_to_python(
                     input_names=input_names,
                     args=args,
                     src_layer=span_to_src_layer(node),
+                    input_shapes=[
+                        graph["nodes"][node["inputs"][input_port][0]]["forge_shape"]
+                        for input_port in range(int(node["attrs"]["num_inputs"]))
+                    ],
                 )
 
         if any([input is None for input in forge_inputs]):
@@ -2632,13 +2661,114 @@ def compile_tvm_to_python(
             param_file_name = os.path.join(writer.module_directory, writer.module_name + "_params.pt")
             torch.save(params_from_tvm, param_file_name)
 
-        param_names.update(const_names)
-        writer.write_param_parser(param_names, param_file_name)
+        if framework == "pytorch":
+            # Store named parameters
+            names_params_file_name = os.path.join(writer.module_directory, writer.module_name + "_names_params.pt")
+            named_parameters = dict(framework_mod.module.state_dict().items())
+            torch.save(named_parameters, names_params_file_name)
+
+            # Store named buffers
+            named_buffers_file_name = os.path.join(writer.module_directory, writer.module_name + "_named_buffers.pt")
+            named_buffers = dict(framework_mod.module.named_buffers())
+            torch.save(named_buffers, named_buffers_file_name)
+
+            # Generate Forge module parameter parser
+            param_names.update(const_names)
+            writer.write_param_parser(param_names, param_file_name, names_params_file_name, named_buffers_file_name)
+        else:
+            param_names.update(const_names)
+            writer.write_param_parser(param_names, param_file_name)
+
         writer.close_file()
 
         modules.append(writer)
+
+        # Generate op tests based on requested model. Currently only supported
+        # for PyTorch framework.
+        if compiler_cfg.tvm_generate_op_tests:
+            generate_op_tests(
+                ops,
+                current_module_name,
+                framework,
+                contains_incompatible_np_floats,
+                delete_inputs,
+                params,
+                constants,
+                param_names,
+                param_file_name,
+                names_params_file_name,
+                named_buffers_file_name,
+            )
+
+            # Exit python progrems without error
+            # - Two different exit methods depending on whether compile is run using
+            # pytest, or as a standalone python script
+            if "pytest" in sys.modules:
+                pytest.exit("Exiting test without error", returncode=0)
+            else:
+                sys.exit(0)
 
     if compiler_cfg.retain_tvm_python_files:
         save_writers_metadata(modules, flattened_pytorch_inputs, forge_inputs, graph_name)
 
     return modules, forge_inputs
+
+
+def generate_op_tests(
+    ops,
+    current_module_name,
+    framework,
+    contains_incompatible_np_floats,
+    delete_inputs,
+    params,
+    constants,
+    param_names,
+    param_file_name,
+    names_params_file_name,
+    named_buffers_file_name,
+):
+    """
+    Generates test modules for a list of operations.
+
+    This function creates unique test modules for each operation in the provided list.
+    It initializes a ForgeWriter to generate the necessary code for testing each operation,
+    including headers, class definitions, forward functions, parameter parsers, and pytest functions.
+    The generated tests are designed to run the operations as standalone tests.
+    """
+    for op_idx, key in enumerate(sorted(ops)):
+        # Create unique module name
+        module_name = "test_" + current_module_name.lower() + str(op_idx)
+
+        # Initialize Forge writer and generate header and class definition
+        writer = ForgeWriter(
+            module_name,
+            framework,
+            contains_incompatible_np_floats=contains_incompatible_np_floats,
+            delete_inputs=delete_inputs,
+        )
+        writer.write_header()
+        writer.write_class_definition(params, constants)
+
+        # Focus on generating test for a single op
+        single_op = {key: ops[key]}
+
+        # Create new inputs for the single op
+        new_inputs = {}
+        for i, input_name in enumerate(single_op[key].input_names):
+            # Detected parameter as input, insert dummy input
+            # TODO: Need to handle this case better. Probably just ignoring
+            # model parameters, and using new generated inputs.
+            if "." in input_name:
+                input_name = "dummy_input_" + str(i)
+            new_inputs[input_name] = input_name
+
+        # Force output to be same as the op we're running
+        single_return = {key: single_op[key].output_name}
+
+        # Generate forward function and parameter parser (loading params and constants)
+        writer.write_forward(single_op, new_inputs, single_return)
+        writer.write_param_parser(param_names, param_file_name, names_params_file_name, named_buffers_file_name)
+
+        # Generate pytest function that enables runing Forge Module as standalone test
+        writer.write_pytest_function(module_name, single_op[key].input_shapes)
+        writer.close_file()

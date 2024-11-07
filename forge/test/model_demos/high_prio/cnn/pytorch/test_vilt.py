@@ -131,6 +131,7 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_vilt_question_answering_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(
         test_device,
@@ -174,6 +175,7 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.nightly
 def test_vilt_maskedlm_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(
         test_device,

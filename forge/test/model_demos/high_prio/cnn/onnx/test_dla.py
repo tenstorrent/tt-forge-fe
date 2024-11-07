@@ -29,6 +29,7 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_dla_onnx(test_device, variant):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"

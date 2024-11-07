@@ -20,7 +20,7 @@ import os
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(torch.hub.load, variant, "mobilenet_v2", pretrained=True)
 
@@ -35,6 +35,7 @@ def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv2_basic(test_device):
     model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(
         test_device,
@@ -60,6 +61,7 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv2_96(test_device):
     model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(
         test_device,
@@ -85,6 +87,7 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv2_160(test_device):
     model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(
         test_device,
@@ -112,6 +115,7 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv2_224(test_device):
     model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(
         test_device,
@@ -148,6 +152,7 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.nightly
 def test_mobilenetv2_timm(test_device):
     model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(
         test_device,
@@ -192,6 +197,7 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_mobilenetv2_deeplabv3(variant, test_device):
     model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(
         test_device,

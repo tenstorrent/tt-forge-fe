@@ -24,10 +24,14 @@ variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_vgg_osmr_pytorch(variant, test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    if variant == "bn_vgg19":
+        compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    else:
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
@@ -55,11 +59,12 @@ def test_vgg_osmr_pytorch(variant, test_device):
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}_osmr")
 
 
+@pytest.mark.nightly
 def test_vgg_19_hf_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -113,6 +118,7 @@ def preprocess_timm_model(model_name):
     return model, img_tensor
 
 
+@pytest.mark.nightly
 def test_vgg_bn19_timm_pytorch(test_device):
     torch.multiprocessing.set_sharing_strategy("file_system")
     model_name = "vgg19_bn"
@@ -125,11 +131,12 @@ def test_vgg_bn19_timm_pytorch(test_device):
     compiled_model = forge.compile(model, sample_inputs=[image_tensor], module_name=f"pt_{model_name}_timm")
 
 
+@pytest.mark.nightly
 def test_vgg_bn19_torchhub_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
 
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     model.eval()

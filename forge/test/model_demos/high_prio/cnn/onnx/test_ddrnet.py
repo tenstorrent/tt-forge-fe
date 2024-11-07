@@ -16,6 +16,7 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_ddrnet(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -76,6 +77,7 @@ variants = ["ddrnet_23_slim_1024"]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_onnx(variant, test_device):
 
     # Set Forge configuration parameters

@@ -13,6 +13,7 @@ from forge._C.backend_api import BackendType, BackendDevice
 from forge.verify.config import TestKind
 
 
+@pytest.mark.nightly
 def test_lstm_valence_onnx(test_device):
     # Load model checkpoint from HuggingFace
     load_path = "third_party/confidential_customer_models/model_2/onnx/lstm_valence/lstm-valence-model.onnx"
