@@ -107,7 +107,6 @@ def test_vovnet_v1_39_stigma_pytorch(test_device, enable_default_dram_parameters
         None,
     )
 
-    compiler_cfg = forge.config._get_global_compiler_config()
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_vovnet_39_stigma")
 
 

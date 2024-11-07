@@ -20,7 +20,7 @@ import os
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(torch.hub.load, variant, "mobilenet_v2", pretrained=True)
 

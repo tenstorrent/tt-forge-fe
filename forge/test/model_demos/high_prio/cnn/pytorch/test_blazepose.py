@@ -50,7 +50,7 @@ def test_blazepose_regressor_pytorch(test_device):
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
     img2 = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(pose_regressor, sample_inputs=[img2], module_name="pt_blazepose_regressor")
+    compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name="pt_blazepose_regressor")
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -88,4 +88,4 @@ def test_blaze_hand_pytorch(test_device):
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
     sample_tensor = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(hand_regressor, sample_inputs=[sample_tensor], module_name="pt_hand_regressor")
+    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name="pt_hand_regressor")
