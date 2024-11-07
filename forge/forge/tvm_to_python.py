@@ -9,6 +9,7 @@ from loguru import logger
 
 import torch
 import numpy as np
+import pytest
 
 # import forge._C.pattern_matcher as pypattern_matcher
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
@@ -2682,7 +2683,92 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
+        # Generate op tests based on requested model. Currently only supported
+        # for PyTorch framework.
+        if compiler_cfg.tvm_generate_op_tests:
+            generate_op_tests(
+                ops,
+                current_module_name,
+                framework,
+                contains_incompatible_np_floats,
+                delete_inputs,
+                params,
+                constants,
+                param_names,
+                param_file_name,
+                names_params_file_name,
+                named_buffers_file_name,
+            )
+
+            # Exit python progrems without error
+            # - Two different exit methods depending on whether compile is run using
+            # pytest, or as a standalone python script
+            if "pytest" in sys.modules:
+                pytest.exit("Exiting test without error", returncode=0)
+            else:
+                sys.exit(0)
+
     if compiler_cfg.retain_tvm_python_files:
         save_writers_metadata(modules, flattened_pytorch_inputs, forge_inputs, graph_name)
 
     return modules, forge_inputs
+
+
+def generate_op_tests(
+    ops,
+    current_module_name,
+    framework,
+    contains_incompatible_np_floats,
+    delete_inputs,
+    params,
+    constants,
+    param_names,
+    param_file_name,
+    names_params_file_name,
+    named_buffers_file_name,
+):
+    """
+    Generates test modules for a list of operations.
+
+    This function creates unique test modules for each operation in the provided list.
+    It initializes a ForgeWriter to generate the necessary code for testing each operation,
+    including headers, class definitions, forward functions, parameter parsers, and pytest functions.
+    The generated tests are designed to run the operations as standalone tests.
+    """
+    for op_idx, key in enumerate(sorted(ops)):
+        # Create unique module name
+        module_name = "test_" + current_module_name.lower() + str(op_idx)
+
+        # Initialize Forge writer and generate header and class definition
+        writer = ForgeWriter(
+            module_name,
+            framework,
+            contains_incompatible_np_floats=contains_incompatible_np_floats,
+            delete_inputs=delete_inputs,
+        )
+        writer.write_header()
+        writer.write_class_definition(params, constants)
+
+        # Focus on generating test for a single op
+        single_op = {key: ops[key]}
+
+        # Create new inputs for the single op
+        new_inputs = {}
+        for i, input_name in enumerate(single_op[key].input_names):
+            # Detected parameter as input, insert dummy input
+            # TODO: Need to handle this case better. Probably just ignoring
+            # model parameters, and using new generated inputs.
+            if "." in input_name:
+                input_name = "dummy_input_" + str(i)
+            new_inputs[input_name] = input_name
+
+        # Force output to be same as the op we're running
+        single_return = {key: single_op[key].output_name}
+
+        # Generate forward function and parameter parser (loading params and constants)
+        writer.write_forward(single_op, new_inputs, single_return)
+        writer.write_param_parser(param_names, param_file_name, names_params_file_name, named_buffers_file_name)
+
+        # Generate pytest function that enables runing Forge Module as standalone test
+        writer.write_pytest_function(module_name, single_op[key].input_shapes)
+        writer.close_file()
