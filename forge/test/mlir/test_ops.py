@@ -1364,3 +1364,86 @@ def test_avg_pool2d():
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
+@pytest.mark.parametrize(
+    "padding",
+    [
+        pytest.param(
+            (1, 1, 1, 1),
+            marks=pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion"),
+        ),
+        pytest.param(
+            (1, 1, 2, 2),
+            marks=pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion"),
+        ),
+        pytest.param(
+            (1, 2, 1, 2),
+            marks=pytest.mark.xfail(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top "
+                "must equal padding_bottom for the op to execute as expected."
+            ),
+        ),
+    ],
+)
+@pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion")
+def test_conv2d_with_padding(shape, padding):
+    class PaddingAndConv2d(nn.Module):
+        def __init__(self, padding):
+            super().__init__()
+            self.padding = padding
+            self.conv = nn.Conv2d(3, 3, kernel_size=3, stride=1, padding=0)
+
+        def forward(self, x):
+            x = nn.functional.pad(x, self.padding, mode="constant", value=0)
+            return self.conv(x)
+
+    framework_model = PaddingAndConv2d(padding=padding)
+
+    inputs = [torch.rand(shape)]
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
+@pytest.mark.parametrize(
+    "padding",
+    [
+        pytest.param(
+            (1, 1, 1, 1),
+            marks=pytest.mark.xfail(reason="For interleaved-buffers page size should be divisible by buffer size"),
+        ),
+        pytest.param(
+            (1, 1, 2, 2),
+            marks=pytest.mark.xfail(
+                reason="Page size must be divisible by sizeof(uint32_t) because buffers hold uint32_t values"
+            ),
+        ),
+    ],
+)
+def test_maxpool2d_with_padding(shape, padding):
+    class PaddingAndMaxPool2d(nn.Module):
+        def __init__(self, padding):
+            super().__init__()
+            self.padding = padding
+            self.pool = nn.MaxPool2d(3, stride=3, padding=0)
+
+        def forward(self, x):
+            x = nn.functional.pad(x, self.padding, mode="constant", value=0)
+            return self.pool(x)
+
+    framework_model = PaddingAndMaxPool2d(padding=padding)
+    framework_model = framework_model.to(torch.bfloat16)
+
+    inputs = [torch.rand(shape).to(torch.bfloat16)]
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
