@@ -254,3 +254,44 @@ class TestCollectionCommon:
             forge.MathFidelity.HiFi4,
         ],
     )
+
+    float = TestCollection(
+        dev_data_formats=[
+            pytest.param(forge.DataFormat.Bfp2, id="Bfp2"),
+            pytest.param(forge.DataFormat.Bfp2_b, id="Bfp2_b"),
+            pytest.param(forge.DataFormat.Bfp4, id="Bfp4"),
+            pytest.param(forge.DataFormat.Bfp4_b, id="Bfp4_b"),
+            pytest.param(forge.DataFormat.Bfp8, id="Bfp8"),
+            pytest.param(forge.DataFormat.Bfp8_b, id="Bfp8_b"),
+            pytest.param(forge.DataFormat.Float16, id="Float16"),
+            pytest.param(forge.DataFormat.Float16_b, id="Float16_b"),
+            pytest.param(forge.DataFormat.Float32, id="Float32"),
+            pytest.param(forge.DataFormat.Lf8, id="Lf8"),
+        ],
+    )
+
+    int = TestCollection(
+        dev_data_formats=[
+            pytest.param(forge.DataFormat.RawUInt8, id="RawUInt8"),
+            pytest.param(forge.DataFormat.RawUInt16, id="RawUInt16"),
+            pytest.param(forge.DataFormat.RawUInt32, id="RawUInt32"),
+            pytest.param(forge.DataFormat.Int8, id="Int8"),
+            pytest.param(forge.DataFormat.UInt16, id="UInt16"),
+            pytest.param(forge.DataFormat.Int32, id="Int32"),
+        ],
+    )
+
+    quick = TestCollection(
+        input_shapes=[]
+        + [shape for shape in all.input_shapes if len(shape) in (2,) and shape[0] == 1][:2]
+        + [shape for shape in all.input_shapes if len(shape) in (2,) and shape[0] != 1][:2]
+        + [shape for shape in all.input_shapes if len(shape) in (3,) and shape[0] == 1][:2]
+        + [shape for shape in all.input_shapes if len(shape) in (3,) and shape[0] != 1][:2]
+        + [shape for shape in all.input_shapes if len(shape) in (4,) and shape[0] == 1][:2]
+        + [shape for shape in all.input_shapes if len(shape) in (4,) and shape[0] != 1][:2],
+        dev_data_formats=[
+            None,
+            forge.DataFormat.Float16_b,
+            forge.DataFormat.Int8,
+        ],
+    )
