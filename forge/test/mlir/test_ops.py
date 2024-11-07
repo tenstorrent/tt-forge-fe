@@ -15,6 +15,7 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
+@pytest.mark.push
 def test_cast(operand_and_cast_dtype):
 
     operand_dtype = operand_and_cast_dtype[0]
@@ -61,6 +62,8 @@ def test_cast(operand_and_cast_dtype):
         (1, 7, 256),
     ],
 )
+@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_sin(shape):
     class sin(nn.Module):
         def __init__(self):
@@ -88,6 +91,8 @@ def test_sin(shape):
         (1, 7, 256),
     ],
 )
+@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_cosine(shape):
     class cosine(nn.Module):
         def __init__(self):
@@ -116,6 +121,7 @@ def test_cosine(shape):
     ],
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_tanh(shape):
     class tanh(nn.Module):
         def __init__(self):
@@ -144,6 +150,7 @@ def test_tanh(shape):
     ],
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_leakyrelu(shape):
 
     inputs = [torch.rand(shape)]
@@ -166,6 +173,7 @@ def test_leakyrelu(shape):
     ],
 )
 @pytest.mark.xfail(reason="shape mismatch: expected [1], got []")
+@pytest.mark.push
 def test_layernorm(batch_size, num_channels, height, width):
 
     # framework_model = nn.LayerNorm((num_channels, height, width)) # Support only normalization over last one dimension
@@ -190,6 +198,7 @@ def test_layernorm(batch_size, num_channels, height, width):
     ],
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_gelu(shape):
 
     inputs = [torch.rand(shape)]
@@ -212,6 +221,7 @@ def test_gelu(shape):
     ],
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_clip(shape, min_val, max_val):
     class Clip(nn.Module):
         def __init__(self, min_val, max_val):
@@ -242,6 +252,7 @@ def test_clip(shape, min_val, max_val):
     ],
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
 def test_cumsum(shape, dim):
     class cumsum(nn.Module):
         def __init__(self, dim):
@@ -275,6 +286,7 @@ def test_cumsum(shape, dim):
     ],
 )
 @pytest.mark.xfail(reason="Unsupported data format during lowering from TTForge to TTIR: Bfp2_b")
+@pytest.mark.push
 def test_where(condition, input, other):
     class Where(nn.Module):
         def __init__(self):
@@ -304,6 +316,7 @@ def test_where(condition, input, other):
 @pytest.mark.parametrize(
     "shape", [(1, 1, 256, 256), (1, 1, 1, 128), (1, 1, 1, 384), (1, 1, 32, 32), (1, 1, 6, 6), (1, 1, 29, 29)]
 )
+@pytest.mark.push
 def test_abs(shape):
     class abs(nn.Module):
         def __init__(self):
@@ -337,6 +350,7 @@ def test_abs(shape):
         (1, 512, 7, 7),
     ],
 )
+@pytest.mark.push
 def test_exp(shape):
     class exp(nn.Module):
         def __init__(self):
@@ -370,6 +384,7 @@ def test_exp(shape):
     ],
 )
 @pytest.mark.xfail(reason="TTNN maximum op: unsupported broadcast")
+@pytest.mark.push
 def test_maximum(shape_x, shape_y):
     class maximum(nn.Module):
         def __init__(self):
@@ -406,6 +421,7 @@ def test_maximum(shape_x, shape_y):
         ((1, 32, 32, 32), (1, 32, 32, 32)),
     ],
 )
+@pytest.mark.push
 def test_less(shape_x, shape_y):
     class less(nn.Module):
         def __init__(self):
@@ -442,6 +458,7 @@ def test_less(shape_x, shape_y):
         ((1, 32, 32, 32), (1, 32, 32, 32)),
     ],
 )
+@pytest.mark.push
 def test_greater(shape_x, shape_y):
     class greater(nn.Module):
         def __init__(self):
@@ -478,6 +495,7 @@ def test_greater(shape_x, shape_y):
         ((1, 32, 32, 32), (1, 32, 32, 32)),
     ],
 )
+@pytest.mark.push
 def test_not_equal(shape_x, shape_y):
     class not_equal(nn.Module):
         def __init__(self):
@@ -516,6 +534,7 @@ def test_not_equal(shape_x, shape_y):
         (32, 256, 28, 28),  # pcc = 0.39200606381500713
     ],
 )
+@pytest.mark.push
 def test_batchnorm2d(batch_size, num_channels, height, width):
 
     framework_model = nn.BatchNorm2d(num_features=num_channels)
@@ -533,6 +552,7 @@ def test_batchnorm2d(batch_size, num_channels, height, width):
         assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
+@pytest.mark.push
 def test_add():
     class Add(nn.Module):
         def __init__(self):
@@ -568,6 +588,7 @@ def test_add():
         ((32, 128, 24), (1, -3)),
     ],
 )
+@pytest.mark.push
 def test_transpose(params):
     class Transpose(nn.Module):
         def __init__(self, dims):
@@ -600,6 +621,7 @@ def test_transpose(params):
     [((8, 32, 256), (2, 4, 32, 256)), ((8, 32, 32), (1, 2, 4, 32, 32)), ((8192, 128), (1, 256, 32, 128))],
     ids=["1", "2", "3"],
 )
+@pytest.mark.push
 def test_reshape(source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
 
@@ -638,6 +660,7 @@ def test_reshape(source_and_target_shape):
         ([1, 1, 1, 64], [-4, -3]),
     ],
 )
+@pytest.mark.push
 def test_squeeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
@@ -675,6 +698,7 @@ def test_squeeze(input_shape_and_dim):
         ([12, 8640], 0),
     ],
 )
+@pytest.mark.push
 def test_unsqueeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
@@ -715,6 +739,7 @@ def test_unsqueeze(input_shape_and_dim):
     ],
     ids=["0", "1", "2", "3", "-1", "-2", "-3", "-4"],
 )
+@pytest.mark.push
 def test_concat(inputs_and_dim):
     in_shape1, in_shape2, dim = inputs_and_dim
 
@@ -738,6 +763,7 @@ def test_concat(inputs_and_dim):
 
 
 @pytest.mark.parametrize("dims", [(1, 32, 64), (6, 33), (4, 16, 17)])
+@pytest.mark.push
 def test_greater_equal(dims):
     class GreaterEqual(nn.Module):
         def __init__(self):
@@ -759,6 +785,7 @@ def test_greater_equal(dims):
     assert compare_with_golden(golden=fw_out, calculated=output)
 
 
+@pytest.mark.push
 def test_subtract():
     class Subtract(nn.Module):
         def __init__(self):
@@ -787,6 +814,7 @@ def test_subtract():
         (12, 8640),
     ],
 )
+@pytest.mark.push
 def test_multiply(shape):
     class Multiply(nn.Module):
         def __init__(self):
@@ -808,6 +836,7 @@ def test_multiply(shape):
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
+@pytest.mark.push
 def test_relu():
     class ReLU(nn.Module):
         def __init__(self):
@@ -831,6 +860,7 @@ def test_relu():
 
 
 @pytest.mark.skip(reason="This is not ready yet")
+@pytest.mark.push
 def test_linear():
     class Linear(nn.Module):
         def __init__(self):
@@ -853,6 +883,7 @@ def test_linear():
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
+@pytest.mark.push
 def test_softmax():
     class Softmax(nn.Module):
         def __init__(self):
@@ -877,6 +908,7 @@ def test_softmax():
 
 @pytest.mark.parametrize("input_shape", [(1, 32, 32), (1, 64, 64), (1, 128, 128, 128)], ids=["32", "64", "128"])
 @pytest.mark.parametrize("dim", [-1, -2], ids=["-1", "-2"])
+@pytest.mark.push
 def test_reduce_sum(input_shape, dim):
     class ReduceSum(nn.Module):
         def __init__(self):
@@ -916,6 +948,7 @@ def test_reduce_sum(input_shape, dim):
         -2,
     ],
 )
+@pytest.mark.push
 def test_reduce_mean(input_shape, dim):
 
     if input_shape == (1, 12, 3200) and dim == -1:
@@ -946,6 +979,7 @@ def test_reduce_mean(input_shape, dim):
 @pytest.mark.parametrize("outer_dim_x", [7, 32, 41, 64])
 @pytest.mark.parametrize("outer_dim_y", [7, 32, 41, 64])
 @pytest.mark.parametrize("inner_dim", [1, 7, 32, 41, 64])
+@pytest.mark.push
 def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     class Matmul(nn.Module):
         def __init__(self):
@@ -975,6 +1009,7 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.parametrize("dim", [1, 2])
+@pytest.mark.push
 def test_mean(x_shape, y_shape, dim):
     class Mean(nn.Module):
         def __init__(self):
@@ -999,6 +1034,7 @@ def test_mean(x_shape, y_shape, dim):
 
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
+@pytest.mark.push
 def test_sqrt(x_shape, y_shape):
     class Sqrt(nn.Module):
         def __init__(self):
@@ -1028,6 +1064,7 @@ def test_sqrt(x_shape, y_shape):
 @pytest.mark.parametrize("vocab_size", [32000])
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
 def test_embedding(vocab_size, token_num, embedding_dim):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -1067,6 +1104,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
         (2, 7, 32, 41),  # 4D tensor
     ],
 )
+@pytest.mark.push
 def test_reciprocal(shape):
     class Reciprocal(nn.Module):
         def __init__(self):
@@ -1102,6 +1140,7 @@ def test_reciprocal(shape):
         (2, 7, 32, 41),  # 4D tensor
     ],
 )
+@pytest.mark.push
 def test_sigmoid(shape):
     class Sigmoid(nn.Module):
         def __init__(self):
@@ -1128,6 +1167,7 @@ def test_sigmoid(shape):
 @pytest.mark.parametrize("stop", [2, 32, 64], ids=["2", "32", "64"])
 @pytest.mark.parametrize("stride", [1, 2, 4, 8], ids=["1", "2", "4", "8"])
 @pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
+@pytest.mark.push
 def test_indexing(dim, start, stop, stride, shape):
     if len(shape) == 2 and dim == -3:
         pytest.skip("Skipping since indexing on dim=-3, 2D tensor doesn't make sense")
@@ -1173,6 +1213,7 @@ def test_indexing(dim, start, stop, stride, shape):
         (4127, 256),
     ],
 )
+@pytest.mark.push
 def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
     class ForgeAdvIndex(forge.ForgeModule):
         def __init__(self, name):
@@ -1225,6 +1266,7 @@ def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
         -4,
     ],
 )
+@pytest.mark.push
 def test_reduce_max(input_shape, dim):
 
     reduce_max_dim = dim
@@ -1272,6 +1314,7 @@ def test_reduce_max(input_shape, dim):
         (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros"),
     ],
 )
+@pytest.mark.push
 def test_convtranspose2d(in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode):
     inputs = [torch.randn(20, 16, 50, 100)]
 
@@ -1299,6 +1342,7 @@ def test_convtranspose2d(in_channels, out_channels, kernel_size, stride, padding
 @pytest.mark.xfail(
     reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
 )
+@pytest.mark.push
 def test_avg_pool2d():
     class AvgPool2d(nn.Module):
         def __init__(self):
