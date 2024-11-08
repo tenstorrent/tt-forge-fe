@@ -87,7 +87,10 @@ def test_densenet_121_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    if variant == densenet121_hf_xray:
+        compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    else:
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -110,7 +113,7 @@ def test_densenet_161_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -127,7 +130,7 @@ def test_densenet_169_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
@@ -144,7 +147,7 @@ def test_densenet_201_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
