@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import forge, os
 import requests
+import pytest
 import torch
 from PIL import Image
 from pathlib import Path
