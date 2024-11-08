@@ -1840,6 +1840,7 @@ class Operation:
         output_name (str): The name of the output variable.
         input_names (list): A list of input variable names.
         input_shapes (list): A list of shapes corresponding to the input variables.
+        input_dtypes (list): A list of dtypes corresponding to the input variables.
         args (list): A list of arguments for the operation.
         is_submodule_call (bool): A flag indicating if the operation is a submodule call (related to Torch 2.0).
         inputs_to_delete (list): A list of inputs to delete.
@@ -1848,13 +1849,14 @@ class Operation:
     """
 
     def __init__(
-        self, function_name, output_name, node_name="", input_names=[], args=[], src_layer=None, input_shapes=[]
+        self, function_name, output_name, node_name="", input_names=[], args=[], src_layer=None, input_shapes=[], input_dtypes=[]
     ):
         self.function_name = function_name
         self.node_name = node_name
         self.output_name = output_name
         self.input_names = input_names
         self.input_shapes = input_shapes
+        self.input_dtypes = input_dtypes
         self.args = args
         self.is_submodule_call = False
         self.inputs_to_delete = []
@@ -2113,7 +2115,7 @@ def compile_tvm_to_python(
     )
 
     def _determine_node_dtype(node):
-        if node["attrs"]["framework_dtype"] != "N/A":
+        if "framework_dtype" in node["attrs"].keys() and node["attrs"]["framework_dtype"] != "N/A":
             return node["attrs"]["framework_dtype"]
         else:
             logger.debug(
@@ -2380,6 +2382,16 @@ def compile_tvm_to_python(
                         input_node["users"] = []
                     input_node["users"].append(nid)
                     input_names.append(input_node["forge_name"])
+                    
+                input_shapes = [
+                    graph["nodes"][node["inputs"][input_port][0]]["forge_shape"] 
+                    for input_port in range(int(node["attrs"]["num_inputs"]))
+                ]
+                input_dtypes = [
+                    _determine_node_dtype(graph["nodes"][node["inputs"][input_port][0]])
+                    for input_port in range(int(node["attrs"]["num_inputs"]))
+                ]
+                
                 # Handle concatenate case when a single node name in referenced twice in the input list
                 if node["name"] == "forge.concatenate" and len(input_names) == 1:
                     inp_shape = graph["nodes"][node["inputs"][input_port][0]]["attrs"]["shape"][0][0]
@@ -2387,9 +2399,14 @@ def compile_tvm_to_python(
 
                     if inp_shape[:2] == out_shape[:2] and inp_shape[2] * 2 == out_shape[2]:
                         input_names = [input_names[0], input_names[0]]
+                        input_shapes = [input_shapes[0], input_shapes[0]]
+                        input_dtypes = [input_dtypes[0], input_dtypes[0]]
 
                 if json_graph["device"] == "tt" and node["name"] == "embedding":
                     input_names = [input_names[1], input_names[0]]
+                    input_shapes = [input_shapes[1], input_shapes[0]]
+                    input_shapes = [input_dtypes[1], input_dtypes[0]]
+
 
                 ops[node["nid"]] = Operation(
                     function_name=function_name,
@@ -2398,10 +2415,8 @@ def compile_tvm_to_python(
                     input_names=input_names,
                     args=args,
                     src_layer=span_to_src_layer(node),
-                    input_shapes=[
-                        graph["nodes"][node["inputs"][input_port][0]]["forge_shape"]
-                        for input_port in range(int(node["attrs"]["num_inputs"]))
-                    ],
+                    input_shapes=input_shapes,
+                    input_dtypes=input_dtypes
                 )
 
         if any([input is None for input in forge_inputs]):
@@ -2735,11 +2750,12 @@ def generate_op_tests(
     including headers, class definitions, forward functions, parameter parsers, and pytest functions.
     The generated tests are designed to run the operations as standalone tests.
     """
-    for op_idx, key in enumerate(sorted(ops)):
+    for op_idx, nid in enumerate(sorted(ops)):
+
         # Create unique module name
         module_name = "test_" + current_module_name.lower() + str(op_idx)
 
-        # Initialize Forge writer and generate header and class definition
+        # Initialize Forge writer and generate header
         writer = ForgeWriter(
             module_name,
             framework,
@@ -2747,28 +2763,66 @@ def generate_op_tests(
             delete_inputs=delete_inputs,
         )
         writer.write_header()
-        writer.write_class_definition(params, constants)
 
-        # Focus on generating test for a single op
-        single_op = {key: ops[key]}
+        # Generating test for a single op
+        single_op = {nid: ops[nid]}
 
-        # Create new inputs for the single op
-        new_inputs = {}
-        for i, input_name in enumerate(single_op[key].input_names):
-            # Detected parameter as input, insert dummy input
-            # TODO: Need to handle this case better. Probably just ignoring
-            # model parameters, and using new generated inputs.
-            if "." in input_name:
-                input_name = "dummy_input_" + str(i)
-            new_inputs[input_name] = input_name
+        forward_method_inputs = {}
+        test_inputs_shapes = []
+        test_inputs_dtypes = []
+        activation_param_names = []
+        needed_params = {}
+        needed_consts = {}
+        
+        # Lambda function to check whether the input for the single op is const or parameter based upon the input names.
+        is_params_const = lambda inp_name: True if (inp_name.startswith("const") or inp_name.endswith(".weight") or "." in inp_name) else False
+        
+        # Check whether all the inputs for the single op are const and params.
+        all_inputs_are_params_const = all([is_params_const(input_name) for input_name in single_op[nid].input_names])
+        
+        # If all the inputs for the single op are const and params, pass the parameter as input activation to the forge module forward function, 
+        # otherwise, pass the input activation from producer nodes as activation to the forge module forward function.
+        if all_inputs_are_params_const:
+            for idx, input_name in enumerate(single_op[nid].input_names):
+                forward_method_inputs[idx] = input_name.replace(".", "_")
+                single_op[nid].input_names[idx] = input_name.replace(".", "_")
+                activation_param_names.append(input_name)
+        else:
+            for idx, input_name in enumerate(single_op[nid].input_names):
+                if is_params_const(input_name):
+                    for param_nid, param in params.items():
+                        param_name = param[0]
+                        if param_name == input_name:
+                            needed_params[param_nid] = param
+                            break
+                    for const_nid, constant in constants.items():
+                        constant_name = constant[0]
+                        if constant_name == input_name:
+                            needed_consts[const_nid] = constant
+                            break
+                    continue
 
-        # Force output to be same as the op we're running
-        single_return = {key: single_op[key].output_name}
+                if input_name not in forward_method_inputs.values():
+                    forward_method_inputs[idx] = input_name
+                    test_inputs_shapes.append(single_op[nid].input_shapes[idx])
+                    test_inputs_dtypes.append(single_op[nid].input_dtypes[idx])
+                    
+        
+        # Generate class definition for the parameters and constants that are need for the single forge op inputs in forward function.
+        writer.write_class_definition(needed_params, needed_consts)
 
-        # Generate forward function and parameter parser (loading params and constants)
-        writer.write_forward(single_op, new_inputs, single_return)
-        writer.write_param_parser(param_names, param_file_name, names_params_file_name, named_buffers_file_name)
+        # Forge module forward method output to be same as the op we're running
+        forward_method_returns = {nid: single_op[nid].output_name}
+
+        # Generate single op forge module forward function
+        writer.write_forward(single_op, forward_method_inputs, forward_method_returns)
 
         # Generate pytest function that enables runing Forge Module as standalone test
-        writer.write_pytest_function(module_name, single_op[key].input_shapes)
+        if all_inputs_are_params_const:
+            writer.write_pytest_function(module_name, framework, test_inputs_shapes, test_inputs_dtypes, activation_param_names, param_file_name = param_file_name, names_params_file_name = names_params_file_name, named_buffers_file_name = named_buffers_file_name)
+        else:
+            need_process_framework_parameters_func = needed_params or needed_consts
+            if need_process_framework_parameters_func:
+                writer.write_param_parser(param_names, param_file_name, names_params_file_name, named_buffers_file_name)
+            writer.write_pytest_function(module_name, framework, test_inputs_shapes, test_inputs_dtypes, activation_param_names, need_process_framework_parameters_func)
         writer.close_file()

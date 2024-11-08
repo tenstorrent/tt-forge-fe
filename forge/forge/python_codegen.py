@@ -7,6 +7,8 @@ import torch
 import numpy as np
 import tensorflow as tf
 from loguru import logger
+import forge
+from forge.tensor import forge_dataformat_to_pytorch_dtype
 
 
 def forge_df_str_from_str(df: str, name: str):
@@ -53,6 +55,51 @@ def forge_df_str_from_str(df: str, name: str):
     else:
         logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
         return "forge.DataFormat.Float32"
+    
+def forge_df_from_str(df: str):
+    df = df.lower()
+
+    if df == "bfp2":
+        return forge.DataFormat.Bfp2
+    elif df == "bfp2_b":
+        return forge.DataFormat.Bfp2_b
+    elif df == "bfp4":
+        return forge.DataFormat.Bfp4
+    elif df == "bfp4_b":
+        return forge.DataFormat.Bfp4_b
+    elif df == "bfp8":
+        return forge.DataFormat.Bfp8
+    elif df == "bfp8_b":
+        return forge.DataFormat.Bfp8_b
+    elif df == "float16":
+        return forge.DataFormat.Float16
+    elif df in ["float16_b", "bfloat16"]:
+        return forge.DataFormat.Float16_b
+    elif df == "float32":
+        return forge.DataFormat.Float32
+    elif df == "int8":
+        return forge.DataFormat.Int8
+    elif df == "invalid":
+        return forge.DataFormat.Invalid
+    elif df == "lf8":
+        return forge.DataFormat.Lf8
+    elif df == "raw_uint16":
+        return forge.DataFormat.RawUInt16
+    elif df == "raw_uint32":
+        return forge.DataFormat.RawUInt32
+    elif df == "raw_uint8":
+        return forge.DataFormat.RawUInt8
+    elif df == "uint16":
+        return forge.DataFormat.UInt16
+    elif df == "uint8":
+        return forge.DataFormat.UInt8
+    elif df == "int8":
+        return forge.DataFormat.Int8
+    elif df == "int32":
+        return forge.DataFormat.Int32
+    else:
+        logger.warning(f"Invalid data format so defaulting to float32")
+        return forge.DataFormat.Float32
 
 
 def pytorch_df_str_from_str(df: str, name):
@@ -953,7 +1000,7 @@ class ForgeWriter(PythonWriter):
         else:
             assert False, "TODO: Add other framework param parsers"
 
-    def write_pytest_function(self, module_name, input_shapes):
+    def write_pytest_function(self, module_name, framework, input_shapes, input_dtypes, activation_param_names, need_process_framework_parameters_func=False, param_file_name=None, names_params_file_name=None, named_buffers_file_name=None):
         """
         Generates a pytest function to test a module with given input shapes.
 
@@ -969,27 +1016,56 @@ class ForgeWriter(PythonWriter):
         Args:
             module_name (str): The name of the module to be tested.
             input_shapes (list): A list of shapes for the input tensors.
+            input_dtypes (list): A list of dtypes for the input tensors.
+            activation_param_names (list): A list of parameter names that are used for creating input activation and passed as input to the forward function.
         """
         self.wl("")
         self.wl("")
         self.wl("def test_module():")
         self.indent += 1
-        self.wl("inputs = [")
-        self.indent += 1
-        for shape in input_shapes:
-            self.wl(f"Tensor.create_from_torch(torch.rand({shape})),")
+        if names_params_file_name is not None and named_buffers_file_name is not None and len(activation_param_names)!=0:
+            self.wl(f"named_parameters = torch.load('{names_params_file_name}')")
+            if param_file_name is not None:
+                self.wl(f'serialized_params = torch.load("{param_file_name}")')
+                self.wl(f"named_parameters.update(serialized_params)")
+            self.wl(f"named_buffers = torch.load('{named_buffers_file_name}')")
+            self.wl("named_parameters.update(named_buffers)")
+            self.wl("")
+            self.wl("inputs = [")
+            self.indent += 1
+            for param_name in activation_param_names:
+                self.wl(f"Tensor.create_from_torch(named_parameters[\"{param_name}\"]),")
+        else:
+            self.wl("inputs = [")
+            self.indent += 1
+            assert len(input_shapes) == len(input_dtypes)
+            for shape, dtype in zip(input_shapes, input_dtypes):
+                    forge_dataformat = forge_df_from_str(dtype)
+                    torch_dtype = forge_dataformat_to_pytorch_dtype(forge_dataformat)
+                    if torch_dtype in [torch.float16, torch.bfloat16, torch.float32]:
+                        input_torch_tensor_str = f"torch.rand({shape}, dtype={torch_dtype})"
+                    elif dtype in [torch.int8, torch.int, torch.int32]:
+                        input_torch_tensor_str = f"torch.randint(high=1000, size={shape}, dtype={torch_dtype})"
+                    else:
+                        input_torch_tensor_str = f"torch.rand({shape}, dtype=torch.float32)"
+                    self.wl(f"Tensor.create_from_torch({input_torch_tensor_str}, dev_data_format=forge.{forge_dataformat}),")
         self.indent -= 1
         self.wl("]")
         self.wl("")
         self.wl(f"framework_model = {self.class_name}('{module_name}')")
-        self.wl("framework_model.process_framework_parameters()")
-        self.wl("fw_out = framework_model(*inputs)")
+        if need_process_framework_parameters_func:
+            self.wl("framework_model.process_framework_parameters()")
+        self.wl("framework_output = framework_model(*inputs)")
         self.wl("")
         self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
-        self.wl("co_out = compiled_model(*inputs)")
+        self.wl("tt_output = compiled_model(*inputs)")
+        self.wl("")
+        self.wl("tt_output = [tt_out.to(\"cpu\") for tt_out in tt_output]")
+        self.wl("framework_output = [framework_output] if isinstance(framework_output, forge.tensor.TensorFromTrace) else framework_output")
+        self.wl(f"framework_output = [fw_out.to_framework(\"{framework}\") for fw_out in framework_output]")
         self.wl("")
         self.wl(
-            "assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])"
+            "assert all([compare_with_golden(golden=fw_out, calculated=tt_out, pcc=0.99) for fw_out, tt_out in zip(framework_output, tt_output)])"
         )
         self.indent -= 1
 
