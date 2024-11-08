@@ -1366,6 +1366,32 @@ def test_avg_pool2d():
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
+@pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
+@pytest.mark.parametrize("padding", [0, 1])
+@pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32")
+def test_avgpool2d_decompose_to_conv2d(shape, padding):
+    class AvgPool2d(nn.Module):
+        def __init__(self, padding):
+            super().__init__()
+            self.pool = nn.AvgPool2d(kernel_size=[7, 7], stride=[7, 7], padding=padding)
+
+        def forward(self, x):
+            return self.pool(x)
+
+    inputs = [torch.rand(shape).to(torch.bfloat16)]
+
+    framework_model = AvgPool2d(padding=padding)
+    framework_model = framework_model.to(torch.bfloat16)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
 @pytest.mark.parametrize(
     "padding",

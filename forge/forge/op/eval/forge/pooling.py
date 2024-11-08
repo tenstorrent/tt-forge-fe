@@ -11,6 +11,7 @@ from forge.utils import align_up_tile
 from .transpose import TransposeTM
 from .nop import Nop
 from .nop import Nop
+from .convolution import Conv2d
 from ..interface import PyOp
 
 from ..common import to_torch_operands
@@ -498,8 +499,32 @@ def decompose(type, attr, dc, inputs):
         weight_tensor = weight_value * torch.ones((cin, 1, kH, kW))
 
         weight = dc.tensor(weight_tensor)
-        result = dc.op(
-            "conv2d", [activations, weight], stride + [dilation, cin] + padding + [False, 0, 0, 0, channel_last]
+        result = dc.op_with_named_attrs(
+            Conv2d.create(
+                stride_height=stride[0],
+                stride_width=stride[1],
+                dilation_height=dilation,
+                dilation_width=dilation,
+                groups=cin,
+                padding_left=padding[0],
+                padding_right=padding[1],
+                padding_top=padding[2],
+                padding_bottom=padding[3],
+                channel_last=channel_last,
+            ),
+            [activations, weight],
+            {
+                "stride_height": stride[0],
+                "stride_width": stride[1],
+                "dilation_height": dilation,
+                "dilation_width": dilation,
+                "groups": cin,
+                "padding_left": padding[0],
+                "padding_right": padding[1],
+                "padding_top": padding[2],
+                "padding_bottom": padding[3],
+                "channel_last": channel_last,
+            },
         )
 
         #
