@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # STEP 0: import Forge library
 import forge
+import pytest
 import os
 from transformers import ViTImageProcessor
 import timm

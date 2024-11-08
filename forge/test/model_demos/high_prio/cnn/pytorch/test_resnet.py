@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from test.utils import download_model
 import forge
+import pytest
 import requests
 from PIL import Image
 from transformers import AutoFeatureExtractor, ResNetForImageClassification

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
-
+import pytest
 import forge
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import torch
