@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from test.utils import download_model
-
+import pytest
 import forge
 from transformers import (
     BertForMaskedLM,

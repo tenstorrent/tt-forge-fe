@@ -5,6 +5,7 @@
 
 # STEP 0: import Forge library
 import forge
+import pytest
 import os
 import urllib
 from loguru import logger

@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import forge
+import pytest
 import requests
 import torchvision.transforms as transforms
 from PIL import Image

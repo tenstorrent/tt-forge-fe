@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
+import pytest
 from torchvision import models, transforms
 from test.utils import download_model
 import forge

@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import forge
+import pytest
 import cv2
 import torch.nn.init as init
 import torchvision

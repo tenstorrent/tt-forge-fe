@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 from datasets import load_dataset
 from forge.op.eval.common import compare_with_golden_pcc
 import os
+import pytest
 
 
 # SPDX-FileCopyrightText: Copyright (c) 2018 Udacity

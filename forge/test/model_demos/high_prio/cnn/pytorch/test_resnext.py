@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from test.utils import download_model
 import os
+import pytest
 from loguru import logger
 import forge
 import torch

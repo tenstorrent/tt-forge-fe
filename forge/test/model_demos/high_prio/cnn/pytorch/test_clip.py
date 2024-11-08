@@ -4,6 +4,7 @@
 from test.utils import download_model
 import forge
 import requests
+import pytest
 import torch
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
