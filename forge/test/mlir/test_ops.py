@@ -14,6 +14,43 @@ from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 256, 6, 6),
+        (1, 3, 64, 64),
+        (1, 512, 14, 14),
+        (1, 3, 224, 224),
+        (2, 256, 10, 10),
+        (1, 512, 3, 3),
+        (1, 1000, 1, 1),
+        (2, 128, 8, 8),
+        (4, 1, 32, 32),
+        (8, 64, 32, 32),
+    ],
+)
+@pytest.mark.push
+def test_flatten(shape):
+    class flatten(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.flatten(x, 1)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = flatten()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
 @pytest.mark.push
 def test_cast(operand_and_cast_dtype):
