@@ -234,42 +234,33 @@ class Conv2dTranspose(PyOp):
         stride = [self.stride_height, self.stride_width]
         dilation = [self.dilation_height, self.dilation_width]
         groups = self.groups
-        padding = [
-            self.padding_left,
-            self.padding_right,
-            self.padding_top,
-            self.padding_bottom,
-        ]
-
+        assert self.padding_top == self.padding_bottom, "Padding values for top and bottom must be the same."
+        assert self.padding_left == self.padding_right, "Padding values for left and right must be the same."
+        padding = (self.padding_top, self.padding_left)
         channel_last = self.channel_last
         if channel_last:
             activations = activations.permute((0, 3, 1, 2))
 
-        padded_activations = torch.nn.functional.pad(
-            activations,
-            padding,
-        )
         if t_ops[1].dtype == torch.int8:
             target_dtype = torch.int32
-            padded_activations, weights = padded_activations.float(), weights.float()
+            activations, weights = activations.float(), weights.float()
             if bias is not None:
                 bias = bias.float()
         else:
             target_dtype = torch.float32
 
         result = torch.nn.functional.conv_transpose2d(
-            padded_activations,
+            activations,
             weights,
             bias=bias,
             stride=stride,
-            padding=0,
+            padding=padding,
             dilation=dilation,
             groups=groups,
         )
 
         if channel_last:
             result = result.permute((0, 2, 3, 1))
-
         result = result.to(target_dtype)
         return result
 

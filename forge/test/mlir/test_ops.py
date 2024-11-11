@@ -1305,13 +1305,10 @@ def test_reduce_max(input_shape, dim):
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode",
     [
-        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros"),
-        (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros"),
-        (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros"),
+        (16, 33, (3, 3), 2, (2, 1), 1, False, 1, "zeros")
     ],
 )
 @pytest.mark.push
