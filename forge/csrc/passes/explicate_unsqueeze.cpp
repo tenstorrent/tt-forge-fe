@@ -129,7 +129,10 @@ void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
             {
                 new_reshape_attr.push_back((int)dim);
             }
-            op->change_op_type(graphlib::OpType("reshape", new_reshape_attr));
+            std::vector<int> shape_vector(target_shape.begin(), target_shape.end());
+            graphlib::OpType::Attrs named_attrs;
+            named_attrs["shape"] = shape_vector;
+            op->change_op_type(graphlib::OpType("reshape", new_reshape_attr, {}, named_attrs));
             op->set_shape(user_op->shape());
             nodes_to_remove.insert(users[0]);
         }
