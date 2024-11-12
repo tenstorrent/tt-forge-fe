@@ -10,7 +10,7 @@
 
 namespace mlir
 {
-class ModuleOp;
+class Operation;
 }  // namespace mlir
 namespace tt
 {
@@ -37,7 +37,7 @@ json create_json_for_graph(
     const graphlib::Graph* graph,
     std::function<bool(graphlib::Node*)> node_filter = [](graphlib::Node*) { return true; });
 
-json create_json_for_mlir(mlir::ModuleOp* module);
+json create_json_for_mlir(const std::string& module_name, mlir::Operation* operation);
 
 void dump_graph(
     const std::string& test_name,
@@ -59,7 +59,7 @@ void dump_epoch_id_graphs(
     const graphlib::Graph* graph,
     const std::string& directory_path = get_default_reportify_path(""));
 
-void dump_mlir(const std::string& name, mlir::ModuleOp* module);
+void dump_mlir(const std::string& file_name, const std::string& module_name, mlir::Operation* operation);
 
 }  // namespace reportify
 
