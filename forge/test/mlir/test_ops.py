@@ -15,6 +15,36 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "shape, mode",
+    [
+        ((1, 2048, 7, 7), "nearest"),
+        ((1, 2048, 7, 7), "bilinear"),
+    ],
+)
+@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
+def test_interpolate(shape, mode):
+    class interpolate(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.interpolate(x, scale_factor=2, mode=mode)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = interpolate()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
     "shape",
     [
         (1, 256, 6, 6),
