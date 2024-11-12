@@ -20,7 +20,7 @@ def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
 
     # Set PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Sample Input
     image_w = 800
