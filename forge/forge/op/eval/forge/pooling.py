@@ -543,10 +543,14 @@ def decompose(type, attr, dc, inputs):
         if not padding == [0, 0, 0, 0] and (ceil_mode == True or count_include_pad == False):
             if channel_last:
                 _, y_out, x_out, _ = (result.shape.w, result.shape.z, result.shape.r, result.shape.c)
-                result = dc.op("reshape", [result], (w, 1, y_out * x_out, cin))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, 1, y_out * x_out, cin)}, (w, 1, y_out * x_out, cin)
+                )
             else:
                 _, _, y_out, x_out = (result.shape.w, result.shape.z, result.shape.r, result.shape.c)
-                result = dc.op("reshape", [result], (w, 1, cin, y_out * x_out))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, 1, cin, y_out * x_out)}, (w, 1, cin, y_out * x_out)
+                )
                 result = dc.op(TransposeTM.create(2, 3), [result])
 
             # Since count_include_pad=False undoes math in all padded regions, it takes precedence:
@@ -567,16 +571,17 @@ def decompose(type, attr, dc, inputs):
                 tile_align=False,
             )
             undo_math_picker_tensor = dc.tensor(undo_math_picker)
-            # TODO: This sparse matmul can definitely be fused the same way the sparse mm of convtransposed2d was fused
-            # Ideally, conv2d op should be aware of the ceil_mode param (convtranspose2d has a similar thing -
-            # output_padding) as that way it could create this sparse mm itself and easily fuse it
-            result = dc.op("sparse_matmul", [undo_math_picker_tensor, result])
+            result = dc.op("matmul", [undo_math_picker_tensor, result])
 
             if channel_last:
-                result = dc.op("reshape", [result], (w, y_out, x_out, cin))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, y_out, x_out, cin)}, (w, y_out, x_out, cin)
+                )
             else:
                 result = dc.op(TransposeTM.create(2, 3), [result])
-                result = dc.op("reshape", [result], (w, cin, y_out, x_out))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, cin, y_out, x_out)}, (w, cin, y_out, x_out)
+                )
 
         dc.fuse(result)
 
