@@ -20,8 +20,17 @@ static bool is_reshape(graphlib::Node const *node)
     return op and op->op_name() == "reshape";
 }
 
-void limit_to_4d_reshape(graphlib::Graph *graph)
+void limit_to_5d_reshape(graphlib::Graph *graph)
 {
+    // Limiting reshape operation till 5D.
+    // More than 5D, If it is a singleton dimension
+    // we still support by removing the redundant singleton dimension.
+    // For example,
+    //      if new shape is (1, 1, 1, 2, 3, 4, 4), it is supported and new shape changed to (1, 2, 3, 4, 4).
+    //      if new shape is (1, 2, 1, 2, 3, 4, 4), it is not supported, as 6th dimension is non singleton.
+    // If this new shape change affects the graph output shape,
+    // new reshape node will be added before output node to handle this shape change.
+
     std::vector<std::vector<std::uint32_t>> nd_graph_output_shapes = graph->get_ordered_output_shapes();
     for (auto node : graph->nodes())
     {
@@ -29,8 +38,8 @@ void limit_to_4d_reshape(graphlib::Graph *graph)
             continue;
 
         auto op_node = dynamic_cast<graphlib::OpNode *>(node);
-        auto attr = op_node->op_attrs();
-        if (attr.size() <= 4)
+        auto attrs = op_node->op_attrs();
+        if (attrs.size() <= 5)
             continue;
 
         auto users = graph->users(node);
@@ -48,25 +57,32 @@ void limit_to_4d_reshape(graphlib::Graph *graph)
         if (feeds_graph_output)
             continue;
 
-        bool dims_before_last_4d_are_singleton = true;
-        for (long unsigned int i = 0; i < attr.size() - 4; ++i)
+        bool dims_before_last_5d_are_singleton = true;
+        for (long unsigned int i = 0; i < attrs.size() - 5; ++i)
         {
-            if (std::get<int>(attr[i]) != 1)
+            if (std::get<int>(attrs[i]) != 1)
             {
-                dims_before_last_4d_are_singleton = false;
+                dims_before_last_5d_are_singleton = false;
                 break;
             }
         }
 
-        if (dims_before_last_4d_are_singleton)
+        if (dims_before_last_5d_are_singleton)
         {
-            auto new_shape = attr;
-            new_shape.erase(new_shape.begin(), new_shape.begin() + attr.size() - 4);
+            auto new_shape = attrs;
+            new_shape.erase(new_shape.begin(), new_shape.begin() + attrs.size() - 5);
             op_node->overwrite_op_attrs(new_shape);
+
+            // Overwrite shape in named attrs
+            graphlib::OpType::Attrs named_attrs;
+            std::vector<int> shape_vector;
+            for (auto attr : new_shape) shape_vector.push_back(std::get<int>(attr));
+            named_attrs["shape"] = shape_vector;
+            op_node->change_op_type(graphlib::OpType("reshape", new_shape, {}, named_attrs));
         }
         else
         {
-            TT_ASSERT(false, "Don't support reshape with more than 4 non-singleton dimensions");
+            TT_ASSERT(false, "Don't support reshape with more than 5 non-singleton dimensions");
         }
     }
 

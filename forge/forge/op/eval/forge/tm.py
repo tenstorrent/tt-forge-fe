@@ -1104,8 +1104,25 @@ def decompose(type, attr, dc, inputs):
             # We need to transpose to get the dimension we want to index by at the -2 position
             act = dc.op(TransposeTM.create(-2, dim), [act])
 
+        orig_act_shape = None
+        if len(act.shape) > 3:
+            # Add reshape to handle matmul's input tensor more than 3D
+            orig_act_shape = act.shape.as_list()
+            new_shape = (1, math.prod(orig_act_shape[:-2]), orig_act_shape[-2], orig_act_shape[-1])
+            act = dc.op_with_named_attrs("reshape", [act], {"shape": new_shape}, new_shape)
+
+            lhs_num_cols = act.shape[-2]
+            lhs_num_channels = act.shape[-3]
+            lhs_batch_size = 1
+
         lhs = create_row_picker_matrix(row_indices, lhs_num_cols, lhs_num_channels, lhs_batch_size)
         result = picker_matmul(False, dc, lhs, act)
+
+        if orig_act_shape is not None:
+            # Reshape back to original dimensions
+            orig_act_shape[-1] = result.shape[-1]
+            orig_act_shape[-2] = result.shape[-2]
+            result = dc.op_with_named_attrs("reshape", [result], {"shape": orig_act_shape}, orig_act_shape)
 
         if dim != -2:
             # We need to transpose again to return to the original order of dimensions
