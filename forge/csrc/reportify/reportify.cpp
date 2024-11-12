@@ -437,7 +437,8 @@ JsonNamePairs create_jsons_for_graph(
     return this_json_name_pairs;
 }
 
-JsonNamePairs create_jsons_for_mlir(const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
+JsonNamePairs create_jsons_for_mlir(
+    const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
 {
     JsonNamePairs this_json_name_pairs;
 
@@ -464,12 +465,13 @@ void dump_graph(
  *
  * This function generates a JSON representation of the given MLIR operation and writes it to a file.
  * The file path is following: `$REPORTIFY_PATH$/$OPERATION_NAME$/mlir_reports/$FILE_NAME$.mlir`.
- * If the environment variable "FORGE_DISABLE_REPORTIFY_DUMP" is set to true, the function returns without performing any action.
+ * If the environment variable "FORGE_DISABLE_REPORTIFY_DUMP" is set to true, the function returns without performing
+ * any action.
  *
  * @param name The name of the file to be saved (currently in use are 'ttir' and 'ttnn').
  * @param operation A pointer to the MLIR operation to be dumped.
  */
-void dump_mlir(const std::string& file_name,  const std::string& module_name, mlir::Operation* operation)
+void dump_mlir(const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
 {
     if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
         return;
