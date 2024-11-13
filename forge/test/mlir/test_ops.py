@@ -1374,16 +1374,25 @@ def test_reduce_max(input_shape, dim):
 
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
-    "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode",
+    "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
-        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros"),
-        (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros"),
-        (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros"),
+        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros", (16, 50, 100)),
+        (16, 32, (3, 5), 2, 1, 1, True, 1, "zeros", (16, 50, 100)),
+        (16, 16, (3, 3), 1, 1, 16, True, 1, "zeros", (16, 50, 100)),
+        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros", (20, 16, 50, 100)),
+        (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (5, 5), 1, 2, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 32, (3, 5), 2, 1, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 32, (3, 3), 4, 1, 1, False, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (3, 3), 2, 2, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (3, 3), 1, 1, 16, True, 1, "zeros", (20, 16, 50, 100)),
     ],
 )
-@pytest.mark.push
-def test_convtranspose2d(in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode):
-    inputs = [torch.randn(20, 16, 50, 100)]
+def test_convtranspose2d(
+    in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape
+):
+    inputs = [torch.randn(*input_shape)]
 
     framework_model = torch.nn.ConvTranspose2d(
         in_channels=in_channels,
