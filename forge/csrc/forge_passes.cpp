@@ -25,7 +25,7 @@
 #include "passes/generate_initial_flops_estimate.hpp"
 #include "passes/hoist_transforms_to_inputs.hpp"
 #include "passes/insert_inverse_on_io.hpp"
-#include "passes/limit_to_4d_reshape.hpp"
+#include "passes/limit_to_5d_reshape.hpp"
 #include "passes/link_past_cache_ios.hpp"
 #include "passes/lower_concat_to_runtime_transform.hpp"
 #include "passes/lowering_context.hpp"
@@ -84,7 +84,7 @@ run_post_initial_graph_passes(
     passes::print_graph(graph, "INITIAL");
     passes::generate_initial_flops_estimate(graph);
     passes::decompose_nd_reshape_split(graph);
-    passes::limit_to_4d_reshape(graph);
+    passes::limit_to_5d_reshape(graph);
     passes::erase_unnecessary_4d_tm_sequence(graph);
     passes::fuse_pad_conv2d(graph);
     passes::explicate_unsqueeze(graph);

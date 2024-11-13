@@ -1445,6 +1445,7 @@ def test_avg_pool2d():
 @pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
 @pytest.mark.parametrize("padding", [0, 1])
 @pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32")
+@pytest.mark.push
 def test_avgpool2d_decompose_to_conv2d(shape, padding):
     class AvgPool2d(nn.Module):
         def __init__(self, padding):
@@ -1489,7 +1490,7 @@ def test_avgpool2d_decompose_to_conv2d(shape, padding):
         ),
     ],
 )
-@pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion")
+@pytest.mark.push
 def test_conv2d_with_padding(shape, padding):
     class PaddingAndConv2d(nn.Module):
         def __init__(self, padding):
@@ -1528,6 +1529,7 @@ def test_conv2d_with_padding(shape, padding):
         ),
     ],
 )
+@pytest.mark.push
 def test_maxpool2d_with_padding(shape, padding):
     class PaddingAndMaxPool2d(nn.Module):
         def __init__(self, padding):
@@ -1543,6 +1545,57 @@ def test_maxpool2d_with_padding(shape, padding):
     framework_model = framework_model.to(torch.bfloat16)
 
     inputs = [torch.rand(shape).to(torch.bfloat16)]
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.push
+@pytest.mark.xfail(reason="Tensor rank is greater than 4")
+def test_reshape_pytorch():
+    class ReshapeTest(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, inp_1, inp_2):
+            inp = inp_1 + inp_2
+            inp_res = inp.reshape(1, 2, 2, 7, 7, 384)
+            inp_res = inp_res.transpose(-4, -3)
+            inp_res = inp_res.reshape(-1, 384)
+            return inp_res
+
+    inputs = [torch.rand(4, 49, 384), torch.rand(4, 49, 384)]
+    framework_model = ReshapeTest()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.push
+@pytest.mark.xfail(reason="Tensor rank is greater than 4")
+def test_broadcast_pytorch():
+    class BroadcastTest(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, inp_1):
+            inp_1 = inp_1.transpose(-3, -2)
+            inp_1_1 = inp_1[:1]
+            inp_1_1 = inp_1_1.squeeze(0)
+            return inp_1_1
+
+    inputs = [torch.rand(3, 64, 49, 3, 32)]
+    framework_model = BroadcastTest()
+    fw_out = framework_model(*inputs)
+
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 
