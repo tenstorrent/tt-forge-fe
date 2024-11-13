@@ -1502,6 +1502,13 @@ def test_conv2d_with_padding(shape, padding):
             x = nn.functional.pad(x, self.padding, mode="constant", value=0)
             return self.conv(x)
 
+    pad_top, pad_bottom, pad_left, pad_right = padding
+    if pad_top != pad_bottom or pad_left != pad_right:
+        pytest.xfail(
+            "TTNN only supports padding height/width attributes. Thus, padding_top "
+            "must equal padding_bottom for the op to execute as expected."
+        )
+
     framework_model = PaddingAndConv2d(padding=padding)
 
     inputs = [torch.rand(shape)]
