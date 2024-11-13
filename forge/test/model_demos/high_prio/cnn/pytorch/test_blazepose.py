@@ -24,7 +24,7 @@ import os
 def test_blazepose_detector_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePose Detector
     pose_detector = BlazePose()
@@ -46,7 +46,7 @@ def test_blazepose_detector_pytorch(test_device):
 def test_blazepose_regressor_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
@@ -61,7 +61,7 @@ def test_blaze_palm_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
@@ -85,7 +85,7 @@ def test_blaze_hand_pytorch(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePalm Detector
     hand_regressor = BlazeHandLandmark()
