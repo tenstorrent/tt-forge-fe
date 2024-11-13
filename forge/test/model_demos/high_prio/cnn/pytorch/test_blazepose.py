@@ -28,8 +28,12 @@ def test_blazepose_detector_pytorch(test_device):
 
     # Load BlazePose Detector
     pose_detector = BlazePose()
-    pose_detector.load_weights("mediapipepytorch/blazepose.pth")
-    pose_detector.load_anchors("mediapipepytorch/anchors_pose.npy")
+    pose_detector.load_weights(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/blazepose.pth"
+    )
+    pose_detector.load_anchors(
+        "third_party/confidential_customer_models/model_2/pytorch/mediapipepytorch/anchors_pose.npy"
+    )
 
     # Load data sample
     orig_image = cv2.imread("forge/test/model_demos/utils/cnn/pytorch/images/girl.png")

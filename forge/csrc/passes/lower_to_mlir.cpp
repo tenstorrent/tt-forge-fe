@@ -187,6 +187,14 @@ class MLIRGenerator
                     }
                     return builder_.getArrayAttr(attributes);
                 }
+                else if constexpr (std::is_same_v<T, std::tuple<int, int, int>>)
+                {
+                    llvm::SmallVector<mlir::Attribute, 3> attributes;
+                    attributes.push_back(builder_.getI32IntegerAttr(std::get<0>(arg)));
+                    attributes.push_back(builder_.getI32IntegerAttr(std::get<1>(arg)));
+                    attributes.push_back(builder_.getI32IntegerAttr(std::get<2>(arg)));
+                    return builder_.getArrayAttr(attributes);
+                }
                 else
                 {
                     // If type not handled, throw an exception or handle it appropriately
