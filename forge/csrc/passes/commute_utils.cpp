@@ -539,7 +539,11 @@ bool commute_through_concat(
         concat_golden_transform.attr[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.attr.size()] =
             concat_output_len;
     op->add_golden_transform(concat_golden_transform);
-    op->overwrite_op_attrs(attr);
+    std::vector<graphlib::OpType::Attr> concat_attr;
+    concat_attr.push_back(new_dim);
+    graphlib::OpType::Attrs named_attrs;
+    named_attrs["dim"] = new_dim;
+    op->change_op_type(graphlib::OpType("concatenate", concat_attr, {}, named_attrs));
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
