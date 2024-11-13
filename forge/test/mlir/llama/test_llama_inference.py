@@ -10,7 +10,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 
 
-@pytest.mark.push
+@pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 def test_llama_inference(model_path):
