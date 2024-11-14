@@ -1339,7 +1339,13 @@ def consteval_tensor(
 
 
 def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
-    return consteval_tensor(consteval_trace, name, inputs, is_forge, "Forward")
+    const_eval_tensor = consteval_tensor(consteval_trace, name, inputs, is_forge, "Forward")
+    # This: "torch.empty(const_eval_tensor.shape).copy_(const_eval_tensor)" will create tensor with contiguous memory layout consistent with its current shape.
+    # We are doing this because constant input tensors should have memory layout consistent with their shape.
+    # Sometimes, the stride is inconsistent with shape because some consteval operations might change the shape but not the stride.
+    # For example, if we had transpose in consteval graph, output tensor would have stride same as input.
+    # However, since we store that input as constant tensor, its shape defines its stride.
+    return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
 
 
 def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
@@ -1359,7 +1365,13 @@ def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_fo
 
 def consteval_input_bw(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool) -> torch.Tensor:
     inputs = {name: tensor}
-    return consteval_tensor(compiled_graph_state.consteval_trace, name, inputs, is_forge, "Backward")
+    const_eval_tensor = consteval_tensor(compiled_graph_state.consteval_trace, name, inputs, is_forge, "Backward")
+    # This: "torch.empty(const_eval_tensor.shape).copy_(const_eval_tensor)" will create tensor with contiguous memory layout consistent with its current shape.
+    # We are doing this because constant input tensors should have memory layout consistent with their shape.
+    # Sometimes, the stride is inconsistent with shape because some consteval operations might change the shape but not the stride.
+    # For example, if we had transpose in consteval graph, output tensor would have stride same as input.
+    # However, since we store that input as constant tensor, its shape defines its stride.
+    return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
 
 
 def compare_tensors(t0, t1):
