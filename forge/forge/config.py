@@ -187,6 +187,9 @@ class CompilerConfig:
     # If enabled, for given test, it generates Forge Modules in form of PyTest for each op that exists in given module
     tvm_generate_op_tests: bool = False
 
+    # If enabled, for given test, it generates Forge Modules in form of PyTest for each unique behaviors that exists in given module
+    tvm_generate_unique_op_tests: bool = False
+
     # Enables a transform for conv that directly reads input, such that it goes from stride > 1 to stride = 1
     # This usually translates to lower DRAM BW and less math as the input better populates tiles
     enable_conv_prestride: bool = True

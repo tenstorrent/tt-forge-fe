@@ -7,52 +7,61 @@ import torch
 import numpy as np
 import tensorflow as tf
 from loguru import logger
+import forge
+from forge.tensor import forge_dataformat_to_pytorch_dtype
+
+from typing import Tuple, List
 
 
-def forge_df_str_from_str(df: str, name: str):
+def forge_df_from_str(df: str, name: str, return_as_str: bool = True):
     df = df.lower()
 
     if df == "bfp2":
-        return "forge.DataFormat.Bfp2"
+        dev_data_format = forge.DataFormat.Bfp2
     elif df == "bfp2_b":
-        return "forge.DataFormat.Bfp2_b"
+        dev_data_format = forge.DataFormat.Bfp2_b
     elif df == "bfp4":
-        return "forge.DataFormat.Bfp4"
+        dev_data_format = forge.DataFormat.Bfp4
     elif df == "bfp4_b":
-        return "forge.DataFormat.Bfp4_b"
+        dev_data_format = forge.DataFormat.Bfp4_b
     elif df == "bfp8":
-        return "forge.DataFormat.Bfp8"
+        dev_data_format = forge.DataFormat.Bfp8
     elif df == "bfp8_b":
-        return "forge.DataFormat.Bfp8_b"
+        dev_data_format = forge.DataFormat.Bfp8_b
     elif df == "float16":
-        return "forge.DataFormat.Float16"
+        dev_data_format = forge.DataFormat.Float16
     elif df in ["float16_b", "bfloat16"]:
-        return "forge.DataFormat.Float16_b"
+        dev_data_format = forge.DataFormat.Float16_b
     elif df == "float32":
-        return "forge.DataFormat.Float32"
+        dev_data_format = forge.DataFormat.Float32
     elif df == "int8":
-        return "forge.DataFormat.Int8"
+        dev_data_format = forge.DataFormat.Int8
     elif df == "invalid":
-        return "forge.DataFormat.Invalid"
+        dev_data_format = forge.DataFormat.Invalid
     elif df == "lf8":
-        return "forge.DataFormat.Lf8"
+        dev_data_format = forge.DataFormat.Lf8
     elif df == "raw_uint16":
-        return "forge.DataFormat.RawUInt16"
+        dev_data_format = forge.DataFormat.RawUInt16
     elif df == "raw_uint32":
-        return "forge.DataFormat.RawUInt32"
+        dev_data_format = forge.DataFormat.RawUInt32
     elif df == "raw_uint8":
-        return "forge.DataFormat.RawUInt8"
+        dev_data_format = forge.DataFormat.RawUInt8
     elif df == "uint16":
-        return "forge.DataFormat.UInt16"
+        dev_data_format = forge.DataFormat.UInt16
     elif df == "uint8":
-        return "forge.DataFormat.UInt8"
+        dev_data_format = forge.DataFormat.UInt8
     elif df == "int8":
-        return "forge.DataFormat.Int8"
+        dev_data_format = forge.DataFormat.Int8
     elif df == "int32":
-        return "forge.DataFormat.Int32"
+        dev_data_format = forge.DataFormat.Int32
     else:
         logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
-        return "forge.DataFormat.Float32"
+        dev_data_format = forge.DataFormat.Float32
+
+    if return_as_str:
+        return "forge." + str(dev_data_format)
+
+    return dev_data_format
 
 
 def pytorch_df_str_from_str(df: str, name):
@@ -82,10 +91,10 @@ def pytorch_df_str_from_str(df: str, name):
 
 
 class PythonWriter:
-    def __init__(self, module_name, open_file=True):
+    def __init__(self, module_name, module_directory="generated_modules", open_file=True):
         self.filename = module_name + ".py"
 
-        self.module_directory = "generated_modules"
+        self.module_directory = module_directory
         os.makedirs(self.module_directory, exist_ok=True)
         if open_file:
             self.file = open(os.path.join(self.module_directory, self.filename), "w")
@@ -112,8 +121,15 @@ class ForgeWriter(PythonWriter):
         tf.bfloat16,
     ]
 
-    def __init__(self, module_name, framework, contains_incompatible_np_floats=False, delete_inputs=True):
-        super().__init__(module_name)
+    def __init__(
+        self,
+        module_name,
+        framework,
+        module_directory="generated_modules",
+        contains_incompatible_np_floats=False,
+        delete_inputs=True,
+    ):
+        super().__init__(module_name, module_directory)
 
         self.framework = framework
         self.param_names = []
@@ -123,7 +139,7 @@ class ForgeWriter(PythonWriter):
         self.delete_inputs = delete_inputs
         self.dev = "TTDevice"
 
-    def write_header(self):
+    def write_header(self, include_pytest_imports=False):
         self.wl("import forge")
         self.wl("import forge.op")
         self.wl("from forge import ForgeModule")
@@ -132,8 +148,13 @@ class ForgeWriter(PythonWriter):
         self.wl("from loguru import logger")
 
         self.wl("import torch")
-        self.wl("from forge import Tensor, compile")
-        self.wl("from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden")
+
+        if include_pytest_imports:
+            self.wl("")
+            self.wl("from forge import Tensor, compile")
+            self.wl("from forge.op.eval.common import compare_with_golden")
+            self.wl("import pytest")
+
         if self.framework == "tensorflow":
             self.wl("import tensorflow as tf")
             self.wl("from forge.tvm_utils import map_tf_dtype_to_pt")
@@ -151,6 +172,7 @@ class ForgeWriter(PythonWriter):
         if class_name is None:
             class_name = self.class_name
         self.num_submodels = num_submodels
+        self.wl("")
         self.wl(f"class {class_name}(ForgeModule):")
         self.indent += 1
         self.wl("def __init__(self, name):")
@@ -171,11 +193,11 @@ class ForgeWriter(PythonWriter):
             self.param_names.append(name)
             if is_submodel:
                 self.wl(
-                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_str_from_str(dtype, name)}), prepend_name=True)'
+                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_from_str(dtype, name)}), prepend_name=True)'
                 )
             else:
                 self.wl(
-                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_str_from_str(dtype, name)}))'
+                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_from_str(dtype, name)}))'
                 )
 
         for const in constants.values():
@@ -260,14 +282,14 @@ class ForgeWriter(PythonWriter):
         self.wl("")
 
     def write_param_parser(
-        self, param_names, param_file_name, names_params_file_name=None, named_buffers_file_name=None
+        self, param_names, param_file_name, named_params_file_name=None, named_buffers_file_name=None
     ):
         self.indent = 1
 
         if self.framework == "pytorch":
             # Case 1: No parameter or buffer files provided. Extract parameters and buffers
             # directly from the model.
-            if not names_params_file_name and not named_buffers_file_name:
+            if not named_params_file_name and not named_buffers_file_name:
                 self.wl(f"def process_framework_parameters(self, model):")
                 self.indent += 1
                 self.wl(f"named_parameters = dict(model.state_dict().items())")
@@ -278,10 +300,10 @@ class ForgeWriter(PythonWriter):
                 self.wl("named_parameters.update(named_buffers)")
             # Case 2: Parameter and buffer files provided. Load parameters and buffers from
             # the serialized files.
-            elif names_params_file_name and named_buffers_file_name:
+            elif named_params_file_name and named_buffers_file_name:
                 self.wl(f"def process_framework_parameters(self):")
                 self.indent += 1
-                self.wl(f"named_parameters = torch.load('{names_params_file_name}')")
+                self.wl(f"named_parameters = torch.load('{named_params_file_name}')")
                 if param_file_name is not None:
                     self.wl(f'serialized_params = torch.load("{param_file_name}")')
                     self.wl(f"named_parameters.update(serialized_params)")
@@ -969,44 +991,121 @@ class ForgeWriter(PythonWriter):
         else:
             assert False, "TODO: Add other framework param parsers"
 
-    def write_pytest_function(self, module_name, input_shapes):
+    def write_model_parameter_function(self, param_file_name, named_params_file_name, named_buffers_file_name):
         """
-        Generates a pytest function to test a module with given input shapes.
-
-        This function writes a pytest function that:
-        1. Creates input tensors based on the provided shapes.
-        2. Initializes the framework model with the specified module name.
-        3. Processes the framework parameters.
-        4. Runs the framework model with the created inputs.
-        5. Compiles the framework model.
-        6. Runs the compiled model with the same inputs.
-        7. Asserts that the outputs of the framework model and the compiled model are similar within a specified tolerance.
+        Generates a function to load model parameters and buffers from specified files.
 
         Args:
-            module_name (str): The name of the module to be tested.
-            input_shapes (list): A list of shapes for the input tensors.
+            param_file_name (str): The file name for additional serialized model parameters.
+            named_params_file_name (str): The file name containing the named parameters to be loaded.
+            named_buffers_file_name (str): The file name containing the named buffers to be loaded.
+        """
+        if named_params_file_name is None and named_buffers_file_name is None:
+            logger.warning("named_params_file_name and named_params_file_name arguments are None")
+        self.wl("")
+        self.wl("def load_model_params_and_buffers():")
+        self.indent += 1
+        self.wl(f"named_parameters = torch.load('{named_params_file_name}')")
+        if param_file_name is not None:
+            self.wl(f'serialized_params = torch.load("{param_file_name}")')
+            self.wl(f"named_parameters.update(serialized_params)")
+        self.wl(f"named_buffers = torch.load('{named_buffers_file_name}')")
+        self.wl("named_parameters.update(named_buffers)")
+        self.wl("return named_parameters")
+        self.indent -= 1
+        self.wl("")
+        self.wl("named_parameters = load_model_params_and_buffers()")
+        self.wl("")
+
+    def write_pytest_function(
+        self,
+        forge_module_names: List[str],
+        framework: str,
+        pytest_input_shapes_and_dtypes_list: List[List[Tuple]],
+        process_framework_parameters_func_status_list: List[bool],
+    ):
+        """
+        Generates a pytest function that tests modules with input shapes and data types.
+
+        This function writes a pytest function that:
+        1. Creates a list of forge module names, their associated input shapes, and data types into a pytest parameter list. It also includes a flag indicating whether each module needs to process framework parameters.
+        2. Creates inputs(i.e TensorFromPyTorch) for the forge module by calling the create_from_shape Tensor class method with shapes and dtypes from the pytest parameter.
+        3. Initializes the framework model using the forge module from the pytest parameter.
+        4. Calls the `process_framework_parameters` function for modules that need it (if the process_framework_parameters_func_status is `True`).
+        5. Runs the framework model with the created inputs.
+        6. Compiles the framework model.
+        7. Runs the compiled model with the same inputs.
+        8. Asserts that the outputs of the framework model and the compiled model are similar within a specified tolerance.
+
+        Args:
+            forge_module_names (List[str]): List of names of the modules to be tested, each corresponding to a forge module.
+            framework (str): The name of the framework under which the model is to be tested (e.g., "pytorch").
+            pytest_input_shapes_and_dtypes_list (List[List[Tuple]]): A list of input shapes and corresponding data types for each module. Each tuple contains the shape and dtype to be tested.
+            process_framework_parameters_func_status_list (List[bool]): A list indicating whether each module requires processing of framework parameters.
         """
         self.wl("")
         self.wl("")
-        self.wl("def test_module():")
+        self.wl("forge_modules_and_shapes_dtypes_list = [")
         self.indent += 1
-        self.wl("inputs = [")
-        self.indent += 1
-        for shape in input_shapes:
-            self.wl(f"Tensor.create_from_torch(torch.rand({shape})),")
+        for forge_module_name, process_framework_parameters_func_status, pytest_input_shapes_and_dtypes in zip(
+            forge_module_names, process_framework_parameters_func_status_list, pytest_input_shapes_and_dtypes_list
+        ):
+            pytest_input_shapes_and_dtypes = [
+                (shape, forge_dataformat_to_pytorch_dtype(forge_df_from_str(dtype, "", False)))
+                for shape, dtype in pytest_input_shapes_and_dtypes
+            ]
+            self.wl(
+                f"(({forge_module_name}, {process_framework_parameters_func_status}), {pytest_input_shapes_and_dtypes}), "
+            )
         self.indent -= 1
         self.wl("]")
-        self.wl("")
-        self.wl(f"framework_model = {self.class_name}('{module_name}')")
-        self.wl("framework_model.process_framework_parameters()")
-        self.wl("fw_out = framework_model(*inputs)")
-        self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
-        self.wl("co_out = compiled_model(*inputs)")
+        self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
+        self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        self.indent += 1
         self.wl("")
         self.wl(
-            "assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])"
+            "(forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes"
         )
+        self.wl("")
+        need_model_parameter_function = any(
+            [
+                True if isinstance(shape, str) else False
+                for pytest_input_shapes_and_dtypes in pytest_input_shapes_and_dtypes_list
+                for shape, _ in pytest_input_shapes_and_dtypes
+            ]
+        )
+        if need_model_parameter_function:
+            self.wl(
+                "inputs = [named_parameters[operand_shape] if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+            )
+        else:
+            self.wl(
+                "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+            )
+        self.wl("")
+        self.wl(f"framework_model = forge_module(forge_module.__name__)")
+        self.wl("")
+        self.wl("if need_process_framework_parameters_func:")
+        self.indent += 1
+        self.wl("framework_model.process_framework_parameters()")
+        self.indent -= 1
+        self.wl("")
+        self.wl("framework_output = framework_model(*inputs)")
+        self.wl("")
+        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
+        self.wl("tt_output = compiled_model(*inputs)")
+        self.wl("")
+        self.wl('tt_output = [tt_out.to("cpu") for tt_out in tt_output]')
+        self.wl(
+            "framework_output = [framework_output] if isinstance(framework_output, forge.tensor.TensorFromTrace) else framework_output"
+        )
+        self.wl(f'framework_output = [fw_out.to_framework("{framework}") for fw_out in framework_output]')
+        self.wl("")
+        self.wl(
+            "assert all([compare_with_golden(golden=fw_out, calculated=tt_out, pcc=0.99) for fw_out, tt_out in zip(framework_output, tt_output)])"
+        )
+        self.wl("")
+        self.wl("")
         self.indent -= 1
 
 
