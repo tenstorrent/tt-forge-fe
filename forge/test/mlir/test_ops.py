@@ -15,6 +15,92 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "shape, kernel_size, stride, padding, channel_last",
+    [
+        # NCDHW format
+        ((1, 1, 100, 54, 54), (5, 1, 1), (1, 1, 1), (0, 0, 0), False),
+        ((1, 1, 10, 10, 10), (2, 2, 2), (2, 2, 2), (0, 0, 0), False),
+        ((1, 1, 20, 20, 20), (3, 3, 3), (1, 1, 1), (1, 1, 1), False),
+        ((2, 2, 15, 25, 35), (5, 5, 5), (3, 3, 3), (2, 2, 2), False),
+        ((1, 2, 5, 5, 5), (3, 3, 3), (2, 2, 2), (1, 1, 1), False),
+        # NDHWC format (channel last)
+        ((1, 100, 54, 54, 100), (5, 1, 1), (1, 1, 1), (0, 0, 0), True),
+        ((1, 10, 10, 10, 10), (2, 2, 2), (2, 2, 2), (0, 0, 0), True),
+        ((1, 20, 20, 20, 10), (3, 3, 3), (1, 1, 1), (1, 1, 1), True),
+        ((2, 15, 25, 35, 20), (5, 5, 5), (3, 3, 3), (2, 2, 2), True),
+        ((1, 5, 5, 5, 10), (3, 3, 3), (2, 2, 2), (1, 1, 1), True),
+    ],
+)
+@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph : conv3d")
+@pytest.mark.push
+def test_decompose_avgpool3d_to_conv3d(shape, kernel_size, stride, padding, channel_last):
+    class AvgPool3D(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.avg_pool3d(x, kernel_size=kernel_size, stride=stride, padding=padding)
+
+    inputs = [torch.rand(shape)]
+    if channel_last:
+        inputs[0] = inputs[0].to(memory_format=torch.channels_last_3d)
+
+    framework_model = AvgPool3D()
+    fw_out = framework_model(*inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
+    "shape, kernel_size, stride, padding, dilation, output_channels, channel_last",
+    [
+        ((1, 1, 100, 54, 54), (5, 1, 1), (1, 1, 1), (0, 0, 0), (1, 1, 1), 1, False),
+        ((1, 1, 32, 32, 32), (3, 3, 3), (1, 1, 1), (1, 1, 1), (1, 1, 1), 2, True),
+        ((1, 1, 50, 28, 28), (3, 3, 3), (2, 2, 2), (1, 1, 1), (1, 1, 1), 3, False),
+        ((1, 1, 32, 32, 32), (3, 3, 3), (1, 1, 1), (1, 1, 1), (2, 2, 2), 4, True),
+        ((1, 1, 20, 20, 20), (3, 3, 3), (1, 1, 1), (2, 2, 2), (1, 1, 1), 5, False),
+        ((1, 1, 8, 8, 8), (1, 1, 1), (1, 1, 1), (0, 0, 0), (1, 1, 1), 7, True),
+        ((1, 1, 16, 16, 16), (5, 5, 5), (1, 1, 1), (2, 2, 2), (1, 1, 1), 8, False),
+    ],
+)
+@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph : conv3d")
+@pytest.mark.push
+def test_conv3d(shape, kernel_size, stride, padding, dilation, output_channels, channel_last):
+    class Conv3d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.conv3d = nn.Conv3d(
+                in_channels=shape[1],
+                out_channels=output_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+            )
+
+        def forward(self, x):
+            return self.conv3d(x)
+
+    inputs = [torch.rand(shape)]
+    if channel_last:
+        inputs[0] = inputs[0].to(memory_format=torch.channels_last_3d)
+
+    framework_model = Conv3d()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
     "shape, mode",
     [
         ((1, 2048, 7, 7), "nearest"),

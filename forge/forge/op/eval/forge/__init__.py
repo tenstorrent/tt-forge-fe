@@ -19,7 +19,7 @@ from .tilizer import Tilizer
 from .clip import Clip
 from .cumulativesum import CumulativeSum
 from .argmax import Argmax
-from .convolution import Conv2d
+from .convolution import Conv2d, Conv3d
 from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
 from .cast import Cast
@@ -110,12 +110,13 @@ op_to_module_map = {
     "grouped_reduce_avg": "reduce",
     "conv2d": Conv2d,
     "conv2d_transpose": Conv2dTranspose,
-    "conv3d": "convolution",
+    "conv3d": Conv3d,
     "max_pool1d": "pooling",
     "max_pool2d": MaxPool2d,
     "max_pool3d": "pooling",
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
+    "avg_pool3d": "pooling",
     "constant": "constant",
     "resize2d": "resize",
     "resize3d": "resize",

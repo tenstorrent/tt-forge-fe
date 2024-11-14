@@ -155,7 +155,7 @@ def Conv3d(
     bias: Optional[Union[Tensor, Parameter]] = None,
     stride: int = 1,
     padding: Union[int, str, List] = "same",
-    dilation: int = 1,
+    dilation: Union[int, List] = 1,
     groups: int = 1,
     channel_last: bool = False,
 ) -> Tensor:
@@ -168,34 +168,46 @@ def Conv3d(
         Op name, unique to the module, or leave blank to autoset
 
     activations: Tensor
-        Input activations of shape (N, Cin, Din, iH, iW)
+        Input activations of shape (N, Cin, iD, iH, iW) if channel_last=False,
+        or (N, iD, iH, iW, Cin) if channel_last=True
 
     weights:
         Tensor
             Input weights of shape (Cout, Cin / groups, kD, kH, kW)
-        [Tensor]
-            Internal Use pre-split
-            Optional Input weights list of shape [(weight_grouping, Cin / groups, Cout)]
-            of length: (K*K // weight_grouping)
 
-    bias: Tenor, optional
+    bias: Tensor, optional
         Optional bias tensor of shape (Cout)
     """
-    assert not channel_last, "Decomposition for channel-last Conv3d is not added yet"
-
+    # Ensure stride, dilation, and padding are in the correct format
     if isinstance(stride, int):
         stride = [stride] * 3
+    if isinstance(dilation, int):
+        dilation = [dilation] * 3
 
-    padding = conv3d_padding_to_canonical(padding, (weights.shape[2], weights.shape[3], weights.shape[4]))
+    # Adjust padding to handle 3D dimensions
+    padding = conv3d_padding_to_canonical(padding, (weights.shape[0], weights.shape[3], weights.shape[4]))
 
+    # Assemble inputs list
     inputs = [activations, weights]
     if bias is not None:
         inputs.append(bias)
 
-    attrs = stride + [dilation, groups] + padding + [channel_last]
     return op(
         "conv3d",
         name,
         *inputs,
-        attrs=attrs,
+        stride_depth=stride[0],
+        stride_height=stride[1],
+        stride_width=stride[2],
+        dilation_depth=dilation[0],
+        dilation_height=dilation[1],
+        dilation_width=dilation[2],
+        groups=groups,
+        padding_front=padding[0],
+        padding_back=padding[1],
+        padding_top=padding[2],
+        padding_bottom=padding[3],
+        padding_left=padding[4],
+        padding_right=padding[5],
+        channel_last=channel_last,
     ).get_tensor()

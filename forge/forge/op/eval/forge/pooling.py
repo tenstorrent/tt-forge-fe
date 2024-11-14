@@ -11,7 +11,7 @@ from forge.utils import align_up_tile
 from .transpose import TransposeTM
 from .nop import Nop
 from .nop import Nop
-from .convolution import Conv2d
+from .convolution import Conv2d, Conv3d
 from ..interface import PyOp
 
 from ..common import to_torch_operands
@@ -95,11 +95,13 @@ class MaxPool2d(PyOp):
         h_numerator = (
             h_in + (self.padding_top + self.padding_bottom) - self.dilation_height * (self.kernel_height - 1) - 1
         )
+
         h_out = math.floor(1 + (h_numerator / self.stride_height))
 
         w_numerator = (
             w_in + (self.padding_left + self.padding_right) - self.dilation_width * (self.kernel_width - 1) - 1
         )
+
         w_out = math.floor(1 + (w_numerator / self.stride_width))
 
         out_shape = [batch_size, h_out, w_out, channels] if self.channel_last else [batch_size, channels, h_out, w_out]
@@ -287,6 +289,35 @@ def eval(type, attr, ops):
         if channel_last:
             result = result.permute(0, 2, 3, 1)
 
+    elif type == "avg_pool3d":
+
+        kernel_size = [attr[0], attr[1], attr[2]]
+        stride = [attr[3], attr[4], attr[5]]
+        dilation = attr[6]
+        ceil_mode = attr[7]
+        padding = [attr[8], attr[9], attr[10], attr[11], attr[12], attr[13]]
+        count_include_pad = attr[-2]
+        channel_last = attr[-1]
+
+        assert padding[0] == padding[1] and padding[2] == padding[3] and padding[4] == padding[5]
+        padding = [padding[0], padding[2], padding[4]]
+
+        if channel_last:
+            activations = activations.permute(0, 4, 1, 2, 3)
+
+        result = torch.nn.functional.avg_pool3d(
+            activations,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            ceil_mode=bool(ceil_mode),
+            count_include_pad=count_include_pad,
+            divisor_override=None,
+        )
+
+        if channel_last:
+            result = result.permute(0, 2, 3, 4, 1)
+
     return result
 
 
@@ -366,8 +397,12 @@ def shape(type, attr, ops):
             result = (activations[0], activations[1], y, x)
 
         return result, []
-    elif type == "max_pool3d":
-        assert len(attr) == 17, f"Got len(attr) = {len(attr)} for type: {type}"
+
+    elif type == "max_pool3d" or "avg_pool3d":
+
+        assert (len(attr) == 17 and type == "max_pool3d") or (
+            type == "avg_pool3d" and len(attr) == 16
+        ), f"Got len(attr) = {len(attr)} for type: {type}"
         kernel_size = [attr[0], attr[1], attr[2]]
         stride = [attr[3], attr[4], attr[5]]
         dilation = attr[6]
@@ -583,6 +618,78 @@ def decompose(type, attr, dc, inputs):
                     "reshape", [result], {"shape": (w, cin, y_out, x_out)}, (w, cin, y_out, x_out)
                 )
 
+        dc.fuse(result)
+
+    elif type == "avg_pool3d":
+        kernel_size = [attr[0], attr[1], attr[2]]
+        stride = [attr[3], attr[4], attr[5]]
+        dilation = attr[6]
+        ceil_mode = attr[7]
+        padding = [attr[8], attr[9], attr[10], attr[11], attr[12], attr[13]]
+        count_include_pad = attr[-2]
+        channel_last = attr[-1]
+
+        activations = inputs[0]
+
+        if channel_last:
+            w, din, y, x, cin = (
+                activations.shape.v,
+                activations.shape.w,
+                activations.shape.z,
+                activations.shape.r,
+                activations.shape.c,
+            )
+
+        else:
+            w, cin, din, y, x = (
+                activations.shape.v,
+                activations.shape.w,
+                activations.shape.z,
+                activations.shape.r,
+                activations.shape.c,
+            )
+
+        kD, kH, kW = kernel_size
+
+        weight_value = 1.0 / (kD * kH * kW)
+        weight = torch.ones(1, 1, kD, kH, kW) * weight_value
+        weight = dc.tensor(weight)
+
+        result = dc.op_with_named_attrs(
+            Conv3d.create(
+                stride_depth=stride[0],
+                stride_height=stride[1],
+                stride_width=stride[2],
+                dilation_depth=dilation,
+                dilation_height=dilation,
+                dilation_width=dilation,
+                groups=cin,
+                padding_front=padding[0],
+                padding_back=padding[1],
+                padding_top=padding[2],
+                padding_bottom=padding[3],
+                padding_left=padding[4],
+                padding_right=padding[5],
+                channel_last=channel_last,
+            ),
+            [activations, weight],
+            {
+                "stride_depth": stride[0],
+                "stride_height": stride[1],
+                "stride_width": stride[2],
+                "dilation_depth": dilation,
+                "dilation_height": dilation,
+                "dilation_width": dilation,
+                "groups": cin,
+                "padding_front": padding[0],
+                "padding_back": padding[1],
+                "padding_top": padding[2],
+                "padding_bottom": padding[3],
+                "padding_left": padding[4],
+                "padding_right": padding[5],
+                "channel_last": channel_last,
+            },
+        )
         dc.fuse(result)
 
     elif type == "max_pool2d":
