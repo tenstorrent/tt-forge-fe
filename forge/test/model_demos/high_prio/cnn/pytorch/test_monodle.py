@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import forge
+import pytest
 import requests
 import torchvision.transforms as transforms
 from PIL import Image
@@ -13,7 +14,7 @@ import os
 def test_monodle_pytorch(test_device):
     # PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model_name = "monodle_pytorch"
 

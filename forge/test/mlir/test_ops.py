@@ -14,6 +14,73 @@ from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
+@pytest.mark.parametrize(
+    "shape, mode",
+    [
+        ((1, 2048, 7, 7), "nearest"),
+        ((1, 2048, 7, 7), "bilinear"),
+    ],
+)
+@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+@pytest.mark.push
+def test_interpolate(shape, mode):
+    class interpolate(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.interpolate(x, scale_factor=2, mode=mode)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = interpolate()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 256, 6, 6),
+        (1, 3, 64, 64),
+        (1, 512, 14, 14),
+        (1, 3, 224, 224),
+        (2, 256, 10, 10),
+        (1, 512, 3, 3),
+        (1, 1000, 1, 1),
+        (2, 128, 8, 8),
+        (4, 1, 32, 32),
+        (8, 64, 32, 32),
+    ],
+)
+@pytest.mark.push
+def test_flatten(shape):
+    class flatten(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.flatten(x, 1)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = flatten()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
 @pytest.mark.push
 def test_cast(operand_and_cast_dtype):
@@ -1307,16 +1374,25 @@ def test_reduce_max(input_shape, dim):
 
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
-    "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode",
+    "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
-        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros"),
-        (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros"),
-        (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros"),
+        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros", (16, 50, 100)),
+        (16, 32, (3, 5), 2, 1, 1, True, 1, "zeros", (16, 50, 100)),
+        (16, 16, (3, 3), 1, 1, 16, True, 1, "zeros", (16, 50, 100)),
+        (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros", (20, 16, 50, 100)),
+        (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (5, 5), 1, 2, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 32, (3, 5), 2, 1, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 32, (3, 3), 4, 1, 1, False, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (3, 3), 2, 2, 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (3, 3), 1, 1, 16, True, 1, "zeros", (20, 16, 50, 100)),
     ],
 )
-@pytest.mark.push
-def test_convtranspose2d(in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode):
-    inputs = [torch.randn(20, 16, 50, 100)]
+def test_convtranspose2d(
+    in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape
+):
+    inputs = [torch.randn(*input_shape)]
 
     framework_model = torch.nn.ConvTranspose2d(
         in_channels=in_channels,
@@ -1366,6 +1442,33 @@ def test_avg_pool2d():
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
+@pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
+@pytest.mark.parametrize("padding", [0, 1])
+@pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32")
+@pytest.mark.push
+def test_avgpool2d_decompose_to_conv2d(shape, padding):
+    class AvgPool2d(nn.Module):
+        def __init__(self, padding):
+            super().__init__()
+            self.pool = nn.AvgPool2d(kernel_size=[7, 7], stride=[7, 7], padding=padding)
+
+        def forward(self, x):
+            return self.pool(x)
+
+    inputs = [torch.rand(shape).to(torch.bfloat16)]
+
+    framework_model = AvgPool2d(padding=padding)
+    framework_model = framework_model.to(torch.bfloat16)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
 @pytest.mark.parametrize(
     "padding",
@@ -1387,7 +1490,7 @@ def test_avg_pool2d():
         ),
     ],
 )
-@pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion")
+@pytest.mark.push
 def test_conv2d_with_padding(shape, padding):
     class PaddingAndConv2d(nn.Module):
         def __init__(self, padding):
@@ -1398,6 +1501,13 @@ def test_conv2d_with_padding(shape, padding):
         def forward(self, x):
             x = nn.functional.pad(x, self.padding, mode="constant", value=0)
             return self.conv(x)
+
+    pad_top, pad_bottom, pad_left, pad_right = padding
+    if pad_top != pad_bottom or pad_left != pad_right:
+        pytest.xfail(
+            "TTNN only supports padding height/width attributes. Thus, padding_top "
+            "must equal padding_bottom for the op to execute as expected."
+        )
 
     framework_model = PaddingAndConv2d(padding=padding)
 
@@ -1426,6 +1536,7 @@ def test_conv2d_with_padding(shape, padding):
         ),
     ],
 )
+@pytest.mark.push
 def test_maxpool2d_with_padding(shape, padding):
     class PaddingAndMaxPool2d(nn.Module):
         def __init__(self, padding):
@@ -1441,6 +1552,57 @@ def test_maxpool2d_with_padding(shape, padding):
     framework_model = framework_model.to(torch.bfloat16)
 
     inputs = [torch.rand(shape).to(torch.bfloat16)]
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.push
+@pytest.mark.xfail(reason="Tensor rank is greater than 4")
+def test_reshape_pytorch():
+    class ReshapeTest(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, inp_1, inp_2):
+            inp = inp_1 + inp_2
+            inp_res = inp.reshape(1, 2, 2, 7, 7, 384)
+            inp_res = inp_res.transpose(-4, -3)
+            inp_res = inp_res.reshape(-1, 384)
+            return inp_res
+
+    inputs = [torch.rand(4, 49, 384), torch.rand(4, 49, 384)]
+    framework_model = ReshapeTest()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.push
+@pytest.mark.xfail(reason="Tensor rank is greater than 4")
+def test_broadcast_pytorch():
+    class BroadcastTest(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, inp_1):
+            inp_1 = inp_1.transpose(-3, -2)
+            inp_1_1 = inp_1[:1]
+            inp_1_1 = inp_1_1.squeeze(0)
+            return inp_1_1
+
+    inputs = [torch.rand(3, 64, 49, 3, 32)]
+    framework_model = BroadcastTest()
+    fw_out = framework_model(*inputs)
+
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 

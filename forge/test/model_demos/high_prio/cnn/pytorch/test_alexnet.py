@@ -7,7 +7,7 @@ import torch
 from PIL import Image
 from torchvision import transforms
 from loguru import logger
-
+import pytest
 import forge
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import os
@@ -17,7 +17,7 @@ import os
 def test_alexnet_torchhub(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)

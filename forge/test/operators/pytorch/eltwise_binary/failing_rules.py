@@ -298,3 +298,376 @@ class FailingRulesData:
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
     ]
+
+    ne_non_compact = [
+        # PCC check fails for all input sources and buggy shapes
+        common[0],
+        # Exception from DATA_MISMATCH
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_ANOTHER_OP,
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 1),
+            ],
+            failing_reason=None,
+        ),
+        # PCC check fails for CONST_EVAL_PASS and buggy shapes
+        common[1],
+        # PCC check fails for FROM_HOST and all int dev data formats
+        common[2],
+        # Exceptions for failing_rules[2]
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+            ],
+            input_shapes=[
+                (1, 2, 3, 4),
+            ],
+            dev_data_formats=[forge.DataFormat.RawUInt32, forge.DataFormat.Int32],
+            failing_reason=None,
+        ),
+        # PCC check fails for buggy shapes for ge
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 1000),
+                (5, 11, 64, 1),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (11, 45, 17),
+                (1, 11, 45, 17),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+                None,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (45, 17),
+                (1, 45, 17),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Float16_b,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_DRAM_QUEUE,
+                InputSource.CONST_EVAL_PASS,
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # Exception for PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 4),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=None,
+        ),
+    ]
+
+    ne = [
+        # PCC check fails for all input sources and buggy shapes
+        common[0],
+        # PCC check fails for CONST_EVAL_PASS and buggy shapes
+        common[1],
+        # PCC check fails for FROM_HOST and all int dev data formats
+        common[2],
+        # fmt: off
+        # Exceptions for failing_rules[1]
+        (InputSource.FROM_ANOTHER_OP,   (1, 1),             None,                               None,   None),
+        (InputSource.FROM_HOST,         (1, 1),             None,                               None,   None),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 1),             None,                               None,   None),
+        # Exceptions for failing_rules[3]
+        (InputSource.FROM_HOST,         (1, 4),             forge.DataFormat.Int8,              None,   None),
+        (InputSource.FROM_HOST,         (1, 2, 3, 4),       forge.DataFormat.RawUInt32,         None,   None),
+        (InputSource.FROM_HOST,         (1, 2, 3, 4),       forge.DataFormat.Int32,             None,   None),
+        # PCC check fails for Int8
+        (InputSource.FROM_DRAM_QUEUE,   None,               forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.CONST_EVAL_PASS,   None,               forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        # Exceptions for PCC check fails for Int8
+        (InputSource.FROM_DRAM_QUEUE,   (1, 4),             forge.DataFormat.Int8,              None,   None),
+        # PCC check fails for buggy shapes
+        (InputSource.FROM_HOST,         (1, 1000),          None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 1000),          None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (5, 11, 64, 1),     None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (5, 11, 64, 1),     None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        # PCC check fails for buggy shapes
+        (InputSource.FROM_HOST,         (11, 45, 17),       [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (11, 45, 17),       [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (1, 11, 45, 17),    [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 11, 45, 17),    [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        # PCC check fails for buggy shapes
+        (InputSource.FROM_HOST,         (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        # fmt: on
+    ]
+
+    gt = [
+        # PCC check fails for all input sources and buggy shapes
+        common[0],
+        # Exception from DATA_MISMATCH
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_ANOTHER_OP,
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 1),
+            ],
+            failing_reason=None,
+        ),
+        # PCC check fails for CONST_EVAL_PASS and buggy shapes
+        common[1],
+        # PCC check fails for FROM_HOST and all int dev data formats
+        common[2],
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (5, 11, 64, 1),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (11, 45, 17),
+                (1, 11, 45, 17),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+                None,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (45, 17),
+                (1, 45, 17),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Float16_b,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_DRAM_QUEUE,
+                InputSource.CONST_EVAL_PASS,
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # Exception for PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 4),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=None,
+        ),
+    ]
+
+    lt = [
+        # PCC check fails for all input sources and buggy shapes
+        common[0],
+        # Exception from DATA_MISMATCH
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_ANOTHER_OP,
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 1),
+            ],
+            failing_reason=None,
+        ),
+        # PCC check fails for CONST_EVAL_PASS and buggy shapes
+        common[1],
+        # PCC check fails for FROM_HOST and all int dev data formats
+        common[2],
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (5, 11, 64, 1),
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (11, 45, 17),
+                (1, 11, 45, 17),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+                None,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for buggy shapes
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (45, 17),
+                (1, 45, 17),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Float16_b,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for FROM_ANOTHER_OP
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_ANOTHER_OP,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_DRAM_QUEUE,
+                InputSource.FROM_ANOTHER_OP,
+                InputSource.CONST_EVAL_PASS,
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # Exception for PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+            ],
+            input_shapes=[
+                (1, 4),
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=None,
+        ),
+    ]
+
+    maximum = [
+        # PCC check fails for all input sources and buggy shapes
+        common[0],
+        # PCC check fails for CONST_EVAL_PASS and buggy shapes
+        common[1],
+        # PCC check fails for FROM_HOST and all int dev data formats
+        common[2],
+        # PCC check fails for Int8
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_DRAM_QUEUE,
+                InputSource.FROM_ANOTHER_OP,
+                InputSource.CONST_EVAL_PASS,
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+    ]
+
+    minimum = [
+        # PCC check fails for all input sources and buggy shapes
+        common[0],
+        # PCC check fails for CONST_EVAL_PASS and buggy shapes
+        common[1],
+        # PCC check fails for FROM_HOST and all int dev data formats
+        common[2],
+        # PCC check fails for CONST_EVAL_PASS and Int8
+        TestCollection(
+            input_sources=[
+                InputSource.CONST_EVAL_PASS,
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # Int data formats complains about type of second tensor
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_DRAM_QUEUE,
+                InputSource.FROM_ANOTHER_OP,
+            ],
+            dev_data_formats=TestCollectionCommon.int.dev_data_formats,
+            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        ),
+    ]

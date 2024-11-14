@@ -697,7 +697,14 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
         )
     )
 
-    in_channel = next((n["attrs"]["shape"][0][0][0] for n in graph["nodes"] if n["name"] == "model.weight"), None)
+    in_channel = None
+    for input_ in node["inputs"]:
+        input_nid = input_[0]
+        input_node = graph["nodes"][input_nid]
+        if input_node["op"] == "parameter" and input_node["name"].endswith("weight"):
+            in_channel = input_node["attrs"]["shape"][0][0][0]
+            break
+
     groups = int(node["attrs"]["groups"][0][0])
     assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel"
     args.append(
@@ -2041,7 +2048,7 @@ def generate_forge_module(
         else:
             forge_mod = TestClass(writer.module_name)
 
-            if isinstance(framework_mod, forge.module.PyTorchModule):
+            if isinstance(framework_mod, forge.module.PyTorchModule) and compiler_cfg.tvm_generate_op_tests:
                 forge_mod.process_framework_parameters()
             else:
                 forge_mod.process_framework_parameters(framework_mod.module)
@@ -2661,7 +2668,7 @@ def compile_tvm_to_python(
             param_file_name = os.path.join(writer.module_directory, writer.module_name + "_params.pt")
             torch.save(params_from_tvm, param_file_name)
 
-        if framework == "pytorch":
+        if framework == "pytorch" and compiler_cfg.tvm_generate_op_tests:
             # Store named parameters
             names_params_file_name = os.path.join(writer.module_directory, writer.module_name + "_names_params.pt")
             named_parameters = dict(framework_mod.module.state_dict().items())

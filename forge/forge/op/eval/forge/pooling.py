@@ -11,6 +11,7 @@ from forge.utils import align_up_tile
 from .transpose import TransposeTM
 from .nop import Nop
 from .nop import Nop
+from .convolution import Conv2d
 from ..interface import PyOp
 
 from ..common import to_torch_operands
@@ -498,8 +499,32 @@ def decompose(type, attr, dc, inputs):
         weight_tensor = weight_value * torch.ones((cin, 1, kH, kW))
 
         weight = dc.tensor(weight_tensor)
-        result = dc.op(
-            "conv2d", [activations, weight], stride + [dilation, cin] + padding + [False, 0, 0, 0, channel_last]
+        result = dc.op_with_named_attrs(
+            Conv2d.create(
+                stride_height=stride[0],
+                stride_width=stride[1],
+                dilation_height=dilation,
+                dilation_width=dilation,
+                groups=cin,
+                padding_left=padding[0],
+                padding_right=padding[1],
+                padding_top=padding[2],
+                padding_bottom=padding[3],
+                channel_last=channel_last,
+            ),
+            [activations, weight],
+            {
+                "stride_height": stride[0],
+                "stride_width": stride[1],
+                "dilation_height": dilation,
+                "dilation_width": dilation,
+                "groups": cin,
+                "padding_left": padding[0],
+                "padding_right": padding[1],
+                "padding_top": padding[2],
+                "padding_bottom": padding[3],
+                "channel_last": channel_last,
+            },
         )
 
         #
@@ -518,10 +543,14 @@ def decompose(type, attr, dc, inputs):
         if not padding == [0, 0, 0, 0] and (ceil_mode == True or count_include_pad == False):
             if channel_last:
                 _, y_out, x_out, _ = (result.shape.w, result.shape.z, result.shape.r, result.shape.c)
-                result = dc.op("reshape", [result], (w, 1, y_out * x_out, cin))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, 1, y_out * x_out, cin)}, (w, 1, y_out * x_out, cin)
+                )
             else:
                 _, _, y_out, x_out = (result.shape.w, result.shape.z, result.shape.r, result.shape.c)
-                result = dc.op("reshape", [result], (w, 1, cin, y_out * x_out))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, 1, cin, y_out * x_out)}, (w, 1, cin, y_out * x_out)
+                )
                 result = dc.op(TransposeTM.create(2, 3), [result])
 
             # Since count_include_pad=False undoes math in all padded regions, it takes precedence:
@@ -542,16 +571,17 @@ def decompose(type, attr, dc, inputs):
                 tile_align=False,
             )
             undo_math_picker_tensor = dc.tensor(undo_math_picker)
-            # TODO: This sparse matmul can definitely be fused the same way the sparse mm of convtransposed2d was fused
-            # Ideally, conv2d op should be aware of the ceil_mode param (convtranspose2d has a similar thing -
-            # output_padding) as that way it could create this sparse mm itself and easily fuse it
-            result = dc.op("sparse_matmul", [undo_math_picker_tensor, result])
+            result = dc.op("matmul", [undo_math_picker_tensor, result])
 
             if channel_last:
-                result = dc.op("reshape", [result], (w, y_out, x_out, cin))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, y_out, x_out, cin)}, (w, y_out, x_out, cin)
+                )
             else:
                 result = dc.op(TransposeTM.create(2, 3), [result])
-                result = dc.op("reshape", [result], (w, cin, y_out, x_out))
+                result = dc.op_with_named_attrs(
+                    "reshape", [result], {"shape": (w, cin, y_out, x_out)}, (w, cin, y_out, x_out)
+                )
 
         dc.fuse(result)
 

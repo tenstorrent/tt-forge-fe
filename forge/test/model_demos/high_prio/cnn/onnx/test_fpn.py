@@ -5,6 +5,7 @@ import torch
 import forge
 import onnx
 import os
+import pytest
 from forge.verify.backend import verify_module
 from forge import VerifyConfig
 
