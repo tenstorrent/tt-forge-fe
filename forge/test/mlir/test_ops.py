@@ -129,7 +129,6 @@ def test_cast(operand_and_cast_dtype):
         (1, 7, 256),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_sin(shape):
     class sin(nn.Module):
@@ -158,7 +157,6 @@ def test_sin(shape):
         (1, 7, 256),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_cosine(shape):
     class cosine(nn.Module):
@@ -1070,9 +1068,6 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
-@pytest.mark.xfail(
-    reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
-)
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.parametrize("dim", [1, 2])
@@ -1084,6 +1079,11 @@ def test_mean(x_shape, y_shape, dim):
 
         def forward(self, x):
             return torch.mean(x, dim=dim)
+
+    if dim == 1 and y_shape == 32:
+        pytest.xfail(
+            "TTNN: tilize fails for float32 - will be fixed once a080e2f035990d57ce5436a8affb3f052a5a1b5f in tt-metal is consumed"
+        )
 
     inputs = [
         torch.rand(1, x_shape, y_shape),
