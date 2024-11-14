@@ -11,6 +11,9 @@ from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.push
+@pytest.mark.xfail(
+    reason=" Metal issue:  Can only tilize bfloat16 tensors. tracked on: https://github.com/tenstorrent/tt-metal/issues/14570"
+)
 def test_resnet_inference():
     # Compiler configurations
     compiler_cfg = forge.config._get_global_compiler_config()
