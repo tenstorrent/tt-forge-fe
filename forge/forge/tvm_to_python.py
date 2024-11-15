@@ -23,7 +23,7 @@ import os
 import sys
 import importlib
 
-from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter
+from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_str_from_str
 
 
 def populate_torch_all_to_args(graph, nid, compiler_cfg):
@@ -1246,7 +1246,7 @@ def populate_cast_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     args = []
     dtype = node["attrs"]["dtype"][0][0]
-    args.append(("dtype", "torch." + f"{dtype}"))
+    args.append(("dtype", pytorch_df_str_from_str(dtype, node["forge_name"])))
     return args
 
 
