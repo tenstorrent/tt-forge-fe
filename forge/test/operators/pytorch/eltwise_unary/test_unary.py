@@ -165,7 +165,21 @@ class TestCollectionData:
     __test__ = False
 
     implemented = TestCollection(
-        operators=["relu", "sqrt", "reciprocal", "sigmoid"],
+        operators=[
+            "relu",
+            "sqrt",
+            "reciprocal",
+            "sigmoid",
+            "abs",
+            # "absolute",     # alias for abs
+            "cos",
+            "exp",
+            "neg",
+            # "negative",     # alias for neg
+            "rsqrt",
+            "sin",
+            "square",
+        ],
     )
 
 
@@ -233,6 +247,63 @@ TestParamsData.test_plan = TestPlan(
             ],
             math_fidelities=[MathFidelity.HiFi4],
             failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            operators=["abs", "cos", "neg", "sin"],
+            input_sources=[InputSource.FROM_HOST],
+            input_shapes=[(1, 2, 3, 4)],
+            dev_data_formats=[
+                DataFormat.Int8,
+                DataFormat.Int32,
+            ],
+            math_fidelities=[MathFidelity.HiFi4],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            operators=["rsqrt"],
+            input_sources=[InputSource.FROM_HOST],
+            input_shapes=[(1, 2, 3, 4)],
+            dev_data_formats=[
+                DataFormat.Bfp2,
+                DataFormat.Bfp2_b,
+                DataFormat.Bfp4,
+                DataFormat.Bfp4_b,
+                DataFormat.Bfp8,
+                DataFormat.Bfp8_b,
+                DataFormat.Float16,
+                DataFormat.Float32,
+                DataFormat.Lf8,
+            ],
+            math_fidelities=[MathFidelity.HiFi4],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            operators=["rsqrt"],
+            input_sources=[InputSource.FROM_HOST],
+            input_shapes=[(1, 2, 3, 4)],
+            dev_data_formats=[DataFormat.Float16_b],
+            math_fidelities=[
+                MathFidelity.LoFi,
+                MathFidelity.HiFi2,
+                MathFidelity.HiFi3,
+                MathFidelity.HiFi4,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            operators=["square"],
+            input_sources=[InputSource.FROM_HOST],
+            input_shapes=[(1, 2, 3, 4)],
+            dev_data_formats=[
+                DataFormat.RawUInt8,
+                DataFormat.RawUInt16,
+                DataFormat.RawUInt32,
+                DataFormat.Int8,
+                DataFormat.UInt16,
+                DataFormat.Int32,
+            ],
+            math_fidelities=[MathFidelity.HiFi4],
+            failing_reason=FailingReasons.ATTRIBUTE_ERROR,
         ),
     ],
 )
