@@ -76,6 +76,8 @@ def pytorch_df_str_from_str(df: str, name):
         return "torch.int16"
     elif df == "int64":
         return "torch.int64"
+    elif df == "uint1":
+        return "torch.bool"
     else:
         logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
         return "torch.float32"

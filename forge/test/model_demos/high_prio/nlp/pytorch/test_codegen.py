@@ -22,7 +22,7 @@ variants = [
 def test_codegen(test_device, variant):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
