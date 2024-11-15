@@ -13,7 +13,7 @@ import numpy as np
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, VerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
 from forge.config import CompileDepth, _get_global_compiler_config
 
 from . import models
@@ -87,5 +87,5 @@ def test_hstack_hslice(test_device, mode, recompute, model, shape, pad):
             enable_recompute=recompute,
             compile_depth=CompileDepth.FORGE_GRAPH_PRE_PLACER,  # some reshapes decomposed into unsupported MMs
         ),
-        verify_cfg=VerifyConfig(),
+        verify_cfg=DepricatedVerifyConfig(),
     )

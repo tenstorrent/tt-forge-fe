@@ -40,7 +40,7 @@ from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors
 from forge.typing import *
-from forge.verify import VerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
+from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 
 
 LAST_SUCCESSFUL_STAGE = None
@@ -110,7 +110,7 @@ class CompileContext:
     modules: List[Module]
     graph_name: str
     compiler_cfg: CompilerConfig
-    verify_cfg: VerifyConfig
+    verify_cfg: DepricatedVerifyConfig
     microbatch_size: int
     microbatch_count: int
     inputs: Union[torch.Tensor, List[torch.Tensor]]
@@ -233,7 +233,7 @@ def compile_main(
         modules=[wrapped_module],
         graph_name=module_name,
         compiler_cfg=compiler_cfg,
-        verify_cfg=VerifyConfig.disabled(),
+        verify_cfg=DepricatedVerifyConfig.disabled(),
         microbatch_size=1,
         microbatch_count=1,
         inputs=sample_inputs,
@@ -398,7 +398,7 @@ def forge_compile_torch(
         graph_name=module_name,
         inputs=inputs,
         compiler_cfg=compiler_cfg,
-        verify_cfg=VerifyConfig.disabled(),
+        verify_cfg=DepricatedVerifyConfig.disabled(),
         microbatch_size=1,
         microbatch_count=1,
         graph=graph,
@@ -412,7 +412,7 @@ def forge_compile(
     *inputs: Union[Tensor, List[Any], Dict[str, Any]],
     targets: List[Tensor] = [],
     compiler_cfg: Optional[CompilerConfig] = None,
-    verify_cfg: Optional[VerifyConfig] = None,
+    verify_cfg: Optional[DepricatedVerifyConfig] = None,
     losses: Optional[List[Tensor]] = None,
     microbatch_size: int = 1,
     microbatch_count: int = 1,
@@ -439,7 +439,7 @@ def forge_compile(
     targets: List[Tensor], optional
         Optional list of target tensors, if this device has a loss module
 
-    verify_cfg: Optional[VerifyConfig]
+    verify_cfg: Optional[DepricatedVerifyConfig]
         If set, automatic verification vs. pytorch golden result will be performed, with given parameters
         must contain data.
 
@@ -452,7 +452,7 @@ def forge_compile(
 
     inputs = list(inputs)
     if verify_cfg is None:
-        verify_cfg = VerifyConfig.disabled()  # no verification config provided, disable by default
+        verify_cfg = DepricatedVerifyConfig.disabled()  # no verification config provided, disable by default
 
     if compiler_cfg is None:
         compiler_cfg = _get_global_compiler_config()
@@ -538,7 +538,7 @@ def generate_compile_results(
 
     Parameters
     ----------
-    verify_cfg: VerifyConfig
+    verify_cfg: DepricatedVerifyConfig
         Value verification config
 
     initial_graph: Graph
@@ -946,7 +946,7 @@ def convert_to_forge_module(
     module: AnyModule,
     module_inputs: Union[AnyTensor, List[AnyTensor]],
     compiler_cfg: CompilerConfig,
-    verify_cfg: VerifyConfig,
+    verify_cfg: DepricatedVerifyConfig,
 ) -> ForgeModule:
     """
     Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).

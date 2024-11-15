@@ -7,6 +7,8 @@ from enum import Enum
 import os
 
 import torch
+import tensorflow as tf
+import forge
 
 from forge._C import DataFormat
 from dataclasses_json import dataclass_json
@@ -83,7 +85,7 @@ class NebulaGalaxy:
 
 @dataclass_json
 @dataclass
-class VerifyConfig:
+class DepricatedVerifyConfig:
     graph_name: str = "graph"  # name of the graph/test
     enabled: bool = True
     intermediates: bool = True
@@ -204,8 +206,8 @@ class VerifyConfig:
             self.golden_ignore_df_precision = False
 
     @classmethod
-    def disabled(cls) -> "VerifyConfig":
-        v = VerifyConfig()
+    def disabled(cls) -> "DepricatedVerifyConfig":
+        v = DepricatedVerifyConfig()
         v.enabled = False
         v.verify_last = False
         v.intermediates = False
@@ -224,18 +226,99 @@ def should_waive_gradient(param_name, verify_cfg):
 
 
 # Global verify configutation
-g_verify_config: VerifyConfig = VerifyConfig()
+g_verify_config: DepricatedVerifyConfig = DepricatedVerifyConfig()
 
 
-def _get_global_verify_config() -> VerifyConfig:
+def _get_global_verify_config() -> DepricatedVerifyConfig:
     return g_verify_config
 
 
 def _clear_global_verify_config():
     global g_verify_config
-    g_verify_config = VerifyConfig()
+    g_verify_config = DepricatedVerifyConfig()
 
 
-def _set_global_verify_config(config: VerifyConfig):
+def _set_global_verify_config(config: DepricatedVerifyConfig):
     global g_compiler_config
     g_compiler_config = config
+
+
+# TODO: 1. Add support for backward pass verification
+#       2. Add support for intermediate representation verification
+@dataclass_json
+@dataclass
+class VerifyConfig:
+
+    # --- Tensor Verification Settings --- #
+    enabled: bool = True  # enable/disable verification
+    verify_size: bool = True  # Check output size
+    verify_dtype: bool = True  # Check output dtype
+    verify_shape: bool = True  # Check output shape
+    verify_values: bool = True  # Check output similarity
+
+    # --- Thresholds and Metrics --- #
+    rtol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
+    atol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
+    relative_atol: float = 0.1  # set atol at 10% of the max value in tensor
+    pcc: Optional[float] = None  # Pearson Coefficient Check
+    dissimilarity_threshold: Optional[float] = None  # use dissimilarity check for bool tensors
+
+    # --- Logging settings --- #
+    dump_tensors: bool = False  # dump tensors to the bellow path
+    dump_tensors_path: str = (
+        ""  # dump input tensors as well as framework_model and compiled_model output tensors to this path
+    )
+
+    # --- Supported Types --- #
+    @property
+    def supported_tensor_types(self) -> Tuple:
+        from forge import Tensor  # Local import to avoid circular dependency
+
+        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor)
+
+    @property
+    def compiled_model_types(self) -> Tuple:
+        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency
+
+        return (CompiledModel,)
+
+    @property
+    def framework_model_types(self) -> Tuple:
+        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule)
+
+    # set defaults if not set explicitly by user. Relax under silicon, focus on pcc more.
+    def __post_init__(self):
+        if isinstance(self.rtol, (int, float)):
+            # User set one value, instead of dict
+            self.rtol = {torch.float32: self.rtol, torch.float16: self.rtol, torch.bfloat16: self.rtol}
+
+        if isinstance(self.atol, (int, float)):
+            # User set one value, instead of dict
+            self.atol = {torch.float32: self.atol, torch.float16: self.atol, torch.bfloat16: self.atol}
+
+        rtol_defaults = {
+            torch.float32: None,
+            torch.float16: None,
+            torch.bfloat16: None,
+        }
+        atol_defaults = {
+            torch.float32: None,
+            torch.float16: None,
+            torch.bfloat16: None,
+        }
+
+        for dt in [torch.float32, torch.float16, torch.bfloat16]:
+            if not dt in self.rtol:
+                self.rtol[dt] = rtol_defaults[dt]
+            if not dt in self.atol:
+                self.atol[dt] = atol_defaults[dt]
+
+        if self.pcc is None:
+            self.pcc = 0.99
+
+        if self.dissimilarity_threshold is None:
+            # threshold picked empirically. We will update it as TTNN evolves
+            self.dissimilarity_threshold = 0.001
+
+
+global_verify_config: VerifyConfig = VerifyConfig()

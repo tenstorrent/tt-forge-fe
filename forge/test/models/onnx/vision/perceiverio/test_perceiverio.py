@@ -11,9 +11,9 @@ import pytest
 
 from transformers import AutoImageProcessor
 
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
-# from forge.verify.config import TestKind
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
+from forge.verify.config import TestKind
 
 
 def get_sample_data(model_name):
@@ -102,7 +102,7 @@ def test_perceiver_for_image_classification_onnx(test_device, model_name):
         tt_model,
         input_shapes=(pixel_values.shape,),
         inputs=[(pixel_values,)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

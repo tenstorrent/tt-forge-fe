@@ -11,6 +11,7 @@ import forge
 from forge.tensor import to_pt_tensors
 from forge.op.eval.common import compare_tensor_to_golden, compare_with_golden
 from forge.config import _get_global_compiler_config
+from forge.verify.verify import verify
 from forge._C import DataFormat
 
 
@@ -91,10 +92,7 @@ def test_conv2d(
     inputs = [tf.random.uniform((batch_size, input_height, input_width, input_channels), dtype=activations_dtype)]
 
     framework_model = Conv2d()
-    fw_out = to_pt_tensors(framework_model(*inputs))
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
     co_out[0] = co_out[0].reshape(fw_out[0].shape)
@@ -155,12 +153,9 @@ def test_dual_conv2d():
     inputs = [tf.random.uniform((1, 128, 128, 3))]
 
     framework_model = DualConv2d()
-    fw_out = to_pt_tensors(framework_model(*inputs))
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-    co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
-    assert compare_tensor_to_golden("dual_conv2d", fw_out[0], co_out[0].reshape(fw_out[0].shape))
+
+    verify(inputs=inputs, compiled_model=compiled_model, framework_model=framework_model)
 
 
 @pytest.mark.parametrize(
@@ -218,11 +213,8 @@ def test_maxpool2d(
 
     _get_global_compiler_config().default_df_override = DataFormat.Float16_b
     inputs = [tf.random.uniform(act_shape, dtype=tf.bfloat16)]
+
     framework_model = MaxPool()
-    fw_out = to_pt_tensors(framework_model(*inputs))
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-    co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
 
-    assert compare_tensor_to_golden("max_pool", fw_out[0], co_out[0])
+    verify(inputs=inputs, compiled_model=compiled_model, framework_model=framework_model)

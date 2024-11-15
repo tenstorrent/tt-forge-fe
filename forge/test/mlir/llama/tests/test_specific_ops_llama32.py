@@ -8,7 +8,8 @@ import torch
 from torch import nn
 
 import forge
-from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
+from forge.op.eval.common import compare_with_golden_pcc
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize(
@@ -42,7 +43,7 @@ def test_add(shapes):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize(
@@ -73,7 +74,7 @@ def test_concat(inputs_and_dim):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize("shapes", [(1, 11, 64)])
@@ -95,7 +96,7 @@ def test_cosine(shapes):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize("shapes", [(1, 11, 64)])
@@ -117,7 +118,7 @@ def test_sine(shapes):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize(
@@ -148,7 +149,7 @@ def test_embedding(shapes):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize(
@@ -190,7 +191,7 @@ def test_matmul(shapes):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.95)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], verify_cfg=VerifyConfig(pcc=0.95))
 
 
 @pytest.mark.parametrize(
@@ -232,7 +233,7 @@ def test_multiply(shapes):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    assert compare_with_golden_pcc(fw_out, co_out)
 
 
 @pytest.mark.parametrize(
@@ -258,7 +259,7 @@ def test_reduce_avg(shapes):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.75)
+    assert compare_with_golden_pcc(fw_out, co_out, verify_cfg=VerifyConfig(pcc=0.75))
 
 
 @pytest.mark.parametrize(
@@ -283,7 +284,7 @@ def test_sigmoid(shapes):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    assert compare_with_golden_pcc(fw_out, co_out)
 
 
 @pytest.mark.parametrize(
@@ -308,7 +309,7 @@ def test_reciprocal(shapes):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    assert compare_with_golden_pcc(fw_out, co_out)
 
 
 @pytest.mark.parametrize(
@@ -359,7 +360,7 @@ def test_reshape(source_and_target_shape):
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize(
@@ -387,7 +388,7 @@ def test_softmax(shapes):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    assert compare_with_golden_pcc(fw_out, co_out)
 
 
 @pytest.mark.parametrize(
@@ -412,7 +413,7 @@ def test_sqrt(shapes):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    assert compare_with_golden_pcc(fw_out, co_out)
 
 
 @pytest.mark.parametrize(
@@ -444,7 +445,7 @@ def test_unsqueeze(input_shape_and_dim):
 
     co_out = [co.to("cpu") for co in co_out]
     assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
 
 
 @pytest.mark.parametrize(
@@ -482,4 +483,4 @@ def test_transpose(params):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    assert compare_with_golden_pcc(fw_out, co_out)

@@ -815,7 +815,7 @@ def test_t5_small_tiny_tile(test_device):
             )
         ],
         inputs=[(decoder_input_ids, encoder_outputs)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

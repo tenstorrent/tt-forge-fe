@@ -7,7 +7,7 @@ import torch
 from torchvision.models.resnet import resnet50
 
 import forge
-from forge.op.eval.common import compare_with_golden
+from forge.verify.verify import verify
 
 
 @pytest.mark.push
@@ -24,14 +24,9 @@ def test_resnet_inference():
     framework_model.eval()
 
     input_image = torch.rand(1, 3, 224, 224)
-
-    # Sanity run
-    fw_out = framework_model(input_image)
+    inputs = [input_image]
 
     # Compile the model
     compiled_model = forge.compile(framework_model, input_image)
-    co_out = compiled_model(input_image)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs=inputs, compiled_model=compiled_model, framework_model=framework_model)

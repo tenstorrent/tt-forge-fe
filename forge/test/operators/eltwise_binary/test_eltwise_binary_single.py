@@ -7,7 +7,7 @@ import numpy as np
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, VerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
 
 from . import models
 
@@ -60,5 +60,5 @@ def test_eltwise_binary_single(bin_model, bin_train, bin_recompute, bin_op, bin_
         model.testname,
         *model.inputs,
         compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
-        verify_cfg=VerifyConfig(),
+        verify_cfg=DepricatedVerifyConfig(),
     )
