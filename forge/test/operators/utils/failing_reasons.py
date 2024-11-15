@@ -60,6 +60,10 @@ class FailingReasons:
 
     ATTRIBUTE_ERROR = "Attribute error"
 
+    # INFO     | forge.compiled_graph_state:__call__:247  Running model forward on device...
+    # Always | FATAL    | Out of Memory: Not enough space to allocate 896204800 B DRAM buffer across 12 banks, where each bank needs to store 74686464 B
+    ALLOCATION_FAILED = "Out of Memory"
+
 
 class FailingReasonsValidation:
     @classmethod
@@ -109,6 +113,14 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and " not implemented for " in f"{ex}",
             lambda ex: isinstance(ex, AssertionError)
             and f"{ex}" == "Encountered unsupported op types. Check error logs for more details",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "!in_ref.get_shape().has_tile_padding(this->dim)"  # tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
+            in f"{ex}",
+        ],
+        FailingReasons.ALLOCATION_FAILED: [
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:143"
+            in f"{ex}",
         ],
         FailingReasons.ATTRIBUTE_ERROR: [
             lambda ex: isinstance(ex, AttributeError),
