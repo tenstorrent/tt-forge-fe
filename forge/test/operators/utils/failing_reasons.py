@@ -58,6 +58,8 @@ class FailingReasons:
 
     UNSUPPORTED_INPUT_SOURCE = "Unsupported input source"
 
+    ATTRIBUTE_ERROR = "Attribute error"
+
 
 class FailingReasonsValidation:
     @classmethod
@@ -107,6 +109,9 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and " not implemented for " in f"{ex}",
             lambda ex: isinstance(ex, AssertionError)
             and f"{ex}" == "Encountered unsupported op types. Check error logs for more details",
+        ],
+        FailingReasons.ATTRIBUTE_ERROR: [
+            lambda ex: isinstance(ex, AttributeError),
         ],
     }
 
