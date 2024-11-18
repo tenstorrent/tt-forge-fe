@@ -7,7 +7,7 @@ import pytest
 
 import pytest
 import torch
-from torch import nn
+from torch import nn, threshold
 
 import forge
 from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
@@ -24,7 +24,7 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_interpolate(shape, mode):
-    class interpolate(nn.Module):
+    class Interpolate(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -33,7 +33,7 @@ def test_interpolate(shape, mode):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = interpolate()
+    framework_model = Interpolate()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -61,7 +61,7 @@ def test_interpolate(shape, mode):
 )
 @pytest.mark.push
 def test_flatten(shape):
-    class flatten(nn.Module):
+    class Flatten(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -70,7 +70,7 @@ def test_flatten(shape):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = flatten()
+    framework_model = Flatten()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -129,10 +129,9 @@ def test_cast(operand_and_cast_dtype):
         (1, 7, 256),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_sin(shape):
-    class sin(nn.Module):
+    class Sin(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -141,7 +140,7 @@ def test_sin(shape):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = sin()
+    framework_model = Sin()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -158,10 +157,9 @@ def test_sin(shape):
         (1, 7, 256),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_cosine(shape):
-    class cosine(nn.Module):
+    class Cosine(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -170,7 +168,7 @@ def test_cosine(shape):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = cosine()
+    framework_model = Cosine()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -190,7 +188,7 @@ def test_cosine(shape):
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_tanh(shape):
-    class tanh(nn.Module):
+    class Tanh(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -199,7 +197,7 @@ def test_tanh(shape):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = tanh()
+    framework_model = Tanh()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -321,7 +319,7 @@ def test_clip(shape, min_val, max_val):
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_cumsum(shape, dim):
-    class cumsum(nn.Module):
+    class CumSum(nn.Module):
         def __init__(self, dim):
             super().__init__()
             self.dim = dim
@@ -329,7 +327,7 @@ def test_cumsum(shape, dim):
         def forward(self, x):
             return torch.cumsum(x, dim=self.dim)
 
-    framework_model = cumsum(dim)
+    framework_model = CumSum(dim)
     inputs = [torch.rand(shape)]
 
     fw_out = framework_model(*inputs)
@@ -385,7 +383,7 @@ def test_where(condition, input, other):
 )
 @pytest.mark.push
 def test_abs(shape):
-    class abs(nn.Module):
+    class Abs(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -394,7 +392,7 @@ def test_abs(shape):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = abs()
+    framework_model = Abs()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -419,7 +417,7 @@ def test_abs(shape):
 )
 @pytest.mark.push
 def test_exp(shape):
-    class exp(nn.Module):
+    class Exp(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -428,7 +426,7 @@ def test_exp(shape):
 
     inputs = [torch.rand(shape)]
 
-    framework_model = exp()
+    framework_model = Exp()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
@@ -453,7 +451,7 @@ def test_exp(shape):
 @pytest.mark.xfail(reason="TTNN maximum op: unsupported broadcast")
 @pytest.mark.push
 def test_maximum(shape_x, shape_y):
-    class maximum(nn.Module):
+    class Maximum(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -463,7 +461,7 @@ def test_maximum(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = maximum()
+    framework_model = Maximum()
     inputs = [x, y]
 
     fw_out = framework_model(*inputs)
@@ -490,7 +488,7 @@ def test_maximum(shape_x, shape_y):
 )
 @pytest.mark.push
 def test_less(shape_x, shape_y):
-    class less(nn.Module):
+    class Less(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -500,7 +498,7 @@ def test_less(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = less()
+    framework_model = Less()
     inputs = [x, y]
 
     fw_out = framework_model(*inputs)
@@ -527,7 +525,7 @@ def test_less(shape_x, shape_y):
 )
 @pytest.mark.push
 def test_greater(shape_x, shape_y):
-    class greater(nn.Module):
+    class Greater(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -537,7 +535,7 @@ def test_greater(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = greater()
+    framework_model = Greater()
     inputs = [x, y]
 
     fw_out = framework_model(*inputs)
@@ -564,7 +562,7 @@ def test_greater(shape_x, shape_y):
 )
 @pytest.mark.push
 def test_not_equal(shape_x, shape_y):
-    class not_equal(nn.Module):
+    class NotEqual(nn.Module):
         def __init__(self):
             super().__init__()
 
@@ -574,7 +572,7 @@ def test_not_equal(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = not_equal()
+    framework_model = NotEqual()
     inputs = [x, y]
 
     fw_out = framework_model(*inputs)
@@ -583,7 +581,61 @@ def test_not_equal(shape_x, shape_y):
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 128, 28, 28),
+        (1, 64, 28, 28),
+        (1, 256, 28, 28),
+        (1, 128, 14, 14),
+        (1, 128, 56, 56),
+        (1, 32, 64, 64),
+        (1, 512, 7, 7),
+        (1, 32, 32, 32),
+        (128, 28, 28),
+        (64, 28, 28),
+        (256, 28, 28),
+        (128, 14, 14),
+        (128, 56, 56),
+        (32, 64, 64),
+        (512, 7, 7),
+        (32, 32, 32),
+        (128, 28),
+        (64, 28),
+        (256, 28),
+        (128, 14),
+        (128, 56),
+        (32, 64),
+        (512, 7),
+        (32, 32),
+    ],
+)
+@pytest.mark.push
+def test_equal(shape):
+    class Equal(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, y):
+            return torch.eq(x, y)
+
+    x = torch.rand(shape)
+    y = x * 2.0
+
+    framework_model = Equal()
+    inputs = [x, y]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    fw_out = framework_model(*inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.parametrize(
@@ -1070,9 +1122,6 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
-@pytest.mark.xfail(
-    reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
-)
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.parametrize("dim", [1, 2])
@@ -1084,6 +1133,11 @@ def test_mean(x_shape, y_shape, dim):
 
         def forward(self, x):
             return torch.mean(x, dim=dim)
+
+    if dim == 1 and y_shape == 32:
+        pytest.xfail(
+            "TTNN: tilize fails for float32 - will be fixed once a080e2f035990d57ce5436a8affb3f052a5a1b5f in tt-metal is consumed"
+        )
 
     inputs = [
         torch.rand(1, x_shape, y_shape),
@@ -1609,3 +1663,42 @@ def test_broadcast_pytorch():
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.xfail(
+    reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
+)
+@pytest.mark.parametrize(
+    "params",
+    [
+        ([(1, 256, 24, 24), (1, 256, 24, 24)], -4),
+        ([(5, 64, 128, 128), (5, 64, 128, 128)], -3),
+        ([(1, 30, 30, 16), (1, 30, 30, 16)], -2),
+        ([(1, 30, 30, 16), (1, 30, 30, 16)], 3),
+        ([(5, 64, 128, 128), (5, 64, 128, 128)], -1),
+        ([(1, 256, 24, 24), (1, 256, 24, 24)], 4),
+        ([(1, 256, 24, 24), (1, 256, 24, 24)], 2),
+        ([(5, 64, 128, 128), (5, 64, 128, 128)], 1),
+        ([(1, 30, 30, 16), (1, 30, 30, 16)], 0),
+    ],
+)
+def test_stack(params):
+    class Stack(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, *tensors):
+            return torch.stack(tensors, dim=self.dim)
+
+    input_shapes, dim = params
+    inputs = [torch.rand(shape) for shape in input_shapes]
+
+    framework_model = Stack(dim)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="stack_sanity")
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
