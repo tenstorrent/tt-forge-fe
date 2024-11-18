@@ -1282,8 +1282,6 @@ def populate_transpose_args(graph, nid, compiler_cfg):
     args.append(("dim0", f"{transpose_axes[0]}"))
     args.append(("dim1", f"{transpose_axes[1]}"))
 
-    args.append(("out_dtype", "torch." + node["attrs"]["dtype"][0][0]))
-
     return args
 
 

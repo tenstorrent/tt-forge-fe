@@ -693,22 +693,47 @@ def test_add():
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-@pytest.mark.parametrize(
-    "params",
-    [
-        ((1, 32, 64), (-1, -2)),
-        ((1, 64, 32), (1, 2)),
-        ((1, 32, 64, 128), (3, 2)),
-        ((32, 128), (0, 1)),
-        ((18, 65), (1, 0)),
-        ((6, 33, 34), (-1, 1)),
-        ((1, 32, 64), (-2, -3)),
-        ((6, 33, 34), (-1, -3)),
-        ((32, 128, 24), (1, -3)),
-    ],
-)
+params = [
+    ((1, 32, 64), (-1, -2)),
+    ((1, 64, 32), (1, 2)),
+    ((1, 32, 64, 128), (3, 2)),
+    ((32, 128), (0, 1)),
+    ((18, 65), (1, 0)),
+    ((6, 33, 34), (-1, 1)),
+    ((1, 32, 64), (-2, -3)),
+    ((6, 33, 34), (-1, -3)),
+    ((32, 128, 24), (1, -3)),
+    ((1, 12, 32, 100), (-3, -2)),
+    ((32, 12, 100), (-1, -2)),
+]
+# Dynamically generate params with conditional xfail
+param_list = []
+for param in params:
+    for data_format in [torch.float32, torch.bfloat16]:
+        if data_format == torch.bfloat16 and param in [
+            ((18, 65), (1, 0)),
+            ((6, 33, 34), (-1, 1)),
+            ((6, 33, 34), (-1, -3)),
+            ((32, 128, 24), (1, -3)),
+            ((1, 12, 32, 100), (-3, -2)),
+            ((32, 12, 100), (-1, -2)),
+        ]:
+            param_list.append(
+                pytest.param(
+                    param,
+                    data_format,
+                    marks=pytest.mark.xfail(
+                        reason="Tensor mismatch issue for bfloat16. Metal tracking issue: https://github.com/tenstorrent/tt-metal/issues/15099"
+                    ),
+                )
+            )
+        else:
+            param_list.append((param, data_format))
+
+
+@pytest.mark.parametrize("params, data_format", param_list)
 @pytest.mark.push
-def test_transpose(params):
+def test_transpose(params, data_format):
     class Transpose(nn.Module):
         def __init__(self, dims):
             super().__init__()
@@ -718,15 +743,12 @@ def test_transpose(params):
             return torch.transpose(a, *self.dims)
 
     input_shape, dims = params
-    inputs = [torch.rand(input_shape)]
-
-    framework_model = Transpose(dims)
+    inputs = [torch.rand(input_shape, dtype=data_format)]  # Use data_format instead of hardcoded dtype
+    # Initialize the model with data_formats
+    framework_model = Transpose(dims).to(data_format)
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-
-    if params[1][1] == -3:
-        pytest.xfail("Currently the lowering to TTNN is not supported for -3 dim")
 
     co_out = compiled_model(*inputs)
 
