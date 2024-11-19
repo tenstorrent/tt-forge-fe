@@ -21,6 +21,7 @@ from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
         [(1, 11, 2048), (1, 11, 2048)],
     ],
 )
+@pytest.mark.push
 def test_add(shapes):
     if shapes[0] != shapes[1]:
         pytest.xfail("eltwise_add broadcast not supported")
@@ -52,6 +53,7 @@ def test_add(shapes):
         ((1, 8, 11, 32), (1, 8, 11, 32), -1),
     ],
 )
+@pytest.mark.push
 def test_concat(inputs_and_dim):
     in_shape1, in_shape2, dim = inputs_and_dim
 
@@ -75,6 +77,7 @@ def test_concat(inputs_and_dim):
 
 
 @pytest.mark.parametrize("shapes", [(1, 11, 64)])
+@pytest.mark.push
 def test_cosine(shapes):
     class Cosine(nn.Module):
         def __init__(self):
@@ -96,6 +99,7 @@ def test_cosine(shapes):
 
 
 @pytest.mark.parametrize("shapes", [(1, 11, 64)])
+@pytest.mark.push
 def test_sine(shapes):
     class Sine(nn.Module):
         def __init__(self):
@@ -123,6 +127,7 @@ def test_sine(shapes):
     ],
 )
 @pytest.mark.xfail(reason="TTNN Layout::ROW_MAJOR error")
+@pytest.mark.push
 def test_embedding(shapes):
     input_size, vocab_size, embedding_dim = shapes
 
@@ -159,6 +164,7 @@ def test_embedding(shapes):
         ((1, 11, 2048), (2048, 128256)),
     ],
 )
+@pytest.mark.push
 def test_matmul(shapes):
     if shapes == ((1, 11, 8192), (8192, 2048)):
         pytest.xfail("pcc < 0.95")
@@ -201,6 +207,7 @@ def test_matmul(shapes):
         ((1, 11, 8192), (1, 11, 8192)),
     ],
 )
+@pytest.mark.push
 def test_multiply(shapes):
     if shapes == ((1, 32, 11, 64), (1, 1, 11, 64)) or shapes == ((1, 8, 11, 64), (1, 1, 11, 64)):
         pytest.xfail("eltwise multiply broadcast not supported")
@@ -235,6 +242,7 @@ def test_multiply(shapes):
     ],
 )
 @pytest.mark.xfail(reason="pcc < 0.75")
+@pytest.mark.push
 def test_reduce_avg(shapes):
     class ReduceAvg(nn.Module):
         def __init__(self):
@@ -259,6 +267,7 @@ def test_reduce_avg(shapes):
         (1, 11, 8192),
     ],
 )
+@pytest.mark.push
 def test_sigmoid(shapes):
     class Sigmoid(nn.Module):
         def __init__(self):
@@ -283,6 +292,7 @@ def test_sigmoid(shapes):
         ((1, 11, 1),),
     ],
 )
+@pytest.mark.push
 def test_reciprocal(shapes):
     class Reciprocal(nn.Module):
         def __init__(self):
@@ -319,6 +329,7 @@ def test_reciprocal(shapes):
         ((11, 8192), (1, 11, 8192)),
     ],
 )
+@pytest.mark.push
 def test_reshape(source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
 
@@ -357,6 +368,7 @@ def test_reshape(source_and_target_shape):
         ((1, 32, 11, 11), -1),
     ],
 )
+@pytest.mark.push
 def test_softmax(shapes):
     shape, dim = shapes
 
@@ -384,6 +396,7 @@ def test_softmax(shapes):
         (1, 11, 1),
     ],
 )
+@pytest.mark.push
 def test_sqrt(shapes):
     class Sqrt(nn.Module):
         def __init__(self):
@@ -409,6 +422,7 @@ def test_sqrt(shapes):
         ((1, 11, 64), 1),
     ],
 )
+@pytest.mark.push
 def test_unsqueeze(input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
@@ -449,6 +463,7 @@ def test_unsqueeze(input_shape_and_dim):
         ((128256, 2048), (-2, -1)),
     ],
 )
+@pytest.mark.push
 def test_transpose(params):
     shapes, dims = params
 
