@@ -13,6 +13,7 @@ std::string build_report_path(std::string const& base_path, std::string const& t
 bool initalize_reportify_directory(const std::string& reportify_dir, const std::string& test_name);
 std::string get_default_reportify_path(const std::string& test_name);
 std::string get_pass_reports_relative_directory();
+std::string get_mlir_reports_relative_directory();
 std::string get_router_report_relative_directory();
 std::string get_memory_report_relative_directory();
 std::string get_epoch_type_report_relative_directory();
