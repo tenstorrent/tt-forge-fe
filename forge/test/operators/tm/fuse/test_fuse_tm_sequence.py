@@ -44,8 +44,8 @@ class PtFuseTMMultiUser(ForgeModule):
             epsilon=1e-05,
         )
         reshape_341 = forge.op.Reshape("", layernorm_340, shape=(1, 128, 128, 32))
-        transpose_342 = forge.op.Transpose("", reshape_341, dim0=-3, dim1=-1, out_dtype=torch.float32)
-        transpose_343 = forge.op.Transpose("", transpose_342, dim0=-2, dim1=-1, out_dtype=torch.float32)
+        transpose_342 = forge.op.Transpose("", reshape_341, dim0=-3, dim1=-1)
+        transpose_343 = forge.op.Transpose("", transpose_342, dim0=-2, dim1=-1)
         conv2d_344 = forge.op.Conv2d(
             "",
             transpose_343,
@@ -58,7 +58,7 @@ class PtFuseTMMultiUser(ForgeModule):
             channel_last=0,
         )
         reshape_783 = forge.op.Reshape("", transpose_343, shape=(1, 32, 16384))
-        transpose_784 = forge.op.Transpose("", reshape_783, dim0=-2, dim1=-1, out_dtype=torch.float32)
+        transpose_784 = forge.op.Transpose("", reshape_783, dim0=-2, dim1=-1)
         reshape_785 = forge.op.Reshape("", transpose_784, shape=(16384, 32))
         return conv2d_344, reshape_785
 

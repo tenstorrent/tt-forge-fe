@@ -23,6 +23,7 @@ from .eltwise_binary import (
     Equal,
     NotEqual,
     LogicalAnd,
+    Remainder,
 )
 from .eltwise_unary import (
     Exp,

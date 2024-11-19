@@ -95,12 +95,18 @@ class MaxPool2d(PyOp):
         h_numerator = (
             h_in + (self.padding_top + self.padding_bottom) - self.dilation_height * (self.kernel_height - 1) - 1
         )
-        h_out = math.floor(1 + (h_numerator / self.stride_height))
+        if self.ceil_mode:
+            h_out = math.ceil(1 + (h_numerator / self.stride_height))
+        else:
+            h_out = math.floor(1 + (h_numerator / self.stride_height))
 
         w_numerator = (
             w_in + (self.padding_left + self.padding_right) - self.dilation_width * (self.kernel_width - 1) - 1
         )
-        w_out = math.floor(1 + (w_numerator / self.stride_width))
+        if self.ceil_mode:
+            w_out = math.ceil(1 + (w_numerator / self.stride_width))
+        else:
+            w_out = math.floor(1 + (w_numerator / self.stride_width))
 
         out_shape = [batch_size, h_out, w_out, channels] if self.channel_last else [batch_size, channels, h_out, w_out]
 

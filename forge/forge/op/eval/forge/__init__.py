@@ -28,6 +28,7 @@ op_to_module_map = {
     "add": "eltwise_binary",
     "cast": Cast,
     "divide": "eltwise_binary",
+    "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
     "multiply": "eltwise_binary",
     "maximum": "eltwise_binary",

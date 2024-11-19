@@ -53,6 +53,13 @@ std::string get_pass_reports_relative_directory()
     return retstring;
 }
 
+std::string get_mlir_reports_relative_directory()
+{
+    std::string retstring("mlir_reports");
+
+    return retstring;
+}
+
 std::string get_router_report_relative_directory()
 {
     std::string retstring("/router_reports/EpochType/");

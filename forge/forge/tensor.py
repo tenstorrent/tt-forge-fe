@@ -266,6 +266,26 @@ class Tensor(TensorBase):
         return TensorFromPytorch(torch_tensor, dev_data_format, constant)
 
     @classmethod
+    def create_from_shape(
+        cls,
+        tensor_shape: Union[List, Tuple, torch.Size],
+        torch_dtype: Optional[torch.dtype] = None,
+        integer_tensor_high_value: int = 1000,
+        constant: bool = False,
+    ) -> "TensorFromPytorch":
+
+        if torch_dtype in [torch.float16, torch.bfloat16, torch.float32]:
+            torch_tensor = torch.rand(tensor_shape, dtype=torch_dtype)
+        elif torch_dtype in [torch.int8, torch.int, torch.int32]:
+            torch_tensor = torch.randint(high=integer_tensor_high_value, size=tensor_shape, dtype=torch_dtype)
+        else:
+            torch_tensor = torch.rand(tensor_shape, dtype=torch.float32)
+
+        return TensorFromPytorch(
+            torch_tensor, dev_data_format=pytorch_dtype_to_forge_dataformat(torch_dtype), constant=constant
+        )
+
+    @classmethod
     def create_from_trace(cls, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat) -> "TensorFromTrace":
         """
         New path to creating front-end Tensor
