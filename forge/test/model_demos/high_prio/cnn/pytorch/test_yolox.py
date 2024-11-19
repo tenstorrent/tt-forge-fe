@@ -58,7 +58,7 @@ def test_yolox_pytorch(variant, test_device):
 
     # Set PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # prepare model
     weight_name = f"{variant}.pth"
@@ -76,6 +76,11 @@ def test_yolox_pytorch(variant, test_device):
     model = exp.get_model()
     ckpt = torch.load(f"{variant}.pth", map_location="cpu")
     model.load_state_dict(ckpt["model"])
+
+    # Set to false as it is part of model post-processing
+    # to avoid pcc mismatch due to inplace slice and update
+    model.head.decode_in_inference = False
+
     model.eval()
     model_name = f"pt_{variant}"
 
@@ -96,6 +101,13 @@ def test_yolox_pytorch(variant, test_device):
     inputs = [img_tensor]
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+
+    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
+        co_out = compiled_model(*inputs)
+        co_out = [co.to("cpu") for co in co_out]
+
+        # Postprocessing outputs
+        outputs = model.head.decode_outputs(outputs, dtype=img_tensor.type())
 
     # remove downloaded weights,image
     os.remove(weight_name)
