@@ -1615,6 +1615,7 @@ def populate_requantize_args(graph, nid, compiler_cfg):
 tvm_to_forge_op_map = {
     "abs": "abs",
     "add": "add",
+    "floor_mod": "remainder",
     "argmax": "argmax",
     "broadcast_to": "broadcast",
     "cast": "cast",
@@ -1700,6 +1701,7 @@ tvm_to_forge_op_map = {
 forge_op_to_function_name = {
     "abs": "forge.op.Abs",
     "add": "forge.op.Add",
+    "remainder": "forge.op.Remainder",
     "adv_index": "forge.op.AdvIndex",
     "argmax": "forge.op.Argmax",
     "avg_pool1d": "forge.op.AvgPool1d",

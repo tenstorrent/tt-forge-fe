@@ -50,6 +50,7 @@ def eval(type, attr, ops):
         "equal": lambda i: torch.eq(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "not_equal": lambda i: torch.ne(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "logical_and": lambda i: torch.logical_and(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
+        "remainder": lambda i: torch.remainder(t_ops[0], t_ops[1]),
     }
     assert type in f, f"{type} not defined in eval map for eltwise binary ops."
 
