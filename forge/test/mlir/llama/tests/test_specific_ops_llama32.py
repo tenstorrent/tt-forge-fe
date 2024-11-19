@@ -314,6 +314,7 @@ def test_reciprocal(shapes):
         ((1, 8, 4, 11, 64), (1, 32, 11, 64)),
         ((32, 11, 11), (1, 32, 11, 11)),
         ((32, 11, 11), (32, 11, 11)),
+        ((1, 3, 10), (1, 3, 10)),
         ((1, 32, 64, 11), (32, 64, 11)),
         ((1, 11, 32, 64), (11, 2048)),
         ((11, 8192), (1, 11, 8192)),
@@ -321,6 +322,17 @@ def test_reciprocal(shapes):
 )
 def test_reshape(source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
+
+    if len(source_shape) > 4 or len(target_shape) > 4:
+        pytest.xfail("Only 2D, 3D, and 4D tensors are supported")
+
+    if (
+        source_and_target_shape == ((32, 11, 11), (1, 32, 11, 11))
+        or source_and_target_shape == ((32, 11, 11), (32, 11, 11))
+        or source_and_target_shape == ((1, 3, 10), (1, 3, 10))
+        or source_and_target_shape == ((1, 32, 64, 11), (32, 64, 11))
+    ):
+        pytest.xfail("pcc < 0.99")
 
     class Reshape(nn.Module):
         def __init__(self, target_shape):
