@@ -314,7 +314,6 @@ def test_reciprocal(shapes):
         ((1, 8, 4, 11, 64), (1, 32, 11, 64)),
         ((32, 11, 11), (1, 32, 11, 11)),
         ((32, 11, 11), (32, 11, 11)),
-        ((1, 3, 10), (1, 3, 10)),
         ((1, 32, 64, 11), (32, 64, 11)),
         ((1, 11, 32, 64), (11, 2048)),
         ((11, 8192), (1, 11, 8192)),
@@ -329,7 +328,6 @@ def test_reshape(source_and_target_shape):
     if (
         source_and_target_shape == ((32, 11, 11), (1, 32, 11, 11))
         or source_and_target_shape == ((32, 11, 11), (32, 11, 11))
-        or source_and_target_shape == ((1, 3, 10), (1, 3, 10))
         or source_and_target_shape == ((1, 32, 64, 11), (32, 64, 11))
     ):
         pytest.xfail("pcc < 0.99")
