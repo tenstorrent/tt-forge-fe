@@ -15,6 +15,170 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "input_shape, kernel_size, stride_size, padding, ceil_mode",
+    [
+        pytest.param(
+            (1, 96, 54, 54),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 64, 55, 54),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 128, 26, 26),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 256, 26, 26),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 96, 54, 54),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
+        ),
+        pytest.param(
+            (1, 64, 55, 54),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
+            ),
+        ),
+        pytest.param(
+            (1, 128, 26, 26),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
+        ),
+        pytest.param(
+            (1, 256, 26, 26),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
+        ),
+        pytest.param(
+            (1, 3, 32, 32),
+            3,
+            3,
+            (1, 1, 1, 1),
+            False,
+            marks=pytest.mark.xfail(
+                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+            ),
+        ),
+        pytest.param(
+            (1, 3, 32, 32),
+            3,
+            3,
+            (1, 1, 2, 2),
+            False,
+            marks=pytest.mark.xfail(
+                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+            ),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
+    class maxpool2d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.padding = padding
+            self.maxpool2d = nn.MaxPool2d(
+                kernel_size=kernel_size, stride=stride_size, padding=0, dilation=1, ceil_mode=ceil_mode
+            )
+
+        def forward(self, x):
+            if padding != 0:
+                x = nn.functional.pad(x, self.padding, mode="constant", value=0)
+            return self.maxpool2d(x)
+
+    inputs = [torch.rand(input_shape).to(dtype=torch.bfloat16)]
+
+    framework_model = maxpool2d().to(dtype=torch.bfloat16)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (10,),
+        (1, 96),
+        (10, 10),
+        (1, 96, 54),
+        (1, 64, 128),
+        (1, 96, 54, 54),
+        (1, 3, 224, 224),
+        (1, 64, 128, 128),
+        (1, 96, 28, 28),
+        (1, 1, 128, 128),
+    ],
+)
+@pytest.mark.push
+def test_power(shape):
+    class power(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.pow(x, 0.75)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = power()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
     "shape, mode",
     [
         ((1, 2048, 7, 7), "nearest"),
@@ -1588,46 +1752,6 @@ def test_conv2d_with_padding(shape, padding):
     framework_model = PaddingAndConv2d(padding=padding)
 
     inputs = [torch.rand(shape)]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
-
-
-@pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
-@pytest.mark.parametrize(
-    "padding",
-    [
-        pytest.param(
-            (1, 1, 1, 1),
-            marks=pytest.mark.xfail(reason="For interleaved-buffers page size should be divisible by buffer size"),
-        ),
-        pytest.param(
-            (1, 1, 2, 2),
-            marks=pytest.mark.xfail(
-                reason="Page size must be divisible by sizeof(uint32_t) because buffers hold uint32_t values"
-            ),
-        ),
-    ],
-)
-@pytest.mark.push
-def test_maxpool2d_with_padding(shape, padding):
-    class PaddingAndMaxPool2d(nn.Module):
-        def __init__(self, padding):
-            super().__init__()
-            self.padding = padding
-            self.pool = nn.MaxPool2d(3, stride=3, padding=0)
-
-        def forward(self, x):
-            x = nn.functional.pad(x, self.padding, mode="constant", value=0)
-            return self.pool(x)
-
-    framework_model = PaddingAndMaxPool2d(padding=padding)
-    framework_model = framework_model.to(torch.bfloat16)
-
-    inputs = [torch.rand(shape).to(torch.bfloat16)]
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 
