@@ -1449,24 +1449,6 @@ graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape
     return shape;
 }
 
-graphlib::Shape ignore_broadcast_tm_evaluator(
-    graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
-{
-    // Ignore unit broadcasts
-    // Since we ignore bcasts slices / stacks might have incorrect factors, ignore them
-    if (tm.op == "broadcast" and shape.is_unit(std::get<int>(tm.attr[0])))
-        return shape;
-    else if (tm.op == "hslice" and shape.is_unit(-1))
-        return shape;
-    else if (tm.op == "vslice" and shape.is_unit(-2))
-        return shape;
-    else if (tm.op == "hstack" and shape.is_unit(-3))
-        return shape;
-    else if (tm.op == "vstack" and shape.is_unit(-3))
-        return shape;
-    return default_tm_evaluator(tm, shape, ir_level);
-}
-
 graphlib::Shape post_tms_shape(
     graphlib::Shape input_shape,
     std::vector<OpType> const &tms,
