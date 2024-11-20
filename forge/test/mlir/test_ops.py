@@ -15,6 +15,34 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "shape, kernel_size, stride",
+    [
+        # NCDHW format
+        ((1, 1, 100, 54, 54), (5, 1, 1), (1, 1, 1)),
+        # ((1, 2, 5, 5, 5), (3, 3, 3), (2, 2, 2)),
+        # ((1, 4, 100, 54, 54), (3, 1, 1), (1, 1, 1)),
+        # ((1, 8, 32, 16, 16), (4, 1, 1), (1, 1, 1)),
+        # ((1, 1, 100, 54, 54), (5, 1, 1), (5, 1, 1)),
+        # ((1, 4, 10, 4, 4), (1, 1, 1), (1, 1, 1)),
+        # ((1, 16, 32, 16, 16), (8, 1, 1), (3, 3, 3)),
+    ],
+)
+@pytest.mark.push
+def test_decompose_avgpool3d_with_avgpool2d(shape, kernel_size, stride):
+    class AvgPool3D(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.avg_pool3d(x, kernel_size=kernel_size, stride=stride, padding=0)
+
+    compiler_cfg = forge.config._get_global_compiler_config()
+    inputs = [torch.rand(shape)]
+    framework_model = AvgPool3D()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+
+@pytest.mark.parametrize(
     "input_shape, kernel_size, stride_size, padding, ceil_mode",
     [
         pytest.param(

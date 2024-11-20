@@ -293,6 +293,35 @@ def eval(type, attr, ops):
         if channel_last:
             result = result.permute(0, 2, 3, 1)
 
+    elif type == "avg_pool3d":
+
+        kernel_size = [attr[0], attr[1], attr[2]]
+        stride = [attr[3], attr[4], attr[5]]
+        dilation = attr[6]
+        ceil_mode = attr[7]
+        padding = [attr[8], attr[9], attr[10], attr[11], attr[12], attr[13]]
+        count_include_pad = attr[-2]
+        channel_last = attr[-1]
+
+        assert padding[0] == padding[1] and padding[2] == padding[3] and padding[4] == padding[5]
+        padding = [padding[0], padding[2], padding[4]]
+
+        if channel_last:
+            activations = activations.permute(0, 4, 1, 2, 3)
+
+        result = torch.nn.functional.avg_pool3d(
+            activations,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            ceil_mode=bool(ceil_mode),
+            count_include_pad=count_include_pad,
+            divisor_override=None,
+        )
+
+        if channel_last:
+            result = result.permute(0, 2, 3, 4, 1)
+
     return result
 
 
@@ -372,8 +401,12 @@ def shape(type, attr, ops):
             result = (activations[0], activations[1], y, x)
 
         return result, []
-    elif type == "max_pool3d":
-        assert len(attr) == 17, f"Got len(attr) = {len(attr)} for type: {type}"
+
+    elif type == "max_pool3d" or "avg_pool3d":
+
+        assert (len(attr) == 17 and type == "max_pool3d") or (
+            type == "avg_pool3d" and len(attr) == 16
+        ), f"Got len(attr) = {len(attr)} for type: {type}"
         kernel_size = [attr[0], attr[1], attr[2]]
         stride = [attr[3], attr[4], attr[5]]
         dilation = attr[6]
@@ -588,6 +621,84 @@ def decompose(type, attr, dc, inputs):
                 result = dc.op_with_named_attrs(
                     "reshape", [result], {"shape": (w, cin, y_out, x_out)}, (w, cin, y_out, x_out)
                 )
+
+        dc.fuse(result)
+
+    elif type == "avg_pool3d":
+
+        kernel_size = [attr[0], attr[1], attr[2]]
+        stride = [attr[3], attr[4], attr[5]]
+        dilation = attr[6]
+        ceil_mode = attr[7]
+        padding = [attr[8], attr[9], attr[10], attr[11], attr[12], attr[13]]
+        count_include_pad = attr[-2]
+        channel_last = attr[-1]
+
+        activations = inputs[0]
+
+        w, cin, din, y, x = (
+            activations.shape.v,
+            activations.shape.w,
+            activations.shape.z,
+            activations.shape.r,
+            activations.shape.c,
+        )
+
+        kD, kH, kW = kernel_size
+        sD, sH, sW = stride
+
+        pad_d1, pad_h1, pad_w1, pad_d2, pad_h2, pad_w2 = padding
+
+        out_depth = (din - kD + pad_d1 + pad_d2) // sD + 1
+        out_height = (y - kH + pad_h1 + pad_h2) // sH + 1
+        out_width = (x - kW + pad_w1 + pad_w2) // sW + 1
+
+        result = dc.tensor(torch.zeros((activations.shape[0], cin, 0, out_height, out_width)))
+
+        # for i in range(out_depth):
+        for i in range(1):
+
+            d_start = i * sD
+
+            depth_slice = dc.op("index", [activations], (2, d_start, d_start + kD, activations.shape[2]))
+            depth_avg = dc.op_with_named_attrs("reduce_avg", [depth_slice], {"dim": 2, "keep_dim": True}, (2,))
+
+            named_attrs = {
+                "kernel_height": kernel_size[1],
+                "kernel_width": kernel_size[2],
+                "stride_height": stride[1],
+                "stride_width": stride[2],
+                "dilation": dilation,
+                "ceil_mode": ceil_mode,
+                "padding_left": padding[1],
+                "padding_right": padding[2],
+                "padding_top": padding[4],
+                "padding_bottom": padding[5],
+                "count_include_pad": count_include_pad,
+                "channel_last": channel_last,
+            }
+
+            attr = (
+                kernel_size[1],
+                kernel_size[2],
+                stride[1],
+                stride[2],
+                dilation,
+                ceil_mode,
+                padding[1],
+                padding[2],
+                padding[4],
+                padding[5],
+                count_include_pad,
+                channel_last,
+            )
+
+            depth_avg_pooled = dc.op_with_named_attrs("avg_pool2d", [depth_avg], named_attrs, attr)
+
+            depth_avg_pooled = dc.op_with_named_attrs(
+                "unsqueeze", [depth_avg_pooled], {"dim": 2}, (0, len(depth_avg_pooled.shape))
+            )
+            result = dc.op_with_named_attrs("concatenate", [result, depth_avg_pooled], {"dim": (2)}, (2,))
 
         dc.fuse(result)
 
