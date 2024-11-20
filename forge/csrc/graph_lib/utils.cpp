@@ -1527,22 +1527,6 @@ bool tms_support_kernel_broadcast(
                 (not shape.is_unit(-1) and dim == -2 and ublock_order == UBlockOrder::C))
                 return false;
         }
-        else if (tm.op == "hslice" and not shape.is_unit(-2) and (ublock_order == UBlockOrder::R or ublock_ct > 1))
-        {
-            return false;
-        }
-        else if (tm.op == "hstack" and not shape.is_unit(-2) and (ublock_order == UBlockOrder::R or ublock_ct > 1))
-        {
-            return false;
-        }
-        else if (tm.op == "vslice" and not shape.is_unit(-1) and ublock_order == UBlockOrder::C)
-        {
-            return false;
-        }
-        else if (tm.op == "vstack" and not shape.is_unit(-1) and ublock_order == UBlockOrder::C)
-        {
-            return false;
-        }
         else if (tm.op == "transpose")
         {
             ublock_order = flip_ublock_order(ublock_order);
