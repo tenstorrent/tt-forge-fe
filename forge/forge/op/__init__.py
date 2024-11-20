@@ -51,10 +51,6 @@ from .eltwise_unary import (
 )
 from .reduce import ReduceSum, ReduceAvg, ReduceMax, GroupedReduceAvg
 from .tm import (
-    HSlice,
-    HStack,
-    VSlice,
-    VStack,
     Transpose,
     Reshape,
     Index,
