@@ -400,10 +400,10 @@ def get_test_params_sortmax_inconsistency():
         pytest.param((1, 160, 96), 2, ModelFromDramQueue, forge.DataFormat.Float16_b, forge.MathFidelity.HiFi4, id="(1, 160, 96)-dim=2-model_type=ModelFromDramQueue-df=Float16_b-mf=HiFi4"),
     ]
     # params.reverse()      # COMMENT/UNCOMMENT THIS LINE TO CHANGE ORDER OF TESTS - test results inconsistency issue
-    print("\n\n\nPARAMETERS:\n\n")
-    for item in params:
-        print(item.id)
-    print("\n")
+    # print("\n\n\nPARAMETERS:\n\n")
+    # for item in params:
+    #     print(item.id)
+    # print("\n")
     return params
 # fmt: on
 
