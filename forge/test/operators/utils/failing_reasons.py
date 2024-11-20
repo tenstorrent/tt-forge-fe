@@ -116,6 +116,8 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "!in_ref.get_shape().has_tile_padding(this->dim)"  # tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "info:\nBinaryOpType cannot be mapped to BcastOpMath" in f"{ex}",
         ],
         FailingReasons.ALLOCATION_FAILED: [
             lambda ex: isinstance(ex, RuntimeError)
