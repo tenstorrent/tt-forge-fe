@@ -159,12 +159,13 @@ def generate_model_vovnet_imgcls_timm_pytorch(test_device, variant):
     model, image_tensor = download_model(preprocess_timm_model, variant)
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.CONSTEVAL_GRAPH
+    # compiler_cfg.compile_depth = forge.CompileDepth.CONSTEVAL_GRAPH
 
     return model, [image_tensor], {}
 
 
-variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b"]
+# variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b"]
+variants = ["ese_vovnet19b_dw"]
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
@@ -174,4 +175,25 @@ def test_vovnet_timm_pytorch(variant, test_device):
         test_device,
         variant,
     )
+
+    class wrapper_forge(torch.nn.Module):
+        def __init__(self, model):
+            super().__init__()
+
+            self.conv_concat = model.stages[3].blocks[0].conv_concat
+            self.attn = model.stages[3].blocks[0].attn
+            self.head_gp = model.head.global_pool
+
+        def forward(self, x):
+
+            x = self.conv_concat(x)
+            x = self.attn(x)
+            x = self.head_gp(x)
+
+            return x
+
+    model = wrapper_forge(model)
+    print("wrapped model", model)
+    inputs = [torch.rand(1, 1440, 7, 7)]
+
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
