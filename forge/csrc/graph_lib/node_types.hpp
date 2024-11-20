@@ -523,7 +523,29 @@ class OpNode : public TaggedNode
     IRLevel get_ir_level() const { return (node_type() == NodeType::kPyOp) ? IRLevel::IR_TT_FORGE : IRLevel::IR_FORGE; }
     const std::string &op_name() const { return op_type_.op; }
     const std::vector<OpType::Attr> &op_attrs() const { return op_type_.attr; }
-    void overwrite_op_attrs(std::vector<OpType::Attr> op_attrs) { op_type_.attr = op_attrs; }
+    OpType::Attrs &named_attrs() { return op_type_.named_attrs; }
+    /**
+     * @brief Updates the attributes and named attributes of the operation.
+     *
+     * Overwrites the current operation's attributes and named attributes
+     * with the provided ones. It constructs a new `OpType` object with the updated
+     * attributes while retaining the existing operation name.
+     */
+    void overwrite_op_named_attrs(
+        const std::vector<graphlib::OpType::Attr> &op_attrs, const graphlib::OpType::Attrs &named_attrs)
+    {
+        const std::string &name = op_name();
+        log_trace("op name = {}", name);
+        op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
+    }
+    /**
+     * @brief Overwrites the named attributes of the operation.
+     *
+     * Updates the current operation's named attributes with the
+     * provided `named_attrs` without altering the operation's other properties.
+     */
+    void overwrite_named_attrs(graphlib::OpType::Attrs &named_attrs) { op_type_.named_attrs = named_attrs; }
+
     const ForgeOpAttrs &forge_attrs() const { return op_type_.forge_attrs; }
     void overwrite_forge_attrs(ForgeOpAttrs forge_attrs) { op_type_.forge_attrs = forge_attrs; }
     void set_gradient_op(bool value = true) { gradient_op_ = value; }

@@ -213,7 +213,7 @@ static bool attempt_replace_downward_pattern(
 
         std::vector<graphlib::OpType::Attr> grouped_reduce_attrs{reduce_dim, (int)clone_shape[reduce_dim - 1], true};
         op->change_op_type("grouped_reduce_avg");
-        op->overwrite_op_attrs(grouped_reduce_attrs);
+        update_grouped_reduce_avg_attr(op, reduce_dim);
         auto grouped_reduce_shape = commute_shape;
         op->set_shape(grouped_reduce_shape);
 
