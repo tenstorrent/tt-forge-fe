@@ -446,10 +446,19 @@ def test_gelu(shape):
 @pytest.mark.parametrize(
     "shape, min_val, max_val",
     [
-        ((1, 1, 256, 256), 0, 1),
+        ((1, 96, 96, 24), 6.0, 0.0),
+        ((1, 1, 32, 32), -0.5, 0.5),
+        ((2, 10, 5, 20), 2.0, -1.0),
+        ((3, 3, 3, 3), -3.0, -1.0),
+        ((1, 64, 64), -0.5, 0.5),
+        ((1, 128, 128), 1.0, -1.0),
+        ((2, 2, 2), -1.0, 0.0),
+        ((32, 32), -0.2, 0.2),
+        ((3, 3), -0.5, -0.2),
+        ((4,), 0.0, 2.0),
+        ((8,), -3.0, -1.0),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_clip(shape, min_val, max_val):
     class Clip(nn.Module):
