@@ -70,12 +70,19 @@ def pytest_sessionstart(session):
             print(f"{key}={value}")
 
 
+def reset_device():
+    if "GITHUB_ACTION" in os.environ:
+        # Reset device between tests
+        # For this to work, pytest must be called with --forked
+        subprocess.run(["tt-smi-metal", "-r", "0"], check=True)
+
+
 @pytest.fixture(autouse=True)
 def clear_forge():
     if "GITHUB_ACTION" in os.environ:
         # Reset device between tests
         # For this to work, pytest must be called with --forked
-        subprocess.run(["tt-smi-metal", "-r", "0"], check=True)
+        subprocess.run(["/opt/tt_metal_infra/scripts/ci/wormhole_b0/reset.sh"], check=True)
 
     import random
 
