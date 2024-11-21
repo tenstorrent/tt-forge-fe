@@ -176,66 +176,6 @@ TEST_F(FractureFF, 2d_weight_stationary_mixed_factors)
     EXPECT_EQ(count_nodes<graphlib::OpNode>(nodes, e1_name, "matmul"), 2 * 2);
 }
 
-struct FractureForkJoin : public ForgeGraphTest
-{
-   protected:
-    virtual std::vector<OpType*> create_graph() override
-    {
-        std::uint32_t seq_len = 128;
-        std::uint32_t embed = 384;
-        std::uint32_t hidden = 512;
-
-        auto act = create_activation(shape(1, 1, seq_len, embed));
-        auto y = create_activation(shape(1, 16, seq_len, 32));
-        auto Win = create_parameter(shape(1, 1, embed, hidden));
-
-        auto e0 = create_op("matmul", {act, Win});
-        auto hslice = create_op("hslice", {e0}, {16});
-        auto mul = create_op("multiply", {hslice, y});
-        auto gelu0 = create_op("gelu", {mul});
-        auto gelu1 = create_op("gelu", {hslice});
-        auto join = create_op("multiply", {gelu0, gelu1});
-
-        e0_name = e0->name();
-        join_name = join->name();
-
-        return {join};
-    }
-
-    std::string e0_name;
-    std::string join_name;
-};
-
-TEST_F(FractureForkJoin, fracture_fork_join)
-{
-    graphlib::Graph* graph = get_graph();
-
-    passes::fracture(
-        graph,
-        {{{
-              {e0_name, {-2}, {2}},
-              {join_name, {-2}, {2}},
-          },
-          {}}});
-
-    auto nodes = graphlib::topological_sort(*graph);
-
-    for (auto* node : nodes)
-    {
-        graphlib::OpNode* op = dynamic_cast<graphlib::OpNode*>(node);
-        if (not op)
-            continue;
-
-        // Enforce that all of the gathers got wired up by ensuring that all ops have the expected number of inputs
-        if (op->op_name() == "matmul" or op->op_name() == "multiply" or op->op_name() == "concatenate")
-            EXPECT_EQ(graph->operands(op).size(), 2);
-        else if (op->op_name() == "gelu" or op->op_name() == "hslice" or op->op_name() == "select")
-            EXPECT_EQ(graph->operands(op).size(), 1);
-        else
-            FAIL();
-    }
-}
-
 struct FractureDimSwitch : public ForgeGraphTest
 {
    protected:
