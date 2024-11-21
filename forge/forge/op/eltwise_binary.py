@@ -441,3 +441,7 @@ def LogicalAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) 
     """
 
     return op("logical_and", name, operandA, operandA).get_tensor()
+
+
+def Remainder(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
+    return _Eltwise(name, operandA, operandB, "remainder")

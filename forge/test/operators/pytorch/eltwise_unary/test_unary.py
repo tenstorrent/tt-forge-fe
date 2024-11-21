@@ -157,7 +157,8 @@ class TestParamsData:
 
     __test__ = False
 
-    test_plan: TestPlan = None
+    test_plan_implemented: TestPlan = None
+    test_plan_not_implemented: TestPlan = None
 
 
 class TestCollectionData:
@@ -181,9 +182,60 @@ class TestCollectionData:
             "square",
         ],
     )
+    not_implemented = TestCollection(
+        operators=[
+            "acos",
+            "arccos",
+            "acosh",
+            "arccosh",
+            "angle",
+            "asin",
+            "arcsin",
+            "asinh",
+            "arcsinh",
+            "atan",
+            "arctan",
+            "atanh",
+            "arctanh",
+            "bitwise_not",
+            "ceil",
+            "conj_physical",
+            "cosh",
+            "deg2rad",
+            "digamma",
+            "erf",
+            "erfc",
+            "erfinv",
+            "exp2",
+            "expm1",
+            "fix",
+            "floor",
+            "frac",
+            "lgamma",
+            "log",
+            "log10",
+            "log1p",
+            "log2",
+            "logit",
+            "i0",
+            "isnan",
+            "nan_to_num",
+            "positive",
+            "rad2deg",
+            "round",
+            "sign",
+            "sgn",
+            "signbit",
+            "sinc",
+            "sinh",
+            "tan",
+            "tanh",
+            "trunc",
+        ],
+    )
 
 
-TestParamsData.test_plan = TestPlan(
+TestParamsData.test_plan_implemented = TestPlan(
     verify=lambda test_device, test_vector: TestVerification.verify(
         test_device,
         test_vector,
@@ -309,7 +361,31 @@ TestParamsData.test_plan = TestPlan(
 )
 
 
+TestParamsData.test_plan_not_implemented = TestPlan(
+    verify=lambda test_device, test_vector: TestVerification.verify(
+        test_device,
+        test_vector,
+    ),
+    collections=[
+        TestCollection(
+            operators=TestCollectionData.not_implemented.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+        )
+    ],
+    failing_rules=[
+        TestCollection(
+            operators=TestCollectionData.not_implemented.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            failing_reason=FailingReasons.NOT_IMPLEMENTED,
+        ),
+    ],
+)
+
+
 def get_test_plans() -> List[TestPlan]:
     return [
-        TestParamsData.test_plan,
+        TestParamsData.test_plan_implemented,
+        TestParamsData.test_plan_not_implemented,
     ]

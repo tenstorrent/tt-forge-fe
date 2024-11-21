@@ -65,6 +65,9 @@ class FailingReasons:
     ALLOCATION_FAILED = "Out of Memory"
 
 
+# 2024-10-16 09:00:57.038 | DEBUG    | test.operators.utils.failing_reasons:validate_exception:121 - Validating xfail reason: 'None' for exception: <class 'AttributeError'> ''TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)'
+
+
 class FailingReasonsValidation:
     @classmethod
     def validate_exception_message(
@@ -116,6 +119,8 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "!in_ref.get_shape().has_tile_padding(this->dim)"  # tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "info:\nBinaryOpType cannot be mapped to BcastOpMath" in f"{ex}",
         ],
         FailingReasons.ALLOCATION_FAILED: [
             lambda ex: isinstance(ex, RuntimeError)
@@ -124,6 +129,28 @@ class FailingReasonsValidation:
         ],
         FailingReasons.ATTRIBUTE_ERROR: [
             lambda ex: isinstance(ex, AttributeError),
+        ],
+        FailingReasons.COMPILATION_FAILED: [
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:49: tt::exception"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:60: tt::exception"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Generated MLIR module failed verification" in f"{ex}",
+        ],
+        FailingReasons.INFERENCE_FAILED: [
+            lambda ex: isinstance(ex, AttributeError)
+            and f"{ex}" == "'TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/tilize/device/tilize_op.cpp"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/tilize_with_val_padding/device/tilize_with_val_padding_op.cpp"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp"
+            in f"{ex}",
         ],
     }
 

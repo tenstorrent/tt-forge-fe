@@ -15,6 +15,170 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "input_shape, kernel_size, stride_size, padding, ceil_mode",
+    [
+        pytest.param(
+            (1, 96, 54, 54),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 64, 55, 54),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 128, 26, 26),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 256, 26, 26),
+            3,
+            2,
+            0,
+            True,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
+            ),
+        ),
+        pytest.param(
+            (1, 96, 54, 54),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
+        ),
+        pytest.param(
+            (1, 64, 55, 54),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
+            ),
+        ),
+        pytest.param(
+            (1, 128, 26, 26),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
+        ),
+        pytest.param(
+            (1, 256, 26, 26),
+            3,
+            2,
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
+        ),
+        pytest.param(
+            (1, 3, 32, 32),
+            3,
+            3,
+            (1, 1, 1, 1),
+            False,
+            marks=pytest.mark.xfail(
+                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+            ),
+        ),
+        pytest.param(
+            (1, 3, 32, 32),
+            3,
+            3,
+            (1, 1, 2, 2),
+            False,
+            marks=pytest.mark.xfail(
+                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+            ),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
+    class maxpool2d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.padding = padding
+            self.maxpool2d = nn.MaxPool2d(
+                kernel_size=kernel_size, stride=stride_size, padding=0, dilation=1, ceil_mode=ceil_mode
+            )
+
+        def forward(self, x):
+            if padding != 0:
+                x = nn.functional.pad(x, self.padding, mode="constant", value=0)
+            return self.maxpool2d(x)
+
+    inputs = [torch.rand(input_shape).to(dtype=torch.bfloat16)]
+
+    framework_model = maxpool2d().to(dtype=torch.bfloat16)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (10,),
+        (1, 96),
+        (10, 10),
+        (1, 96, 54),
+        (1, 64, 128),
+        (1, 96, 54, 54),
+        (1, 3, 224, 224),
+        (1, 64, 128, 128),
+        (1, 96, 28, 28),
+        (1, 1, 128, 128),
+    ],
+)
+@pytest.mark.push
+def test_power(shape):
+    class power(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.pow(x, 0.75)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = power()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
     "shape, mode",
     [
         ((1, 2048, 7, 7), "nearest"),
@@ -693,22 +857,47 @@ def test_add():
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-@pytest.mark.parametrize(
-    "params",
-    [
-        ((1, 32, 64), (-1, -2)),
-        ((1, 64, 32), (1, 2)),
-        ((1, 32, 64, 128), (3, 2)),
-        ((32, 128), (0, 1)),
-        ((18, 65), (1, 0)),
-        ((6, 33, 34), (-1, 1)),
-        ((1, 32, 64), (-2, -3)),
-        ((6, 33, 34), (-1, -3)),
-        ((32, 128, 24), (1, -3)),
-    ],
-)
+params = [
+    ((1, 32, 64), (-1, -2)),
+    ((1, 64, 32), (1, 2)),
+    ((1, 32, 64, 128), (3, 2)),
+    ((32, 128), (0, 1)),
+    ((18, 65), (1, 0)),
+    ((6, 33, 34), (-1, 1)),
+    ((1, 32, 64), (-2, -3)),
+    ((6, 33, 34), (-1, -3)),
+    ((32, 128, 24), (1, -3)),
+    ((1, 12, 32, 100), (-3, -2)),
+    ((32, 12, 100), (-1, -2)),
+]
+# Dynamically generate params with conditional xfail
+param_list = []
+for param in params:
+    for data_format in [torch.float32, torch.bfloat16]:
+        if data_format == torch.bfloat16 and param in [
+            ((18, 65), (1, 0)),
+            ((6, 33, 34), (-1, 1)),
+            ((6, 33, 34), (-1, -3)),
+            ((32, 128, 24), (1, -3)),
+            ((1, 12, 32, 100), (-3, -2)),
+            ((32, 12, 100), (-1, -2)),
+        ]:
+            param_list.append(
+                pytest.param(
+                    param,
+                    data_format,
+                    marks=pytest.mark.xfail(
+                        reason="Tensor mismatch issue for bfloat16. Metal tracking issue: https://github.com/tenstorrent/tt-metal/issues/15099"
+                    ),
+                )
+            )
+        else:
+            param_list.append((param, data_format))
+
+
+@pytest.mark.parametrize("params, data_format", param_list)
 @pytest.mark.push
-def test_transpose(params):
+def test_transpose(params, data_format):
     class Transpose(nn.Module):
         def __init__(self, dims):
             super().__init__()
@@ -718,15 +907,12 @@ def test_transpose(params):
             return torch.transpose(a, *self.dims)
 
     input_shape, dims = params
-    inputs = [torch.rand(input_shape)]
-
-    framework_model = Transpose(dims)
+    inputs = [torch.rand(input_shape, dtype=data_format)]  # Use data_format instead of hardcoded dtype
+    # Initialize the model with data_formats
+    framework_model = Transpose(dims).to(data_format)
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-
-    if params[1][1] == -3:
-        pytest.xfail("Currently the lowering to TTNN is not supported for -3 dim")
 
     co_out = compiled_model(*inputs)
 
@@ -1574,46 +1760,6 @@ def test_conv2d_with_padding(shape, padding):
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-@pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
-@pytest.mark.parametrize(
-    "padding",
-    [
-        pytest.param(
-            (1, 1, 1, 1),
-            marks=pytest.mark.xfail(reason="For interleaved-buffers page size should be divisible by buffer size"),
-        ),
-        pytest.param(
-            (1, 1, 2, 2),
-            marks=pytest.mark.xfail(
-                reason="Page size must be divisible by sizeof(uint32_t) because buffers hold uint32_t values"
-            ),
-        ),
-    ],
-)
-@pytest.mark.push
-def test_maxpool2d_with_padding(shape, padding):
-    class PaddingAndMaxPool2d(nn.Module):
-        def __init__(self, padding):
-            super().__init__()
-            self.padding = padding
-            self.pool = nn.MaxPool2d(3, stride=3, padding=0)
-
-        def forward(self, x):
-            x = nn.functional.pad(x, self.padding, mode="constant", value=0)
-            return self.pool(x)
-
-    framework_model = PaddingAndMaxPool2d(padding=padding)
-    framework_model = framework_model.to(torch.bfloat16)
-
-    inputs = [torch.rand(shape).to(torch.bfloat16)]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
-
-
 @pytest.mark.push
 @pytest.mark.xfail(reason="Tensor rank is greater than 4")
 def test_reshape_pytorch():
@@ -1702,3 +1848,25 @@ def test_stack(params):
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+
+@pytest.mark.push
+def test_remainder():
+    class Remainder(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return a % b
+
+    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
+
+    framework_model = Remainder()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

@@ -40,6 +40,9 @@
 #include "ttmlir/Dialect/TT/IR/TTOpsTypes.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIROps.h"
 
+// Reportify headers
+#include "reportify/reportify.hpp"
+
 namespace
 {
 using namespace tt;
@@ -101,6 +104,9 @@ class MLIRGenerator
 
         log_info(LogMLIRCompiler, "MLIR module generated successfully.");
         graphModule_.dump();
+
+        // save what's dumped to a file named "{file_name}.mlir"
+        reportify::dump_mlir("ttir", graphModule_.getNameAttr().getValue().str(), graphModule_.getOperation());
 
 #ifdef DEBUG
         // Create a string to store the output
@@ -577,6 +583,7 @@ class MLIRGenerator
         lowering_handler_map["subtract"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SubtractOp>;
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
+        lowering_handler_map["remainder"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RemainderOp>;
     }
 };
 }  // namespace

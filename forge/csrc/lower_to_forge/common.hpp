@@ -56,7 +56,6 @@ using ForgeOpAttr = ::std::variant<
     bool,
     int,
     float,
-    std::tuple<int, int, int>,
     std::vector<int>,
     std::vector<std::tuple<int, int, int>>,
     std::vector<std::tuple<int, int, int, int>>,
