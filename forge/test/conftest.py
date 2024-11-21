@@ -72,10 +72,10 @@ def pytest_sessionstart(session):
 
 @pytest.fixture(autouse=True)
 def clear_forge():
-    if "FORGE_RESET_DEV_BEFORE_TEST" in os.environ:
+    if "GITHUB_ACTION" in os.environ:
         # Reset device between tests
         # For this to work, pytest must be called with --forked
-        subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
+        subprocess.run(["tt-smi-metal", "-r", "0"], check=True)
 
     import random
 
