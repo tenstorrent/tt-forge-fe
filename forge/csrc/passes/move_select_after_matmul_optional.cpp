@@ -90,10 +90,9 @@ static bool have_consecutive_even_mm_as_src_nodes(graphlib::Graph *graph, graphl
 
         std::vector<graphlib::Node *> operands = graph->data_operands(op);
 
-        // skip if op-type is slice or stack
+        // skip if op-type is reduce_max
         auto op_name = op->op_name();
-        if (op_name == "hslice" or op_name == "hstack" or op_name == "vslice" or op_name == "vstack" or
-            op_name == "reduce_max")
+        if (op_name == "reduce_max")
         {
             iter = operands[0];
             continue;
