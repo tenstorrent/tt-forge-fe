@@ -319,20 +319,18 @@ def verify(
     # - shape check
     # - compare with golden
     if verify_cfg.verify_size:
-        assert len(fw_out) == len(
-            co_out
-        ), f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_out)} outputs, compiled model has {len(co_out)} outputs"
+        if len(fw_out) != len(co_out):
+            raise ValueError(
+                f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_out)} outputs, compiled model has {len(co_out)} outputs"
+            )
 
-        for fw, co in zip(fw_out, co_out):
-            if verify_cfg.verify_dtype:
-                assert (
-                    fw.dtype == co.dtype
-                ), f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}"
-            if verify_cfg.verify_shape:
-                assert (
-                    fw.shape == co.shape
-                ), f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}"
-            if verify_cfg.verify_values:
-                assert compare_with_golden(
-                    golden=fw, calculated=co, verify_cfg=global_verify_config
-                ), f"Data mismatch: framework_model={fw}, compiled_model={co}"
+    for fw, co in zip(fw_out, co_out):
+        if verify_cfg.verify_dtype:
+            if fw.dtype != co.dtype:
+                raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
+        if verify_cfg.verify_shape:
+            if fw.shape != co.shape:
+                raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
+        if verify_cfg.verify_values:
+            if not compare_with_golden(golden=fw, calculated=co, verify_cfg=global_verify_config):
+                raise ValueError(f"Data mismatch: framework_model={fw}, compiled_model={co}")
