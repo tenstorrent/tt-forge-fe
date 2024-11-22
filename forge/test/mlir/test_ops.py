@@ -1359,11 +1359,6 @@ def test_mean(x_shape, y_shape, dim):
         def forward(self, x):
             return torch.mean(x, dim=dim)
 
-    if dim == 1 and y_shape == 32:
-        pytest.xfail(
-            "TTNN: tilize fails for float32 - will be fixed once a080e2f035990d57ce5436a8affb3f052a5a1b5f in tt-metal is consumed"
-        )
-
     inputs = [
         torch.rand(1, x_shape, y_shape),
     ]
