@@ -229,6 +229,7 @@ utils.extend_shape_params_with_marks(
 # )
 
 
+@pytest.mark.nightly_sweeps
 @pytest.mark.parametrize(utils.test_list_fields, utils.test_list)
 def test_operator(
     test_device,

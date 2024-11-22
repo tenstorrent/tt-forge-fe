@@ -369,6 +369,7 @@ utils.extend_shape_params_with_marks(
 
 
 # TEST(S):
+@pytest.mark.nightly_sweeps
 @pytest.mark.parametrize("input_shape, dim, model_type, dev_data_format, math_fidelity", utils.test_list)
 def test_softmax(test_device, model_type, dim, input_shape, dev_data_format, math_fidelity):
 
