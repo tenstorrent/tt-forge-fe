@@ -328,6 +328,7 @@ def test_single(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
+@pytest.mark.nightly_sweeps
 @pytest.mark.parametrize("test_vector", test_suite.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params())
 def test_plan(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
