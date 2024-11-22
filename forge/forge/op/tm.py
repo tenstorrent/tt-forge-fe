@@ -428,9 +428,20 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
 
 
-def Repeat(name: str, operandA: Tensor, factors: List[int]) -> Tensor:
+def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     """
-    TM
+    Repeats this tensor along the specified dimensions.
+
+    >>> x = torch.tensor([1, 2, 3])
+    >>> x.repeat(4, 2)
+    tensor([[ 1,  2,  3,  1,  2,  3],
+            [ 1,  2,  3,  1,  2,  3],
+            [ 1,  2,  3,  1,  2,  3],
+            [ 1,  2,  3,  1,  2,  3]])
+
+    NOTE:
+    -----
+    This Forge.Repeat is equivalent to torch.repeat, numpy.tile, tvm.tile, and ttnn.repeat
 
     Parameters
     ----------
@@ -448,8 +459,42 @@ def Repeat(name: str, operandA: Tensor, factors: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    assert len(operandA.shape) == len(factors)
-    return op("repeat", name, operandA, attrs=factors).get_tensor()
+    assert len(operandA.shape) == len(repeats)
+    return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
+
+
+def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:
+    """
+    Repeat elements of a tensor.
+
+    >>> x = torch.tensor([1, 2, 3])
+    >>> x.repeat_interleave(2)
+    tensor([1, 1, 2, 2, 3, 3])
+
+    NOTE:
+    -----
+    This Forge.RepeatInterleave is equivalent to torch.repeat_interleave, numpy.repeat, tvm.repeat, and ttnn.repeat_interleave
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A
+
+    repeats: int
+        The number of repetitions for each element.
+
+    dim: int
+        The dimension along which to repeat values.
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    return op("repeat_interleave", name, operandA, attrs=(repeats, dim), repeats=repeats, dim=dim).get_tensor()
 
 
 def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:

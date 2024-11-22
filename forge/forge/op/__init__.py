@@ -63,6 +63,7 @@ from .tm import (
     PadTile,
     Broadcast,
     Repeat,
+    RepeatInterleave,
     AdvIndex,
     Narrow,
     Unsqueeze,
