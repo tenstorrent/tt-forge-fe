@@ -85,12 +85,12 @@ def test_t5_generation(variant, test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()
 
-    if variant in ["t5-small", "t5-base", "t5-large"]:
-        compiler_cfg.compile_depth = CompileDepth.FINISH_COMPILE
-    elif variant in ["google/flan-t5-small", "google/flan-t5-base"]:
-        compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
-    else:
-        compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
+    # if variant in ["t5-small", "t5-base", "t5-large"]:
+    #     # compiler_cfg.compile_depth = CompileDepth.FINISH_COMPILE
+    # elif variant in ["google/flan-t5-small", "google/flan-t5-base"]:
+    #     compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
+    # else:
+    #     compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -122,6 +122,7 @@ def test_t5_generation(variant, test_device):
     inputs = [decoder_input_ids, encoder_outputs]
     variant_name = variant.replace("-", "_").replace("/", "_")
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
+    co_out = compiled_model(*inputs)
 
 
 class T5_encoder(torch.nn.Module):
