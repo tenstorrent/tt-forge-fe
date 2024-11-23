@@ -913,25 +913,7 @@ params = [
 param_list = []
 for param in params:
     for data_format in [torch.float32, torch.bfloat16]:
-        if data_format == torch.bfloat16 and param in [
-            ((18, 65), (1, 0)),
-            ((6, 33, 34), (-1, 1)),
-            ((6, 33, 34), (-1, -3)),
-            ((32, 128, 24), (1, -3)),
-            ((1, 12, 32, 100), (-3, -2)),
-            ((32, 12, 100), (-1, -2)),
-        ]:
-            param_list.append(
-                pytest.param(
-                    param,
-                    data_format,
-                    marks=pytest.mark.xfail(
-                        reason="Tensor mismatch issue for bfloat16. Metal tracking issue: https://github.com/tenstorrent/tt-metal/issues/15099"
-                    ),
-                )
-            )
-        else:
-            param_list.append((param, data_format))
+        param_list.append((param, data_format))
 
 
 @pytest.mark.parametrize("params, data_format", param_list)
