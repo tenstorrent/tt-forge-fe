@@ -32,92 +32,6 @@ void optimize_tms(std::vector<graphlib::OpType> &tms)
     using MatchFn = std::function<bool(OpType const &, OpType const &)>;  // return true means apply MergeFn
     using MergeFn = std::function<Erase(OpType &, OpType &)>;
     std::vector<std::pair<MatchFn, MergeFn>> rules = {
-        // back to back slice or stack
-        {[](OpType const &a, OpType const &b)
-         { return (a.op == "hslice" or a.op == "vslice" or a.op == "hstack" or a.op == "vstack") and a.op == b.op; },
-         [](OpType &a, OpType &b)
-         {
-             TT_ASSERT(a.attr.size() == 1 and b.attr.size() == 1);
-             TT_ASSERT(std::holds_alternative<int>(a.attr[0]) and std::holds_alternative<int>(b.attr[0]));
-             std::get<int>(a.attr[0]) *= std::get<int>(b.attr[0]);
-
-             return Erase::B;
-         }},
-
-        // back to back (slice then stack) or (stack then slice)
-        {[](OpType const &a, OpType const &b)
-         {
-             bool valid = false;
-             if ((a.op == "hslice" and b.op == "hstack") or (a.op == "vslice" and b.op == "vstack") or
-                 (a.op == "hstack" and b.op == "hslice") or (a.op == "vstack" and b.op == "vslice"))
-             {
-                 int a_factor = std::get<int>(a.attr[0]);
-                 int b_factor = std::get<int>(b.attr[0]);
-                 if (((a_factor >= b_factor) and (a_factor % b_factor == 0)) or
-                     ((b_factor > a_factor) and (b_factor % a_factor == 0)))
-                 {
-                     valid = true;
-                 }
-             }
-             return valid;
-         },
-         [](OpType &a, OpType &b)
-         {
-             TT_ASSERT(a.attr.size() == 1 and b.attr.size() == 1);
-             TT_ASSERT(std::holds_alternative<int>(a.attr[0]) and std::holds_alternative<int>(b.attr[0]));
-             int &a_factor = std::get<int>(a.attr[0]);
-             int &b_factor = std::get<int>(b.attr[0]);
-             if (a_factor == b_factor)
-             {
-                 // They cancel each other
-                 return Erase::AB;
-             }
-             else if (a_factor > b_factor)
-             {
-                 a_factor /= b_factor;
-             }
-             else
-             {
-                 b_factor /= a_factor;
-                 std::swap(a, b);
-             }
-             return Erase::B;
-         }},
-
-        // hoist slice above stack
-        {[](OpType const &a, OpType const &b)
-         {
-             return ((a.op == "hstack" and b.op == "hslice") or (a.op == "vstack" and b.op == "vslice")) and
-                    divisible_either_direction(std::get<int>(a.attr[0]), std::get<int>(b.attr[0]));
-         },
-         [](OpType &a, OpType &b)
-         {
-             std::swap(a, b);
-             return Erase::None;
-         }},
-
-        // hoist transpose before slice
-        {[](OpType const &a, OpType const &b)
-         { return (a.op == "hslice" or a.op == "vslice") and b.op == "transpose"; },
-         [](OpType &a, OpType &b)
-         {
-             // Switch slicing direction and commute
-             a.op = (a.op == "hslice") ? "vslice" : "hslice";
-             std::swap(a, b);
-             return Erase::None;
-         }},
-
-        // hoist transpose before stack
-        {[](OpType const &a, OpType const &b)
-         { return (a.op == "hstack" or a.op == "vstack") and b.op == "transpose"; },
-         [](OpType &a, OpType &b)
-         {
-             // Switch stacking direction and commute
-             a.op = (a.op == "hstack") ? "vstack" : "hstack";
-             std::swap(a, b);
-             return Erase::None;
-         }},
-
         // hoist transpose before broadcast
         {[](OpType const &a, OpType const &b) { return a.op == "broadcast" and b.op == "transpose"; },
          [](OpType &a, OpType &b)
@@ -128,19 +42,6 @@ void optimize_tms(std::vector<graphlib::OpType> &tms)
                  TT_ASSERT(dim == 2 or dim == 3);
                  dim = (dim == 2) ? 3 : 2;
              }
-             std::swap(a, b);
-             return Erase::None;
-         }},
-
-        // hoist broadcast before stack
-        {[](OpType const &a, OpType const &b)
-         {
-             int supported_bcast_dim = (a.op == "hstack") ? 2 : 3;
-             return (a.op == "hstack" or a.op == "vstack") and b.op == "broadcast" and
-                    std::get<int>(b.attr[0]) == supported_bcast_dim;
-         },
-         [](OpType &a, OpType &b)
-         {
              std::swap(a, b);
              return Erase::None;
          }},
@@ -160,26 +61,6 @@ void optimize_tms(std::vector<graphlib::OpType> &tms)
         {[](OpType const &a, OpType const &b) { return a.op == "transpose" and b.op == "transpose"; },
          [](OpType &, OpType &) { return Erase::AB; }},
 
-        // slice after select
-        {[](OpType const &a, OpType const &b) { return a.op == "select" and (b.op == "hslice" or b.op == "vslice"); },
-         [](OpType &a, OpType &b)
-         {
-             TT_ASSERT(a.attr.size() == 4 and b.attr.size() == 1);
-             TT_ASSERT(std::holds_alternative<int>(a.attr[1]));
-             TT_ASSERT(std::holds_alternative<int>(a.attr[2]));
-             TT_ASSERT(std::holds_alternative<int>(a.attr[3]));
-             TT_ASSERT(std::holds_alternative<int>(b.attr[0]));
-
-             std::get<int>(a.attr[1]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.attr[2]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.attr[3]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.forge_attrs["index"]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.forge_attrs["length"]) *= std::get<int>(b.attr[0]);
-             std::get<int>(a.forge_attrs["stride"]) *= std::get<int>(b.attr[0]);
-             std::swap(a, b);
-             return Erase::None;
-         }},
-
         // back to back select
         {[](OpType const &a, OpType const &b) { return false and a.op == "select" and b.op == "select"; },
          [](OpType &a, OpType &b)
@@ -190,41 +71,43 @@ void optimize_tms(std::vector<graphlib::OpType> &tms)
          }},
     };
 
-    using SingleMatchFn = std::function<bool(OpType const &)>;  // return true means apply MergeFn
-    using SingleUpdateFn = std::function<bool(OpType &)>;       // return true means remove this tm
-    std::pair<SingleMatchFn, SingleUpdateFn> single_rules[] = {
-        // Erase stacks and slices with factors of 1
-        {[](OpType const &a)
-         {
-             return (a.op == "hstack" or a.op == "vstack" or a.op == "hslice" or a.op == "vslice") and
-                    std::get<int>(a.attr[0]) == 1;
-         },
-         [](OpType &) { return true; }},
-    };
+    // left as an example of how to write a single rule
+    // using SingleMatchFn = std::function<bool(OpType const &)>;  // return true means apply MergeFn
+    // using SingleUpdateFn = std::function<bool(OpType &)>;       // return true means remove this tm
+    // std::pair<SingleMatchFn, SingleUpdateFn> single_rules[] = {
+    // Erase stacks and slices with factors of 1
+    //     {[](OpType const &a)
+    //      {
+    //          return (a.op == "hstack" or a.op == "vstack" or a.op == "hslice" or a.op == "vslice") and
+    //                 std::get<int>(a.attr[0]) == 1;
+    //      },
+    //      [](OpType &) { return true; }},
+    // };
 
     bool any_updated = true;
     while (any_updated)
     {
         any_updated = false;
-        for (auto [match_fn, update_fn] : single_rules)
-        {
-            for (auto iter = tms.begin(); iter != tms.end(); ++iter)
-            {
-                auto &tm = *iter;
-                if (match_fn(tm))
-                {
-                    any_updated = true;
-                    if (update_fn(tm))
-                    {
-                        tms.erase(iter);
-                        break;
-                    }
-                }
-            }
-        }
+        // loop for single rules
+        // for (auto [match_fn, update_fn] : single_rules)
+        // {
+        //     for (auto iter = tms.begin(); iter != tms.end(); ++iter)
+        //     {
+        //         auto &tm = *iter;
+        //         if (match_fn(tm))
+        //         {
+        //             any_updated = true;
+        //             if (update_fn(tm))
+        //             {
+        //                 tms.erase(iter);
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
 
-        if (any_updated)
-            continue;
+        // if (any_updated)
+        //     continue;
 
         for (auto [match_fn, merge_fn] : rules)
         {
