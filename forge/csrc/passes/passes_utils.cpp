@@ -71,44 +71,10 @@ void optimize_tms(std::vector<graphlib::OpType> &tms)
          }},
     };
 
-    // left as an example of how to write a single rule
-    // using SingleMatchFn = std::function<bool(OpType const &)>;  // return true means apply MergeFn
-    // using SingleUpdateFn = std::function<bool(OpType &)>;       // return true means remove this tm
-    // std::pair<SingleMatchFn, SingleUpdateFn> single_rules[] = {
-    // Erase stacks and slices with factors of 1
-    //     {[](OpType const &a)
-    //      {
-    //          return (a.op == "hstack" or a.op == "vstack" or a.op == "hslice" or a.op == "vslice") and
-    //                 std::get<int>(a.attr[0]) == 1;
-    //      },
-    //      [](OpType &) { return true; }},
-    // };
-
     bool any_updated = true;
     while (any_updated)
     {
         any_updated = false;
-        // loop for single rules
-        // for (auto [match_fn, update_fn] : single_rules)
-        // {
-        //     for (auto iter = tms.begin(); iter != tms.end(); ++iter)
-        //     {
-        //         auto &tm = *iter;
-        //         if (match_fn(tm))
-        //         {
-        //             any_updated = true;
-        //             if (update_fn(tm))
-        //             {
-        //                 tms.erase(iter);
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
-
-        // if (any_updated)
-        //     continue;
-
         for (auto [match_fn, merge_fn] : rules)
         {
             auto iter = std::adjacent_find(tms.begin(), tms.end(), match_fn);
