@@ -1344,17 +1344,70 @@ def test_softmax():
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-@pytest.mark.parametrize("input_shape", [(1, 32, 32), (1, 64, 64), (1, 128, 128, 128)], ids=["32", "64", "128"])
-@pytest.mark.parametrize("dim", [-1, -2], ids=["-1", "-2"])
+@pytest.mark.parametrize(
+    "input_shape, dim, keepdim",
+    [
+        ((64,), 0, True),
+        ((64,), -1, True),
+        ((4, 64), 0, True),
+        ((32, 32), -2, True),
+        pytest.param((2, 32, 32), 0, True, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
+        ((1, 64, 32), 2, True),
+        ((4, 32, 64), -2, True),
+        ((4, 128, 128, 128), 0, True),
+        ((1, 128, 128, 128), 2, True),
+        ((1, 128, 128, 128), -3, True),
+        ((4, 128, 128, 128), -4, True),
+        pytest.param(
+            (64,),
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="'ttir.squeeze' op Output tensor must have at least one dimension."),
+        ),
+        pytest.param(
+            (64,),
+            -1,
+            False,
+            marks=pytest.mark.xfail(reason="'ttir.squeeze' op Output tensor must have at least one dimension."),
+        ),
+        pytest.param(
+            (4, 64),
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
+            ),
+        ),
+        pytest.param(
+            (32, 32),
+            -2,
+            False,
+            marks=pytest.mark.xfail(
+                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
+            ),
+        ),
+        pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
+        ((1, 64, 32), 2, False),
+        ((4, 32, 64), -2, False),
+        ((4, 128, 128, 128), 0, False),
+        pytest.param(
+            (1, 128, 128, 128),
+            2,
+            False,
+            marks=pytest.mark.xfail(reason="Tensor mismatch with pcc=0.004573872645252714"),
+        ),
+        ((1, 128, 128, 128), -3, False),
+        ((4, 128, 128, 128), -4, False),
+    ],
+)
 @pytest.mark.push
-def test_reduce_sum(input_shape, dim):
+def test_reduce_sum(input_shape, dim, keepdim):
     class ReduceSum(nn.Module):
         def __init__(self):
             super().__init__()
 
         def forward(self, a):
-            # reduce is supported on tt-metal only with keepdim=True
-            return torch.sum(a, dim=dim, keepdim=True)
+            return torch.sum(a, dim=dim, keepdim=keepdim)
 
     inputs = [torch.rand(input_shape)]
 
@@ -1371,37 +1424,69 @@ def test_reduce_sum(input_shape, dim):
 
 
 @pytest.mark.parametrize(
-    "input_shape",
+    "input_shape, dim, keepdim",
     [
-        (1, 32, 12),
-        (1, 12, 32),
-        (1, 12, 3200),
-        (1, 32, 32),
-        (1, 64, 64),
-        (1, 128, 128, 128),
-    ],
-)
-@pytest.mark.parametrize(
-    "dim",
-    [
-        -1,
-        -2,
+        ((64,), 0, True),
+        ((64,), -1, True),
+        ((4, 64), 0, True),
+        ((32, 32), -2, True),
+        pytest.param((2, 32, 32), 0, True, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
+        ((1, 64, 32), 2, True),
+        ((4, 32, 64), -2, True),
+        ((4, 128, 128, 128), 0, True),
+        ((1, 128, 128, 128), 2, True),
+        ((1, 128, 128, 128), -3, True),
+        ((4, 128, 128, 128), -4, True),
+        pytest.param(
+            (64,),
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="'ttir.squeeze' op Output tensor must have at least one dimension."),
+        ),
+        pytest.param(
+            (64,),
+            -1,
+            False,
+            marks=pytest.mark.xfail(reason="'ttir.squeeze' op Output tensor must have at least one dimension."),
+        ),
+        pytest.param(
+            (4, 64),
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
+            ),
+        ),
+        pytest.param(
+            (32, 32),
+            -2,
+            False,
+            marks=pytest.mark.xfail(
+                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
+            ),
+        ),
+        pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
+        ((1, 64, 32), 2, False),
+        ((4, 32, 64), -2, False),
+        ((4, 128, 128, 128), 0, False),
+        pytest.param(
+            (1, 128, 128, 128),
+            2,
+            False,
+            marks=pytest.mark.xfail(reason="Tensor mismatch with pcc=0.004573872645252714"),
+        ),
+        ((1, 128, 128, 128), -3, False),
+        ((4, 128, 128, 128), -4, False),
     ],
 )
 @pytest.mark.push
-def test_reduce_mean(input_shape, dim):
-
-    if input_shape == (1, 12, 3200) and dim == -1:
-        # Tensor mismatch(PCC: 0.72) - https://github.com/tenstorrent/tt-mlir/issues/869
-        pytest.xfail("Tensor mismatch between PyTorch and TTNN (PCC: 0.72)")
-
+def test_reduce_mean(input_shape, dim, keepdim):
     class ReduceMean(nn.Module):
         def __init__(self):
             super().__init__()
 
         def forward(self, a):
-            # reduce is supported on tt-metal only with keepdim=True
-            return torch.mean(a, dim=dim, keepdim=True)
+            return torch.mean(a, dim=dim, keepdim=keepdim)
 
     inputs = [torch.rand(input_shape)]
 
@@ -1686,40 +1771,65 @@ def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
 
 
 @pytest.mark.parametrize(
-    "input_shape",
+    "input_shape, dim, keepdim",
     [
-        (2, 32, 64, 64),
-        (3, 22, 37, 41),
-        (2, 32, 64),
-        (3, 22, 37),
-    ],
-)
-@pytest.mark.parametrize(
-    "dim",
-    [
-        0,
-        1,
-        2,
-        3,
-        -1,
-        -2,
-        -3,
-        -4,
+        ((64,), 0, True),
+        ((64,), -1, True),
+        ((4, 64), 0, True),
+        ((32, 32), -2, True),
+        pytest.param((2, 32, 32), 0, True, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
+        ((1, 64, 32), 2, True),
+        ((4, 32, 64), -2, True),
+        ((4, 128, 128, 128), 0, True),
+        pytest.param(
+            (1, 128, 128, 128), 2, True, marks=pytest.mark.xfail(reason="Tensor mismatch with pcc=0.9891996879950039")
+        ),
+        pytest.param(
+            (1, 128, 128, 128), -3, True, marks=pytest.mark.xfail(reason="Tensor mismatch with pcc=0.989399442105872")
+        ),
+        ((4, 128, 128, 128), -4, True),
+        pytest.param(
+            (64,),
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion `end > 0' failed."),
+        ),
+        pytest.param(
+            (64,),
+            -1,
+            False,
+            marks=pytest.mark.xfail(reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion `end > 0' failed."),
+        ),
+        pytest.param(
+            (4, 64),
+            0,
+            False,
+            marks=pytest.mark.xfail(reason="keepdim=False is not supported"),
+        ),
+        pytest.param(
+            (32, 32),
+            -2,
+            False,
+            marks=pytest.mark.xfail(reason="keepdim=False is not supported"),
+        ),
+        pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="keepdim=False is not supported")),
+        pytest.param((1, 64, 32), 2, False, marks=pytest.mark.xfail(reason="keepdim=False is not supported")),
+        pytest.param((4, 32, 64), -2, False, marks=pytest.mark.xfail(reason="keepdim=False is not supported")),
+        pytest.param((4, 128, 128, 128), 0, False, marks=pytest.mark.xfail(reason="keepdim=False is not supported")),
+        pytest.param(
+            (1, 128, 128, 128),
+            2,
+            False,
+            marks=pytest.mark.xfail(reason="keepdim=False is not supported"),
+        ),
+        pytest.param((1, 128, 128, 128), -3, False, marks=pytest.mark.xfail(reason="keepdim=False is not supported")),
+        pytest.param((4, 128, 128, 128), -4, False, marks=pytest.mark.xfail(reason="keepdim=False is not supported")),
     ],
 )
 @pytest.mark.push
-def test_reduce_max(input_shape, dim):
-
-    reduce_max_dim = dim
-    if reduce_max_dim < 0:
-        reduce_max_dim = reduce_max_dim + len(input_shape)
-    if (reduce_max_dim < 0) or (reduce_max_dim >= len(input_shape)):
-        pytest.skip()
-
-    if (input_shape in [(2, 32, 64, 64), (3, 22, 37, 41)] and dim in [0, -4, 1, -3]) or (
-        input_shape in [(2, 32, 64), (3, 22, 37)] and dim in [0, -3]
-    ):
-        pytest.xfail("TTNN Issue: Unsupported dim")
+def test_reduce_max(input_shape, dim, keepdim):
+    if input_shape == (64,) and dim in [0, -1] and keepdim is False:
+        pytest.xfail(reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion `end > 0' failed.")
 
     # TTNN Max issues:
     #   Unsupported dim - https://github.com/tenstorrent/tt-metal/issues/13186
@@ -1731,7 +1841,7 @@ def test_reduce_max(input_shape, dim):
             super().__init__()
 
         def forward(self, a):
-            return torch.max(a, dim=dim, keepdim=True)[0]
+            return torch.max(a, dim=dim, keepdim=keepdim)[0]
 
     inputs = [torch.rand(input_shape)]
 
@@ -1742,10 +1852,8 @@ def test_reduce_max(input_shape, dim):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
 
-    # Skipping PCC check due to inconsistencies between Framework and Compiled model
-    #
-    # co_out = [co.to("cpu") for co in co_out]
-    # assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")

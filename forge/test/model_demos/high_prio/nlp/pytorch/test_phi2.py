@@ -11,17 +11,15 @@ from transformers import (
 )
 import pytest
 import forge
+from forge.op.eval.common import compare_with_golden_pcc
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.xfail(reason="weights.get_dtype() == DataType::BFLOAT16")
 def test_phi2_clm(variant, test_device):
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -52,18 +50,25 @@ def test_phi2_clm(variant, test_device):
     attn_mask = inputs["attention_mask"].to(torch.float32)
 
     inputs = [input_ids, attn_mask]
+
+    # Sanity
+    fw_out = model(*inputs)
+
+    # Inference
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
     )
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.xfail(reason="Indices tensor must be in row major layout.")
 def test_phi2_token_classification(variant, test_device):
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -85,18 +90,24 @@ def test_phi2_token_classification(variant, test_device):
 
     inputs = [inputs["input_ids"]]
 
+    # Sanity
+    fw_out = model(*inputs)
+
+    # Inference
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
     )
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.xfail(reason="Indices tensor must be in row major layout.")
 def test_phi2_sequence_classification(variant, test_device):
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -118,6 +129,16 @@ def test_phi2_sequence_classification(variant, test_device):
     inputs = tokenizer(input_prompt, return_tensors="pt")
 
     inputs = [inputs["input_ids"]]
+
+    # Sanity
+    fw_out = model(*inputs)
+
+    # Inference
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
     )
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)

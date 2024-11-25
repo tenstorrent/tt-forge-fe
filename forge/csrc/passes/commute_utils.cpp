@@ -581,7 +581,7 @@ bool commute_through_reduce(
     graphlib::OpType *golden_transform,
     bool commute_up)
 {
-    TT_ASSERT(op->op_attrs().size() == 1);
+    TT_ASSERT(op->op_attrs().size() == 2);
     int reduce_dim = std::get<int>(op->op_attrs()[0]);
 
     // Convert to positive indexing
@@ -661,7 +661,7 @@ bool commute_through_reduce(
 
         if (prev_op->op_name() == op->op_name())
         {
-            TT_ASSERT(prev_op->op_attrs().size() == 1);
+            TT_ASSERT(prev_op->op_attrs().size() == 2);
             int prev_reduce_dim = std::get<int>(prev_op->op_attrs()[0]);
             // Convert to positive indexing
             if (prev_reduce_dim < 0)

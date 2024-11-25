@@ -166,6 +166,12 @@ def eval_debug_print(type, inputs, output):
 
 
 def calculate_pcc(a, b):
+    # broadcasting single value tensor to 2 value tensor to support pcc calculation
+    if a.flatten().size() == (1,):
+        a = a.flatten().broadcast_to(2)
+    if b.flatten().size() == (1,):
+        b = b.flatten().broadcast_to(2)
+
     if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
         logger.warning("Both tensors are 'nan'")
         return 1.0
@@ -233,7 +239,6 @@ def compare_with_golden_pcc(
     atol=None,
 ):
     assert pcc is not None
-    assert golden.flatten().size() != (1,), "PCC for single values doesn't work"
 
     pcc_value = calculate_pcc(golden, calculated)
     if pcc_value >= pcc:
@@ -244,7 +249,7 @@ def compare_with_golden_pcc(
         logger.trace(calculated)
         return True
     else:
-        logger.error("Tensor mismatch")
+        logger.error(f"Tensor mismatch with pcc={pcc_value}")
         return False
 
 
@@ -347,7 +352,7 @@ def compare_tensor_to_golden(
     )
     ok &= callback_ok
     pcc_value = 0
-    if not (pcc is None or golden.flatten().size() == (1,)):  # PCC for single values doesn't work
+    if pcc is not None:
         pcc_value = calculate_pcc(golden, calculated)
         if pcc_value >= pcc and not ok:
             logger.warning("PCC is correct but allclose failed on {}", name)
