@@ -26,6 +26,7 @@ import sys
 import importlib
 
 from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_str_from_str
+from forge.utils import create_excel_file
 
 
 def populate_torch_all_to_args(graph, nid, compiler_cfg):
@@ -2828,6 +2829,7 @@ def compile_tvm_to_python(
                     param_file_name,
                     named_params_file_name,
                     named_buffers_file_name,
+                    compiler_cfg,
                 )
 
             if compiler_cfg.tvm_generate_op_tests or compiler_cfg.tvm_generate_unique_op_tests:
@@ -3212,7 +3214,7 @@ def generate_op_tests(
         writer = ForgeWriter(
             module_name,
             framework,
-            module_directory=f"generated_modules/single_ops/{current_module_name.replace('_', '').lower()}",
+            module_directory=f"generated_modules/single_ops/{current_module_name}",
             contains_incompatible_np_floats=contains_incompatible_np_floats,
             delete_inputs=delete_inputs,
         )
@@ -3306,6 +3308,7 @@ def generate_unique_op_tests(
     param_file_name,
     named_params_file_name,
     named_buffers_file_name,
+    compiler_cfg,
 ):
     """
     Generates test modules for unique operation configurations.
@@ -3337,6 +3340,7 @@ def generate_unique_op_tests(
                 return nid, const
         logger.error(f"There is no paramter/constant with the name {name}")
 
+    unique_operation_details = []
     for op_idx, forge_op_function_name in enumerate(sorted(unique_operations)):
 
         # Extract operation name from forge op function name
@@ -3348,7 +3352,7 @@ def generate_unique_op_tests(
         writer = ForgeWriter(
             module_name,
             framework,
-            module_directory=f"generated_modules/unique_ops/{current_module_name.replace('_', '').lower()}",
+            module_directory=f"generated_modules/unique_ops/{current_module_name}",
             contains_incompatible_np_floats=contains_incompatible_np_floats,
             delete_inputs=delete_inputs,
         )
@@ -3364,6 +3368,7 @@ def generate_unique_op_tests(
         process_framework_parameters_func_status_list = []
         module_idx = 0
         forge_module_list = []
+        test_count = 0
         for operands_idx, (operands, opargs_opnames) in enumerate(unique_operands_and_opargs_opnames):
 
             for args_idx, (args, opnames_list) in enumerate(opargs_opnames.get_opargs_opnames()):
@@ -3547,6 +3552,34 @@ def generate_unique_op_tests(
                         pytest_input_shapes_dtypes.append((operand_shape, operand_dtype))
                 pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
 
+                if compiler_cfg.export_tvm_generated_unique_op_tests_details:
+                    operation_info = {}
+                    operands_info = []
+                    for node_type, name, shape, dtype in zip(
+                        operand_types, operand_names, operand_shapes, operand_dtypes
+                    ):
+                        name_or_shape_val = name if node_type == NodeType.Constant else shape
+                        operands_info.append(
+                            f"Operand(type={node_type.name}, name/shape={name_or_shape_val}, dtype={dtype})"
+                        )
+                    operation_info["Framework"] = framework
+                    operation_info["Op"] = op_name
+                    operation_info["Operands"] = "\n".join(operands_info)
+                    if args.is_empty():
+                        operation_info["Args"] = ""
+                    else:
+                        operation_info["Args"] = "\n".join(
+                            [f"{arg_name} : {arg_value}" for arg_name, arg_value in args.items()]
+                        )
+                    operation_info["tests"] = (
+                        writer.module_directory
+                        + "/"
+                        + writer.filename
+                        + f"::test_module[forge_module_and_shapes_dtypes{test_count}]"
+                    )
+                    unique_operation_details.append(operation_info)
+                    test_count += 1
+
         # If the parameter/constant is passed as activation, operand shape will be replaced with operand name
         # because instead of generating tensor from shape, use actual tensor from model parameters/buffers
         # and so generating function for loading the model parameters/buffers and saving it as named_parameter variable
@@ -3570,3 +3603,34 @@ def generate_unique_op_tests(
         )
 
         writer.close_file()
+
+        if compiler_cfg.export_tvm_generated_unique_op_tests_details:
+            xlsx_file_title = current_module_name
+            xlsx_file_headers = ["Framework", "Op", "Operands", "Args", "Testfile"]
+            xlsx_file_rows = []
+            for operation_info in unique_operation_details:
+                xlsx_file_rows.append(list(operation_info.values()))
+
+            export_tvm_generated_unique_op_tests_details_dir_path = os.getenv(
+                "FORGE_EXPORT_TVM_GENERATED_UNIQUE_OP_TESTS_DETAILS_DIR_PATH", f"generated_modules/unique_ops/"
+            )
+            if not os.path.exists(
+                os.path.join(export_tvm_generated_unique_op_tests_details_dir_path, current_module_name)
+            ):
+                os.makedirs(
+                    os.path.join(export_tvm_generated_unique_op_tests_details_dir_path, current_module_name),
+                    exist_ok=True,
+                )
+
+            export_tvm_generated_unique_op_tests_details_file_path = os.path.join(
+                export_tvm_generated_unique_op_tests_details_dir_path,
+                current_module_name,
+                "tvm_generated_op_test_details.xlsx",
+            )
+
+            create_excel_file(
+                title=xlsx_file_title,
+                headers=xlsx_file_headers,
+                rows=xlsx_file_rows,
+                output_file_path=export_tvm_generated_unique_op_tests_details_file_path,
+            )
