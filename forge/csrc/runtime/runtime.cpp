@@ -133,6 +133,28 @@ void verify_input_tensors(
     }
 }
 
+void re_initialize_device()
+{
+    auto& system = TTSystem::get_system();
+    for (auto& device : system.devices)
+    {
+        if (device->is_open())
+        {
+            device->close_device();
+        }
+    }
+
+    for (auto& device : system.devices)
+    {
+        if (!device->is_open())
+        {
+            device->open_device();
+        }
+    }
+
+    std::cout << "Device re-initialized" << std::endl;
+}
+
 std::vector<torch::Tensor> run_binary(
     runtime::Binary& binary, int program_idx, std::vector<torch::Tensor> const& inputs)
 {
@@ -179,6 +201,9 @@ std::vector<torch::Tensor> run_binary(
     }
 
     runtime::Event _ = runtime::submit(device, binary, program_idx, rt_inputs, rt_outputs);
+
+    // Close device
+    tt_device->close_device();
 
     return outputs;
 }

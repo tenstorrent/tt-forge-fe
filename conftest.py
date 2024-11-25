@@ -6,6 +6,7 @@ import time
 import pytest
 import psutil
 import threading
+import subprocess
 from loguru import logger
 from datetime import datetime
 
@@ -85,3 +86,28 @@ def memory_usage_tracker():
     logger.info(f"    Minimum: {min_mem:.2f} MB")
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
+
+
+# @pytest.fixture(autouse=True)
+# def run_script_before_test():
+#     print("Running external script before each test.")
+#     subprocess.run(["python3", "/home/nvukobrat/scripts/wh_reset.py"], check=True)
+
+# def pytest_runtest_teardown(item, nextitem):
+#     yield
+
+#     # Your custom script or command
+#     custom_script = ["python3", "/home/nvukobrat/scripts/wh_reset.py"]
+#     try:
+#         subprocess.run(custom_script, check=True)
+#     except subprocess.CalledProcessError as e:
+#         print(f"Error running custom script after test: {e}")
+
+
+@pytest.fixture(autouse=True)
+def run_after_teardown():
+    yield
+
+    from forge._C.runtime import re_initialize_device
+
+    re_initialize_device()

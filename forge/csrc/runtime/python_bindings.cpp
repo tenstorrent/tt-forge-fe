@@ -16,6 +16,7 @@ void RuntimeModule(py::module &m_runtime)
         .def("get_program_inputs", &runtime::Binary::getProgramInputs)
         .def("get_program_outputs", &runtime::Binary::getProgramOutputs);
     m_runtime.def("run_binary", tt::run_binary);
+    m_runtime.def("re_initialize_device", tt::re_initialize_device);
 }
 
 }  // namespace tt
