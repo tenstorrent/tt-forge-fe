@@ -30,4 +30,4 @@ def test_llama_embedding(model_path):
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs=inputs, compiled_model=compiled_model, framework_model=framework_model)
+    verify(inputs, framework_model, compiled_model)

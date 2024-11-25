@@ -7,12 +7,13 @@ import pytest
 
 import pytest
 import torch
-from torch import nn, threshold
+from torch import nn
 
 import forge
-from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
-from forge.tensor import to_forge_tensors, to_pt_tensors
+from forge.tensor import to_forge_tensors
 from tvm.relay.op.transform import squeeze
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize(
@@ -58,14 +59,9 @@ def test_index(shape, dim, index):
     inputs = [torch.rand(shape)]
 
     framework_model = Index(index)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -96,15 +92,10 @@ def test_avgpool3d(shape, kernel_size, stride):
     inputs = [torch.rand(shape)]
 
     framework_model = AvgPool3D()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(*inputs)
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-        assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+        verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -224,14 +215,9 @@ def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
     inputs = [torch.rand(input_shape).to(dtype=torch.bfloat16)]
 
     framework_model = maxpool2d().to(dtype=torch.bfloat16)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -261,14 +247,9 @@ def test_power(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = power()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -291,14 +272,9 @@ def test_interpolate(shape, mode):
     inputs = [torch.rand(shape)]
 
     framework_model = Interpolate()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -328,14 +304,9 @@ def test_flatten(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Flatten()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
@@ -368,16 +339,9 @@ def test_cast(operand_and_cast_dtype):
     framework_model = Cast()
     framework_model.eval()
 
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([fo.dtype == co.dtype for fo, co in zip(fw_out, co_out)])
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -398,14 +362,9 @@ def test_sin(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Sin()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -426,14 +385,9 @@ def test_cosine(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Cosine()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -455,14 +409,10 @@ def test_tanh(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Tanh()
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -477,14 +427,10 @@ def test_leakyrelu(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = nn.LeakyReLU(negative_slope=0.1)
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -500,15 +446,10 @@ def test_layernorm(batch_size, num_channels, height, width):
     framework_model = nn.LayerNorm((width))
 
     inputs = [torch.rand(batch_size, num_channels, height, width)]
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -523,14 +464,9 @@ def test_gelu(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = nn.GELU()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -561,17 +497,12 @@ def test_clip(shape, min_val, max_val):
         def forward(self, x):
             return torch.clamp(x, self.min_val, self.max_val)
 
-    framework_model = Clip(min_val, max_val)
     inputs = [torch.rand(shape)]
 
-    fw_out = framework_model(*inputs)
-
+    framework_model = Clip(min_val, max_val)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -591,17 +522,12 @@ def test_cumsum(shape, dim):
         def forward(self, x):
             return torch.cumsum(x, dim=self.dim)
 
-    framework_model = CumSum(dim)
     inputs = [torch.rand(shape)]
 
-    fw_out = framework_model(*inputs)
-
+    framework_model = CumSum(dim)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -628,18 +554,12 @@ def test_where(condition, input, other):
     input = torch.tensor(input)
     other = torch.tensor(other)
 
-    framework_model = Where()
-
     inputs = [condition, input, other]
 
-    fw_out = framework_model(*inputs)
-
+    framework_model = Where()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -657,14 +577,9 @@ def test_abs(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Abs()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -691,14 +606,9 @@ def test_exp(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Exp()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -742,15 +652,9 @@ def test_log(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Log()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
-
+    
+    verify(inputs, framework_model, compiled_model)
 
 @pytest.mark.parametrize(
     "shape_x, shape_y",
@@ -776,16 +680,12 @@ def test_maximum(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = Maximum()
     inputs = [x, y]
 
-    fw_out = framework_model(*inputs)
+    framework_model = Maximum()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -813,16 +713,12 @@ def test_less(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = Less()
     inputs = [x, y]
 
-    fw_out = framework_model(*inputs)
+    framework_model = Less()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 
 
 @pytest.mark.parametrize(
@@ -850,16 +746,12 @@ def test_greater(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = Greater()
     inputs = [x, y]
 
-    fw_out = framework_model(*inputs)
+    framework_model = Greater()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 
 
 @pytest.mark.parametrize(
@@ -887,16 +779,12 @@ def test_not_equal(shape_x, shape_y):
     x = torch.rand(shape_x)
     y = torch.rand(shape_y)
 
-    framework_model = NotEqual()
     inputs = [x, y]
 
-    fw_out = framework_model(*inputs)
+    framework_model = NotEqual()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 
 
 @pytest.mark.parametrize(
@@ -940,17 +828,12 @@ def test_equal(shape):
     x = torch.rand(shape)
     y = x * 2.0
 
-    framework_model = Equal()
     inputs = [x, y]
 
+    framework_model = Equal()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    fw_out = framework_model(*inputs)
-    co_out = compiled_model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 
 
 @pytest.mark.parametrize(
@@ -971,19 +854,15 @@ def test_equal(shape):
 @pytest.mark.push
 def test_batchnorm2d(batch_size, num_channels, height, width):
 
-    framework_model = nn.BatchNorm2d(num_features=num_channels)
+    if batch_size != 1:
+        pytest.xfail("Batch size is not 1")
 
     inputs = [torch.rand(batch_size, num_channels, height, width)]
-    fw_out = framework_model(*inputs)
 
+    framework_model = nn.BatchNorm2d(num_features=num_channels)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    if batch_size == 1:
-        assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -998,14 +877,9 @@ def test_add():
     inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
     framework_model = Add()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 params = [
@@ -1043,15 +917,9 @@ def test_transpose(params, data_format):
     inputs = [torch.rand(input_shape, dtype=data_format)]  # Use data_format instead of hardcoded dtype
     # Initialize the model with data_formats
     framework_model = Transpose(dims).to(data_format)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    co_out = compiled_model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1071,14 +939,11 @@ def test_reshape(source_and_target_shape):
             return torch.reshape(a, target_shape)
 
     inputs = [torch.rand(source_shape)]
+
     framework_model = Reshape()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1115,14 +980,9 @@ def test_squeeze(input_shape_and_dim):
     inputs = [torch.rand(*input_shape)]
 
     framework_model = Squeeze()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1153,14 +1013,9 @@ def test_unsqueeze(input_shape_and_dim):
     inputs = [torch.rand(*input_shape)]
 
     framework_model = Unsqueeze()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1191,13 +1046,9 @@ def test_concat(inputs_and_dim):
     inputs = [torch.rand(in_shape1), torch.rand(in_shape2)]
 
     framework_model = Concat()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("dims", [(1, 32, 64), (6, 33), (4, 16, 17)])
@@ -1213,14 +1064,9 @@ def test_greater_equal(dims):
     inputs = [torch.rand(dims), torch.rand(dims)]
 
     framework_model = GreaterEqual()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    output = co_out[0].to(torch.bool)
-    assert compare_with_golden(golden=fw_out, calculated=output)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 
 
 @pytest.mark.push
@@ -1235,14 +1081,9 @@ def test_subtract():
     inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
 
     framework_model = Subtract()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1264,14 +1105,9 @@ def test_multiply(shape):
     inputs = [torch.rand(shape), torch.rand(shape)]
 
     framework_model = Multiply()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -1287,14 +1123,9 @@ def test_relu():
     inputs = [torch.rand(1, 32)]
 
     framework_model = ReLU()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip(reason="This is not ready yet")
@@ -1311,14 +1142,9 @@ def test_linear():
     inputs = [torch.rand(1, 128, 20)]
 
     framework_model = Linear()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -1334,14 +1160,9 @@ def test_softmax():
     inputs = [torch.rand(1, 128)]
 
     framework_model = Softmax()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1519,13 +1340,9 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     ]
 
     framework_model = Matmul()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
@@ -1572,13 +1389,9 @@ def test_sqrt(x_shape, y_shape):
     ]
 
     framework_model = Sqrt()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 # @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
@@ -1606,13 +1419,9 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     ]
 
     framework_model = Embedding()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1642,13 +1451,9 @@ def test_reciprocal(shape):
     ]
 
     framework_model = Reciprocal()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1677,13 +1482,9 @@ def test_sigmoid(shape):
         torch.rand(*shape),
     ]
     framework_model = Sigmoid()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("dim", [-1, -2, -3], ids=["-1", "-2", "-3"])
@@ -1706,16 +1507,11 @@ def test_indexing(dim, start, stop, stride, shape):
             return forge.op.Index("indexing_op_1", x, dim, start, stop, stride)
 
     inputs = to_forge_tensors([torch.rand(*shape)])
-    model = ForgeIndexing(dim, start, stop, stride)
-    golden_out = model(*inputs)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs)
+    framework_model = ForgeIndexing(dim, start, stop, stride)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    inputs = to_pt_tensors(inputs)
-    compiled_output = compiled_model(*inputs)
-
-    co_out = [co.to("cpu") for co in compiled_output]
-    assert compare_with_golden_pcc(golden=golden_out.value(), calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(reason="ttnn.embedding op fails while reshaping the input_tensor in TILE_LAYOUT")
@@ -1746,26 +1542,16 @@ def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
         def forward(self, input_tensor, indices):
             return forge.op.AdvIndex("adv_index_op_1", input_tensor, indices)
 
-    model = ForgeAdvIndex("ForgeAdvIndex")
+    framework_model = ForgeAdvIndex("ForgeAdvIndex")
 
     # Sample Inputs
     pt_input_tensor = torch.rand(input_tensor_shape).to(torch.float32)
     pt_indices = torch.randint(input_tensor_shape[0], indices_shape).to(torch.int32)
     inputs = to_forge_tensors([pt_input_tensor, pt_indices])
 
-    # Sanity run
-    golden_out = model(*inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    # Compile the model
-    compiled_model = forge.compile(model, sample_inputs=inputs)
-
-    # Run on TT device
-    inputs = to_pt_tensors(inputs)
-    compiled_output = compiled_model(*inputs)
-    co_out = [co.to("cpu") for co in compiled_output]
-
-    # Validate results
-    assert compare_with_golden_pcc(golden=golden_out.value(), calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1888,14 +1674,10 @@ def test_convtranspose2d(
         dilation=dilation,
         padding_mode=padding_mode,
     )
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -1915,14 +1697,9 @@ def test_avg_pool2d():
     inputs = [torch.rand(1, 2048, 7, 7)]
 
     framework_model = AvgPool2d()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
@@ -1942,14 +1719,10 @@ def test_avgpool2d_decompose_to_conv2d(shape, padding):
 
     framework_model = AvgPool2d(padding=padding)
     framework_model = framework_model.to(torch.bfloat16)
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
@@ -1992,15 +1765,12 @@ def test_conv2d_with_padding(shape, padding):
             "must equal padding_bottom for the op to execute as expected."
         )
 
-    framework_model = PaddingAndConv2d(padding=padding)
-
     inputs = [torch.rand(shape)]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    framework_model = PaddingAndConv2d(padding=padding)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -2018,15 +1788,11 @@ def test_reshape_pytorch():
             return inp_res
 
     inputs = [torch.rand(4, 49, 384), torch.rand(4, 49, 384)]
+
     framework_model = ReshapeTest()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -2043,15 +1809,11 @@ def test_broadcast_pytorch():
             return inp_1_1
 
     inputs = [torch.rand(3, 64, 49, 3, 32)]
+
     framework_model = BroadcastTest()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -2105,14 +1867,9 @@ def test_remainder():
     inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
     framework_model = Remainder()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -2131,14 +1888,9 @@ def test_repeat():
     inputs = [torch.rand(1, 2, 1, 4, 4)]
 
     framework_model = Repeat(repeats=(1, 1, 4, 1, 1))
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -2157,14 +1909,9 @@ def test_expand():
     inputs = [torch.rand(1, 2, 1, 4, 4)]
 
     framework_model = Expand(expand_shape=(1, 2, 4, 4, 4))
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -2184,11 +1931,6 @@ def test_repeat_interleave():
     inputs = [torch.rand(1, 2, 1, 4, 4)]
 
     framework_model = RepeatInterleave(repeats=4, dim=2)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)

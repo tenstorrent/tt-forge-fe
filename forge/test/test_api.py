@@ -27,10 +27,10 @@ def test_torch():
     shape = (1, 1024, 32)
     inputs = [torch.rand(shape), torch.rand(shape)]
 
-    model = Add()
-    compiled_model = forge.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
+    framework_model = Add()
+    compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
 
-    verify(inputs=inputs, compiled_model=compiled_model, framework_model=model)
+    verify(inputs, framework_model, compiled_model)
 
 
 def test_tf():
@@ -46,10 +46,10 @@ def test_tf():
 
     inputs_tf = [tf.convert_to_tensor(x) for x in inputs]
 
-    model = TFAdd()
-    compiled_model = forge.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
+    framework_model = TFAdd()
+    compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
 
-    verify(inputs=inputs_tf, compiled_model=compiled_model, framework_model=model)
+    verify(inputs_tf, framework_model, compiled_model)
 
 
 def test_forge():

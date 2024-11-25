@@ -29,4 +29,4 @@ def test_resnet_inference():
     # Compile the model
     compiled_model = forge.compile(framework_model, input_image)
 
-    verify(inputs=inputs, compiled_model=compiled_model, framework_model=framework_model)
+    verify(inputs, framework_model, compiled_model)
