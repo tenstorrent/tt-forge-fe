@@ -60,12 +60,12 @@ def test_phi3_causal_lm(variant, test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="RuntimeError: Indices tensor must be in row major layout.")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(variant, test_device):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -91,15 +91,21 @@ def test_phi3_token_classification(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
     )
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="RuntimeError: Embedding Device Operation Layout Mismatch - Expected ROW_MAJOR")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(variant, test_device):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -124,3 +130,9 @@ def test_phi3_sequence_classification(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
     )
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

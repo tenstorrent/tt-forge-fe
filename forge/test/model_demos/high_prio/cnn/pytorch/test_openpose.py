@@ -327,7 +327,7 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
