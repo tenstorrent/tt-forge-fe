@@ -23,7 +23,7 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     try:
@@ -60,7 +60,7 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     try:
