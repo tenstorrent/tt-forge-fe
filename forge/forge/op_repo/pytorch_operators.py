@@ -10,17 +10,29 @@ from .datatypes import OperatorParamNumber
 
 # TODO describe operand and shapes
 _OPERATORS = [
-    OperatorDefinition("linear", "torch.nn.Linear", 1, instantiate=True, constructor_params=[
-        OperatorParamNumber("in_features", int, 10, 50),
-        OperatorParamNumber("out_features", int, 10, 50),
-    ]),
-    OperatorDefinition("conv2d", "torch.nn.Conv2d", 1, instantiate=True, constructor_params=[
-        OperatorParamNumber("in_channels", int, 10, 50),
-        OperatorParamNumber("out_channels", int, 10, 50),
-        OperatorParamNumber("kernel_size", int, 3, 3),
-        OperatorParamNumber("stride", int, 1, 1),
-        OperatorParamNumber("padding", int, 1, 1),
-    ]),
+    OperatorDefinition(
+        "linear",
+        "torch.nn.Linear",
+        1,
+        instantiate=True,
+        constructor_params=[
+            OperatorParamNumber("in_features", int, 10, 50),
+            OperatorParamNumber("out_features", int, 10, 50),
+        ],
+    ),
+    OperatorDefinition(
+        "conv2d",
+        "torch.nn.Conv2d",
+        1,
+        instantiate=True,
+        constructor_params=[
+            OperatorParamNumber("in_channels", int, 10, 50),
+            OperatorParamNumber("out_channels", int, 10, 50),
+            OperatorParamNumber("kernel_size", int, 3, 3),
+            OperatorParamNumber("stride", int, 1, 1),
+            OperatorParamNumber("padding", int, 1, 1),
+        ],
+    ),
     OperatorDefinition("relu", "torch.relu", 1),
     OperatorDefinition("sqrt", "torch.sqrt", 1),
     OperatorDefinition("tanh", "torch.tanh", 1),
@@ -30,7 +42,6 @@ _OPERATORS = [
     OperatorDefinition("mul", "torch.mul", 2),
     OperatorDefinition("div", "torch.div", 2),
     OperatorDefinition("ge", "torch.ge", 2),
-
     # Non-linear activation functions
     # HARDTANH = OperatorDefinition("hardtanh", 1)
     # HARDWISH = OperatorDefinition("hardwish", 1)
@@ -64,7 +75,6 @@ _OPERATORS = [
     # LAYER_NORM = OperatorDefinition("layer_norm", 1)
     # LOCAL_RESPONSE_NORM = OperatorDefinition("local_response_norm", 1)
     # NORMALIZE = OperatorDefinition("normalize", 1)
-
     OperatorDefinition("matmul", "torch.matmul", 2),
     OperatorDefinition("eltwise", "torch.add", 2),
 ]

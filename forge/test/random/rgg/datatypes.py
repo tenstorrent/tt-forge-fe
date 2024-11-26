@@ -40,7 +40,7 @@ class RandomizerNode:
     out_value: Optional[str] = None
     operator: Optional[OperatorDefinition] = None
     input_num: int = field(init=False)
-    inputs: List['RandomizerNode'] = field(init=False)
+    inputs: List["RandomizerNode"] = field(init=False)
     constructor_kwargs: Dict[str, object] = field(default_factory=dict)
     forward_kwargs: Dict[str, object] = field(default_factory=dict)
     input_shapes: List[TensorShape] = field(default_factory=list)
@@ -77,15 +77,14 @@ class RandomizerNode:
 
 
 class NodeShapeCalculationContext(ShapeCalculationContext):
-
-    def __init__(self, node: RandomizerNode, test_context: 'RandomizerTestContext'):
+    def __init__(self, node: RandomizerNode, test_context: "RandomizerTestContext"):
         self.node = node
         self.test_context = test_context
 
     @property
     def operator(self) -> OperatorDefinition:
         return self.node.operator
-    
+
     @property
     def input_num(self) -> int:
         return self.node.input_num
@@ -148,12 +147,12 @@ class RandomizerConfig:
     print_graph: bool = True
     print_code: bool = False
     run_test: bool = True
-    test_dir:str = "forge/test/random_tests"
+    test_dir: str = "forge/test/random_tests"
     save_tests: bool = False
     save_failing_tests: bool = False
     # build_model_from_code: bool = False  # TODO remove obsoleted
-    debug_shapes: bool = False,
-    verify_shapes: bool = False,
+    debug_shapes: bool = (False,)
+    verify_shapes: bool = (False,)
     verification_timeout: int = 60
     dim_min: int = 3
     dim_max: int = 4
@@ -187,15 +186,14 @@ class RandomizerTestContext:
 
 
 class ModelBuilder:
-    '''
+    """
     ModelBuilder is an interface that each framework should implement for instantiated model instances from a previously generated test model class.
-    '''
+    """
 
     def build_model(self, graph: RandomizerGraph, GeneratedTestModel: Type) -> ForgeModule:
         raise Exception("Method build_model() not implemented")
 
 
 class InvalidShape(Exception):
-
     def __init__(self, message):
         super().__init__(message)
