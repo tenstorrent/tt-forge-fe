@@ -15,6 +15,45 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "shape, kernel_size, stride",
+    [
+        ((1, 1, 100, 54, 54), (5, 1, 1), (1, 1, 1)),
+        ((1, 2, 5, 5, 5), (3, 3, 3), (2, 2, 2)),
+        ((1, 4, 100, 54, 54), (3, 1, 1), (1, 1, 1)),
+        ((1, 8, 32, 16, 16), (4, 1, 1), (1, 1, 1)),
+        ((1, 1, 100, 54, 54), (5, 1, 1), (5, 1, 1)),
+        ((1, 4, 10, 4, 4), (1, 1, 1), (1, 1, 1)),
+        ((1, 16, 32, 16, 16), (8, 1, 1), (3, 3, 3)),
+    ],
+)
+@pytest.mark.push
+def test_avgpool3d(shape, kernel_size, stride):
+    class AvgPool3D(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return nn.functional.avg_pool3d(x, kernel_size=kernel_size, stride=stride)
+
+    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.compile_depth = (
+        forge.CompileDepth.SPLIT_GRAPH
+    )  # Due to #https://github.com/tenstorrent/tt-mlir/issues/1343
+    inputs = [torch.rand(shape)]
+
+    framework_model = AvgPool3D()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
+        co_out = compiled_model(*inputs)
+        co_out = [co.to("cpu") for co in co_out]
+        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+        assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
     "input_shape, kernel_size, stride_size, padding, ceil_mode",
     [
         pytest.param(
@@ -1319,11 +1358,6 @@ def test_mean(x_shape, y_shape, dim):
 
         def forward(self, x):
             return torch.mean(x, dim=dim)
-
-    if dim == 1 and y_shape == 32:
-        pytest.xfail(
-            "TTNN: tilize fails for float32 - will be fixed once a080e2f035990d57ce5436a8affb3f052a5a1b5f in tt-metal is consumed"
-        )
 
     inputs = [
         torch.rand(1, x_shape, y_shape),
