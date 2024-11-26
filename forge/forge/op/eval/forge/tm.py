@@ -832,19 +832,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
 
-    if type == "hstack":
-        return ac.op("hslice", (grad,), attributes=attr)
-
-    elif type == "hslice":
-        return ac.op("hstack", (grad,), attributes=attr)
-
-    elif type == "vstack":
-        return ac.op("vslice", (grad,), attributes=attr)
-
-    elif type == "vslice":
-        return ac.op("vstack", (grad,), attributes=attr)
-
-    elif type == "transpose":
+    if type == "transpose":
         assert len(attr) == 3
 
         if (attr[0] == -3 and attr[1] == -4) or (attr[0] == -4 and attr[1] == -3):
