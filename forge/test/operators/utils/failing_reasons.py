@@ -105,6 +105,7 @@ class FailingReasonsValidation:
         ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
+            lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Exponent value"),
         ],
         FailingReasons.NOT_IMPLEMENTED: [
             lambda ex: isinstance(ex, NotImplementedError)
