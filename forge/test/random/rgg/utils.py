@@ -24,30 +24,29 @@ from .datatypes import NodeShapeCalculationContext
 
 
 class StrUtils:
-
     @staticmethod
     def kwargs_str(**kwargs):
-        s = ', '.join([f"{key}= {value}" for key, value in kwargs.items()])
+        s = ", ".join([f"{key}= {value}" for key, value in kwargs.items()])
         return s
 
     @staticmethod
     def args_str(*args):
-        s = ', '.join([f"{value}" for value in args])
+        s = ", ".join([f"{value}" for value in args])
         if s:
             s = ", " + s
         return s
 
     @staticmethod
     def camel_case_to_snake_case(camel_case: str) -> str:
-        pattern = re.compile(r'(?<!^)(?=[A-Z])')
-        snake_case = re.sub(pattern, '_', camel_case).lower()
+        pattern = re.compile(r"(?<!^)(?=[A-Z])")
+        snake_case = re.sub(pattern, "_", camel_case).lower()
         return snake_case
 
     @staticmethod
     def text_to_snake_case(text: str) -> str:
         text = text.lower()
-        pattern = re.compile(r'\ +')
-        snake_case = re.sub(pattern, '_', text).lower()
+        pattern = re.compile(r"\ +")
+        snake_case = re.sub(pattern, "_", text).lower()
         return snake_case
 
     @classmethod
@@ -56,20 +55,22 @@ class StrUtils:
         framework_name = cls.text_to_snake_case(parameters.framework.framework_name)
         graph_builder_snake_case = cls.camel_case_to_snake_case(parameters.graph_builder_name)
         test_name = cls.text_to_snake_case(test_context.test_name)
-        test_id = f"{framework_name}_{graph_builder_snake_case}_{test_name}_{parameters.test_index}_{parameters.random_seed}"
+        test_id = (
+            f"{framework_name}_{graph_builder_snake_case}_{test_name}_{parameters.test_index}_{parameters.random_seed}"
+        )
         return test_id
 
     @staticmethod
     def nodes_to_str(nodes: List[RandomizerNode]) -> str:
-        '''Converts list of nodes to string representation
+        """Converts list of nodes to string representation
         Used for debugging purposes
-        
+
         Args:
             nodes (List[RandomizerNode]): list of nodes
 
         Returns:
             str: string representation of nodes
-        '''
+        """
         # TODO Very slow -> implement in a faster way
         # nodes_str = "\n".join([f"    {node}" for node in nodes])
         nodes_str = ""
@@ -77,7 +78,6 @@ class StrUtils:
 
 
 class RandomUtils:
-
     @classmethod
     def random_value_for_param(cls, param: OperatorParam, rng_params: random.Random):
         if isinstance(param, OperatorParamNumber):
@@ -97,16 +97,30 @@ class RandomUtils:
             raise ValueError(f"Unsupported type {param.type}")
 
     @classmethod
-    def constructor_kwargs(cls, operator: OperatorDefinition, constructor_kwargs: Dict[str, object], rng_params: random.Random) -> Dict:
-        return {param.name: cls.random_value_for_param(param, rng_params) if param.name not in constructor_kwargs else constructor_kwargs[param.name] for param in operator.constructor_params}
+    def constructor_kwargs(
+        cls, operator: OperatorDefinition, constructor_kwargs: Dict[str, object], rng_params: random.Random
+    ) -> Dict:
+        return {
+            param.name: cls.random_value_for_param(param, rng_params)
+            if param.name not in constructor_kwargs
+            else constructor_kwargs[param.name]
+            for param in operator.constructor_params
+        }
 
     @classmethod
-    def forward_kwargs(cls, operator: OperatorDefinition, forward_kwargs: Dict[str, object], rng_params: random.Random) -> Dict:
-        return {param.name: cls.random_value_for_param(param, rng_params) if param.name not in forward_kwargs else forward_kwargs[param.name] for param in operator.forward_params}
+    def forward_kwargs(
+        cls, operator: OperatorDefinition, forward_kwargs: Dict[str, object], rng_params: random.Random
+    ) -> Dict:
+        return {
+            param.name: cls.random_value_for_param(param, rng_params)
+            if param.name not in forward_kwargs
+            else forward_kwargs[param.name]
+            for param in operator.forward_params
+        }
 
     @classmethod
     def quantize(cls, value: int, quantization: int = 2) -> int:
-        '''Quantize the value to the nearest multiple of quantization
+        """Quantize the value to the nearest multiple of quantization
 
         Args:
             value (int): value to quantize
@@ -114,22 +128,26 @@ class RandomUtils:
 
         Returns:
             int: quantized value
-        '''
+        """
         # Using max to avoid quantizing to 0
         return max(round(value / quantization) * quantization, quantization)
 
     @classmethod
-    def random_shape(cls,
-                     rng_shape: random.Random,
-                     dim_min: int,
-                     dim_max: int,
-                     op_size_min: int,
-                     op_size_max: int,
-                     quantization: int,
-                     microbatch_size_min: int,
-                     microbatch_size_max: int,
-        ) -> TensorShape:
-        shape = [cls.quantize(rng_shape.randint(op_size_min, op_size_max), quantization) for _ in range(rng_shape.randint(dim_min - 1, dim_max - 1))]
+    def random_shape(
+        cls,
+        rng_shape: random.Random,
+        dim_min: int,
+        dim_max: int,
+        op_size_min: int,
+        op_size_max: int,
+        quantization: int,
+        microbatch_size_min: int,
+        microbatch_size_max: int,
+    ) -> TensorShape:
+        shape = [
+            cls.quantize(rng_shape.randint(op_size_min, op_size_max), quantization)
+            for _ in range(rng_shape.randint(dim_min - 1, dim_max - 1))
+        ]
         microbatch_size = rng_shape.randint(microbatch_size_min, microbatch_size_max)
         shape.insert(0, microbatch_size)
         shape = tuple(shape)
@@ -161,7 +179,6 @@ class RandomUtils:
 
 
 class GraphUtils:
-
     @classmethod
     def get_input_shapes(cls, graph: RandomizerGraph) -> List[TensorShape]:
         input_shapes = [input_node.input_shape for input_node in graph.input_nodes]
@@ -188,7 +205,6 @@ class GraphUtils:
 
 
 class NodeUtils:
-
     @staticmethod
     def is_previous_node(node: RandomizerNode, previous_node: RandomizerNode) -> bool:
         return node.index == previous_node.index + 1
@@ -226,11 +242,15 @@ class NodeUtils:
 
     # TODO replace list with generator
     @classmethod
-    def get_open_nodes_with_input_shape(cls, nodes: List[RandomizerNode], input_shape: TensorShape) -> List[RandomizerNode]:
+    def get_open_nodes_with_input_shape(
+        cls, nodes: List[RandomizerNode], input_shape: TensorShape
+    ) -> List[RandomizerNode]:
         return [node for node in nodes if cls.is_open(node) and cls.has_open_input_with_input_shape(node, input_shape)]
 
     @classmethod
-    def calc_input_shapes(cls, node: RandomizerNode, shape_calculation_context: NodeShapeCalculationContext) -> List[TensorShape]:
+    def calc_input_shapes(
+        cls, node: RandomizerNode, shape_calculation_context: NodeShapeCalculationContext
+    ) -> List[TensorShape]:
         return node.operator.calc_input_shapes(shape_calculation_context)
 
     @classmethod
@@ -245,28 +265,27 @@ class NodeUtils:
 
 
 class DebugUtils:
-
     @classmethod
     def format_tensors(cls, tensors: List[forge.Tensor]):
         if isinstance(tensors[0], forge.Tensor):
-            format_tensor: Callable[[forge.Tensor], str] = lambda t: f'{t.data_format}:{t.shape}'
+            format_tensor: Callable[[forge.Tensor], str] = lambda t: f"{t.data_format}:{t.shape}"
         elif isinstance(tensors[0], torch.Tensor):
-            format_tensor: Callable[[forge.Tensor], str] = lambda t: f'{t.type()}:{t.shape}'
+            format_tensor: Callable[[forge.Tensor], str] = lambda t: f"{t.type()}:{t.shape}"
         return [format_tensor(t) for t in tensors]
-    
+
     @classmethod
     def debug_inputs(cls, inputs: List[forge.Tensor]):
         logger.info(f"inputs: {cls.format_tensors(inputs)}")
 
 
 class Timer:
-    '''Timer class to measure the duration of a code block'''
+    """Timer class to measure the duration of a code block"""
 
     def __init__(self):
         self.start_time = time.perf_counter()
 
     def get_duration(self):
-        '''Calculate the duration of the code block in seconds'''
+        """Calculate the duration of the code block in seconds"""
         end_time = time.perf_counter()
         duration = end_time - self.start_time
         return duration
@@ -295,6 +314,7 @@ def timeout(seconds):
                 # Shutdown alarm
                 signal.alarm(0)
             return result
-        return wrapper
-    return decorator
 
+        return wrapper
+
+    return decorator

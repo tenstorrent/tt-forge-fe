@@ -10,24 +10,33 @@ from .datatypes import OperatorParamNumber
 
 # TODO describe operand and shapes
 _OPERATORS = [
-
     # Unary operators
     OperatorDefinition("exp", "forge.op.Exp", 1),
     OperatorDefinition("reciprocal", "forge.op.Reciprocal", 1),
     OperatorDefinition("buffer", "forge.op.Buffer", 1),
     OperatorDefinition("sqrt", "forge.op.Sqrt", 1),
     OperatorDefinition("relu", "forge.op.Relu", 1),
-    OperatorDefinition("leaky_relu", "forge.op.LeakyRelu", 1, forward_params=[
-        OperatorParamNumber("alpha", float, 0, 100),
-    ]),
+    OperatorDefinition(
+        "leaky_relu",
+        "forge.op.LeakyRelu",
+        1,
+        forward_params=[
+            OperatorParamNumber("alpha", float, 0, 100),
+        ],
+    ),
     OperatorDefinition("nop", "forge.op.Identity", 1),
     OperatorDefinition("gelu", "forge.op.Gelu", 1),
     OperatorDefinition("log", "forge.op.Log", 1),
     OperatorDefinition("sigmoid", "forge.op.Sigmoid", 1),
-    OperatorDefinition("clip", "forge.op.Clip", 1, forward_params=[
-        OperatorParamNumber("min", float, 0, 100),
-        OperatorParamNumber("max", float, 0, 100),
-    ]),
+    OperatorDefinition(
+        "clip",
+        "forge.op.Clip",
+        1,
+        forward_params=[
+            OperatorParamNumber("min", float, 0, 100),
+            OperatorParamNumber("max", float, 0, 100),
+        ],
+    ),
     OperatorDefinition("sine", "forge.op.Sine", 1),
     OperatorDefinition("cosine", "forge.op.Cosine", 1),
     OperatorDefinition("abs", "forge.op.Abs", 1),
@@ -36,11 +45,15 @@ _OPERATORS = [
     OperatorDefinition("argmax", "forge.op.Argmax", 1),
     OperatorDefinition("logical_not", "forge.op.LogicalNot", 1),
     OperatorDefinition("dropout", "forge.op.Dropout", 1),
-    OperatorDefinition("pow", "forge.op.Pow", 1, forward_params=[
-        OperatorParamNumber("exponent", float, 0, 100),
-    ]),
+    OperatorDefinition(
+        "pow",
+        "forge.op.Pow",
+        1,
+        forward_params=[
+            OperatorParamNumber("exponent", float, 0, 100),
+        ],
+    ),
     OperatorDefinition("tilizer", "forge.op.Tilize", 1),
-
     # Binary operators
     OperatorDefinition("add", "forge.op.Add", 2),
     OperatorDefinition("divide", "forge.op.Divide", 2),
@@ -58,21 +71,34 @@ _OPERATORS = [
     OperatorDefinition("equal", "forge.op.Equal", 2),
     OperatorDefinition("not_equal", "forge.op.NotEqual", 2),
     OperatorDefinition("logical_and", "forge.op.LogicalAnd", 2),
-
     # Nary operators
     OperatorDefinition("where", "forge.op.Where", 3),
     # OperatorDefinition("index_copy", "forge.op.IndexCopy", 3),  # Bug #2705
-    OperatorDefinition("interleave", "forge.op.Interleave", (1,10), forward_params=[
-        OperatorParamNumber("axis", int, -3, -3),
-        OperatorParamNumber("stride", int, 1, 1),
-    ]),
-    OperatorDefinition("concatenate", "forge.op.Concatenate", (1, 10), forward_params=[
-        OperatorParamNumber("axis", int, -10, 10),
-    ]),
-    OperatorDefinition("stack", "forge.op.Stack", (2,4), forward_params=[
-        OperatorParamNumber("axis", int, 1, 10),
-    ]),
-
+    OperatorDefinition(
+        "interleave",
+        "forge.op.Interleave",
+        (1, 10),
+        forward_params=[
+            OperatorParamNumber("axis", int, -3, -3),
+            OperatorParamNumber("stride", int, 1, 1),
+        ],
+    ),
+    OperatorDefinition(
+        "concatenate",
+        "forge.op.Concatenate",
+        (1, 10),
+        forward_params=[
+            OperatorParamNumber("axis", int, -10, 10),
+        ],
+    ),
+    OperatorDefinition(
+        "stack",
+        "forge.op.Stack",
+        (2, 4),
+        forward_params=[
+            OperatorParamNumber("axis", int, 1, 10),
+        ],
+    ),
     OperatorDefinition("matmul", "forge.op.Matmul", 2),
     # OperatorDefinition("sparse_matmul", "forge.op.SparseMatmul", 2),
 ]

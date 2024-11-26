@@ -16,7 +16,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(torch.nn.Module):
 
     def __init__(self):
         super(GeneratedTestModel_{{ test_index }}_{{ random_seed }}, self).__init__()
-{% for node in graph.nodes %}{% if node.operator.is_layer %}        
+{% for node in graph.nodes %}{% if node.operator.is_layer %}
         self.{{ node.layer_name }} = {{ node.operator.full_name }}({{ constructor_kwargs(node=node) }}){% endif %}{% endfor %}
         {% for constant_node in graph.constant_nodes %}
         self.{{ constant_node.out_value }} = torch.randn({{ reduce_microbatch_size(constant_node.input_shape) }}){% endfor %}
@@ -38,7 +38,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(torch.nn.Module):
 
 # @pytest.mark.xfail(reason="The model triggers a bug.")
 def test_gen_model_{{ test_index }}_{{ random_seed }}(test_device):
-    
+
     input_shapes = [
         {% for input_node in graph.input_nodes %}{{ input_node.input_shape }},
         {% endfor %}]

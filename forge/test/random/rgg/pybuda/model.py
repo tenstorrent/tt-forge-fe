@@ -13,7 +13,6 @@ from .. import RandomizerGraph, ModelBuilder, StrUtils
 
 
 class PyBudaModelBuilder(ModelBuilder):
-
     def build_model(self, graph: RandomizerGraph, GeneratedTestModel: Type[ForgeModule]) -> ForgeModule:
         module_name = f"gen_model_pytest_{StrUtils.test_id(graph)}"
         pybuda_model = GeneratedTestModel(module_name)

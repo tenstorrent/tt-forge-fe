@@ -18,7 +18,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(ForgeModule):
     def __init__(self, module_name: str = "Buda Test GeneratedTestModel_{{ test_id }}"):
         super(GeneratedTestModel_{{ test_index }}_{{ random_seed }}, self).__init__(module_name)
         self.testname = "Operator Test GeneratedTestModel_{{ test_id }}"
-{% for node in graph.nodes %}{% if node.operator.is_layer %}        
+{% for node in graph.nodes %}{% if node.operator.is_layer %}
         self.{{ node.layer_name }} = {{ node.operator.full_name }}({{ constructor_kwargs(node=node) }}){% endif %}{% endfor %}
         {% for constant_node in graph.constant_nodes %}
         self.add_constant("{{ constant_node.out_value }}")
@@ -41,7 +41,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(ForgeModule):
 
 # @pytest.mark.xfail(reason="The model triggers a bug.")
 def test_gen_model_{{ test_index }}_{{ random_seed }}(test_device):
-    
+
     input_shapes = [
         {% for input_node in graph.input_nodes %}{{ input_node.input_shape }},
         {% endfor %}]

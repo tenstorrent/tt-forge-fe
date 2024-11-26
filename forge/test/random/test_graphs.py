@@ -18,7 +18,7 @@ from test.random.rgg import process_test
 
 
 class FrameworksHealthy(Enum):
-    ''' Adjust repositories to test healthy operators '''
+    """Adjust repositories to test healthy operators"""
 
     @staticmethod
     def healty_pybuda():
@@ -31,13 +31,11 @@ class FrameworksHealthy(Enum):
             "logical_not",  # bug
             "dropout",  # pcc?
             "tilizer",  # bug
-
             # Binary operators
             "divide",  # bug
             "binary_stack",  # bug
             "power",  # occasionally fails
             "logical_and",  # bug
-
             # Nary operators
             "where",  # pcc?
         )
@@ -66,19 +64,17 @@ class FrameworksHealthy(Enum):
         framework = FrameworkTestUtils.copy_framework(Frameworks.PYTORCH.value, "Healthy PyTorch", SKIP_OPERATORS)
 
         return framework
-    
+
     PYBUDA = healty_pybuda()
     PYTORCH = healty_pytorch()
 
 
 class FrameworksCustom(Enum):
-    ''' Adjust repositories to prepare custom framework configurations '''
-
+    """Adjust repositories to prepare custom framework configurations"""
 
     @staticmethod
     def pybuda_fork_joins():
-        SKIP_OPERATORS = (
-        )
+        SKIP_OPERATORS = ()
 
         framework = FrameworkTestUtils.copy_framework(Frameworks.PYBUDA.value, "PyBuda fork joins", SKIP_OPERATORS)
 
@@ -95,8 +91,7 @@ class FrameworksCustom(Enum):
 
     @staticmethod
     def pybuda_nary():
-        SKIP_OPERATORS = (
-        )
+        SKIP_OPERATORS = ()
 
         framework = FrameworkTestUtils.copy_framework(Frameworks.PYBUDA.value, "PyBuda nary", SKIP_OPERATORS)
 
@@ -119,10 +114,15 @@ class FrameworksCustom(Enum):
     PYBUDA_NARY = pybuda_nary()
 
 
-@pytest.mark.parametrize("framework", [
-    FrameworksHealthy.PYBUDA.value,
-])
-def test_random_graph_algorithm_pybuda(test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework):
+@pytest.mark.parametrize(
+    "framework",
+    [
+        FrameworksHealthy.PYBUDA.value,
+    ],
+)
+def test_random_graph_algorithm_pybuda(
+    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
     # randomizer_config.debug_shapes = True
@@ -144,18 +144,31 @@ def test_random_graph_algorithm_pybuda(test_index, random_seeds, test_device, ra
 
     # TODO random_seed instead of random_seeds
     random_seed = random_seeds[test_index]
-    process_test("Default", test_index, random_seed, test_device, randomizer_config, graph_builder_type=RandomGraphAlgorithm, framework=framework)
+    process_test(
+        "Default",
+        test_index,
+        random_seed,
+        test_device,
+        randomizer_config,
+        graph_builder_type=RandomGraphAlgorithm,
+        framework=framework,
+    )
 
 
-@pytest.mark.parametrize("framework", [
-    FrameworksHealthy.PYTORCH.value,
-])
-def test_random_graph_algorithm_pytorch(test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework):
+@pytest.mark.parametrize(
+    "framework",
+    [
+        FrameworksHealthy.PYTORCH.value,
+    ],
+)
+def test_random_graph_algorithm_pytorch(
+    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
     # randomizer_config.debug_shapes = True
     # randomizer_config.verify_shapes = True
-    
+
     # Uncomment the following randomizer_config values to override the default values
     # randomizer_config.dim_min = 4
     # randomizer_config.dim_max = 4
@@ -172,13 +185,26 @@ def test_random_graph_algorithm_pytorch(test_index, random_seeds, test_device, r
 
     # TODO random_seed instead of random_seeds
     random_seed = random_seeds[test_index]
-    process_test("Default", test_index, random_seed, test_device, randomizer_config, graph_builder_type=RandomGraphAlgorithm, framework=framework)
+    process_test(
+        "Default",
+        test_index,
+        random_seed,
+        test_device,
+        randomizer_config,
+        graph_builder_type=RandomGraphAlgorithm,
+        framework=framework,
+    )
 
 
-@pytest.mark.parametrize("framework", [
-    FrameworksCustom.PYBUDA_FORK_JOINS.value,
-])
-def ttest_random_graph_algorithm_pybuda_fork_joins(test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework):
+@pytest.mark.parametrize(
+    "framework",
+    [
+        FrameworksCustom.PYBUDA_FORK_JOINS.value,
+    ],
+)
+def ttest_random_graph_algorithm_pybuda_fork_joins(
+    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
     # randomizer_config.debug_shapes = True
@@ -198,14 +224,27 @@ def ttest_random_graph_algorithm_pybuda_fork_joins(test_index, random_seeds, tes
 
     # TODO random_seed instead of random_seeds
     random_seed = random_seeds[test_index]
-    process_test("Fork Joins", test_index, random_seed, test_device, randomizer_config, graph_builder_type=RandomGraphAlgorithm, framework=framework)
+    process_test(
+        "Fork Joins",
+        test_index,
+        random_seed,
+        test_device,
+        randomizer_config,
+        graph_builder_type=RandomGraphAlgorithm,
+        framework=framework,
+    )
 
 
 # @pytest.mark.xfail(reason="Nary operators are buggy")
-@pytest.mark.parametrize("framework", [
-    FrameworksCustom.PYBUDA_NARY.value,
-])
-def ttest_random_graph_algorithm_pybuda_nary(test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework):
+@pytest.mark.parametrize(
+    "framework",
+    [
+        FrameworksCustom.PYBUDA_NARY.value,
+    ],
+)
+def ttest_random_graph_algorithm_pybuda_nary(
+    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
     # randomizer_config.debug_shapes = True
@@ -227,4 +266,12 @@ def ttest_random_graph_algorithm_pybuda_nary(test_index, random_seeds, test_devi
 
     # TODO random_seed instead of random_seeds
     random_seed = random_seeds[test_index]
-    process_test("Nary", test_index, random_seed, test_device, randomizer_config, graph_builder_type=RandomGraphAlgorithm, framework=framework)
+    process_test(
+        "Nary",
+        test_index,
+        random_seed,
+        test_device,
+        randomizer_config,
+        graph_builder_type=RandomGraphAlgorithm,
+        framework=framework,
+    )
