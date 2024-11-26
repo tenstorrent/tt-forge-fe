@@ -33,7 +33,9 @@ RUN apt-get update && apt-get install -y \
     jq \
     curl \
     gh \
-    expect
+    expect \
+    libpolly-17-dev \
+    libzstd-dev
 
 # Install clang 17
 RUN wget https://apt.llvm.org/llvm.sh && \
