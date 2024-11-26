@@ -818,9 +818,6 @@ def lower(type, attr, lc, ops, outputs):
 
         return lc.op(ForgeNop.create(), ops)
 
-    elif (type == "hstack" or type == "hslice") and attr[0] == 1:
-        return lc.op(ForgeNop.create(), ops)
-
     elif type == "forge_pad":
         return lc.tm("forge_pad", ops[0], attr, {"rt": attr[0], "ct": attr[1], "pad_value": attr[2]})
 
