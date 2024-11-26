@@ -123,43 +123,6 @@ def eval(type, attr, ops):
             ret = t_ops[0][t_ops[1].numpy()]
         return ret
 
-    if type == "hslice":
-        assert len(attr) == 1, "HSlice should have one attribute, the slice size"
-        slice_size = attr[0]
-        shape = list(t_ops[0].shape)
-        assert shape[-1] % slice_size == 0
-        while len(shape) < 4:
-            shape = [1] + shape
-        ret = t_ops[0].reshape(-1, shape[-2], slice_size, shape[-1] // slice_size)
-        ret = ret.permute(0, 2, 1, 3)
-        return ret.reshape(shape[:-3] + [shape[-3] * slice_size, shape[-2], shape[-1] // slice_size])
-
-    if type == "hstack":
-        assert len(attr) == 1, "hstack should have one attribute, equal to number of stacks of Z dim to create"
-        slice_size = attr[0]
-        shape = list(t_ops[0].shape)
-        assert shape[-3] % slice_size == 0, f"HStack requires Z to be divisible by slice size"
-        ret = t_ops[0].reshape(-1, shape[-3] // slice_size, slice_size, shape[-2], shape[-1])
-        ret = ret.permute(0, 1, 3, 2, 4)
-        return ret.reshape(shape[:-3] + [shape[-3] // slice_size, shape[-2], shape[-1] * slice_size])
-
-    if type == "vslice":
-        assert len(attr) == 1, "VSlice should have one attribute, the slice size"
-        slice_size = attr[0]
-        shape = t_ops[0].shape
-        assert len(shape) >= 2
-        assert shape[-2] % slice_size == 0
-        if len(shape) < 3:
-            shape = (1,) + shape
-        return t_ops[0].reshape(shape[:-3] + (shape[-3] * slice_size, shape[-2] // slice_size, shape[-1]))
-
-    if type == "vstack":
-        assert len(attr) == 1, "vstack should have one attribute, equal to number of stacks of Z dim to create"
-        slice_size = attr[0]
-        shape = t_ops[0].shape
-        assert shape[-3] % slice_size == 0, f"VStack requires Z to be divisible by slice size"
-        return t_ops[0].reshape(shape[:-3] + (shape[-3] // slice_size, shape[-2] * slice_size, shape[-1]))
-
     if type == "broadcast":
         assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
         explicit_bcast = len(attr) == 3 and bool(attr[2])
