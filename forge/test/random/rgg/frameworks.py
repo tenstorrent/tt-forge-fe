@@ -23,37 +23,54 @@ from forge.op_repo import OperatorRepository
 
 
 class FrameworkTestUtils:
-
     @classmethod
-    def copy_framework(cls, framework: Framework, framework_name: str = None, skip_operators: Tuple[str] = []) -> Framework:
+    def copy_framework(
+        cls, framework: Framework, framework_name: str = None, skip_operators: Tuple[str] = []
+    ) -> Framework:
         framework0 = framework
         framework = copy(framework)
         if framework_name is not None:
             framework.framework_name = framework_name
         framework.operator_repository = copy(framework.operator_repository)
         cls.skip_operators(framework, skip_operators)
-        assert len(framework.operator_repository.operators) + len(skip_operators) == len(framework0.operator_repository.operators), "Operators count should match after skipping operators"
+        assert len(framework.operator_repository.operators) + len(skip_operators) == len(
+            framework0.operator_repository.operators
+        ), "Operators count should match after skipping operators"
         return framework
 
     @classmethod
     def skip_operators(cls, framework: Framework, skip_operators: Tuple[str] = []) -> None:
         initial_operator_count = len(framework.operator_repository.operators)
-        framework.operator_repository.operators = [op for op in framework.operator_repository.operators if op.name not in skip_operators]
-        logger.debug(f"Skipped num of operators for framework {framework.framework_name}: {initial_operator_count} -> {len(framework.operator_repository.operators)}")
-        assert len(framework.operator_repository.operators) + len(skip_operators) == initial_operator_count, "Operators count should match after skipping operators"
+        framework.operator_repository.operators = [
+            op for op in framework.operator_repository.operators if op.name not in skip_operators
+        ]
+        logger.debug(
+            f"Skipped num of operators for framework {framework.framework_name}: {initial_operator_count} -> {len(framework.operator_repository.operators)}"
+        )
+        assert (
+            len(framework.operator_repository.operators) + len(skip_operators) == initial_operator_count
+        ), "Operators count should match after skipping operators"
 
     @classmethod
     def allow_operators(cls, framework: Framework, allow_operators: Tuple[str] = []) -> None:
         initial_operator_count = len(framework.operator_repository.operators)
-        framework.operator_repository.operators = [op for op in framework.operator_repository.operators if op.name in allow_operators]
-        logger.debug(f"Allowed num of operators for framework {framework.framework_name}: {initial_operator_count} -> {len(framework.operator_repository.operators)}")
-        assert len(allow_operators) == len(framework.operator_repository.operators), "Operators count should match allowing skipping operators"
+        framework.operator_repository.operators = [
+            op for op in framework.operator_repository.operators if op.name in allow_operators
+        ]
+        logger.debug(
+            f"Allowed num of operators for framework {framework.framework_name}: {initial_operator_count} -> {len(framework.operator_repository.operators)}"
+        )
+        assert len(allow_operators) == len(
+            framework.operator_repository.operators
+        ), "Operators count should match allowing skipping operators"
 
     @classmethod
     def copy_operator(cls, framework: Framework, operator_name: str) -> OperatorDefinition:
         operators = framework.operator_repository.operators
 
-        i, operator = next(((i, operator) for i, operator in enumerate(operators) if operator.name == operator_name), (None, None))
+        i, operator = next(
+            ((i, operator) for i, operator in enumerate(operators) if operator.name == operator_name), (None, None)
+        )
         if not operator:
             return None
 
@@ -63,7 +80,7 @@ class FrameworkTestUtils:
 
     @classmethod
     def set_calc_input_shapes(cls, framework: Framework, allow_operators: Tuple[str] = []) -> None:
-        ''' Implicitly set calc_input_shapes for all operators in the framework '''
+        """Implicitly set calc_input_shapes for all operators in the framework"""
         logger.debug(f"Setting calc_input_shapes for framework {framework.framework_name}")
         for operator in framework.operator_repository.operators:
             function_name = f"{operator.name}_inputs"
@@ -75,10 +92,15 @@ class FrameworkTestUtils:
 
 
 class Frameworks(Enum):
-    ''' Register of all frameworks '''
+    """Register of all frameworks"""
 
     @staticmethod
-    def build_framework(template_name: str, framework_name: str, ModelBuilderType: Type[ModelBuilder], operator_repository: OperatorRepository):
+    def build_framework(
+        template_name: str,
+        framework_name: str,
+        ModelBuilderType: Type[ModelBuilder],
+        operator_repository: OperatorRepository,
+    ):
         framework = Framework(
             template_name=template_name,
             framework_name=framework_name,

@@ -7,12 +7,13 @@ import torch
 import forge
 import random
 from forge.verify import verify_module, VerifyConfig, TestKind
-    
+
+
 class ThreeOpModel(torch.nn.Module):
     def __init__(self, rng, cols1, cols2):
         super(ThreeOpModel, self).__init__()
         self.rng = rng
-        
+
         self.op1 = self.rng.choice(["matmul", "conv2d"])
         self.op2 = self.rng.choice(["sqrt", "tanh", "add"])
         self.op3 = self.rng.choice(["matmul", "eltwise"])
@@ -45,7 +46,7 @@ class ThreeOpModel(torch.nn.Module):
                 a = a.permute(0, 3, 1, 2)
                 b = b.permute(0, 3, 1, 2)
             # transpose should use last 2 columns, in case of conv there are 4 dimensions
-            c = torch.matmul(a, torch.transpose(b, b.dim()-2, b.dim()-1))
+            c = torch.matmul(a, torch.transpose(b, b.dim() - 2, b.dim() - 1))
         elif self.op3 == "eltwise":
             c = a + b
         else:
@@ -68,6 +69,8 @@ def test_three_ops(test_index, random_seeds, test_device):
     model = ThreeOpModel(rng, cols1, cols2)
     input_shape = (microbatch_size, rows, cols1) if model.op1 == "matmul" else (microbatch_size, cols1, rows, 32)
 
-    verify_module(forge.PyTorchModule(f"three_op_model_{test_index}", model), [input_shape],
-            VerifyConfig(test_kind=TestKind.INFERENCE, devtype=test_device.devtype, arch=test_device.arch))
-                
+    verify_module(
+        forge.PyTorchModule(f"three_op_model_{test_index}", model),
+        [input_shape],
+        VerifyConfig(test_kind=TestKind.INFERENCE, devtype=test_device.devtype, arch=test_device.arch),
+    )

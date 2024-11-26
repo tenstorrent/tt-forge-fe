@@ -12,16 +12,16 @@ from .datatypes import RandomizerConfig
 # TODO introduce environment variables to set these values
 # TODO read config from file
 def get_randomizer_config_default():
-    randomizer_config = RandomizerConfig (
-        print_graph = False,
-        print_code = True,
-        run_test = True,
-        save_tests = True,
-        save_failing_tests = True,
+    randomizer_config = RandomizerConfig(
+        print_graph=False,
+        print_code=True,
+        run_test=True,
+        save_tests=True,
+        save_failing_tests=True,
         # build_model_from_code = False,
-        debug_shapes = False,
-        verify_shapes = False,
-        verification_timeout = int(os.environ.get("VERIFICATION_TIMEOUT", 60)),
+        debug_shapes=False,
+        verify_shapes=False,
+        verification_timeout=int(os.environ.get("VERIFICATION_TIMEOUT", 60)),
         # TODO ranges
         # dim_min=int(os.environ.get("MIN_DIM", 3)),
         dim_min=int(os.environ.get("MIN_DIM", 4)),  # Until #2722 is resolved

@@ -19,7 +19,6 @@ from .utils import RandomUtils
 
 
 class OperatorShapes:
-
     @staticmethod
     def same_input_shapes(calculation_context: ShapeCalculationContext) -> List[TensorShape]:
         input_num, output_shape = calculation_context.input_num, calculation_context.output_shape
@@ -59,7 +58,7 @@ class OperatorShapes:
         # calculates inner dimension based on one of output shape dimensions
         # dim is wrong for second operand
         q = randomize_size(len(batch_shape) + 1, test_context)
-        input_shapes = [batch_shape + (m,q), batch_shape + (q,n)]
+        input_shapes = [batch_shape + (m, q), batch_shape + (q, n)]
         return input_shapes
 
     @staticmethod
@@ -77,13 +76,15 @@ class OperatorShapes:
 
         shape1 = output_shape[:axis]
         mid_size = output_shape[axis]
-        shape2 = output_shape[axis+1:]
+        shape2 = output_shape[axis + 1 :]
 
         if mid_size < input_num:
             raise InvalidShape(f"Output shape {output_shape} is too small mid_size={mid_size} < input_num={input_num}")
 
         if mid_size % input_num != 0:
-            raise InvalidShape(f"Output shape {output_shape} axis[{axis}]={mid_size} is not divisible by input_num={input_num}")
+            raise InvalidShape(
+                f"Output shape {output_shape} axis[{axis}]={mid_size} is not divisible by input_num={input_num}"
+            )
 
         dim = mid_size // input_num
 
@@ -107,7 +108,7 @@ class OperatorShapes:
 
         shape1 = output_shape[:axis]
         mid_size = output_shape[axis]
-        shape2 = output_shape[axis+1:]
+        shape2 = output_shape[axis + 1 :]
 
         if mid_size < input_num:
             raise InvalidShape(f"Output shape {output_shape} is too small mid_size={mid_size} < input_num={input_num}")
@@ -116,7 +117,9 @@ class OperatorShapes:
         for input_pos in range(input_num):
             reserved_size = input_num - input_pos - 1
             mid_range = mid_size - reserved_size
-            logger.trace(f"input_num = {input_num} mid_size = {mid_size} reserved_size = {reserved_size} mid_range = {mid_range}")
+            logger.trace(
+                f"input_num = {input_num} mid_size = {mid_size} reserved_size = {reserved_size} mid_range = {mid_range}"
+            )
             if mid_range <= 0:
                 raise InvalidShape(f"Output shape {output_shape} is too small mid_range={mid_range} <= 0")
             if reserved_size == 0:
@@ -140,19 +143,23 @@ class OperatorShapes:
         axis = forward_kwargs["axis"]
 
         if len(output_shape) <= test_context.randomizer_config.dim_min:
-            raise InvalidShape(f"Output shape {output_shape} is too small len(output_shape)={len(output_shape)} <= dim_min={test_context.randomizer_config.dim_min}")
+            raise InvalidShape(
+                f"Output shape {output_shape} is too small len(output_shape)={len(output_shape)} <= dim_min={test_context.randomizer_config.dim_min}"
+            )
         dim = output_shape[axis]
         if dim != input_num:
-            raise InvalidShape(f"Mismatch of dim and input_num in output shape {output_shape}. dim={dim} != input_num={input_num}")
+            raise InvalidShape(
+                f"Mismatch of dim and input_num in output shape {output_shape}. dim={dim} != input_num={input_num}"
+            )
         shape1 = output_shape[:axis]
-        shape2 = output_shape[axis+1:]
+        shape2 = output_shape[axis + 1 :]
 
         input_shapes = [shape1 + shape2 for _ in range(input_num)]
         return input_shapes
 
 
 def randomize_size(dim: int, test_context: RandomizerTestContext) -> int:
-    '''Randomize size of a new dimension based operand size range
+    """Randomize size of a new dimension based operand size range
 
     Args:
         dim (int): new dimension
@@ -160,7 +167,7 @@ def randomize_size(dim: int, test_context: RandomizerTestContext) -> int:
 
     Returns:
         int: random size of an dimension
-    '''
+    """
     rng_shape = test_context.rng_shape
     randomizer_config = test_context.randomizer_config
     op_size_min = randomizer_config.op_size_per_dim_min
@@ -175,12 +182,13 @@ def randomize_size(dim: int, test_context: RandomizerTestContext) -> int:
 
 
 class AdjustParameters:
-    '''Adjust parameters for operators based on output shape'''
+    """Adjust parameters for operators based on output shape"""
+
     # TODO Introduce adjustment method in operator definition similar to calc_input_shapes
 
     @staticmethod
     def interleave_adjust(node: RandomizerNode, test_context: RandomizerTestContext) -> None:
-        '''Adjust parameters and input number for interleave based on output shape'''
+        """Adjust parameters and input number for interleave based on output shape"""
         rng_shape = test_context.rng_shape
         input_num_range = node.operator.input_num_range
 
@@ -196,7 +204,9 @@ class AdjustParameters:
 
         mid_size = output_shape[axis]
 
-        logger.trace(f"Interleave axis = {axis} output_shape = {output_shape} mid_size = {mid_size} input_num = {input_num}")
+        logger.trace(
+            f"Interleave axis = {axis} output_shape = {output_shape} mid_size = {mid_size} input_num = {input_num}"
+        )
 
         if mid_size % input_num == 0:
             # If axis is divisible by input number, no need to recalculate
@@ -207,7 +217,10 @@ class AdjustParameters:
         # supported_axises = list(enumerate(node.output_shape))
 
         for axis, mid_size in rng_shape.sample(supported_axises, len(supported_axises)):
-            for input_num in rng_shape.sample(range(input_num_range.operands_min, input_num_range.operands_max+1), input_num_range.operands_max - input_num_range.operands_min + 1):
+            for input_num in rng_shape.sample(
+                range(input_num_range.operands_min, input_num_range.operands_max + 1),
+                input_num_range.operands_max - input_num_range.operands_min + 1,
+            ):
                 if mid_size % input_num == 0:
                     node.forward_kwargs["axis"] = axis
                     node.input_num = input_num
@@ -218,7 +231,7 @@ class AdjustParameters:
 
     @staticmethod
     def concatenate_adjust(node: RandomizerNode, test_context: RandomizerTestContext) -> None:
-        '''Adjust parameters and input number for concatenate based on output shape'''
+        """Adjust parameters and input number for concatenate based on output shape"""
         rng_shape = test_context.rng_shape
         input_num_range = node.operator.input_num_range
 
@@ -258,19 +271,23 @@ class AdjustParameters:
                 continue
             if input_num_range.operands_min <= mid_size:
                 node.forward_kwargs["axis"] = axis
-                node.input_num = rng_shape.randint(input_num_range.operands_min, min(mid_size, input_num_range.operands_max))
+                node.input_num = rng_shape.randint(
+                    input_num_range.operands_min, min(mid_size, input_num_range.operands_max)
+                )
                 node.init_inputs()
                 return
-        
+
         raise InvalidShape(f"Not found possible params for output shape {node.output_shape}")
 
     @staticmethod
     def stack_adjust(node: RandomizerNode, test_context: RandomizerTestContext) -> None:
-        '''Adjust parameters and input number for stack based on output shape'''
+        """Adjust parameters and input number for stack based on output shape"""
         input_num_range = node.operator.input_num_range
         output_shape = node.output_shape
         if len(output_shape) <= test_context.randomizer_config.dim_min:
-            raise InvalidShape(f"Output shape {output_shape} is too small len(output_shape)={len(output_shape)} <= dim_min={test_context.randomizer_config.dim_min}")
+            raise InvalidShape(
+                f"Output shape {output_shape} is too small len(output_shape)={len(output_shape)} <= dim_min={test_context.randomizer_config.dim_min}"
+            )
         for axis, dim in enumerate(node.output_shape):
             if axis == 0:
                 # Axis 0 is not supported

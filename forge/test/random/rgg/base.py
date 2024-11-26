@@ -13,7 +13,7 @@ import random
 import forge
 
 from forge import ForgeModule
-from forge.verify import VerifyConfig  #, verify_module
+from forge.verify import VerifyConfig  # , verify_module
 from test.operators.utils.compat import verify_module
 from forge.op_repo import OperatorRepository
 from test.operators.utils import ShapeUtils
@@ -31,6 +31,7 @@ class GraphBuilder:
     GraphBuilder is an interface that each graph building algorithm should implement.
     GraphBuilder encapsulates the logic for generating random graphs.
     """
+
     def __init__(self, randomizer_config: RandomizerConfig):
         self.randomizer_config = randomizer_config
 
@@ -52,9 +53,8 @@ class GraphBuilder:
 
 # Translates randomized graph into framework NN model code
 class RandomizerCodeGenerator:
-
     def __init__(self, template_dir: str):
-        self.template = Environment(loader=FileSystemLoader(template_dir)).get_template('generated_model.jinja2')
+        self.template = Environment(loader=FileSystemLoader(template_dir)).get_template("generated_model.jinja2")
 
     def constructor_kwargs(self, node: RandomizerNode):
         return StrUtils.kwargs_str(**node.constructor_kwargs)
@@ -62,7 +62,7 @@ class RandomizerCodeGenerator:
     def forward_args(self, node: RandomizerNode) -> str:
         args_str = ", ".join([f"inputs[{i}]" for i in range(node.input_num)])
         return args_str
-    
+
     def forward_kwargs(self, node: RandomizerNode) -> str:
         return StrUtils.kwargs_str(**node.forward_kwargs)
 
@@ -73,31 +73,30 @@ class RandomizerCodeGenerator:
         template = self.template
 
         code_str = template.render(
-            randomizer_config = test_context.randomizer_config,
-            graph_builder_name = parameters.graph_builder_name,
-            test_id = StrUtils.test_id(test_context),
-            test_format = test_format,
-            test_index = parameters.test_index,
-            random_seed = parameters.random_seed,
+            randomizer_config=test_context.randomizer_config,
+            graph_builder_name=parameters.graph_builder_name,
+            test_id=StrUtils.test_id(test_context),
+            test_format=test_format,
+            test_index=parameters.test_index,
+            random_seed=parameters.random_seed,
             graph=test_context.graph,
             constructor_kwargs=self.constructor_kwargs,
             forward_args=self.forward_args,
             forward_kwargs=self.forward_kwargs,
             reduce_microbatch_size=ShapeUtils.reduce_microbatch_size,
             ExecutionContext=ExecutionContext,
-            )
+        )
 
         return code_str
 
 
 class RandomizerModelProviderFromSourceCode:
-
     def __init__(self, code_generator: RandomizerCodeGenerator, model_builder: ModelBuilder):
         self.code_generator = code_generator
         self.model_builder = model_builder
 
     def build_model(self, test_context: RandomizerTestContext) -> ForgeModule:
-        '''
+        """
         Build model from generated test model class.
 
         Args:
@@ -105,7 +104,7 @@ class RandomizerModelProviderFromSourceCode:
 
         Returns:
             ForgeModule: The Forge model.
-        '''
+        """
         GeneratedTestModel = self._get_model_class(test_context)
         model = self.model_builder.build_model(test_context, GeneratedTestModel)
         return model
@@ -145,9 +144,12 @@ class RandomizerRunner:
         init_nodes(): Initializes the nodes for generating tests. Sets the index for each node and
                       stores output values if they are needed as explicit input for a later operator.
     """
+
     def __init__(self, test_context: RandomizerTestContext, modelBuilder: ModelBuilder):
         self.test_context = test_context
-        self.code_generator = RandomizerCodeGenerator(f"forge/test/random/rgg/{StrUtils.text_to_snake_case(test_context.parameters.framework.template_name)}")
+        self.code_generator = RandomizerCodeGenerator(
+            f"forge/test/random/rgg/{StrUtils.text_to_snake_case(test_context.parameters.framework.template_name)}"
+        )
         self.model_provider = RandomizerModelProviderFromSourceCode(self.code_generator, modelBuilder)
 
     def generate_code(self) -> str:
@@ -180,6 +182,7 @@ class RandomizerRunner:
         verification_timeout = self.test_context.randomizer_config.verification_timeout
 
         try:
+
             @timeout(verification_timeout)
             def verify_model_timeout() -> None:
                 self.verify_model(model)
@@ -217,7 +220,7 @@ class RandomizerRunner:
         test_dir = self.test_context.randomizer_config.test_dir
         if failing_test:
             test_dir = f"{test_dir}/failing_tests"
-            test_code_str = test_code_str.replace("# @pytest.mark.xfail", "@pytest.mark.xfail") 
+            test_code_str = test_code_str.replace("# @pytest.mark.xfail", "@pytest.mark.xfail")
         test_code_file_name = f"{test_dir}/test_gen_model_{StrUtils.test_id(self.test_context)}.py"
 
         if not os.path.exists(test_dir):
@@ -232,9 +235,9 @@ class RandomizerRunner:
         """
         Process the randomizer generator.
         Usually the only method from this class that is called from the test.
-        
+
         This method generates randomizer model config, initializes nodes, and performs verification via Forge.
-        
+
         Args:
             test_context (RandomizerTestContext): The context for the randomizer test.
             graph_builder (GraphBuilder): The graph builder for generating tests.
@@ -242,7 +245,9 @@ class RandomizerRunner:
         logger.debug("-------------- Process Randomizer Generator -------------------")
         randomizer_config = self.test_context.randomizer_config
         parameters = self.test_context.parameters
-        logger.debug(f"Parameters test_index: {parameters.test_index} random_seed: {parameters.random_seed} test_device: {parameters.test_device}")
+        logger.debug(
+            f"Parameters test_index: {parameters.test_index} random_seed: {parameters.random_seed} test_device: {parameters.test_device}"
+        )
 
         # build random graph for the specified parameters
         logger.trace("Building graph started")
@@ -299,8 +304,16 @@ class RandomizerRunner:
             logger.info("Skipping test run")
 
 
-def process_test(test_name: str, test_index: int, random_seed: int, test_device: TestDevice, randomizer_config: RandomizerConfig, graph_builder_type: Type[GraphBuilder], framework: Framework):
-    '''
+def process_test(
+    test_name: str,
+    test_index: int,
+    random_seed: int,
+    test_device: TestDevice,
+    randomizer_config: RandomizerConfig,
+    graph_builder_type: Type[GraphBuilder],
+    framework: Framework,
+):
+    """
     Process a single randomizer test.
 
     Args:
@@ -311,15 +324,19 @@ def process_test(test_name: str, test_index: int, random_seed: int, test_device:
         randomizer_config (RandomizerConfig): The configuration for the randomizer.
         graph_builder_type (Type[GraphBuilder]): The graph builder type (algorithm) for the test.
         framework (Framework): The test framework for the test.
-    '''
+    """
     # TODO read framwework from randomizer_config
 
     # instantiate graph_builder
     graph_builder = graph_builder_type(framework, randomizer_config)
     # instantiate parameters
-    parameters = RandomizerParameters(test_index, random_seed, test_device, framework=framework, graph_builder_name=graph_builder.get_name())
+    parameters = RandomizerParameters(
+        test_index, random_seed, test_device, framework=framework, graph_builder_name=graph_builder.get_name()
+    )
     # instantiate test_context
-    test_context = RandomizerTestContext(randomizer_config=randomizer_config, parameters=parameters, graph=None, test_name=test_name)
+    test_context = RandomizerTestContext(
+        randomizer_config=randomizer_config, parameters=parameters, graph=None, test_name=test_name
+    )
     # instantiate graph_builder
     model_builder = framework.ModelBuilderType()
     # instantiate runner
