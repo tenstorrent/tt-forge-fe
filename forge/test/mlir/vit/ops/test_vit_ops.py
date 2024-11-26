@@ -29,7 +29,7 @@ def test_add(shapes):
         def forward(self, a, b):
             return a + b
 
-    inputs = [torch.rand(shapes[0]), torch.rand(shapes[1])]
+    inputs = [torch.rand(shapes[0]), torch.rand(shapes[1])] # when we use dtype=torch.bfloat16, pcc fails
 
     framework_model = Add()
     fw_out = framework_model(*inputs)
@@ -413,5 +413,176 @@ def test_reshape(source_and_target_shape):
     # some of them are failing with pcc < 0.99
 
 
+@pytest.mark.parametrize(
+    "shapes",
+    [
+        ((1, 12, 197, 197), -1),
+    ],
+)
+@pytest.mark.push
+def test_softmax(shapes):
+    shape, dim = shapes
+
+    class Softmax(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, x):
+            return torch.softmax(x, dim=dim)
+
+    inputs = [torch.rand(shape)]
+    framework_model = Softmax(dim)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)[0].to("cpu")
+
+    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
 
 
+
+# ERROR | forge.op.eval.common:compare_with_golden_pcc:245 - Tensor mismatch
+@pytest.mark.parametrize(
+    "input_shape_and_dim",
+    [
+        ((1, 768, 196, 1), -1),
+    ],
+)
+@pytest.mark.push
+def test_squeeze(input_shape_and_dim):
+    input_shape, dim = input_shape_and_dim
+
+    class Squeeze(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, a):
+            return torch.squeeze(a, self.dim)
+
+    inputs = [torch.rand(input_shape)] # pcc fails if we use dtype=torch.bfloat16
+
+
+    framework_model = Squeeze(dim)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+
+
+#     def run_mlir_compiler(context: CompileContext) -> CompileDepth:
+#         assert context.forge_module is not None
+    
+# >       context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
+# E       RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 768),
+    ],
+)
+@pytest.mark.push
+def test_tanh(input_shape):
+    class Tanh(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.tanh(a)
+
+    inputs = [torch.rand(input_shape)]
+
+    framework_model = Tanh()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        ((1, 768, 196), (-2, -1)),
+        ((768, 768), (-2, -1)),
+        ((1, 197, 12, 64), (-3, -2)),
+        ((12, 197, 64), (-2, -1)),
+        ((12, 197, 64), (-3, -2)),
+        ((12, 64, 197), (-2, -1)),
+        ((3072, 768), (-2, -1)),
+        ((768, 3072), (-2, -1)),
+    ],
+)
+@pytest.mark.push
+def test_transpose(params):
+    shapes, dims = params
+
+    class Transpose(nn.Module):
+        def __init__(self, dims):
+            super().__init__()
+            self.dims = dims
+
+        def forward(self, a):
+            return torch.transpose(a, *self.dims)
+
+    inputs = [torch.rand(shapes)]
+    framework_model = Transpose(dims)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)[0].to("cpu")
+
+    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+
+
+
+# context = CompileContext(modules=[Module Unsqueeze], graph_name='Unsqueeze', compiler_cfg=CompilerConfig(enable_training=False, ...unt=0, target_cycles_offset=0, forge_module=<forge._C.ForgeGraphModule object at 0x7f5c2bd22f70>, compiled_binary=None)
+
+#     def run_mlir_compiler(context: CompileContext) -> CompileDepth:
+#         assert context.forge_module is not None
+    
+# >       context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
+# E       RuntimeError: Failed to run MLIR compiler pass pipeline.
+
+# forge/forge/compile.py:935: RuntimeError
+
+# 'ttnn.reshape' op Shape attribute size must match output tensor rank
+@pytest.mark.parametrize(
+    "input_shape_and_dim",
+    [
+        ((768), 1),
+        ((768,1), 1),
+    ],
+)
+@pytest.mark.push
+def test_unsqueeze(input_shape_and_dim):
+    input_shape, dim = input_shape_and_dim
+
+    class Unsqueeze(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, a):
+            return torch.unsqueeze(a, self.dim)
+
+    inputs = [torch.rand(input_shape)] # pcc fails if we use dtype=torch.bfloat16
+
+    framework_model = Unsqueeze(dim)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert co_out[0].shape == fw_out.shape
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
