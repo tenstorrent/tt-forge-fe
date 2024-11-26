@@ -12,6 +12,7 @@ from torch import nn, threshold
 import forge
 from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
 from forge.tensor import to_forge_tensors, to_pt_tensors
+from tvm.relay.op.transform import squeeze
 
 
 @pytest.mark.parametrize(
@@ -691,6 +692,57 @@ def test_exp(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Exp()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 128, 28, 28),
+        (128, 28, 28),
+        (28, 28),
+        (28),
+        (1, 64, 28, 28),
+        (64, 28, 28),
+        (1, 256, 28, 28),
+        (256, 28, 28),
+        (1, 128, 14, 14),
+        (128, 14, 14),
+        (14, 14),
+        (14),
+        (1, 128, 56, 56),
+        (128, 56, 56),
+        (56, 56),
+        (56),
+        (1, 32, 64, 64),
+        (32, 64, 64),
+        (64, 64),
+        (64),
+        (1, 512, 7, 7),
+        (512, 7, 7),
+        (7, 7),
+        (7),
+    ],
+)
+@pytest.mark.push
+def test_log(shape):
+    class Log(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.log(x)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = Log()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
