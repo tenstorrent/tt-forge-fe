@@ -10,16 +10,19 @@ from .rgg import get_randomizer_config_default
 
 test_rg = random.Random()
 seeds = []
-    
+
+
 @pytest.fixture(autouse=True)
 def run_test(test_index, random_seeds):
     forge.config.set_configuration_options(balancer_policy="Random", use_interactive_placer=True)
     os.environ["FORGE_BALANCER_RANDOM_POLICY_SEED"] = str(random_seeds[test_index])
-    
+
     rng = random.Random(random_seeds[test_index])
-    
+
     # Pick a random data format, bfp8 and up
-    df = rng.choice([forge.DataFormat.Bfp8_b, forge.DataFormat.Float16_b, forge.DataFormat.Float16, forge.DataFormat.Float32])
+    df = rng.choice(
+        [forge.DataFormat.Bfp8_b, forge.DataFormat.Float16_b, forge.DataFormat.Float16, forge.DataFormat.Float32]
+    )
     forge.config.set_configuration_options(default_df_override=df)
 
     # Enable AMP
@@ -27,6 +30,7 @@ def run_test(test_index, random_seeds):
     forge.config.set_configuration_options(amp_level=amp)
 
     yield
+
 
 def pytest_generate_tests(metafunc):
     if "randomizer_config" in metafunc.fixturenames:
@@ -63,7 +67,7 @@ def pytest_generate_tests(metafunc):
 
         global seeds
         if len(seeds) > 0:
-            return 
+            return
 
         if "RANDOM_TEST_SEED" in os.environ:
             test_rg.seed(int(os.environ["RANDOM_TEST_SEED"]))
@@ -76,8 +80,7 @@ def pytest_generate_tests(metafunc):
         for _ in range(test_count):
             seeds.append(test_rg.randint(0, 1000000))
 
+
 @pytest.fixture
 def random_seeds():
     return seeds
-
-
