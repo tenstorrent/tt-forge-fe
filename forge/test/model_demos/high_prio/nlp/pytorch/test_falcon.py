@@ -11,7 +11,7 @@ import forge
 def test_falcon(test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = AutoTokenizer.from_pretrained("tiiuae/falcon-7b-instruct")
     model = FalconForCausalLM.from_pretrained("tiiuae/falcon-7b-instruct")

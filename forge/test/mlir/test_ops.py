@@ -15,6 +15,59 @@ from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
 @pytest.mark.parametrize(
+    "shape,dim,index",
+    [
+        ((3, 23, 73, 164), 1, 21),
+        ((8, 66, 713, 54), 2, -403),
+        ((12, 86, 273, 34), 3, 30),
+        ((5, 115, 75, 64), -3, -21),
+        ((2, 7, 213, 64), -2, -103),
+        ((6, 99, 12, 64), -1, 36),
+        ((1, 6, 73, 64), 2, -2),
+        ((1, 6, 73, 64), -2, -1),
+        ((3, 27, 94), 0, 2),
+        ((5, 100, 64), 1, 50),
+        ((7, 82, 16), 2, -5),
+        ((10, 53, 23), -1, 15),
+        ((8, 32, 12), -2, -20),
+        ((18, 31, 22), -3, -12),
+    ],
+)
+@pytest.mark.push
+def test_index(shape, dim, index):
+    class Index(nn.Module):
+        def __init__(self, index):
+            super().__init__()
+            self.index = index
+
+        def forward(self, x):
+
+            if dim == 3 or dim == -1:
+                return x[..., [self.index]]
+
+            elif dim == 2 or dim == -2:
+                return x[..., [self.index], :]
+
+            elif dim == 1 or dim == -3:
+                return x[:, [self.index], ...]
+
+            else:
+                return x[[self.index], ...]
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = Index(index)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.parametrize(
     "shape, kernel_size, stride",
     [
         ((1, 1, 100, 54, 54), (5, 1, 1), (1, 1, 1)),
