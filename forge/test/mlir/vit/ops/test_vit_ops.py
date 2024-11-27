@@ -9,6 +9,7 @@ from torch import nn
 import forge
 from forge.op.eval.common import compare_with_golden_pcc
 
+
 @pytest.mark.parametrize(
     "shapes",
     [
@@ -21,7 +22,6 @@ from forge.op.eval.common import compare_with_golden_pcc
 )
 @pytest.mark.push
 def test_add(shapes):
-
     class Add(nn.Module):
         def __init__(self):
             super().__init__()
@@ -29,7 +29,7 @@ def test_add(shapes):
         def forward(self, a, b):
             return a + b
 
-    inputs = [torch.rand(shapes[0]), torch.rand(shapes[1])] # when we use dtype=torch.bfloat16, pcc fails
+    inputs = [torch.rand(shapes[0]), torch.rand(shapes[1])]  # when we use dtype=torch.bfloat16, pcc fails
 
     framework_model = Add()
     fw_out = framework_model(*inputs)
@@ -42,9 +42,24 @@ def test_add(shapes):
 
 
 @pytest.mark.push
-@pytest.mark.parametrize("shapes", [(1,1,768), ])
-@pytest.mark.parametrize("dim", [(-3), ])
-@pytest.mark.parametrize("new_shape", [(1), ])
+@pytest.mark.parametrize(
+    "shapes",
+    [
+        (1, 1, 768),
+    ],
+)
+@pytest.mark.parametrize(
+    "dim",
+    [
+        (-3),
+    ],
+)
+@pytest.mark.parametrize(
+    "new_shape",
+    [
+        (1),
+    ],
+)
 def test_broadcast(shapes, dim, new_shape):
     class Broadcast(nn.Module):
         def __init__(self, dim, new_shape):
@@ -55,15 +70,14 @@ def test_broadcast(shapes, dim, new_shape):
         def forward(self, x):
             # Get the size of x
             x_size = list(x.size())
-            
+
             # Calculate the new shape for the x
             x_size[self.dim] = self.new_shape
-            
+
             # Expand the tensor to the new shape
             broadcasted_tensor = x.expand(x_size)
-            
-            return broadcasted_tensor
 
+            return broadcasted_tensor
 
     inputs = [torch.rand(shapes)]
 
@@ -81,7 +95,6 @@ def test_broadcast(shapes, dim, new_shape):
     # Validate the output shapes and values
     assert fw_out.shape == co_out[0].shape, f"Expected shape {fw_out.shape}, but got {co_out[0].shape}"
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
-
 
 
 # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vkovinic/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
@@ -114,7 +127,6 @@ def test_concat(inputs_and_dim):
 
     co_out = [co.to("cpu") for co in co_out]
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
-
 
 
 # error: 'ttnn.conv2d' op Bias must only have data on the final dimenstion
@@ -169,13 +181,7 @@ def test_conv2d(shape, conv_params):
     fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
 
     # Ensure the framework and compiled outputs match
-    assert all(
-        [
-            compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99)
-            for fo, co in zip(fw_out, co_out)
-        ]
-    )
-
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 # 2024-11-25 14:45:04.620 | ERROR    | Always          - Found Unsupported operations while lowering from TTForge to TTIR in forward graph
@@ -183,14 +189,11 @@ def test_conv2d(shape, conv_params):
 # gelu
 #                  Input_shape: [{1, 197, 3072}, ]
 #                                          Attributes: gelu(none,)
+# #745 Issue
 @pytest.mark.parametrize("shape", [(1, 197, 3072)])
 @pytest.mark.parametrize(
     "gelu_params",
-    [
-        {
-            "approximate": "none"
-        }
-    ],
+    [{"approximate": "none"}],
 )
 @pytest.mark.push
 def test_gelu(shape, gelu_params):
@@ -221,13 +224,7 @@ def test_gelu(shape, gelu_params):
     fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
 
     # Ensure the framework and compiled outputs match
-    assert all(
-        [
-            compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99)
-            for fo, co in zip(fw_out, co_out)
-        ]
-    )
-
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.parametrize("shape", [(1, 197, 768)])
@@ -238,7 +235,7 @@ def test_gelu(shape, gelu_params):
             "dim": -2,  # Slice the second-to-last dimension (i.e., index dimension -2)
             "start": 0,  # Start index for slicing
             "stop": 1,  # End index (exclusive) for slicing
-            "stride": 1  # Stride for slicing
+            "stride": 1,  # Stride for slicing
         }
     ],
 )
@@ -253,7 +250,7 @@ def test_index(shape, index_params):
             self.stride = index_params["stride"]
 
         def forward(self, x):
-            return x.narrow(self.dim, self.start, self.stop - self.start)[::self.stride]
+            return x.narrow(self.dim, self.start, self.stop - self.start)[:: self.stride]
 
     # Instantiate the model with the parameters
     framework_model = IndexModule(index_params)
@@ -273,14 +270,9 @@ def test_index(shape, index_params):
     fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
 
     # Ensure the framework and compiled outputs match
-    assert all(
-        [
-            compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99)
-            for fo, co in zip(fw_out, co_out)
-        ]
-    )
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
-# #763 Issue
+
 @pytest.mark.parametrize("shape", [(1, 197, 768)])
 @pytest.mark.parametrize(
     "layernorm_params",
@@ -324,17 +316,50 @@ def test_layernorm(shape, layernorm_params):
     fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
 
     # Ensure the framework and compiled outputs match
-    assert all(
-        [
-            compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99)
-            for fo, co in zip(fw_out, co_out)
-        ]
-    )
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
 
 @pytest.mark.parametrize(
     "shapes",
     [
-        ((1,12,197,197), (1)),
+        ((197, 768), (768, 768)),
+        ((12, 197, 64), (12, 64, 197)),
+        ((12, 197, 197), (12, 197, 64)),
+        ((1, 197, 768), (768, 3072)),
+        ((1, 197, 3072), (3072, 768)),
+        ((1, 768), (768, 768)),
+    ],
+)
+@pytest.mark.push
+def test_matmul(shapes):
+    shape1, shape2 = shapes
+
+    class Matmul(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, y):
+            return torch.matmul(x, y)
+
+    inputs = [
+        torch.rand(shape1),
+        torch.rand(shape2),
+    ]
+
+    framework_model = Matmul()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.95)
+
+
+@pytest.mark.parametrize(
+    "shapes",
+    [
+        ((1, 12, 197, 197), (1)),
     ],
 )
 @pytest.mark.push
@@ -441,8 +466,6 @@ def test_softmax(shapes):
     assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
 
 
-
-# ERROR | forge.op.eval.common:compare_with_golden_pcc:245 - Tensor mismatch
 @pytest.mark.parametrize(
     "input_shape_and_dim",
     [
@@ -461,8 +484,7 @@ def test_squeeze(input_shape_and_dim):
         def forward(self, a):
             return torch.squeeze(a, self.dim)
 
-    inputs = [torch.rand(input_shape)] # pcc fails if we use dtype=torch.bfloat16
-
+    inputs = [torch.rand(input_shape)]  # pcc fails if we use dtype=torch.bfloat16
 
     framework_model = Squeeze(dim)
     fw_out = framework_model(*inputs)
@@ -475,10 +497,9 @@ def test_squeeze(input_shape_and_dim):
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
-
 #     def run_mlir_compiler(context: CompileContext) -> CompileDepth:
 #         assert context.forge_module is not None
-    
+
 # >       context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
 # E       RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph
 @pytest.mark.parametrize(
@@ -544,23 +565,22 @@ def test_transpose(params):
     assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
 
 
-
 # context = CompileContext(modules=[Module Unsqueeze], graph_name='Unsqueeze', compiler_cfg=CompilerConfig(enable_training=False, ...unt=0, target_cycles_offset=0, forge_module=<forge._C.ForgeGraphModule object at 0x7f5c2bd22f70>, compiled_binary=None)
 
 #     def run_mlir_compiler(context: CompileContext) -> CompileDepth:
 #         assert context.forge_module is not None
-    
+
 # >       context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
 # E       RuntimeError: Failed to run MLIR compiler pass pipeline.
 
 # forge/forge/compile.py:935: RuntimeError
 
-# 'ttnn.reshape' op Shape attribute size must match output tensor rank
+#  error: 'ttnn.reshape' op Shape attribute size must match output tensor rank
 @pytest.mark.parametrize(
     "input_shape_and_dim",
     [
         ((768), 1),
-        ((768,1), 1),
+        ((768, 1), 1),
     ],
 )
 @pytest.mark.push
@@ -575,7 +595,7 @@ def test_unsqueeze(input_shape_and_dim):
         def forward(self, a):
             return torch.unsqueeze(a, self.dim)
 
-    inputs = [torch.rand(input_shape)] # pcc fails if we use dtype=torch.bfloat16
+    inputs = [torch.rand(input_shape)]  # pcc fails if we use dtype=torch.bfloat16
 
     framework_model = Unsqueeze(dim)
     fw_out = framework_model(*inputs)
