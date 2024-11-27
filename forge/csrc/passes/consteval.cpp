@@ -30,6 +30,11 @@ static bool input_can_consteval(graphlib::Graph *graph, graphlib::InputNode *inp
         return false;
     };
 
+    if (input->requires_grad() && graph->training())
+    {
+        return false;
+    }
+
     // Generally we don't want to consteval broadcast or repeat as it
     // causes the input to blow up in size with duplicated data
     auto is_broadcast_or_repeat = [](graphlib::Node *n)
