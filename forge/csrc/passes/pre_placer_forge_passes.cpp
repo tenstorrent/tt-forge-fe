@@ -1105,7 +1105,7 @@ void constant_pre_broadcast(Graph *graph)
         {
             std::vector<graphlib::Shape> input_shapes = {current_shape};
             auto [shape, bcast_dims] = get_op_shape(op_type, input_shapes, true);
-            op_type.op = "repeat_dim";
+            op_type.op = "repeat_interleave";
             auto broadcast = graphlib::create_node<graphlib::PyOpNode>(
                 "broadcast" + std::to_string(std::get<int>(op_type.attr[0])) + "_" + input->name(), op_type);
             broadcast->set_shape(shape);

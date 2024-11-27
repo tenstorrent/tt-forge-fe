@@ -90,7 +90,7 @@ op_to_module_map = {
     "vstack": "tm",
     "broadcast": "tm",
     "repeat": "tm",
-    "repeat_dim": "tm",
+    "repeat_interleave": "tm",
     "conv2d_depthwise_weights": "tm",
     "conv2d_depthwise_weights_bw": "tm",
     "conv2d_grouped_weights": "tm",
