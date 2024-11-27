@@ -122,17 +122,11 @@ def test_conv2d(
             (1, 128, 128, 56, 56, 3, 3, 2, 2),
             (1, 64, 64, 8, 8, 3, 3, 1, 1),
             (1, 64, 64, 16, 16, 3, 3, 1, 1),
-            (1, 256, 256, 7, 7, 3, 3, 1, 1),
             (1, 256, 64, 56, 56, 1, 1, 2, 2),
         ]
         and activations_dtype == tf.bfloat16
         and weights_dtype == tf.float32
     ):
-        if test_param == (1, 256, 256, 7, 7, 3, 3, 1, 1):
-            # This test case fails PCC check on n300, but passes on n150.
-            # Xfailing it for now.
-            pytest.xfail("PCC check fails on n300 - issue tt-metal #15361")
-
         if ok:
             pytest.fail("Test passed but expected to fail (simulating xpass)")
         pytest.xfail("PCC check failed")
