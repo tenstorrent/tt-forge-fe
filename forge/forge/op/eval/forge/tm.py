@@ -179,16 +179,11 @@ def eval(type, attr, ops):
         assert len(t_ops[0].shape) == len(sizes)
         return t_ops[0].repeat(*sizes)
 
-    if type == "repeat_dim":
-        assert len(attr) <= 3, "repeat should have two attributes - dim and size"
-        dim = attr[0]
-        if dim < 0:
-            dim += len(t_ops[0].shape)
-        factor = attr[1]
-        assert dim > 0, "Don't support broadcasting on w"
-        sizes = [1] * len(t_ops[0].shape)
-        sizes[dim] = factor
-        return t_ops[0].repeat(*sizes)
+    if type == "repeat_interleave":
+        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
+        repeats = attr[0]
+        dim = attr[1]
+        return t_ops[0].repeat_interleave(repeats=repeats, dim=dim)
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -530,14 +525,15 @@ def shape(type, attr, ops):
         sizes = attr
         return tuple(dim * size for dim, size in zip(list(ops[0]), sizes)), []
 
-    if type == "repeat_dim":
-        assert len(attr) <= 3, "repeat should have two attributes - dim and size"
-        dim = attr[0]
+    if type == "repeat_interleave":
+        assert len(attr) <= 3, "repeat should have two attributes - repeats and dim"
+        repeats = attr[0]
+        dim = attr[1]
+
         if dim < 0:
             dim += len(ops[0])
-        factor = attr[1]
         target_shape = list(ops[0])
-        target_shape[dim] *= factor
+        target_shape[dim] *= repeats
         return tuple(target_shape), []
 
     if type == "conv2d_depthwise_weights":
@@ -783,20 +779,23 @@ def lower(type, attr, lc, ops, outputs):
         return lc.tm("broadcast", ops[0], attr)
 
     elif type == "repeat":
-        assert False, "repeat should have been decomposed into repeat_dim"
+        assert False, "repeat should have been decomposed into repeat_interleave"
 
-    elif type == "repeat_dim":
-        # Adjust the repeat dim if we're moving to more/less dimensions
-        if attr[0] < 0:
-            attr[0] += ops[0].shape.len()
+    elif type == "repeat_interleave":
+        # Adjust the repeat interleave if we're moving to more/less dimensions
+        repeats = attr[0]
+        dim = attr[1]
+
+        if dim < 0:
+            dim += ops[0].shape.len()
 
         delta = 4 - ops[0].shape.len()
-        attr[0] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid repeat dim after lowering: {attr[0]}"
+        dim += delta
+        assert dim >= 0 and dim <= 3, f"Invalid repeat interleave after lowering: {dim}"
 
-        if attr[0] == 2:
+        if dim == 2:
             assert ops[0].shape[-2] % TILE_DIM == 0, "Repeat on R must be TILE_DIM aligned"
-        if attr[0] == 3:
+        if dim == 3:
             assert ops[0].shape[-1] % TILE_DIM == 0, "Repeat on C must be TILE_DIM aligned"
         return lc.tm("broadcast", ops[0], attr)
 
@@ -1805,45 +1804,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
     # TODO: remove once backend support is available
     if type == "select":
         decompose_select(attr, dc, inputs)
-
-    elif type == "repeat":
-        sizes = attr
-        result = inputs[0]
-        for dim, factor in enumerate(sizes):
-            neg_idx = dim - len(inputs[0].shape)  # Use negative indexing
-            if factor == 1:
-                continue
-            result = dc.op("repeat_dim", [result], (neg_idx, factor))
-        dc.fuse(result)
-
-    elif type == "repeat_dim":
-        axis = attr[0]
-        if inputs[0].shape[axis] % TILE_DIM != 0 and (axis == -2 or axis == -1):
-            # Decompose repeat to spase mm
-            orig_shape = inputs[0].shape.as_list()
-            orig_dim = orig_shape[axis]
-            target_dim_size = inputs[0].shape[axis] * attr[1]
-            rounded_target_dim = align_up_tile(target_dim_size)
-            if axis == -2:
-                result = inputs[0]
-                use_sparse_mm = True
-                result = dc.op("pad_tile", [result], (-2, orig_shape[-2]))
-                i_spm = create_repeat_sparse_picker_matrix(orig_dim, attr[1])
-                result = picker_matmul(use_sparse_mm, dc, i_spm, result)
-                result = dc.op("narrow", [result], (-2, 0, target_dim_size, result.shape[-2]))
-            elif axis == -1:
-                result = inputs[0]
-                use_sparse_mm = True
-                result = dc.op("pad_tile", [result], (-1, orig_shape[-1]))
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                i_spm = create_repeat_sparse_picker_matrix(orig_dim, attr[1])
-                result = picker_matmul(use_sparse_mm, dc, i_spm, result)
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                result = dc.op("narrow", [result], (-1, 0, target_dim_size, result.shape[-1]))
-            else:
-                assert False
-
-            dc.fuse(result)
 
     elif type == "hslice":
         input_shape = inputs[0].shape.as_list()

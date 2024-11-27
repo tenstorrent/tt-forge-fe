@@ -37,7 +37,7 @@ static bool input_can_consteval(graphlib::Graph *graph, graphlib::InputNode *inp
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(n);
         if (not op)
             return false;
-        return op->op_name() == "broadcast" or op->op_name() == "repeat" or op->op_name() == "repeat_dim";
+        return op->op_name() == "broadcast" or op->op_name() == "repeat" or op->op_name() == "repeat_interleave";
     };
 
     TT_ASSERT(graphlib::is_consteval_capable_input_type(input));

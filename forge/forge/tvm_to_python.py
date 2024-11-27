@@ -1363,7 +1363,17 @@ def populate_repeat_args(graph, nid, compiler_cfg):
 
     forge_shape = node["forge_shape"]
     reps = list(map(int, node["attrs"]["reps"][0]))
-    args = [("factors", f"{reps}")]
+    args = [("repeats", f"{reps}")]
+    return args
+
+
+def populate_repeat_interleave_args(graph, nid, compiler_cfg):
+    node = graph["nodes"][nid]
+
+    repeats = int(node["attrs"]["repeats"][0][0])
+    dim = int(node["attrs"]["axis"][0][0])
+
+    args = [("repeats", f"{repeats}"), ("dim", f"{dim}")]
     return args
 
 
@@ -1740,6 +1750,7 @@ tvm_to_forge_op_map = {
     "take": "take",
     "tanh": "tanh",
     "tile": "repeat",
+    "repeat": "repeat_interleave",
     "transpose": "transpose",
     "where": "where",
     "expand_dims": "unsqueeze",
@@ -1809,6 +1820,7 @@ forge_op_to_function_name = {
     "reduce_sum": "forge.op.ReduceSum",
     "relu": "forge.op.Relu",
     "repeat": "forge.op.Repeat",
+    "repeat_interleave": "forge.op.RepeatInterleave",
     "reshape": "forge.op.Reshape",
     "resize2d": "forge.op.Resize2d",
     "resize3d": "forge.op.Resize3d",
@@ -1865,6 +1877,7 @@ forge_ops_needing_arguments = {
     "reduce_max": populate_reduce_args,
     "reduce_sum": populate_reduce_args,
     "repeat": populate_repeat_args,
+    "repeat_interleave": populate_repeat_interleave_args,
     "reshape": populate_reshape_args,
     "resize2d": populate_resize2d_args,
     "resize3d": populate_resize3d_args,

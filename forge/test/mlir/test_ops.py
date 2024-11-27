@@ -1903,3 +1903,82 @@ def test_remainder():
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat"
+)
+@pytest.mark.push
+def test_repeat():
+    class Repeat(nn.Module):
+        def __init__(self, repeats):
+            super().__init__()
+            self.repeats = repeats
+
+        def forward(self, x):
+            return x.repeat(*self.repeats)
+
+    inputs = [torch.rand(1, 2, 1, 4, 4)]
+
+    framework_model = Repeat(repeats=(1, 1, 4, 1, 1))
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat_interleave"
+)
+@pytest.mark.push
+def test_expand():
+    class Expand(nn.Module):
+        def __init__(self, expand_shape):
+            super().__init__()
+            self.expand_shape = expand_shape
+
+        def forward(self, x):
+            return x.expand(*self.expand_shape)
+
+    inputs = [torch.rand(1, 2, 1, 4, 4)]
+
+    framework_model = Expand(expand_shape=(1, 2, 4, 4, 4))
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat_interleave"
+)
+@pytest.mark.push
+def test_repeat_interleave():
+    class RepeatInterleave(nn.Module):
+        def __init__(self, repeats, dim):
+            super().__init__()
+            self.repeats = repeats
+            self.dim = dim
+
+        def forward(self, x):
+            return x.repeat_interleave(self.repeats, dim=self.dim)
+
+    inputs = [torch.rand(1, 2, 1, 4, 4)]
+
+    framework_model = RepeatInterleave(repeats=4, dim=2)
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    co_out = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
