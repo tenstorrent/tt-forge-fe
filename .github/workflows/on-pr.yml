@@ -15,3 +15,5 @@ jobs:
   docker-build:
     uses: ./.github/workflows/build-and-test.yml
     secrets: inherit
+    with:
+      test_mark: 'push'

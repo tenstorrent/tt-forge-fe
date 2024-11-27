@@ -2,7 +2,23 @@ name: Build and Test
 
 on:
   workflow_dispatch:
+    inputs:
+      test_mark:
+        description: 'Test mark to run'
+        required: true
+        default: 'push'
+        type: choice
+        options:
+          - push
+          - nightly
+          - push or nightly
   workflow_call:
+    inputs:
+      test_mark:
+        description: 'Test mark to run'
+        required: false
+        default: 'push'
+        type: string
 
 jobs:
 
@@ -139,6 +155,7 @@ jobs:
         pytest -m push --splits 2 \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
+               -m "${{ inputs.test_mark }}" \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                2>&1 | tee pytest.log
 
