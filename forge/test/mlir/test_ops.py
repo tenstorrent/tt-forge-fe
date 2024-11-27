@@ -497,7 +497,6 @@ def test_gelu(shape):
         ((8,), -3.0, -1.0),
     ],
 )
-@pytest.mark.xfail(reason="'ttnn.clamp' op input and output must have same shape")
 @pytest.mark.push
 def test_clip(shape, min_val, max_val):
     class Clip(nn.Module):
