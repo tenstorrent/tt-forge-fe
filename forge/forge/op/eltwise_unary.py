@@ -267,7 +267,7 @@ def LeakyRelu(name: str, operandA: Tensor, alpha: int) -> Tensor:
         Forge tensor
     """
 
-    return op("leaky_relu", name, operandA, attrs=(alpha,)).get_tensor()
+    return op("leaky_relu", name, operandA, attrs=(alpha,), parameter=alpha).get_tensor()
 
 
 def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
