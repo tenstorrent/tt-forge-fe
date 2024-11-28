@@ -213,7 +213,7 @@ class RandomizerRunner:
         forge.config.g_compiler_config.default_df_override = None
 
         # verify Forge model
-        verify_module(model, input_shapes)
+        verify_module(model, input_shapes, dev_data_format=forge.DataFormat.Float32)
         # verify_module(model, input_shapes,
         #               DepricatedVerifyConfig(devtype=parameters.test_device.devtype, arch=parameters.test_device.arch))
 
