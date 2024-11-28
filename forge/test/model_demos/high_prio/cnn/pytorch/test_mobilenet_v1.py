@@ -8,7 +8,7 @@ import forge
 
 import os
 import torch.nn as nn
-
+from forge.op.eval.common import compare_with_golden_pcc
 
 # SPDX-FileCopyrightText: Copyright (c) 2017 LoRnaTang
 #
@@ -160,6 +160,7 @@ def test_mobilenetv1_basic(test_device):
     co_out = compiled_model(inputs)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = model(inputs)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

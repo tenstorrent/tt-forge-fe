@@ -10,7 +10,7 @@ from transformers import (
 )
 import pytest
 import forge
-
+from forge.op.eval.common import compare_with_golden_pcc
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
@@ -91,9 +91,10 @@ def test_phi3_token_classification(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
     )
-    co_out = compiled_model(*inputs)
+    co_out = compiled_model(inputs)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = model(inputs)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
@@ -130,9 +131,10 @@ def test_phi3_sequence_classification(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
     )
-    co_out = compiled_model(*inputs)
+    co_out = compiled_model(inputs)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = model(inputs)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

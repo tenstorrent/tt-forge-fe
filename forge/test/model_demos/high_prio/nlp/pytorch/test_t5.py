@@ -10,6 +10,7 @@ import forge
 import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
+from forge.op.eval.common import compare_with_golden_pcc
 
 
 @pytest.mark.nightly
@@ -131,6 +132,7 @@ def test_t5_generation(variant, test_device):
         co_out = compiled_model(*inputs)
 
         co_out = [co.to("cpu") for co in co_out]
+        fw_out = model(*inputs)
         fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
         assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
