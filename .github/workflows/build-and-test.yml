@@ -11,6 +11,7 @@ on:
         options:
           - push
           - nightly
+          - nightly_sweeps
           - push or nightly
   workflow_call:
     inputs:
