@@ -19,7 +19,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(torch.nn.Module):
 {% for node in graph.nodes %}{% if node.operator.is_layer %}
         self.{{ node.layer_name }} = {{ node.operator.full_name }}({{ constructor_kwargs(node=node) }}){% endif %}{% endfor %}
         {% for constant_node in graph.constant_nodes %}
-        self.{{ constant_node.out_value }} = torch.randn({{ reduce_microbatch_size(constant_node.input_shape) }}){% endfor %}
+        self.{{ constant_node.out_value }} = torch.randn({{ reduce_microbatch_size(constant_node.input_shape) }}, dtype = torch.float32){% endfor %}
 
     def forward(self{% for node in graph.input_nodes %},
             {{ node.out_value }}: torch.Tensor{% endfor %}
@@ -45,6 +45,6 @@ def test_gen_model_{{ test_index }}_{{ random_seed }}(test_device):
     pytorch_model = GeneratedTestModel_{{ test_index }}_{{ random_seed }}()
     # model = forge.PyTorchModule("pytest_gen_model_{{ test_id }}", pytorch_model)
 
-    verify_module(pytorch_model, input_shapes)
+    verify_module(pytorch_model, input_shapes, dev_data_format = forge.DataFormat.Float32)
 
 {% endif %}
