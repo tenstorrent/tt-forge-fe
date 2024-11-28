@@ -11,7 +11,12 @@ from datetime import datetime
 
 
 @pytest.fixture(scope="function", autouse=True)
-def record_test_timestamp(record_property):
+def record_test_timestamp(record_property, request):
+    record_property("frontend", "tt-froge-fe")
+    record_property("model_name", "")
+    record_property("op_name", "")
+    record_property("framework_op_name", "")
+    record_property("op_kind", "")
     start_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z")
     record_property("start_timestamp", start_timestamp)
     yield
