@@ -16,6 +16,7 @@ from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4
 from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
 import os
+from forge.op.eval.common import compare_with_golden_pcc
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
@@ -75,6 +76,7 @@ def test_efficientnet_timm(variant, test_device):
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = framework_model(img_tensor)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
@@ -134,6 +136,7 @@ def test_efficientnet_torchvision(variant, test_device):
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = framework_model(img_tensor)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

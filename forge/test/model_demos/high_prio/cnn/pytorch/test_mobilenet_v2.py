@@ -15,6 +15,7 @@ from loguru import logger
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 from transformers import MobileNetV2ForSemanticSegmentation
 import os
+from forge.op.eval.common import compare_with_golden_pcc
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
@@ -127,7 +128,6 @@ def test_mobilenetv2_224(test_device):
 def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(timm.create_model, variant, pretrained=True)
     # tt_model = forge.PyTorchModule("mobilenet_v2__hf_timm", model)
@@ -152,13 +152,22 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
+@pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.nightly
 def test_mobilenetv2_timm(test_device):
     model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(
         test_device,
         "mobilenetv2_100",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_timm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="mobilenetv2_timm")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def generate_model_mobilenetV2_semseg_hf_pytorch(test_device, variant):

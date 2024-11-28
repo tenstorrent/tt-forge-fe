@@ -8,24 +8,26 @@ import urllib
 from PIL import Image
 from torchvision import transforms
 import os
+from forge.op.eval.common import compare_with_golden_pcc
 
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.nightly
 def test_hardnet_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+
+    if variant in ["hardnet68", "hardnet39"]:
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
     # load the weights downloaded from https://github.com/PingoLH/Pytorch-HarDNet
-    checkpoint_path = f"hardnet/weights/{variant}.pth"
+    checkpoint_path = f"hardnet/files/weights/{variant}.pth"
 
     # Load weights from the checkpoint file and maps tensors to CPU, ensuring compatibility even without a GPU.
     state_dict = torch.load(checkpoint_path, map_location=torch.device("cpu"))
@@ -58,3 +60,13 @@ def test_hardnet_pytorch(test_device, variant):
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+
+    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
+        co_out = compiled_model(input_batch)
+
+        fw_out = model(input_batch)
+
+        co_out = [co.to("cpu") for co in co_out]
+        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+        assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

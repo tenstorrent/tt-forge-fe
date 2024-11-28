@@ -10,6 +10,7 @@ import forge
 import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
+from forge.op.eval.common import compare_with_golden_pcc
 
 
 @pytest.mark.nightly
@@ -80,8 +81,16 @@ variants = [
     pytest.param("t5-small", id="t5-small", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
     pytest.param("t5-base", id="t5-base", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
     pytest.param("t5-large", id="t5-large", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
-    pytest.param("google/flan-t5-small", id="google_flan_t5_small"),
-    pytest.param("google/flan-t5-base", id="google_flan_t5_base"),
+    pytest.param(
+        "google/flan-t5-small",
+        id="google_flan_t5_small",
+        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
+    ),
+    pytest.param(
+        "google/flan-t5-base",
+        id="google_flan_t5_base",
+        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
+    ),
     pytest.param("google/flan-t5-large", id="google_flan_t5_large"),
 ]
 
@@ -94,8 +103,6 @@ def test_t5_generation(variant, test_device):
 
     if variant == "google/flan-t5-large":
         compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
-    elif variant in ["google/flan-t5-small", "google/flan-t5-base"]:
-        compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -127,9 +134,10 @@ def test_t5_generation(variant, test_device):
     inputs = [decoder_input_ids, encoder_outputs]
     variant_name = variant.replace("-", "_").replace("/", "_")
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
+
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(*inputs)
-
+        fw_out = model(*inputs)
         co_out = [co.to("cpu") for co in co_out]
         fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
