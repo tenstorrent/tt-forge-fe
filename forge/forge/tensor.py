@@ -115,6 +115,9 @@ class TensorShape:
     def __getitem__(self, i):
         return self.dims[i]
 
+    def __eq__(self, other):
+        return self.dims == other.dims
+
 
 class TensorBase:
     def _create_const_tensor(self, value):
@@ -222,6 +225,12 @@ class Tensor(TensorBase):
         if self.has_value():
             return f"Forge Tensor: {self.value()}, {self.data_format}"
         return f"Forge Empty Tensor: {self.shape}"
+
+    def ndim(self) -> int:
+        """
+        Return tensor rank (number of dimensions)
+        """
+        return len(self.shape)
 
     @property
     def pt_data_format(self) -> torch.dtype:
