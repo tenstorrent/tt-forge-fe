@@ -221,80 +221,6 @@ def decompose_upsample_3d(attr, dc, inputs, resize_method):
     dc.fuse(result)
 
 
-def decompose_downsample_2d(attr, dc, inputs, resize_method):
-    activations = inputs[0]
-    shape = inputs[0].shape
-    channel_last = attr[-1]
-    if channel_last:
-        cin = shape[-1]
-        scale_factor = shape[-3] // attr[0]
-        activations = dc.op(TransposeTM.create(-3, -1), [activations])
-        activations = dc.op(TransposeTM.create(-2, -1), [activations])
-    else:
-        cin = shape[-3]
-        scale_factor = shape[-2] // attr[0]
-
-    if resize_method == "nearest":
-        dident = create_nearest_neighbor_downsample_picker_matrix(scale_factor, shape, channel_last=channel_last)
-    else:
-        raise NotImplementedError("Only nearest neighbor downsample is supported")
-
-    dident = dident.unsqueeze(0).unsqueeze(0)
-    dident = torch.cat([dident] * cin, dim=-3)
-
-    dident_tensor = dc.tensor(dident)
-    result = dc.op("sparse_matmul", [dident_tensor, activations])
-    result = dc.op(TransposeTM.create(-2, -1), [result])
-    result = dc.op("sparse_matmul", [dident_tensor, result])  # z, x ,y
-
-    if channel_last:
-        result = dc.op(TransposeTM.create(-3, -1), [result])  # y, x, z
-    else:
-        result = dc.op(TransposeTM.create(-2, -1), [result])  # z, y, x
-    dc.fuse(result)
-
-
-def decompose_resize2d(attr, dc, inputs, resize_method):
-    activations = inputs[0]
-    shape = inputs[0].shape
-    channel_last = attr[-1]
-    upsample = attr[0] >= shape[-3] if channel_last else attr[0] >= shape[-2]
-    if channel_last:
-        if upsample:
-            assert attr[1] >= shape[-2], "One dim upsamples, the other dim should also upsample"
-            assert (
-                attr[0] % shape[-3] == 0 and attr[1] % shape[-2] == 0
-            ), "Only support upsample with integer scale factor"
-        else:
-            assert attr[1] < shape[-2], "One dim downsamples, the other dim should also downsample"
-            assert (
-                shape[-3] % attr[0] == 0 and shape[-2] % attr[1] == 0
-            ), "Only support downsample with integer scale factor"
-            assert shape[-3] // attr[0] == shape[-2] // attr[1], "Only support same scale factor for H and W"
-    else:
-        if upsample:
-            assert attr[1] >= shape[-1], "One dim upsamples, the other dim should also upsample"
-            assert (
-                attr[0] % shape[-2] == 0 and attr[1] % shape[-1] == 0
-            ), "Only support upsample with integer scale factor"
-        else:
-            assert attr[1] < shape[-1], "One dim downsamples, the other dim should also downsample"
-            assert (
-                shape[-2] % attr[0] == 0 and shape[-1] % attr[1] == 0
-            ), "Only support downsample with integer scale factor"
-            assert shape[-2] // attr[0] == shape[-1] // attr[1], "Only support same scale factor for H and W"
-
-    scale_factor_y = attr[0] // shape[-2]
-    scale_factor_x = attr[1] // shape[-1]
-    if scale_factor_x == 1 and scale_factor_y == 1:
-        result = dc.op(Nop.create(), [activations])
-        dc.fuse(result)
-        return
-
-    if not upsample:
-        decompose_downsample_2d(attr, dc, inputs, resize_method)
-
-
 def decompose_resize3d(attr, dc, inputs, resize_method):
     activations = inputs[0]
     shape = inputs[0].shape
@@ -351,13 +277,7 @@ def decompose_resize3d(attr, dc, inputs, resize_method):
 
 
 def decompose(type, attr, dc, inputs):
-    if type == "resize2d":
-        assert len(attr) == 5, "Resize2d should have 4 attrs: [size, size, method, align_corners, channel_last]"
-        assert len(inputs) == 1
-        resize_method = INT_TO_RESIZE2d_METHOD[attr[-3]]
-
-        decompose_resize2d(attr, dc, inputs, resize_method)
-    elif type == "resize3d":
+    if type == "resize3d":
         assert len(attr) == 6, "Resize3d should have 6 attrs: [size, size, size, method, align_corners, channel_last]"
         assert len(inputs) == 1
         resize_method = INT_TO_RESIZE2d_METHOD[attr[-3]]
