@@ -1,0 +1,13 @@
+name: On nightly_sweeps
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * *'
+
+jobs:
+  docker-build:
+    uses: ./.github/workflows/build-and-test.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_sweeps'
