@@ -18,7 +18,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(torch.nn.Module):
 {% for node in graph.nodes %}{% if node.operator.is_layer %}
         self.{{ node.layer_name }} = {{ node.operator.full_name }}({{ constructor_kwargs(node=node) }}){% endif %}{% endfor %}
         {% for constant_node in graph.constant_nodes %}
-        self.{{ constant_node.out_value }} = torch.randn({{ reduce_microbatch_size(constant_node.input_shape) }}){% endfor %}
+        self.{{ constant_node.out_value }} = torch.randn({{ reduce_microbatch_size(constant_node.input_shape) }}, dtype = torch.float32){% endfor %}
 
     def forward(self{% for node in graph.input_nodes %},
             {{ node.out_value }}: torch.Tensor{% endfor %}
