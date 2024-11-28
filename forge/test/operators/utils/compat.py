@@ -278,9 +278,13 @@ def verify_module_for_inputs(
     dev_data_format: forge.DataFormat = None,
 ):
 
-    fw_out = model(*inputs)
+    if isinstance(model, torch.nn.Module):
+        fw_out = model(*inputs)
 
     forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+
+    if isinstance(model, ForgeModule):
+        fw_out = model(*forge_inputs)
 
     compiled_model = forge.compile(model, sample_inputs=forge_inputs)
     co_out = compiled_model(*forge_inputs)
@@ -288,7 +292,12 @@ def verify_module_for_inputs(
     # TODO check output data format type
 
     co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    if isinstance(model, torch.nn.Module):
+        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    if isinstance(model, ForgeModule):
+        fw_out = [fw_out] if isinstance(fw_out, forge.tensor.TensorFromTrace) else fw_out
+        fw_out = [fw_out.to_framework("pytorch") for fw_out in fw_out]
+
     # It would be good that compare_with_golden_pcc can take pcc as None
 
     # TODO print pcc value
