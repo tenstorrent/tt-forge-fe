@@ -492,7 +492,6 @@ def test_leakyrelu(shape):
         (1, 32, 56, 56),
     ],
 )
-@pytest.mark.xfail(reason="shape mismatch: expected [1], got []")
 @pytest.mark.push
 def test_layernorm(batch_size, num_channels, height, width):
 
