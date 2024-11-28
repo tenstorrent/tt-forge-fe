@@ -235,6 +235,8 @@ def verify_module(
         f"Verifying model class: {model.__class__.__name__}({model.__class__.__base__.__module__}.{model.__class__.__base__.__name__}) input_shapes: {input_shapes}"
     )
 
+    # logger.debug(f"dev_data_format = {dev_data_format}")
+
     inputs = create_torch_inputs(input_shapes, dev_data_format, value_range, random_seed)
 
     verify_module_for_inputs(model, inputs, pcc, dev_data_format)
@@ -254,6 +256,8 @@ def create_torch_inputs(
     generator = torch.Generator().manual_seed(random_seed)
 
     dtype = TestTensorsUtils.get_dtype_for_df(dev_data_format)
+
+    # logger.debug(f"dev_data_format = {dev_data_format} dtype = {dtype}")
 
     # if dtype is not None:
     #     torch.set_default_dtype(dtype)
