@@ -1,6 +1,0 @@
-loguru
-pydantic
-defusedxml
-toolz
-pytest
-pytest-cov
