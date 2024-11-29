@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# Test random graph configurations by utilizing Random Graph Generator Algorithm and targeting PyBuda and PyTorch frameworks
+
+# Test random graph configurations by utilizing Random Graph Generator Algorithm and targeting Forge and PyTorch frameworks
 
 from enum import Enum
 import pytest
@@ -68,7 +69,7 @@ class FrameworksHealthy(Enum):
     """Adjust repositories to test healthy operators"""
 
     @staticmethod
-    def healty_pybuda():
+    def healty_forge():
         SKIP_OPERATORS = (
             # Unary operators
             "exp",  # pcc?
@@ -87,7 +88,7 @@ class FrameworksHealthy(Enum):
             "where",  # pcc?
         )
 
-        framework = FrameworkTestUtils.copy_framework(Frameworks.PYBUDA.value, "Healthy PyBuda", SKIP_OPERATORS)
+        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Healthy Forge", SKIP_OPERATORS)
 
         pow_operator = FrameworkTestUtils.copy_operator(framework, "pow")
         if pow_operator:
@@ -112,7 +113,7 @@ class FrameworksHealthy(Enum):
 
         return framework
 
-    PYBUDA = healty_pybuda()
+    FORGE = healty_forge()
     PYTORCH = healty_pytorch()
 
 
@@ -120,10 +121,10 @@ class FrameworksCustom(Enum):
     """Adjust repositories to prepare custom framework configurations"""
 
     @staticmethod
-    def pybuda_fork_joins():
+    def forge_fork_joins():
         SKIP_OPERATORS = ()
 
-        framework = FrameworkTestUtils.copy_framework(Frameworks.PYBUDA.value, "PyBuda fork joins", SKIP_OPERATORS)
+        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Forge fork joins", SKIP_OPERATORS)
 
         ALLOW_OPERATORS = (
             "relu",
@@ -137,10 +138,10 @@ class FrameworksCustom(Enum):
         return framework
 
     @staticmethod
-    def pybuda_nary():
+    def forge_nary():
         SKIP_OPERATORS = ()
 
-        framework = FrameworkTestUtils.copy_framework(Frameworks.PYBUDA.value, "PyBuda nary", SKIP_OPERATORS)
+        framework = FrameworkTestUtils.copy_framework(Frameworks.FORGE.value, "Forge nary", SKIP_OPERATORS)
 
         ALLOW_OPERATORS = (
             # "relu",
@@ -157,18 +158,18 @@ class FrameworksCustom(Enum):
 
         return framework
 
-    PYBUDA_FORK_JOINS = pybuda_fork_joins()
-    PYBUDA_NARY = pybuda_nary()
+    FORGE_FORK_JOINS = forge_fork_joins()
+    FORGE_NARY = forge_nary()
 
 
 @pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
 @pytest.mark.parametrize(
     "framework",
     [
-        FrameworksHealthy.PYBUDA.value,
+        FrameworksHealthy.FORGE.value,
     ],
 )
-def test_random_graph_algorithm_pybuda(
+def test_random_graph_algorithm_forge(
     test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config
@@ -245,10 +246,10 @@ def test_random_graph_algorithm_pytorch(
 @pytest.mark.parametrize(
     "framework",
     [
-        FrameworksCustom.PYBUDA_FORK_JOINS.value,
+        FrameworksCustom.FORGE_FORK_JOINS.value,
     ],
 )
-def ttest_random_graph_algorithm_pybuda_fork_joins(
+def ttest_random_graph_algorithm_forge_fork_joins(
     test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config
@@ -284,10 +285,10 @@ def ttest_random_graph_algorithm_pybuda_fork_joins(
 @pytest.mark.parametrize(
     "framework",
     [
-        FrameworksCustom.PYBUDA_NARY.value,
+        FrameworksCustom.FORGE_NARY.value,
     ],
 )
-def ttest_random_graph_algorithm_pybuda_nary(
+def ttest_random_graph_algorithm_forge_nary(
     test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config

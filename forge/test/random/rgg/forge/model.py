@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# Building PyBuda models
+
+# Building Forge models
 
 
 from typing import Type
@@ -12,8 +13,8 @@ from forge import ForgeModule
 from .. import RandomizerGraph, ModelBuilder, StrUtils
 
 
-class PyBudaModelBuilder(ModelBuilder):
+class ForgeModelBuilder(ModelBuilder):
     def build_model(self, graph: RandomizerGraph, GeneratedTestModel: Type[ForgeModule]) -> ForgeModule:
         module_name = f"gen_model_pytest_{StrUtils.test_id(graph)}"
-        pybuda_model = GeneratedTestModel(module_name)
-        return pybuda_model
+        forge_model = GeneratedTestModel(module_name)
+        return forge_model
