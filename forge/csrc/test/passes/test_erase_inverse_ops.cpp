@@ -154,8 +154,8 @@ TEST_F(EraseInverseOps, erase_inverse_ops_dual_reduce)
     auto post_transpose = graph->get_node_by_name("post_transpose");
     auto smx_1 = add_node<graphlib::PyOpNode>(*graph, "smx_1", "softmax", {-1, false}, {post_transpose});
     auto reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, 512, 10, 16}, {smx_1});
-    auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2}, {reshape_1});
-    auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1}, {reduce_1});
+    auto reduce_1 = add_node<graphlib::PyOpNode>(*graph, "reduce_1", "reduce_sum", {-2, true}, {reshape_1});
+    auto reduce_2 = add_node<graphlib::PyOpNode>(*graph, "reduce_2", "reduce_sum", {-1, true}, {reduce_1});
     auto reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {1, 1, 512, 1}, {reduce_2});
     auto smx_2 = add_node<graphlib::PyOpNode>(*graph, "smx_2", "softmax", {-1, false}, {reshape_2});
     graph->remove_node(graph->get_node_by_name("out0"));

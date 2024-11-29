@@ -501,7 +501,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         assert len(out_shape) > dim and dim >= -len(out_shape), "Given dimension is out of the shape"
 
         grad_out = dc.op("multiply", (grad, output), ())
-        gout_sum = dc.op_with_named_attrs("reduce_sum", (grad_out,), {"keep_dim": True}, (dim,))
+        gout_sum = dc.op_with_named_attrs("reduce_sum", (grad_out,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
         gout_sub = dc.op("subtract", (grad, gout_sum), ())
         result = dc.op("multiply", (gout_sub, output), ())
         dc.fuse(result)
@@ -531,7 +531,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             assert bdim == 1, "All dimensions but the last one must be 1"
 
         # mean = dc.op("reduce_avg", (input_, ), (dim, ))
-        mu = dc.op("reduce_sum", (input_,), (dim,))
+        mu = dc.op_with_named_attrs("reduce_sum", (input_,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
         divider = dc.tensor(torch.zeros(input_shape) + 1.0 / input_shape[dim])
         mu = dc.op("multiply", (divider, mu), ())
 
@@ -541,7 +541,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         sq = dc.op("multiply", (xmu, xmu), ())
 
         # var = dc.op("reduce_avg", (squared, ), (dim, ))
-        var = dc.op("reduce_sum", (sq,), (dim,))
+        var = dc.op_with_named_attrs("reduce_sum", (sq,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
         divider = dc.tensor(torch.zeros(var.shape.as_list()) + 1.0 / input_shape[dim])
         var = dc.op("multiply", (divider, var), ())
 
@@ -590,7 +590,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
             assert bdim == 1, "All dimensions but the last one must be 1"
 
         if operand == 2:
-            dbeta = dc.op("reduce_sum", (grad,), (-2,))
+            dbeta = dc.op_with_named_attrs("reduce_sum", (grad,), {"dim_arg": [-2], "keep_dim": True}, (-2, True))
             # dbeta = dc.op("reduce_sum", (grad, ), (0, ))
             # grad_shape = grad.shape.as_list()
             # for i in range(1, len(grad_shape) - 1):
@@ -604,7 +604,7 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         if operand == 1:
             xhat_grad = dc.op("multiply", (xhat, grad), ())
-            dgamma = dc.op("reduce_sum", (xhat_grad,), (-2,))
+            dgamma = dc.op_with_named_attrs("reduce_sum", (xhat_grad,), {"dim_arg": [-2], "keep_dim": True}, (-2, True))
             # dgamma = dc.op("reduce_sum", (xhat_grad, ), (0, ))
             # xhat_grad_shape = xhat_grad.shape.as_list()
             # for i in range(1, len(xhat_grad_shape) - 1):
@@ -615,9 +615,11 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         if operand == 0:
             dxhat = dc.op("multiply", (grad, gamma), ())
             N = input_shape[dim]
-            sum_1 = dc.op("reduce_sum", (dxhat,), (dim,))
+            sum_1 = dc.op_with_named_attrs("reduce_sum", (dxhat,), {"dim_arg": [dim], "keep_dim": True}, (dim, True))
             dxhat_xhat = dc.op("multiply", (dxhat, xhat), ())
-            sum_2 = dc.op("reduce_sum", (dxhat_xhat,), (dim,))
+            sum_2 = dc.op_with_named_attrs(
+                "reduce_sum", (dxhat_xhat,), {"dim_arg": [dim], "keep_dim": True}, (dim, True)
+            )
             xhat_sum_2 = dc.op("multiply", (xhat, sum_2), ())
             sum_1_sum_2_add = dc.op("add", (sum_1, xhat_sum_2), ())
             N_recip = torch.zeros(sum_1_sum_2_add.shape.as_list()) + 1.0 / N

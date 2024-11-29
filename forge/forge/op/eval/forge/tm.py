@@ -489,7 +489,7 @@ def shape(type, attr, ops):
         return tuple(dim * size for dim, size in zip(list(ops[0]), sizes)), []
 
     if type == "repeat_interleave":
-        assert len(attr) <= 3, "repeat should have two attributes - repeats and dim"
+        assert len(attr) <= 3, "repeat_interleave should have two attributes - repeats and dim"
         repeats = attr[0]
         dim = attr[1]
 
