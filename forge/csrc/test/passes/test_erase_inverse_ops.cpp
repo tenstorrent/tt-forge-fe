@@ -544,15 +544,19 @@ TEST_F(UpdateConvAttrsTest, update_padding_attrs)
     }
 }
 
-struct UpdateReduceAttrsTest : testing::Test
+struct UpdateReduceSumAttrsTest : testing::Test
 {
     graphlib::Graph *graph;
     graphlib::OpNode *reduce_node;
 
-    UpdateReduceAttrsTest() { graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateReduceAttrs"); }
+    UpdateReduceSumAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateReduceSumAttrsTest");
+    }
 
    protected:
-    graphlib::OpNode *create_graph(const std::string &reduce_op, int reduce_dim, const graphlib::Shape &input_shape)
+    graphlib::OpNode *create_graph(
+        const std::string &reduce_op, int reduce_dim, bool keep_dim, const graphlib::Shape &input_shape)
     {
         auto input_node = create_input(*graph, "input", input_shape);
 
@@ -562,10 +566,12 @@ struct UpdateReduceAttrsTest : testing::Test
             reduce_op,
             {
                 reduce_dim,
+                keep_dim,
             },
             {input_node});
         auto &named_attrs = reduce_node->named_attrs();
         named_attrs["dim"] = reduce_dim;
+        named_attrs["keep_dim"] = keep_dim;
         reduce_node->overwrite_named_attrs(named_attrs);
         create_output(*graph, "out", reduce_node);
 
@@ -573,37 +579,87 @@ struct UpdateReduceAttrsTest : testing::Test
     }
 };
 
-TEST_F(UpdateReduceAttrsTest, ReduceSumDim)
+TEST_F(UpdateReduceSumAttrsTest, ReduceSumDim)
 {
     std::string reduce_op = "reduce_sum";
     int reduce_dim = 1;
+    bool keep_dim = true;
     graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
     graphlib::Shape expected_shape = graphlib::Shape::create({1, 1, 160});
 
-    auto reduce_node = create_graph(reduce_op, reduce_dim, input_shape);
+    auto reduce_node = create_graph(reduce_op, reduce_dim, keep_dim, input_shape);
 
-    passes::update_reduce_attr(reduce_node, reduce_dim);
+    passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
     auto updated_attrs = reduce_node->named_attrs();
+
     ASSERT_TRUE(updated_attrs.count("dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+
+    ASSERT_TRUE(updated_attrs.count("keep_dim"));
+    EXPECT_EQ(std::get<bool>(updated_attrs["keep_dim"]), keep_dim);
 }
 
-TEST_F(UpdateReduceAttrsTest, ReduceMaxDim)
+struct UpdateReduceMaxAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *reduce_node;
+
+    UpdateReduceMaxAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateReduceMaxAttrsTest");
+    }
+
+   protected:
+    graphlib::OpNode *create_graph(
+        const std::string &reduce_op, int reduce_dim, int stride, bool keep_dim, const graphlib::Shape &input_shape)
+    {
+        auto input_node = create_input(*graph, "input", input_shape);
+
+        reduce_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            reduce_op,
+            reduce_op,
+            {
+                reduce_dim,
+                stride,
+                keep_dim,
+            },
+            {input_node});
+        auto &named_attrs = reduce_node->named_attrs();
+        named_attrs["dim"] = reduce_dim;
+        named_attrs["stride"] = stride;
+        named_attrs["keep_dim"] = keep_dim;
+        reduce_node->overwrite_named_attrs(named_attrs);
+        create_output(*graph, "out", reduce_node);
+
+        return reduce_node;
+    }
+};
+
+TEST_F(UpdateReduceMaxAttrsTest, ReduceMaxDim)
 {
     std::string reduce_op = "reduce_max";
     int reduce_dim = 2;
+    int stride = 1;
+    bool keep_dim = true;
     graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
     graphlib::Shape expected_shape = graphlib::Shape::create({1, 512, 1});
 
-    auto reduce_node = create_graph(reduce_op, reduce_dim, input_shape);
+    auto reduce_node = create_graph(reduce_op, reduce_dim, stride, keep_dim, input_shape);
 
-    passes::update_reduce_attr(reduce_node, reduce_dim);
+    passes::update_reduce_attr(reduce_node, reduce_dim, keep_dim);
 
     auto updated_attrs = reduce_node->named_attrs();
 
     ASSERT_TRUE(updated_attrs.count("dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+
+    ASSERT_TRUE(updated_attrs.count("stride"));
+    EXPECT_EQ(std::get<int>(updated_attrs["stride"]), stride);
+
+    ASSERT_TRUE(updated_attrs.count("keep_dim"));
+    EXPECT_EQ(std::get<bool>(updated_attrs["keep_dim"]), keep_dim);
 }
 
 struct UpdateGroupedReduceAvgTest : testing::Test

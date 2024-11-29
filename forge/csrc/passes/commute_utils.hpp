@@ -150,7 +150,7 @@ void update_select_attr(
     std::optional<int> length = std::nullopt,
     std::optional<int> stride = std::nullopt);
 void update_concat_attr(graphlib::OpNode *op, int new_dim);
-void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim);
+void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim);
 void update_grouped_reduce_avg_attr(graphlib::OpNode *reduce, int reduce_dim);
 void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp);
 void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs);
