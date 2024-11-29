@@ -746,6 +746,16 @@ bool commute_through_reduce(
         auto producer_attr = producer->op_attrs();
 
         int op_reduce_dim = std::get<int>(op_attr[0]);
+        bool op_keep_dim;
+        if (op->op_name() == "grouped_reduce_avg" || op->op_name() == "reduce_max")
+        {
+            op_keep_dim = std::get<bool>(op_attr[2]);
+        }
+        else
+        {
+            op_keep_dim = std::get<bool>(op_attr[1]);
+        }
+
         if (op_reduce_dim < 0)
             op_reduce_dim += clone_shape->size();
 
@@ -769,7 +779,7 @@ bool commute_through_reduce(
         }
 
         op->add_golden_transform(reduce_golden_transform);
-        update_reduce_attr(op, op_reduce_dim);
+        update_reduce_attr(op, op_reduce_dim, op_keep_dim);
 
         *commute_shape = reduce_shape;
         *golden_transform = reduce_golden_transform;
@@ -782,6 +792,15 @@ bool commute_through_reduce(
     {
         auto attr = op->op_attrs();
         int reduce_dim = std::get<int>(attr[0]);
+        bool keep_dim;
+        if (op->op_name() == "grouped_reduce_avg" || op->op_name() == "reduce_max")
+        {
+            keep_dim = std::get<bool>(attr[2]);
+        }
+        else
+        {
+            keep_dim = std::get<bool>(attr[1]);
+        }
 
         int orig_op_dims = op->shape().size();
         if (reduce_dim < 0)
@@ -801,7 +820,7 @@ bool commute_through_reduce(
 
         op->add_golden_transform(reduce_golden_transform);
 
-        update_reduce_attr(op, reduce_dim);
+        update_reduce_attr(op, reduce_dim, keep_dim);
 
         *commute_shape = reduce_shape;
         *golden_transform = reduce_golden_transform;
@@ -1015,9 +1034,9 @@ void update_grouped_reduce_avg_attr(graphlib::OpNode *reduce, int reduce_dim)
  * @brief Updates the attributes and named attributes of reduce operation(reduce_sum, reduce_avg, reduce_max) with new
  * reduction dimension.
  */
-void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim)
+void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
 {
-    log_info("reduce->op_name() = {}", reduce->op_name());
+    log_trace("reduce->op_name() = {}", reduce->op_name());
     TT_ASSERT(
         reduce->op_name().find("reduce") != std::string::npos, "update_reduce_attr called for a non-reduce operation");
 
@@ -1028,9 +1047,11 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim)
     }
     std::vector<graphlib::OpType::Attr> attr;
     attr.push_back(reduce_dim);
+    attr.push_back(keep_dim);
 
     graphlib::OpType::Attrs named_attrs = reduce->named_attrs();
     named_attrs["dim"] = reduce_dim;
+    named_attrs["keep_dim"] = keep_dim;
 
     reduce->overwrite_op_named_attrs(attr, named_attrs);
     log_trace("Reduce operation updated with reduce_dim: {}", reduce_dim);
