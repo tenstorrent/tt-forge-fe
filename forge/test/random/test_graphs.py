@@ -16,6 +16,53 @@ from test.random.rgg import RandomGraphAlgorithm
 from test.random.rgg import RandomizerConfig
 from test.random.rgg import process_test
 
+import os
+import random
+
+from .rgg import get_randomizer_config_default
+
+
+@pytest.fixture
+def randomizer_config():
+    return get_randomizer_config_default()
+
+
+def get_random_seeds():
+    if "RANDOM_TEST_COUNT" in os.environ:
+        test_count = int(os.environ["RANDOM_TEST_COUNT"])
+    else:
+        test_count = 5
+    tests_selected_indecies = []
+    if "RANDOM_TESTS_SELECTED" in os.environ:
+        tests_selected = os.environ["RANDOM_TESTS_SELECTED"]
+        tests_selected = tests_selected.strip()
+        if len(tests_selected) > 0:
+            tests_selected_indecies = tests_selected.split(",")
+            tests_selected_indecies = [int(i) for i in tests_selected_indecies]
+    if len(tests_selected_indecies) > 0:
+        # metafunc.parametrize("test_index", tests_selected_indecies)
+        last_test_selected = max(tests_selected_indecies)
+        if test_count < last_test_selected + 1:
+            test_count = last_test_selected + 1
+    else:
+        tests_selected_indecies = range(test_count)
+
+    test_rg = random.Random()
+    if "RANDOM_TEST_SEED" in os.environ:
+        test_rg.seed(int(os.environ["RANDOM_TEST_SEED"]))
+    else:
+        test_rg.seed(0)
+
+    seeds = []
+    # generate a new random seed for each test. Do it upfront so that
+    # we can run any index in isolation
+    for _ in range(test_count):
+        seeds.append(test_rg.randint(0, 1000000))
+
+    selected_tests = [(index, seeds[index]) for index in tests_selected_indecies]
+
+    return selected_tests
+
 
 class FrameworksHealthy(Enum):
     """Adjust repositories to test healthy operators"""
@@ -114,6 +161,7 @@ class FrameworksCustom(Enum):
     PYBUDA_NARY = pybuda_nary()
 
 
+@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
 @pytest.mark.parametrize(
     "framework",
     [
@@ -121,7 +169,7 @@ class FrameworksCustom(Enum):
     ],
 )
 def test_random_graph_algorithm_pybuda(
-    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
@@ -142,8 +190,6 @@ def test_random_graph_algorithm_pybuda(
     # randomizer_config.num_of_nodes_max = 10
     # randomizer_config.num_fork_joins_max = 5
 
-    # TODO random_seed instead of random_seeds
-    random_seed = random_seeds[test_index]
     process_test(
         "Default",
         test_index,
@@ -155,6 +201,7 @@ def test_random_graph_algorithm_pybuda(
     )
 
 
+@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
 @pytest.mark.parametrize(
     "framework",
     [
@@ -162,7 +209,7 @@ def test_random_graph_algorithm_pybuda(
     ],
 )
 def test_random_graph_algorithm_pytorch(
-    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
@@ -183,8 +230,6 @@ def test_random_graph_algorithm_pytorch(
     # randomizer_config.num_of_nodes_max = 5
     # randomizer_config.num_fork_joins_max = 5
 
-    # TODO random_seed instead of random_seeds
-    random_seed = random_seeds[test_index]
     process_test(
         "Default",
         test_index,
@@ -196,6 +241,7 @@ def test_random_graph_algorithm_pytorch(
     )
 
 
+@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
 @pytest.mark.parametrize(
     "framework",
     [
@@ -203,7 +249,7 @@ def test_random_graph_algorithm_pytorch(
     ],
 )
 def ttest_random_graph_algorithm_pybuda_fork_joins(
-    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
@@ -222,8 +268,6 @@ def ttest_random_graph_algorithm_pybuda_fork_joins(
     randomizer_config.num_of_nodes_max = 15
     randomizer_config.num_fork_joins_max = 10
 
-    # TODO random_seed instead of random_seeds
-    random_seed = random_seeds[test_index]
     process_test(
         "Fork Joins",
         test_index,
@@ -236,6 +280,7 @@ def ttest_random_graph_algorithm_pybuda_fork_joins(
 
 
 # @pytest.mark.xfail(reason="Nary operators are buggy")
+@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
 @pytest.mark.parametrize(
     "framework",
     [
@@ -243,7 +288,7 @@ def ttest_random_graph_algorithm_pybuda_fork_joins(
     ],
 )
 def ttest_random_graph_algorithm_pybuda_nary(
-    test_index, random_seeds, test_device, randomizer_config: RandomizerConfig, framework
+    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
 ):
     # adjust randomizer_config
     randomizer_config = copy(randomizer_config)
@@ -264,8 +309,6 @@ def ttest_random_graph_algorithm_pybuda_nary(
     randomizer_config.num_of_nodes_max = 15
     randomizer_config.num_fork_joins_max = 10
 
-    # TODO random_seed instead of random_seeds
-    random_seed = random_seeds[test_index]
     process_test(
         "Nary",
         test_index,
