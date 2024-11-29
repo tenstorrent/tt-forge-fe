@@ -1215,7 +1215,6 @@ def populate_reduce_args(graph, nid, compiler_cfg):
     assert len(node["attrs"]["axis"][0]) == 1, "Forge only supports reduce with a single axis"
 
     keep_dim = int(node["attrs"]["keepdims"][0][0])
-    assert keep_dim, f"Forge {node['op']} only support keep_dim = True"
 
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]

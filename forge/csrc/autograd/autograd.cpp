@@ -371,7 +371,8 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
 
                     NodeContext src = last_out;
                     last_out = create_op(
-                        OpType("reduce_sum", {dim}, {}, {{"keep_dim", true}, {"dim_arg", std::vector<int>({dim})}}),
+                        OpType(
+                            "reduce_sum", {dim, true}, {}, {{"keep_dim", true}, {"dim_arg", std::vector<int>({dim})}}),
                         {src},
                         node,
                         edge.consumer_input_port_id,
