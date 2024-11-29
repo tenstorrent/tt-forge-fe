@@ -631,7 +631,7 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
     #     return DataFormat.UInt16
 
     if dtype == torch.bool:
-        return DataFormat.Bfp2_b
+        return DataFormat.Int8
 
     if dtype == torch.int32:
         return DataFormat.Int32
@@ -655,7 +655,7 @@ def forge_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
     if data_format == DataFormat.Float16_b:
         return torch.bfloat16
 
-    if data_format in [DataFormat.Bfp8_b, DataFormat.Bfp4_b, DataFormat.Bfp2_b]:
+    if data_format in [DataFormat.Bfp8_b, DataFormat.Bfp4_b]:
         return torch.bfloat16
 
     if data_format in [DataFormat.Bfp8, DataFormat.Bfp4, DataFormat.Bfp2]:
