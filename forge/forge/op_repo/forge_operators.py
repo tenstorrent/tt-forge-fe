@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# PyBuda repostiory operators
+
+# Forge repostiory operators
 
 
 from .datatypes import OperatorDefinition, OperatorRepository
@@ -104,4 +105,4 @@ _OPERATORS = [
 ]
 
 
-pybuda_operator_repository = OperatorRepository([op for op in _OPERATORS])
+forge_operator_repository = OperatorRepository([op for op in _OPERATORS])
