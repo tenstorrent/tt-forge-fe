@@ -35,7 +35,6 @@
 #include "passes/passes_utils.hpp"
 #include "passes/post_autograd_graph_passes.hpp"
 #include "passes/pre_lowering_passes.hpp"
-#include "passes/pre_placer_forge_passes.hpp"
 #include "passes/print_graph.hpp"
 #include "passes/remove_nops.hpp"
 #include "passes/replace_incommutable_patterns.hpp"
@@ -226,117 +225,5 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     recalculate_shapes(graph);
 
     return graph;
-}
-
-// ********** Run lowering passes **********
-std::unique_ptr<graphlib::Graph> run_pre_placer_forge_passes(
-    graphlib::Graph *graph,
-    const DeviceConfig &device_config,
-    std::vector<std::uint32_t> chip_ids,
-    const std::vector<std::string> &op_names_dont_fuse,
-    const std::vector<std::string> &op_names_manual_fuse,
-    const passes::FractureChipIdAssignments &fracture_chip_id_assignments,
-    const std::optional<DataFormat> default_df_override,
-    const std::optional<DataFormat> default_accumulate_df,
-    const bool enable_broadcast_splitting,
-    const DataFormat fp32_fallback,
-    const MathFidelity default_math_fidelity,
-    const bool enable_auto_fusing,
-    const int amp_level,
-    const bool enable_recompute,
-    const bool output_queues_on_host,
-    const bool input_queues_on_host,
-    const std::vector<std::tuple<std::string, std::string, int>> &insert_queues,
-    std::vector<AMPNodeProperties> amp_properties,
-    const std::vector<std::string> &op_intermediates_to_save,
-    const bool use_interactive_placer,
-    bool enable_device_tilize)
-{
-    log_debug(LogGraphCompiler, "Lowering target device\n{}", device_config);
-
-    passes::print_graph(graph, "PRE_PLACER");
-
-    // Create forge ops / tms
-    std::unique_ptr<graphlib::Graph> lowered_graph = lower_to_forge_ops(graph);
-
-    // lower user-defined buffering queues to actual queue types
-    lower_to_buffering_queues(lowered_graph.get());
-
-    split_unsupported_gradient_ops(lowered_graph.get(), device_config);
-    recalculate_shapes(lowered_graph.get());
-
-    // Remove nops
-    remove_nops(lowered_graph.get());
-
-    // Add buffer NOP between host input and ops if there are multiple ops reading from same host input.
-    //
-    if (input_queues_on_host and env_as<bool>("FORGE_ENABLE_HOST_INPUT_NOP_BUFFERING"))
-    {
-        fix_host_inputs(lowered_graph.get());
-    }
-
-    // Sanitize past cache IOs
-    sanitize_past_cache_ios(lowered_graph.get());
-
-    // Remove transposes from srcB
-    bool device_supports_tm_on_srcb = false;  // TODO: device descriptor
-    if (!device_supports_tm_on_srcb)
-        fix_transposes(lowered_graph.get(), device_config);
-
-    // Remove TMs from output node
-    fix_tms_on_output(lowered_graph.get());
-
-    // Need to run before fixing ops that require untilize nop back to host
-    insert_queues_for_op_intermediates(lowered_graph.get(), op_intermediates_to_save);
-
-    // Add NOPs on ops feeding output that can't do it directly
-    if (output_queues_on_host)
-    {
-        fix_untilized_outputs(lowered_graph.get(), device_config);
-    }
-
-    // Replace "buffer" placeholders with NOPs
-    replace_buffers_with_nops(lowered_graph.get());
-
-    insert_nop_on_matmul_input(lowered_graph.get());
-
-    if (enable_device_tilize)
-    {
-        // If true, insert tilize op after activation (input)
-        insert_tilize_op_on_input(lowered_graph.get());
-    }
-
-    // Recalculate shapes
-    recalculate_shapes(lowered_graph.get());
-
-    // Split big broadcasts into multiple smaller ones by adding nops between them
-    if (enable_broadcast_splitting)
-    {
-        split_broadcasts(lowered_graph.get());
-    }
-
-    if (env_as<bool>("FORGE_ENABLE_CONSTANT_PRE_BROADCAST"))
-    {
-        constant_pre_broadcast(lowered_graph.get());
-    }
-
-    insert_partial_datacopy_tms(lowered_graph.get());
-
-    insert_user_defined_queues(lowered_graph.get(), insert_queues);
-
-    //
-    // Data formats
-    //
-    run_dataformat_passes(
-        lowered_graph.get(),
-        device_config,
-        default_df_override,
-        default_accumulate_df,
-        fp32_fallback,
-        default_math_fidelity,
-        amp_level,
-        amp_properties);
-
-    return lowered_graph;
 }
 }  // namespace tt
