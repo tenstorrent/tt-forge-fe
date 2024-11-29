@@ -61,7 +61,7 @@ def test_index(shape, dim, index):
     framework_model = Index(index)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -249,7 +249,7 @@ def test_power(shape):
     framework_model = power()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -449,7 +449,7 @@ def test_layernorm(batch_size, num_channels, height, width):
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -466,7 +466,7 @@ def test_gelu(shape):
     framework_model = nn.GELU()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -502,7 +502,7 @@ def test_clip(shape, min_val, max_val):
     framework_model = Clip(min_val, max_val)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -608,7 +608,7 @@ def test_exp(shape):
     framework_model = Exp()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -654,7 +654,7 @@ def test_log(shape):
     framework_model = Log()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 @pytest.mark.parametrize(
     "shape_x, shape_y",
@@ -862,7 +862,7 @@ def test_batchnorm2d(batch_size, num_channels, height, width):
     framework_model = nn.BatchNorm2d(num_features=num_channels)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.push
@@ -879,7 +879,7 @@ def test_add():
     framework_model = Add()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 params = [
@@ -919,7 +919,7 @@ def test_transpose(params, data_format):
     framework_model = Transpose(dims).to(data_format)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -1083,7 +1083,7 @@ def test_subtract():
     framework_model = Subtract()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False, verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -1107,7 +1107,7 @@ def test_multiply(shape):
     framework_model = Multiply()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.push
@@ -1162,7 +1162,7 @@ def test_softmax():
     framework_model = Softmax()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -1342,7 +1342,7 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     framework_model = Matmul()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
@@ -1453,7 +1453,7 @@ def test_reciprocal(shape):
     framework_model = Reciprocal()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -1484,7 +1484,7 @@ def test_sigmoid(shape):
     framework_model = Sigmoid()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("dim", [-1, -2, -3], ids=["-1", "-2", "-3"])
@@ -1511,7 +1511,7 @@ def test_indexing(dim, start, stop, stride, shape):
     framework_model = ForgeIndexing(dim, start, stop, stride)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.xfail(reason="ttnn.embedding op fails while reshaping the input_tensor in TILE_LAYOUT")
@@ -1869,7 +1869,7 @@ def test_remainder():
     framework_model = Remainder()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.xfail(

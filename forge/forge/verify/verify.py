@@ -331,6 +331,9 @@ def verify(
         if verify_cfg.verify_shape:
             if fw.shape != co.shape:
                 raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
-        if verify_cfg.verify_values:
+        if verify_cfg.verify_data:
             if not compare_with_golden(golden=fw, calculated=co, verify_cfg=global_verify_config):
-                raise ValueError(f"Data mismatch: framework_model={fw}, compiled_model={co}")
+                raise ValueError(f"Data mismatch (compare_with_golden): framework_model={fw}, compiled_model={co}")
+        if verify_cfg.verify_allclose and fw.dtype not in [torch.int32, torch.int64, torch.bool]: # allclose doesn't make sense for integer/bool types
+            if not torch.allclose(fw, co, rtol=verify_cfg.rtol[fw.dtype], atol=verify_cfg.atol[fw.dtype]):
+                raise ValueError(f"Data mismatch (all_close): framework_model={fw}, compiled_model={co}")

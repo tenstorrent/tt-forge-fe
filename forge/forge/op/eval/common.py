@@ -224,7 +224,7 @@ def compare_with_golden(
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
-        return torch.allclose(golden, calculated, rtol=verify_cfg.rtol, atol=verify_cfg.atol)
+        return torch.allclose(golden, calculated, rtol=verify_cfg.rtol[golden.dtype], atol=verify_cfg.atol[golden.dtype])
 
 
 # Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True

@@ -254,7 +254,8 @@ class VerifyConfig:
     verify_size: bool = True  # Check output size
     verify_dtype: bool = True  # Check output dtype
     verify_shape: bool = True  # Check output shape
-    verify_values: bool = True  # Check output similarity
+    verify_data: bool = True  # Check output similarity using pcc
+    verify_allclose: bool = True  # Check output similarity using allclose
 
     # --- Thresholds and Metrics --- #
     rtol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
@@ -297,14 +298,14 @@ class VerifyConfig:
             self.atol = {torch.float32: self.atol, torch.float16: self.atol, torch.bfloat16: self.atol}
 
         rtol_defaults = {
-            torch.float32: None,
-            torch.float16: None,
-            torch.bfloat16: None,
+            torch.float32: 1e-05,
+            torch.float16: 1e-05,
+            torch.bfloat16: 1e-05,
         }
         atol_defaults = {
-            torch.float32: None,
-            torch.float16: None,
-            torch.bfloat16: None,
+            torch.float32: 1e-08,
+            torch.float16: 1e-08,
+            torch.bfloat16: 1e-08,
         }
 
         for dt in [torch.float32, torch.float16, torch.bfloat16]:
