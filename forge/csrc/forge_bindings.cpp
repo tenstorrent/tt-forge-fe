@@ -181,30 +181,6 @@ PYBIND11_MODULE(_C, m)
     m.def("run_consteval_graph_pass", &passes::run_consteval_graph_pass);
     m.def("run_post_autograd_graph_passes", &run_post_autograd_graph_passes);
     m.def(
-        "run_pre_placer_forge_passes",
-        &run_pre_placer_forge_passes,
-        py::arg("graph"),
-        py::arg("device_config"),
-        py::arg("chip_ids") = std::vector<std::uint32_t>{0},
-        py::arg("op_names_dont_fuse") = std::vector<std::string>{},
-        py::arg("op_names_manual_fuse") = std::vector<std::string>{},
-        py::arg("fracture_chip_id_assignments") = passes::FractureChipIdAssignments{},
-        py::arg("default_df_override") = std::optional<DataFormat>{},
-        py::arg("default_accumulate_df") = std::optional<DataFormat>{},
-        py::arg("enable_broadcast_splitting") = false,
-        py::arg("fp32_fallback") = DataFormat::Float16_b,
-        py::arg("default_math_fidelity") = MathFidelity::HiFi3,
-        py::arg("enable_auto_fusing") = false,
-        py::arg("amp_level") = 0,
-        py::arg("enable_recompute") = 0,
-        py::arg("output_queues_on_host") = true,
-        py::arg("input_queues_on_host") = true,
-        py::arg("insert_queues") = std::vector<std::tuple<std::string, std::string, int>>{},
-        py::arg("amp_properties") = std::vector<AMPNodeProperties>{},
-        py::arg("op_intermediates_to_save") = std::vector<std::string>{},
-        py::arg("use_interactive_placer") = true,
-        py::arg("enable_device_tilize") = false);
-    m.def(
         "run_pre_lowering_passes",
         &run_pre_lowering_passes,
         py::arg("graph"),
