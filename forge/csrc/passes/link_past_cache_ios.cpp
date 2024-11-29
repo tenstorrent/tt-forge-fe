@@ -242,8 +242,6 @@ std::map<std::string, std::size_t> convert_inputs_to_params(
                 if (dynamic_cast<graphlib::OpNode *>(producer))
                 {
                     concat_operand = producer;
-                    if (producer->as<graphlib::OpNode>()->op_type().op == "hslice")
-                        slice = producer;
                 }
             }
 
