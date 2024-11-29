@@ -690,11 +690,6 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
-    # Issue #293 - check why we are running consteval here and also later as a separate pass.
-    # This should ideally be removed.
-    if should_run_consteval(context):
-        run_consteval_graph_pass(graph)
-
     inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
         graph, compiler_cfg, compiler_cfg.fracture_groups
     )
@@ -709,16 +704,10 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     next_stage = CompileDepth.OPTIMIZED_GRAPH
-    if should_run_consteval(context):
-        next_stage = CompileDepth.CONSTEVAL_GRAPH
-    elif compiler_cfg.match_subgraph_patterns:
+    if compiler_cfg.match_subgraph_patterns:
         next_stage = CompileDepth.POST_PATTERN_MATCHER
 
     return next_stage
-
-
-def should_run_consteval(context: CompileContext) -> bool:
-    return context.compiler_cfg.enable_consteval and not context.training
 
 
 def run_consteval_pass(context: CompileContext) -> CompileDepth:
@@ -734,7 +723,6 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
     -------
     CompileDepth - next compile stage
     """
-    compiler_cfg = context.compiler_cfg
     graph = context.graph
     graph_name = context.graph_name
 
@@ -742,11 +730,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
     dump_graph(graph, graph_name, "consteval_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
-    next_stage = CompileDepth.OPTIMIZED_GRAPH
-    if compiler_cfg.match_subgraph_patterns:
-        next_stage = CompileDepth.POST_PATTERN_MATCHER
-
-    return next_stage
+    return CompileDepth.PRE_LOWERING_PASS
 
 
 def run_post_pattern_matcher(context: CompileContext) -> CompileDepth:
@@ -880,6 +864,9 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
     # TODO: training is dependent on TTDevice.py which is removed
     if compiler_cfg.enable_training:
         calculate_grads(outputs, dev, intermediate_tensors, False, losses)
+
+    if compiler_cfg.enable_consteval:
+        return CompileDepth.CONSTEVAL_GRAPH
 
     return CompileDepth.PRE_LOWERING_PASS
 
