@@ -2155,8 +2155,8 @@ void ConstEvalGraph::autograd()
 bool is_consteval_capable_input_type(Node *node)
 {
     graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(node);
-    return input and (input->is_parameter() or input->is_constant()) and
-           not node->as<graphlib::TaggedNode>()->has_tag("dont_consteval");
+    return input && (input->is_parameter() || input->is_constant()) &&
+           !node->as<graphlib::TaggedNode>()->has_tag("dont_consteval");
 }
 
 bool is_consteval_capable_op(Graph *graph, Node *node, bool allow_forks)
@@ -2210,6 +2210,11 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
 
     std::vector<Node *> users = graph->data_users(input);
     std::vector<Edge> user_edges = graph->user_data_edges(input);
+
+    if (input->requires_grad() && graph->training())
+    {
+        return false;
+    }
 
     // If there is only one user then check if that op is consteval capable
     if (users.size() == 1)
