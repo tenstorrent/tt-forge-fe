@@ -33,6 +33,8 @@ def test_l1_loss(prediction_shape):
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
+    print(f"torch_loss_out: {torch_loss_out}")
+    print(f"forge_loss_out: {forge_loss_out[0]}")
     assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=11e-3)
 
 
