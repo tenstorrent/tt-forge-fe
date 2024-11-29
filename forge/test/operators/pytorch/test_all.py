@@ -22,8 +22,10 @@
 import os
 import pytest
 import forge
+import textwrap
 
 from loguru import logger
+from tabulate import tabulate
 
 from test.operators.utils import DeviceUtils
 from test.operators.utils import InputSource
@@ -418,3 +420,96 @@ def test_not_implemented(test_vector: TestVector, test_device):
 )
 def test_data_mismatch(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
+
+
+class InfoUtils:
+    @classmethod
+    def print_query_params(cls, max_width=80):
+        print("Query parameters:")
+        cls.print_query_values(max_width)
+        print("Query examples:")
+        cls.print_query_examples(max_width)
+
+    @classmethod
+    def print_query_values(cls, max_width=80):
+
+        operators = [key for key in test_suite.indices]
+        operators = sorted(operators)
+        operators = ", ".join(operators)
+
+        filters = [key for key, value in VectorLambdas.__dict__.items() if not key.startswith("__")]
+        filters = [filter for filter in filters if filter not in ["ALL_OPERATORS", "NONE", "FILTERED"]]
+        filters = ", ".join(filters)
+
+        input_sources = [f"{input_source.name}" for input_source in TestCollectionCommon.all.input_sources]
+        input_sources = ", ".join(input_sources)
+
+        input_shapes = [f"{input_shape}" for input_shape in TestCollectionCommon.all.input_shapes]
+        input_shapes = ", ".join(input_shapes)
+
+        dev_data_formats = [f"{dev_data_format.name}" for dev_data_format in TestCollectionCommon.all.dev_data_formats]
+        dev_data_formats = ", ".join(dev_data_formats)
+
+        math_fidelities = [f"{math_fidelity.name}" for math_fidelity in TestCollectionCommon.all.math_fidelities]
+        math_fidelities = ", ".join(math_fidelities)
+
+        failing_reasons = [
+            key for key, value in FailingReasons.__dict__.items() if not callable(value) and not key.startswith("__")
+        ]
+        failing_reasons = ", ".join(failing_reasons)
+
+        parameters = [
+            {"name": "OPERATORS", "description": f"List of operators. Supported values: {operators}"},
+            {"name": "FILTERS", "description": f"List of lambda filters. Supported values: {filters}"},
+            {"name": "INPUT_SOURCES", "description": f"List of input sources. Supported values: {input_sources}"},
+            {"name": "INPUT_SHAPES", "description": f"List of input shapes. Supported values: {input_shapes}"},
+            {
+                "name": "DEV_DATA_FORMATS",
+                "description": f"List of dev data formats. Supported values: {dev_data_formats}",
+            },
+            {"name": "MATH_FIDELITIES", "description": f"List of math fidelities. Supported values: {math_fidelities}"},
+            {
+                "name": "KWARGS",
+                "description": "List of kwargs dictionaries. Kwarg is a mandatory or optional attribute of an operator. See operator documentation for each operator or use `test_unique` to find examples.",
+            },
+            {"name": "FAILING_REASONS", "description": f"List of failing reasons. Supported values: {failing_reasons}"},
+            {"name": "SKIP_REASONS", "description": "Same as FAILING_REASONS"},
+            {"name": "RANGE", "description": "Limit number of results"},
+            {"name": "TEST_ID", "description": "Id of a test containing test parameters"},
+        ]
+
+        cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Supported values"])
+
+    @classmethod
+    def print_query_examples(cls, max_width=80):
+
+        parameters = [
+            {"name": "OPERATORS", "description": "export OPERATORS=add"},
+            {"name": "OPERATORS", "description": "export OPERATORS=add,div"},
+            {"name": "FILTERS", "description": "export FILTERS=HAS_DATA_FORMAT,QUICK"},
+            {"name": "INPUT_SOURCES", "description": "export INPUT_SOURCES=FROM_HOST,FROM_DRAM_QUEUE"},
+            {"name": "INPUT_SHAPES", "description": 'export INPUT_SHAPES="[(3, 4), (45, 17)]"'},
+            {"name": "DEV_DATA_FORMATS", "description": "export DEV_DATA_FORMATS=Float16_b,Int8"},
+            {"name": "MATH_FIDELITIES", "description": "export MATH_FIDELITIES=HiFi4,HiFi3"},
+            {
+                "name": "KWARGS",
+                "description": "export KWARGS=\"[{'rounding_mode': 'trunc'},{'rounding_mode': 'floor'}]\"",
+            },
+            {"name": "FAILING_REASONS", "description": "export FAILING_REASONS=DATA_MISMATCH,UNSUPPORTED_DATA_FORMAT"},
+            {"name": "FAILING_REASONS", "description": "export FAILING_REASONS=NOT_IMPLEMENTED"},
+            {"name": "SKIP_REASONS", "description": "export SKIP_REASONS=FATAL_ERROR"},
+            {"name": "RANGE", "description": "export RANGE=5"},
+            {"name": "RANGE", "description": "export RANGE=10,20"},
+            {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
+        ]
+
+        cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])
+
+    @classmethod
+    def print_formatted_parameters(cls, parameters, max_width=80, headers=["Parameter", "Description"]):
+        for param in parameters:
+            param["description"] = "\n".join(textwrap.wrap(param["description"], width=max_width))
+
+        table_data = [[param["name"], param["description"]] for param in parameters]
+
+        print(tabulate(table_data, headers, tablefmt="grid"))
