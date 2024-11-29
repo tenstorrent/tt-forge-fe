@@ -5,6 +5,8 @@ import forge
 import pytest
 import sys
 import os
+import torch
+from forge.op.eval.common import compare_with_golden_pcc
 
 sys.path.append("forge/test/model_demos/models")
 
@@ -35,6 +37,7 @@ def test_nbeats_with_seasonality_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_seasonality")
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
+    fw_out = pytorch_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
@@ -55,6 +58,7 @@ def test_nbeats_with_generic_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_generic")
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
+    fw_out = pytorch_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
@@ -82,6 +86,7 @@ def test_nbeats_with_trend_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_trend")
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
+    fw_out = pytorch_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out

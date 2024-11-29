@@ -8,7 +8,7 @@ import forge
 
 import os
 import torch.nn as nn
-
+from forge.op.eval.common import compare_with_golden_pcc
 
 # SPDX-FileCopyrightText: Copyright (c) 2017 LoRnaTang
 #
@@ -149,7 +149,7 @@ def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="RuntimeError: Divide by 0 error")
+@pytest.mark.xfail(reason="RuntimeError: Invalid arguments to reshape")
 def test_mobilenetv1_basic(test_device):
     model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch(
         test_device,
@@ -157,9 +157,10 @@ def test_mobilenetv1_basic(test_device):
     )
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_basic")
-    co_out = compiled_model(inputs)
+    co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = model(*inputs)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
