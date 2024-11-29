@@ -5,6 +5,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "passes/commute_utils.hpp"
 #include "passes/erase_consecutive_reshape.hpp"
 #include "passes/passes_utils.hpp"
 #include "utils/logger.hpp"
@@ -71,14 +72,20 @@ void limit_to_5d_reshape(graphlib::Graph *graph)
         {
             auto new_shape = attrs;
             new_shape.erase(new_shape.begin(), new_shape.begin() + attrs.size() - 5);
-            op_node->overwrite_op_attrs(new_shape);
-
-            // Overwrite shape in named attrs
-            graphlib::OpType::Attrs named_attrs;
             std::vector<int> shape_vector;
-            for (auto attr : new_shape) shape_vector.push_back(std::get<int>(attr));
-            named_attrs["shape"] = shape_vector;
-            op_node->change_op_type(graphlib::OpType("reshape", new_shape, {}, named_attrs));
+            for (auto attr : new_shape)
+            {
+                shape_vector.push_back(std::get<int>(attr));
+            }
+            std::vector<std::uint32_t> shape_vector_uint32(shape_vector.size());
+            std::transform(
+                shape_vector.begin(),
+                shape_vector.end(),
+                shape_vector_uint32.begin(),
+                [](int val) { return static_cast<std::uint32_t>(val); });
+
+            graphlib::Shape converted_shape = graphlib::Shape::create(shape_vector_uint32);
+            update_reshape_attr(op_node, converted_shape);
         }
         else
         {

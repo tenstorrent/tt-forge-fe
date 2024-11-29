@@ -278,3 +278,376 @@ TEST_F(CommuteBroadcastThroughTranspose, commute_broadcast_through_transpose)
     EXPECT_EQ(std::get<int>(tms[1].attr[0]), -3);
     EXPECT_EQ(std::get<int>(tms[1].attr[1]), 112);
 }
+
+struct UpdateReshapeNamedAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+
+    UpdateReshapeNamedAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateReshapeNamedAttrs");
+
+        graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
+        tt::graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
+
+        auto reshape_node = add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {1, 1, 512 * 160}, {input_node});
+
+        create_output(*graph, "out", reshape_node);
+    }
+};
+
+TEST_F(UpdateReshapeNamedAttrsTest, update_named_attrs)
+{
+    graphlib::Node *reshape = graph->get_node_by_name("reshape");
+    ASSERT_NE(reshape, nullptr) << "Reshape node not found.";
+
+    graphlib::OpNode *op_node_reshape = dynamic_cast<graphlib::OpNode *>(reshape);
+    ASSERT_NE(op_node_reshape, nullptr) << "Node is not of type OpNode.";
+
+    graphlib::Shape new_shape = graphlib::Shape::create({1, 512, 160, 1});
+    op_node_reshape->set_shape(new_shape);
+    passes::update_reshape_attr(op_node_reshape, new_shape);
+
+    auto updated_attrs = op_node_reshape->op_type().named_attrs;
+    EXPECT_TRUE(updated_attrs.count("shape")) << "Shape attribute not found.";
+    auto shape_vector = std::get<std::vector<int>>(updated_attrs["shape"]);
+
+    std::vector<std::uint32_t> shape_vector_uint(shape_vector.begin(), shape_vector.end());
+    graphlib::Shape updated_shape = graphlib::Shape::create(shape_vector_uint);
+
+    // Compare updated_shape with new_shape
+    EXPECT_EQ(updated_shape, new_shape) << "Shape attribute does not match expected value.";
+
+    // Verify the node's shape
+    EXPECT_EQ(op_node_reshape->shape(), new_shape);
+}
+
+struct UpdateSelectNamedAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+
+    UpdateSelectNamedAttrsTest()
+    {
+        int dim = 1;
+        int begin = 0;
+        int length = 5;
+        int stride = 1;
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateSelectNamedAttrs");
+
+        graphlib::Shape initial_shape = graphlib::Shape::create({1, 512, 160});
+        tt::graphlib::InputNode *input_node = create_input(*graph, "input", initial_shape);
+        auto select_node =
+            add_node<graphlib::PyOpNode>(*graph, "select", "select", {dim, begin, length, stride}, {input_node});
+
+        create_output(*graph, "out", select_node);
+    }
+};
+
+TEST_F(UpdateSelectNamedAttrsTest, update_named_attrs)
+{
+    graphlib::Node *select = graph->get_node_by_name("select");
+    ASSERT_NE(select, nullptr) << "Select node not found.";
+
+    graphlib::OpNode *op_node_select = dynamic_cast<graphlib::OpNode *>(select);
+    ASSERT_NE(op_node_select, nullptr) << "Node is not of type OpNode.";
+
+    int select_dim = 1;
+    graphlib::Shape commute_shape = graphlib::Shape::create({1, 3, 512, 160});
+
+    passes::update_select_attr(op_node_select, select_dim);
+
+    auto updated_attrs = op_node_select->named_attrs();
+
+    EXPECT_TRUE(updated_attrs.count("select_dim")) << "select_dim attribute not found.";
+    EXPECT_EQ(std::get<int>(updated_attrs["select_dim"]), select_dim) << "select_dim does not match expected value.";
+}
+
+struct UpdateConcatNamedAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *reshape_0;
+    graphlib::OpNode *reshape_1;
+    graphlib::OpNode *reshape_2;
+
+    UpdateConcatNamedAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateConcatNamedAttrs");
+
+        graphlib::Shape shape_0 = graphlib::Shape::create({1, 512, 160});
+        graphlib::Shape shape_1 = graphlib::Shape::create({1, 512, 160});
+        graphlib::Shape shape_2 = graphlib::Shape::create({1, 512, 160});
+
+        tt::graphlib::InputNode *input_node_0 = create_input(*graph, "input_0", shape_0);
+        tt::graphlib::InputNode *input_node_1 = create_input(*graph, "input_1", shape_1);
+        tt::graphlib::InputNode *input_node_2 = create_input(*graph, "input_2", shape_2);
+
+        reshape_0 = add_node<graphlib::PyOpNode>(*graph, "reshape_0", "reshape", {1, 1, 512 * 160}, {input_node_0});
+        reshape_1 = add_node<graphlib::PyOpNode>(*graph, "reshape_1", "reshape", {1, 1, 512 * 160}, {input_node_1});
+        reshape_2 = add_node<graphlib::PyOpNode>(*graph, "reshape_2", "reshape", {1, 1, 512 * 160}, {input_node_2});
+
+        auto concat_node =
+            add_node<graphlib::PyOpNode>(*graph, "concat", "concatenate", {-2}, {reshape_0, reshape_1, reshape_2});
+
+        create_output(*graph, "out", concat_node);
+    }
+};
+
+TEST_F(UpdateConcatNamedAttrsTest, update_named_attrs)
+{
+    graphlib::Node *concat = graph->get_node_by_name("concat");
+    ASSERT_NE(concat, nullptr) << "Concatenate node not found.";
+    graphlib::OpNode *op_node_concat = dynamic_cast<graphlib::OpNode *>(concat);
+    ASSERT_NE(op_node_concat, nullptr) << "Node is not of type OpNode.";
+    int new_dim = 2;
+    passes::update_concat_attr(op_node_concat, new_dim);
+    auto updated_attrs = op_node_concat->named_attrs();
+    EXPECT_TRUE(updated_attrs.count("dim")) << "Dim attribute not found.";
+    auto dim_value = std::get<int>(updated_attrs["dim"]);
+    EXPECT_EQ(dim_value, new_dim) << "Dim attribute does not match expected value.";
+}
+
+struct UpdateVStackAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *vstack_node;
+
+    UpdateVStackAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateVStackAttrs");
+
+        graphlib::Shape shape_0 = graphlib::Shape::create({32, 512, 160});
+
+        auto input_node_0 = create_input(*graph, "input_0", shape_0);
+
+        vstack_node = add_node<graphlib::PyOpNode>(*graph, "vstack", "vstack", {16}, {input_node_0});
+
+        create_output(*graph, "out", vstack_node);
+    }
+};
+
+TEST_F(UpdateVStackAttrsTest, update_vstack_attr)
+{
+    graphlib::Node *vstack = graph->get_node_by_name("vstack");
+    ASSERT_NE(vstack, nullptr) << "VStack node not found.";
+    graphlib::OpNode *op_node_vstack = dynamic_cast<graphlib::OpNode *>(vstack);
+    ASSERT_NE(op_node_vstack, nullptr) << "Node is not of type OpNode.";
+
+    int new_slice_size = 32;
+
+    passes::update_vstack_attr(op_node_vstack, new_slice_size);
+
+    auto updated_attrs = op_node_vstack->named_attrs();
+
+    EXPECT_TRUE(updated_attrs.count("slice_size")) << "Slice size attribute not found.";
+    auto slice_size_value = std::get<int>(updated_attrs["slice_size"]);
+    EXPECT_EQ(slice_size_value, new_slice_size) << "Slice size attribute does not match expected value.";
+}
+
+struct UpdateMatMulNamedAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *matmul;
+
+    UpdateMatMulNamedAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateMatMulNamedAttrs");
+
+        graphlib::Shape shape_0 = graphlib::Shape::create({1, 512, 512});
+        graphlib::Shape shape_1 = graphlib::Shape::create({512, 512});
+
+        auto input_node_0 = create_input(*graph, "input_0", shape_0);
+        auto input_node_1 = create_input(*graph, "input_1", shape_1);
+
+        matmul = add_node<graphlib::PyOpNode>(*graph, "matmul", "matmul", {}, {input_node_0, input_node_1});
+        create_output(*graph, "output", matmul);
+    }
+};
+
+TEST_F(UpdateMatMulNamedAttrsTest, update_named_attrs)
+{
+    graphlib::Node *matmul_node = graph->get_node_by_name("matmul");
+    ASSERT_NE(matmul_node, nullptr) << "MatMul node not found.";
+
+    graphlib::OpNode *op_node_matmul = dynamic_cast<graphlib::OpNode *>(matmul_node);
+    ASSERT_NE(op_node_matmul, nullptr) << "Node is not of type OpNode.";
+    int requant_zp = 128;
+    passes::update_matmul_attr(op_node_matmul, requant_zp);
+    auto updated_attrs = op_node_matmul->named_attrs();
+    EXPECT_TRUE(updated_attrs.count("requant_zp")) << "Requant zp attribute not found.";
+
+    auto zp_value = std::get<int>(updated_attrs["requant_zp"]);
+    EXPECT_EQ(zp_value, requant_zp) << "Requant zp attribute does not match expected value.";
+
+    auto matmul_attrs = op_node_matmul->op_attrs();
+    ASSERT_FALSE(matmul_attrs.empty()) << "MatMul attributes should not be empty.";
+    EXPECT_EQ(std::get<int>(matmul_attrs.back()), requant_zp) << "Requant zp not correctly appended to op_attrs.";
+}
+
+struct UpdateConvAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *conv_node;
+
+    UpdateConvAttrsTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateConvAttrsTest");
+
+        graphlib::Shape shape_0 = graphlib::Shape::create({1, 256, 224, 224});
+        tt::graphlib::InputNode *input_node_0 = create_input(*graph, "input_0", shape_0);
+
+        graphlib::Shape weight_shape = graphlib::Shape::create({256, 256, 3, 3});
+        tt::graphlib::InputNode *weight_node = create_input(*graph, "weight", weight_shape);
+
+        conv_node = add_node<graphlib::PyOpNode>(
+            *graph, "conv2d", "conv2d", {3, 3, 1, 1, 0, 0, 1, 1, 1}, {input_node_0, weight_node});
+        auto named_attrs = conv_node->named_attrs();
+        named_attrs["channel_last"] = false;
+        named_attrs["padding_top"] = 1;
+        named_attrs["padding_bottom"] = 1;
+        named_attrs["padding_left"] = 1;
+        named_attrs["padding_right"] = 1;
+        named_attrs["stride_height"] = 1;
+        named_attrs["stride_width"] = 1;
+        named_attrs["dilation_height"] = 1;
+        named_attrs["dilation_width"] = 1;
+
+        conv_node->overwrite_named_attrs(named_attrs);
+        create_output(*graph, "out", conv_node);
+    }
+};
+
+TEST_F(UpdateConvAttrsTest, update_padding_attrs)
+{
+    graphlib::Node *conv = graph->get_node_by_name("conv2d");
+    ASSERT_NE(conv, nullptr) << "Conv2d node not found.";
+
+    graphlib::OpNode *op_node_conv = dynamic_cast<graphlib::OpNode *>(conv);
+    ASSERT_NE(op_node_conv, nullptr) << "Node is not of type OpNode.";
+
+    std::vector<int> new_padding = {2, 3, 4, 5};
+
+    passes::update_conv_attr(op_node_conv, new_padding);
+
+    auto updated_attrs = op_node_conv->op_type().named_attrs;
+
+    EXPECT_TRUE(updated_attrs.count("padding")) << "Padding attribute not found in named attributes.";
+    auto updated_padding = std::get<std::vector<int>>(updated_attrs["padding"]);
+
+    EXPECT_EQ(updated_padding, new_padding) << "Padding attribute does not match the expected values.";
+
+    auto conv_attrs = op_node_conv->op_attrs();
+    int pad_idx_offset = 4;
+    for (size_t i = 0; i < 4; i++)
+    {
+        EXPECT_EQ(std::get<int>(conv_attrs[pad_idx_offset + i]), new_padding[i])
+            << "Padding value at index " << i << " does not match the expected value.";
+    }
+}
+
+struct UpdateReduceAttrsTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *reduce_node;
+
+    UpdateReduceAttrsTest() { graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateReduceAttrs"); }
+
+   protected:
+    graphlib::OpNode *create_graph(const std::string &reduce_op, int reduce_dim, const graphlib::Shape &input_shape)
+    {
+        auto input_node = create_input(*graph, "input", input_shape);
+
+        reduce_node = add_node<graphlib::PyOpNode>(
+            *graph,
+            reduce_op,
+            reduce_op,
+            {
+                reduce_dim,
+            },
+            {input_node});
+        auto &named_attrs = reduce_node->named_attrs();
+        named_attrs["dim"] = reduce_dim;
+        reduce_node->overwrite_named_attrs(named_attrs);
+        create_output(*graph, "out", reduce_node);
+
+        return reduce_node;
+    }
+};
+
+TEST_F(UpdateReduceAttrsTest, ReduceSumDim)
+{
+    std::string reduce_op = "reduce_sum";
+    int reduce_dim = 1;
+    graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
+    graphlib::Shape expected_shape = graphlib::Shape::create({1, 1, 160});
+
+    auto reduce_node = create_graph(reduce_op, reduce_dim, input_shape);
+
+    passes::update_reduce_attr(reduce_node, reduce_dim);
+
+    auto updated_attrs = reduce_node->named_attrs();
+    ASSERT_TRUE(updated_attrs.count("dim"));
+    EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+}
+
+TEST_F(UpdateReduceAttrsTest, ReduceMaxDim)
+{
+    std::string reduce_op = "reduce_max";
+    int reduce_dim = 2;
+    graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
+    graphlib::Shape expected_shape = graphlib::Shape::create({1, 512, 1});
+
+    auto reduce_node = create_graph(reduce_op, reduce_dim, input_shape);
+
+    passes::update_reduce_attr(reduce_node, reduce_dim);
+
+    auto updated_attrs = reduce_node->named_attrs();
+
+    ASSERT_TRUE(updated_attrs.count("dim"));
+    EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+}
+
+struct UpdateGroupedReduceAvgTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *reduce_node;
+
+    UpdateGroupedReduceAvgTest()
+    {
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "UpdateGroupedReduceAvg");
+    }
+
+   protected:
+    graphlib::OpNode *create_graph(
+        const std::string &reduce_op, const std::vector<int> &attr, const graphlib::Shape &input_shape)
+    {
+        auto input_node = create_input(*graph, "input", input_shape);
+        reduce_node =
+            add_node<graphlib::PyOpNode>(*graph, reduce_op, reduce_op, {attr[0], attr[1], attr[2]}, {input_node});
+        auto &named_attrs = reduce_node->named_attrs();
+        named_attrs["reduce_dim"] = attr[0];
+        named_attrs["groups"] = attr[1];
+        named_attrs["keep_dims"] = attr[2];
+        reduce_node->overwrite_named_attrs(named_attrs);
+
+        create_output(*graph, "out", reduce_node);
+
+        return reduce_node;
+    }
+};
+
+TEST_F(UpdateGroupedReduceAvgTest, GroupedReduceAvgDim)
+{
+    std::string reduce_op = "grouped_reduce_avg";
+    std::vector<int> attr = {1, 4, 1};
+    graphlib::Shape input_shape = graphlib::Shape::create({1, 512, 160});
+    graphlib::Shape expected_shape = graphlib::Shape::create({1, 4, 160});
+
+    auto reduce_node = create_graph(reduce_op, attr, input_shape);
+
+    passes::update_grouped_reduce_avg_attr(reduce_node, attr[0]);
+
+    auto updated_attrs = reduce_node->named_attrs();
+
+    ASSERT_TRUE(updated_attrs.count("reduce_dim"));
+    EXPECT_EQ(std::get<int>(updated_attrs["reduce_dim"]), attr[0]);
+}

@@ -4,6 +4,7 @@
 #include "passes/pre_lowering_passes.hpp"
 
 #include "graph_lib/utils.hpp"
+#include "passes/commute_utils.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 
@@ -456,7 +457,7 @@ void fuse_requantize(Graph *graph)
 
         // copy over zp attrs
         matmul_attrs.push_back(requant_attrs[0]);  // Add requant zp to the back of matmul attr
-        matmul->overwrite_op_attrs(matmul_attrs);
+        passes::update_matmul_attr(matmul, std::get<int>(requant_attrs[0]));
         auto matmul_forge_attr = matmul->op_type().forge_attrs;
         matmul_forge_attr["requant"] = "true";
         matmul->overwrite_forge_attrs(matmul_forge_attr);

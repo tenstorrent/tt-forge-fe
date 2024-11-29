@@ -6,6 +6,7 @@
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
+#include "passes/commute_utils.hpp"
 #include "passes/consteval.hpp"
 #include "python_bindings_common.hpp"
 #include "utils/logger.hpp"
@@ -67,7 +68,13 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
                 conv_attrs[pad_idx_offset + i] =
                     std::get<int>(pad_attrs[i]) + std::get<int>(conv_attrs[pad_idx_offset + i]);
             }
-            user_op->overwrite_op_attrs(conv_attrs);
+            std::vector<int> int_conv_attrs;
+            for (const auto &attr : conv_attrs)
+            {
+                int_conv_attrs.push_back(std::get<int>(attr));
+            }
+
+            update_conv_attr(user_op, int_conv_attrs);
         }
 
         // bypass the pad node
