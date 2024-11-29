@@ -31,7 +31,6 @@
 #include "passes/lowering_context.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/move_requantize.hpp"
-#include "passes/move_select_after_matmul_optional.hpp"
 #include "passes/pad_output_buffer.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/post_autograd_graph_passes.hpp"
@@ -159,8 +158,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
     passes::fuse_per_channel_ops(graph);
     if (not env_as<bool>("FORGE_DISABLE_CONSTANT_FOLDING"))
         passes::constant_folding(graph);
-
-    passes::move_select_after_matmul_optional(graph);
 
     // Issue #152
     // passes::fuse_tm_sequences(graph);

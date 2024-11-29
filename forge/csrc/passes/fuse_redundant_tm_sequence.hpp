@@ -43,17 +43,6 @@ using TMPattern = std::vector<OpTypeItem>;
 using TMPatternPairs = std::vector<std::pair<TMPattern, TMPattern>>;
 
 // PreDefine TM sequence pattern
-static TMPattern pattern_0 = {
-    OpTypeItem("vslice", {}, false),
-    OpTypeItem("transpose", {-3, -1}, true),
-    OpTypeItem("transpose", {-2, -1}, true),
-    OpTypeItem("reshape", {}, false),
-};
-
-static TMPattern replace_0 = {
-    OpTypeItem("transpose", {-2, -1}, true),
-};
-
 static TMPattern pattern_1 = {
     OpTypeItem("reshape", {}, false),
     OpTypeItem("transpose", {-3, -1}, true),
@@ -193,13 +182,13 @@ static TMPattern pattern_4 = {
 };
 
 static TMPatternPairs pattern_map = {
-    {pattern_0, replace_0},    {pattern_1, replace_1},    {pattern_2, replace_2_0},  {pattern_2, replace_2_1},
-    {pattern_2, replace_2_2},  {pattern_2, replace_2_3},  {pattern_2, replace_2_4},  {pattern_2, replace_2_5},
-    {pattern_2, replace_2_6},  {pattern_2, replace_2_7},  {pattern_2, replace_2_8},  {pattern_2, replace_2_9},
-    {pattern_2, replace_2_10}, {pattern_2, replace_2_11}, {pattern_2, replace_2_12}, {pattern_2, replace_2_13},
-    {pattern_2, replace_2_14}, {pattern_2, replace_2_15}, {pattern_3, replace_3_0},  {pattern_3, replace_3_1},
-    {pattern_3, replace_3_2},  {pattern_3, replace_3_3},  {pattern_3, replace_3_4},  {pattern_3, replace_3_5},
-    {pattern_3, replace_3_6},  {pattern_3, replace_3_7},  {pattern_3, replace_3_8},  {pattern_3, replace_3_9},
+    {pattern_1, replace_1},    {pattern_2, replace_2_0},  {pattern_2, replace_2_1},  {pattern_2, replace_2_2},
+    {pattern_2, replace_2_3},  {pattern_2, replace_2_4},  {pattern_2, replace_2_5},  {pattern_2, replace_2_6},
+    {pattern_2, replace_2_7},  {pattern_2, replace_2_8},  {pattern_2, replace_2_9},  {pattern_2, replace_2_10},
+    {pattern_2, replace_2_11}, {pattern_2, replace_2_12}, {pattern_2, replace_2_13}, {pattern_2, replace_2_14},
+    {pattern_2, replace_2_15}, {pattern_3, replace_3_0},  {pattern_3, replace_3_1},  {pattern_3, replace_3_2},
+    {pattern_3, replace_3_3},  {pattern_3, replace_3_4},  {pattern_3, replace_3_5},  {pattern_3, replace_3_6},
+    {pattern_3, replace_3_7},  {pattern_3, replace_3_8},  {pattern_3, replace_3_9},
 };
 
 bool fuse_tm_sequences(tt::graphlib::Graph* graph, TMPatternPairs& pattern_map_ = pattern_map);

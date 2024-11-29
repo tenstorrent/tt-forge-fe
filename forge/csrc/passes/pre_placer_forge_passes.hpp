@@ -53,8 +53,6 @@ void insert_tilize_op_on_input(graphlib::Graph *graph);
 std::vector<std::vector<std::string>> update_epoch_breaks_for_partial_datacopy(
     graphlib::Graph *graph, std::vector<std::vector<std::string>> const &op_names_to_epoch_break);
 
-void calculate_ublock_order(graphlib::Graph *graph);
-
 void apply_user_override_data_formats(
     graphlib::Graph *graph, std::optional<DataFormat> default_df_override, DataFormat default_accumulate_df);
 
