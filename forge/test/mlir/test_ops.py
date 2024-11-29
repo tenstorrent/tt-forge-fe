@@ -653,8 +653,9 @@ def test_log(shape):
 
     framework_model = Log()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    
+
     verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+
 
 @pytest.mark.parametrize(
     "shape_x, shape_y",

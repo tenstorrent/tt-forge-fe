@@ -16,7 +16,7 @@ import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
 from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
-from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient, global_verify_config
+from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
 from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
@@ -267,7 +267,7 @@ def verify(
     inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
     framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model],
     compiled_model: CompiledModel,
-    verify_cfg: VerifyConfig = global_verify_config,
+    verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     """
     Verify the compiled model against the framework model
@@ -308,9 +308,6 @@ def verify(
     if not isinstance(fw_out, torch.Tensor):
         fw_out = to_pt_tensors(fw_out)
 
-    if not isinstance(co_out, torch.Tensor):
-        co_out = to_pt_tensors(co_out)
-
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
@@ -332,8 +329,12 @@ def verify(
             if fw.shape != co.shape:
                 raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
         if verify_cfg.verify_data:
-            if not compare_with_golden(golden=fw, calculated=co, verify_cfg=global_verify_config):
+            if not compare_with_golden(golden=fw, calculated=co, verify_cfg=verify_cfg):
                 raise ValueError(f"Data mismatch (compare_with_golden): framework_model={fw}, compiled_model={co}")
-        if verify_cfg.verify_allclose and fw.dtype not in [torch.int32, torch.int64, torch.bool]: # allclose doesn't make sense for integer/bool types
+        if verify_cfg.verify_allclose and fw.dtype not in [
+            torch.int32,
+            torch.int64,
+            torch.bool,
+        ]:  # allclose doesn't make sense for integer/bool types
             if not torch.allclose(fw, co, rtol=verify_cfg.rtol[fw.dtype], atol=verify_cfg.atol[fw.dtype]):
                 raise ValueError(f"Data mismatch (all_close): framework_model={fw}, compiled_model={co}")

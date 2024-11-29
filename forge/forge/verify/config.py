@@ -320,6 +320,3 @@ class VerifyConfig:
         if self.dissimilarity_threshold is None:
             # threshold picked empirically. We will update it as TTNN evolves
             self.dissimilarity_threshold = 0.001
-
-
-global_verify_config: VerifyConfig = VerifyConfig()

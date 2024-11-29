@@ -20,7 +20,7 @@ from ...forgeglobal import TILE_DIM
 
 from ...tensor import narrow_forge_tensor_to_pytorch, pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
 from forge import DataFormat, MathFidelity
-from forge.verify.config import VerifyConfig, global_verify_config
+from forge.verify.config import VerifyConfig
 
 
 def to_torch_operands(*ops):
@@ -214,7 +214,7 @@ def calculate_pcc(a, b):
 def compare_with_golden(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    verify_cfg: VerifyConfig = global_verify_config,
+    verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     if golden.dtype == torch.bool:
         return compare_with_golden_bool(golden, calculated, verify_cfg)
@@ -224,14 +224,16 @@ def compare_with_golden(
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
-        return torch.allclose(golden, calculated, rtol=verify_cfg.rtol[golden.dtype], atol=verify_cfg.atol[golden.dtype])
+        return torch.allclose(
+            golden, calculated, rtol=verify_cfg.rtol[golden.dtype], atol=verify_cfg.atol[golden.dtype]
+        )
 
 
 # Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
 def compare_with_golden_pcc(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    verify_cfg: VerifyConfig = global_verify_config,
+    verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     assert verify_cfg.pcc is not None and verify_cfg.pcc >= 0, "PCC threshold must be >= 0"
     assert golden.flatten().size() != (1,), "PCC for single values doesn't work"
@@ -254,7 +256,7 @@ def compare_with_golden_pcc(
 def compare_with_golden_bool(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    verify_cfg: VerifyConfig = global_verify_config,
+    verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     if calculated.dtype != torch.bool:
         calculated = calculated.to(torch.bool)

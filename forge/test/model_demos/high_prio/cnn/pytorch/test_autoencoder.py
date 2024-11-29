@@ -149,4 +149,3 @@ def test_linear_ae_pytorch(test_device):
     co_out = [co.to("cpu") for co in co_out]
     assert co_out[0].shape == fw_out.shape
     assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0])
-
