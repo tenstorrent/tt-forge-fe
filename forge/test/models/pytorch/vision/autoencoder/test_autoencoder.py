@@ -5,7 +5,7 @@ import forge
 import torch
 import torchvision.transforms as transforms
 from datasets import load_dataset
-from forge.op.eval.common import compare_with_golden_pcc
+from forge.op.eval.common import compare_with_golden
 import os
 import pytest
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
@@ -72,4 +72,4 @@ def test_linear_ae_pytorch(test_device):
 
     co_out = [co.to("cpu") for co in co_out]
     assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
