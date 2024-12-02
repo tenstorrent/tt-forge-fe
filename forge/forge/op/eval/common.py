@@ -340,16 +340,26 @@ def compare_tensor_to_golden(
         calculated = calculated.type(golden.dtype)
 
     ok = torch.allclose(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
+
+    logger.info("rtol={}", rtol)
+    logger.info("atol={}", atol)
+    logger.info("ok={}", ok)
+
     callback_ok = (
         True
         if verify_cfg is None or verify_cfg.golden_compare_callback is None
         else verify_cfg.golden_compare_callback(golden, calculated)
     )
     ok &= callback_ok
+    logger.info("2nd ok={}", ok)
     pcc_value = 0
     if not (pcc is None or golden.flatten().size() == (1,)):  # PCC for single values doesn't work
         pcc_value = calculate_pcc(golden, calculated)
+        logger.info("pcc_value={}", pcc_value)
+
         if pcc_value >= pcc and not ok:
+            logger.info("inisde if pcc_value >= pcc and not ok:")
+
             logger.warning("PCC is correct but allclose failed on {}", name)
             logger.trace("Golden: (shape = {}", golden.shape)
             logger.trace(golden)
@@ -400,6 +410,7 @@ def compare_tensor_to_golden(
         if not warning_only:
             return False
     else:
+        logger.info("inside else")
         if os.environ.get("SHOW_MATCHING", "0") != "0":
             logger.trace("Golden: (shape = {}", golden.shape)
             logger.trace(golden)

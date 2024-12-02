@@ -198,7 +198,7 @@ class VerifyConfig:
                 self.atol[dt] = atol_defaults[dt]
 
         if self.pcc is None:
-            self.pcc = 0.99
+            self.pcc = 0.99999
 
         if "TT_BACKEND_GOLDEN_QUANTIZE" in os.environ:
             self.golden_ignore_df_precision = False
