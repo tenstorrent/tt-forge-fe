@@ -43,6 +43,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(variant, test_device):
 

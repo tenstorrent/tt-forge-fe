@@ -19,9 +19,10 @@ from forge.op.eval.common import compare_with_golden
 variants = ["ghostnet_100"]
 
 
+@pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.nightly
 def test_ghostnet_timm(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters

@@ -14,6 +14,7 @@ import os
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_alexnet_torchhub(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -47,6 +48,7 @@ def test_alexnet_torchhub(test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_alexnet_osmr(test_device):
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()

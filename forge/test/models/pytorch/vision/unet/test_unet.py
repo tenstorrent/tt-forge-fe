@@ -31,6 +31,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_unet_osmr_cityscape_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
@@ -112,6 +113,7 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_unet_qubvel_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
@@ -159,6 +161,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",

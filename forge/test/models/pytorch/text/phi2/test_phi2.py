@@ -17,6 +17,7 @@ variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.xfail(reason="weights.get_dtype() == DataType::BFLOAT16")
 def test_phi2_clm(variant, test_device):
@@ -66,6 +67,7 @@ def test_phi2_clm(variant, test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_phi2_token_classification(variant, test_device):
@@ -106,6 +108,7 @@ def test_phi2_token_classification(variant, test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_phi2_sequence_classification(variant, test_device):

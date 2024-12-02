@@ -23,8 +23,9 @@ from torchvision import transforms
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants)
 def test_vgg_osmr_pytorch(variant, test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
@@ -57,6 +58,7 @@ def test_vgg_osmr_pytorch(variant, test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_vgg_19_hf_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -116,6 +118,7 @@ def preprocess_timm_model(model_name):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_vgg_bn19_timm_pytorch(test_device):
     torch.multiprocessing.set_sharing_strategy("file_system")
     model_name = "vgg19_bn"
@@ -129,6 +132,7 @@ def test_vgg_bn19_timm_pytorch(test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_vgg_bn19_torchhub_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters

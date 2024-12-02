@@ -9,6 +9,7 @@ import re
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_qwen1_5_causal_lm(test_device):
 
     # Set PyBuda configurations
@@ -58,6 +59,7 @@ def parse_chat_completion(text: str):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_qwen1_5_chat(test_device):
 
     # Set PyBuda configurations
