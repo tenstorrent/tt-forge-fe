@@ -185,7 +185,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: perf-reports-${{ matrix.build.runs-on }}
+        name: perf-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
         path: ${{ steps.strings.outputs.perf_report_path }}
 
     - name: Show Test Report
