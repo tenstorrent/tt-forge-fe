@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/commute_utils.hpp"
+#include <utils/logger.hpp>
 
 #include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
@@ -968,7 +969,7 @@ void update_select_attr(
     }
 
     select_op->overwrite_op_named_attrs(attr, named_attrs);
-    log_trace(
+    log_trace(LogGraphCompiler,
         "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
         select_op->name(),
         select_dim,
@@ -991,7 +992,7 @@ void update_concat_attr(graphlib::OpNode *concatenate, int dim)
     named_attrs["dim"] = dim;
 
     concatenate->overwrite_op_named_attrs(attr, named_attrs);
-    log_trace("Concatenate operation updated with new dim: {}", dim);
+    log_trace(LogGraphCompiler, "Concatenate operation updated with new dim: {}", dim);
 }
 /**
  * @brief Updates the attributes and named attributes of vstack operation with new slice_size.
@@ -1007,7 +1008,7 @@ void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
     named_attrs["slice_size"] = slice_size;
 
     vstack->overwrite_op_named_attrs(attr, named_attrs);
-    log_trace("Vstack operation updated with new slice_size: {}", slice_size);
+    log_trace(LogGraphCompiler, "Vstack operation updated with new slice_size: {}", slice_size);
 }
 /**
  * @brief Updates the attributes and named attributes of grouped_reduce_avg operation with new reduction dimension.
@@ -1036,7 +1037,7 @@ void update_grouped_reduce_avg_attr(graphlib::OpNode *reduce, int reduce_dim)
  */
 void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
 {
-    log_trace("reduce->op_name() = {}", reduce->op_name());
+    log_trace(LogGraphCompiler, "reduce->op_name() = {}", reduce->op_name());
     TT_ASSERT(
         reduce->op_name().find("reduce") != std::string::npos, "update_reduce_attr called for a non-reduce operation");
 
@@ -1054,7 +1055,7 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
     named_attrs["keep_dim"] = keep_dim;
 
     reduce->overwrite_op_named_attrs(attr, named_attrs);
-    log_trace("Reduce operation updated with reduce_dim: {}", reduce_dim);
+    log_trace(LogGraphCompiler, "Reduce operation updated with reduce_dim: {}", reduce_dim);
 }
 /**
  * @brief Updates the attributes and named attributes of a matmul operation with new requantization zero point.
@@ -1068,7 +1069,7 @@ void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp)
     graphlib::OpType::Attrs named_attrs = matmul->named_attrs();
     named_attrs["requant_zp"] = requant_zp;
     matmul->overwrite_op_named_attrs(matmul_attrs, named_attrs);
-    log_trace("MatMul operation updated with new requant_zp: {}", requant_zp);
+    log_trace(LogGraphCompiler, "MatMul operation updated with new requant_zp: {}", requant_zp);
 }
 /**
  * @brief Updates the padding attributes and named attributes of a convolution operation.
@@ -1090,7 +1091,7 @@ void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
     graphlib::OpType::Attrs named_attrs = conv->named_attrs();
     named_attrs["padding"] = pad_attrs;
     conv->overwrite_op_named_attrs(conv_attrs, named_attrs);
-    log_trace("Conv2d operation updated with new padding values: {}", pad_attrs);
+    log_trace(LogGraphCompiler, "Conv2d operation updated with new padding values: {}", pad_attrs);
 }
 /**
  * @brief Updates the attributes and named attributes of a reshape operation with new shape.
