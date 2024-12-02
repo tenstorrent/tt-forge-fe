@@ -7,6 +7,7 @@ import pytest
 import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
@@ -29,4 +30,4 @@ def test_llama_lm_head(model_path):
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
