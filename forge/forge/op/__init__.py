@@ -5,7 +5,7 @@
 from .matmul import Matmul, SparseMatmul
 
 from .convolution import Conv2d, Conv2dTranspose, Conv3d
-from .pooling import MaxPool1d, MaxPool2d, MaxPool3d, AvgPool1d, AvgPool2d
+from .pooling import MaxPool1d, MaxPool2d, MaxPool3d, AvgPool1d, AvgPool2d, AvgPool3d
 from .eltwise_binary import (
     Add,
     Divide,
@@ -23,6 +23,7 @@ from .eltwise_binary import (
     Equal,
     NotEqual,
     LogicalAnd,
+    Remainder,
 )
 from .eltwise_unary import (
     Exp,
@@ -46,13 +47,10 @@ from .eltwise_unary import (
     Dropout,
     Pow,
     Tilize,
+    Cast,
 )
 from .reduce import ReduceSum, ReduceAvg, ReduceMax, GroupedReduceAvg
 from .tm import (
-    HSlice,
-    HStack,
-    VSlice,
-    VStack,
     Transpose,
     Reshape,
     Index,
@@ -61,6 +59,7 @@ from .tm import (
     PadTile,
     Broadcast,
     Repeat,
+    RepeatInterleave,
     AdvIndex,
     Narrow,
     Unsqueeze,

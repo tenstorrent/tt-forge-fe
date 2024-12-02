@@ -1449,24 +1449,6 @@ graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape
     return shape;
 }
 
-graphlib::Shape ignore_broadcast_tm_evaluator(
-    graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
-{
-    // Ignore unit broadcasts
-    // Since we ignore bcasts slices / stacks might have incorrect factors, ignore them
-    if (tm.op == "broadcast" and shape.is_unit(std::get<int>(tm.attr[0])))
-        return shape;
-    else if (tm.op == "hslice" and shape.is_unit(-1))
-        return shape;
-    else if (tm.op == "vslice" and shape.is_unit(-2))
-        return shape;
-    else if (tm.op == "hstack" and shape.is_unit(-3))
-        return shape;
-    else if (tm.op == "vstack" and shape.is_unit(-3))
-        return shape;
-    return default_tm_evaluator(tm, shape, ir_level);
-}
-
 graphlib::Shape post_tms_shape(
     graphlib::Shape input_shape,
     std::vector<OpType> const &tms,
@@ -1544,22 +1526,6 @@ bool tms_support_kernel_broadcast(
             if ((not shape.is_unit(-2) and dim == -1 and (ublock_order == UBlockOrder::R or ublock_ct > 1)) or
                 (not shape.is_unit(-1) and dim == -2 and ublock_order == UBlockOrder::C))
                 return false;
-        }
-        else if (tm.op == "hslice" and not shape.is_unit(-2) and (ublock_order == UBlockOrder::R or ublock_ct > 1))
-        {
-            return false;
-        }
-        else if (tm.op == "hstack" and not shape.is_unit(-2) and (ublock_order == UBlockOrder::R or ublock_ct > 1))
-        {
-            return false;
-        }
-        else if (tm.op == "vslice" and not shape.is_unit(-1) and ublock_order == UBlockOrder::C)
-        {
-            return false;
-        }
-        else if (tm.op == "vstack" and not shape.is_unit(-1) and ublock_order == UBlockOrder::C)
-        {
-            return false;
         }
         else if (tm.op == "transpose")
         {
@@ -2189,8 +2155,8 @@ void ConstEvalGraph::autograd()
 bool is_consteval_capable_input_type(Node *node)
 {
     graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(node);
-    return input and (input->is_parameter() or input->is_constant()) and
-           not node->as<graphlib::TaggedNode>()->has_tag("dont_consteval");
+    return input && (input->is_parameter() || input->is_constant()) &&
+           !node->as<graphlib::TaggedNode>()->has_tag("dont_consteval");
 }
 
 bool is_consteval_capable_op(Graph *graph, Node *node, bool allow_forks)
@@ -2244,6 +2210,11 @@ bool is_consteval_capable_input_no_operand_forks(Graph *graph, InputNode *input)
 
     std::vector<Node *> users = graph->data_users(input);
     std::vector<Edge> user_edges = graph->user_data_edges(input);
+
+    if (input->requires_grad() && graph->training())
+    {
+        return false;
+    }
 
     // If there is only one user then check if that op is consteval capable
     if (users.size() == 1)

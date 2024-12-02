@@ -9,113 +9,7 @@ from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 import torch
 
 
-def HSlice(name: str, operandA: Tensor, slices: int) -> Tensor:
-
-    """
-    Slice along horizontal axis into given number of pieces.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    slices: int
-        The number of slices to create
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    hdim = operandA.shape.c
-    assert hdim % slices == 0, f"Tensor must be evenly divisible by the number of slices."
-    return op("hslice", name, operandA, attrs=(slices,)).get_tensor()
-
-
-def HStack(name: str, operandA: Tensor, slices: int = -1) -> Tensor:
-
-    """
-    Stack Z dimension along horizontal dimension.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    slices: int, optional
-        The number of slices to create. If not provided, it will be equal to current Z dimension.
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    if slices == -1:
-        slices = operandA.shape.z
-    return op("hstack", name, operandA, attrs=(slices,)).get_tensor()
-
-
-def VSlice(name: str, operandA: Tensor, slices: int) -> Tensor:
-
-    """
-    Slice along vertical axis into given number of pieces.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    slices: int
-        The number of slices to create
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-
-    vdim = operandA.shape.r
-    assert vdim % slices == 0, f"Tensor must be evenly divisible by the number of slices."
-    return op("vslice", name, operandA, attrs=(slices,)).get_tensor()
-
-
-def VStack(name: str, operandA: Tensor, slices: int = -1) -> Tensor:
-
-    """
-    Stack Z dimension along vertical dimension.
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    slices: int, optional
-        The number of slices to create. If not provided, it will be equal to current Z dimension.
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-    """
-    if slices == -1:
-        slices = operandA.shape.z
-    return op("vstack", name, operandA, attrs=(slices,)).get_tensor()
-
-
-def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int, out_dtype: torch.dtype = torch.float32) -> Tensor:
+def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int) -> Tensor:
 
     """
     Tranpose X and Y (i.e. rows and columns) dimensions.
@@ -148,9 +42,7 @@ def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int, out_dtype: torc
     if dim0 > dim1:
         dim0, dim1 = dim1, dim0
 
-    return op("transpose", name, operandA, attrs=(dim0, dim1), dim0=dim0, dim1=dim1).get_tensor(
-        out_df=pytorch_dtype_to_forge_dataformat(out_dtype)
-    )
+    return op("transpose", name, operandA, attrs=(dim0, dim1), dim0=dim0, dim1=dim1).get_tensor()
 
 
 def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
@@ -430,9 +322,20 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
 
 
-def Repeat(name: str, operandA: Tensor, factors: List[int]) -> Tensor:
+def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     """
-    TM
+    Repeats this tensor along the specified dimensions.
+
+    >>> x = torch.tensor([1, 2, 3])
+    >>> x.repeat(4, 2)
+    tensor([[ 1,  2,  3,  1,  2,  3],
+            [ 1,  2,  3,  1,  2,  3],
+            [ 1,  2,  3,  1,  2,  3],
+            [ 1,  2,  3,  1,  2,  3]])
+
+    NOTE:
+    -----
+    This Forge.Repeat is equivalent to torch.repeat, numpy.tile, tvm.tile, and ttnn.repeat
 
     Parameters
     ----------
@@ -450,8 +353,42 @@ def Repeat(name: str, operandA: Tensor, factors: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    assert len(operandA.shape) == len(factors)
-    return op("repeat", name, operandA, attrs=factors).get_tensor()
+    assert len(operandA.shape) == len(repeats)
+    return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
+
+
+def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Tensor:
+    """
+    Repeat elements of a tensor.
+
+    >>> x = torch.tensor([1, 2, 3])
+    >>> x.repeat_interleave(2)
+    tensor([1, 1, 2, 2, 3, 3])
+
+    NOTE:
+    -----
+    This Forge.RepeatInterleave is equivalent to torch.repeat_interleave, numpy.repeat, tvm.repeat, and ttnn.repeat_interleave
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A
+
+    repeats: int
+        The number of repetitions for each element.
+
+    dim: int
+        The dimension along which to repeat values.
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    return op("repeat_interleave", name, operandA, attrs=(repeats, dim), repeats=repeats, dim=dim).get_tensor()
 
 
 def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:

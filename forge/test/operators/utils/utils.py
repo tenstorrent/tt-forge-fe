@@ -23,7 +23,8 @@ from forge.verify import TestKind  # , verify_module
 from forge.config import _get_global_compiler_config
 from forge._C import MathFidelity
 
-from .compat import TestDevice, verify_module
+from .compat import TestDevice
+from .compat import create_torch_inputs, verify_module_for_inputs
 from .datatypes import ValueRanges
 
 
@@ -34,6 +35,12 @@ FrameworkModelType = Union[
 
 
 class ShapeUtils:
+    @staticmethod
+    def switch_last_two(t):
+        if len(t) < 2:
+            return t  # If tuple has less than 2 elements, return it as is
+        return t[:-2] + (t[-1], t[-2])
+
     @staticmethod
     def reduce_microbatch_size(shape: TensorShape) -> TensorShape:
         """
@@ -105,8 +112,9 @@ class DeviceUtils:
 class VerifyUtils:
     """Utility functions for Forge verification"""
 
-    @staticmethod
+    @classmethod
     def verify(
+        cls,
         model: Module,
         test_device: TestDevice,
         input_shapes: List[TensorShape],
@@ -116,6 +124,7 @@ class VerifyUtils:
         dev_data_format: forge.DataFormat = None,
         math_fidelity: forge.MathFidelity = None,
         value_range: Optional[ValueRanges] = None,
+        random_seed: Optional[int] = None,
         warm_reset: bool = False,
     ):
         """Perform Forge verification on the model
@@ -130,9 +139,37 @@ class VerifyUtils:
             dev_data_format: Data format
             math_fidelity: Math fidelity
             value_range: Value range of input tensors
+            random_seed: Random seed
             warm_reset: Warm reset the device before verification
         """
 
+        cls.setup(
+            input_source_flag=input_source_flag,
+            math_fidelity=math_fidelity,
+            warm_reset=warm_reset,
+        )
+
+        inputs = cls.create_torch_inputs(
+            input_shapes=input_shapes,
+            dev_data_format=dev_data_format,
+            value_range=value_range,
+            random_seed=random_seed,
+        )
+
+        cls.verify_module_for_inputs(
+            model=model,
+            inputs=inputs,
+            pcc=pcc,
+            dev_data_format=dev_data_format,
+        )
+
+    @classmethod
+    def setup(
+        cls,
+        input_source_flag: InputSourceFlags = None,
+        math_fidelity: forge.MathFidelity = None,
+        warm_reset: bool = False,
+    ):
         if warm_reset:
             DeviceUtils.warm_reset()
 
@@ -145,19 +182,38 @@ class VerifyUtils:
         # if dev_data_format:
         #     input_params.append({"dev_data_format": dev_data_format})
 
-        verify_module(
-            model,
+    @classmethod
+    def create_torch_inputs(
+        cls,
+        input_shapes: List[TensorShape],
+        dev_data_format: forge.DataFormat = None,
+        value_range: Optional[ValueRanges] = None,
+        random_seed: Optional[int] = None,
+    ) -> List[torch.Tensor]:
+
+        inputs = create_torch_inputs(
             input_shapes=input_shapes,
-            # verify_cfg=VerifyConfig(
-            #     test_kind=TestKind.INFERENCE,
-            #     devtype=test_device.devtype,
-            #     arch=test_device.arch,
-            #     pcc=pcc,
-            # ),
-            # input_params=[input_params],
-            pcc=pcc,
             dev_data_format=dev_data_format,
             value_range=value_range,
+            random_seed=random_seed,
+        )
+
+        return inputs
+
+    @classmethod
+    def verify_module_for_inputs(
+        cls,
+        model: Module,
+        inputs: List[torch.Tensor],
+        pcc: Optional[float] = None,
+        dev_data_format: forge.DataFormat = None,
+    ):
+
+        verify_module_for_inputs(
+            model=model,
+            inputs=inputs,
+            pcc=pcc,
+            dev_data_format=dev_data_format,
         )
 
 

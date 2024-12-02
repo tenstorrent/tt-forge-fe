@@ -4,6 +4,7 @@
 #include "passes/pre_lowering_passes.hpp"
 
 #include "graph_lib/utils.hpp"
+#include "passes/commute_utils.hpp"
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 
@@ -182,27 +183,6 @@ void replace_with_broadcasted_const(
     graphlib::Edge edge(broadcasted_const->id(), 0, original_tile_bcast->id(), 0, graphlib::EdgeType::kData);
     graph->add_edge(edge);
     graph->remove_node(constant);
-}
-
-void bypass_embedding_input_nops(Graph *graph)
-{
-    for (Node *node : graph->nodes())
-    {
-        if ((node->node_type() != NodeType::kPyOp) || (node->as<graphlib::PyOpNode>()->op_type().op != "embedding"))
-            continue;
-
-        graphlib::PyOpNode *embedding = node->as<graphlib::PyOpNode>();
-
-        Node *input_ids = graph->data_operands(embedding)[0];
-        if (input_ids->node_type() == NodeType::kInput)
-            continue;
-
-        if (input_ids->node_type() == NodeType::kPyOp)
-        {
-            TT_ASSERT(input_ids->as<graphlib::PyOpNode>()->op_type().op == "nop");
-            graphlib::bypass_node(graph, input_ids, true);
-        }
-    }
 }
 
 bool safe_to_hoist_past(const Graph *graph, const Node *operand)
@@ -477,7 +457,7 @@ void fuse_requantize(Graph *graph)
 
         // copy over zp attrs
         matmul_attrs.push_back(requant_attrs[0]);  // Add requant zp to the back of matmul attr
-        matmul->overwrite_op_attrs(matmul_attrs);
+        passes::update_matmul_attr(matmul, std::get<int>(requant_attrs[0]));
         auto matmul_forge_attr = matmul->op_type().forge_attrs;
         matmul_forge_attr["requant"] = "true";
         matmul->overwrite_forge_attrs(matmul_forge_attr);

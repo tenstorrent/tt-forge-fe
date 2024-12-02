@@ -2,7 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from typing import Union, Tuple
-from ..tensor import Tensor
+import torch
+
+from forge._C import DataFormat
+from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 from .common import ForgeOp as op
 
 
@@ -25,6 +28,30 @@ def Abs(name: str, operandA: Tensor) -> Tensor:
     """
 
     return op("abs", name, operandA).get_tensor()
+
+
+def Cast(name: str, operandA: Tensor, dtype: Union[torch.dtype, DataFormat]) -> Tensor:
+    """
+    Cast
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    dtype: Union[torch.dtype, DataFormat]
+        Specify Torch datatype / Forge DataFormat to convert operandA
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    dtype = pytorch_dtype_to_forge_dataformat(dtype)
+    return op("cast", name, operandA, dtype=dtype.to_json()).get_tensor(out_df=dtype)
 
 
 def Exp(name: str, operandA: Tensor) -> Tensor:
@@ -240,7 +267,7 @@ def LeakyRelu(name: str, operandA: Tensor, alpha: int) -> Tensor:
         Forge tensor
     """
 
-    return op("leaky_relu", name, operandA, attrs=(alpha,)).get_tensor()
+    return op("leaky_relu", name, operandA, attrs=(alpha,), parameter=alpha).get_tensor()
 
 
 def Gelu(name: str, operandA: Tensor, approximate="none") -> Tensor:
@@ -353,12 +380,6 @@ def Sine(name: str, operandA: Tensor) -> Tensor:
     operandA: Tensor
         First operand
 
-    min: float
-        Minimum value
-
-    max: float
-        Maximum value
-
     Returns
     -------
     Tensor
@@ -379,12 +400,6 @@ def Cosine(name: str, operandA: Tensor) -> Tensor:
 
     operandA: Tensor
         First operand
-
-    min: float
-        Minimum value
-
-    max: float
-        Maximum value
 
     Returns
     -------

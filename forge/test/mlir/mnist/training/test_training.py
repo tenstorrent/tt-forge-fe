@@ -15,6 +15,7 @@ from forge.op.eval.common import compare_with_golden
 from loguru import logger
 
 
+@pytest.mark.push
 def test_mnist_training():
     torch.manual_seed(0)
 
@@ -93,7 +94,9 @@ def test_mnist_training():
     print(f"Test (total) loss: {test_loss}")
 
 
-def test_forge_vs_torch_gradients():
+@pytest.mark.parametrize("freeze_layer", [None, 0, 2, 4])
+@pytest.mark.push
+def test_forge_vs_torch_gradients(freeze_layer):
     logger.disable("")
     torch.manual_seed(0)
     batch_size = 64
@@ -109,6 +112,12 @@ def test_forge_vs_torch_gradients():
     forge_model = MNISTLinear(dtype=dtype, bias=True)
 
     copy_params(torch_model, forge_model)
+
+    if freeze_layer is not None:
+        forge_model.linear_relu_stack[freeze_layer].weight.requires_grad = False
+        forge_model.linear_relu_stack[freeze_layer].bias.requires_grad = False
+        torch_model.linear_relu_stack[freeze_layer].weight.requires_grad = False
+        torch_model.linear_relu_stack[freeze_layer].bias.requires_grad = False
 
     loss_fn = nn.CrossEntropyLoss()
 
@@ -133,6 +142,10 @@ def test_forge_vs_torch_gradients():
     tt_model.backward()
     forge_grads = get_param_grads(forge_model.named_parameters)
 
+    if freeze_layer is not None:
+        assert forge_model.linear_relu_stack[freeze_layer].weight.grad is None
+        assert forge_model.linear_relu_stack[freeze_layer].bias.grad is None
+
     # Compare gradients for each parameter
     for name in reversed(list(torch_grads.keys())):
         assert compare_with_golden(torch_grads[name], forge_grads[name])
@@ -143,6 +156,7 @@ def test_forge_vs_torch_gradients():
 # That sets relu threshold to bfloat16 tensor.
 # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
 @pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
+@pytest.mark.push
 def test_forge_vs_torch():
     torch.manual_seed(0)
 

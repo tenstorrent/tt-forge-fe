@@ -281,11 +281,21 @@ class CompiledModel:
         for grad in self.loss_grad:
             assert grad is not None, "Gradients not provided for backward pass."
 
+        # Inputs from forward pass are needed in backward pass only if
+        # they are used in the backward pass computation
+        # They will be used if there is backward operation that explicitly requires them
+        # as in other cases, intermediate tensors can be used if they exists
+        inputs = [
+            self.inputs[i]
+            for i, name in enumerate(self.fwd_compiled_graph_state.ordered_input_names)
+            if name in self.bwd_compiled_graph_state.ordered_input_names
+        ]
+
         logger.info(f"Running backward pass on model {self.bwd_compiled_graph_state.graph.get_name()} on device...")
         grads = run_binary(
             self.compiled_binary,
             int(ProgramId.BACKWARD),
-            [*self.loss_grad, *self.intermediates, *self.inputs, *consts_and_params],
+            [*self.loss_grad, *self.intermediates, *inputs, *consts_and_params],
         )
 
         for name, param in self.framework_module.module.named_parameters():

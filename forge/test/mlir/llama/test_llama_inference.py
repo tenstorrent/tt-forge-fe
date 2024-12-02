@@ -10,8 +10,9 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 
 
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.nightly
 @pytest.mark.xfail()
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 def test_llama_inference(model_path):
     if model_path == "meta-llama/Llama-3.2-1B":
         pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
@@ -32,6 +33,7 @@ def test_llama_inference(model_path):
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
+@pytest.mark.push
 def test_llama_inference_no_cache_cpu(model_path):
     """
     This function tests the inference of the Llama 3B model without using a past-cache (KV cache).
@@ -69,6 +71,7 @@ def test_llama_inference_no_cache_cpu(model_path):
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
+@pytest.mark.push
 def test_llama_inference_cache_cpu(model_path):
     """
     This function tests the inference of the Llama 3B model using a past-cache (KV cache).

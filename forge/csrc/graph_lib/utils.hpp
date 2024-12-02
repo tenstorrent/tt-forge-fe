@@ -209,8 +209,6 @@ graphlib::Edge clone_input_forking_edge(
     graphlib::Graph *graph, graphlib::Edge user_edge, bool allow_single_user = false);
 
 graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
-graphlib::Shape ignore_broadcast_tm_evaluator(
-    graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level);
 
 graphlib::Shape post_tms_shape(
     graphlib::Shape input_shape,

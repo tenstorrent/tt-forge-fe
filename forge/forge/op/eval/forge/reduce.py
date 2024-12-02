@@ -16,14 +16,14 @@ import math
 def eval(type, attr, ops):
     assert len(ops) == 1, "Reduce should have one input"
     assert (
-        len(attr) == 1 or len(attr) == 2 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
-    ), "Reduce should have one dim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+        len(attr) == 2 or len(attr) == 3 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
+    ), "Reduce should have dim and keepdim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
 
     t_ops = to_torch_operands(*ops)
     f = {
-        "reduce_sum": lambda i: torch.sum(t_ops[0], attr[0], keepdim=True),
-        "reduce_avg": lambda i: torch.mean(t_ops[0], attr[0], keepdim=True),
-        "reduce_max": lambda i: torch.max(t_ops[0], dim=attr[0], keepdim=True)[0],
+        "reduce_sum": lambda i: torch.sum(t_ops[0], attr[0], keepdim=attr[1]),
+        "reduce_avg": lambda i: torch.mean(t_ops[0], attr[0], keepdim=attr[1]),
+        "reduce_max": lambda i: torch.max(t_ops[0], dim=attr[0], keepdim=attr[2])[0],
     }
 
     if type == "grouped_reduce_avg":
@@ -52,28 +52,30 @@ def eval(type, attr, ops):
 def shape(type, attr, ops):
     assert len(ops) == 1, "Reduce should have one input"
     assert (
-        len(attr) == 1 or len(attr) == 2 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
-    ), "Reduce should have one dim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+        len(attr) == 2 or len(attr) == 3 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
+    ), "Reduce should have dim and keepdim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+
+    dim = attr[0]
+    assert isinstance(dim, int), "dim must be int"
 
     ret = list(ops[0])
     if len(attr) == 2 and type == "reduce_max":
-        ret[attr[0]] = ret[attr[0]] // attr[1]
+        ret[dim] = ret[dim] // attr[1]
     elif type == "grouped_reduce_avg":
         if not attr[2]:
-            ret[attr[0]] = attr[1]
+            ret[dim] = attr[1]
     else:
-        if isinstance(attr[0], list):
-            for dim in attr[0]:
-                ret[dim] = 1
-        else:
-            ret[attr[0]] = 1
+        ret[dim] = 1
+
+    if type == "reduce_max" and attr[2] is False:
+        del ret[dim]
 
     return tuple(ret), []
 
 
 def lower(type, attr, lc, ops, outputs):
     assert len(ops) == 1, "Reduce should have one input"
-    assert len(attr) in [1, 2, 3], "Reduce should have one dim parameter, and an optional 'tile broadcast' one"
+    assert len(attr) in [2, 3], "Reduce should have dim and keepdim parameter, and an optional 'tile broadcast' one"
 
     inp_shape = ops[0].shape
     reduce_dim = attr[0]
@@ -273,8 +275,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert len(inputs) == 1, "Reduce should have one input"
     assert (
-        len(attr) == 1 or len(attr) == 2 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
-    ), "Reduce should have one dim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+        len(attr) == 2 or len(attr) == 3 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
+    ), "Reduce should have dim and keepdim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
 
     if type == "reduce_max":
         in0 = inputs[0]
@@ -369,13 +371,13 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 def decompose(type, attr, dc, inputs):
     assert len(inputs) == 1, "Reduce should have one input"
     assert (
-        len(attr) == 1 or len(attr) == 2 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
-    ), "Reduce should have one dim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
+        len(attr) == 2 or len(attr) == 3 and type == "reduce_max" or len(attr) == 3 and type == "grouped_reduce_avg"
+    ), "Reduce should have dim and keepdim parameter, and optional stride attr OR mandatory groups attr for grouped reduce."
 
     if isinstance(attr[0], list):
         x = inputs[0]
         for dim in attr[0]:
-            x = dc.op("reduce_avg", [x], (dim,))
+            x = dc.op_with_named_attrs("reduce_avg", [x], (dim,))
         dc.fuse(x)
         return
 
@@ -384,31 +386,10 @@ def decompose(type, attr, dc, inputs):
         # This is a NOP
         result = dc.op(Nop.create(), inputs, ())
         dc.fuse(result)
-    elif type == "reduce_sum" or type == "reduce_avg":
-        dim = attr[0]
-
-        if dim >= 0:
-            dim -= len(inputs[0].shape)
-
-        if dim == -4:
-            result = dc.op(TransposeTM.create(0, 1), inputs)
-            result = dc.op(type, [result], (1,))
-            result = dc.op(TransposeTM.create(0, 1), [result])
-            dc.fuse(result)
 
 
 def decompose_post_autograd(op_type, attr, dc, inputs):
-    if op_type == "reduce_sum" or op_type == "reduce_avg":
-        dim = attr[0]
-        if dim >= 0:
-            dim -= len(inputs[0].shape)
-
-        if dim == -4:
-            result = dc.op(TransposeTM.create(0, 1), inputs)
-            result = dc.op(op_type, [result], (1,))
-            result = dc.op(TransposeTM.create(0, 1), [result])
-            dc.fuse(result)
-            return
+    pass
 
 
 def initial_flops_estimate(type, attr, ops):
@@ -416,6 +397,6 @@ def initial_flops_estimate(type, attr, ops):
     reduce_ops = ["reduce_max", "reduce_sum", "reduce_avg"]
     output_shape = shape(type, attr, ops)[0]
     if type in reduce_ops:
-        flops = np.prod(output_shape)
+        flops = int(np.prod(output_shape))
 
     return flops

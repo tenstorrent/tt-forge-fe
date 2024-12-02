@@ -226,7 +226,6 @@ class Conv2dTranspose(PyOp):
         assert len(tensors) <= 3, "ConvTranspose ops should have up to three inputs (input, weight, bias)"
         assert len(tensors) >= 2, "ConvTranspose ops should have at least two inputs (input, weight)"
         t_ops = to_torch_operands(*tensors)
-
         activations = t_ops[0]
         weights = t_ops[1]
         bias = t_ops[2] if len(t_ops) == 3 else None
@@ -234,49 +233,45 @@ class Conv2dTranspose(PyOp):
         stride = [self.stride_height, self.stride_width]
         dilation = [self.dilation_height, self.dilation_width]
         groups = self.groups
-        padding = [
-            self.padding_left,
-            self.padding_right,
-            self.padding_top,
-            self.padding_bottom,
-        ]
+        # TODO: Add support for asymmetric padding cases in convtranspose2d
+        if self.padding_left == self.padding_right and self.padding_top == self.padding_bottom:
+            padding = (self.padding_top, self.padding_left)
+        else:
+            assert (
+                False
+            ), "Currently, different left and right padding or different top and bottom padding isn't supported. Please check out this issue (https://github.com/tenstorrent/tt-forge-fe/issues/665) for more details."
 
         channel_last = self.channel_last
         if channel_last:
             activations = activations.permute((0, 3, 1, 2))
 
-        padded_activations = torch.nn.functional.pad(
-            activations,
-            padding,
-        )
         if t_ops[1].dtype == torch.int8:
             target_dtype = torch.int32
-            padded_activations, weights = padded_activations.float(), weights.float()
+            activations, weights = activations.float(), weights.float()
             if bias is not None:
                 bias = bias.float()
         else:
             target_dtype = torch.float32
 
         result = torch.nn.functional.conv_transpose2d(
-            padded_activations,
+            activations,
             weights,
             bias=bias,
             stride=stride,
-            padding=0,
+            padding=padding,
             dilation=dilation,
             groups=groups,
         )
 
         if channel_last:
             result = result.permute((0, 2, 3, 1))
-
         result = result.to(target_dtype)
         return result
 
     def shape(self, tensor_shapes):
         act, weight = tensor_shapes[:2]
         batch_size = act[0]
-        cout = weight[1]
+        cout = weight[1] * self.groups
 
         h_in = act[-3] if self.channel_last else act[-2]
         w_in = act[-2] if self.channel_last else act[-1]
@@ -285,22 +280,20 @@ class Conv2dTranspose(PyOp):
         output_padding_width = 0
 
         h_out = (
-            ((h_in - 1) * self.stride_height)
-            - (2 * (self.padding_top + self.padding_bottom))
-            + (self.dilation_height * (weight[-2] - 1))
+            (h_in - 1) * self.stride_height
+            - (self.padding_top + self.padding_bottom)
+            + self.dilation_height * (weight[-2] - 1)
             + output_padding_height
             + 1
         )
         w_out = (
-            ((w_in - 1) * self.stride_width)
-            - (2 * (self.padding_left + self.padding_right))
-            + (self.dilation_width * (weight[-1] - 1))
+            (w_in - 1) * self.stride_width
+            - (self.padding_left + self.padding_right)
+            + self.dilation_width * (weight[-1] - 1)
             + output_padding_width
             + 1
         )
-
         out_shape = [batch_size, h_out, w_out, cout] if self.channel_last else [batch_size, cout, h_out, w_out]
-
         return out_shape, []
 
     def decompose(self, dc, inputs):

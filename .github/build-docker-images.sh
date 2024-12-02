@@ -24,7 +24,6 @@ build_and_push() {
     local on_main=$3
     local from_image=$4
 
-
     if docker manifest inspect $image_name:$DOCKER_TAG > /dev/null; then
         echo "Image $image_name:$DOCKER_TAG already exists"
     else
@@ -34,17 +33,17 @@ build_and_push() {
             --build-arg FROM_TAG=$DOCKER_TAG \
             ${from_image:+--build-arg FROM_IMAGE=$from_image} \
             -t $image_name:$DOCKER_TAG \
-            -t $image_name:latest \
             -f $dockerfile .
 
         echo "Pushing image $image_name:$DOCKER_TAG"
         docker push $image_name:$DOCKER_TAG
+    fi
 
-        # If we are on main branch also push the latest tag
-        if [ "$on_main" = "true" ]; then
-            echo "Pushing image $image_name:latest"
-            docker push $image_name:latest
-        fi
+    # If we are on main branch update manifest and add latest tag
+    if [ "$on_main" = "true" ]; then
+        echo "Adding latest tag to image $image_name:$DOCKER_TAG"
+        docker manifest create $image_name:latest --amend $image_name:$DOCKER_TAG
+        docker manifest push $image_name:latest
     fi
 }
 

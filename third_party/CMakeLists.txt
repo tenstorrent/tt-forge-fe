@@ -10,6 +10,7 @@ add_custom_target(build_tt_mlir ALL
     TTMLIR_TOOLCHAIN_DIR=${TTMLIR_TOOLCHAIN_DIR} # Export TTMLIR_TOOLCHAIN_DIR to use
     TTMLIR_VENV_DIR=${TTMLIR_VENV_DIR} # Export TTMLIR_VENV_DIR to use
     TTMLIR_ENABLE_RUNTIME=ON # Always build runtime
+    TTMLIR_RUNTIME_DEBUG=${TTMLIR_RUNTIME_DEBUG} # Whether to build runtime debug tools (logging, debug environment flags, etc.) - Default is OFF
     bash ${CMAKE_CURRENT_SOURCE_DIR}/build_mlir.sh
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tt-mlir
     BYPRODUCTS ${METAL_LIB_DIR}/_ttnn.so # Workaround how Ninja handles dependencies

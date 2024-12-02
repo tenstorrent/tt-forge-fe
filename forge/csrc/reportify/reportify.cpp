@@ -6,7 +6,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
-#include <ostream>
 #include <sstream>
 #include <string>
 
@@ -17,8 +16,13 @@
 #include "reportify/to_json.hpp"
 #include "utils/logger.hpp"
 
+// MLIR headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#include "mlir/IR/BuiltinOps.h"
+#pragma clang diagnostic pop
+
 using json = nlohmann::json;
-using tt::LogReportify;
 
 namespace tt
 {
@@ -403,6 +407,23 @@ json create_json_for_graph(const graphlib::Graph* graph, std::function<bool(grap
     return this_json;
 }
 
+json create_json_for_mlir(const std::string& module_name, mlir::Operation* operation)
+{
+    json this_json;
+
+    this_json["module"] = module_name;
+
+    std::string outputString;
+    llvm::raw_string_ostream outStream(outputString);
+
+    // Put data into string
+    operation->print(outStream);
+    outStream.flush();
+    this_json["content"] = outputString;
+
+    return this_json;
+}
+
 JsonNamePairs create_jsons_for_graph(
     const std::string& graph_prefix, const graphlib::Graph* graph, std::function<bool(graphlib::Node*)> node_filter)
 {
@@ -410,6 +431,19 @@ JsonNamePairs create_jsons_for_graph(
 
     json this_json = create_json_for_graph(graph, node_filter);
     std::string this_name = graph_prefix + ".forge";
+    JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
+    this_json_name_pairs.push_back(this_json_name_pair);
+
+    return this_json_name_pairs;
+}
+
+JsonNamePairs create_jsons_for_mlir(
+    const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
+{
+    JsonNamePairs this_json_name_pairs;
+
+    json this_json = create_json_for_mlir(module_name, operation);
+    std::string this_name = file_name + ".mlir";
     JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
     this_json_name_pairs.push_back(this_json_name_pair);
 
@@ -425,5 +459,37 @@ void dump_graph(
     std::string default_dir = get_default_reportify_path("");
     dump_graph(default_dir, test_name, graph_prefix, graph, report_path);
 }
+
+/**
+ * @brief Dumps the MLIR's Operation to a JSON file.
+ *
+ * This function generates a JSON representation of the given MLIR operation and writes it to a file.
+ * The file path is following: `$REPORTIFY_PATH$/$OPERATION_NAME$/mlir_reports/$FILE_NAME$.mlir`.
+ * If the environment variable "FORGE_DISABLE_REPORTIFY_DUMP" is set to true, the function returns without performing
+ * any action.
+ *
+ * @param name The name of the file to be saved (currently in use are 'ttir' and 'ttnn').
+ * @param operation A pointer to the MLIR operation to be dumped.
+ */
+void dump_mlir(const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
+{
+    if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
+        return;
+
+    std::string path = get_default_reportify_path("");
+    std::string report_path = get_mlir_reports_relative_directory();
+    std::string full_report_path = build_report_path(path, module_name, report_path);
+
+    JsonNamePairs json_pairs = create_jsons_for_mlir(file_name, module_name, operation);
+    json root_json = json_pairs.back().first;
+
+    std::string root_json_name = json_pairs.back().second;
+    std::transform(root_json_name.begin(), root_json_name.end(), root_json_name.begin(), ::tolower);
+    std::string root_json_path = full_report_path + root_json_name;
+
+    std::filesystem::create_directories(std::filesystem::path(full_report_path));
+    write_json_to_file(root_json_path, root_json);
+}
+
 }  // namespace reportify
 }  // namespace tt

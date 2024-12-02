@@ -115,6 +115,9 @@ class TensorShape:
     def __getitem__(self, i):
         return self.dims[i]
 
+    def __eq__(self, other):
+        return self.dims == other.dims
+
 
 class TensorBase:
     def _create_const_tensor(self, value):
@@ -223,6 +226,12 @@ class Tensor(TensorBase):
             return f"Forge Tensor: {self.value()}, {self.data_format}"
         return f"Forge Empty Tensor: {self.shape}"
 
+    def ndim(self) -> int:
+        """
+        Return tensor rank (number of dimensions)
+        """
+        return len(self.shape)
+
     @property
     def pt_data_format(self) -> torch.dtype:
         """
@@ -264,6 +273,26 @@ class Tensor(TensorBase):
         Create tensor from pytorch tensor, and set value
         """
         return TensorFromPytorch(torch_tensor, dev_data_format, constant)
+
+    @classmethod
+    def create_from_shape(
+        cls,
+        tensor_shape: Union[List, Tuple, torch.Size],
+        torch_dtype: Optional[torch.dtype] = None,
+        integer_tensor_high_value: int = 1000,
+        constant: bool = False,
+    ) -> "TensorFromPytorch":
+
+        if torch_dtype in [torch.float16, torch.bfloat16, torch.float32]:
+            torch_tensor = torch.rand(tensor_shape, dtype=torch_dtype)
+        elif torch_dtype in [torch.int8, torch.int, torch.int32]:
+            torch_tensor = torch.randint(high=integer_tensor_high_value, size=tensor_shape, dtype=torch_dtype)
+        else:
+            torch_tensor = torch.rand(tensor_shape, dtype=torch.float32)
+
+        return TensorFromPytorch(
+            torch_tensor, dev_data_format=pytorch_dtype_to_forge_dataformat(torch_dtype), constant=constant
+        )
 
     @classmethod
     def create_from_trace(cls, src_op: "ForgeOp", shape: Tuple[int, ...], data_format: DataFormat) -> "TensorFromTrace":
@@ -602,7 +631,7 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
     #     return DataFormat.UInt16
 
     if dtype == torch.bool:
-        return DataFormat.Bfp2_b
+        return DataFormat.Int8
 
     if dtype == torch.int32:
         return DataFormat.Int32
@@ -626,7 +655,7 @@ def forge_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
     if data_format == DataFormat.Float16_b:
         return torch.bfloat16
 
-    if data_format in [DataFormat.Bfp8_b, DataFormat.Bfp4_b, DataFormat.Bfp2_b]:
+    if data_format in [DataFormat.Bfp8_b, DataFormat.Bfp4_b]:
         return torch.bfloat16
 
     if data_format in [DataFormat.Bfp8, DataFormat.Bfp4, DataFormat.Bfp2]:
@@ -1250,7 +1279,7 @@ def remove_microbatch(tensors: Tuple[Union[torch.Tensor, Tensor], ...]) -> Tuple
 
 
 def get_constant_inputs(
-    constant_nodes, device_constant_and_parameters, consteval_trace, name: str, is_forge: bool, epoch_type: str
+    constant_nodes, device_constant_and_parameters, consteval_trace, name: str, is_forge: bool
 ) -> Dict[str, torch.Tensor]:
 
     consteval_graph = consteval_trace.get(name, None)
@@ -1260,11 +1289,8 @@ def get_constant_inputs(
             return {name: get_constant_input_value(constant_nodes[name], is_forge)}
         return {name: device_constant_and_parameters[name]}
 
-    def is_node_in_epoch(node):
-        return consteval_graph["nodes"][node]["epoch_type"] == epoch_type
-
     values = {}
-    for node_name in filter(is_node_in_epoch, consteval_graph["topological_sorted_nodes"]):
+    for node_name in consteval_graph["topological_sorted_nodes"]:
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             if node_name in constant_nodes:
@@ -1274,24 +1300,13 @@ def get_constant_inputs(
     return values
 
 
-def consteval_tensor(
-    consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool, epoch_type: str
-) -> torch.Tensor:
+def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
     import forge.op.eval.forge as eval_module
 
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:
         return inputs[name]
-
-    def is_node_in_epoch(node):
-        return consteval_graph["nodes"][node]["epoch_type"] == epoch_type
-
-    def get_loss_node():
-        for name, node in consteval_graph["nodes"].items():
-            if node["type"] == "Input::loss":
-                return name
-        assert False, "Loss node not found"
 
     def eval_op(op_type, inputs):
         forge_eval = eval_module.get_f_forge_eval(OpType(op_type["type"], op_type["attrs"], op_type["named_attrs"]))
@@ -1302,11 +1317,7 @@ def consteval_tensor(
     output: Optional[torch.Tensor] = None
     tile_r, tile_c = (TILE_DIM, TILE_DIM)
 
-    if epoch_type == "Backward":
-        loss_name = get_loss_node()
-        inputs[loss_name] = inputs[name]
-
-    for node_name in filter(is_node_in_epoch, consteval_graph["topological_sorted_nodes"]):
+    for node_name in consteval_graph["topological_sorted_nodes"]:
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Input":
             input_value = inputs[node_name]
@@ -1339,7 +1350,13 @@ def consteval_tensor(
 
 
 def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
-    return consteval_tensor(consteval_trace, name, inputs, is_forge, "Forward")
+    const_eval_tensor = consteval_tensor(consteval_trace, name, inputs, is_forge)
+    # This: "torch.empty(const_eval_tensor.shape).copy_(const_eval_tensor)" will create tensor with contiguous memory layout consistent with its current shape.
+    # We are doing this because constant input tensors should have memory layout consistent with their shape.
+    # Sometimes, the stride is inconsistent with shape because some consteval operations might change the shape but not the stride.
+    # For example, if we had transpose in consteval graph, output tensor would have stride same as input.
+    # However, since we store that input as constant tensor, its shape defines its stride.
+    return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
 
 
 def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
@@ -1347,19 +1364,11 @@ def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_fo
     if consteval_graph is None:
         return tensor.shape
 
-    def is_node_in_fwd(node):
-        return consteval_graph["nodes"][node]["epoch_type"] == "Forward"
-
-    for node_name in filter(is_node_in_fwd, consteval_graph["topological_sorted_nodes"]):
+    for node_name in consteval_graph["topological_sorted_nodes"]:
         node = consteval_graph["nodes"][node_name]
         if node["opcode"] == "Output":
             return node["cache"]["shape"]
     assert False, "No output node found in consteval graph"
-
-
-def consteval_input_bw(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool) -> torch.Tensor:
-    inputs = {name: tensor}
-    return consteval_tensor(compiled_graph_state.consteval_trace, name, inputs, is_forge, "Backward")
 
 
 def compare_tensors(t0, t1):
@@ -1414,7 +1423,7 @@ def get_post_const_eval_tensors(
     for input_name in ordered_input_names:
         # Load input constant tensors for consteval
         inputs = get_constant_inputs(
-            constant_nodes, device_constant_and_parameters, consteval_trace, input_name, is_forge, "Forward"
+            constant_nodes, device_constant_and_parameters, consteval_trace, input_name, is_forge
         )
 
         post_const_eval_constants[input_name] = detach_tensors(

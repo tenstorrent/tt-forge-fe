@@ -29,6 +29,8 @@ import forge
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
 
+from forge.config import _get_global_compiler_config
+
 collect_ignore = ["legacy_tests"]
 
 
@@ -99,6 +101,15 @@ def clear_forge():
 
 def pytest_addoption(parser):
     parser.addoption(
+        "--generate-op-tests", action="store_true", default=False, help="Generate op tests for the given model"
+    )
+    parser.addoption(
+        "--generate-unique-op-tests",
+        action="store_true",
+        default=False,
+        help="Generate unique op tests for the given model",
+    )
+    parser.addoption(
         "--silicon-only", action="store_true", default=False, help="run silicon tests only, skip golden/model"
     )
     parser.addoption("--no-silicon", action="store_true", default=False, help="skip silicon tests")
@@ -164,6 +175,27 @@ def pytest_addoption(parser):
 def runslow(request):
    return request.config.getoption("--runslow")
 """
+
+
+@pytest.fixture(autouse=True, scope="session")
+def initialize_global_compiler_configuration_based_on_pytest_args(pytestconfig):
+    """
+    Set the global compiler config options for the test session
+    which will generate op tests for the given model.
+    """
+    compiler_cfg = _get_global_compiler_config()
+
+    compiler_cfg.tvm_generate_op_tests = pytestconfig.getoption("--generate-op-tests")
+
+    compiler_cfg.tvm_generate_unique_op_tests = pytestconfig.getoption("--generate-unique-op-tests")
+
+    if compiler_cfg.tvm_generate_op_tests or compiler_cfg.tvm_generate_unique_op_tests:
+        # For running standalone tests, we need to retain the generated python files
+        # together with stored model parameters
+        compiler_cfg.retain_tvm_python_files = True
+
+        # Required to prevent early tensor deallocation
+        compiler_cfg.enable_op_level_comparision = True
 
 
 @pytest.hookimpl(tryfirst=True)

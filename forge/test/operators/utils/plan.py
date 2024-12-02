@@ -83,6 +83,7 @@ class TestVector:
     operator: Optional[str]
     input_source: InputSource
     input_shape: TensorShape  # TODO - Support multiple input shapes
+    number_of_operands: Optional[int] = None
     dev_data_format: Optional[DataFormat] = None
     math_fidelity: Optional[MathFidelity] = None
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
@@ -93,7 +94,7 @@ class TestVector:
     def get_id(self, fields: Optional[List[str]] = None) -> str:
         """Get test vector id"""
         if fields is None:
-            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}-{self.dev_data_format.name if self.dev_data_format else None}-{self.math_fidelity.name if self.math_fidelity else None}"
+            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}{'-' + str(self.number_of_operands) + '-' if self.number_of_operands else '-'}{self.dev_data_format.name if self.dev_data_format else None}-{self.math_fidelity.name if self.math_fidelity else None}"
         else:
             attr = [
                 (getattr(self, field).name if getattr(self, field) is not None else None)
@@ -140,6 +141,7 @@ class TestCollection:
     operators: Optional[List[str]] = None
     input_sources: Optional[List[InputSource]] = None
     input_shapes: Optional[List[TensorShape]] = None  # TODO - Support multiple input shapes
+    numbers_of_operands: Optional[List[int]] = None
     dev_data_formats: Optional[List[DataFormat]] = None
     math_fidelities: Optional[List[MathFidelity]] = None
     kwargs: Optional[
@@ -365,42 +367,51 @@ class TestPlan:
             if kwargs_list is None:
                 kwargs_list = [None]
 
+            numbers_of_operands = test_collection.numbers_of_operands
+            if numbers_of_operands is None:
+                numbers_of_operands = [None]
+
             for input_operator in test_collection.operators:
                 for input_source in test_collection.input_sources:
                     for input_shape in test_collection.input_shapes:
-                        for dev_data_format in dev_data_formats:
-                            for math_fidelity in math_fidelities:
+                        for number_of_operands in numbers_of_operands:
+                            for dev_data_format in dev_data_formats:
+                                for math_fidelity in math_fidelities:
 
-                                test_vector_no_kwargs = TestVector(
-                                    test_plan=self,  # Set the test plan to support verification
-                                    operator=input_operator,
-                                    input_source=input_source,
-                                    input_shape=input_shape,
-                                    dev_data_format=dev_data_format,
-                                    math_fidelity=math_fidelity,
-                                    pcc=test_collection.pcc,
-                                )
+                                    test_vector_no_kwargs = TestVector(
+                                        test_plan=self,  # Set the test plan to support verification
+                                        operator=input_operator,
+                                        input_source=input_source,
+                                        input_shape=input_shape,
+                                        number_of_operands=number_of_operands,
+                                        dev_data_format=dev_data_format,
+                                        math_fidelity=math_fidelity,
+                                        pcc=test_collection.pcc,
+                                    )
 
-                                # filter collection based on criteria
-                                if test_collection.criteria is None or test_collection.criteria(test_vector_no_kwargs):
+                                    # filter collection based on criteria
+                                    if test_collection.criteria is None or test_collection.criteria(
+                                        test_vector_no_kwargs
+                                    ):
 
-                                    if isinstance(test_collection.kwargs, types.FunctionType):
-                                        kwargs_list = test_collection.kwargs(test_vector_no_kwargs)
+                                        if isinstance(test_collection.kwargs, types.FunctionType):
+                                            kwargs_list = test_collection.kwargs(test_vector_no_kwargs)
 
-                                    for kwargs in kwargs_list:
-                                        # instantiate a new test vector to avoid mutating the original test_vector_no_kwargs
-                                        test_vector = TestVector(
-                                            test_plan=self,  # Set the test plan to support verification
-                                            operator=input_operator,
-                                            input_source=input_source,
-                                            input_shape=input_shape,
-                                            dev_data_format=dev_data_format,
-                                            math_fidelity=math_fidelity,
-                                            pcc=test_collection.pcc,
-                                            kwargs=kwargs,
-                                        )
+                                        for kwargs in kwargs_list:
+                                            # instantiate a new test vector to avoid mutating the original test_vector_no_kwargs
+                                            test_vector = TestVector(
+                                                test_plan=self,  # Set the test plan to support verification
+                                                operator=input_operator,
+                                                input_source=input_source,
+                                                input_shape=input_shape,
+                                                number_of_operands=number_of_operands,
+                                                dev_data_format=dev_data_format,
+                                                math_fidelity=math_fidelity,
+                                                pcc=test_collection.pcc,
+                                                kwargs=kwargs,
+                                            )
 
-                                        yield test_vector
+                                            yield test_vector
 
     def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
         test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
@@ -569,6 +580,7 @@ class TestPlanUtils:
             cls._match(test_collection.operators, test_vector.operator)
             and cls._match(test_collection.input_sources, test_vector.input_source)
             and cls._match(test_collection.input_shapes, test_vector.input_shape)
+            and cls._match(test_collection.numbers_of_operands, test_vector.number_of_operands)
             and cls._match(test_collection.dev_data_formats, test_vector.dev_data_format)
             and cls._match(test_collection.math_fidelities, test_vector.math_fidelity)
             and cls._match_kwargs_list(test_collection.kwargs, test_vector.kwargs)
@@ -596,19 +608,25 @@ class TestPlanUtils:
 
         # Split by '-' but not by ' -'
         parts = re.split(r"(?<! )-", test_id)
-        assert len(parts) == 6, f"Invalid test id: {test_id} / {parts}"
+        assert len(parts) == 6 or len(parts) == 7, f"Invalid test id: {test_id} / {parts}"
+        if len(parts) == 6:
+            dev_data_format_index = 4
+            math_fidelity_index = 5
+        else:
+            dev_data_format_index = 5
+            math_fidelity_index = 6
 
         input_operator = parts[0]
         input_source = InputSource[parts[1]]
         kwargs = eval(parts[2])
         input_shape = eval(parts[3])
 
-        dev_data_format_part = parts[4]
+        dev_data_format_part = parts[dev_data_format_index]
         if dev_data_format_part == "None":
             dev_data_format_part = None
         dev_data_format = eval(f"forge._C.{dev_data_format_part}") if dev_data_format_part is not None else None
 
-        math_fidelity_part = parts[5]
+        math_fidelity_part = parts[math_fidelity_index]
         if math_fidelity_part == "None":
             math_fidelity_part = None
         # TODO remove hardcoded values here
@@ -666,12 +684,20 @@ class TestPlanScanner:
         # return functions_called
 
     @classmethod
-    def scan_and_invoke(cls, directory: str, method_name: str) -> Generator:
-        """Scan the directory and invoke all method functions."""
+    def scan_and_invoke(cls, scan_file: str, scan_package: str, method_name: str) -> Generator:
+        """
+        Scan the directory and invoke all method functions.
+        Scan modules relative path to the current directory.
+        """
+
+        directory = os.path.relpath(os.path.dirname(scan_file))
+        logger.trace(f"Scan directory: {directory} for base package: {scan_package}")
+
         modules = cls.find_modules_in_directory(directory)
 
         for module_name in modules:
             try:
+                module_name = f"{scan_package}.{module_name}"
                 logger.trace(f"Loading module: {module_name}")
                 # Dynamic module loading
                 module = importlib.import_module(module_name)
@@ -695,16 +721,17 @@ class TestPlanScanner:
             raise ValueError(f"Unsupported suite/plan type: {type(result)}")
 
     @classmethod
-    def get_all_test_plans(cls, current_directory: str) -> Generator[TestPlan, None, None]:
+    def get_all_test_plans(cls, scan_file: str, scan_package: str) -> Generator[TestPlan, None, None]:
         """Get all test suites from the current directory."""
-        results = cls.scan_and_invoke(current_directory, cls.METHOD_COLLECT_TEST_PLANS)
+        results = cls.scan_and_invoke(scan_file, scan_package, cls.METHOD_COLLECT_TEST_PLANS)
         for result in results:
             for test_plan in cls.collect_test_plans(result):
                 yield test_plan
         return results
 
     @classmethod
-    def build_test_suite(cls, current_directory: str) -> TestSuite:
-        test_plans = TestPlanScanner.get_all_test_plans(current_directory)
+    def build_test_suite(cls, scan_file: str, scan_package: str) -> TestSuite:
+        """Build test suite from scaned test plans."""
+        test_plans = cls.get_all_test_plans(scan_file, scan_package)
         test_plans = list(test_plans)
         return TestSuite(test_plans=test_plans)

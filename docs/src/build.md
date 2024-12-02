@@ -71,6 +71,16 @@ cmake -G Ninja -B build
 cmake --build build
 ```
 
+You can pass additional options to the `cmake` command to customize the build. For example, to build everything in debug mode, you can run:
+```sh
+cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+```
+
+> List of commonly used options:
+> - `-DCMAKE_BUILD_TYPE=Debug|Release`  - Build type (Debug, Release)
+> - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`     - Build runtime debug tools (more logging, debug environment flags)
+
 ### Incremental build
 If you have made changes to the C++ sources (of the `tt-forge-fe` compiler, `tt-mlir` or `tt-metal`), you might want to do an incremental build to save time. This can be done by running the following command:
 ```sh
@@ -97,6 +107,8 @@ mdbook serve build/docs
 ```
 
 > **Note:** `mdbook serve` will by default create a local server at `http://localhost:3000`.
+
+> **Note:** For custom port, just specify `-p` attribute. <br><br> E.g. `mdbook serve build/docs -p 5005`, and visit `http://localhost:5005`.
 
 ## Build Cleanup
 

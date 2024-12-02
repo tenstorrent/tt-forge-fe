@@ -22,10 +22,13 @@ from .argmax import Argmax
 from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
+from .cast import Cast
 
 op_to_module_map = {
     "add": "eltwise_binary",
+    "cast": Cast,
     "divide": "eltwise_binary",
+    "remainder": "eltwise_binary",
     "subtract": "eltwise_binary",
     "multiply": "eltwise_binary",
     "maximum": "eltwise_binary",
@@ -87,7 +90,7 @@ op_to_module_map = {
     "vstack": "tm",
     "broadcast": "tm",
     "repeat": "tm",
-    "repeat_dim": "tm",
+    "repeat_interleave": "tm",
     "conv2d_depthwise_weights": "tm",
     "conv2d_depthwise_weights_bw": "tm",
     "conv2d_grouped_weights": "tm",
@@ -114,6 +117,7 @@ op_to_module_map = {
     "max_pool3d": "pooling",
     "avg_pool1d": "pooling",
     "avg_pool2d": "pooling",
+    "avg_pool3d": "pooling",
     "constant": "constant",
     "resize2d": "resize",
     "resize3d": "resize",

@@ -17,6 +17,7 @@
 #pragma clang diagnostic pop
 
 // MLIR headers
+#include "mlir/Dialect/Func/Extensions/InlinerExtension.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "utils/logger.hpp"
 
@@ -32,6 +33,9 @@
 #include "ttmlir/Dialect/TTIR/IR/TTIR.h"
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
+
+// Reportify headers
+#include "reportify/reportify.hpp"
 
 namespace tt::passes
 {
@@ -49,6 +53,8 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
         mlir::func::FuncDialect,
         mlir::ml_program::MLProgramDialect,
         mlir::tensor::TensorDialect>();
+
+    mlir::func::registerInlinerExtension(registry);
 
     // Create a context with all registered dialects.
     mlir::MLIRContext context(registry);
@@ -69,6 +75,9 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
     mlir_module->dump();
+
+    // save what's dumped to a file named "{name}.mlir"
+    reportify::dump_mlir("ttnn", mlir_module->getName()->str(), mlir_module.get());
 
     // Generate binary from the MLIR module.
     auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());

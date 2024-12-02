@@ -18,6 +18,8 @@ import sys
 import subprocess
 import dataclasses_json
 from loguru import logger
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, PatternFill, Side, Font
 
 from .forgeglobal import TILE_DIM
 
@@ -357,3 +359,73 @@ def resolve_output_build_directory(*, directory_prefix: str = None) -> str:
     make_test_output_directory(test_output_directory)
 
     return test_output_directory
+
+
+def create_excel_file(title: str, headers: List[str], rows: List[List[str]], output_file_path: str):
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = title
+    sheet.append(headers)
+
+    for row in rows:
+        sheet.append(row)
+
+    blue_fill = PatternFill(start_color="6495ED", end_color="6495ED", fill_type="solid")
+    center_aligned = Alignment(horizontal="center", vertical="center")
+    side = Side(style="thin", color="000000")
+    thin_border = Border(left=side, right=side, top=side, bottom=side)
+
+    # Fill Header with blue color
+    for col in range(1, sheet.max_column + 1):
+        sheet.cell(row=1, column=col).fill = blue_fill
+        sheet.cell(row=1, column=col).font = Font(bold=True)
+
+    # Make thin border and center align the text for every cell
+    for row in range(1, sheet.max_row + 1):
+        for col in range(1, sheet.max_column + 1):
+            sheet.cell(row=row, column=col).border = thin_border
+            sheet.cell(row=row, column=col).alignment = center_aligned
+
+    # Calculate width for each columns
+    columns_width = {}
+    for header in headers:
+        columns_width[header] = len(header)
+    for row in rows:
+        for header, item in zip(headers, row):
+            columns_width[header] = max(columns_width[header], len(str(item)))
+
+    # Set column width for cells
+    column_offset = 2
+    for col, col_width in zip(sheet.columns, columns_width.values()):
+        column = col[0].column_letter
+        sheet.column_dimensions[column].width = col_width + column_offset
+
+    workbook.save(output_file_path)
+
+
+def create_xlsx_file_from_unique_op_config(
+    unique_op_shapes_attrs, graph_name, stage, export_unique_op_config_file_path
+):
+
+    # Convert Unique Op configuration to list of row for xlsx sheet
+    unique_op_config_data = []
+    for op_name, shapes_attrs in unique_op_shapes_attrs.items():
+        for shape, attrs in shapes_attrs:
+            if len(attrs) != 0:
+                for attr in attrs:
+                    unique_op_config_data.append([str(op_name), str(shape), str(attr)])
+            else:
+                unique_op_config_data.append([str(op_name), str(shape), ""])
+
+    sheet_title = graph_name + "_" + stage
+    headers = ["OpName", "Shape", "Attributes"]
+
+    create_excel_file(
+        title=sheet_title,
+        headers=headers,
+        rows=unique_op_config_data,
+        output_file_path=export_unique_op_config_file_path,
+    )
+
+    return True

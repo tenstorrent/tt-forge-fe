@@ -30,6 +30,11 @@ static bool input_can_consteval(graphlib::Graph *graph, graphlib::InputNode *inp
         return false;
     };
 
+    if (input->requires_grad() && graph->training())
+    {
+        return false;
+    }
+
     // Generally we don't want to consteval broadcast or repeat as it
     // causes the input to blow up in size with duplicated data
     auto is_broadcast_or_repeat = [](graphlib::Node *n)
@@ -37,7 +42,7 @@ static bool input_can_consteval(graphlib::Graph *graph, graphlib::InputNode *inp
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(n);
         if (not op)
             return false;
-        return op->op_name() == "broadcast" or op->op_name() == "repeat" or op->op_name() == "repeat_dim";
+        return op->op_name() == "broadcast" or op->op_name() == "repeat" or op->op_name() == "repeat_interleave";
     };
 
     TT_ASSERT(graphlib::is_consteval_capable_input_type(input));

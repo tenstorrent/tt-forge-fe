@@ -2,6 +2,7 @@
 
 # Introduction
 - [Introduction](./introduction.md)
+- [Architecture Overview](./architecture_overview.md)
 
 # Project setup
 - [Building](./build.md)

@@ -123,43 +123,6 @@ def eval(type, attr, ops):
             ret = t_ops[0][t_ops[1].numpy()]
         return ret
 
-    if type == "hslice":
-        assert len(attr) == 1, "HSlice should have one attribute, the slice size"
-        slice_size = attr[0]
-        shape = list(t_ops[0].shape)
-        assert shape[-1] % slice_size == 0
-        while len(shape) < 4:
-            shape = [1] + shape
-        ret = t_ops[0].reshape(-1, shape[-2], slice_size, shape[-1] // slice_size)
-        ret = ret.permute(0, 2, 1, 3)
-        return ret.reshape(shape[:-3] + [shape[-3] * slice_size, shape[-2], shape[-1] // slice_size])
-
-    if type == "hstack":
-        assert len(attr) == 1, "hstack should have one attribute, equal to number of stacks of Z dim to create"
-        slice_size = attr[0]
-        shape = list(t_ops[0].shape)
-        assert shape[-3] % slice_size == 0, f"HStack requires Z to be divisible by slice size"
-        ret = t_ops[0].reshape(-1, shape[-3] // slice_size, slice_size, shape[-2], shape[-1])
-        ret = ret.permute(0, 1, 3, 2, 4)
-        return ret.reshape(shape[:-3] + [shape[-3] // slice_size, shape[-2], shape[-1] * slice_size])
-
-    if type == "vslice":
-        assert len(attr) == 1, "VSlice should have one attribute, the slice size"
-        slice_size = attr[0]
-        shape = t_ops[0].shape
-        assert len(shape) >= 2
-        assert shape[-2] % slice_size == 0
-        if len(shape) < 3:
-            shape = (1,) + shape
-        return t_ops[0].reshape(shape[:-3] + (shape[-3] * slice_size, shape[-2] // slice_size, shape[-1]))
-
-    if type == "vstack":
-        assert len(attr) == 1, "vstack should have one attribute, equal to number of stacks of Z dim to create"
-        slice_size = attr[0]
-        shape = t_ops[0].shape
-        assert shape[-3] % slice_size == 0, f"VStack requires Z to be divisible by slice size"
-        return t_ops[0].reshape(shape[:-3] + (shape[-3] // slice_size, shape[-2] * slice_size, shape[-1]))
-
     if type == "broadcast":
         assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
         explicit_bcast = len(attr) == 3 and bool(attr[2])
@@ -179,16 +142,11 @@ def eval(type, attr, ops):
         assert len(t_ops[0].shape) == len(sizes)
         return t_ops[0].repeat(*sizes)
 
-    if type == "repeat_dim":
-        assert len(attr) <= 3, "repeat should have two attributes - dim and size"
-        dim = attr[0]
-        if dim < 0:
-            dim += len(t_ops[0].shape)
-        factor = attr[1]
-        assert dim > 0, "Don't support broadcasting on w"
-        sizes = [1] * len(t_ops[0].shape)
-        sizes[dim] = factor
-        return t_ops[0].repeat(*sizes)
+    if type == "repeat_interleave":
+        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
+        repeats = attr[0]
+        dim = attr[1]
+        return t_ops[0].repeat_interleave(repeats=repeats, dim=dim)
 
     if type == "conv2d_depthwise_weights":
         weights = t_ops[0]
@@ -530,14 +488,15 @@ def shape(type, attr, ops):
         sizes = attr
         return tuple(dim * size for dim, size in zip(list(ops[0]), sizes)), []
 
-    if type == "repeat_dim":
-        assert len(attr) <= 3, "repeat should have two attributes - dim and size"
-        dim = attr[0]
+    if type == "repeat_interleave":
+        assert len(attr) <= 3, "repeat_interleave should have two attributes - repeats and dim"
+        repeats = attr[0]
+        dim = attr[1]
+
         if dim < 0:
             dim += len(ops[0])
-        factor = attr[1]
         target_shape = list(ops[0])
-        target_shape[dim] *= factor
+        target_shape[dim] *= repeats
         return tuple(target_shape), []
 
     if type == "conv2d_depthwise_weights":
@@ -783,20 +742,23 @@ def lower(type, attr, lc, ops, outputs):
         return lc.tm("broadcast", ops[0], attr)
 
     elif type == "repeat":
-        assert False, "repeat should have been decomposed into repeat_dim"
+        assert False, "repeat should have been decomposed into repeat_interleave"
 
-    elif type == "repeat_dim":
-        # Adjust the repeat dim if we're moving to more/less dimensions
-        if attr[0] < 0:
-            attr[0] += ops[0].shape.len()
+    elif type == "repeat_interleave":
+        # Adjust the repeat interleave if we're moving to more/less dimensions
+        repeats = attr[0]
+        dim = attr[1]
+
+        if dim < 0:
+            dim += ops[0].shape.len()
 
         delta = 4 - ops[0].shape.len()
-        attr[0] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid repeat dim after lowering: {attr[0]}"
+        dim += delta
+        assert dim >= 0 and dim <= 3, f"Invalid repeat interleave after lowering: {dim}"
 
-        if attr[0] == 2:
+        if dim == 2:
             assert ops[0].shape[-2] % TILE_DIM == 0, "Repeat on R must be TILE_DIM aligned"
-        if attr[0] == 3:
+        if dim == 3:
             assert ops[0].shape[-1] % TILE_DIM == 0, "Repeat on C must be TILE_DIM aligned"
         return lc.tm("broadcast", ops[0], attr)
 
@@ -856,9 +818,6 @@ def lower(type, attr, lc, ops, outputs):
 
         return lc.op(ForgeNop.create(), ops)
 
-    elif (type == "hstack" or type == "hslice") and attr[0] == 1:
-        return lc.op(ForgeNop.create(), ops)
-
     elif type == "forge_pad":
         return lc.tm("forge_pad", ops[0], attr, {"rt": attr[0], "ct": attr[1], "pad_value": attr[2]})
 
@@ -873,19 +832,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     assert operand == 0, "Invalid operand index"
 
-    if type == "hstack":
-        return ac.op("hslice", (grad,), attributes=attr)
-
-    elif type == "hslice":
-        return ac.op("hstack", (grad,), attributes=attr)
-
-    elif type == "vstack":
-        return ac.op("vslice", (grad,), attributes=attr)
-
-    elif type == "vslice":
-        return ac.op("vstack", (grad,), attributes=attr)
-
-    elif type == "transpose":
+    if type == "transpose":
         assert len(attr) == 3
 
         if (attr[0] == -3 and attr[1] == -4) or (attr[0] == -4 and attr[1] == -3):
@@ -1104,8 +1051,25 @@ def decompose(type, attr, dc, inputs):
             # We need to transpose to get the dimension we want to index by at the -2 position
             act = dc.op(TransposeTM.create(-2, dim), [act])
 
+        orig_act_shape = None
+        if len(act.shape) > 3:
+            # Add reshape to handle matmul's input tensor more than 3D
+            orig_act_shape = act.shape.as_list()
+            new_shape = (1, math.prod(orig_act_shape[:-2]), orig_act_shape[-2], orig_act_shape[-1])
+            act = dc.op_with_named_attrs("reshape", [act], {"shape": new_shape}, new_shape)
+
+            lhs_num_cols = act.shape[-2]
+            lhs_num_channels = act.shape[-3]
+            lhs_batch_size = 1
+
         lhs = create_row_picker_matrix(row_indices, lhs_num_cols, lhs_num_channels, lhs_batch_size)
         result = picker_matmul(False, dc, lhs, act)
+
+        if orig_act_shape is not None:
+            # Reshape back to original dimensions
+            orig_act_shape[-1] = result.shape[-1]
+            orig_act_shape[-2] = result.shape[-2]
+            result = dc.op_with_named_attrs("reshape", [result], {"shape": orig_act_shape}, orig_act_shape)
 
         if dim != -2:
             # We need to transpose again to return to the original order of dimensions
@@ -1531,90 +1495,6 @@ def decompose_select(attr, dc, inputs):
         return
 
 
-def decompose_xy_flatten_reshape(inputs, dc, orig_shape, attr):
-    use_sparse_mm = True
-    result = inputs[0]
-    result = dc.op("pad_tile", [result], (-2, orig_shape[-2]))
-    result = dc.op("pad_tile", [result], (-1, orig_shape[-1]))
-
-    if orig_shape[-3] > 1:
-        result = dc.op("hstack", [result], (orig_shape[-3],))
-
-    padded_shape = result.shape
-    r_new = padded_shape[-1] * orig_shape[-2] // (padded_shape[-1] // TILE_DIM)
-    pad_for_factrization = False
-    sparse_r_padding = ast.literal_eval(os.environ.get("FORGE_PAD_SPARSE_MM", "{}"))
-    if orig_shape[-2] % TILE_DIM and orig_shape[-1] % TILE_DIM and orig_shape[-2] in sparse_r_padding:
-        pad_for_factrization = True
-        padded_r_new = sparse_r_padding[orig_shape[-2]] * TILE_DIM
-        cols = torch.arange(r_new // TILE_DIM)
-        rows = cols * TILE_DIM
-        fl_spm = torch.sparse_coo_tensor(
-            [rows.tolist(), cols.tolist()],
-            torch.ones(cols.shape[0]),
-            (padded_r_new, result.shape[-2]),
-            dtype=torch.float32,
-        )
-    else:
-        fl_spm = create_reshape_flatten_sparse_picker_matrix(result.shape[-2], r_new)
-    result = picker_matmul(use_sparse_mm, dc, fl_spm, result)
-    use_sparse_mm = True
-
-    if orig_shape[-3] > 1:
-        result = dc.op("hslice", [result], (orig_shape[-3],))
-        # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/forgebackend#656
-
-    rt = align_up_tile(r_new) // TILE_DIM
-    if pad_for_factrization:
-        rt = sparse_r_padding[orig_shape[-2]]
-    result = dc.op("vslice", [result], (rt,))
-    # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/forgebackend#656
-    result = dc.op("hstack", [result], (rt,))
-
-    if orig_shape[-3] > 1:
-        # result = dc.op(Buffer.create(), [result]) # HW workaround for: tenstorrent/forgebackend#656
-        result = dc.op("vstack", [result], (orig_shape[-3],))
-
-    if orig_shape[-1] % TILE_DIM:
-        result = dc.op(TransposeTM.create(-2, -1), [result])
-        if pad_for_factrization:
-            num_pads = orig_shape[-2]
-            cols = []
-            [
-                cols.extend((torch.arange(0, orig_shape[-1]) + (pad_to_tile_dim(orig_shape[-1]) * pad)).tolist())
-                for pad in range(num_pads)
-            ]
-            cols = torch.tensor(cols)
-            rows = torch.arange(num_pads * orig_shape[-1])
-            num_rows = num_pads * orig_shape[-1]
-            s = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (num_rows, result.shape[-2]),
-                dtype=torch.float32,
-            )
-        else:
-            s = create_flattened_padding_removal_sparse_picker_matrix(
-                result.shape[-2], 0, orig_shape[-1], pad_to_tile_dim(orig_shape[-1])
-            )
-        result = picker_matmul(use_sparse_mm, dc, s, result)
-        result = dc.op(TransposeTM.create(-2, -1), [result])
-
-    while len(result.shape) > len(attr):
-        result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
-
-    while len(result.shape) < len(attr):
-        result = dc.op_with_named_attrs("unsqueeze", [result], {"dim": 0}, (0, len(result.shape.as_list())))
-
-    if orig_shape[-3] > 1:
-        s = create_flattened_padding_removal_sparse_picker_matrix(result.shape[-2], 0, 1, TILE_DIM)
-        result = picker_matmul(use_sparse_mm, dc, s, result)
-    else:
-        result = dc.op("narrow", [result], (-2, 0, 1, result.shape[-2]))
-
-    return result
-
-
 def decompose_xy_unflatten(inputs, dc, orig_shape, attr):
     result = inputs[0]
     use_sparse_mm = True
@@ -1788,45 +1668,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
     # TODO: remove once backend support is available
     if type == "select":
         decompose_select(attr, dc, inputs)
-
-    elif type == "repeat":
-        sizes = attr
-        result = inputs[0]
-        for dim, factor in enumerate(sizes):
-            neg_idx = dim - len(inputs[0].shape)  # Use negative indexing
-            if factor == 1:
-                continue
-            result = dc.op("repeat_dim", [result], (neg_idx, factor))
-        dc.fuse(result)
-
-    elif type == "repeat_dim":
-        axis = attr[0]
-        if inputs[0].shape[axis] % TILE_DIM != 0 and (axis == -2 or axis == -1):
-            # Decompose repeat to spase mm
-            orig_shape = inputs[0].shape.as_list()
-            orig_dim = orig_shape[axis]
-            target_dim_size = inputs[0].shape[axis] * attr[1]
-            rounded_target_dim = align_up_tile(target_dim_size)
-            if axis == -2:
-                result = inputs[0]
-                use_sparse_mm = True
-                result = dc.op("pad_tile", [result], (-2, orig_shape[-2]))
-                i_spm = create_repeat_sparse_picker_matrix(orig_dim, attr[1])
-                result = picker_matmul(use_sparse_mm, dc, i_spm, result)
-                result = dc.op("narrow", [result], (-2, 0, target_dim_size, result.shape[-2]))
-            elif axis == -1:
-                result = inputs[0]
-                use_sparse_mm = True
-                result = dc.op("pad_tile", [result], (-1, orig_shape[-1]))
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                i_spm = create_repeat_sparse_picker_matrix(orig_dim, attr[1])
-                result = picker_matmul(use_sparse_mm, dc, i_spm, result)
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                result = dc.op("narrow", [result], (-1, 0, target_dim_size, result.shape[-1]))
-            else:
-                assert False
-
-            dc.fuse(result)
 
     elif type == "hslice":
         input_shape = inputs[0].shape.as_list()

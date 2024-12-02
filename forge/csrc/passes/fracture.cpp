@@ -784,53 +784,6 @@ static FracturedNodes fracture_op(
     return std::make_pair(nd_slice, fractured_ops);
 }
 
-static FracturedNodes fracture_slice_stack_tm(
-    graphlib::Graph* graph,
-    graphlib::PyOpNode* op,
-    std::unordered_map<graphlib::NodeId, FracturedNodes> const& node_to_fractured_nodes,
-    FractureGroup const& group)
-{
-    graphlib::OpType nop_op_type = graphlib::OpType("nop", {}, {});
-    NDSlice nd_slice = get_node_nd_slice(graph, op, node_to_fractured_nodes, group);
-    graphlib::OpType tm_op_type = op->op_type();
-    bool is_slice = op->op_name() == "hslice" or op->op_name() == "vslice";
-    int tm_dim = tm_op_type.op[0] == 'h' ? -1 : -2;
-    int& tm_factor = std::get<int>(tm_op_type.attr.at(0));
-
-    int pre_dim = is_slice ? tm_dim : -3;
-    int post_dim = is_slice ? -3 : tm_dim;
-    int fracture_factor = nd_slice.get_factor(pre_dim);
-
-    // Update the tm factor
-    TT_ASSERT(tm_factor % fracture_factor == 0);
-    tm_factor /= fracture_factor;
-
-    // For stack we need to fixup the shape before it goes into generic op fracture
-    // For slice we need to fixup the shape after it comes out of generic op fracture
-    if (not is_slice)
-    {
-        auto shape = op->shape();
-        shape[pre_dim] *= fracture_factor;
-        shape[post_dim] /= fracture_factor;
-        op->set_shape(shape);
-    }
-
-    // Swap out the op_type for a nop and fracture regularly
-    op->change_op_type(nop_op_type);
-    auto [result_nd_slice, fractured_ops] = fracture_op(graph, op, node_to_fractured_nodes, group);
-
-    result_nd_slice = result_nd_slice.replace_dim(pre_dim, post_dim);
-
-    for (auto id : fractured_ops)
-    {
-        graphlib::OpNode* fractured_op = graph->node_by_id(id)->as<graphlib::OpNode>();
-        fractured_op->change_op_type(tm_op_type);
-        graphlib::calculate_and_set_node_shape(graph, fractured_op);
-    }
-
-    return std::make_pair(result_nd_slice, fractured_ops);
-}
-
 static FracturedNodes fracture_tm(
     graphlib::Graph* graph,
     graphlib::PyOpNode* op,
@@ -850,12 +803,6 @@ static FracturedNodes fracture_tm(
             nd_slice = nd_slice.replace_factor(dim1, factor0);
         }
         return std::make_pair(nd_slice, fractured_ops);
-    }
-    else if (
-        op->op_name() == "hslice" or op->op_name() == "vslice" or op->op_name() == "hstack" or
-        op->op_name() == "vstack")
-    {
-        return fracture_slice_stack_tm(graph, op, node_to_fractured_nodes, group);
     }
     else if (op->op_name() == "select")
     {

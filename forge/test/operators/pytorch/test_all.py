@@ -59,7 +59,7 @@ class TestParamsData:
 
     __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
-    test_suite = TestPlanScanner.build_test_suite(current_directory=os.path.dirname(__file__))
+    test_suite = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
 
     @classmethod
     def get_single_list(cls) -> list[str]:
@@ -328,6 +328,7 @@ def test_single(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
+@pytest.mark.nightly_sweeps
 @pytest.mark.parametrize("test_vector", test_suite.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params())
 def test_plan(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)

@@ -12,6 +12,7 @@ from forge.op.eval.common import compare_with_golden_pcc
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.xfail()
+@pytest.mark.push
 def test_llama_rotary_emb(model_path):
     class Llama_Rotary_Embedding(torch.nn.Module):
         def __init__(self, model):

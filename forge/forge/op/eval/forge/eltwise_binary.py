@@ -50,6 +50,7 @@ def eval(type, attr, ops):
         "equal": lambda i: torch.eq(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "not_equal": lambda i: torch.ne(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "logical_and": lambda i: torch.logical_and(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
+        "remainder": lambda i: torch.remainder(t_ops[0], t_ops[1]),
     }
     assert type in f, f"{type} not defined in eval map for eltwise binary ops."
 
@@ -442,9 +443,9 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         max_operand_nd = max(len(op0_shape), len(op1_shape), 3)
         while len(operand0.shape) < max_operand_nd:
-            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}(0, len(operand0.shape)))
+            operand0 = dc.op_with_named_attrs("unsqueeze", [operand0], {"dim": 0}, (0, len(operand0.shape)))
         while len(operand1.shape) < max_operand_nd:
-            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}(0, len(operand1.shape)))
+            operand1 = dc.op_with_named_attrs("unsqueeze", [operand1], {"dim": 0}, (0, len(operand1.shape)))
 
         if slice_factor != None:
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))

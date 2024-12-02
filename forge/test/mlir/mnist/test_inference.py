@@ -5,9 +5,11 @@
 import torch
 from .utils import *
 import forge
+import pytest
 from forge.op.eval.common import compare_with_golden_pcc
 
 
+@pytest.mark.push
 def test_mnist_inference():
     inputs = [torch.rand(1, 784)]
 

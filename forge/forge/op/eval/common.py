@@ -87,7 +87,9 @@ def create_constant_tensor_from_value(
         tensor[:, :, 0:dim_r, 0:dim_c] = value
     else:
         if tensor_c == 0 and tensor_r == 0:
-            tensor = torch.tensor(value, dtype=dtype)
+            # Unsqueezing to make this a 1d tensor.
+            # Currently, the runtime expects a 1d tensor for scalar values.
+            tensor = torch.unsqueeze(torch.tensor(value, dtype=dtype), dim=0)
         elif tensor_c == 0 or tensor_r == 0:
             dim = tensor_c if tensor_r == 0 else tensor_r
             tensor = torch.zeros(dim, dtype=dtype)

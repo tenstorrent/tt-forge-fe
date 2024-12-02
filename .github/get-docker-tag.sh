@@ -13,10 +13,10 @@ else
 fi
 
 # The hash is based on the environment files
-ENV_HASH=$(find env -type f -name "*.txt" -exec cat {} + | sha256sum | cut -d ' ' -f 1)
+ENV_HASH=$(find env -type f -name "*.txt" | sort | xargs cat | sha256sum | cut -d ' ' -f 1)
 
 # The hash is based on the Dockerfile(s)
-DOCKERFILE_HASH=$(find .github -type f -name "Dockerfile.*" -exec cat {} + | sha256sum | cut -d ' ' -f 1)
+DOCKERFILE_HASH=$(find .github -type f -name "Dockerfile.*" | sort | xargs cat | sha256sum | cut -d ' ' -f 1)
 
 # Combine the hashes and calculate the final hash
 DOCKER_TAG=$( (echo $MLIR_DOCKER_TAG; echo $ENV_HASH; echo $DOCKERFILE_HASH) | sha256sum | cut -d ' ' -f 1)

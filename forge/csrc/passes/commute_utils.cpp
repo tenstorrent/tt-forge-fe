@@ -403,7 +403,7 @@ bool commute_through_select(
     if (concat_golden_transform.op == "reshape")
         concat_golden_transform.attr[select_dim] = concat_output_len;
     op->add_golden_transform(concat_golden_transform);
-    op->overwrite_op_attrs(attr);
+    update_select_attr(op, new_dim);
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
@@ -539,7 +539,11 @@ bool commute_through_concat(
         concat_golden_transform.attr[concat_dim >= 0 ? concat_dim : concat_dim + concat_golden_transform.attr.size()] =
             concat_output_len;
     op->add_golden_transform(concat_golden_transform);
-    op->overwrite_op_attrs(attr);
+    std::vector<graphlib::OpType::Attr> concat_attr;
+    concat_attr.push_back(new_dim);
+    graphlib::OpType::Attrs named_attrs;
+    named_attrs["dim"] = new_dim;
+    op->change_op_type(graphlib::OpType("concatenate", concat_attr, {}, named_attrs));
 
     *commute_shape = concat_shape;
     *golden_transform = concat_golden_transform;
@@ -577,7 +581,7 @@ bool commute_through_reduce(
     graphlib::OpType *golden_transform,
     bool commute_up)
 {
-    TT_ASSERT(op->op_attrs().size() == 1);
+    TT_ASSERT(op->op_attrs().size() == 2);
     int reduce_dim = std::get<int>(op->op_attrs()[0]);
 
     // Convert to positive indexing
@@ -657,7 +661,7 @@ bool commute_through_reduce(
 
         if (prev_op->op_name() == op->op_name())
         {
-            TT_ASSERT(prev_op->op_attrs().size() == 1);
+            TT_ASSERT(prev_op->op_attrs().size() == 2);
             int prev_reduce_dim = std::get<int>(prev_op->op_attrs()[0]);
             // Convert to positive indexing
             if (prev_reduce_dim < 0)
@@ -742,6 +746,16 @@ bool commute_through_reduce(
         auto producer_attr = producer->op_attrs();
 
         int op_reduce_dim = std::get<int>(op_attr[0]);
+        bool op_keep_dim;
+        if (op->op_name() == "grouped_reduce_avg" || op->op_name() == "reduce_max")
+        {
+            op_keep_dim = std::get<bool>(op_attr[2]);
+        }
+        else
+        {
+            op_keep_dim = std::get<bool>(op_attr[1]);
+        }
+
         if (op_reduce_dim < 0)
             op_reduce_dim += clone_shape->size();
 
@@ -765,7 +779,7 @@ bool commute_through_reduce(
         }
 
         op->add_golden_transform(reduce_golden_transform);
-        op->overwrite_op_attrs(op_attr);
+        update_reduce_attr(op, op_reduce_dim, op_keep_dim);
 
         *commute_shape = reduce_shape;
         *golden_transform = reduce_golden_transform;
@@ -778,6 +792,15 @@ bool commute_through_reduce(
     {
         auto attr = op->op_attrs();
         int reduce_dim = std::get<int>(attr[0]);
+        bool keep_dim;
+        if (op->op_name() == "grouped_reduce_avg" || op->op_name() == "reduce_max")
+        {
+            keep_dim = std::get<bool>(attr[2]);
+        }
+        else
+        {
+            keep_dim = std::get<bool>(attr[1]);
+        }
 
         int orig_op_dims = op->shape().size();
         if (reduce_dim < 0)
@@ -797,7 +820,7 @@ bool commute_through_reduce(
 
         op->add_golden_transform(reduce_golden_transform);
 
-        op->overwrite_op_attrs(attr);
+        update_reduce_attr(op, reduce_dim, keep_dim);
 
         *commute_shape = reduce_shape;
         *golden_transform = reduce_golden_transform;
@@ -894,18 +917,202 @@ bool can_commute_past_op(
     return (is_elementwise(op) and op->op_name() != "interleave") or is_quantization_ops(op);
 }
 
-void update_reshape_attr(graphlib::OpNode *reshape, graphlib::Shape new_shape)
+/**
+ * @brief Updates the attributes of a "select" operation with new values for dimension, begin, length, and stride.
+ */
+void update_select_attr(
+    graphlib::OpNode *select_op,
+    int select_dim,
+    std::optional<int> begin,
+    std::optional<int> length,
+    std::optional<int> stride)
 {
-    if (reshape->op_name() != "reshape")
-        return;
-    std::vector<graphlib::OpType::Attr> attr;
-    for (size_t i = 0; i < new_shape.size(); i++)
+    TT_ASSERT(select_op->op_name() == "select", "update_select_attr called for a non-select operation");
+
+    graphlib::OpType::Attrs named_attrs = select_op->named_attrs();
+    std::vector<graphlib::OpType::Attr> attr = select_op->op_attrs();
+
+    assert(attr.size() == 4 && "Invalid attribute size for select operation: expected 4");
+
+    std::get<int>(attr[0]) = select_dim;
+    named_attrs["select_dim"] = select_dim;
+
+    if (begin.has_value())
     {
-        attr.push_back((int)new_shape[i]);
+        std::get<int>(attr[1]) = begin.value();
+        named_attrs["begin"] = begin.value();
     }
-    reshape->overwrite_op_attrs(attr);
+    else
+    {
+        named_attrs["begin"] = std::get<int>(attr[1]);
+    }
+
+    if (length.has_value())
+    {
+        std::get<int>(attr[2]) = length.value();
+        named_attrs["length"] = length.value();
+    }
+    else
+    {
+        named_attrs["length"] = std::get<int>(attr[2]);
+    }
+
+    if (stride.has_value())
+    {
+        std::get<int>(attr[3]) = stride.value();
+        named_attrs["stride"] = stride.value();
+    }
+    else
+    {
+        named_attrs["stride"] = std::get<int>(attr[3]);
+    }
+
+    select_op->overwrite_op_named_attrs(attr, named_attrs);
+    log_trace(
+        "Updated select operation {}: select_dim = {}, begin = {}, length = {}, stride = {}",
+        select_op->name(),
+        select_dim,
+        begin.value_or(std::get<int>(attr[1])),
+        length.value_or(std::get<int>(attr[2])),
+        stride.value_or(std::get<int>(attr[3])));
 }
 
+/**
+ * @brief Updates the attributes and named attributes of concat operation with new dimension.
+ */
+void update_concat_attr(graphlib::OpNode *concatenate, int dim)
+{
+    TT_ASSERT(concatenate->op_name() == "concatenate", "update_concat_attr called for a non-concatenate operation");
+
+    std::vector<graphlib::OpType::Attr> attr;
+    attr.push_back(dim);
+
+    graphlib::OpType::Attrs named_attrs = concatenate->named_attrs();
+    named_attrs["dim"] = dim;
+
+    concatenate->overwrite_op_named_attrs(attr, named_attrs);
+    log_trace("Concatenate operation updated with new dim: {}", dim);
+}
+/**
+ * @brief Updates the attributes and named attributes of vstack operation with new slice_size.
+ */
+void update_vstack_attr(graphlib::OpNode *vstack, int slice_size)
+{
+    TT_ASSERT(vstack->op_name() == "vstack", "update_vstack_attr called for a non-vstack operation");
+
+    std::vector<graphlib::OpType::Attr> attr;
+    attr.push_back(slice_size);
+
+    graphlib::OpType::Attrs named_attrs = vstack->named_attrs();
+    named_attrs["slice_size"] = slice_size;
+
+    vstack->overwrite_op_named_attrs(attr, named_attrs);
+    log_trace("Vstack operation updated with new slice_size: {}", slice_size);
+}
+/**
+ * @brief Updates the attributes and named attributes of grouped_reduce_avg operation with new reduction dimension.
+ */
+void update_grouped_reduce_avg_attr(graphlib::OpNode *reduce, int reduce_dim)
+{
+    TT_ASSERT(
+        reduce->op_name().find("grouped_reduce_avg") != std::string::npos,
+        "update_grouped_reduce_avg_attr called for non-grouped_reduce_avg op");
+
+    graphlib::OpType::Attrs named_attrs = reduce->named_attrs();
+    std::vector<graphlib::OpType::Attr> attr;
+
+    auto current_attrs = reduce->op_attrs();
+
+    attr.push_back(reduce_dim);
+    attr.push_back(current_attrs.size() > 1 ? current_attrs[1] : 1);  // Update groups attribute
+    attr.push_back(current_attrs.size() > 2 ? current_attrs[2] : 0);  // Update keep_dims attribute
+
+    named_attrs["reduce_dim"] = reduce_dim;
+    reduce->overwrite_op_named_attrs(attr, named_attrs);
+}
+/**
+ * @brief Updates the attributes and named attributes of reduce operation(reduce_sum, reduce_avg, reduce_max) with new
+ * reduction dimension.
+ */
+void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
+{
+    log_trace("reduce->op_name() = {}", reduce->op_name());
+    TT_ASSERT(
+        reduce->op_name().find("reduce") != std::string::npos, "update_reduce_attr called for a non-reduce operation");
+
+    if (reduce->op_name() == "grouped_reduce_avg")
+    {
+        update_grouped_reduce_avg_attr(reduce, reduce_dim);
+        return;
+    }
+    std::vector<graphlib::OpType::Attr> attr;
+    attr.push_back(reduce_dim);
+    attr.push_back(keep_dim);
+
+    graphlib::OpType::Attrs named_attrs = reduce->named_attrs();
+    named_attrs["dim"] = reduce_dim;
+    named_attrs["keep_dim"] = keep_dim;
+
+    reduce->overwrite_op_named_attrs(attr, named_attrs);
+    log_trace("Reduce operation updated with reduce_dim: {}", reduce_dim);
+}
+/**
+ * @brief Updates the attributes and named attributes of a matmul operation with new requantization zero point.
+ */
+void update_matmul_attr(graphlib::OpNode *matmul, int requant_zp)
+{
+    TT_ASSERT(matmul->op_name() == "matmul", "update_matmul_attr called for a non-matmul operation");
+
+    auto matmul_attrs = matmul->op_attrs();
+    matmul_attrs.push_back(requant_zp);
+    graphlib::OpType::Attrs named_attrs = matmul->named_attrs();
+    named_attrs["requant_zp"] = requant_zp;
+    matmul->overwrite_op_named_attrs(matmul_attrs, named_attrs);
+    log_trace("MatMul operation updated with new requant_zp: {}", requant_zp);
+}
+/**
+ * @brief Updates the padding attributes and named attributes of a convolution operation.
+ */
+void update_conv_attr(graphlib::OpNode *conv, const std::vector<int> &pad_attrs)
+{
+    TT_ASSERT(conv->op_name() == "conv2d", "update_conv_attr called for a non-conv operation");
+
+    std::vector<graphlib::OpType::Attr> conv_attrs = conv->op_attrs();
+
+    int pad_idx_offset = 4;
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        if (i < pad_attrs.size())
+        {
+            conv_attrs[pad_idx_offset + i] = pad_attrs[i];
+        }
+    }
+    graphlib::OpType::Attrs named_attrs = conv->named_attrs();
+    named_attrs["padding"] = pad_attrs;
+    conv->overwrite_op_named_attrs(conv_attrs, named_attrs);
+    log_trace("Conv2d operation updated with new padding values: {}", pad_attrs);
+}
+/**
+ * @brief Updates the attributes and named attributes of a reshape operation with new shape.
+ */
+void update_reshape_attr(graphlib::OpNode *reshape, graphlib::Shape new_shape)
+{
+    if (reshape->op_name() == "transpose")
+        return;
+
+    TT_ASSERT(reshape->op_name() == "reshape", "update_reshape_attr called for a non-reshape operation");
+    graphlib::OpType::Attrs named_attrs;
+    std::vector<graphlib::OpType::Attr> attr;
+    std::vector<int> shape_vector;
+    for (auto dim : new_shape)
+    {
+        int dim_value = static_cast<int>(dim);
+        shape_vector.push_back(dim);
+        attr.push_back(dim_value);
+    }
+    named_attrs["shape"] = shape_vector;
+    reshape->overwrite_op_named_attrs(attr, named_attrs);
+}
 std::pair<bool, std::pair<std::vector<int>, std::vector<int>>> handle_shape_change_through_bcast(
     graphlib::Graph *graph,
     graphlib::OpNode *initial_op,
@@ -1006,6 +1213,24 @@ void restore_bcast_on_condition(
             add_or_compound_bcast(graph, edge, dim, volume);
         }
     }
+}
+
+// Updates broadcast dim after broadcast commutes through transpose.
+// By moving broadcasts after transpose we have to change broadcast dim
+// if it was included in transpose (if broadcast dim is -2 and transpose
+// is between -3 and -2 new broadcast dim becomes -3 because transpose
+// changed the axis we want to broadcast on...)
+int update_bcast_dim_commuted_through_transpose(int dim, graphlib::OpNode *op)
+{
+    TT_ASSERT(op->op_name() == "transpose", "Op has to be transpose");
+    int updated_bcast_dim = dim;
+    int transpose_dim_0 = std::get<int>(op->op_type().get_attr("dim0"));
+    int transpose_dim_1 = std::get<int>(op->op_type().get_attr("dim1"));
+    if (dim == transpose_dim_0)
+        updated_bcast_dim = transpose_dim_1;
+    else if (dim == transpose_dim_1)
+        updated_bcast_dim = transpose_dim_0;
+    return updated_bcast_dim;
 }
 
 bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *node)
@@ -1138,7 +1363,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 std::get<int>(attr[bcast_dim]) = 1;
                 new_reshape_shape[bcast_dim] = 1;
                 op->set_shape(new_reshape_shape);
-                op->overwrite_op_attrs(attr);
+                update_reshape_attr(op, new_reshape_shape);
 
                 // Remove the broadcasts from operand
                 graph->get_edge_attributes(operand_edge)->clear_broadcast_dims();
@@ -1168,7 +1393,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 std::get<int>(attr[op->shape().size() - 1]) = 1;
                 new_reshape_shape[op->shape().size() - 1] = 1;
                 op->set_shape(new_reshape_shape);
-                op->overwrite_op_attrs(attr);
+                update_reshape_attr(op, new_reshape_shape);
 
                 // Remove the broadcasts from operand
                 graph->get_edge_attributes(operand_edge)->clear_broadcast_dims();
@@ -1194,7 +1419,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 std::get<int>(attr[op->shape().size() - 2]) = 1;
                 new_reshape_shape[op->shape().size() - 2] = 1;
                 op->set_shape(new_reshape_shape);
-                op->overwrite_op_attrs(attr);
+                update_reshape_attr(op, new_reshape_shape);
 
                 // Remove the broadcasts from operand
                 graph->get_edge_attributes(operand_edge)->clear_broadcast_dims();
@@ -1221,7 +1446,7 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
                 std::get<int>(attr[op->shape().size() + bcast_dim]) = 1;
                 new_reshape_shape[op->shape().size() + bcast_dim] = 1;
                 op->set_shape(new_reshape_shape);
-                op->overwrite_op_attrs(attr);
+                update_reshape_attr(op, new_reshape_shape);
 
                 // Remove the broadcasts from operand
                 graph->get_edge_attributes(operand_edge)->clear_broadcast_dims();
@@ -1267,8 +1492,8 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     }
     else if (op->op_name() == "transpose")
     {
-        auto &tms = graph->get_edge_attributes(operand_edge)->get_tms();
-        auto updated_shape = node->shape();
+        std::vector<graphlib::OpType> &tms = graph->get_edge_attributes(operand_edge)->get_tms();
+        graphlib::Shape updated_shape = node->shape();
 
         std::vector<int> erase_tms;
         for (int i = 0; i < (int)tms.size(); ++i)
@@ -1282,15 +1507,12 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
 
                 int operand_dim_size = operand->shape()[dim];
                 // Hoist the transpose before the bcasts
-                if (dim == -1 or dim == -2)
-                {
-                    erase_tms.push_back(i);
-                    dim = (dim == -1) ? -2 : -1;  // flip the dim
-                    updated_shape[dim] = operand_dim_size;
-                    std::get<int>(op_type.attr[0]) = dim;
-                    for (auto user_edge : graph->user_data_edges(op))
-                        graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
-                }
+                erase_tms.push_back(i);
+                int updated_bcast_dim = update_bcast_dim_commuted_through_transpose(dim, op);
+                updated_shape[updated_bcast_dim] = operand_dim_size;
+                std::get<int>(op_type.attr[0]) = updated_bcast_dim;
+                for (graphlib::Edge user_edge : graph->user_data_edges(op))
+                    graph->get_edge_attributes(user_edge)->prepend_tm(op_type);
             }
         }
 
