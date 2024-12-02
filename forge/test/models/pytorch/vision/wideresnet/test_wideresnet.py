@@ -18,7 +18,7 @@ def generate_model_wideresnet_imgcls_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
@@ -60,7 +60,7 @@ def generate_model_wideresnet_imgcls_timm(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)

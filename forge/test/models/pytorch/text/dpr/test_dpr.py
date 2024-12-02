@@ -12,10 +12,13 @@ from transformers import (
     DPRQuestionEncoder,
     DPRQuestionEncoderTokenizer,
 )
+import torch
+from forge.op.eval.common import compare_with_golden
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
 
 
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_context_encoder_pytorch(variant, test_device):
@@ -27,7 +30,6 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     sample_text = "Hello, is my dog cute?"
@@ -45,11 +47,19 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
 
 
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(variant, test_device):
@@ -60,7 +70,6 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     sample_text = "Hello, is my dog cute?"
@@ -78,11 +87,19 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
 
 
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(variant, test_device):
@@ -93,7 +110,6 @@ def test_dpr_reader_pytorch(variant, test_device):
     model = download_model(DPRReader.from_pretrained, model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Data preprocessing
     input_tokens = tokenizer(
@@ -110,3 +126,10 @@ def test_dpr_reader_pytorch(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

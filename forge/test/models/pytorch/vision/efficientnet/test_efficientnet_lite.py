@@ -7,14 +7,15 @@ import forge
 ## https://github.com/RangiLyu/EfficientNet-Lite/
 from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite as efflite
 import os
+import torch
+from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_0_pytorch():
+def test_efficientnet_lite_0_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
@@ -25,7 +26,14 @@ def test_efficientnet_lite_0_pytorch():
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_0")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_0")
+    co_out = compiled_model(img_tensor)
+    fw_out = model(img_tensor)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -34,7 +42,6 @@ def test_efficientnet_lite_1_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -46,7 +53,15 @@ def test_efficientnet_lite_1_pytorch(test_device):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
 
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_1")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+
+    co_out = compiled_model(img_tensor)
+    fw_out = model(img_tensor)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -55,7 +70,6 @@ def test_efficientnet_lite_2_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
@@ -66,7 +80,15 @@ def test_efficientnet_lite_2_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_2")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+
+    co_out = compiled_model(img_tensor)
+    fw_out = model(img_tensor)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -75,7 +97,6 @@ def test_efficientnet_lite_3_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
@@ -87,6 +108,15 @@ def test_efficientnet_lite_3_pytorch(test_device):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
     compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+
+    co_out = compiled_model(img_tensor)
+    fw_out = model(img_tensor)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -95,7 +125,6 @@ def test_efficientnet_lite_4_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
@@ -107,3 +136,13 @@ def test_efficientnet_lite_4_pytorch(test_device):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
     compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
+
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+
+    co_out = compiled_model(img_tensor)
+    fw_out = model(img_tensor)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
