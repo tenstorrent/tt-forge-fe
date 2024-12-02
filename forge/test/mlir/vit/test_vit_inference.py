@@ -2,10 +2,9 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import pytest
 import torch
 import forge
-import pytest
-
 from test.mlir.vit.utils.utils import load_model
 
 
