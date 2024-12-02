@@ -35,7 +35,7 @@ def test_unet_osmr_cityscape_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_cityscapes_osmr")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_cityscapes_osmr")
 
 
 def get_imagenet_sample():
@@ -116,7 +116,7 @@ def test_unet_qubvel_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_qubvel_pt")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_qubvel_pt")
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
@@ -163,4 +163,4 @@ def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_unet_torchhub")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_torchhub")

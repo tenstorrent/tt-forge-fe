@@ -10,6 +10,7 @@ import torch
 from PIL import Image
 from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
 from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
+from forge.op.eval.common import compare_with_golden
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image = Image.open(requests.get(url, stream=True).raw)
@@ -65,7 +66,6 @@ def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
@@ -93,6 +93,7 @@ def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
 variants = ["dandelin/vilt-b32-mlm"]
 
 
+@pytest.mark.xfail(reason="pcc=0.9498278562793674")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
 def test_vilt_maskedlm_hf_pytorch(variant, test_device):
@@ -100,4 +101,11 @@ def test_vilt_maskedlm_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]], module_name="pt_ViLt_maskedlm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_ViLt_maskedlm")
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

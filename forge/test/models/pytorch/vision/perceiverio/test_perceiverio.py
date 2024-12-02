@@ -1,22 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import forge
+import torch
 import requests
 from PIL import Image
 import pytest
 from loguru import logger
-import os
-
-import torch
-
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
     PerceiverForImageClassificationLearned,
     PerceiverForImageClassificationFourier,
 )
-
-import forge
+import os
+from forge.op.eval.common import compare_with_golden
 
 
 def get_sample_data(model_name):
@@ -36,9 +34,13 @@ def get_sample_data(model_name):
 
 
 variants = [
-    "deepmind/vision-perceiver-conv",
-    "deepmind/vision-perceiver-learned",
-    "deepmind/vision-perceiver-fourier",
+    pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
+    pytest.param("deepmind/vision-perceiver-learned", id="deepmind/vision-perceiver-learned"),
+    pytest.param(
+        "deepmind/vision-perceiver-fourier",
+        id="deepmind/vision-perceiver-fourier",
+        marks=pytest.mark.xfail(reason="Runtime error: Incompatible dimensions 288 and 261"),
+    ),
 ]
 
 
@@ -48,7 +50,8 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    if variant != "deepmind/vision-perceiver-fourier":
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Sample Image
     pixel_values = get_sample_data(variant)
@@ -71,3 +74,12 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
     compiled_model = forge.compile(
         model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
+
+    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
+        co_out = compiled_model(pixel_values)
+        fw_out = model(pixel_values)
+
+        co_out = [co.to("cpu") for co in co_out]
+        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
