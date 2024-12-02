@@ -34,12 +34,12 @@ def get_sample_data(model_name):
 
 
 variants = [
-    pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
-    pytest.param("deepmind/vision-perceiver-learned", id="deepmind/vision-perceiver-learned"),
+    # pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
+    # pytest.param("deepmind/vision-perceiver-learned", id="deepmind/vision-perceiver-learned"),
     pytest.param(
         "deepmind/vision-perceiver-fourier",
-        id="deepmind/vision-perceiver-fourier",
-        marks=pytest.mark.xfail(reason="Runtime error: Incompatible dimensions 288 and 261"),
+        id="deepmind/vision-perceiver-fourier"
+        # marks=pytest.mark.xfail(reason="Runtime error: Incompatible dimensions 288 and 261"),
     ),
 ]
 

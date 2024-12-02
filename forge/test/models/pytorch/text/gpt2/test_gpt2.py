@@ -10,7 +10,7 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from forge.op.eval.common import compare_with_golden
 
 
-@pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got BFloat16")
+# @pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got BFloat16")
 @pytest.mark.nightly
 def test_gpt2_text_gen(test_device):
     # Load tokenizer and model from HuggingFace
