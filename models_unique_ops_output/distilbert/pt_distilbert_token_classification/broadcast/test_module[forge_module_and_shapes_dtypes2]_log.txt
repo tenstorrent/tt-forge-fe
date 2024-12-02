@@ -1,0 +1,74 @@
+STDERR: 
+
+2024-12-02 12:14:22.633 | INFO     | forge.compile:compile_main:219 - Compiling module PtDistilbertTokenClassificationbroadcast2
+2024-12-02 12:14:22.634 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage init_compile
+2024-12-02 12:14:22.635 | INFO     | forge.ci:initialize_output_build_directory:100 - Forge output build directory for compiled artifacts: /tmp/root/799e5deb9f01
+2024-12-02 12:14:22.635 | INFO     | forge.ci:create_symlink:90 - Symlink created from /__w/tt-forge-fe/tt-forge-fe/tt_build/test_out to /tmp/root/799e5deb9f01
+2024-12-02 12:14:22.635 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage generate_initial_graph
+2024-12-02 12:14:22.635 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_initial_graph_pass
+2024-12-02 12:14:22.636 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage optimized_graph
+2024-12-02 12:14:22.636 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_autograd_pass
+2024-12-02 12:14:22.636 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage consteval_graph
+2024-12-02 12:14:22.636 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage pre_lowering_pass
+2024-12-02 12:14:22.636 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage split_graph
+2024-12-02 12:14:22.636 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage run_mlir_compiler
+error: type of return operand 0 ('tensor<1x12x1x128xf32>') doesn't match function result type ('tensor<1x12x128x128xf32>') in function @forward
+loc("PtDistilbertTokenClassificationbroadcast2":0:0): error: module verification failed.
+2024-12-02 12:14:23.033 | INFO     | conftest:memory_usage_tracker:83 - Test memory usage:
+2024-12-02 12:14:23.033 | INFO     | conftest:memory_usage_tracker:84 -     By test: 21.33 MB
+2024-12-02 12:14:23.033 | INFO     | conftest:memory_usage_tracker:85 -     Minimum: 768.89 MB
+2024-12-02 12:14:23.034 | INFO     | conftest:memory_usage_tracker:86 -     Maximum: 790.22 MB
+2024-12-02 12:14:23.034 | INFO     | conftest:memory_usage_tracker:87 -     Average: 780.15 MB
+STDOUT: 
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.4, py-1.11.0, pluggy-0.13.1 -- /opt/ttforge-toolchain/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /__w/tt-forge-fe/tt-forge-fe, configfile: pytest.ini
+plugins: hydra-core-1.3.2, forked-1.6.0, xdist-2.5.0, timeout-2.0.1, anyio-3.7.1
+collecting ... collected 1 item
+
+generated_modules/unique_ops/pt_distilbert_token_classification/test_broadcast.py::test_module[forge_module_and_shapes_dtypes2] [32m2024-12-02 12:14:22.639[0m | [1m[38;2;128;128;128mINFO    [0m | [36mAlways         [0m - Emmiting mlir for function forward
+FAILED
+
+=================================== FAILURES ===================================
+_________________ test_module[forge_module_and_shapes_dtypes2] _________________
+
+forge_module_and_shapes_dtypes = ((<class 'test_broadcast.PtDistilbertTokenClassificationbroadcast2'>, False), [((1, 12, 1, 128), torch.float32)])
+
+    @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)
+    def test_module(forge_module_and_shapes_dtypes):
+    
+        (forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes
+    
+        inputs = [Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]
+    
+        framework_model = forge_module(forge_module.__name__)
+    
+        if need_process_framework_parameters_func:
+            framework_model.process_framework_parameters()
+    
+        framework_output = framework_model(*inputs)
+    
+>       compiled_model = compile(framework_model, sample_inputs=inputs)
+
+generated_modules/unique_ops/pt_distilbert_token_classification/test_broadcast.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+forge/forge/compile.py:245: in compile_main
+    return forge_compile_from_context(compile_context)
+forge/forge/compile.py:287: in forge_compile_from_context
+    next_stage = stage_to_func[current_stage](context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = CompileContext(modules=[Module PtDistilbertTokenClassificationbroadcast2], graph_name='PtDistilbertTokenClassification...unt=0, target_cycles_offset=0, forge_module=<forge._C.ForgeGraphModule object at 0x7fda58a1b670>, compiled_binary=None)
+
+    def run_mlir_compiler(context: CompileContext) -> CompileDepth:
+        assert context.forge_module is not None
+    
+>       context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
+E       RuntimeError: Generated MLIR module failed verification.
+
+forge/forge/compile.py:922: RuntimeError
+=========================== short test summary info ============================
+FAILED generated_modules/unique_ops/pt_distilbert_token_classification/test_broadcast.py::test_module[forge_module_and_shapes_dtypes2]
+============================== 1 failed in 5.60s ===============================

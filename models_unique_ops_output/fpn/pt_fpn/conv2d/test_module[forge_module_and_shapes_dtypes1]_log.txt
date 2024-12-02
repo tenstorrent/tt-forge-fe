@@ -1,0 +1,203 @@
+STDERR: 
+
+2024-12-02 12:29:29.922 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.0.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.923 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.0.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.923 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.0.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.923 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.0.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.923 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.0.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.923 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.0.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.924 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.1.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.924 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.1.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.924 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.1.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.924 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.1.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.924 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.1.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.925 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.2.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.925 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.2.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.925 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.2.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.925 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.2.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.925 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.2.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.925 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.2.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.926 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.3.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.926 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.3.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.926 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.3.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.926 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.3.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.926 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.3.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.926 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.inner_blocks.3.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.927 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.0.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.927 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.0.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.927 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.0.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.927 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.0.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.927 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.0.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.927 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.0.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.928 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.1.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.928 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.1.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.928 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.1.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.928 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.1.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.928 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.1.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.928 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.1.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.2.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.2.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.2.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.2.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.2.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.2.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.929 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.3.0.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.3.1.weight not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.3.1.bias not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.3.1.running_mean not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.3.1.running_var not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - fpn.layer_blocks.3.1.num_batches_tracked not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - const_048 not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - const_148 not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - const_248 not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - const_348 not found in self._parameters and self._constants
+2024-12-02 12:29:29.930 | WARNING  | test_conv2d:process_framework_parameters:82 - const_448 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_548 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_648 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_748 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_848 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_948 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1048 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1148 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1248 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1348 not found in self._parameters and self._constants
+2024-12-02 12:29:29.931 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1448 not found in self._parameters and self._constants
+2024-12-02 12:29:29.932 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1548 not found in self._parameters and self._constants
+2024-12-02 12:29:29.932 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1648 not found in self._parameters and self._constants
+2024-12-02 12:29:29.932 | WARNING  | test_conv2d:process_framework_parameters:82 - const_1748 not found in self._parameters and self._constants
+2024-12-02 12:29:29.935 | INFO     | forge.compile:compile_main:219 - Compiling module PtFpnconv2D1
+2024-12-02 12:29:29.935 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage init_compile
+2024-12-02 12:29:29.936 | INFO     | forge.ci:initialize_output_build_directory:100 - Forge output build directory for compiled artifacts: /tmp/root/19f9100e9749
+2024-12-02 12:29:29.936 | INFO     | forge.ci:create_symlink:90 - Symlink created from /__w/tt-forge-fe/tt-forge-fe/tt_build/test_out to /tmp/root/19f9100e9749
+2024-12-02 12:29:29.936 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage generate_initial_graph
+2024-12-02 12:29:29.937 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_initial_graph_pass
+2024-12-02 12:29:29.938 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage optimized_graph
+2024-12-02 12:29:29.939 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_autograd_pass
+2024-12-02 12:29:29.939 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage consteval_graph
+2024-12-02 12:29:29.939 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage pre_lowering_pass
+2024-12-02 12:29:29.939 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage split_graph
+2024-12-02 12:29:29.939 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage run_mlir_compiler
+module @PtFpnconv2D1 attributes {tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x512x16x16xf32> {ttir.name = "input_9"}, %arg1: tensor<256x512x1x1xf32> {ttir.name = "fpn.inner_blocks.1.0.weight"}) -> (tensor<1x256x16x16xf32> {ttir.name = "PtFpnconv2D1.output_conv2d_0"}) {
+    %0 = tensor.empty() : tensor<1x16x512x16xf32>
+    %1 = "ttir.transpose"(%arg0, %0) <{dim0 = -3 : si32, dim1 = -2 : si32, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<1x512x16x16xf32>, tensor<1x16x512x16xf32>) -> tensor<1x16x512x16xf32>
+    %2 = tensor.empty() : tensor<1x16x16x512xf32>
+    %3 = "ttir.transpose"(%1, %2) <{dim0 = -2 : si32, dim1 = -1 : si32, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<1x16x512x16xf32>, tensor<1x16x16x512xf32>) -> tensor<1x16x16x512xf32>
+    %4 = tensor.empty() : tensor<1x16x16x256xf32>
+    %5 = "ttir.conv2d"(%3, %arg1, %4) <{dilation_height = 1 : si32, dilation_width = 1 : si32, groups = 1 : si32, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>], padding_bottom = 0 : si32, padding_left = 0 : si32, padding_right = 0 : si32, padding_top = 0 : si32, stride_height = 1 : si32, stride_width = 1 : si32}> {channel_last = 1 : si32} : (tensor<1x16x16x512xf32>, tensor<256x512x1x1xf32>, tensor<1x16x16x256xf32>) -> tensor<1x16x16x256xf32>
+    %6 = tensor.empty() : tensor<1x16x256x16xf32>
+    %7 = "ttir.transpose"(%5, %6) <{dim0 = -2 : si32, dim1 = -1 : si32, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<1x16x16x256xf32>, tensor<1x16x256x16xf32>) -> tensor<1x16x256x16xf32>
+    %8 = tensor.empty() : tensor<1x256x16x16xf32>
+    %9 = "ttir.transpose"(%7, %8) <{dim0 = -3 : si32, dim1 = -2 : si32, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<1x16x256x16xf32>, tensor<1x256x16x16xf32>) -> tensor<1x256x16x16xf32>
+    return %9 : tensor<1x256x16x16xf32>
+  }
+}
+module @PtFpnconv2D1 attributes {tt.device = #tt.device<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>, tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<8192x16xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "input_9"}, %arg1: tensor<256x512x1x1xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 512 + d1 + d2, d3), <1x1>, memref<131072x1xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "fpn.inner_blocks.1.0.weight"}) -> (tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "PtFpnconv2D1.output_conv2d_0"}) {
+    %0 = "ttnn.get_device"() <{mesh_shape = #ttnn<mesh_shape 1x1>}> : () -> !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>
+    %1 = "ttnn.to_layout"(%arg0) <{layout = #ttnn.layout<tile>}> : (tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<8192x16xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<256x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    %2 = "ttnn.to_device"(%1, %0) <{memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<256x1>>>}> : (tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<256x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<256x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%1) <{force = false}> : (tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<256x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %3 = "ttnn.transpose"(%2) <{dim0 = -3 : si32, dim1 = -2 : si32}> : (tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<256x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x16x512x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 512 + d2, d3), <1x1>, memref<8192x16xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%2) <{force = false}> : (tensor<1x512x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 16 + d2, d3), <1x1>, memref<256x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %4 = "ttnn.transpose"(%3) <{dim0 = -2 : si32, dim1 = -1 : si32}> : (tensor<1x16x512x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 512 + d2, d3), <1x1>, memref<8192x16xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x16x16x512xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x512xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%3) <{force = false}> : (tensor<1x16x512x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 8192 + d1 * 512 + d2, d3), <1x1>, memref<8192x16xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %5 = "ttnn.reshape"(%4) <{shape = [1 : i32, 1 : i32, 256 : i32, 512 : i32]}> : (tensor<1x16x16x512xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x512xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x1x256x512xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x512xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%4) <{force = false}> : (tensor<1x16x16x512xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x512xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %6 = "ttnn.empty"(%0) <{dtype = #tt.supportedDataTypes<f32>, layout = #ttnn.layout<row_major>, memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<256x256>>>, shape = #ttnn.shape<1x1x256x256>}> : (!tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x1x256x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    %7 = "ttnn.conv2d"(%5, %arg1, %6, %0) <{batch_size = 1 : i32, dilation_height = 1 : i32, dilation_width = 1 : i32, groups = 1 : i32, in_channels = 512 : i32, input_height = 16 : i32, input_width = 16 : i32, kernel_height = 1 : i32, kernel_width = 1 : i32, out_channels = 256 : i32, padding_height = 0 : i32, padding_width = 0 : i32, stride_height = 1 : i32, stride_width = 1 : i32}> : (tensor<1x1x256x512xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x512xf32, #ttnn.buffer_type<dram>>, interleaved>>, tensor<256x512x1x1xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 512 + d1 + d2, d3), <1x1>, memref<131072x1xf32, #ttnn.buffer_type<system_memory>>>>, tensor<1x1x256x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x1x256x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%5) <{force = false}> : (tensor<1x1x256x512xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x512xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %8 = "ttnn.reshape"(%7) <{shape = [1 : i32, 16 : i32, 16 : i32, 256 : i32]}> : (tensor<1x1x256x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x16x16x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%6) <{force = false}> : (tensor<1x1x256x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %9 = "ttnn.transpose"(%8) <{dim0 = -2 : si32, dim1 = -1 : si32}> : (tensor<1x16x16x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x16x256x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 256 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%8) <{force = false}> : (tensor<1x16x16x256xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 256 + d1 * 16 + d2, d3), <1x1>, memref<256x256xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %10 = "ttnn.transpose"(%9) <{dim0 = -3 : si32, dim1 = -2 : si32}> : (tensor<1x16x256x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 256 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%9) <{force = false}> : (tensor<1x16x256x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 256 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %11 = "ttnn.from_device"(%10) : (tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%10) <{force = false}> : (tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %12 = "ttnn.to_layout"(%11) <{layout = #ttnn.layout<row_major>}> : (tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%11) <{force = false}> : (tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<system_memory>>>>) -> ()
+    return %12 : tensor<1x256x16x16xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 4096 + d1 * 16 + d2, d3), <1x1>, memref<4096x16xf32, #ttnn.buffer_type<system_memory>>>>
+  }
+}
+2024-12-02 12:29:29.951 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage finish_compile
+2024-12-02 12:29:29.952 | INFO     | forge.compile:forge_compile_from_context:361 - Compilation completed.
+2024-12-02 12:29:29.952 | INFO     | forge.compiled_graph_state:__call__:244 - Converting inputs and parameters to PyTorch tensors...
+2024-12-02 12:29:29.952 | INFO     | forge.compiled_graph_state:__call__:247 - Running model forward on device...
+2024-12-02 12:29:34.797 | ERROR    | forge.op.eval.common:compare_with_golden_pcc:247 - Tensor mismatch
+2024-12-02 12:29:34.893 | INFO     | conftest:memory_usage_tracker:83 - Test memory usage:
+2024-12-02 12:29:34.893 | INFO     | conftest:memory_usage_tracker:84 -     By test: 43.07 MB
+2024-12-02 12:29:34.893 | INFO     | conftest:memory_usage_tracker:85 -     Minimum: 770.56 MB
+2024-12-02 12:29:34.893 | INFO     | conftest:memory_usage_tracker:86 -     Maximum: 813.63 MB
+2024-12-02 12:29:34.893 | INFO     | conftest:memory_usage_tracker:87 -     Average: 791.37 MB
+STDOUT: 
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.4, py-1.11.0, pluggy-0.13.1 -- /opt/ttforge-toolchain/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /__w/tt-forge-fe/tt-forge-fe, configfile: pytest.ini
+plugins: hydra-core-1.3.2, forked-1.6.0, xdist-2.5.0, timeout-2.0.1, anyio-3.7.1
+collecting ... collected 1 item
+
+generated_modules/unique_ops/pt_fpn/test_conv2d.py::test_module[forge_module_and_shapes_dtypes1] [32m2024-12-02 12:29:29.943[0m | [1m[38;2;128;128;128mINFO    [0m | [36mAlways         [0m - Emmiting mlir for function forward
+[32m2024-12-02 12:29:29.944[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR module generated successfully.
+[32m2024-12-02 12:29:29.946[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR passes run successfully.
+[32m2024-12-02 12:29:29.951[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - Flatbuffer binary generated successfully.
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Opening user mode device driver
+
+[32m2024-12-02 12:29:29.981[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Detected 1 PCI device : [0]
+[32m2024-12-02 12:29:29.982[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Opened PCI device 0; KMD version: 1.27.1
+[32m2024-12-02 12:29:29.992[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - init_detect_tt_device_numanodes(): Could not determine NumaNodeSet for TT device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 12:29:29.992[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - Could not find NumaNodeSet for TT Device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 12:29:29.993[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - bind_area_memory_nodeset(): Unable to determine TT Device to NumaNode mapping for physical_device_id: 0. Skipping membind.
+[32m2024-12-02 12:29:29.993[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - ---- ttSiliconDevice::init_hugepage: bind_area_to_memory_nodeset() failed (physical_device_id: 0 ch: 0). Hugepage allocation is not on NumaNode matching TT Device. Side-Effect is decreased Device->Host perf (Issue #893).
+[32m2024-12-02 12:29:30.021[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Software version 6.0.0, Ethernet FW version 6.9.0 (Device 0)
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+FAILED
+
+=================================== FAILURES ===================================
+_________________ test_module[forge_module_and_shapes_dtypes1] _________________
+
+forge_module_and_shapes_dtypes = ((<class 'test_conv2d.PtFpnconv2D1'>, True), [((1, 512, 16, 16), torch.float32)])
+
+    @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)
+    def test_module(forge_module_and_shapes_dtypes):
+    
+        (forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes
+    
+        inputs = [Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]
+    
+        framework_model = forge_module(forge_module.__name__)
+    
+        if need_process_framework_parameters_func:
+            framework_model.process_framework_parameters()
+    
+        framework_output = framework_model(*inputs)
+    
+        compiled_model = compile(framework_model, sample_inputs=inputs)
+        tt_output = compiled_model(*inputs)
+    
+        tt_output = [tt_out.to("cpu") for tt_out in tt_output]
+        framework_output = [framework_output] if isinstance(framework_output, forge.tensor.TensorFromTrace) else framework_output
+        framework_output = [fw_out.to_framework("pytorch") for fw_out in framework_output]
+    
+>       assert all([compare_with_golden(golden=fw_out, calculated=tt_out, pcc=0.99) for fw_out, tt_out in zip(framework_output, tt_output)])
+E       assert False
+E        +  where False = all([False])
+
+generated_modules/unique_ops/pt_fpn/test_conv2d.py:184: AssertionError
+=========================== short test summary info ============================
+FAILED generated_modules/unique_ops/pt_fpn/test_conv2d.py::test_module[forge_module_and_shapes_dtypes1]
+============================== 1 failed in 10.15s ==============================
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Closing user mode device drivers

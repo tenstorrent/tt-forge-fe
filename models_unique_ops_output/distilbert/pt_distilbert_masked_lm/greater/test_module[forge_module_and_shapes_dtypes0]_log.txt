@@ -1,0 +1,383 @@
+STDERR: 
+
+2024-12-02 12:07:13.508 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.embeddings.word_embeddings.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.509 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.embeddings.position_embeddings.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.510 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.embeddings.LayerNorm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.510 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.embeddings.LayerNorm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.510 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.q_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.510 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.q_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.511 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.k_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.511 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.k_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.512 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.v_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.512 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.v_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.513 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.out_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.513 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.attention.out_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.513 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.sa_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.514 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.sa_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.517 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.ffn.lin1.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.517 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.ffn.lin1.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.519 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.ffn.lin2.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.519 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.ffn.lin2.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.519 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.output_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.519 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.0.output_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.520 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.q_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.520 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.q_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.521 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.k_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.521 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.k_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.523 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.v_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.523 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.v_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.523 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.out_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.523 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.attention.out_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.523 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.sa_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.523 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.sa_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.525 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.ffn.lin1.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.525 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.ffn.lin1.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.530 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.ffn.lin2.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.530 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.ffn.lin2.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.530 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.output_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.530 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.1.output_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.531 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.q_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.531 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.q_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.532 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.k_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.532 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.k_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.532 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.v_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.532 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.v_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.533 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.out_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.533 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.attention.out_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.533 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.sa_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.533 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.sa_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.535 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.ffn.lin1.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.535 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.ffn.lin1.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.537 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.ffn.lin2.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.537 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.ffn.lin2.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.537 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.output_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.537 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.2.output_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.538 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.q_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.538 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.q_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.544 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.k_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.544 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.k_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.545 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.v_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.545 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.v_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.546 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.out_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.546 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.attention.out_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.546 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.sa_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.546 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.sa_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.548 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.ffn.lin1.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.548 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.ffn.lin1.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.550 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.ffn.lin2.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.550 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.ffn.lin2.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.550 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.output_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.550 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.3.output_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.551 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.q_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.551 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.q_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.551 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.k_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.551 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.k_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.552 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.v_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.552 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.v_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.553 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.out_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.553 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.attention.out_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.553 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.sa_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.553 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.sa_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.555 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.ffn.lin1.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.555 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.ffn.lin1.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.556 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.ffn.lin2.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.556 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.ffn.lin2.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.556 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.output_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.556 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.4.output_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.557 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.q_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.557 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.q_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.558 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.k_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.558 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.k_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.558 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.v_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.558 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.v_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.559 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.out_lin.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.559 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.attention.out_lin.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.559 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.sa_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.559 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.sa_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.561 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.ffn.lin1.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.561 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.ffn.lin1.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.563 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.ffn.lin2.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.563 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.ffn.lin2.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.563 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.output_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.563 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.transformer.layer.5.output_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.564 | WARNING  | test_greater:process_framework_parameters:47 - vocab_transform.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.564 | WARNING  | test_greater:process_framework_parameters:47 - vocab_transform.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.564 | WARNING  | test_greater:process_framework_parameters:47 - vocab_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.564 | WARNING  | test_greater:process_framework_parameters:47 - vocab_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.682 | WARNING  | test_greater:process_framework_parameters:47 - vocab_projector.weight not found in self._parameters and self._constants
+2024-12-02 12:07:13.682 | WARNING  | test_greater:process_framework_parameters:47 - vocab_projector.bias not found in self._parameters and self._constants
+2024-12-02 12:07:13.682 | WARNING  | test_greater:process_framework_parameters:47 - const_0115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.683 | WARNING  | test_greater:process_framework_parameters:47 - const_1115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.683 | WARNING  | test_greater:process_framework_parameters:47 - const_2115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.683 | WARNING  | test_greater:process_framework_parameters:47 - const_4115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.683 | WARNING  | test_greater:process_framework_parameters:47 - const_5115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.683 | WARNING  | test_greater:process_framework_parameters:47 - const_6115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.683 | WARNING  | test_greater:process_framework_parameters:47 - const_7115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_8115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_9115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_10115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_11115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_12115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_13115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.684 | WARNING  | test_greater:process_framework_parameters:47 - const_14115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_15115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_16115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_17115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_18115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_19115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_20115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.685 | WARNING  | test_greater:process_framework_parameters:47 - const_21115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.686 | WARNING  | test_greater:process_framework_parameters:47 - const_22115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.686 | WARNING  | test_greater:process_framework_parameters:47 - const_23115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.686 | WARNING  | test_greater:process_framework_parameters:47 - const_24115 not found in self._parameters and self._constants
+2024-12-02 12:07:13.686 | WARNING  | test_greater:process_framework_parameters:47 - distilbert.embeddings.position_ids not found in self._parameters and self._constants
+2024-12-02 12:07:13.714 | INFO     | forge.compile:compile_main:219 - Compiling module PtDistilbertMaskedLmgreater0
+2024-12-02 12:07:13.715 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage init_compile
+2024-12-02 12:07:13.716 | INFO     | forge.ci:initialize_output_build_directory:100 - Forge output build directory for compiled artifacts: /tmp/root/3e06b55a20de
+2024-12-02 12:07:13.716 | INFO     | forge.ci:create_symlink:90 - Symlink created from /__w/tt-forge-fe/tt-forge-fe/tt_build/test_out to /tmp/root/3e06b55a20de
+2024-12-02 12:07:13.716 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage generate_initial_graph
+2024-12-02 12:07:13.717 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_initial_graph_pass
+2024-12-02 12:07:13.718 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage optimized_graph
+2024-12-02 12:07:13.718 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_autograd_pass
+2024-12-02 12:07:13.718 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage consteval_graph
+2024-12-02 12:07:13.718 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage pre_lowering_pass
+2024-12-02 12:07:13.718 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage split_graph
+2024-12-02 12:07:13.718 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage run_mlir_compiler
+module @PtDistilbertMaskedLmgreater0 attributes {tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x12x128x128xf32> {ttir.name = "clip_145"}, %arg1: tensor<1xf32> {ttir.name = "input_1_greater_0"}) -> (tensor<1x12x128x128xf32> {ttir.name = "PtDistilbertMaskedLmgreater0.output_greater_0"}) {
+    %0 = tensor.empty() : tensor<1x12x128x128xf32>
+    %1 = "ttir.gt"(%arg0, %arg1, %0) <{operandSegmentSizes = array<i32: 2, 1>, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<1x12x128x128xf32>, tensor<1xf32>, tensor<1x12x128x128xf32>) -> tensor<1x12x128x128xf32>
+    return %1 : tensor<1x12x128x128xf32>
+  }
+}
+module @PtDistilbertMaskedLmgreater0 attributes {tt.device = #tt.device<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>, tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "clip_145"}, %arg1: tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "input_1_greater_0"}) -> (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "PtDistilbertMaskedLmgreater0.output_greater_0"}) {
+    %0 = "ttnn.get_device"() <{mesh_shape = #ttnn<mesh_shape 1x1>}> : () -> !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>
+    %1 = "ttnn.to_layout"(%arg0) <{layout = #ttnn.layout<tile>}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<48x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    %2 = "ttnn.to_device"(%1, %0) <{memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<48x4>>>}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<48x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<48x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%1) <{force = false}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<48x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %3 = "ttnn.to_layout"(%arg1) <{layout = #ttnn.layout<tile>}> : (tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    %4 = "ttnn.to_device"(%3, %0) <{memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<1x1>>>}> : (tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%3) <{force = false}> : (tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %5 = "ttnn.empty"(%0) <{dtype = #tt.supportedDataTypes<f32>, layout = #ttnn.layout<row_major>, memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<1536x128>>>, shape = #ttnn.shape<1x12x128x128>}> : (!tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    %6 = "ttnn.gt"(%2, %4, %5) <{operandSegmentSizes = array<i32: 2, 1>}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<48x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>, tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>, tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%4) <{force = false}> : (tensor<1xf32, #ttnn.ttnn_layout<(d0) -> (0, d0), <1x1>, memref<1x1x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    "ttnn.deallocate"(%2) <{force = false}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<48x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %7 = "ttnn.from_device"(%6) : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%5) <{force = false}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %8 = "ttnn.to_layout"(%7) <{layout = #ttnn.layout<row_major>}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%7) <{force = false}> : (tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>>) -> ()
+    return %8 : tensor<1x12x128x128xf32, #ttnn.ttnn_layout<(d0, d1, d2, d3) -> (d0 * 1536 + d1 * 128 + d2, d3), <1x1>, memref<1536x128xf32, #ttnn.buffer_type<system_memory>>>>
+  }
+}
+2024-12-02 12:07:13.727 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage finish_compile
+2024-12-02 12:07:13.728 | INFO     | forge.compile:forge_compile_from_context:361 - Compilation completed.
+2024-12-02 12:07:13.728 | INFO     | forge.compiled_graph_state:__call__:244 - Converting inputs and parameters to PyTorch tensors...
+2024-12-02 12:07:13.728 | INFO     | forge.compiled_graph_state:__call__:247 - Running model forward on device...
+2024-12-02 12:07:15.602 | INFO     | conftest:memory_usage_tracker:83 - Test memory usage:
+2024-12-02 12:07:15.602 | INFO     | conftest:memory_usage_tracker:84 -     By test: 110.19 MB
+2024-12-02 12:07:15.602 | INFO     | conftest:memory_usage_tracker:85 -     Minimum: 769.76 MB
+2024-12-02 12:07:15.602 | INFO     | conftest:memory_usage_tracker:86 -     Maximum: 1738.07 MB
+2024-12-02 12:07:15.602 | INFO     | conftest:memory_usage_tracker:87 -     Average: 1057.32 MB
+STDOUT: 
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.4, py-1.11.0, pluggy-0.13.1 -- /opt/ttforge-toolchain/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /__w/tt-forge-fe/tt-forge-fe, configfile: pytest.ini
+plugins: hydra-core-1.3.2, forked-1.6.0, xdist-2.5.0, timeout-2.0.1, anyio-3.7.1
+collecting ... collected 1 item
+
+generated_modules/unique_ops/pt_distilbert_masked_lm/test_greater.py::test_module[forge_module_and_shapes_dtypes0] [32m2024-12-02 12:07:13.721[0m | [1m[38;2;128;128;128mINFO    [0m | [36mAlways         [0m - Emmiting mlir for function forward
+[32m2024-12-02 12:07:13.722[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR module generated successfully.
+[32m2024-12-02 12:07:13.724[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR passes run successfully.
+[32m2024-12-02 12:07:13.727[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - Flatbuffer binary generated successfully.
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Opening user mode device driver
+
+[32m2024-12-02 12:07:13.758[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Detected 1 PCI device : [0]
+[32m2024-12-02 12:07:13.758[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Opened PCI device 0; KMD version: 1.27.1
+[32m2024-12-02 12:07:13.769[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - init_detect_tt_device_numanodes(): Could not determine NumaNodeSet for TT device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 12:07:13.769[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - Could not find NumaNodeSet for TT Device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 12:07:13.770[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - bind_area_memory_nodeset(): Unable to determine TT Device to NumaNode mapping for physical_device_id: 0. Skipping membind.
+[32m2024-12-02 12:07:13.770[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - ---- ttSiliconDevice::init_hugepage: bind_area_to_memory_nodeset() failed (physical_device_id: 0 ch: 0). Hugepage allocation is not on NumaNode matching TT Device. Side-Effect is decreased Device->Host perf (Issue #893).
+[32m2024-12-02 12:07:13.798[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Software version 6.0.0, Ethernet FW version 6.9.0 (Device 0)
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;000;000mFATAL   [0m | BinaryOpType cannot be mapped to BcastOpMath
+FAILED
+
+=================================== FAILURES ===================================
+_________________ test_module[forge_module_and_shapes_dtypes0] _________________
+
+forge_module_and_shapes_dtypes = ((<class 'test_greater.PtDistilbertMaskedLmgreater0'>, True), [((1, 12, 128, 128), torch.float32)])
+
+    @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)
+    def test_module(forge_module_and_shapes_dtypes):
+    
+        (forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes
+    
+        inputs = [Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]
+    
+        framework_model = forge_module(forge_module.__name__)
+    
+        if need_process_framework_parameters_func:
+            framework_model.process_framework_parameters()
+    
+        framework_output = framework_model(*inputs)
+    
+        compiled_model = compile(framework_model, sample_inputs=inputs)
+>       tt_output = compiled_model(*inputs)
+
+generated_modules/unique_ops/pt_distilbert_masked_lm/test_greater.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <forge.compiled_graph_state.CompiledModel object at 0x7f2fd06c8d30>
+inputs = (Forge Tensor: tensor([[[[0.7775, 0.5699, 0.1255,  ..., 0.9692, 0.9876, 0.2094],
+          [0.1169, 0.3636, 0.0556,  ......, 0.0890, 0.6852, 0.5856],
+          [0.3298, 0.8701, 0.0591,  ..., 0.9789, 0.3901, 0.5422]]]]), DataFormat.Float32,)
+inputs_and_parameters = (tensor([[[[0.7775, 0.5699, 0.1255,  ..., 0.9692, 0.9876, 0.2094],
+          [0.1169, 0.3636, 0.0556,  ..., 0.4955, 0....206,  ..., 0.0890, 0.6852, 0.5856],
+          [0.3298, 0.8701, 0.0591,  ..., 0.9789, 0.3901, 0.5422]]]]), tensor([0.]))
+
+    def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
+        """
+        Run inference on the compiled model.
+    
+        Parameters
+        ----------
+        inputs: [Tensor, ...]
+            Input tensors
+    
+        Returns
+        -------
+        List[Tensor]
+            Output tensors
+        """
+        self.inputs = [*inputs]
+        inputs_and_parameters = [
+            *inputs,
+            *self.fwd_compiled_graph_state.get_ordered_constant_tensors(),
+            *self.fwd_compiled_graph_state.get_ordered_parameter_tensors(),
+        ]
+    
+        if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
+            logger.info("Converting inputs and parameters to PyTorch tensors...")
+            inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
+    
+        logger.info(f"Running model {self.fwd_compiled_graph_state.graph.get_name()} on device...")
+>       all_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
+E       RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_width_multi_core_program_factory.cpp:27: tt::exception
+E       info:
+E       BinaryOpType cannot be mapped to BcastOpMath
+E       backtrace:
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x512198) [0x7f2fe9e43198]
+E        --- ttnn::operations::binary::BinaryDeviceOperation::BroadcastHeightAndWidthMultiCore::create(ttnn::operations::binary::BinaryDeviceOperation::operation_attributes_t const&, ttnn::operations::binary::BinaryDeviceOperation::tensor_args_t const&, tt::tt_metal::Tensor&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib/_ttnn.so(+0x9d29e6) [0x7f2fd64299e6]
+E        --- void ttnn::device_operation::detail::launch_on_worker_thread<ttnn::operations::binary::BinaryDeviceOperation, unsigned char, long, ttnn::operations::binary::BinaryDeviceOperation::operation_attributes_t, ttnn::operations::binary::BinaryDeviceOperation::tensor_args_t, tt::tt_metal::Tensor, tt::tt_metal::v0::Device*>(unsigned char, long, ttnn::operations::binary::BinaryDeviceOperation::operation_attributes_t const&, ttnn::operations::binary::BinaryDeviceOperation::tensor_args_t const&, tt::tt_metal::Tensor&, tt::tt_metal::v0::Device*&)
+E        --- ttnn::operations::binary::BinaryDeviceOperation::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<ttnn::operations::binary::BinaryDeviceOperation>(unsigned char, ttnn::operations::binary::BinaryDeviceOperation::operation_attributes_t const&, ttnn::operations::binary::BinaryDeviceOperation::tensor_args_t const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib/_ttnn.so(+0x9d0e19) [0x7f2fd6427e19]
+E        --- ttnn::operations::binary::BinaryDeviceOperation::tensor_return_value_t ttnn::device_operation::detail::invoke<ttnn::operations::binary::BinaryDeviceOperation>(unsigned char, ttnn::operations::binary::BinaryDeviceOperation::operation_attributes_t const&, ttnn::operations::binary::BinaryDeviceOperation::tensor_args_t const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib/_ttnn.so(+0x1b68cfc) [0x7f2fd75bfcfc]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib/_ttnn.so(+0x1b59a2b) [0x7f2fd75b0a2b]
+E        --- ttnn::operations::binary::RelationalBinary<(ttnn::operations::binary::BinaryOpType)3>::invoke(unsigned char, tt::tt_metal::Tensor const&, tt::tt_metal::Tensor const&, std::optional<tt::tt_metal::DataType const> const&, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<tt::tt_metal::Tensor>, std::optional<std::vector<ttnn::operations::unary::UnaryWithParam, std::allocator<ttnn::operations::unary::UnaryWithParam> > > const&, std::optional<ttnn::operations::unary::UnaryWithParam> const&)
+E        --- ttnn::operations::binary::RelationalBinary<(ttnn::operations::binary::BinaryOpType)3>::invoke(tt::tt_metal::Tensor const&, tt::tt_metal::Tensor const&, std::optional<tt::tt_metal::DataType const> const&, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<tt::tt_metal::Tensor>, std::optional<std::vector<ttnn::operations::unary::UnaryWithParam, std::allocator<ttnn::operations::unary::UnaryWithParam> > >, std::optional<ttnn::operations::unary::UnaryWithParam>)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6392c2) [0x7f2fe9f6a2c2]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x63a0b4) [0x7f2fe9f6b0b4]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x63a9e7) [0x7f2fe9f6b9e7]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x638045) [0x7f2fe9f69045]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6367a8) [0x7f2fe9f677a8]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x636105) [0x7f2fe9f67105]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x636032) [0x7f2fe9f67032]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x60a007) [0x7f2fe9f3b007]
+E        --- tt::runtime::ttnn::operations::binary::run(tt::target::ttnn::EltwiseOp const*, tt::runtime::ttnn::ProgramContext&)
+E        --- tt::runtime::ttnn::runProgram(tt::tt_metal::distributed::MeshDevice&, tt::runtime::Binary&, unsigned int, std::vector<tt::tt_metal::Tensor*, std::allocator<tt::tt_metal::Tensor*> > const&, std::vector<tt::tt_metal::Tensor*, std::allocator<tt::tt_metal::Tensor*> > const&)
+E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&)
+E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&)
+E        --- tt::run_binary(tt::runtime::Binary&, int, std::vector<at::Tensor, std::allocator<at::Tensor> > const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x311ea0) [0x7f2fea53aea0]
+E        --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x311dee) [0x7f2fea53adee]
+E        --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0xde865) [0x7f2fea307865]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x15cb2e) [0x559492dbdb2e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x559492db42db]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x64d6) [0x559492dac6e6]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0xc4) [0x559492db3474]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x559492dc92bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x559492ee36d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0xbb) [0x559492dccebb]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0x122) [0x559492dccf22]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x559492da7b93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x559492dac34a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x559492dcc281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x559492dac34a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x559492db351d]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x559492dc92bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x559492ee36d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x559492db42db]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x559492dad4fa]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x8ab) [0x559492da6abb]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x559492da7b93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x559492dac34a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x559492dcc281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x559492dac34a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x559492db351d]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x559492dc92bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x559492ee36d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0xbb) [0x559492dccebb]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x559492da68cc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x559492dcc281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x559492da7b93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x559492da68cc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x559492da7b93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x559492da7b93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x559492dac34a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x559492dcc281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x559492dac34a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x559492db351d]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x559492dc92bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x559492ee36d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x559492db42db]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x559492dad4fa]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x559492da8a6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x559492da7b93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x559492dbe42c]
+
+forge/forge/compiled_graph_state.py:248: RuntimeError
+=========================== short test summary info ============================
+FAILED generated_modules/unique_ops/pt_distilbert_masked_lm/test_greater.py::test_module[forge_module_and_shapes_dtypes0]
+============================== 1 failed in 7.64s ===============================
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Closing user mode device drivers

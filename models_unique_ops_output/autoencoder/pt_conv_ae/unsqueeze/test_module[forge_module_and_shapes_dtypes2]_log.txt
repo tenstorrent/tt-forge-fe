@@ -1,0 +1,81 @@
+STDERR: 
+
+2024-12-02 12:23:26.641 | INFO     | forge.compile:compile_main:219 - Compiling module PtConvAeunsqueeze0
+2024-12-02 12:23:26.642 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage init_compile
+2024-12-02 12:23:26.643 | INFO     | forge.ci:initialize_output_build_directory:100 - Forge output build directory for compiled artifacts: /tmp/root/3141e604308c
+2024-12-02 12:23:26.643 | INFO     | forge.ci:create_symlink:90 - Symlink created from /__w/tt-forge-fe/tt-forge-fe/tt_build/test_out to /tmp/root/3141e604308c
+2024-12-02 12:23:26.643 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage generate_initial_graph
+2024-12-02 12:23:26.644 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_initial_graph_pass
+2024-12-02 12:23:26.644 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage optimized_graph
+2024-12-02 12:23:26.644 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_autograd_pass
+2024-12-02 12:23:26.644 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage consteval_graph
+2024-12-02 12:23:26.644 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage pre_lowering_pass
+2024-12-02 12:23:26.644 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage split_graph
+2024-12-02 12:23:26.645 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage run_mlir_compiler
+module @PtConvAeunsqueeze0 attributes {tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<4xf32> {ttir.name = "unsqueeze_input_0"}) -> (tensor<4x1xf32> {ttir.name = "PtConvAeunsqueeze0.output_unsqueeze_0"}) {
+    %0 = tensor.empty() : tensor<4x1xf32>
+    %1 = "ttir.unsqueeze"(%arg0, %0) <{dim = 1 : si32, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<4xf32>, tensor<4x1xf32>) -> tensor<4x1xf32>
+    return %1 : tensor<4x1xf32>
+  }
+}
+loc("unsqueeze_0"("forward":4294967295:5)): error: 'ttnn.reshape' op Shape attribute size must match output tensor rank
+2024-12-02 12:23:27.042 | INFO     | conftest:memory_usage_tracker:83 - Test memory usage:
+2024-12-02 12:23:27.042 | INFO     | conftest:memory_usage_tracker:84 -     By test: 23.47 MB
+2024-12-02 12:23:27.042 | INFO     | conftest:memory_usage_tracker:85 -     Minimum: 772.00 MB
+2024-12-02 12:23:27.042 | INFO     | conftest:memory_usage_tracker:86 -     Maximum: 795.47 MB
+2024-12-02 12:23:27.042 | INFO     | conftest:memory_usage_tracker:87 -     Average: 785.23 MB
+STDOUT: 
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.4, py-1.11.0, pluggy-0.13.1 -- /opt/ttforge-toolchain/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /__w/tt-forge-fe/tt-forge-fe, configfile: pytest.ini
+plugins: hydra-core-1.3.2, forked-1.6.0, xdist-2.5.0, timeout-2.0.1, anyio-3.7.1
+collecting ... collected 1 item
+
+generated_modules/unique_ops/pt_conv_ae/test_unsqueeze.py::test_module[forge_module_and_shapes_dtypes2] [32m2024-12-02 12:23:26.648[0m | [1m[38;2;128;128;128mINFO    [0m | [36mAlways         [0m - Emmiting mlir for function forward
+[32m2024-12-02 12:23:26.648[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR module generated successfully.
+FAILED
+
+=================================== FAILURES ===================================
+_________________ test_module[forge_module_and_shapes_dtypes2] _________________
+
+forge_module_and_shapes_dtypes = ((<class 'test_unsqueeze.PtConvAeunsqueeze0'>, False), [('encoder_conv2d_2.bias', torch.float32)])
+
+    @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)
+    def test_module(forge_module_and_shapes_dtypes):
+    
+        (forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes
+    
+        inputs = [Tensor.create_from_torch(named_parameters[operand_shape]) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]
+    
+        framework_model = forge_module(forge_module.__name__)
+    
+        if need_process_framework_parameters_func:
+            framework_model.process_framework_parameters()
+    
+        framework_output = framework_model(*inputs)
+    
+>       compiled_model = compile(framework_model, sample_inputs=inputs)
+
+generated_modules/unique_ops/pt_conv_ae/test_unsqueeze.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+forge/forge/compile.py:245: in compile_main
+    return forge_compile_from_context(compile_context)
+forge/forge/compile.py:287: in forge_compile_from_context
+    next_stage = stage_to_func[current_stage](context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+context = CompileContext(modules=[Module PtConvAeunsqueeze0], graph_name='PtConvAeunsqueeze0', compiler_cfg=CompilerConfig(enabl...unt=0, target_cycles_offset=0, forge_module=<forge._C.ForgeGraphModule object at 0x7f12613dbf30>, compiled_binary=None)
+
+    def run_mlir_compiler(context: CompileContext) -> CompileDepth:
+        assert context.forge_module is not None
+    
+>       context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
+E       RuntimeError: Failed to run MLIR compiler pass pipeline.
+
+forge/forge/compile.py:922: RuntimeError
+=========================== short test summary info ============================
+FAILED generated_modules/unique_ops/pt_conv_ae/test_unsqueeze.py::test_module[forge_module_and_shapes_dtypes2]
+============================== 1 failed in 5.66s ===============================

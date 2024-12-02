@@ -1,0 +1,804 @@
+STDERR: 
+
+2024-12-02 11:40:49.960 | WARNING  | test_embedding:process_framework_parameters:47 - model.shared.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.028 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.embed_tokens.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.029 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.embed_positions.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.030 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.030 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.030 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.030 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.031 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.031 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.031 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.031 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.032 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.032 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.037 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.037 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.041 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.041 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.041 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.041 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.0.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.042 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.042 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.043 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.043 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.043 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.043 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.044 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.044 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.044 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.045 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.046 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.046 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.048 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.048 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.048 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.048 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.1.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.049 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.049 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.050 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.050 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.051 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.051 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.051 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.051 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.051 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.052 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.053 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.054 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.055 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.055 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.055 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.055 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.2.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.056 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.057 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.057 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.057 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.058 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.058 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.058 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.058 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.058 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.059 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.060 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.060 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.062 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.062 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.062 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.062 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.3.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.063 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.064 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.064 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.064 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.065 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.065 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.065 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.065 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.065 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.066 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.067 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.067 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.069 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.069 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.069 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.069 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.4.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.070 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.070 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.071 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.071 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.072 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.072 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.072 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.072 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.072 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.072 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.074 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.074 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.076 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.076 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.076 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.076 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.5.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.077 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.077 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.078 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.078 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.078 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.078 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.079 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.079 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.079 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.079 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.081 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.081 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.083 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.083 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.083 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.083 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.6.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.084 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.084 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.085 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.085 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.085 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.086 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.086 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.086 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.086 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.086 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.088 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.088 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.090 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.090 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.090 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.090 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.7.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.091 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.091 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.092 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.092 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.093 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.093 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.093 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.093 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.093 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.094 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.095 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.095 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.097 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.097 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.097 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.097 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.8.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.098 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.098 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.099 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.099 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.100 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.100 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.100 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.100 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.100 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.100 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.102 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.102 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.104 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.104 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.104 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.104 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.9.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.105 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.105 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.106 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.106 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.106 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.107 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.107 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.107 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.107 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.107 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.109 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.109 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.111 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.111 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.111 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.111 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.10.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.112 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.112 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.113 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.113 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.113 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.114 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.114 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.114 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.114 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.114 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.116 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.116 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.118 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.118 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.118 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.118 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layers.11.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.118 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layernorm_embedding.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.118 | WARNING  | test_embedding:process_framework_parameters:47 - model.encoder.layernorm_embedding.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.185 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.embed_positions.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.186 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.186 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.186 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.186 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.187 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.187 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.187 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.188 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.188 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.188 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.188 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.188 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.189 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.189 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.189 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.189 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.190 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.190 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.190 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.190 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.192 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.192 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.194 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.194 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.194 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.194 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.0.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.195 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.195 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.196 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.196 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.196 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.196 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.197 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.197 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.197 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.197 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.198 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.198 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.198 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.198 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.199 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.199 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.199 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.199 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.199 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.200 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.201 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.201 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.203 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.203 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.203 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.203 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.1.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.204 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.204 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.205 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.205 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.206 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.206 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.206 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.206 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.206 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.206 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.207 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.207 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.207 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.208 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.208 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.208 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.209 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.209 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.209 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.209 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.211 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.211 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.212 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.213 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.213 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.213 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.2.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.214 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.214 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.214 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.215 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.215 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.215 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.216 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.216 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.216 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.216 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.216 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.217 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.217 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.217 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.218 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.218 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.218 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.218 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.218 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.218 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.220 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.220 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.222 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.222 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.222 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.222 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.3.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.223 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.223 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.224 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.224 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.224 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.224 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.225 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.225 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.225 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.225 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.226 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.226 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.226 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.226 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.227 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.227 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.228 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.228 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.228 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.228 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.230 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.230 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.231 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.231 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.231 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.232 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.4.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.233 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.233 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.233 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.233 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.234 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.234 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.234 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.235 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.235 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.235 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.235 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.235 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.236 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.236 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.236 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.237 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.237 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.237 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.237 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.237 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.239 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.239 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.241 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.241 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.241 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.241 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.5.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.242 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.242 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.243 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.243 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.243 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.243 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.244 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.244 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.244 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.244 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.245 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.245 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.245 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.245 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.246 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.246 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.246 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.247 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.247 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.247 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.248 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.249 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.250 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.250 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.250 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.250 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.6.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.251 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.252 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.252 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.252 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.253 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.253 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.253 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.253 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.253 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.254 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.254 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.254 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.255 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.255 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.255 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.255 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.256 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.256 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.256 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.256 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.258 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.258 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.260 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.260 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.260 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.260 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.7.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.261 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.261 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.262 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.262 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.262 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.262 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.263 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.263 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.263 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.263 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.264 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.264 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.264 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.264 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.265 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.265 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.265 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.265 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.266 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.266 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.267 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.268 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.269 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.269 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.269 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.269 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.8.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.270 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.270 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.271 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.271 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.272 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.272 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.272 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.272 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.272 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.272 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.273 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.273 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.274 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.274 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.274 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.274 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.275 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.275 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.275 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.275 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.277 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.277 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.278 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.278 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.279 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.279 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.9.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.280 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.280 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.280 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.280 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.281 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.281 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.282 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.282 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.282 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.282 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.282 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.282 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.283 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.283 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.284 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.284 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.285 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.285 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.285 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.285 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.287 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.287 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.288 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.289 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.289 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.289 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.10.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.290 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.290 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.290 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.291 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.291 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.291 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.292 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.292 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.292 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.292 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.self_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.292 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.k_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.293 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.k_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.293 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.v_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.293 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.v_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.294 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.q_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.294 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.q_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.294 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.out_proj.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.294 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn.out_proj.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.294 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.294 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.encoder_attn_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.296 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.fc1.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.296 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.fc1.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.298 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.fc2.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.298 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.fc2.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.298 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.final_layer_norm.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.298 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layers.11.final_layer_norm.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.298 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layernorm_embedding.weight not found in self._parameters and self._constants
+2024-12-02 11:40:50.298 | WARNING  | test_embedding:process_framework_parameters:47 - model.decoder.layernorm_embedding.bias not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_00 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_10 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_20 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_30 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_40 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_50 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_60 not found in self._parameters and self._constants
+2024-12-02 11:40:50.299 | WARNING  | test_embedding:process_framework_parameters:47 - const_70 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_80 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_90 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_100 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_110 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_120 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_130 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_140 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_150 not found in self._parameters and self._constants
+2024-12-02 11:40:50.300 | WARNING  | test_embedding:process_framework_parameters:47 - const_160 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_170 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_180 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_190 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_200 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_210 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_220 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_230 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_240 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_250 not found in self._parameters and self._constants
+2024-12-02 11:40:50.301 | WARNING  | test_embedding:process_framework_parameters:47 - const_260 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_270 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_280 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_290 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_300 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_310 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_320 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_330 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_340 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_350 not found in self._parameters and self._constants
+2024-12-02 11:40:50.302 | WARNING  | test_embedding:process_framework_parameters:47 - const_360 not found in self._parameters and self._constants
+2024-12-02 11:40:50.303 | WARNING  | test_embedding:process_framework_parameters:47 - const_370 not found in self._parameters and self._constants
+2024-12-02 11:40:50.303 | WARNING  | test_embedding:process_framework_parameters:47 - const_380 not found in self._parameters and self._constants
+2024-12-02 11:40:50.303 | WARNING  | test_embedding:process_framework_parameters:47 - const_390 not found in self._parameters and self._constants
+2024-12-02 11:40:50.303 | WARNING  | test_embedding:process_framework_parameters:47 - const_400 not found in self._parameters and self._constants
+2024-12-02 11:40:50.303 | WARNING  | test_embedding:process_framework_parameters:47 - const_410 not found in self._parameters and self._constants
+2024-12-02 11:40:50.303 | WARNING  | test_embedding:process_framework_parameters:47 - const_420 not found in self._parameters and self._constants
+2024-12-02 11:40:50.373 | INFO     | forge.compile:compile_main:219 - Compiling module PtBartembedding0
+2024-12-02 11:40:50.373 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage init_compile
+2024-12-02 11:40:50.374 | INFO     | forge.ci:initialize_output_build_directory:100 - Forge output build directory for compiled artifacts: /tmp/root/db8a8b851869
+2024-12-02 11:40:50.375 | INFO     | forge.ci:create_symlink:90 - Symlink created from /__w/tt-forge-fe/tt-forge-fe/tt_build/test_out to /tmp/root/db8a8b851869
+2024-12-02 11:40:50.375 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage generate_initial_graph
+2024-12-02 11:40:50.375 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_initial_graph_pass
+2024-12-02 11:40:50.375 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage optimized_graph
+2024-12-02 11:40:50.376 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_autograd_pass
+2024-12-02 11:40:50.376 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage consteval_graph
+2024-12-02 11:40:50.376 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage pre_lowering_pass
+2024-12-02 11:40:50.376 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage split_graph
+2024-12-02 11:40:50.376 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage run_mlir_compiler
+module @PtBartembedding0 attributes {tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x256xf32> {ttir.name = "input_ids"}, %arg1: tensor<50265x1024xf32> {ttir.name = "model.decoder.embed_tokens.weight"}) -> (tensor<1x256x1024xf32> {ttir.name = "PtBartembedding0.output_embedding_0"}) {
+    %0 = tensor.empty() : tensor<1x256x1024xf32>
+    %1 = "ttir.embedding"(%arg0, %arg1, %0) <{operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> : (tensor<1x256xf32>, tensor<50265x1024xf32>, tensor<1x256x1024xf32>) -> tensor<1x256x1024xf32>
+    return %1 : tensor<1x256x1024xf32>
+  }
+}
+module @PtBartembedding0 attributes {tt.device = #tt.device<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>, tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x256xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x256xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "input_ids"}, %arg1: tensor<50265x1024xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<50265x1024xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "model.decoder.embed_tokens.weight"}) -> (tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "PtBartembedding0.output_embedding_0"}) {
+    %0 = "ttnn.get_device"() <{mesh_shape = #ttnn<mesh_shape 1x1>}> : () -> !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>
+    %1 = "ttnn.to_device"(%arg0, %0) <{memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<1x256>>>}> : (tensor<1x256xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x256xf32, #ttnn.buffer_type<system_memory>>>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x256xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x256xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    %2 = "ttnn.to_device"(%arg1, %0) <{memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<50265x1024>>>}> : (tensor<50265x1024xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<50265x1024xf32, #ttnn.buffer_type<system_memory>>>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<50265x1024xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<50265x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    %3 = "ttnn.empty"(%0) <{dtype = #tt.supportedDataTypes<f32>, layout = #ttnn.layout<row_major>, memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<256x1024>>>, shape = #ttnn.shape<1x256x1024>}> : (!tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    %4 = "ttnn.embedding"(%1, %3, %2) : (tensor<1x256xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x256xf32, #ttnn.buffer_type<dram>>, interleaved>>, tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>, tensor<50265x1024xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<50265x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%2) <{force = false}> : (tensor<50265x1024xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<50265x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    "ttnn.deallocate"(%1) <{force = false}> : (tensor<1x256xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x256xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %5 = "ttnn.from_device"(%4) : (tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%3) <{force = false}> : (tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %6 = "ttnn.to_layout"(%5) <{layout = #ttnn.layout<row_major>}> : (tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%5) <{force = false}> : (tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<system_memory>>>>) -> ()
+    return %6 : tensor<1x256x1024xf32, #ttnn.ttnn_layout<(d0, d1, d2) -> (d0 * 256 + d1, d2), <1x1>, memref<256x1024xf32, #ttnn.buffer_type<system_memory>>>>
+  }
+}
+2024-12-02 11:40:50.384 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage finish_compile
+2024-12-02 11:40:50.385 | INFO     | forge.compile:forge_compile_from_context:361 - Compilation completed.
+2024-12-02 11:40:50.385 | INFO     | forge.compiled_graph_state:__call__:244 - Converting inputs and parameters to PyTorch tensors...
+2024-12-02 11:40:50.385 | INFO     | forge.compiled_graph_state:__call__:247 - Running model forward on device...
+2024-12-02 11:40:52.228 | INFO     | conftest:memory_usage_tracker:83 - Test memory usage:
+2024-12-02 11:40:52.228 | INFO     | conftest:memory_usage_tracker:84 -     By test: 768.78 MB
+2024-12-02 11:40:52.228 | INFO     | conftest:memory_usage_tracker:85 -     Minimum: 2709.47 MB
+2024-12-02 11:40:52.229 | INFO     | conftest:memory_usage_tracker:86 -     Maximum: 4787.86 MB
+2024-12-02 11:40:52.229 | INFO     | conftest:memory_usage_tracker:87 -     Average: 3787.60 MB
+STDOUT: 
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.4, py-1.11.0, pluggy-0.13.1 -- /opt/ttforge-toolchain/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /__w/tt-forge-fe/tt-forge-fe, configfile: pytest.ini
+plugins: hydra-core-1.3.2, forked-1.6.0, xdist-2.5.0, timeout-2.0.1, anyio-3.7.1
+collecting ... collected 1 item
+
+generated_modules/unique_ops/pt_bart/test_embedding.py::test_module[forge_module_and_shapes_dtypes0] [32m2024-12-02 11:40:50.379[0m | [1m[38;2;128;128;128mINFO    [0m | [36mAlways         [0m - Emmiting mlir for function forward
+[32m2024-12-02 11:40:50.380[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR module generated successfully.
+[32m2024-12-02 11:40:50.381[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR passes run successfully.
+[32m2024-12-02 11:40:50.384[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - Flatbuffer binary generated successfully.
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Opening user mode device driver
+
+[32m2024-12-02 11:40:50.418[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Detected 1 PCI device : [0]
+[32m2024-12-02 11:40:50.418[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Opened PCI device 0; KMD version: 1.27.1
+[32m2024-12-02 11:40:50.431[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - init_detect_tt_device_numanodes(): Could not determine NumaNodeSet for TT device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 11:40:50.431[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - Could not find NumaNodeSet for TT Device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 11:40:50.433[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - bind_area_memory_nodeset(): Unable to determine TT Device to NumaNode mapping for physical_device_id: 0. Skipping membind.
+[32m2024-12-02 11:40:50.433[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - ---- ttSiliconDevice::init_hugepage: bind_area_to_memory_nodeset() failed (physical_device_id: 0 ch: 0). Hugepage allocation is not on NumaNode matching TT Device. Side-Effect is decreased Device->Host perf (Issue #893).
+[32m2024-12-02 11:40:50.463[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Software version 6.0.0, Ethernet FW version 6.9.0 (Device 0)
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;165;000mWARNING [0m | Specifying tile shape for a row major layout is deprecated, and will be removed soon
+[38;2;000;128;000m                 Always[0m | [1m[38;2;255;000;000mFATAL   [0m | Input must be UINT32 or BFLOAT16
+FAILED
+
+=================================== FAILURES ===================================
+_________________ test_module[forge_module_and_shapes_dtypes0] _________________
+
+forge_module_and_shapes_dtypes = ((<class 'test_embedding.PtBartembedding0'>, True), [((1, 256), torch.float32)])
+
+    @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)
+    def test_module(forge_module_and_shapes_dtypes):
+    
+        (forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes
+    
+        inputs = [Tensor.create_from_torch(named_parameters[operand_shape]) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]
+    
+        framework_model = forge_module(forge_module.__name__)
+    
+        if need_process_framework_parameters_func:
+            framework_model.process_framework_parameters()
+    
+        framework_output = framework_model(*inputs)
+    
+        compiled_model = compile(framework_model, sample_inputs=inputs)
+>       tt_output = compiled_model(*inputs)
+
+generated_modules/unique_ops/pt_bart/test_embedding.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <forge.compiled_graph_state.CompiledModel object at 0x7f4aa458c7f0>
+inputs = (Forge Tensor: tensor([[0.6682, 0.0216, 0.0208, 0.2995, 0.1130, 0.1265, 0.9611, 0.1720, 0.6396,
+         0.8303, 0.934....2368, 0.3792, 0.9835, 0.0845, 0.6296, 0.7412, 0.0567,
+         0.6703, 0.8944, 0.3588, 0.6330]]), DataFormat.Float32,)
+inputs_and_parameters = (tensor([[0.6682, 0.0216, 0.0208, 0.2995, 0.1130, 0.1265, 0.9611, 0.1720, 0.6396,
+         0.8303, 0.9346, 0.8120, 0.6...,  0.0098, -0.0091],
+        [ 0.0063,  0.0296, -0.0188,  ..., -0.0108,  0.0221, -0.0010]],
+       requires_grad=True))
+
+    def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
+        """
+        Run inference on the compiled model.
+    
+        Parameters
+        ----------
+        inputs: [Tensor, ...]
+            Input tensors
+    
+        Returns
+        -------
+        List[Tensor]
+            Output tensors
+        """
+        self.inputs = [*inputs]
+        inputs_and_parameters = [
+            *inputs,
+            *self.fwd_compiled_graph_state.get_ordered_constant_tensors(),
+            *self.fwd_compiled_graph_state.get_ordered_parameter_tensors(),
+        ]
+    
+        if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
+            logger.info("Converting inputs and parameters to PyTorch tensors...")
+            inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
+    
+        logger.info(f"Running model {self.fwd_compiled_graph_state.graph.get_name()} on device...")
+>       all_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
+E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp:27: a.get_dtype() == DataType::UINT32 or a.get_dtype() == DataType::BFLOAT16
+E       info:
+E       Input must be UINT32 or BFLOAT16
+E       backtrace:
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x512198) [0x7f4aade9f198]
+E        --- ttnn::operations::embedding::Embeddings::validate(std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > const&) const
+E        --- void ttnn::device_operation::detail::launch_on_worker_thread<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >, unsigned char, long, tt::tt_metal::operation::DeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t, std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> >, tt::tt_metal::v0::Device*>(unsigned char, long, tt::tt_metal::operation::DeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > const&, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t const&, std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> >&, tt::tt_metal::v0::Device*&)
+E        --- tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > >(unsigned char, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::operation_attributes_t const&, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib/_ttnn.so(+0x1da2339) [0x7f4aac9c2339]
+E        --- tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_return_value_t ttnn::device_operation::detail::invoke<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > >(unsigned char, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::operation_attributes_t const&, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib/_ttnn.so(+0x1d9e50f) [0x7f4aac9be50f]
+E        --- std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > tt::tt_metal::operation::run<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >(tt::tt_metal::operation::DeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >&&, std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > const&, std::vector<std::optional<tt::tt_metal::Tensor const>, std::allocator<std::optional<tt::tt_metal::Tensor const> > > const&, std::vector<std::optional<tt::tt_metal::Tensor>, std::allocator<std::optional<tt::tt_metal::Tensor> > > const&, unsigned char)
+E        --- ttnn::operations::embedding::EmbeddingOperation::invoke(unsigned char, tt::tt_metal::Tensor const&, tt::tt_metal::Tensor const&, std::optional<int> const&, std::optional<tt::tt_metal::Layout> const&, ttnn::operations::embedding::EmbeddingsType, std::optional<tt::tt_metal::DataType const>, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<tt::tt_metal::Tensor> const&)
+E        --- ttnn::operations::embedding::EmbeddingOperation::invoke(tt::tt_metal::Tensor const&, tt::tt_metal::Tensor const&, std::optional<int> const&, std::optional<tt::tt_metal::Layout> const&, ttnn::operations::embedding::EmbeddingsType, std::optional<tt::tt_metal::DataType const>, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<tt::tt_metal::Tensor> const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6b4784) [0x7f4aae041784]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6b53e4) [0x7f4aae0423e4]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6b5df7) [0x7f4aae042df7]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6b35f5) [0x7f4aae0405f5]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6b1dfb) [0x7f4aae03edfb]
+E        --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x6b16f5) [0x7f4aae03e6f5]
+E        --- tt::runtime::ttnn::operations::embedding::run(tt::target::ttnn::EmbeddingOp const*, tt::runtime::ttnn::ProgramContext&)
+E        --- tt::runtime::ttnn::runProgram(tt::tt_metal::distributed::MeshDevice&, tt::runtime::Binary&, unsigned int, std::vector<tt::tt_metal::Tensor*, std::allocator<tt::tt_metal::Tensor*> > const&, std::vector<tt::tt_metal::Tensor*, std::allocator<tt::tt_metal::Tensor*> > const&)
+E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&)
+E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> > const&)
+E        --- tt::run_binary(tt::runtime::Binary&, int, std::vector<at::Tensor, std::allocator<at::Tensor> > const&)
+E        --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x311ea0) [0x7f4aba5efea0]
+E        --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x311dee) [0x7f4aba5efdee]
+E        --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0xde865) [0x7f4aba3bc865]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x15cb2e) [0x5639451d2b2e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5639451c92db]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x64d6) [0x5639451c16e6]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0xc4) [0x5639451c8474]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5639451de2bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5639452f86d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0xbb) [0x5639451e1ebb]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0x122) [0x5639451e1f22]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5639451bcb93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5639451e1281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5639451c851d]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5639451de2bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5639452f86d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5639451c92db]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x5639451c24fa]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x8ab) [0x5639451bbabb]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5639451bcb93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5639451e1281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5639451c851d]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5639451de2bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5639452f86d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0xbb) [0x5639451e1ebb]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x5639451bb8cc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5639451e1281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5639451bcb93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x5639451bb8cc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5639451bcb93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5639451bcb93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5639451e1281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5639451c851d]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5639451de2bc]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5639452f86d0]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5639451c92db]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x5639451c24fa]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5639451bda6e]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5639451bcb93]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5639451d342c]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+E        --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5639451e1281]
+E        --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5639451c134a]
+
+forge/forge/compiled_graph_state.py:248: RuntimeError
+=========================== short test summary info ============================
+FAILED generated_modules/unique_ops/pt_bart/test_embedding.py::test_module[forge_module_and_shapes_dtypes0]
+============================== 1 failed in 9.31s ===============================
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Closing user mode device drivers

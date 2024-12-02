@@ -1,0 +1,246 @@
+STDERR: 
+
+2024-12-02 12:05:49.020 | INFO     | forge.compile:compile_main:219 - Compiling module PtDistilbertMaskedLmcast0
+2024-12-02 12:05:49.020 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage init_compile
+2024-12-02 12:05:49.021 | INFO     | forge.ci:initialize_output_build_directory:100 - Forge output build directory for compiled artifacts: /tmp/root/7e7de0b8c20a
+2024-12-02 12:05:49.021 | INFO     | forge.ci:create_symlink:90 - Symlink created from /__w/tt-forge-fe/tt-forge-fe/tt_build/test_out to /tmp/root/7e7de0b8c20a
+2024-12-02 12:05:49.022 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage generate_initial_graph
+2024-12-02 12:05:49.022 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_initial_graph_pass
+2024-12-02 12:05:49.022 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage optimized_graph
+2024-12-02 12:05:49.023 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage post_autograd_pass
+2024-12-02 12:05:49.023 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage consteval_graph
+2024-12-02 12:05:49.023 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage pre_lowering_pass
+2024-12-02 12:05:49.023 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage split_graph
+2024-12-02 12:05:49.023 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage run_mlir_compiler
+module @PtDistilbertMaskedLmcast0 attributes {tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x128xf32> {ttir.name = "mask_1"}) -> (tensor<1x128xi8> {ttir.name = "PtDistilbertMaskedLmcast0.output_cast_0"}) {
+    %0 = tensor.empty() : tensor<1x128xi8>
+    %1 = "ttir.typecast"(%arg0, %0) <{operandSegmentSizes = array<i32: 1, 1>, operand_constraints = [#tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>, #tt.operand_constraint<dram|l1|scalar|tile|none|interleaved|single_bank|height_sharded|width_sharded|block_sharded|any_layout|any_device|any_device_tile|l1_block_sharded>]}> {dtype = "Int8"} : (tensor<1x128xf32>, tensor<1x128xi8>) -> tensor<1x128xi8>
+    return %1 : tensor<1x128xi8>
+  }
+}
+module @PtDistilbertMaskedLmcast0 attributes {tt.device = #tt.device<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>, tt.system_desc = #tt.system_desc<[{role = host, target_triple = "x86_64-pc-linux-gnu"}], [{arch = <wormhole_b0>, grid = 8x8, l1_size = 1499136, num_dram_channels = 12, dram_channel_size = 1073741824, noc_l1_address_align_bytes = 16, pcie_address_align_bytes = 32, noc_dram_address_align_bytes = 32, l1_unreserved_base = 1024, erisc_l1_unreserved_base = 1024, dram_unreserved_base = 1024, dram_unreserved_end = 1073741824, physical_cores = {worker = [ 0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  1x0,  1x1,  1x2,  1x3,  1x4,  1x5,  1x6,  1x7,  2x0,  2x1,  2x2,  2x3,  2x4,  2x5,  2x6,  2x7,  3x0,  3x1,  3x2,  3x3,  3x4,  3x5,  3x6,  3x7,  4x0,  4x1,  4x2,  4x3,  4x4,  4x5,  4x6,  4x7,  5x0,  5x1,  5x2,  5x3,  5x4,  5x5,  5x6,  5x7,  6x0,  6x1,  6x2,  6x3,  6x4,  6x5,  6x6,  6x7,  7x0,  7x1,  7x2,  7x3,  7x4,  7x5,  7x6,  7x7] dram = [ 8x0,  9x0,  10x0,  8x1,  9x1,  10x1,  8x2,  9x2,  10x2,  8x3,  9x3,  10x3]}, supported_data_types = [<f32>, <f16>, <bf16>, <bfp_f8>, <bfp_bf8>, <bfp_f4>, <bfp_bf4>, <bfp_f2>, <bfp_bf2>, <u32>, <u16>, <u8>], supported_tile_sizes = [ 4x16,  16x16,  32x16,  4x32,  16x32,  32x32], num_cbs = 32}], [0], [3 : i32], [ 0x0x0x0]>} {
+  func.func @forward(%arg0: tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xf32, #ttnn.buffer_type<system_memory>>>> {ttir.name = "mask_1"}) -> (tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<system_memory>>>> {ttir.name = "PtDistilbertMaskedLmcast0.output_cast_0"}) {
+    %0 = "ttnn.get_device"() <{mesh_shape = #ttnn<mesh_shape 1x1>}> : () -> !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>
+    %1 = "ttnn.to_layout"(%arg0) <{layout = #ttnn.layout<tile>}> : (tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xf32, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    %2 = "ttnn.to_device"(%1, %0) <{memory_config = #ttnn.memory_config<<interleaved>, <dram>, <<1x4>>>}> : (tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>, !tt.device<<workerGrid = #tt.grid<8x8, (d0, d1) -> (0, d0, d1)>, l1Map = (d0, d1)[s0, s1] -> (0, d0 floordiv s0, d1 floordiv s1, (d0 mod s0) * s1 + d1 mod s1), dramMap = (d0, d1)[s0, s1] -> (0, 0, ((((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 8192) mod 12, (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) floordiv 98304 + (((d0 floordiv s0) * 8 + d1 floordiv s1) * (s1 * s0) + (d0 mod s0) * s1 + d1 mod s1) mod 8192), meshShape = , chipIds = [0]>>) -> tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%1) <{force = false}> : (tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %3 = "ttnn.typecast"(%2) <{dtype = #tt.supportedDataTypes<u8>}> : (tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<dram>>, interleaved>>
+    "ttnn.deallocate"(%2) <{force = false}> : (tensor<1x128xf32, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x4x!tt.tile<32x32, f32>, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %4 = "ttnn.from_device"(%3) : (tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<dram>>, interleaved>>) -> tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%3) <{force = false}> : (tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<dram>>, interleaved>>) -> ()
+    %5 = "ttnn.to_layout"(%4) <{layout = #ttnn.layout<row_major>}> : (tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<system_memory>>>>) -> tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<system_memory>>>>
+    "ttnn.deallocate"(%4) <{force = false}> : (tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<system_memory>>>>) -> ()
+    return %5 : tensor<1x128xi8, #ttnn.ttnn_layout<(d0, d1) -> (d0, d1), <1x1>, memref<1x128xi8, #ttnn.buffer_type<system_memory>>>>
+  }
+}
+2024-12-02 12:05:49.031 | INFO     | forge.compile:forge_compile_from_context:280 - Running compile stage finish_compile
+2024-12-02 12:05:49.031 | INFO     | forge.compile:forge_compile_from_context:361 - Compilation completed.
+2024-12-02 12:05:49.031 | INFO     | forge.compiled_graph_state:__call__:244 - Converting inputs and parameters to PyTorch tensors...
+2024-12-02 12:05:49.031 | INFO     | forge.compiled_graph_state:__call__:247 - Running model forward on device...
+2024-12-02 12:05:50.845 | INFO     | conftest:memory_usage_tracker:83 - Test memory usage:
+2024-12-02 12:05:50.845 | INFO     | conftest:memory_usage_tracker:84 -     By test: 30.14 MB
+2024-12-02 12:05:50.846 | INFO     | conftest:memory_usage_tracker:85 -     Minimum: 767.98 MB
+2024-12-02 12:05:50.846 | INFO     | conftest:memory_usage_tracker:86 -     Maximum: 798.11 MB
+2024-12-02 12:05:50.846 | INFO     | conftest:memory_usage_tracker:87 -     Average: 787.51 MB
+STDOUT: 
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.4, py-1.11.0, pluggy-0.13.1 -- /opt/ttforge-toolchain/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /__w/tt-forge-fe/tt-forge-fe, configfile: pytest.ini
+plugins: hydra-core-1.3.2, forked-1.6.0, xdist-2.5.0, timeout-2.0.1, anyio-3.7.1
+collecting ... collected 1 item
+
+generated_modules/unique_ops/pt_distilbert_masked_lm/test_cast.py::test_module[forge_module_and_shapes_dtypes0] [32m2024-12-02 12:05:49.026[0m | [1m[38;2;128;128;128mINFO    [0m | [36mAlways         [0m - Emmiting mlir for function forward
+[32m2024-12-02 12:05:49.026[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR module generated successfully.
+[32m2024-12-02 12:05:49.028[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - MLIR passes run successfully.
+[32m2024-12-02 12:05:49.030[0m | [1m[38;2;128;128;128mINFO    [0m | [36mMLIRCompiler   [0m - Flatbuffer binary generated successfully.
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Opening user mode device driver
+
+[32m2024-12-02 12:05:49.069[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Detected 1 PCI device : [0]
+[32m2024-12-02 12:05:49.069[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Opened PCI device 0; KMD version: 1.27.1
+[32m2024-12-02 12:05:49.080[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - init_detect_tt_device_numanodes(): Could not determine NumaNodeSet for TT device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 12:05:49.080[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - Could not find NumaNodeSet for TT Device (physical_device_id: 0 pci_bus_id: 0000:04:00.0)
+[32m2024-12-02 12:05:49.081[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - bind_area_memory_nodeset(): Unable to determine TT Device to NumaNode mapping for physical_device_id: 0. Skipping membind.
+[32m2024-12-02 12:05:49.081[0m | [1m[38;2;255;165;000mWARNING [0m | [36mSiliconDriver  [0m - ---- ttSiliconDevice::init_hugepage: bind_area_to_memory_nodeset() failed (physical_device_id: 0 ch: 0). Hugepage allocation is not on NumaNode matching TT Device. Side-Effect is decreased Device->Host perf (Issue #893).
+[32m2024-12-02 12:05:49.108[0m | [1m[38;2;100;149;237mINFO    [0m | [36mSiliconDriver  [0m - Software version 6.0.0, Ethernet FW version 6.9.0 (Device 0)
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Initializing device 0. Program cache is NOT enabled
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | AI CLK for device 0 is:   1000 MHz
+[32m                 Always[0m | [1m[31m   FATAL[0m | Unsupported data type
+[1mLOG_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/runtime/lib/ttnn/runtime.cpp:55: tt::exception
+backtrace:
+ --- /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/build/lib/SharedLib/libTTMLIR.so(+0x50ad50) [0x7f11ca46dd50]
+ --- tt::runtime::ttnn::createTensor(std::shared_ptr<void>, std::vector<unsigned int, std::allocator<unsigned int> > const&, std::vector<unsigned int, std::allocator<unsigned int> > const&, unsigned int, tt::target::DataType)
+ --- tt::runtime::createTensor(std::shared_ptr<void>, std::vector<unsigned int, std::allocator<unsigned int> > const&, std::vector<unsigned int, std::allocator<unsigned int> > const&, unsigned int, tt::target::DataType)
+ --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x314724) [0x7f11d6bc8724]
+ --- tt::run_binary(tt::runtime::Binary&, int, std::vector<at::Tensor, std::allocator<at::Tensor> > const&)
+ --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x311ea0) [0x7f11d6bc5ea0]
+ --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0x311dee) [0x7f11d6bc5dee]
+ --- /__w/tt-forge-fe/tt-forge-fe/forge/forge/_C.so(+0xde865) [0x7f11d6992865]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x15cb2e) [0x5629c5b2ab2e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5629c5b212db]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x64d6) [0x5629c5b196e6]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0xc4) [0x5629c5b20474]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5629c5b362bc]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5629c5c506d0]
+ --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0xbb) [0x5629c5b39ebb]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0x122) [0x5629c5b39f22]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5629c5b39281]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5629c5b2051d]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5629c5b362bc]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5629c5c506d0]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5629c5b212db]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x5629c5b1a4fa]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x8ab) [0x5629c5b13abb]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5629c5b39281]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5629c5b2051d]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5629c5b362bc]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5629c5c506d0]
+ --- /opt/ttforge-toolchain/venv/bin/python(PyObject_Call+0xbb) [0x5629c5b39ebb]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x5629c5b138cc]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5629c5b39281]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x5629c5b138cc]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5629c5b39281]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5629c5b2051d]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5629c5b362bc]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5629c5c506d0]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5629c5b212db]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x5629c5b1a4fa]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x16b281) [0x5629c5b39281]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_FastCallDictTstate+0x16d) [0x5629c5b2051d]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_Call_Prepend+0x5c) [0x5629c5b362bc]
+ --- /opt/ttforge-toolchain/venv/bin/python(+0x2826d0) [0x5629c5c506d0]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyObject_MakeTpCall+0x25b) [0x5629c5b212db]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x72ea) [0x5629c5b1a4fa]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x5629c5b138cc]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x6bc) [0x5629c5b138cc]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x285e) [0x5629c5b15a6e]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x1983) [0x5629c5b14b93]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyFunction_Vectorcall+0x7c) [0x5629c5b2b42c]
+ --- /opt/ttforge-toolchain/venv/bin/python(_PyEval_EvalFrameDefault+0x613a) [0x5629c5b1934a]
+[0m
+FAILED
+
+=================================== FAILURES ===================================
+_________________ test_module[forge_module_and_shapes_dtypes0] _________________
+
+forge_module_and_shapes_dtypes = ((<class 'test_cast.PtDistilbertMaskedLmcast0'>, False), [((1, 128), torch.float32)])
+
+    @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)
+    def test_module(forge_module_and_shapes_dtypes):
+    
+        (forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes
+    
+        inputs = [Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]
+    
+        framework_model = forge_module(forge_module.__name__)
+    
+        if need_process_framework_parameters_func:
+            framework_model.process_framework_parameters()
+    
+        framework_output = framework_model(*inputs)
+    
+        compiled_model = compile(framework_model, sample_inputs=inputs)
+>       tt_output = compiled_model(*inputs)
+
+generated_modules/unique_ops/pt_distilbert_masked_lm/test_cast.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <forge.compiled_graph_state.CompiledModel object at 0x7f11c0d8c880>
+inputs = (Forge Tensor: tensor([[0.9987, 0.8600, 0.9914, 0.8080, 0.4302, 0.9522, 0.1770, 0.9463, 0.3794,
+         0.6642, 0.520....6896, 0.3354, 0.5098, 0.0758, 0.7723, 0.3670, 0.4243, 0.2039, 0.9912,
+         0.9799, 0.8722]]), DataFormat.Float32,)
+inputs_and_parameters = (tensor([[0.9987, 0.8600, 0.9914, 0.8080, 0.4302, 0.9522, 0.1770, 0.9463, 0.3794,
+         0.6642, 0.5200, 0.1225, 0.9..., 0.7112,
+         0.6896, 0.3354, 0.5098, 0.0758, 0.7723, 0.3670, 0.4243, 0.2039, 0.9912,
+         0.9799, 0.8722]]),)
+
+    def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
+        """
+        Run inference on the compiled model.
+    
+        Parameters
+        ----------
+        inputs: [Tensor, ...]
+            Input tensors
+    
+        Returns
+        -------
+        List[Tensor]
+            Output tensors
+        """
+        self.inputs = [*inputs]
+        inputs_and_parameters = [
+            *inputs,
+            *self.fwd_compiled_graph_state.get_ordered_constant_tensors(),
+            *self.fwd_compiled_graph_state.get_ordered_parameter_tensors(),
+        ]
+    
+        if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
+            logger.info("Converting inputs and parameters to PyTorch tensors...")
+            inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
+    
+        logger.info(f"Running model {self.fwd_compiled_graph_state.graph.get_name()} on device...")
+>       all_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
+E       RuntimeError: Fatal error
+
+forge/forge/compiled_graph_state.py:248: RuntimeError
+=========================== short test summary info ============================
+FAILED generated_modules/unique_ops/pt_distilbert_masked_lm/test_cast.py::test_module[forge_module_and_shapes_dtypes0]
+============================== 1 failed in 7.03s ===============================
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Closing device 0
+[38;2;000;128;000m                  Metal[0m | [1m[38;2;100;149;237mINFO    [0m | Disabling and clearing program cache on device 0
+[38;2;000;128;000m                 Device[0m | [1m[38;2;100;149;237mINFO    [0m | Closing user mode device drivers
