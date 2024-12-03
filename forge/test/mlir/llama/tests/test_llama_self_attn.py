@@ -10,7 +10,6 @@ from forge.op.eval.common import compare_with_golden_pcc
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
 @pytest.mark.push
 def test_llama_self_attn(model_path):
     if model_path == "meta-llama/Llama-3.2-1B":
