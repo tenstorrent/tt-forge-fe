@@ -2,24 +2,7 @@ name: Build and Test
 
 on:
   workflow_dispatch:
-    inputs:
-      test_mark:
-        description: 'Test mark to run'
-        required: true
-        default: 'push'
-        type: choice
-        options:
-          - push
-          - nightly
-          - nightly_sweeps
-          - push or nightly
   workflow_call:
-    inputs:
-      test_mark:
-        description: 'Test mark to run'
-        required: false
-        default: 'push'
-        type: string
 
 jobs:
 
@@ -67,14 +50,10 @@ jobs:
     needs: build-image
     strategy:
       fail-fast: false
-      matrix:
-        build:
-          - runs-on: runner
-        test_group_id: [1,2]
-
     runs-on:
       - in-service
-      - ${{ matrix.build.runs-on }}
+      - n150
+      - performance
 
     container:
       image: ${{ needs.build-image.outputs.docker-image }}
@@ -91,7 +70,7 @@ jobs:
       id: strings
       shell: bash
       env:
-        job-name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        job-name: "${{ github.job }} (${{ matrix.build.runs-on }})"
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
@@ -126,7 +105,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         create-symlink: true
-        key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
+        key: runner-runtime--
 
     - name: Build
       shell: bash
@@ -141,43 +120,15 @@ jobs:
         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
-    - name: Run Unit Tests
+    - name: Run Perf Benchmark
       shell: bash
       run: |
         source env/activate
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -o ${{ steps.strings.outputs.perf_report_path }}
 
-    - name: Run Test
-      shell: bash
-      run: |
-        source env/activate
-        apt install -y libgl1-mesa-glx
-        set -o pipefail # Ensures that the exit code reflects the first command that fails
-        pip install pytest-split
-        pytest -m push --splits 2 \
-               --group ${{ matrix.test_group_id }} \
-               --splitting-algorithm least_duration \
-               -m "${{ inputs.test_mark }}" \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               2>&1 | tee pytest.log
-
-    - name: Upload Test Log
+    - name: Upload Perf Report
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
-        path: pytest.log
-
-    - name: Upload Test Report
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-        name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
-        path: ${{ steps.strings.outputs.test_report_path }}
-
-    - name: Show Test Report
-      uses: mikepenz/action-junit-report@v4
-      if: success() || failure()
-      with:
-        report_paths: ${{ steps.strings.outputs.test_report_path }}
-        check_name: TT-Forge-FE Tests
+        name: perf-reports
+        path: ${{ steps.strings.outputs.perf_report_path }}
