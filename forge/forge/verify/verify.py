@@ -308,6 +308,8 @@ def verify(
     if not isinstance(fw_out, torch.Tensor):
         fw_out = to_pt_tensors(fw_out)
 
+    assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
+
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
