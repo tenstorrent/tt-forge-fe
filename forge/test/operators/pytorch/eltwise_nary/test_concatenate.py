@@ -237,7 +237,7 @@ class TestCollectionData:
         numbers_of_operands=[
             2,
             3,
-            7,
+            # 7,  # consume too much memory
             # 15, # consume too much memory
         ],
         dev_data_formats=TestCollectionCommon.all.dev_data_formats,
