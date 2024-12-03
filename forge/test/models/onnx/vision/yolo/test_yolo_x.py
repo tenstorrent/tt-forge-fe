@@ -7,10 +7,9 @@ import pytest
 import cv2, torch
 import numpy as np
 import onnx
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
-# from forge.verify.config import TestKind
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
+from forge.verify.config import TestKind
 import requests
 
 # from forge._C.backend_api import BackendDevice
@@ -343,7 +342,7 @@ def test_yolox_onnx(variant, test_device):
         tt_model,
         input_shapes=([img_tensor.shape]),
         inputs=([img_tensor]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

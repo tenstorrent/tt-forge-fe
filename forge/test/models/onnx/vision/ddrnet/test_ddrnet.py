@@ -7,11 +7,10 @@ from torchvision import transforms
 import requests
 from PIL import Image
 import onnx
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
+from forge.verify.config import TestKind
+from forge._C.backend_api import BackendDevice
 
 variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 
@@ -65,7 +64,7 @@ def test_ddrnet(variant, test_device):
         tt_model,
         input_shapes=([img_tensor.shape]),
         inputs=([img_tensor]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
@@ -164,7 +163,7 @@ def test_ddrnet_semantic_segmentation_onnx(variant, test_device):
         tt_model,
         input_shapes=([input_batch.shape]),
         inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

@@ -11,7 +11,7 @@ from torch import nn
 import forge
 from ..utils import *
 from forge.op.eval.common import compare_with_golden
-
+from forge.verify.config import VerifyConfig
 from loguru import logger
 
 
@@ -59,7 +59,7 @@ def test_mnist_training():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            assert compare_with_golden(golden_pred, pred, verify_cfg=VerifyConfig(pcc=0.95))
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)

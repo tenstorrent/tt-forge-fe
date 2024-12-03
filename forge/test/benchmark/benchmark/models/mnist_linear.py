@@ -101,7 +101,7 @@ def test_mnist_linear(
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    assert [compare_with_golden_pcc(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)]
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = (

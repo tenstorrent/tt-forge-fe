@@ -13,7 +13,7 @@ import forge
 import forge.op
 import forge.tensor
 
-from forge import ForgeModule, VerifyConfig
+from forge import ForgeModule, DepricatedVerifyConfig
 from forge.verify import TestKind, verify_module
 
 
@@ -39,7 +39,7 @@ def test_cond_bool_tensor_manual_inputs(test_device):
     verify_module(
         mod,
         input_shapes=None,
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             test_kind=TestKind.INFERENCE,
             devtype=test_device.devtype,
             arch=test_device.arch,
@@ -68,7 +68,7 @@ def test_cond_non_bool_tensor_manual_inputs(test_device):
     verify_module(
         mod,
         input_shapes=None,
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             test_kind=TestKind.INFERENCE,
             devtype=test_device.devtype,
             arch=test_device.arch,
@@ -93,7 +93,7 @@ def test_where_input_shapes(test_device, input_shape):
     verify_module(
         mod,
         input_shapes,
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             test_kind=TestKind.INFERENCE,
             devtype=test_device.devtype,
             arch=test_device.arch,
@@ -162,7 +162,7 @@ def test_where_verify_module(test_device, cond_values):
     verify_module(
         mod,
         input_shapes=None,
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             test_kind=TestKind.INFERENCE,
             devtype=test_device.devtype,
             arch=test_device.arch,

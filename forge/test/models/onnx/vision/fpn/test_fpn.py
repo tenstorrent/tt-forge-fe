@@ -6,9 +6,8 @@ import forge
 import onnx
 import os
 import pytest
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
 
 
 @pytest.mark.skip(reason="Not supported")
@@ -34,7 +33,7 @@ def test_fpn_onnx(test_device, test_kind):
         tt_model,
         input_shapes=[feat0.shape, feat1.shape, feat2.shape],
         inputs=[(feat0, feat1, feat2)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
