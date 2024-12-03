@@ -270,6 +270,11 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 name,
                 consumer->name(),
                 graph->node_by_id(operand_edge.producer_node_id)->name());
+
+            // Updating op type to reshape to support update_reshape_attr
+            if (op->op_name() == "squeeze" || op->op_name() == "unsqueeze")
+                op->change_op_type("reshape");
+
             if (retain_operand_dim)
             {
                 auto updated_commute_shape = commute_shape;
@@ -306,37 +311,44 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             // (1024,) Placing an unsqueeze clone will cause the input to be (1, 1024) which isn't wrong but also is not
             // correct. In this case we shall convert the clone to a reshape which contains the correct number of
             // unsqueezes implicitly.
-            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze") and
-                dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id)))
+            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze"))
             {
                 op->change_op_type("reshape");
-                graphlib::Shape op_shape = graphlib::Shape::create(std::vector<uint32_t>(consumer->shape().size(), 1));
-                auto input = dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id));
-
-                for (int i = -1; i >= -(int)input->shape().size(); i--)
+                std::vector<graphlib::Edge> clone_data_edges = graph->operand_data_edges(clone);
+                for (const graphlib::Edge &clone_data_edge : clone_data_edges)
                 {
-                    if (i + (int)op_shape.size() >= 0)
-                        op_shape[i] = input->shape()[i];
-                    else
-                    {
-                        TT_ASSERT(
-                            input->shape()[i] == 1,
-                            "After this point all dims should be 1 else the squeeze op is not valid.");
-                    }
-                }
-                std::vector<graphlib::OpType> tms = graph->get_edge_attributes(operand_edge)->get_tms();
+                    graphlib::InputNode *input =
+                        dynamic_cast<graphlib::InputNode *>(graph->node_by_id(clone_data_edge.producer_node_id));
+                    if (!input)
+                        continue;
+                    graphlib::Node *producer_node = graph->node_by_id(clone_data_edge.producer_node_id);
+                    graphlib::Shape op_shape =
+                        graphlib::Shape::create(std::vector<uint32_t>(producer_node->shape().size(), 1));
 
-                for (graphlib::OpType &tm : tms)
-                {
-                    if (tm.op == "broadcast")
+                    for (int i = -1; i >= -(int)input->shape().size(); i--)
                     {
-                        int dim = std::get<int>(tm.attr[0]);
-                        int volume = std::get<int>(tm.attr[1]);
-                        op_shape[dim] *= volume;
+                        if (i + (int)op_shape.size() >= 0)
+                            op_shape[i] = input->shape()[i];
+                        else
+                        {
+                            TT_ASSERT(
+                                input->shape()[i] == 1,
+                                "After this point all dims should be 1 else the squeeze op is not valid.");
+                        }
                     }
+                    std::vector<graphlib::OpType> tms = graph->get_edge_attributes(operand_edge)->get_tms();
+                    for (graphlib::OpType &tm : tms)
+                    {
+                        if (tm.op == "broadcast")
+                        {
+                            int dim = std::get<int>(tm.attr[0]);
+                            int volume = std::get<int>(tm.attr[1]);
+                            op_shape[dim] *= volume;
+                        }
+                    }
+                    op->set_shape(op_shape);
+                    update_reshape_attr(op, op_shape);
                 }
-                op->set_shape(op_shape);
-                update_reshape_attr(op, op_shape);
             }
 
             auto [in_edge, out_edge] = insert_node_on_edge(graph, operand_edge, clone);
