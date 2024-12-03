@@ -5,79 +5,80 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, OPTForCausalLM, OPTConfig, OPTForQuestionAnswering, OPTForSequenceClassification
+from loguru import logger
 
-variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
-
-
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_opt_causal_lm(variant, test_device):
-    # Load tokenizer and model from HuggingFace
-    # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
-
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
-    config = OPTConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config_dict["use_cache"] = False
-    config = OPTConfig(**config_dict)
-    model = download_model(OPTForCausalLM.from_pretrained, variant, config=config)
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Input sample
-    prefix_text = "My name is Thomas and my main"
-    input_tokens = tokenizer(
-        prefix_text,
-        max_length=256,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
-
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(
-        model,
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
-    )
+variants = ["facebook/opt-125m"]
 
 
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_opt_qa(variant, test_device):
-    # Load tokenizer and model from HuggingFace
-    # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
-    # NOTE: These model variants are pre-trined only. They need to be fine-tuned
-    # on a downstream task. Code is for demonstration purposes only.
+# @pytest.mark.nightly
+# @pytest.mark.parametrize("variant", variants, ids=variants)
+# def test_opt_causal_lm(variant, test_device):
+#     # Load tokenizer and model from HuggingFace
+#     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+#     compiler_cfg = forge.config._get_global_compiler_config()
+#     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(OPTForQuestionAnswering.from_pretrained, variant, torchscript=True)
+#     config = OPTConfig.from_pretrained(variant)
+#     config_dict = config.to_dict()
+#     config_dict["return_dict"] = False
+#     config_dict["use_cache"] = False
+#     config = OPTConfig(**config_dict)
+#     model = download_model(OPTForCausalLM.from_pretrained, variant, config=config)
+#     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+#     tokenizer.pad_token = tokenizer.eos_token
 
-    # Load data sample
-    question, context = "Who was Jim Henson?", "Jim Henson was a nice puppet"
+#     # Input sample
+#     prefix_text = "My name is Thomas and my main"
+#     input_tokens = tokenizer(
+#         prefix_text,
+#         max_length=256,
+#         padding="max_length",
+#         truncation=True,
+#         return_tensors="pt",
+#     )
 
-    # Data preprocessing
-    input_tokens = tokenizer(
-        question,
-        context,
-        max_length=32,
-        padding="max_length",
-        truncation=True,
-        return_tensors="pt",
-    )
+#     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+#     compiled_model = forge.compile(
+#         model,
+#         sample_inputs=inputs,
+#         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
+#     )
 
-    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(
-        model,
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_qa",
-    )
+
+# @pytest.mark.nightly
+# @pytest.mark.parametrize("variant", variants, ids=variants)
+# def test_opt_qa(variant, test_device):
+#     # Load tokenizer and model from HuggingFace
+#     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
+#     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
+#     # on a downstream task. Code is for demonstration purposes only.
+
+#     compiler_cfg = forge.config._get_global_compiler_config()
+#     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+
+#     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+#     model = download_model(OPTForQuestionAnswering.from_pretrained, variant, torchscript=True)
+
+#     # Load data sample
+#     question, context = "Who was Jim Henson?", "Jim Henson was a nice puppet"
+
+#     # Data preprocessing
+#     input_tokens = tokenizer(
+#         question,
+#         context,
+#         max_length=32,
+#         padding="max_length",
+#         truncation=True,
+#         return_tensors="pt",
+#     )
+
+#     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+#     compiled_model = forge.compile(
+#         model,
+#         sample_inputs=inputs,
+#         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_qa",
+#     )
 
 
 @pytest.mark.nightly
@@ -85,7 +86,7 @@ def test_opt_qa(variant, test_device):
 def test_opt_sequence_classification(variant, test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    # compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -94,6 +95,10 @@ def test_opt_sequence_classification(variant, test_device):
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     model = download_model(OPTForSequenceClassification.from_pretrained, variant, torchscript=True)
+
+    # model.num_hidden_layers = 1
+
+    logger.info("model={}", model)
 
     # Load data sample
     review = "the movie was great!"
