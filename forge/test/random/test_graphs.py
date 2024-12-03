@@ -8,9 +8,12 @@ from enum import Enum
 import pytest
 
 from copy import copy
+from dataclasses import dataclass
+from typing import Generator, Tuple, List, Union
 
 from forge.op_repo import OperatorParamNumber
 
+from test.random.rgg import Framework
 from test.random.rgg import Frameworks
 from test.random.rgg import FrameworkTestUtils
 from test.random.rgg import RandomGraphAlgorithm
@@ -21,11 +24,6 @@ import os
 import random
 
 from .rgg import get_randomizer_config_default
-
-
-@pytest.fixture
-def randomizer_config():
-    return get_randomizer_config_default()
 
 
 def get_random_seeds():
@@ -65,7 +63,7 @@ def get_random_seeds():
     return selected_tests
 
 
-class FrameworksHealthy(Enum):
+class FrameworkBuilder:
     """Adjust repositories to test healthy operators"""
 
     @staticmethod
@@ -113,13 +111,6 @@ class FrameworksHealthy(Enum):
 
         return framework
 
-    FORGE = healty_forge()
-    PYTORCH = healty_pytorch()
-
-
-class FrameworksCustom(Enum):
-    """Adjust repositories to prepare custom framework configurations"""
-
     @staticmethod
     def forge_fork_joins():
         SKIP_OPERATORS = ()
@@ -158,160 +149,128 @@ class FrameworksCustom(Enum):
 
         return framework
 
-    FORGE_FORK_JOINS = forge_fork_joins()
-    FORGE_NARY = forge_nary()
+
+class RandomizerConfigBuilder:
+
+    DEFAULT = get_randomizer_config_default()
+
+    @classmethod
+    def default(cls):
+        # adjust randomizer_config
+        randomizer_config = copy(cls.DEFAULT)
+        # randomizer_config.debug_shapes = True
+        # randomizer_config.verify_shapes = True
+
+        # Uncomment the following randomizer_config values to override the default values
+        # randomizer_config.dim_min = 3
+        # randomizer_config.dim_max = 4
+        # randomizer_config.op_size_per_dim_min = 4
+        # # randomizer_config.op_size_per_dim_min = 16
+        # randomizer_config.op_size_per_dim_max = 8
+        # # randomizer_config.op_size_per_dim_max = 64
+        # # randomizer_config.op_size_per_dim_max = 256
+        # randomizer_config.microbatch_size_min = 1
+        # randomizer_config.microbatch_size_max = 8
+        # randomizer_config.num_of_nodes_min = 5
+        # randomizer_config.num_of_nodes_max = 10
+        # randomizer_config.num_fork_joins_max = 5
+
+        return randomizer_config
+
+    @classmethod
+    def forge_fork_joins(cls):
+        # adjust randomizer_config
+        randomizer_config = copy(cls.DEFAULT)
+        # randomizer_config.debug_shapes = True
+        # randomizer_config.verify_shapes = True
+        randomizer_config.dim_min = 3
+        randomizer_config.dim_max = 4
+        randomizer_config.op_size_per_dim_min = 4
+        # randomizer_config.op_size_per_dim_min = 16
+        randomizer_config.op_size_per_dim_max = 8
+        # randomizer_config.op_size_per_dim_max = 64
+        # randomizer_config.op_size_per_dim_max = 256
+        randomizer_config.microbatch_size_min = 1
+        randomizer_config.microbatch_size_max = 8
+        randomizer_config.num_of_nodes_min = 10
+        randomizer_config.num_of_nodes_max = 15
+        randomizer_config.num_fork_joins_max = 10
+
+        return randomizer_config
+
+    @classmethod
+    def forge_nary(cls):
+        # adjust randomizer_config
+        randomizer_config = copy(cls.DEFAULT)
+        # randomizer_config.debug_shapes = True
+        # randomizer_config.verify_shapes = True
+        randomizer_config.dim_min = 3
+        randomizer_config.dim_max = 4
+        randomizer_config.op_size_per_dim_min = 2  # avoid failing tests with smaller dimensions?
+        # randomizer_config.op_size_per_dim_min = 4
+        # randomizer_config.op_size_per_dim_min = 16
+        randomizer_config.op_size_per_dim_max = 8
+        # randomizer_config.op_size_per_dim_max = 64
+        # randomizer_config.op_size_per_dim_max = 256
+        randomizer_config.op_size_quantization = 2
+        randomizer_config.microbatch_size_min = 1
+        randomizer_config.microbatch_size_max = 8
+        randomizer_config.num_of_nodes_min = 10
+        randomizer_config.num_of_nodes_max = 15
+        randomizer_config.num_fork_joins_max = 10
+
+        return randomizer_config
+
+
+@dataclass
+class RGGTestConfiguration:
+    framework: Framework
+    test_name: str
+    randomizer_config: RandomizerConfig
+
+    def get_id(self):
+        return f"{self.framework.template_name}_{self.test_name}"
+
+
+class RGGConfiguraionProvider:
+
+    ALL_TESTS = [
+        RGGTestConfiguration(FrameworkBuilder.healty_forge(), "Default", RandomizerConfigBuilder.default()),
+        RGGTestConfiguration(FrameworkBuilder.healty_pytorch(), "Default", RandomizerConfigBuilder.default()),
+        RGGTestConfiguration(
+            FrameworkBuilder.forge_fork_joins(), "Fork Joins", RandomizerConfigBuilder.forge_fork_joins()
+        ),
+        RGGTestConfiguration(FrameworkBuilder.forge_nary(), "Nary", RandomizerConfigBuilder.forge_nary()),
+    ]
+
+    @classmethod
+    def get_tests(cls) -> Generator[Tuple[Framework, str, RandomizerConfig], None, None]:
+        if "FRAMEWORKS" in os.environ:
+            frameworks = os.environ["FRAMEWORKS"].lower().split(",")
+        else:
+            frameworks = None
+
+        if "TEST_NAMES" in os.environ:
+            test_names = os.environ["TEST_NAMES"].split(",")
+        else:
+            test_names = ["DEFAULT"]
+        test_names = [test_name.lower() for test_name in test_names]
+
+        for test in cls.ALL_TESTS:
+            if not (frameworks is None or test.framework.template_name.lower() in frameworks):
+                continue
+            if not (test_names is None or test.test_name.lower() in test_names):
+                continue
+            yield pytest.param(test.framework, test.test_name, test.randomizer_config, id=test.get_id())
 
 
 @pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
-@pytest.mark.parametrize(
-    "framework",
-    [
-        FrameworksHealthy.FORGE.value,
-    ],
-)
-def test_random_graph_algorithm_forge(
-    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
+@pytest.mark.parametrize("framework, test_name, randomizer_config", RGGConfiguraionProvider.get_tests())
+def test_random_graph_algorithm(
+    test_index, random_seed, test_device, framework, test_name: str, randomizer_config: RandomizerConfig
 ):
-    # adjust randomizer_config
-    randomizer_config = copy(randomizer_config)
-    # randomizer_config.debug_shapes = True
-    # randomizer_config.verify_shapes = True
-
-    # Uncomment the following randomizer_config values to override the default values
-    # randomizer_config.dim_min = 3
-    # randomizer_config.dim_max = 4
-    # randomizer_config.op_size_per_dim_min = 4
-    # # randomizer_config.op_size_per_dim_min = 16
-    # randomizer_config.op_size_per_dim_max = 8
-    # # randomizer_config.op_size_per_dim_max = 64
-    # # randomizer_config.op_size_per_dim_max = 256
-    # randomizer_config.microbatch_size_min = 1
-    # randomizer_config.microbatch_size_max = 8
-    # randomizer_config.num_of_nodes_min = 5
-    # randomizer_config.num_of_nodes_max = 10
-    # randomizer_config.num_fork_joins_max = 5
-
     process_test(
-        "Default",
-        test_index,
-        random_seed,
-        test_device,
-        randomizer_config,
-        graph_builder_type=RandomGraphAlgorithm,
-        framework=framework,
-    )
-
-
-@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
-@pytest.mark.parametrize(
-    "framework",
-    [
-        FrameworksHealthy.PYTORCH.value,
-    ],
-)
-def test_random_graph_algorithm_pytorch(
-    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
-):
-    # adjust randomizer_config
-    randomizer_config = copy(randomizer_config)
-    # randomizer_config.debug_shapes = True
-    # randomizer_config.verify_shapes = True
-
-    # Uncomment the following randomizer_config values to override the default values
-    # randomizer_config.dim_min = 4
-    # randomizer_config.dim_max = 4
-    # randomizer_config.op_size_per_dim_min = 4
-    # # randomizer_config.op_size_per_dim_min = 16
-    # randomizer_config.op_size_per_dim_max = 8
-    # # randomizer_config.op_size_per_dim_max = 64
-    # # randomizer_config.op_size_per_dim_max = 256
-    # randomizer_config.microbatch_size_min = 1
-    # randomizer_config.microbatch_size_max = 8
-    # randomizer_config.num_of_nodes_min = 3
-    # randomizer_config.num_of_nodes_max = 5
-    # randomizer_config.num_fork_joins_max = 5
-
-    process_test(
-        "Default",
-        test_index,
-        random_seed,
-        test_device,
-        randomizer_config,
-        graph_builder_type=RandomGraphAlgorithm,
-        framework=framework,
-    )
-
-
-@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
-@pytest.mark.parametrize(
-    "framework",
-    [
-        FrameworksCustom.FORGE_FORK_JOINS.value,
-    ],
-)
-def ttest_random_graph_algorithm_forge_fork_joins(
-    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
-):
-    # adjust randomizer_config
-    randomizer_config = copy(randomizer_config)
-    # randomizer_config.debug_shapes = True
-    # randomizer_config.verify_shapes = True
-    randomizer_config.dim_min = 3
-    randomizer_config.dim_max = 4
-    randomizer_config.op_size_per_dim_min = 4
-    # randomizer_config.op_size_per_dim_min = 16
-    randomizer_config.op_size_per_dim_max = 8
-    # randomizer_config.op_size_per_dim_max = 64
-    # randomizer_config.op_size_per_dim_max = 256
-    randomizer_config.microbatch_size_min = 1
-    randomizer_config.microbatch_size_max = 8
-    randomizer_config.num_of_nodes_min = 10
-    randomizer_config.num_of_nodes_max = 15
-    randomizer_config.num_fork_joins_max = 10
-
-    process_test(
-        "Fork Joins",
-        test_index,
-        random_seed,
-        test_device,
-        randomizer_config,
-        graph_builder_type=RandomGraphAlgorithm,
-        framework=framework,
-    )
-
-
-# @pytest.mark.xfail(reason="Nary operators are buggy")
-@pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
-@pytest.mark.parametrize(
-    "framework",
-    [
-        FrameworksCustom.FORGE_NARY.value,
-    ],
-)
-def ttest_random_graph_algorithm_forge_nary(
-    test_index, random_seed, test_device, randomizer_config: RandomizerConfig, framework
-):
-    # adjust randomizer_config
-    randomizer_config = copy(randomizer_config)
-    # randomizer_config.debug_shapes = True
-    # randomizer_config.verify_shapes = True
-    randomizer_config.dim_min = 3
-    randomizer_config.dim_max = 4
-    randomizer_config.op_size_per_dim_min = 2  # avoid failing tests with smaller dimensions?
-    # randomizer_config.op_size_per_dim_min = 4
-    # randomizer_config.op_size_per_dim_min = 16
-    randomizer_config.op_size_per_dim_max = 8
-    # randomizer_config.op_size_per_dim_max = 64
-    # randomizer_config.op_size_per_dim_max = 256
-    randomizer_config.op_size_quantization = 2
-    randomizer_config.microbatch_size_min = 1
-    randomizer_config.microbatch_size_max = 8
-    randomizer_config.num_of_nodes_min = 10
-    randomizer_config.num_of_nodes_max = 15
-    randomizer_config.num_fork_joins_max = 10
-
-    process_test(
-        "Nary",
+        test_name,
         test_index,
         random_seed,
         test_device,
