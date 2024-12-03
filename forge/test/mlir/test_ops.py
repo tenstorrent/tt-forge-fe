@@ -16,6 +16,35 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+@pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
+@pytest.mark.parametrize(
+    "input_shape, sequence_lengths",
+    [
+        ((1, 32, 2), [5]),
+        ((1, 64, 4), [55]),
+        ((1, 16, 8), [14]),
+        ((1, 164, 14), [22]),
+        ((1, 80, 7), [79]),
+        ((1, 43, 25), [34]),
+    ],
+)
+def test_multi_indexing(input_shape, sequence_lengths):
+    class Multi_Indexing(torch.nn.Module):
+        def __init__(self, sequence_lengths):
+            super().__init__()
+            self.sequence_lengths = torch.tensor(sequence_lengths, dtype=torch.int64)
+
+        def forward(self, logits):
+            pooled_logits = logits[torch.arange(1), self.sequence_lengths]
+            return pooled_logits
+
+    inputs = [torch.randn(input_shape)]
+    framework_model = Multi_Indexing(sequence_lengths)
+    framework_model.eval()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.parametrize(
     "shape,dim,index",
     [
