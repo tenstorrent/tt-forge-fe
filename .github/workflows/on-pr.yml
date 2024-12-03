@@ -20,4 +20,3 @@ jobs:
   perf-benchmark:
     uses: ./.github/workflows/perf-benchmark.yml
     secrets: inherit
-    needs: docker-build

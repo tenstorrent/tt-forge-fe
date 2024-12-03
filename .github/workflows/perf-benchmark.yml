@@ -45,7 +45,7 @@ jobs:
           echo "DOCKER_CI_IMAGE $DOCKER_CI_IMAGE"
           echo "docker-image=$DOCKER_CI_IMAGE" >> "$GITHUB_OUTPUT"
 
-  build-and-test:
+  build-and-run-perf:
 
     needs: build-image
     strategy:
