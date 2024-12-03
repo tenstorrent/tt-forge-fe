@@ -275,13 +275,18 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 auto updated_commute_shape = commute_shape;
                 updated_commute_shape[operand_dims.second] =
                     graph->node_by_id(operand_edge.producer_node_id)->shape()[operand_dims.first];
-                update_reshape_attr(op, updated_commute_shape);
+
+                if (op->op_name() == "reshape")
+                    update_reshape_attr(op, updated_commute_shape);
+
                 clone->set_shape(updated_commute_shape);
                 log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", updated_commute_shape);
             }
             else
             {
-                update_reshape_attr(op, commute_shape);
+                if (op->op_name() == "reshape")
+                    update_reshape_attr(op, commute_shape);
+
                 clone->set_shape(commute_shape);
                 log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", commute_shape);
             }
@@ -294,7 +299,6 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             }
             else if (first->op_name() == "squeeze")
             {
-                op->change_op_type("unsqueeze");
                 op->change_op_type(
                     "unsqueeze",
                     {first->op_attrs()[0], (int)graph->node_by_id(operand_edge.producer_node_id)->shape().size()},
@@ -309,7 +313,6 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze") and
                 dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id)))
             {
-                op->change_op_type("reshape");
                 graphlib::Shape op_shape = graphlib::Shape::create(std::vector<uint32_t>(consumer->shape().size(), 1));
                 auto input = dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id));
 
@@ -336,12 +339,25 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                     }
                 }
                 op->set_shape(op_shape);
-                update_reshape_attr(op, op_shape);
+                if (op->op_name() == "reshape")
+                    update_reshape_attr(op, op_shape);
             }
 
             auto [in_edge, out_edge] = insert_node_on_edge(graph, operand_edge, clone);
             // Set dataformat to match producer on operand edge
             clone->set_output_df(graph->node_by_id(in_edge.producer_node_id)->output_df());
+
+            // Remove braodcast tms from clone's data edges and recalculate shapes
+            std::vector<graphlib::Edge> clone_data_edges = graph->operand_data_edges(clone);
+            for (const graphlib::Edge &clone_data_edge : clone_data_edges)
+            {
+                if (op->op_name() == "squeeze" || op->op_name() == "unsqueeze")
+                {
+                    graph->get_edge_attributes(clone_data_edge)->clear_broadcast_dims();
+                    recalculate_shapes(graph);
+                }
+            }
+
             handle_change_rank(graph, clone);
             try_commute_bcast_through_clone(graph, op);
             if (graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(graph->data_operands(clone)[0]))
