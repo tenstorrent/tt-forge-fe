@@ -82,7 +82,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
 
     # Compare result of prefilling on device with the result of prefilling on CPU.
     # Calculate the pcc for only the last vector in the hidden states tensor.
-    assert compare_with_golden(hidden_states_framework[:, -1, :], hidden_states_compiled[:, -1, :], pcc=0.99)
+    assert compare_with_golden(hidden_states_framework[:, -1, :], hidden_states_compiled[:, -1, :])
 
     # Decode Phase - Generate new tokens
     max_new_tokens = 46
@@ -94,7 +94,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     # Compare the logits of the generated tokens with the golden values from CPU.
     assert all(
         [
-            compare_with_golden(golden=out_logits_fw, calculated=out_logits_tt, pcc=0.99)
+            compare_with_golden(golden=out_logits_fw, calculated=out_logits_tt)
             for out_logits_fw, out_logits_tt in zip(output_logits_framework, output_logits_compiled)
         ]
     )

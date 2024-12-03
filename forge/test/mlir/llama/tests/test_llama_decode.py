@@ -158,7 +158,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(run_on_tt_device):
             # Validate TT result with Framework
             assert all(
                 [
-                    compare_with_golden(golden=fw_out, calculated=tt_out, pcc=0.99)
+                    compare_with_golden(golden=fw_out, calculated=tt_out)
                     for fw_out, tt_out in zip(framework_output, tt_output)
                 ]
             )
@@ -280,7 +280,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(run_on_tt_device):
             # Validate TT result with Framework
             assert all(
                 [
-                    compare_with_golden(golden=fw_out, calculated=tt_out, pcc=0.99)
+                    compare_with_golden(golden=fw_out, calculated=tt_out)
                     for fw_out, tt_out in zip(framework_output, tt_output)
                 ]
             )

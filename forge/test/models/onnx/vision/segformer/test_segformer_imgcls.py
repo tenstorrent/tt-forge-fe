@@ -3,10 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import forge
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
-# from forge.verify.config import TestKind
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
+from forge.verify.config import TestKind
 from transformers import AutoImageProcessor
 import os
 import pytest
@@ -79,7 +78,7 @@ def test_segformer_image_classification_onnx(test_device, variant):
         tt_model,
         input_shapes=[(pixel_values.shape,)],
         inputs=[(pixel_values,)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

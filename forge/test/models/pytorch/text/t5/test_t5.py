@@ -140,7 +140,7 @@ def test_t5_generation(variant, test_device):
         co_out = [co.to("cpu") for co in co_out]
         fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+        assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 class T5_encoder(torch.nn.Module):
@@ -815,7 +815,7 @@ def test_t5_small_tiny_tile(test_device):
             )
         ],
         inputs=[(decoder_input_ids, encoder_outputs)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

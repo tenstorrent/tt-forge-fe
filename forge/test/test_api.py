@@ -12,6 +12,8 @@ import tensorflow as tf
 import forge
 import forge.config
 from forge.tensor import to_forge_tensors, to_pt_tensors
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 def test_torch():
@@ -22,20 +24,13 @@ def test_torch():
         def forward(self, x1, x2):
             return torch.add(x1, x2)
 
-    model = Add()
     shape = (1, 1024, 32)
     inputs = [torch.rand(shape), torch.rand(shape)]
 
-    golden = model(*inputs)
+    framework_model = Add()
+    compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
 
-    compiled_model = forge.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
-
-    output = compiled_model(*inputs)
-
-    print(f"golden: {golden}")
-    print(f"output: {output}")
-    if not torch.allclose(output[0], golden, rtol=1e-1):
-        raise ValueError("Output does not match the golden output")
+    verify(inputs, framework_model, compiled_model)
 
 
 def test_tf():
@@ -46,22 +41,15 @@ def test_tf():
         def call(self, x1, x2):
             return x1 + x2
 
-    model = TFAdd()
     shape = (1, 1024, 32)
     inputs = [torch.rand(shape), torch.rand(shape)]
 
     inputs_tf = [tf.convert_to_tensor(x) for x in inputs]
-    golden = model(inputs_tf[0], inputs_tf[1])
-    golden = torch.tensor(golden.numpy())
 
-    compiled_model = forge.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
+    framework_model = TFAdd()
+    compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
 
-    output = compiled_model(*inputs)
-
-    print(f"golden: {golden}")
-    print(f"output: {output}")
-    if not torch.allclose(output[0], golden, rtol=1e-1):
-        raise ValueError("Output does not match the golden output")
+    verify(inputs_tf, framework_model, compiled_model)
 
 
 def test_forge():

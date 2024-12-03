@@ -50,7 +50,7 @@ from .config import (
     override_dram_queue_placement,
     configure_mixed_precision,
 )
-from .verify import VerifyConfig
+from .verify import DepricatedVerifyConfig
 from .forgeglobal import forge_reset, set_device_pipeline, is_silicon, get_tenstorrent_device
 from .parameter import Parameter
 from .tensor import Tensor, SomeTensor, TensorShape

@@ -5,10 +5,10 @@
 # STEP 0: import Forge library
 import pytest
 
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig, PyTorchModule
-# from forge._C.backend_api import BackendType, BackendDevice
-# from forge.verify.config import TestKind
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig, PyTorchModule
+from forge._C.backend_api import BackendType, BackendDevice
+from forge.verify.config import TestKind
 import forge
 import os
 
@@ -86,7 +86,7 @@ def test_retinanet_r101_640x480_onnx(test_device):
         tt_model,
         input_shapes=([img_tensor.shape]),
         inputs=([img_tensor]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             test_kind=TestKind.INFERENCE,
             arch=test_device.arch,
             devtype=test_device.devtype,
@@ -194,7 +194,7 @@ def test_retinanet_onnx(variant, test_device):
         tt_model,
         input_shapes=([input_batch.shape]),
         inputs=([input_batch]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

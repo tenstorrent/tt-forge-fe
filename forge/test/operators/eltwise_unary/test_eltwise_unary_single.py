@@ -13,7 +13,7 @@ import pytest
 import numpy as np
 
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, VerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
 
 from . import models
 
@@ -81,5 +81,5 @@ def test_eltwise_unary(un_train, un_recompute, un_op, un_model, un_shape, un_kwa
         model.testname,
         *model.inputs,
         compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
-        verify_cfg=VerifyConfig(pcc=pcc),
+        verify_cfg=DepricatedVerifyConfig(pcc=pcc),
     )

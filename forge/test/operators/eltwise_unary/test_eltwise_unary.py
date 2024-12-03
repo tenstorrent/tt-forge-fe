@@ -12,7 +12,7 @@ import pytest
 import numpy as np
 
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, VerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
 from forge.verify.config import TestKind
 
 from . import models
@@ -112,5 +112,5 @@ def test_eltwise_unary(op_test_kind, operation, model, shape):
         compiler_cfg=CompilerConfig(
             enable_training=test_kind.is_training(), enable_recompute=test_kind.is_recompute(), enable_auto_fusing=False
         ),
-        verify_cfg=VerifyConfig(pcc=pcc),
+        verify_cfg=DepricatedVerifyConfig(pcc=pcc),
     )

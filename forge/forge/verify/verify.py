@@ -7,17 +7,20 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any
+from typing import Tuple, Dict, List, Any, Union
 
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import torch
+import tensorflow as tf
+from forge.tensor import to_pt_tensors
 
 from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
-from .config import VerifyConfig, should_waive_gradient
+from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
 from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
+from forge.compiled_graph_state import CompiledModel
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -78,7 +81,7 @@ def do_verify(
     golden_input_grads: Tuple[torch.Tensor, ...],
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
-    verify_cfg: VerifyConfig,
+    verify_cfg: DepricatedVerifyConfig,
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
@@ -254,7 +257,84 @@ def verify_golden(
     device: "TTDevice",
     inputs: Tuple[Tensor],
     outputs: Tuple[torch.Tensor],
-    verify_cfg: VerifyConfig,
+    verify_cfg: DepricatedVerifyConfig,
 ):
 
     assert False  # Run ttnn golden
+
+
+def verify(
+    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
+    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model],
+    compiled_model: CompiledModel,
+    verify_cfg: VerifyConfig = VerifyConfig(),
+):
+    """
+    Verify the compiled model against the framework model
+    """
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return
+
+    from forge.op.eval.common import compare_with_golden  # avoid circular import
+
+    # 0th step: input checks
+
+    # Check if inputs are of the correct type
+    if not inputs:
+        raise ValueError("Input tensors must be provided")
+    for input_tensor in inputs:
+        if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
+            raise TypeError(
+                f"Input tensor must be of type {verify_cfg.supported_tensor_types}, but got {type(input_tensor)}"
+            )
+
+    if not isinstance(framework_model, verify_cfg.framework_model_types):
+        raise TypeError(
+            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
+        )
+
+    if not isinstance(compiled_model, verify_cfg.compiled_model_types):
+        raise TypeError(
+            f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
+        )
+
+    # 1st step: run forward pass for the networks
+    fw_out = framework_model(*inputs)
+    co_out = compiled_model(*inputs)
+
+    # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
+    #  cast from tensorflow tensors to pytorch tensors if needed)
+    if not isinstance(fw_out, torch.Tensor):
+        fw_out = to_pt_tensors(fw_out)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    # 3rd step: verifications of outputs
+    # - dtype check
+    # - shape check
+    # - compare with golden
+    if verify_cfg.verify_size:
+        if len(fw_out) != len(co_out):
+            raise ValueError(
+                f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_out)} outputs, compiled model has {len(co_out)} outputs"
+            )
+
+    for fw, co in zip(fw_out, co_out):
+        if verify_cfg.verify_dtype:
+            if fw.dtype != co.dtype:
+                raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
+        if verify_cfg.verify_shape:
+            if fw.shape != co.shape:
+                raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
+        if verify_cfg.verify_data:
+            if not compare_with_golden(golden=fw, calculated=co, verify_cfg=verify_cfg):
+                raise ValueError(f"Data mismatch (compare_with_golden): framework_model={fw}, compiled_model={co}")
+        if verify_cfg.verify_allclose and fw.dtype not in [
+            torch.int32,
+            torch.int64,
+            torch.bool,
+        ]:  # allclose doesn't make sense for integer/bool types
+            if not torch.allclose(fw, co, rtol=verify_cfg.rtol[fw.dtype], atol=verify_cfg.atol[fw.dtype]):
+                raise ValueError(f"Data mismatch (all_close): framework_model={fw}, compiled_model={co}")

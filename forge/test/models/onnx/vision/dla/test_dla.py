@@ -4,9 +4,8 @@
 import forge
 import onnx
 import os
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
 import requests
 import pytest
 
@@ -86,7 +85,7 @@ def test_dla_onnx(test_device, variant):
         tt_model,
         input_shapes=[img_tensor.shape],
         inputs=[(img_tensor,)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
