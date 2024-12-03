@@ -1951,3 +1951,36 @@ def test_repeat_interleave():
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.xfail(reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast")
+@pytest.mark.push
+def test_squeeze_operand_commute_clone():
+    class SqueezeOperandCommuteClone(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, attn_weights, attention_mask):
+            bsz = 1
+            tgt_len = 256
+            src_len = 256
+
+            num_heads = 16
+
+            attn_weights = attn_weights.view(bsz, num_heads, tgt_len, src_len) + attention_mask
+            attn_weights = torch.max(
+                attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min, device=attn_weights.device)
+            )
+            attn_weights = attn_weights.view(bsz * num_heads, tgt_len, src_len)
+
+            return attn_weights
+
+    attn_weights = torch.randn(16, 256, 256)
+    attention_mask = torch.zeros([1, 1, 256, 256], dtype=torch.int64)
+    attention_mask[:, :, :8, :8] = 1
+    inputs = [attn_weights, attention_mask]
+
+    framework_model = SqueezeOperandCommuteClone()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
