@@ -8,6 +8,8 @@ from torch import nn
 
 import forge
 from forge.op.eval.common import compare_with_golden_pcc
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize(
@@ -32,13 +34,9 @@ def test_add(shapes):
     inputs = [torch.rand(shapes[0]), torch.rand(shapes[1])]  # when we use dtype=torch.bfloat16, pcc fails
 
     framework_model = Add()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.push
@@ -84,20 +82,10 @@ def test_broadcast(shapes, dim, new_shape):
 
     inputs = [torch.rand(shapes)]
 
-    # Framework Model
     framework_model = Broadcast(dim, new_shape)
-    fw_out = framework_model(*inputs)
-
-    # Compile Model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Move compiled outputs to CPU for comparison
-    co_out = [co.to("cpu") for co in co_out]
-
-    # Validate the output shapes and values
-    assert fw_out.shape == co_out[0].shape, f"Expected shape {fw_out.shape}, but got {co_out[0].shape}"
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -107,7 +95,6 @@ def test_broadcast(shapes, dim, new_shape):
     ],
 )
 @pytest.mark.push
-@pytest.mark.xfail(reason="Data values do not match, pcc < 0.1")
 def test_concat(inputs_and_dim):
     in_shape1, in_shape2, dim = inputs_and_dim
 
@@ -121,13 +108,9 @@ def test_concat(inputs_and_dim):
     inputs = [torch.rand(in_shape1), torch.rand(in_shape2)]
 
     framework_model = Concat()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.1)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
@@ -163,25 +146,13 @@ def test_conv2d(shape, conv_params):
         def forward(self, x):
             return self.conv(x)
 
-    # Instantiate the model with the parameters
-    framework_model = Conv2d(conv_params)
-
     # Prepare the input tensor
     inputs = [torch.rand(shape)]
 
-    # Get framework output
-    fw_out = framework_model(*inputs)
-
-    # Compile the model with Forge
+    framework_model = Conv2d(conv_params)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Move compiled output to CPU for comparison
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
-
-    # Ensure the framework and compiled outputs match
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 197, 3072)])
@@ -200,25 +171,13 @@ def test_gelu(shape, gelu_params):
         def forward(self, x):
             return self.gelu(x)
 
-    # Instantiate the model with the parameters
-    framework_model = GELU(gelu_params)
-
     # Prepare the input tensor
     inputs = [torch.rand(shape)]
 
-    # Get framework output
-    fw_out = framework_model(*inputs)
-
-    # Compile the model with Forge
+    framework_model = GELU(gelu_params)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Move compiled output to CPU for comparison
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
-
-    # Ensure the framework and compiled outputs match
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("shape", [(1, 197, 768)])
@@ -246,25 +205,13 @@ def test_index(shape, index_params):
         def forward(self, x):
             return x.narrow(self.dim, self.start, self.stop - self.start)[:: self.stride]
 
-    # Instantiate the model with the parameters
-    framework_model = IndexModule(index_params)
-
     # Prepare the input tensor
     inputs = [torch.rand(shape)]
 
-    # Get framework output
-    fw_out = framework_model(*inputs)
-
-    # Compile the model with Forge
+    framework_model = IndexModule(index_params)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Move compiled output to CPU for comparison
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
-
-    # Ensure the framework and compiled outputs match
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("shape", [(1, 197, 768)])
@@ -292,25 +239,12 @@ def test_layernorm(shape, layernorm_params):
         def forward(self, x):
             return nn.functional.layer_norm(x, (x.size(self.dim),), self.weights, self.bias, self.epsilon)
 
-    # Instantiate the model with the parameters
-    framework_model = LayernormModule(layernorm_params)
-
-    # Prepare the input tensor
     inputs = [torch.rand(shape)]
 
-    # Get framework output
-    fw_out = framework_model(*inputs)
-
-    # Compile the model with Forge
+    framework_model = LayernormModule(layernorm_params)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Move compiled output to CPU for comparison
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = fw_out if isinstance(fw_out, list) else [fw_out]
-
-    # Ensure the framework and compiled outputs match
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -341,13 +275,9 @@ def test_matmul(shapes):
     ]
 
     framework_model = Matmul()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.90)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(pcc=0.90, verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -374,12 +304,9 @@ def test_multiply(shapes):
     ]
 
     framework_model = Multiply()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -421,15 +348,11 @@ def test_reshape(source_and_target_shape):
             return torch.reshape(a, self.target_shape)
 
     inputs = [torch.rand(source_shape, dtype=torch.bfloat16)]
+
     framework_model = Reshape(target_shape)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
-    # some of them are failing with pcc < 0.99
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -451,13 +374,11 @@ def test_softmax(shapes):
             return torch.softmax(x, dim=dim)
 
     inputs = [torch.rand(shape)]
+
     framework_model = Softmax(dim)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -481,14 +402,9 @@ def test_squeeze(input_shape_and_dim):
     inputs = [torch.rand(input_shape)]  # pcc fails if we use dtype=torch.bfloat16
 
     framework_model = Squeeze(dim)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -510,14 +426,9 @@ def test_tanh(input_shape):
     inputs = [torch.rand(input_shape)]
 
     framework_model = Tanh()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -546,13 +457,11 @@ def test_transpose(params):
             return torch.transpose(a, *self.dims)
 
     inputs = [torch.rand(shapes)]
+
     framework_model = Transpose(dims)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)[0].to("cpu")
 
-    assert compare_with_golden_pcc(fw_out, co_out, pcc=0.99)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -587,11 +496,6 @@ def test_unsqueeze(input_shape, dim):
     inputs = [torch.rand(input_shape)]  # pcc fails if we use dtype=torch.bfloat16
 
     framework_model = Unsqueeze(dim)
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.9)
+    verify(inputs, framework_model, compiled_model)
