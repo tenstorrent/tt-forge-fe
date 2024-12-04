@@ -184,9 +184,6 @@ class CompilerConfig:
     # Number of patterns to match for each module
     tvm_module_to_num_patterns: Dict[str, int] = field(default_factory=lambda: dict())
 
-    # If enabled, for given test, it generates Forge Modules in form of PyTest for each op that exists in given module
-    tvm_generate_op_tests: bool = False
-
     # If enabled, for given test, it generates Forge Modules in form of PyTest for each unique operation configuration within the given module.
     # Each configuration is based on:
     # - Operand Type (e.g., Activation, Parameter, Constant)
