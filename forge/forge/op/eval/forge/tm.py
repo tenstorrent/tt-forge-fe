@@ -848,7 +848,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     elif type == "reshape":
         shape = inputs[0].shape
-        return ac.op(type, (grad,), attributes=(shape))
+        return ac.op(type, (grad,), attributes=(shape), named_attrs={"shape": shape})
 
     elif type == "conv2d_depthwise_weights":
         return ac.op("conv2d_depthwise_weights_bw", (grad,), attributes=attr)
@@ -881,7 +881,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 break
 
             # pass the gradient for selected part
-            grad_slice = ac.op("select", (grad,), (dim, grad_offset, length, current_size))
+            grad_slice = ac.op("select", (grad,), (dim, grad_offset, length, current_size),
+                               named_attrs={"dim": dim, "begin": grad_offset, "length": length, "stride": current_size})
             if grad_return is None:
                 grad_return = grad_slice
             else:
@@ -954,7 +955,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         dim = attr[0]
         if grad.shape.len() == 4:  # Cannot unsqueeze beyond 4D
             return ac.op(Nop.create(), (grad,))
-        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()))
+        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()),  named_attrs={"dim": dim})
 
     elif type == "broadcast":
         assert len(attr) == 3
@@ -2009,10 +2010,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
 
 
 def decompose_post_autograd(type, attr, dc, inputs):
-    if type == "select":
-        decompose_select(attr, dc, inputs)
-        return
-
     if type == "reshape":
         assert len(inputs) == 1
         input_shape = inputs[0].shape.as_list()
