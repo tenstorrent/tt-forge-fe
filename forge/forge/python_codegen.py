@@ -157,6 +157,7 @@ class ForgeWriter(PythonWriter):
             self.wl("from forge.verify.compare import compare_with_golden")
             self.wl("from forge.verify.verify import verify")
             self.wl("from forge.verify.config import VerifyConfig")
+            self.wl("from forge.verify.compare import compare_with_golden")
             self.wl("import pytest")
 
         if self.framework == "tensorflow":
