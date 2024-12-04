@@ -535,7 +535,7 @@ class OpNode : public TaggedNode
         const std::vector<graphlib::OpType::Attr> &op_attrs, const graphlib::OpType::Attrs &named_attrs)
     {
         const std::string &name = op_name();
-        log_trace("op name = {}", name);
+        log_trace(LogGraphCompiler, "op name = {}", name);
         op_type_ = graphlib::OpType(name, op_attrs, {}, named_attrs);
     }
     /**
