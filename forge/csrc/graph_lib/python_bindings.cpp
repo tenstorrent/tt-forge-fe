@@ -109,6 +109,7 @@ void GraphModule(py::module &m_graph)
             py::arg("recurse") = false)
         .def("get_subgraph_id_for_node", &Graph::get_subgraph_id_for_node)
         .def("get_parameter_nodes", &Graph::get_parameter_nodes, py::return_value_policy::reference)
+        .def("get_optimizer_parameter_nodes", &Graph::get_optimizer_parameter_nodes, py::return_value_policy::reference)
         .def(
             "register_module_inputs",
             &Graph::register_module_inputs,

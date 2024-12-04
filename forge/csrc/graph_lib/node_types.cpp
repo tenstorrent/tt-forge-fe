@@ -360,6 +360,7 @@ std::unique_ptr<Node> InputNode::clone(std::string const &name) const
     node->tile_broadcast_dims_ = tile_broadcast_dims_;
     node->runtime_tensor_transform = runtime_tensor_transform;
     node->add_tags(this->as<TaggedNode>()->get_tags());
+    node->requires_grad_ = requires_grad_;
     return node;
 }
 

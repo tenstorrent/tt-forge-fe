@@ -4,6 +4,7 @@
 
 from typing import Dict, List, Any, Tuple, Optional
 from enum import IntEnum
+import forge
 from loguru import logger
 
 from dataclasses import dataclass, field
@@ -85,7 +86,9 @@ class CompiledGraphState:
     has_cache_buffers: bool = False
 
     @staticmethod
-    def from_compiled_graph(module: Module, graph: Graph) -> "CompiledGraphState":
+    def from_compiled_graph(
+        module: Module, graph: Graph, optimizer_params: Optional[Dict[str, Tensor]] = None
+    ) -> "CompiledGraphState":
         ordered_input_names = graph.get_ordered_input_names()
         ordered_output_names = graph.get_ordered_output_names()
         ordered_external_output_names = graph.get_ordered_external_output_names()
@@ -94,6 +97,12 @@ class CompiledGraphState:
         ordered_output_requires_grad = graph.get_ordered_output_requires_grad()
         ordered_constant_node_names = [constant_node.name for constant_node in graph.get_constant_nodes()]
         ordered_parameter_node_names = [parameter_node.name for parameter_node in graph.get_parameter_nodes()]
+        ordered_optimizer_parameter_node_names = [
+            parameter_node.name for parameter_node in graph.get_optimizer_parameter_nodes()
+        ]
+        if len(ordered_optimizer_parameter_node_names) > 0:
+            ordered_parameter_node_names.extend(ordered_optimizer_parameter_node_names)
+        print("ordered_parameter_node_names", ordered_parameter_node_names)
         ordered_input_gradient_names = graph.get_ordered_input_gradient_names()
 
         # TODO: will be needed for training
@@ -112,6 +121,11 @@ class CompiledGraphState:
         elif isinstance(module, torch.fx.GraphModule):
             for name, value in module.named_parameters():
                 constant_to_tensor[name] = value
+
+        if optimizer_params is not None:
+            for name, value in optimizer_params.items():
+                print("found optimizer param: {}", name)
+                constant_to_tensor[name] = value.value()
 
         post_const_eval_constants = {}
         post_const_eval_constants: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
@@ -165,10 +179,17 @@ class CompiledGraphState:
     def get_ordered_parameter_tensors(self):
         return [self.get_parameter_tensor(name) for name in self.ordered_parameter_node_names]
 
+    def get_ordered_parameter_names(self):
+        return self.ordered_parameter_node_names
+
+    def set_parameter_value(self, name, value):
+        self.post_const_eval_parameters[name] = value
+
 
 class ProgramId(IntEnum):
     FORWARD = 0
     BACKWARD = 1
+    OPTIMIZER = 2
 
 
 class CompiledModel:
@@ -204,12 +225,14 @@ class CompiledModel:
         self,
         fwd_compiled_graph_state: CompiledGraphState,
         bwd_compiled_graph_state: Optional[CompiledGraphState],
+        opt_compiled_graph_state: Optional[CompiledGraphState],
         compiled_binary: Binary,
         framework_module: AnyModule,
         attached_module: Optional["CompiledModel"] = None,
     ):
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
+        self.opt_compiled_graph_state = opt_compiled_graph_state
         self.compiled_binary = compiled_binary
         self.inputs = []
         self.framework_module = framework_module
@@ -219,6 +242,7 @@ class CompiledModel:
             self.gradient_inputs = [None] * len(self.bwd_compiled_graph_state.ordered_input_gradient_names)
         self.outputs = {}
         self.attached_module = attached_module
+        self.gradient_outputs = []
 
     def tie_grad_fn(self, grad_id: int, grad: torch.Tensor):
         """
@@ -329,16 +353,71 @@ class CompiledModel:
                             param.grad = grads[idx]
 
         # Pass on the calculated gradients to the attached module
-        self.gradient_outputs = grads
         if self.attached_module is not None:
             # pass on the calculated gradients and call the attached module's backward pass
             # HACK: we don't have a way to know which gradient outputs are tied to which gradient inputs
             # of the attached module. For now, just attach the first one since we are doing this only for
             # the loss module (which will have only one gradient output) and the model will need only one
             # gradient output to be passed to the loss module.
-            assert len(self.gradient_outputs) == 1, "Passing gradients not properly implemented yet"
+            assert len(grads) == 1, "Passing gradients not properly implemented yet"
             assert len(self.attached_module.gradient_inputs) == 1, "Passing gradients not properly implemented yet"
-            self.attached_module.gradient_inputs[0] = self.gradient_outputs[0]
+            self.attached_module.gradient_inputs[0] = grads[0]
             self.attached_module.backward()
 
+        if self.gradient_outputs is None or len(self.gradient_outputs) == 0:
+            self.gradient_outputs = grads
+        else:
+            assert len(self.gradient_outputs) == len(grads), "Number of gradients does not match number of outputs"
+            for idx, grad in enumerate(grads):
+                self.gradient_outputs[idx] += grad
+
         return grads
+
+    def print_gradients(self):
+        for idx, grad in enumerate(self.gradient_outputs):
+            print(f"Gradient {idx}: {grad}")
+
+    def step(self):
+        assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
+        assert self.opt_compiled_graph_state is not None, "Optimizer graph should be present for training."
+
+        inputs_and_parameters = [
+            *self.gradient_outputs,
+            *self.opt_compiled_graph_state.get_ordered_constant_tensors(),
+            *self.opt_compiled_graph_state.get_ordered_parameter_tensors(),
+        ]
+
+        print("gradient_outputs", len(self.gradient_outputs))
+        print(
+            "opt_compiled_graph_state.get_ordered_constant_tensors()",
+            len(self.opt_compiled_graph_state.get_ordered_constant_tensors()),
+        )
+        print(
+            "opt_compiled_graph_state.get_ordered_parameter_tensors()",
+            len(self.opt_compiled_graph_state.get_ordered_parameter_tensors()),
+        )
+        print("inputs_and_parameters", inputs_and_parameters)
+
+        logger.info(
+            f"Running optimizer step on model {self.framework_module.get_name()} {self.opt_compiled_graph_state.graph.get_name()} on device..."
+        )
+
+        out_params = run_binary(self.compiled_binary, int(ProgramId.OPTIMIZER), inputs_and_parameters)
+
+        update_param: Dict[str, torch.Tensor] = {}
+        for idx, param in enumerate(self.opt_compiled_graph_state.ordered_output_names):
+            update_param[param] = out_params[idx]
+
+        for name in self.opt_compiled_graph_state.get_ordered_parameter_names():
+            if name + "_weight_output" in update_param:
+                print("Setting parameter value for", name)
+                print(f"old value: {self.opt_compiled_graph_state.get_parameter_tensor(name).data}")
+                print(f"new value: {update_param[name + '_weight_output'].data}")
+                self.opt_compiled_graph_state.get_parameter_tensor(name).data = update_param[
+                    name + "_weight_output"
+                ].data
+                self.fwd_compiled_graph_state.get_parameter_tensor(name).data = update_param[
+                    name + "_weight_output"
+                ].data
+
+        self.gradient_outputs = []

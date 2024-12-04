@@ -11,6 +11,7 @@ import copy
 import numpy as np
 import torch
 
+from forge.compiled_graph_state import CompiledModel
 from forge.tensor import Tensor
 from forge.parameter import Parameter
 import forge.torch_optimizers
@@ -22,12 +23,15 @@ class Optimizer:
     Optimizer base class
     """
 
-    def __init__(self, device_params: bool = False):
+    dynamic_params = False
+    linked_modules: Optional[List[CompiledModel]] = None
+
+    def __init__(self, parameters: Optional[List[Parameter]]):
         """
-        Create baseline optimizer. If device_params is set, no parameters are provided at the time of
-        optimizer creation, but will be extracted from the device on which the optimizer is placed.
+        Create baseline optimizer. If parameters are not passed at construction, they will be
+        dynamically added during compilation.
         """
-        self.device_params = device_params
+        self.dynamic_params = parameters is None
 
     def get_param_dict(self) -> Dict:
         """
@@ -62,6 +66,16 @@ class Optimizer:
     def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor]) -> torch.optim.Optimizer:
         raise RuntimeError("Subclasses should implement this.")
 
+    def link_module(self, module: CompiledModel):
+        if self.linked_modules is None:
+            self.linked_modules = []
+        self.linked_modules.append(module)
+
+    def step(self):
+        assert self.linked_modules is not None, "Optimizer must be linked to a module before calling step"
+        for module in self.linked_modules:
+            module.step()
+
 
 class SGD(Optimizer):
     """
@@ -76,16 +90,12 @@ class SGD(Optimizer):
         optimizer_parameter_name -> Tensor dict.
     """
 
-    def __init__(self, learning_rate: float, parameters: Optional[List[Parameter]] = None, device_params: bool = False):
-        super().__init__(device_params)
+    def __init__(self, learning_rate: float, parameters: Optional[List[Parameter]] = None):
+        super().__init__(parameters)
         self.learning_rate: float = learning_rate
         self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
 
-        if device_params:
-            assert parameters is None
-
-        else:
-            assert parameters is not None
+        if parameters is not None:
             self.set_parameters_to_optimize(parameters)
 
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
@@ -108,18 +118,14 @@ class SGD(Optimizer):
     def get_optimizer_state_keys(self) -> List:
         return []
 
-    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
-        if parameter_name not in self.parameter_to_opt_inputs:
-            return None
+    def get_optimizer_params(self) -> Optional[Dict[str, Tensor]]:
 
-        ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_forge:
-            for k, v in ret.items():
-                # optimize params should always tile broadcast if they are scalar
-                one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
-                tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
-        return ret
+        opt_params = {}
+        for name, params in self.parameter_to_opt_inputs.items():
+            opt_name = "input_opt_" + name + "_0.lr"
+            opt_params[opt_name] = self.parameter_to_opt_inputs[name]["lr"]
+            print(f"Optimizing {opt_name} with learning rate {opt_params[opt_name]}")
+        return opt_params
 
     def get_type(self) -> str:
         return "sgd"

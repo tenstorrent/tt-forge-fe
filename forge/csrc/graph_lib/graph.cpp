@@ -437,11 +437,11 @@ std::vector<Edge> Graph::user_data_edges_for_operand_port(const Node *node, Port
     return result;
 }
 
-std::vector<Node *> Graph::users(const Node *node) const
+std::vector<Node *> Graph::users(const Node *node, std::function<bool(Edge)> edge_filter) const
 {
     std::vector<Node *> user_nodes;
 
-    for (auto &user_edge : this->user_edges(node))
+    for (auto &user_edge : this->user_edges(node, edge_filter))
     {
         NodeId consumer_node_id = user_edge.consumer_node_id;
         Node *consumer_node = node_by_id(consumer_node_id);
@@ -1094,6 +1094,23 @@ std::vector<std::string> Graph::get_constant_names() const
         constant_names.push_back(constant_node->name());
     }
     return constant_names;
+}
+
+std::vector<Node *> Graph::get_optimizer_parameter_nodes() const
+{
+    std::vector<Node *> parameters;
+    for (Node *node : nodes_)
+    {
+        if (node->node_type() == NodeType::kInput)
+        {
+            InputNode *input_node = node->as<InputNode>();
+            if (input_node->is_optimizer_parameter())
+            {
+                parameters.push_back(node);
+            }
+        }
+    }
+    return parameters;
 }
 
 std::vector<Node *> Graph::get_parameter_nodes() const

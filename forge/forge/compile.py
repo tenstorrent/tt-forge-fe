@@ -5,6 +5,7 @@ import os
 from typing import Optional, List, Dict, Any, Tuple, Union
 from dataclasses import dataclass, field
 
+from forge.optimizers import Optimizer
 import torch
 import tensorflow as tf
 from loguru import logger
@@ -114,7 +115,7 @@ class CompileContext:
     microbatch_size: int
     microbatch_count: int
     inputs: Union[torch.Tensor, List[torch.Tensor]]
-    optimizer: Optional[torch.optim.Optimizer] = None
+    optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None
     training: bool = False
     graph: Optional[Graph] = None
     losses: Optional[List[Tensor]] = None
@@ -177,7 +178,7 @@ def compile_main(
     module: AnyModule,
     sample_inputs: List[torch.Tensor],
     module_name: Optional[str] = None,
-    optimizer: Optional[torch.optim.Optimizer] = None,
+    optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None,
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
 ) -> CompiledModel:
@@ -349,20 +350,32 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         context.modules[0], context.forge_module.get_graph(GraphType.Forward)
     )
     bwd_compiled_graph_state = None
+    opt_compiled_graph_state = None
     if context.training:
         bwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(
             context.modules[0], context.forge_module.get_graph(GraphType.Backward)
         )
+
+        if context.optimizer is not None and isinstance(context.optimizer, forge.optimizers.Optimizer):
+            context.optimizer.set_parameters_to_optimize(context.modules[0].get_parameters())
+            opt_params = context.optimizer.get_optimizer_params()
+            opt_compiled_graph_state = CompiledGraphState.from_compiled_graph(
+                context.modules[0], context.forge_module.get_graph(GraphType.Optimizer), opt_params
+            )
 
     assert context.compiled_binary is not None
 
     compiled_module = CompiledModel(
         fwd_compiled_graph_state,
         bwd_compiled_graph_state,
+        opt_compiled_graph_state,
         context.compiled_binary,
         context.modules[0],
         context.attach_to,
     )
+
+    if context.optimizer is not None and isinstance(context.optimizer, forge.optimizers.Optimizer):
+        context.optimizer.link_module(compiled_module)
 
     logger.info("Compilation completed.")
 
@@ -818,8 +831,14 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
 
     graph.set_training(True)
 
-    # NOTE: Don't pass optimizer, to avoid creating the optimizer graph (v0 will run optimizer on CPU)
-    autograd_config = pyautograd.AutogradConfig(recompute=compiler_cfg.enable_recompute, optimizer=None)
+    # If we've got the torch optimizer, it means that the optimizer will be ran on the CPU, otherwise we need
+    # to compile it and it will be ran on the device.
+    optimizer = None
+    if context.optimizer is not None and isinstance(context.optimizer, forge.optimizers.Optimizer):
+        optimizer = context.optimizer
+        print("Using provided optimizer")
+
+    autograd_config = pyautograd.AutogradConfig(recompute=compiler_cfg.enable_recompute, optimizer=optimizer)
     autograd_engine = pyautograd.AutogradEngine(graph, autograd_config)
 
     graph = autograd_engine.run()
