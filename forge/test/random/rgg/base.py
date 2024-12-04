@@ -13,11 +13,11 @@ import random
 import forge
 
 from forge import ForgeModule
-from forge.verify import VerifyConfig  # , verify_module
-from test.operators.utils.compat import verify_module
 from forge.op_repo import OperatorRepository
 from test.operators.utils import ShapeUtils
 from test.operators.utils.compat import TestDevice
+
+from .verify import verify_module
 from .utils import Timer
 from .datatypes import ModelBuilder, Framework
 from .datatypes import RandomizerNode, RandomizerGraph, RandomizerParameters, RandomizerConfig, ExecutionContext
@@ -209,9 +209,7 @@ class RandomizerRunner:
         input_shapes = GraphUtils.get_input_shapes(self.test_context.graph)
 
         # verify Forge model
-        verify_module(model, input_shapes)
-        # verify_module(model, input_shapes,
-        #               VerifyConfig(devtype=parameters.test_device.devtype, arch=parameters.test_device.arch))
+        verify_module(model, input_shapes, random_seed=parameters.random_seed)
 
     def save_test(self, test_code_str: str, failing_test: bool = False):
         test_dir = self.test_context.randomizer_config.test_dir
