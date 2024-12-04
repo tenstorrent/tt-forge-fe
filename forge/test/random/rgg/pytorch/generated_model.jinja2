@@ -2,8 +2,7 @@ import torch
 import forge
 {% if test_format %}
 import pytest
-from forge.verify import VerifyConfig
-from test.operators.utils.compat import verify_module
+from test.random.rgg.verify import verify_module
 {% endif %}{% if randomizer_config.debug_shapes %}
 from test.random.rgg import DebugUtils{% endif %}
 
@@ -45,6 +44,6 @@ def test_gen_model_{{ test_index }}_{{ random_seed }}(test_device):
     pytorch_model = GeneratedTestModel_{{ test_index }}_{{ random_seed }}()
     # model = forge.PyTorchModule("pytest_gen_model_{{ test_id }}", pytorch_model)
 
-    verify_module(pytorch_model, input_shapes)
+    verify_module(pytorch_model, input_shapes, random_seed={{ random_seed}})
 
 {% endif %}
