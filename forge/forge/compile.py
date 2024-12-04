@@ -114,7 +114,7 @@ class CompileContext:
     microbatch_size: int
     microbatch_count: int
     inputs: Union[torch.Tensor, List[torch.Tensor]]
-    optimizer: Optional[torch.optim.Optimizer] = None
+    optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None
     training: bool = False
     graph: Optional[Graph] = None
     losses: Optional[List[Tensor]] = None
@@ -142,6 +142,10 @@ class CompileContext:
     forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
     attach_to: Optional[CompiledModel] = None
+
+    def optimizer_on_device(self):
+        # For now we support only Forge optimizer on device.
+        return self.optimizer is not None and isinstance(self.optimizer, forge.optimizers.Optimizer)
 
 
 def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, is_forge: bool, losses=None):
@@ -177,7 +181,7 @@ def compile_main(
     module: AnyModule,
     sample_inputs: List[torch.Tensor],
     module_name: Optional[str] = None,
-    optimizer: Optional[torch.optim.Optimizer] = None,
+    optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None,
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
 ) -> CompiledModel:
@@ -349,20 +353,61 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         context.modules[0], context.forge_module.get_graph(GraphType.Forward)
     )
     bwd_compiled_graph_state = None
+    opt_compiled_graph_state = None
     if context.training:
         bwd_compiled_graph_state = CompiledGraphState.from_compiled_graph(
             context.modules[0], context.forge_module.get_graph(GraphType.Backward)
         )
+
+        if context.optimizer_on_device():
+            # TODO(#924): This is not good. We are linking the optimizer parameters (such as learning rate, momentum, etc.)
+            # to the optimizer parameters in the optimizer graph via their names. Due to the nature of the previous stack,
+            # this was maybe a good enough solution, but we should redesign this.
+            #
+            # E.g. if the optimizer has a learning rate parameter named "lr" and the compiled graph has a parameter named
+            # "l1.weight", the optimizer parameter in the graph will be named "input_opt_l1.weight_0.lr". This needs to be
+            # matched with ('l1.weight', 'lr') in the parameters that we extract from the optimizer.
+            #
+            # Additionally, all trainable parameters will have its own copy of the learning rate optimizer parameter, which
+            # is not ideal as well.
+            module_params = context.modules[0].get_parameters()
+            context.optimizer.set_parameters_to_optimize(module_params)
+
+            # Get all parameters of the optimizer (learning rate, momentum, etc.) for the compiled graph.
+            assert context.optimizer is not None
+            opt_params = context.optimizer.get_optimizer_params()
+            graph_opt_params = context.graph.get_optimizer_parameter_nodes()
+
+            # Now convert the names of the optimizer parameters to the names of the parameters in the compiled graph.
+            module_param_names = [param.get_name() for param in module_params]
+            converted_opt_params = {}
+            for opt_param_node in graph_opt_params:
+                for opt_param in opt_params:
+                    param_name, opt_param_name = opt_param
+                    assert param_name in module_param_names, f"Parameter {param_name} not found in module parameters"
+
+                    if param_name in opt_param_node.name and opt_param_name in opt_param_node.name:
+                        converted_opt_params[opt_param_node.name] = opt_params[opt_param]
+
+            opt_compiled_graph_state = CompiledGraphState.from_compiled_graph(
+                context.modules[0], context.forge_module.get_graph(GraphType.Optimizer), converted_opt_params
+            )
 
     assert context.compiled_binary is not None
 
     compiled_module = CompiledModel(
         fwd_compiled_graph_state,
         bwd_compiled_graph_state,
+        opt_compiled_graph_state,
         context.compiled_binary,
         context.modules[0],
         context.attach_to,
     )
+
+    if context.optimizer_on_device():
+        # Link the module to the optimizer, so that the user can call `optimizer.step()` which can in turn
+        # execute the optimizer graphs of all linked modules.
+        context.optimizer.link_module(compiled_module)
 
     logger.info("Compilation completed.")
 
@@ -818,8 +863,12 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
 
     graph.set_training(True)
 
-    # NOTE: Don't pass optimizer, to avoid creating the optimizer graph (v0 will run optimizer on CPU)
-    autograd_config = pyautograd.AutogradConfig(recompute=compiler_cfg.enable_recompute, optimizer=None)
+    optimizer = None
+    if context.optimizer_on_device():
+        # If we should run the optimizer on the device, pass it so that the autograd engine can create the optimizer graph.
+        optimizer = context.optimizer
+
+    autograd_config = pyautograd.AutogradConfig(recompute=compiler_cfg.enable_recompute, optimizer=optimizer)
     autograd_engine = pyautograd.AutogradEngine(graph, autograd_config)
 
     graph = autograd_engine.run()

@@ -91,6 +91,7 @@ void GraphModule(py::module &m_graph)
         .def("get_ordered_input_names", &Graph::get_ordered_input_names)
         .def("get_ordered_intermediate_names", &Graph::get_ordered_intermediate_names)
         .def("get_ordered_output_names", &Graph::get_ordered_output_names)
+        .def("get_ordered_output_nodes", &Graph::ordered_module_outputs)
         .def("get_ordered_external_output_names", &Graph::get_ordered_external_output_names)
         .def("get_ordered_target_names", &Graph::get_ordered_target_names)
         .def("get_ordered_intermediate_names", &Graph::get_ordered_intermediate_names)
@@ -109,6 +110,7 @@ void GraphModule(py::module &m_graph)
             py::arg("recurse") = false)
         .def("get_subgraph_id_for_node", &Graph::get_subgraph_id_for_node)
         .def("get_parameter_nodes", &Graph::get_parameter_nodes, py::return_value_policy::reference)
+        .def("get_optimizer_parameter_nodes", &Graph::get_optimizer_parameter_nodes, py::return_value_policy::reference)
         .def(
             "register_module_inputs",
             &Graph::register_module_inputs,
@@ -250,6 +252,15 @@ void GraphModule(py::module &m_graph)
         .def_property_readonly("node_type", &Node::node_type)
         .def_property_readonly("shape", &Node::shape)
         .def_property_readonly("output_df", &Node::output_df);
+
+    py::class_<tt::graphlib::OutputNode, tt::raw_ptr<tt::graphlib::OutputNode>>(m_graph, "OutputNode")
+        .def_property_readonly("id", &Node::id)
+        .def_property_readonly("name", &Node::name)
+        .def_property_readonly("node_type", &Node::node_type)
+        .def_property_readonly("shape", &Node::shape)
+        .def_property_readonly("output_df", &Node::output_df)
+        .def_property_readonly("is_aliased", &graphlib::OutputNode::is_aliased_tensor)
+        .def_property_readonly("alias", &graphlib::OutputNode::alias);
 
     py::class_<graphlib::NodeContext>(m_graph, "NodeContext")
         .def_readonly("id", &graphlib::NodeContext::id)
