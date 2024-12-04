@@ -135,7 +135,8 @@ class Graph
     const std::unordered_set<Edge> &user_edges_set(const Node *node) const;
     std::vector<Node *> operands(const Node *node) const;
     std::vector<Node *> data_operands(const Node *node) const;
-    std::vector<Node *> users(const Node *node) const;
+    std::vector<Node *> users(
+        const Node *node, std::function<bool(Edge)> edge_filter = [](Edge) { return true; }) const;
     std::vector<Node *> data_users(const Node *node) const;
     std::unordered_set<NodeId> node_ids();
 
@@ -251,6 +252,7 @@ class Graph
     std::vector<Node *> ordered_intermediates() const;
     std::vector<Node *> get_constant_nodes(bool recurse = false) const;
     std::vector<Node *> get_parameter_nodes() const;
+    std::vector<Node *> get_optimizer_parameter_nodes() const;
     std::vector<std::string> get_constant_names() const;
     std::vector<std::string> get_ordered_input_names() const;
     std::vector<std::string> get_ordered_intermediate_names() const;

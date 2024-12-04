@@ -21,16 +21,6 @@ using Graph = tt::graphlib::Graph;
 namespace tt::passes
 {
 
-bool is_parameter_node(const tt::graphlib::Node *node)
-{
-    return node->node_type() == graphlib::NodeType::kInput && node->as<graphlib::InputNode>()->is_parameter();
-}
-
-bool is_loss_input_node(const tt::graphlib::Node *node)
-{
-    return node->node_type() == graphlib::NodeType::kInput && node->as<graphlib::InputNode>()->is_loss();
-}
-
 void clone_and_add(const graphlib::Node *node, Graph *new_graph)
 {
     auto cloned_node = node->clone(node->name());
@@ -49,10 +39,16 @@ void clone_and_connect_operands(const graphlib::Graph *src_graph, const graphlib
 
     for (auto operand : src_graph->operands(src_node))
     {
+        if (!operand->is_forward())
+        {
+            continue;
+        }
+
         TT_ASSERT(
             dst_graph->has_node_with_name(operand->name()),
-            "Expected operand {} to be present in the destination graph",
-            operand->name());
+            "Expected operand {} of the node {} to be present in the destination graph",
+            operand->name(),
+            src_node_name);
         auto dst_operand = dst_graph->get_node_by_name(operand->name());
         dst_graph->add_edge(dst_operand, dst_graph->get_node_by_name(src_node_name));
     }
@@ -66,6 +62,16 @@ bool has_users_in_bwd(const Graph *graph, const graphlib::Node *node)
         user_edges.begin(),
         user_edges.end(),
         [graph](const graphlib::Edge &edge) { return graph->node_by_id(edge.consumer_node_id)->is_backward(); });
+}
+
+bool has_users_in_opt(const Graph *graph, const graphlib::Node *node)
+{
+    auto user_edges = graph->user_data_edges(node);
+
+    return std::any_of(
+        user_edges.begin(),
+        user_edges.end(),
+        [graph](const graphlib::Edge &edge) { return graph->node_by_id(edge.consumer_node_id)->is_forward(); });
 }
 
 bool needs_intermediate_output(const Graph *graph, const graphlib::Node *node)
@@ -333,26 +339,157 @@ std::unique_ptr<Graph> extract_backward_graph(
     return bwd_graph;
 }
 
+std::unique_ptr<Graph> extract_optimizer_graph(
+    const Graph *graph, const Graph *fwd_graph, const std::vector<graphlib::Node *> &topo)
+{
+    auto opt_graph = std::make_unique<Graph>(tt::graphlib::IRLevel::IR_TT_FORGE, "optimizer");
+    opt_graph->set_training(graph->training());
+
+    // Adding all params (which require gradients) from the forward graph as inputs to the optimizer graph.
+    std::vector<graphlib::NodeId> opt_module_outputs;
+    for (auto param : graph->get_parameter_nodes())
+    {
+        if (param->as<graphlib::InputNode>()->requires_grad())
+        {
+            TT_ASSERT(
+                has_users_in_opt(graph, param),
+                "Expected parameter node {} to have users in the optimizer graph",
+                param->name());
+            log_info("Adding parameter node {} as input to opt graph", param->name());
+            clone_and_add(param, opt_graph.get());
+            {
+                // Create the gradient output node
+                auto grad_output_node = graphlib::create_node<graphlib::OutputNode>(param->name() + "_weight_output");
+                grad_output_node->set_output_type(graphlib::OutputType::Internal);
+                grad_output_node->set_shape(param->shape());
+                grad_output_node->set_output_df(param->output_df());
+                grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+                opt_graph->add_node(std::move(grad_output_node), 0 /*subgraph_id=*/);
+                opt_module_outputs.push_back(opt_graph->get_node_by_name(param->name() + "_weight_output")->id());
+            }
+        }
+    }
+
+    std::vector<graphlib::NodeId> opt_module_inputs;
+
+    for (auto grad_output : graph->nodes(
+             [](const graphlib::Node *node) {
+                 return node->node_type() == graphlib::NodeType::kQueue &&
+                        node->as<graphlib::QueueNode>()->is_grad_accumulator();
+             }))
+    {
+        log_info("Adding gradient input node {} as input to opt graph", grad_output->name());
+        auto grad_output_node =
+            graphlib::create_node<graphlib::InputNode>(grad_output->name(), graphlib::InputNodeType::Gradient, false);
+        grad_output_node->set_shape(grad_output->shape());
+        grad_output_node->set_output_df(grad_output->output_df());
+        grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+
+        opt_graph->add_node(std::move(grad_output_node), 0 /*subgraph_id=*/);
+        opt_module_inputs.push_back(opt_graph->get_node_by_name(grad_output->name())->id());
+    }
+
+    for (auto node : topo)
+    {
+        if (!node->is_optimizer())
+        {
+            continue;
+        }
+
+        clone_and_add(node, opt_graph.get());
+
+        for (auto operand : graph->data_operands(node))
+        {
+            if (opt_graph->has_node_with_name(operand->name()))
+            {
+                opt_graph->add_edge(
+                    opt_graph->get_node_by_name(operand->name()), opt_graph->get_node_by_name(node->name()));
+                continue;
+            }
+
+            if (operand->is_forward())
+            {
+                TT_ASSERT(false, "Not expected operand from forward graph in optimizer graph");
+                auto fwd_operand = fwd_graph->get_node_by_name(operand->name());
+                auto users = fwd_graph->data_users(fwd_operand);
+
+                for (auto user : users)
+                {
+                    if (user->node_type() == graphlib::NodeType::kOutput)
+                    {
+                        // Find the intermediate output node in the fwd graph
+                        if (opt_graph->has_node_with_name(user->name()))
+                        {
+                            opt_graph->add_edge(
+                                opt_graph->get_node_by_name(user->name()), opt_graph->get_node_by_name(node->name()));
+                            continue;
+                        }
+
+                        auto intermediate_input_node = graphlib::create_node<graphlib::InputNode>(
+                            user->name(), graphlib::InputNodeType::Activation, false);
+                        intermediate_input_node->set_shape(user->shape());
+                        intermediate_input_node->set_output_df(user->output_df());
+
+                        opt_graph->add_node(std::move(intermediate_input_node), 0 /*subgraph_id=*/);
+                        opt_graph->add_edge(
+                            opt_graph->get_node_by_name(user->name()), opt_graph->get_node_by_name(node->name()));
+                    }
+                }
+            }
+        }
+
+        auto users = graph->users(
+            node,
+            [](graphlib::Edge edge) {
+                return edge.edge_type == graphlib::EdgeType::kData ||
+                       edge.edge_type == graphlib::EdgeType::kDataLoopback;
+            });
+        log_info("Adding weight output node for optimizer node {}, users: {}", node->name(), users.size());
+        for (auto user : users)
+        {
+            if (user->node_type() == graphlib::NodeType::kInput && user->as<graphlib::InputNode>()->is_parameter())
+            {
+                auto weight_output_node = opt_graph->get_node_by_name(user->name() + "_weight_output");
+                opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), weight_output_node);
+            }
+        }
+    }
+
+    opt_graph->register_module_outputs(opt_module_outputs);
+
+    return opt_graph;
+}
+
 // Splits the graph into multiple graphs which will be lowered to MLIR as different functions.
 ForgeGraphModule split_graph(graphlib::Graph *graph)
 {
     auto topo = graphlib::topological_sort(*graph);
 
     auto fwd_graph = extract_forward_graph(graph, topo);
-    reportify::dump_graph(graph->name(), "extracted_fwd", fwd_graph.get());
+    reportify::dump_graph(graph->name(), "forward_graph", fwd_graph.get());
 
     ForgeGraphModule module(graph->name(), fwd_graph.release());
 
     if (!graph->training())
     {
         // We're not in training mode, so we don't need to split the graph further.
+        TT_ASSERT(!graph->contains_bwd_nodes() && !graph->contains_opt_nodes(), "Unexpected backward/optimizer nodes");
         return module;
     }
 
     auto bwd_graph = extract_backward_graph(graph, module.get_graph(GraphType::Forward), topo);
-    reportify::dump_graph(graph->name(), "extracted_bwd", bwd_graph.get());
-
+    reportify::dump_graph(graph->name(), "backward_graph", bwd_graph.get());
     module.set_graph(GraphType::Backward, bwd_graph.release());
+
+    if (!graph->contains_opt_nodes())
+    {
+        // No optimizer nodes in the graph, so we're done.
+        return module;
+    }
+    auto opt_graph = extract_optimizer_graph(graph, module.get_graph(GraphType::Forward), topo);
+    reportify::dump_graph(graph->name(), "optimizer_graph", opt_graph.get());
+    module.set_graph(GraphType::Optimizer, opt_graph.release());
+
     return module;
 }
 

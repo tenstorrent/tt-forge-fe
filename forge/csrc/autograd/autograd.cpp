@@ -395,6 +395,8 @@ void autograd_engine::create_optimizer_graph()
         return;
     }
 
+    log_info(tt::LogAutograd, "Creating optimizer graph");
+
     // for each parameter with requires_grad, we're going to inject an optimizer graph
     std::unordered_set<Node *> visited;
     std::vector<Node *> topo_order =
