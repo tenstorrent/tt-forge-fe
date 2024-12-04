@@ -8,7 +8,7 @@ from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 import forge
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 from test.mlir.llama.utils.utils import load_model
 
 
