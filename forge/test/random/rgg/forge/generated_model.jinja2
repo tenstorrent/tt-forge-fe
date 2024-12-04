@@ -2,7 +2,7 @@ import torch
 import forge
 {% if test_format %}
 import pytest
-from forge.verify import VerifyConfig
+from forge.verify import DepricatedVerifyConfig
 from test.operators.utils.compat import verify_module
 {% endif %}{% if randomizer_config.debug_shapes %}
 from test.random.rgg import DebugUtils{% endif %}
