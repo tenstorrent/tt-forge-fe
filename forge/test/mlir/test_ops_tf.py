@@ -9,7 +9,7 @@ import tensorflow as tf
 
 import forge
 from forge.tensor import to_pt_tensors
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 from forge.config import _get_global_compiler_config
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig

@@ -2006,7 +2006,7 @@ def get_forge_outputs(forge_mods, devices, forge_inputs):
 
 
 def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
-    from forge.op.eval import compare_tensor_to_golden
+    from forge.verify.compare import compare_tensor_to_golden
 
     test_pass = True
     for i, (golden, output) in enumerate(zip(frame_outputs, forge_outputs)):

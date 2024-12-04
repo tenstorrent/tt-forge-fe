@@ -10,7 +10,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 

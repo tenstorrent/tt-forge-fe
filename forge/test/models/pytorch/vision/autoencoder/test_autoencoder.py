@@ -5,7 +5,7 @@ import forge
 import torch
 import torchvision.transforms as transforms
 from datasets import load_dataset
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 import os
 import pytest
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE

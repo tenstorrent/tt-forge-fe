@@ -11,7 +11,7 @@ from transformers import (
 )
 import pytest
 import forge
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 

@@ -11,7 +11,7 @@ from transformers import (
 import pytest
 import forge
 import torch
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 

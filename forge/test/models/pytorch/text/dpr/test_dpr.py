@@ -13,7 +13,7 @@ from transformers import (
     DPRQuestionEncoderTokenizer,
 )
 import torch
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
 
@@ -54,7 +54,7 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
@@ -95,7 +95,7 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
@@ -135,4 +135,4 @@ def test_dpr_reader_pytorch(variant, test_device):
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
