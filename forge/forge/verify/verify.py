@@ -21,6 +21,7 @@ from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
+from forge.verify.compare import compare_with_golden, compare_tensor_to_golden
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -90,7 +91,6 @@ def do_verify(
     """
     Verify graph vs. pytorch golden
     """
-    from forge.op.eval import compare_tensor_to_golden  # avoid circular import
 
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
     torch_targets: List[torch.Tensor] = [i.value() for i in targets]
@@ -275,8 +275,6 @@ def verify(
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
         return
-
-    from forge.op.eval.common import compare_with_golden  # avoid circular import
 
     # 0th step: input checks
 

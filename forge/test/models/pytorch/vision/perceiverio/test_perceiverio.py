@@ -14,7 +14,7 @@ from transformers import (
     PerceiverForImageClassificationFourier,
 )
 import os
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 def get_sample_data(model_name):
