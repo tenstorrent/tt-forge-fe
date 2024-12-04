@@ -7,7 +7,6 @@ from forge._C import DataFormat
 from forge._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType
 from ....forgeglobal import TILE_DIM
 
-
 def eval(type, attr, ops):
     assert type == "embedding"
     assert len(ops) == 2
@@ -47,5 +46,4 @@ def decompose(type, attr, dc, inputs):
 
 def backward(type, attr, ac, operand, inputs, output, grad):
     assert type == "embedding"
-    assert len(ops) == 2
-    raise NotImplementedError("embedding backwards not implemented")
+    return ac.op("embedding_bw", [inputs[0], inputs[1], grad])

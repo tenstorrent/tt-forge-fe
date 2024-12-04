@@ -2192,3 +2192,32 @@ def test_repeat_interleave():
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+
+@pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
+@pytest.mark.parametrize("dim", [-1, -2])
+@pytest.mark.parametrize("begin", [0, 16])
+@pytest.mark.parametrize("length", [4, 16])
+@pytest.mark.parametrize("stride", [16, 32])
+def test_select(shape, dim, begin, length, stride):
+    if stride <= begin + length:
+        pytest.skip("Skipping since stride <= begin + length")
+
+    class Select(forge.ForgeModule):
+        def __init__(self):
+            super().__init__("Select")
+
+        def forward(self, x):
+            x = forge.op.Select("select_op", x, dim, [begin, length], stride)
+            return x
+
+    inputs = to_forge_tensors([torch.rand(*shape)])
+    framework_model = Select()
+    fw_out = framework_model(*inputs)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    inputs = to_pt_tensors(inputs)
+    compiled_output = compiled_model(*inputs)
+
+    co_out = [co.to("cpu") for co in compiled_output]
+    assert compare_with_golden_pcc(golden=fw_out.value(), calculated=co_out[0], pcc=0.99)
