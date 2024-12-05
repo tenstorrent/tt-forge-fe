@@ -540,6 +540,7 @@ std::string InputNode::input_type_string() const
     {
         case InputNodeType::Accumulator: return "accumulator";
         case InputNodeType::Activation: return "input";
+        case InputNodeType::Gradient: return "gradient";
         case InputNodeType::Loss: return "loss";
         case InputNodeType::Parameter: return "parameter";
         case InputNodeType::Constant: return "constant";
@@ -579,6 +580,7 @@ std::ostream &operator<<(std::ostream &out, InputNodeType t)
     {
         case InputNodeType::Parameter: out << "InputNodeType::Parameter"; break;
         case InputNodeType::Constant: out << "InputNodeType::Constant"; break;
+        case InputNodeType::Gradient: out << "InputNodeType::Gradient"; break;
         case InputNodeType::Accumulator: out << "InputNodeType::Accumulator"; break;
         case InputNodeType::Activation: out << "InputNodeType::Activation"; break;
         case InputNodeType::Loss: out << "InputNodeType::Loss"; break;
