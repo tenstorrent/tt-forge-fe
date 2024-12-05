@@ -131,6 +131,9 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:143"
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145"
+            in f"{ex}",
         ],
         FailingReasons.ATTRIBUTE_ERROR: [
             lambda ex: isinstance(ex, AttributeError),
@@ -177,6 +180,16 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "293 unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/repeat/repeat.cpp:41: repeat_dims.rank() == input_rank"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/binary.cpp:124: second_shape[-3] == 1"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/types.cpp:192: normalized_index >= 0 and normalized_index < rank"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Fatal error" in f"{ex}",
         ],
     }
 
