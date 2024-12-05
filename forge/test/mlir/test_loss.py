@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 
+import pytest
 import torch
 from torch import nn
+
 import forge
 from forge.op.eval.common import compare_with_golden
 
