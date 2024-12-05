@@ -152,6 +152,11 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp"
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "input_tensor_arg.get_layout() == ttnn::ROW_MAJOR_LAYOUT" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "weights.get_dtype() == DataType::BFLOAT16" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Tensor 1 - data type mismatch: expected BFloat16, got Float32" in f"{ex}",
         ],
     }
 
