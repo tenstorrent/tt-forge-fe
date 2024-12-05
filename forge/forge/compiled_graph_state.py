@@ -413,11 +413,18 @@ class CompiledModel:
                 print("Setting parameter value for", name)
                 print(f"old value: {self.opt_compiled_graph_state.get_parameter_tensor(name).data}")
                 print(f"new value: {update_param[name + '_weight_output'].data}")
+                type_data = type(update_param[name + "_weight_output"].data)
                 self.opt_compiled_graph_state.get_parameter_tensor(name).data = update_param[
                     name + "_weight_output"
                 ].data
                 self.fwd_compiled_graph_state.get_parameter_tensor(name).data = update_param[
                     name + "_weight_output"
                 ].data
+                for torch_name, val in self.framework_module.module.named_parameters():
+                    if torch_name == name:
+                        val.data = update_param[name + "_weight_output"].data
+                        val.grad = None
+
+                print(f"new value: {self.opt_compiled_graph_state.get_parameter_tensor(name)}")
 
         self.gradient_outputs = []
