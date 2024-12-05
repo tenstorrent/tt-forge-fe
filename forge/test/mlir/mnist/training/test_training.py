@@ -34,7 +34,9 @@ def test_mnist_training():
     test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
 
     # Define model and instruct it to compile and run on TT device
-    framework_model = MNISTLinear(bias=False, dtype=dtype)  # bias=False because batch_size=1 with bias=True is not supported
+    framework_model = MNISTLinear(
+        bias=False, dtype=dtype
+    )  # bias=False because batch_size=1 with bias=True is not supported
 
     # Create a torch loss and leave on CPU
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -42,7 +44,10 @@ def test_mnist_training():
     # Define optimizer and instruct it to compile and run on TT device
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
     tt_model = forge.compile(
-        framework_model, sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)], loss=loss_fn, optimizer=framework_optimizer
+        framework_model,
+        sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)],
+        loss=loss_fn,
+        optimizer=framework_optimizer,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -74,7 +79,7 @@ def test_mnist_training():
             loss.backward()
 
             tt_model.backward()
-            
+
             # Adjust weights (on CPU)
             framework_optimizer.step()
 
@@ -82,7 +87,6 @@ def test_mnist_training():
                 break
 
         print(f"epoch: {epoch_idx} loss: {total_loss}")
-
 
     test_loss = 0
     for batch_idx, (data, target) in enumerate(test_loader):
@@ -95,6 +99,7 @@ def test_mnist_training():
             break
 
     print(f"Test (total) loss: {test_loss}")
+
 
 @pytest.mark.push
 def test_mnist_training_with_grad_accumulation():
