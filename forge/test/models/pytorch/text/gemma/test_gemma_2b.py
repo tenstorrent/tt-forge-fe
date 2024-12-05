@@ -254,6 +254,7 @@ def test_gemma_2b_single_decoder(test_device, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(test_device, variant):
     # Random see for reproducibility

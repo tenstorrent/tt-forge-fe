@@ -99,6 +99,7 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(test_device, variant):
 

@@ -11,6 +11,7 @@ from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_pytorch_ssd300_resnet50(test_device):
 
     # STEP 1 : Set Forge configuration parameters

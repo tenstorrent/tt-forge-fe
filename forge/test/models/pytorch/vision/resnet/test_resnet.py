@@ -47,6 +47,7 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_resnet(test_device):
 
     model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
@@ -83,6 +84,7 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_resnet_timm(test_device):
     model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
         "resnet50",

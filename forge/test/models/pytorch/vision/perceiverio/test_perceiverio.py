@@ -44,8 +44,9 @@ variants = [
 ]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     # Set Forge configuration parameters

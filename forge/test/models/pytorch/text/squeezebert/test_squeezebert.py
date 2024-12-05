@@ -8,6 +8,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_squeezebert_sequence_classification_pytorch(test_device):
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")

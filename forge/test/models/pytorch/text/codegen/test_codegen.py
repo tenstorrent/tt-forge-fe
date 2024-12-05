@@ -19,8 +19,9 @@ import torch
 from forge.op.eval.common import compare_with_golden
 
 
-@pytest.mark.xfail(reason="RuntimeError: Tensor 41 - data type mismatch: expected Float32, got BFloat16")
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="RuntimeError: Tensor 41 - data type mismatch: expected Float32, got BFloat16")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(test_device, variant):
     # Configurations
