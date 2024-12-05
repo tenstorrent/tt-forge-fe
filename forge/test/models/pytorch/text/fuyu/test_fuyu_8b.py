@@ -30,6 +30,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_fuyu8b(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

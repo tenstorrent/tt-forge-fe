@@ -1104,7 +1104,7 @@ class ForgeWriter(PythonWriter):
         self.wl(f'framework_output = [fw_out.to_framework("{framework}") for fw_out in framework_output]')
         self.wl("")
         self.wl(
-            "assert all([compare_with_golden(golden=fw_out, calculated=tt_out, pcc=0.99) for fw_out, tt_out in zip(framework_output, tt_output)])"
+            "assert all([compare_with_golden(golden=fw_out, calculated=tt_out) for fw_out, tt_out in zip(framework_output, tt_output)])"
         )
         self.wl("")
         self.wl("")

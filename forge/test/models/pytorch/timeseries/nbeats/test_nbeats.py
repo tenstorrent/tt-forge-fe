@@ -17,6 +17,7 @@ from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 # @pytest.mark.xfail(reason="Failing with pcc=0.82")
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -44,6 +45,7 @@ def test_nbeats_with_seasonality_basis(test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 # @pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -65,7 +67,8 @@ def test_nbeats_with_generic_basis(test_device):
 
 
 @pytest.mark.nightly
-# @pytest.mark.xfail(eason="Failing with pcc=0.83")
+@pytest.mark.model_analysis
+# @pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 

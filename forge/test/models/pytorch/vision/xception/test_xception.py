@@ -38,8 +38,9 @@ def generate_model_xception_imgcls_timm(test_device, variant):
 variants = ["xception", "xception41", "xception65", "xception71"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xception_timm(variant, test_device):
 
     (model, inputs,) = generate_model_xception_imgcls_timm(

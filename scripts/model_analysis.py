@@ -542,53 +542,57 @@ def dump_logs(log_file_dir_path: str, log_file_name: str, content: str):
         logger.info(f"Dumped test logs in {log_file}")
 
 
-def collect_all_pytests(root_dir_path):
+def collect_all_model_analysis_test(directory_or_file_path, output_directory_path):
 
-    assert check_path(root_dir_path), f"The directory path for collecting pytest {root_dir_path} doesn't exists"
+    assert check_path(
+        directory_or_file_path
+    ), f"The directory path for collecting test {directory_or_file_path} doesn't exists"
 
-    logger.info(f"Collecting all pytests in {root_dir_path}")
+    logger.info(f"Collecting all test that has model_analysis marker in {directory_or_file_path}")
 
+    collected_test_outputs = ""
     try:
-        res = subprocess.check_output(["pytest", root_dir_path, "--setup-plan"], stderr=subprocess.STDOUT).decode(
-            "utf-8"
+        result = subprocess.run(
+            ["pytest", directory_or_file_path, "-m", "model_analysis", "--collect-only"],
+            capture_output=True,
+            text=True,
+            check=True,
         )
+
+        collected_test_outputs += "STDOUT:\n"
+        collected_test_outputs += result.stdout
+        collected_test_outputs += "STDERR:\n"
+        collected_test_outputs += result.stderr
+
     except subprocess.CalledProcessError as e:
-        output = e.output.decode("utf-8")
-        logger.error(f"[Error!] output = {output}")
-        return []
+        collected_test_outputs += e.output
+
+    dump_logs(output_directory_path, "collected_tests.txt", collected_test_outputs)
 
     test_list = []
-    lines = res.split("\n")
-    for line in lines:
-        if "warnings summary" in line or "slowest durations" in line:
-            break
-
-        if line and line.startswith("        " + root_dir_path) and "::" in line and "training" not in line:
-            line = line.strip()
-            line = line.split(" (fixtures used:")[0] if " (fixtures used:" in line else line
-            if "Grayskull" not in line and "Wormhole_B0" not in line:
-                test_list.append(line)
+    with open(os.path.join(output_directory_path, "collected_tests.txt"), "r") as collected_test_file:
+        lines = collected_test_file.readlines()
+        test_lines = False
+        for line in lines:
+            if "Automatic Model Analysis Collected tests:" in line:
+                test_lines = True
+            elif "Automatic Model Analysis Collected test count:" in line:
+                test_lines = False
+                break
+            elif test_lines:
+                test_list.append(str(line).replace("\n", ""))
 
     return test_list
 
 
-def generate_and_export_unique_ops_tests(pytest_directory_path, model_file_path, unique_ops_output_directory_path):
+def generate_and_export_unique_ops_tests(test_directory_or_file_path, unique_ops_output_directory_path):
 
-    # If model_file_path is specified, collect all the tests in the model_file_path parent directory path
-    # and in the test_list will only include the tests matching with model_file_path,
-    # otherwise collect all the tests in the pytest_directory_path specified by the user
-    if model_file_path:
-        model_file_path_list = model_file_path.split("/")[:-1]
-        tests_directory_path = "/".join(model_file_path_list)
-    else:
-        tests_directory_path = pytest_directory_path
+    # Collect all the pytest inside the test_directory_or_file_path specified by the user with model_analysis marker
+    test_list = collect_all_model_analysis_test(test_directory_or_file_path, unique_ops_output_directory_path)
 
-    test_list = collect_all_pytests(tests_directory_path)
-
-    if model_file_path:
-        test_list = [test for test in test_list if test.split("::")[0] == model_file_path]
-
-    assert test_list != [], f"No tests found in the {tests_directory_path} path"
+    assert (
+        test_list != []
+    ), f"No tests found in the {test_directory_or_file_path} path with model_analysis pytest marker"
 
     # Create a dictonary contains model_name as key and model tests(i.e include variant, task) as values
     model_name_to_tests = {}
@@ -941,21 +945,16 @@ def run_model_unique_op_tests_and_generate_markdowns(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="""Generate unique ops test for the models present in the  pytest_directory_path or model_file_path
+        description="""Generate unique ops test for the models present in the test_directory_or_file_path
         specified by the user and run the unique ops test and generate markdown files, the root markdown file contains model name,
         variant name, framework and compiler components supported rate and sub-markdown file contains  model variant unique op tests info"""
     )
 
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "--pytest_directory_path",
+    parser.add_argument(
+        "--test_directory_or_file_path",
         type=str,
-        help="Specify the directory path containing models to test.",
-    )
-    group.add_argument(
-        "--model_file_path",
-        type=str,
-        help="Specify the model file path to generate unique op tests and markdown file.",
+        default=os.path.join(os.getcwd(), "forge/test"),
+        help="Specify the directory or file path containing models test with model_analysis pytest marker",
     )
     parser.add_argument(
         "--dump_failure_logs",
@@ -964,29 +963,21 @@ def main():
     )
     parser.add_argument(
         "--markdown_directory_path",
-        default=os.path.join(os.getcwd(), "new_models_analysis_docs"),
+        default=os.path.join(os.getcwd(), "models_analysis_docs"),
         required=False,
         help="Specify the directory path for saving models information as markdowns file",
     )
     parser.add_argument(
         "--unique_ops_output_directory_path",
-        default=os.path.join(os.getcwd(), "new_unique_ops"),
+        default=os.path.join(os.getcwd(), "unique_ops"),
         required=False,
         help="Specify the output directory path for saving models unique op tests outputs(i.e failure logs, xlsx file)",
     )
 
     args = parser.parse_args()
 
-    if args.pytest_directory_path is not None:
-        assert check_path(
-            args.pytest_directory_path
-        ), f"Specified pytest directory path {args.pytest_directory_path} doesn't exists"
-    else:
-        assert check_path(args.model_file_path), f"Specified model file path {args.model_file_path} doesn't exists"
-
     model_output_dir_paths = generate_and_export_unique_ops_tests(
-        pytest_directory_path=args.pytest_directory_path,
-        model_file_path=args.model_file_path,
+        test_directory_or_file_path=args.test_directory_or_file_path,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
     )
 

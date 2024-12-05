@@ -30,8 +30,9 @@ varaints = [
 ]
 
 
-@pytest.mark.parametrize("variant", varaints, ids=varaints)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_mlp_mixer_timm_pytorch(variant, test_device):
 
     model = download_model(timm.create_model, variant, pretrained=True)

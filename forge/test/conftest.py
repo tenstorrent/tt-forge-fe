@@ -448,3 +448,23 @@ def pytest_runtest_logreport(report):
         for key, default_value in environ_before_test.items():
             if os.environ.get(key, "") != default_value:
                 os.environ[key] = default_value
+
+
+def pytest_collection_modifyitems(config, items):
+
+    marker = config.getoption("-m")  # Get the marker from the -m option
+
+    if marker and marker == "model_analysis":  # If a marker is specified
+        print("Automatic Model Analysis Collected tests: ")
+        test_count = 0
+        for item in items:
+            if marker in item.keywords:
+                test_file_path = item.location[0]
+                test_name = item.location[2]
+                print(f"{test_file_path}::{test_name}")
+                test_count += 1
+        print(f"Automatic Model Analysis Collected test count: {test_count}")
+        if test_count == 0:  # Warn if no tests match the marker
+            print(f"Warning: No tests found with marker '{marker}'.")
+    else:
+        print(items)

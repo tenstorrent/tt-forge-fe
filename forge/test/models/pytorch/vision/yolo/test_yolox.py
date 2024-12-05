@@ -33,8 +33,9 @@ from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant, test_device):
 
     # Set PyBuda configuration parameters
