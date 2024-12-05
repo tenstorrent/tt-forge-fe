@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import pdb
 import time
 
 import torch
@@ -23,7 +22,7 @@ def test_mnist_training():
     # Model and data type. To use bfloat16 follow the instructions found at test_forge_vs_torch() in this file.
     dtype = torch.float32
 
-    # Config
+    # Set training hyperparameters
     num_epochs = 3
     batch_size = 64
     learning_rate = 0.001
@@ -49,9 +48,6 @@ def test_mnist_training():
     logger.info("Starting training loop... (logger will be disabled)")
     logger.disable("")
     for epoch_idx in range(num_epochs):
-        # Reset gradients (every epoch) - since our batch size is currently 1,
-        # we accumulate gradients across multiple batches (limit_num_batches),
-        # and then run the optimizer.
 
         total_loss = 0
         for batch_idx, (data, target) in enumerate(train_loader):
