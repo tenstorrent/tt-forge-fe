@@ -16,7 +16,13 @@ import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
 from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
-from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
+from .config import (
+    DepricatedVerifyConfig,
+    VerifyConfig,
+    VerifyTensorValues,
+    VerifyTensorMetadata,
+    should_waive_gradient,
+)
 from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
@@ -312,29 +318,42 @@ def verify(
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     # 3rd step: verifications of outputs
+    # - size check
     # - dtype check
     # - shape check
     # - compare with golden
-    if verify_cfg.verify_size:
+    if verify_cfg.tensor_metadata_verification in [VerifyTensorMetadata.ONLY_SIZE, VerifyTensorMetadata.ALL_CHECKS]:
         if len(fw_out) != len(co_out):
             raise ValueError(
                 f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_out)} outputs, compiled model has {len(co_out)} outputs"
             )
 
     for fw, co in zip(fw_out, co_out):
-        if verify_cfg.verify_dtype:
+        # metadata verification
+        if verify_cfg.tensor_metadata_verification in [
+            VerifyTensorMetadata.ONLY_DTYPE,
+            VerifyTensorMetadata.ALL_CHECKS,
+        ]:
             if fw.dtype != co.dtype:
                 raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
-        if verify_cfg.verify_shape:
+        if verify_cfg.tensor_metadata_verification in [
+            VerifyTensorMetadata.ONLY_SHAPE,
+            VerifyTensorMetadata.ALL_CHECKS,
+        ]:
             if fw.shape != co.shape:
                 raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
-        if verify_cfg.verify_data:
+
+        # tensor values verification
+        if verify_cfg.tensor_values_verification in [VerifyTensorValues.AUTOMATIC, VerifyTensorValues.ALL_CHECKS]:
             if not compare_with_golden(golden=fw, calculated=co, verify_cfg=verify_cfg):
                 raise ValueError(f"Data mismatch (compare_with_golden): framework_model={fw}, compiled_model={co}")
-        if verify_cfg.verify_allclose and fw.dtype not in [
-            torch.int32,
-            torch.int64,
-            torch.bool,
-        ]:  # allclose doesn't make sense for integer/bool types
+
+        if verify_cfg.tensor_values_verification in [VerifyTensorValues.TORCH_ALL_CLOSE, VerifyTensorValues.ALL_CHECKS]:
+            assert fw.dtype not in [
+                torch.int32,
+                torch.int64,
+                torch.bool,
+            ], "allclose doesn't make sense for integer/bool types"
+
             if not torch.allclose(fw, co, rtol=verify_cfg.rtol[fw.dtype], atol=verify_cfg.atol[fw.dtype]):
                 raise ValueError(f"Data mismatch (all_close): framework_model={fw}, compiled_model={co}")
