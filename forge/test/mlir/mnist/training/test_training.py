@@ -48,8 +48,8 @@ def test_mnist_training():
     tt_model = forge.compile(
         framework_model,
         sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)],
-        loss=loss_fn,
         optimizer=framework_optimizer,
+        training=True,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
