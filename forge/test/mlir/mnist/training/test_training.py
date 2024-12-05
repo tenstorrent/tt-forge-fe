@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import pdb
 import time
 
 import torch
@@ -17,6 +18,90 @@ from loguru import logger
 
 @pytest.mark.push
 def test_mnist_training():
+    torch.manual_seed(0)
+
+    # Model and data type. To use bfloat16 follow the instructions found at test_forge_vs_torch() in this file.
+    dtype = torch.float32
+
+    # Config
+    num_epochs = 3
+    batch_size = 64
+    learning_rate = 0.001
+
+    # Limit number of batches to run - quicker test
+    limit_num_batches = 1000
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
+
+    # Define model and instruct it to compile and run on TT device
+    framework_model = MNISTLinear(bias=False, dtype=dtype)  # bias=False because batch_size=1 with bias=True is not supported
+
+    # Create a torch loss and leave on CPU
+    loss_fn = torch.nn.CrossEntropyLoss()
+
+    # Define optimizer and instruct it to compile and run on TT device
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
+    tt_model = forge.compile(
+        framework_model, sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)], loss=loss_fn, optimizer=framework_optimizer
+    )
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+    for epoch_idx in range(num_epochs):
+        # Reset gradients (every epoch) - since our batch size is currently 1,
+        # we accumulate gradients across multiple batches (limit_num_batches),
+        # and then run the optimizer.
+
+        total_loss = 0
+        for batch_idx, (data, target) in enumerate(train_loader):
+            # Reset gradients (every batch)
+            framework_optimizer.zero_grad()
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).to(dtype)
+
+            # Forward pass (prediction) on device
+            pred = tt_model(data)[0]
+            golden_pred = framework_model(data)
+            assert golden_pred.dtype == dtype
+            assert compare_with_golden(golden_pred, pred, verify_cfg=VerifyConfig(pcc=0.95))
+
+            # Compute loss on CPU
+            loss = loss_fn(pred, target)
+            total_loss += loss.item()
+
+            golden_loss = loss_fn(golden_pred, target)
+            assert torch.allclose(loss, golden_loss, rtol=1e-1)  # 10% tolerance
+
+            # Run backward pass on device
+            loss.backward()
+
+            tt_model.backward()
+            
+            # Adjust weights (on CPU)
+            framework_optimizer.step()
+
+            if batch_idx >= limit_num_batches:
+                break
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+
+
+    test_loss = 0
+    for batch_idx, (data, target) in enumerate(test_loader):
+        pred = tt_model(data)[0]
+        target = nn.functional.one_hot(target, num_classes=10).to(dtype)
+
+        test_loss += loss_fn(pred, target)
+
+        if batch_idx == limit_num_batches:
+            break
+
+    print(f"Test (total) loss: {test_loss}")
+
+@pytest.mark.push
+def test_mnist_training_with_grad_accumulation():
     torch.manual_seed(0)
 
     # Config
