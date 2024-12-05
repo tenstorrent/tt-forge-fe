@@ -16,6 +16,10 @@ class CrossEntropyLoss(ForgeModule):
     loss = reduce_avg(-1 * sum(labels * log(softmax(predictions)), dim=-1), dim=0)
     """
 
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.is_loss = True
+
     def forward(self, predictions, labels):
         assert predictions.ndim() == 2, f"Predictions must be a 2D tensor. Got {predictions.ndim()}."
         assert (
@@ -49,6 +53,7 @@ class L1Loss(ForgeModule):
     def __init__(self, name: str, reduction: str = "avg"):
         super().__init__(name)
         self.reduction = reduction
+        self.is_loss = True
 
     def forward(self, prediction, labels):
         diff = Abs("abs", Subtract("sub", prediction, labels))

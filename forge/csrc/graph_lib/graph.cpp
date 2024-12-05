@@ -849,22 +849,17 @@ std::vector<std::string> Graph::get_ordered_target_names() const
 
 std::vector<std::string> Graph::get_ordered_input_gradient_names() const
 {
-    std::vector<std::string> ordered_outputs;
+    std::vector<std::string> input_grads;
+    input_grads.reserve(this->ordered_module_input_node_ids_.size());
     for (auto input_node_id : this->ordered_module_input_node_ids_)
     {
         Node *node = node_by_id(input_node_id);
-        if (!node->as<graphlib::InputNode>()->requires_grad())
-            continue;
-
-        std::vector<Edge> gradients =
-            user_edges(node, [](Edge edge) { return edge.edge_type == EdgeType::kAutogradInputToGradientOut; });
-        if (not gradients.empty())
+        if (node->as<InputNode>()->is_gradient())
         {
-            TT_ASSERT(gradients.size() == 1, "Each input with requires_grad should have exactly one bw output");
-            ordered_outputs.push_back(node_by_id(gradients[0].consumer_node_id)->name());
+            input_grads.push_back(node->name());
         }
     }
-    return ordered_outputs;
+    return input_grads;
 }
 
 std::vector<Node *> Graph::ordered_intermediates() const
