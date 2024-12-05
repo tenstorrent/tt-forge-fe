@@ -176,10 +176,11 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
 
             else
             {
-                // Normal outputs, which will require a loss input to bring its gradient in
+                // Normal outputs, which will require an input (either from loss.backward() or submodule.backward())
+                // to bring its gradient in.
                 auto input_node = graph->add_node(
                     graphlib::create_node<graphlib::InputNode>(
-                        "loss_" + node->name(), graphlib::InputNodeType::Loss, false),
+                        "gradient_" + node->name(), graphlib::InputNodeType::Gradient, false),
                     graph->get_subgraph_id_for_node(node->id()));
 
                 input_node->set_shape(node->shape());
@@ -232,7 +233,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                 graph->get_subgraph_id_for_node(node->id()));
             nop_node->set_shape(node->shape());
             nop_node->set_epoch_type(graphlib::NodeEpochType::Backward);
-            nop_node->set_output_df(nop_node->output_df());
+            nop_node->set_output_df(node->output_df());
 
             Edge nop_edge(out_grad->id(), 0, nop_node->id(), 0, graphlib::EdgeType::kData);
             graph->add_edge(nop_edge);

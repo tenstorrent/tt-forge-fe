@@ -43,6 +43,7 @@ class Module:
             self.name: str = name
         self.device: Optional["Device"] = None
         self.input_names = []
+        self.is_loss = False
         register_module(self)
 
     def __repr__(self):

@@ -156,12 +156,13 @@ class BufferingQueueNode : public QueueNode
 
 enum InputNodeType
 {
-    Parameter,
-    Constant,
     Accumulator,
     Activation,
+    Constant,
+    Gradient,
     Loss,
     OptimizerParameter,
+    Parameter,
     Target,
 };
 
@@ -209,6 +210,7 @@ class InputNode : public QueueNode
 
     bool is_constant() const { return input_type_ == Constant; }
     bool is_parameter() const { return input_type_ == Parameter; }
+    bool is_gradient() const { return input_type_ == Gradient; }
     bool is_loss() const { return input_type_ == Loss; }
     bool is_target() const { return input_type_ == Target; }
     bool is_accumulator() const { return input_type_ == Accumulator; }
@@ -774,6 +776,7 @@ inline std::string to_string(InputNodeType t)
     {
         case InputNodeType::Parameter: return "parameter";
         case InputNodeType::Constant: return "constant";
+        case InputNodeType::Gradient: return "gradient";
         case InputNodeType::Accumulator: return "accumulator";
         case InputNodeType::Activation: return "activation";
         case InputNodeType::Loss: return "loss";

@@ -114,7 +114,6 @@ class CompileContext:
     microbatch_size: int
     microbatch_count: int
     inputs: Union[torch.Tensor, List[torch.Tensor]]
-    loss_module: Optional[Module] = None
     optimizer: Optional[torch.optim.Optimizer] = None
     training: bool = False
     graph: Optional[Graph] = None
@@ -142,6 +141,7 @@ class CompileContext:
     target_cycles_offset: int = 0
     forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
+    attach_to: Optional[CompiledModel] = None
 
 
 def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, is_forge: bool, losses=None):
@@ -177,8 +177,9 @@ def compile_main(
     module: AnyModule,
     sample_inputs: List[torch.Tensor],
     module_name: Optional[str] = None,
-    loss: Optional[torch.nn.Module | ForgeModule] = None,
     optimizer: Optional[torch.optim.Optimizer] = None,
+    training: bool = False,
+    attach_to: Optional[CompiledModel] = None,
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -194,11 +195,17 @@ def compile_main(
     module_name: Optional[str]
         Name of the module. If not provided, the class name of the provided module will be used.
 
-    loss: Optional[torch.nn.Module | ForgeModule]
-        Loss module for training.
-
     optimizer: Optional[torch.optim.Optimizer]
         Optimizer for training.
+
+    training: bool
+        Whether to compile the module for training.
+        If true, the compiled module will contain both forward and backward passes.
+
+    attach_to: Optional[CompiledModel]
+        If provided, the compiled module will be "attached" to this module. Meaning that the backward pass
+        of this module is tied to the backward pass of the attached module.
+        NOTE: This part of the API is still in development and will probably change.
 
     Returns
     -------
@@ -224,22 +231,20 @@ def compile_main(
 
     assert sample_inputs is not None
 
-    wrapped_module = wrap_module(module, module_name)
-    wrapped_loss = None
-    if loss is not None:
-        wrapped_loss = wrap_module(loss, module_name + "_loss")
+    modules = [wrap_module(module, module_name)]
+    training = training or optimizer is not None
 
     compile_context: CompileContext = CompileContext(
-        modules=[wrapped_module],
+        modules=modules,
         graph_name=module_name,
         compiler_cfg=compiler_cfg,
         verify_cfg=DepricatedVerifyConfig.disabled(),
         microbatch_size=1,
         microbatch_count=1,
         inputs=sample_inputs,
-        loss_module=wrapped_loss,
         optimizer=optimizer,
-        training=wrapped_loss is not None,
+        training=training,
+        attach_to=attach_to,
     )
 
     return forge_compile_from_context(compile_context)
@@ -356,6 +361,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         bwd_compiled_graph_state,
         context.compiled_binary,
         context.modules[0],
+        context.attach_to,
     )
 
     logger.info("Compilation completed.")
@@ -416,6 +422,7 @@ def forge_compile(
     losses: Optional[List[Tensor]] = None,
     microbatch_size: int = 1,
     microbatch_count: int = 1,
+    training: bool = False,
 ) -> CompileResults:
     """
     Run front-end compile passes and generate a Forge netlist for given input tensors. Optionally verify
@@ -468,6 +475,7 @@ def forge_compile(
         microbatch_count=microbatch_count,
         targets=targets,
         losses=losses,
+        training=training,
     )
 
     return forge_compile_from_context(compile_context)
@@ -634,11 +642,9 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
+            context,
             modules_,
-            *context.inputs,
             return_intermediate=context.verify_cfg.intermediates,
-            graph_name=context.graph_name,
-            compiler_cfg=context.compiler_cfg,
             target_tensors=context.targets,
         )
 
@@ -983,12 +989,10 @@ def convert_to_forge_module(
 
 
 def generate_graph(
-    modules,
-    *inputs: Tensor,
+    context: CompileContext,
+    modules: List[ForgeModule],
     target_tensors: List[Tensor] = [],
     return_intermediate: bool = False,
-    graph_name: str = "default_graph",
-    compiler_cfg: Optional[CompilerConfig] = None,
     trace_only: bool = False,
 ) -> Tuple[Graph, Tuple[Tensor, ...], Dict[str, Tensor], Tuple[Tensor, ...], Optional[Tensor]]:
     """
@@ -1035,7 +1039,11 @@ def generate_graph(
         create_target_input,
     )
 
-    output_to_module_name_prefix = {}
+    inputs = context.inputs
+    graph_name = context.graph_name
+    compiler_cfg = context.compiler_cfg
+
+    output_to_module_map: Dict[Tensor, ForgeModule] = {}
     output_to_subgraph_index = {}
 
     # Create the graph
@@ -1062,7 +1070,7 @@ def generate_graph(
             outputs = (outputs,)  # Force a tuple
 
         for output in outputs:
-            output_to_module_name_prefix[output] = module.get_name()
+            output_to_module_map[output] = module
             if compiler_cfg.compile_subgraphs:
                 assert (
                     output not in output_to_subgraph_index
@@ -1100,7 +1108,10 @@ def generate_graph(
     inputs, _, _ = flatten_inputs(inputs)
 
     for out in all_subgraph_outputs:
-        is_loss_output = False  # self.loss_module is not None
+        module = output_to_module_map[out]
+        assert module is not None
+        module_name = module.get_name()
+
         if out.src_op is None:
 
             # No source op. It could be a pass-through, so let's compare to inputs
@@ -1110,10 +1121,10 @@ def generate_graph(
                     # Found a passthrough
                     outq = create_output(
                         graph,
-                        output_to_module_name_prefix.get(out, "") + f".output_passthrough_{len(passthroughs)}",
+                        module_name + f".output_passthrough_{len(passthroughs)}",
                         out.shape.get_pytorch_shape(),
                         out.data_format,
-                        is_loss_output,
+                        module.is_loss,
                         output_to_subgraph_index.get(out, 0),
                     )
                     passthroughs.add(input)
@@ -1126,10 +1137,10 @@ def generate_graph(
         else:
             outq = create_output(
                 graph,
-                output_to_module_name_prefix.get(out, "") + ".output_" + out.src_op.name,
+                module_name + ".output_" + out.src_op.name,
                 out.shape.get_pytorch_shape(),
                 out.data_format,
-                is_loss_output,
+                module.is_loss,
                 output_to_subgraph_index.get(out, 0),
             )
         module_output_tensor_to_node[out] = outq

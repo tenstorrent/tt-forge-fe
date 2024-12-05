@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import pytest
 
 import pytest
 import torch
@@ -129,9 +128,7 @@ def test_batch_size_training(batch_size, in_features, out_features):
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
-    tt_model = forge.compile(
-        model, sample_inputs=[torch.rand(batch_size, in_features)], loss=loss_fn, optimizer=optimizer
-    )
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(batch_size, in_features)], optimizer=optimizer)
 
     optimizer.zero_grad()
 

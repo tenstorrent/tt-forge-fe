@@ -943,7 +943,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
         dim = attr[0]
         input_ndim = attr[1]
-        return ac.op("squeeze", (grad,), attributes=(dim,))
+        return ac.op("squeeze", (grad,), (dim,), {"dim": dim})
 
     elif type == "squeeze":
         assert len(attr) == 1
