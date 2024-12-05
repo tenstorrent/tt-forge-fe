@@ -16,9 +16,6 @@ from forge.op.eval.common import compare_with_golden
 from forge.verify.config import VerifyConfig
 from forge.tensor import to_forge_tensors
 
-import matplotlib
-from pylab import plt
-
 
 @pytest.mark.push
 def test_mnist_training():
@@ -508,5 +505,3 @@ def test_e2e_device():
     #
     # print(f"Test (total) loss: {test_loss}")
     print(f"Losses: {losses}")
-    plt.plot(losses)
-    plt.savefig("losses.png")

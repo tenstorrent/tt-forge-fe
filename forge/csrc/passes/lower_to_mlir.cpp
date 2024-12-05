@@ -208,7 +208,7 @@ class MLIRGenerator
     /// for the function.
     mlir::func::FuncOp emit_mlir_function(tt::graphlib::Graph *graph, std::string fn_name = "forward")
     {
-        log_info("Emmiting mlir for function {}", fn_name);
+        log_info("Emitting mlir for function {}", fn_name);
         // Assemble the function arguments (inputs and parameters)
         llvm::SmallVector<mlir::Type> argument_types;
         llvm::SmallVector<graphlib::Node *> argument_nodes;
@@ -218,7 +218,7 @@ class MLIRGenerator
         // Add the graph inputs to the argument list.
         for (auto *input : graph->ordered_module_inputs())
         {
-            log_info(LogMLIRCompiler, "Adding input {} to the argument list.", input->name());
+            log_trace(LogMLIRCompiler, "Adding input {} to the argument list.", input->name());
 
             argument_nodes.push_back(input);
             argument_types.push_back(get_node_type(input));
@@ -231,7 +231,7 @@ class MLIRGenerator
                 continue;
             }
 
-            log_info(LogMLIRCompiler, "Adding gradient input {} to the argument list.", input->name());
+            log_trace(LogMLIRCompiler, "Adding gradient input {} to the argument list.", input->name());
 
             argument_nodes.push_back(input);
             argument_types.push_back(get_node_type(input));
@@ -240,7 +240,7 @@ class MLIRGenerator
         // Add the graph constants to the argument list.
         for (auto *constant : graph->get_constant_nodes())
         {
-            log_info(LogMLIRCompiler, "Adding constant {} to the argument list.", constant->name());
+            log_trace(LogMLIRCompiler, "Adding constant {} to the argument list.", constant->name());
 
             argument_nodes.push_back(constant);
             argument_types.push_back(get_node_type(constant));
@@ -253,7 +253,7 @@ class MLIRGenerator
             params.end(), std::make_move_iterator(opt_params.begin()), std::make_move_iterator(opt_params.end()));
         for (auto *parameter : params)
         {
-            log_info(LogMLIRCompiler, "Adding parameter {} to the argument list.", parameter->name());
+            log_trace(LogMLIRCompiler, "Adding parameter {} to the argument list.", parameter->name());
 
             argument_nodes.push_back(parameter);
             argument_types.push_back(get_node_type(parameter));
@@ -264,7 +264,7 @@ class MLIRGenerator
         auto output_nodes = graph->ordered_module_outputs();
         for (auto *output : output_nodes)
         {
-            log_info(LogMLIRCompiler, "Adding output {} to the return list.", output->name());
+            log_trace(LogMLIRCompiler, "Adding output {} to the return list.", output->name());
             returns.push_back(get_node_type(output));
         }
 
@@ -280,7 +280,7 @@ class MLIRGenerator
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
             func.setArgAttrs(i, named_attributes);
-            log_info(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
+            log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
 
         // Set the return value names.
@@ -290,7 +290,7 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(builder_.getNamedAttr("ttir.name", builder_.getStringAttr(output_node->name())));
             func.setResultAttrs(i, named_attributes);
-            log_info(LogMLIRCompiler, "Set name {} for return value {}.", output_node->name(), i);
+            log_trace(LogMLIRCompiler, "Set name {} for return value {}.", output_node->name(), i);
         }
 
         // Start the body of the function by creating an entry block.
@@ -317,16 +317,16 @@ class MLIRGenerator
             // Skip if the node isn't TTForge operation
             if (node->node_type() != tt::graphlib::NodeType::kPyOp)
             {
-                log_info(LogMLIRCompiler, "Skipping node {} as it is not a TTForge operation.", node->name());
+                log_trace(LogMLIRCompiler, "Skipping node {} as it is not a TTForge operation.", node->name());
                 continue;
             }
-            log_info(LogMLIRCompiler, "Emitting MLIR for node {}", node->name());
+            log_trace(LogMLIRCompiler, "Emitting MLIR for node {}", node->name());
 
             tt::graphlib::OpNode *op_node = node->as<tt::graphlib::OpNode>();
 
             // Emit MLIR for the TTForge operation node
             mlir::Value opValue = emit_mlir_tt_forge_operation(graph, op_node);
-            log_info(
+            log_trace(
                 LogMLIRCompiler,
                 "Generated MLIR for node {} with value {}",
                 node->name(),
