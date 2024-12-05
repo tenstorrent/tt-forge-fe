@@ -1,16 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
+# Standard Library
 import ast
-import os
 import math
-import torch.nn.functional as F
-from forge.forgeglobal import TILE_DIM
-from forge.utils import align_up_tile
+import os
+
+# Third Party
 import numpy as np
-from ..common import to_torch_operands
+import torch
+import torch.nn.functional as F
+
+# Local Imports
+from forge.forgeglobal import TILE_DIM
 from forge.tensor import pytorch_dtype_to_forge_dataformat
+from forge.utils import align_up_tile
+
+from ..common import to_torch_operands
 from .reciprocal import Reciprocal
 
 STRING_TO_TORCH_DTYPE = {

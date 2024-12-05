@@ -10,15 +10,24 @@
 # (e.g, before reduce shape=(64, 32, 256, 128), after reduce over dimension 2 shape=(64, 32, 1, 128))
 #
 
+# Standard Library
 import os
-import pytest
+
+# Third Party
 import numpy as np
+import pytest
 import torch
 
+# Local Imports
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
-
+from forge import (
+    BackendType,
+    CompilerConfig,
+    DepricatedVerifyConfig,
+    TTDevice,
+    forge_compile,
+)
 from forge.verify.config import TestKind
 
 from . import models
@@ -39,6 +48,7 @@ WDIM_FIXED = True
 
 np.random.seed(100)
 
+# Standard Library
 from functools import reduce
 
 

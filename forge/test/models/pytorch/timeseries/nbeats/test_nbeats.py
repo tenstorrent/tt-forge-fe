@@ -1,18 +1,24 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import pytest
-import sys
+# Standard Library
 import os
-
-from test.models.pytorch.timeseries.nbeats.utils.dataset import get_electricity_dataset_input
+import sys
+from test.models.pytorch.timeseries.nbeats.utils.dataset import (
+    get_electricity_dataset_input,
+)
 from test.models.pytorch.timeseries.nbeats.utils.model import (
     NBeatsWithGenericBasis,
-    NBeatsWithTrendBasis,
     NBeatsWithSeasonalityBasis,
+    NBeatsWithTrendBasis,
 )
+
+# Third Party
+import pytest
 import torch
+
+# Local Imports
+import forge
 from forge.op.eval.common import compare_with_golden
 
 

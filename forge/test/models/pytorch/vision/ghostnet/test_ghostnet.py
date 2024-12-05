@@ -1,19 +1,21 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-import pytest
 import urllib
-from PIL import Image
+from test.utils import download_model
 
+# Third Party
+import pytest
 import timm
+import torch
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
-from test.utils import download_model
-
+# Local Imports
 import forge
-import torch
 from forge.op.eval.common import compare_with_golden
 
 variants = ["ghostnet_100"]

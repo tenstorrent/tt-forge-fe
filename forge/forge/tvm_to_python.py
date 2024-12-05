@@ -1,32 +1,38 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import re
+# Standard Library
+import importlib
 import json
+import os
+import re
+import sys
 from collections import OrderedDict
-from typing import Dict, List
 from enum import Enum
+from typing import Dict, List
 
-from loguru import logger
-
-import torch
+# Third Party
 import numpy as np
 import pytest
+import torch
+from loguru import logger
+
+# Local Imports
+import forge
+from forge.config import _get_global_compiler_config
 
 # import forge._C.pattern_matcher as pypattern_matcher
-from forge.module import OnnxModule, ForgeModule, TFLiteModule
-from forge.config import _get_global_compiler_config
-from forge.verify.config import _get_global_verify_config
-import forge
+from forge.module import ForgeModule, OnnxModule, TFLiteModule
+from forge.python_codegen import (
+    ForgeWriter,
+    PythonWriter,
+    PyTorchWriter,
+    pytorch_df_str_from_str,
+)
 from forge.tensor import to_pt_tensors
 from forge.tvm_utils import flatten_inputs
-
-import os
-import sys
-import importlib
-
-from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_str_from_str
 from forge.utils import create_excel_file
+from forge.verify.config import _get_global_verify_config
 
 
 def populate_torch_all_to_args(graph, nid, compiler_cfg):
@@ -1991,6 +1997,7 @@ def cleanup_temporary_files():
 
 
 def get_forge_outputs(forge_mods, devices, forge_inputs):
+    # Local Imports
     from forge.tensor import to_forge_tensors, to_pt_tensors
 
     for i, (mod, dev) in enumerate(zip(forge_mods, devices)):
@@ -2006,6 +2013,7 @@ def get_forge_outputs(forge_mods, devices, forge_inputs):
 
 
 def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
+    # Local Imports
     from forge.op.eval import compare_tensor_to_golden
 
     test_pass = True
@@ -2195,6 +2203,7 @@ def compile_tvm_to_python(
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded
+    # Third Party
     from tvm.contrib.forge_compile import load_tvm_graph
 
     json_graphs, flattened_pytorch_inputs, weights = load_tvm_graph(

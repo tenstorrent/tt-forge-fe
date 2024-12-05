@@ -1,17 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-import pytest
-from PIL import Image
-import requests
-import zipfile
 import shutil
-
-from test.models.pytorch.vision.retinanet.utils.model import Model
+import zipfile
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
-import forge
+from test.models.pytorch.vision.retinanet.utils.model import Model
 
+# Third Party
+import pytest
+import requests
+from PIL import Image
+
+# Local Imports
+import forge
 
 variants = [
     "retinanet_rn18fpn",

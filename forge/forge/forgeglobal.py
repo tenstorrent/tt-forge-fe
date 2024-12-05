@@ -7,12 +7,13 @@
 Devices and modules register with ForgeGlobal as they are created
 """
 
-from typing import Tuple
+# Standard Library
 import os
 import queue
+from typing import Tuple
 
+# Third Party
 from loguru import logger
-
 
 devices = []  # Ordered list of devices running in a pipeline
 modules = []
@@ -32,6 +33,7 @@ g_tracing = False
 # ID used to uniquefy nodes when no names are provided
 g_unique_node_id = -1
 
+# Third Party
 from pyinstrument import Profiler
 
 profiler = Profiler() if "FORGE_PROFILE" in os.environ else None
@@ -76,6 +78,7 @@ def get_devices():
 
 
 def get_tenstorrent_device():
+    # Local Imports
     from forge.ttdevice import TTDevice
 
     for device in devices:
@@ -95,6 +98,7 @@ def forge_reset():
     devices = []
     modules = []
 
+    # Local Imports
     from forge.config import _clear_global_compiler_config
 
     _clear_global_compiler_config()

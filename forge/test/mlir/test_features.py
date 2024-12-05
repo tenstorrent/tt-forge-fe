@@ -2,17 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import os
-import pytest
 
+# Third Party
 import pytest
 import torch
 from torch import nn
 
+# Local Imports
 import forge
 from forge.op.eval.common import compare_with_golden
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 @pytest.mark.push

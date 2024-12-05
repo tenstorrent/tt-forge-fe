@@ -1,11 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+# Standard Library
 from test.utils import download_model
-import forge
-from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
 
+# Third Party
+import pytest
+from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
+
+# Local Imports
+import forge
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 

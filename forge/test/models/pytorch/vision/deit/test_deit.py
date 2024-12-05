@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
+from test.utils import download_model
+
+# Third Party
 import pytest
 import requests
-from PIL import Image
 from datasets import load_dataset
-
+from PIL import Image
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
+# Local Imports
 import forge
-from test.utils import download_model
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):

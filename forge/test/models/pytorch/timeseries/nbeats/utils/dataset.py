@@ -24,21 +24,22 @@ or implied). Copyright © 2020 Element AI Inc. All rights reserved.
 Electricity Dataset
 """
 
+# Standard Library
 import logging
 import os
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Tuple
 
+# Third Party
 import numpy as np
 import patoolib
 from tqdm import tqdm
 
 from .http_utils import download, url_file_name
-from .settings import DATASETS_PATH
 from .sampler import TimeseriesSampler
+from .settings import DATASETS_PATH
 from .utils import to_tensor
-
 
 """
 Hourly aggregated dataset from https://archive.ics.uci.edu/ml/datasets/ElectricityLoadDiagrams20112014

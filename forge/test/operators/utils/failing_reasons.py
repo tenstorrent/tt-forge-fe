@@ -12,8 +12,11 @@
 # ...
 
 
+# Standard Library
+from typing import Optional, Type
+
+# Third Party
 from loguru import logger
-from typing import Type, Optional
 
 
 class FailingReasons:

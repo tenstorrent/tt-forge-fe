@@ -1,13 +1,16 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
-import sys
+# Standard Library
+import argparse
 import os
 import subprocess
-import argparse
-from loguru import logger
+import sys
+
+# Third Party
 import pandas as pd
+from loguru import logger
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, PatternFill, Side, Font
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 test_to_skip = []
 

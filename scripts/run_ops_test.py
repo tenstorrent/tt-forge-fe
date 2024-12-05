@@ -1,12 +1,15 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import subprocess
+# Standard Library
+import argparse
 import os
+import subprocess
 import time
 from datetime import datetime
+
+# Third Party
 from loguru import logger
-import argparse
 
 
 def collect_all_pytests(root_dir_path):

@@ -1,32 +1,34 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
+import os
+from test.models.pytorch.text.fuyu.utils.model import (
+    FuyuModelImgDecoderWrapper,
+    FuyuModelTxtDecoderWrapper,
+    FuyuModelWrapper,
+    generate_fuyu_embedding,
+)
+
+# Third Party
 import pytest
 import requests
-import os
-
-from forge.forgeglobal import TILE_DIM
-from forge.utils import align_up_tile
-
-import forge
 import torch
 from PIL import Image
-
 from transformers import (
-    FuyuForCausalLM,
     AutoTokenizer,
-    FuyuProcessor,
-    FuyuImageProcessor,
     FuyuConfig,
+    FuyuForCausalLM,
+    FuyuImageProcessor,
+    FuyuProcessor,
     LogitsProcessorList,
 )
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
-from test.models.pytorch.text.fuyu.utils.model import (
-    generate_fuyu_embedding,
-    FuyuModelWrapper,
-    FuyuModelImgDecoderWrapper,
-    FuyuModelTxtDecoderWrapper,
-)
+
+# Local Imports
+import forge
+from forge.forgeglobal import TILE_DIM
+from forge.utils import align_up_tile
 
 
 @pytest.mark.nightly

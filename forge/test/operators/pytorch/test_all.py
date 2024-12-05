@@ -19,21 +19,26 @@
 # pytest -svv forge/test/operators/pytorch/test_all.py::test_single
 
 
+# Standard Library
 import os
-import pytest
-import forge
 import textwrap
+from test.operators.utils import (
+    DeviceUtils,
+    FailingReasons,
+    InputSource,
+    TestCollection,
+    TestCollectionCommon,
+    TestPlanScanner,
+    TestVector,
+)
 
+# Third Party
+import pytest
 from loguru import logger
 from tabulate import tabulate
 
-from test.operators.utils import DeviceUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestPlanScanner
-from test.operators.utils import FailingReasons
+# Local Imports
+import forge
 
 
 class TestVerification:

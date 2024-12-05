@@ -3,11 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # CodeGen Demo - CasualLM
 
-import torch
-import pytest
+# Standard Library
 from test.utils import download_model
+
+# Third Party
+import pytest
+import torch
 from transformers import AutoTokenizer, CodeGenForCausalLM
 
+# Local Imports
 import forge
 
 variants = [
@@ -15,7 +19,10 @@ variants = [
     # "Salesforce/codegen-350M-multi", # Currently not supported
     # "Salesforce/codegen-350M-nl", # Currently not supported
 ]
+# Third Party
 import torch
+
+# Local Imports
 from forge.op.eval.common import compare_with_golden
 
 

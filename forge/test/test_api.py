@@ -2,18 +2,21 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import os
+
+# Third Party
 import pytest
+import tensorflow as tf
 import torch
 import torch.nn as nn
 
-import tensorflow as tf
-
+# Local Imports
 import forge
 import forge.config
 from forge.tensor import to_forge_tensors, to_pt_tensors
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 def test_torch():

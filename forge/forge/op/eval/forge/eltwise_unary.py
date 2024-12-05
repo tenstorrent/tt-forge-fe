@@ -1,25 +1,29 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
 
+# Third Party
+import numpy as np
 import torch
 import torch.nn.functional
 from loguru import logger
-from ..common import to_torch_operands
+
+# Local Imports
+from forge.op.eval.common import calculate_tile_size
+
 from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
-import numpy as np
-from forge.op.eval.common import calculate_tile_size
-from .tanh import Tanh
+from ..common import to_torch_operands
+from ..lforge.exp import Exp as ForgeExp
 from ..lforge.log import Log as ForgeLog
-from .nop import Nop
 from ..lforge.nop import Nop as ForgeNop
 from .buffer import Buffer
-
-from ..lforge.exp import Exp as ForgeExp
 from .exp import Exp
+from .nop import Nop
 from .reciprocal import Reciprocal
+from .tanh import Tanh
 
 M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
 M_SQRT2 = 1.41421356237309504880  # sqrt(2)
@@ -44,6 +48,7 @@ def gelu_forward(x, approximate):
     if approximate == "none":
         return torch.nn.functional.gelu(x)
     elif approximate == "tanh":
+        # Standard Library
         import math
 
         return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
@@ -519,6 +524,7 @@ def decompose(type, attr, dc, inputs):
         axis = attr[0] if len(attr) > 0 else None
 
         if axis is None:
+            # Standard Library
             import math
 
             inp_node = dc.op("reshape", [inp_node], (1, math.prod(inp_node.shape.as_list())))

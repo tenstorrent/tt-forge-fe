@@ -1,13 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
-import forge
-import onnx
+# Standard Library
 import os
+
+# Third Party
+import onnx
 import pytest
-from forge.verify.backend import verify_module
+import torch
+
+# Local Imports
+import forge
 from forge import DepricatedVerifyConfig
+from forge.verify.backend import verify_module
 
 
 @pytest.mark.skip(reason="Not supported")

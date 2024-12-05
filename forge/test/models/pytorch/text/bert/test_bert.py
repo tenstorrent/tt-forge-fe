@@ -1,17 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 from test.utils import download_model
+
+# Third Party
 import pytest
-import forge
+import torch
 from transformers import (
     BertForMaskedLM,
-    BertTokenizer,
-    BertForTokenClassification,
-    BertForSequenceClassification,
     BertForQuestionAnswering,
+    BertForSequenceClassification,
+    BertForTokenClassification,
+    BertTokenizer,
 )
-import torch
+
+# Local Imports
+import forge
 from forge.op.eval.common import compare_with_golden
 
 

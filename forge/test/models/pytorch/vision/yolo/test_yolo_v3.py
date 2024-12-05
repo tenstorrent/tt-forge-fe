@@ -1,11 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-
-from PIL import Image
+# Standard Library
 import os
+
+# Third Party
+import pytest
 import torch
+from PIL import Image
+
+# Local Imports
 import forge
 
 # https://github.com/holli/yolov3_pytorch

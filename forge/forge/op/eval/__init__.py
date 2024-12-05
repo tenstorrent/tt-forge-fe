@@ -2,13 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from .common import (
-    dump_tensor,
-    eval_debug_print,
+    calculate_pcc,
     compare_tensor_to_golden,
+    create_constant_tensor_from_tensor,
     create_constant_tensor_from_tile,
     create_constant_tensor_from_value,
-    create_constant_tensor_from_tensor,
-    calculate_pcc,
+    dump_tensor,
+    eval_debug_print,
 )
 from .sparse_utils import (
     create_flattened_padding_removal_sparse_picker_matrix,

@@ -1,10 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
 import torch
 
+# Local Imports
 from forge.forgeglobal import TILE_DIM
-from ..common import to_torch_operands, cast_for_cpu_eval
+
+from ..common import cast_for_cpu_eval, to_torch_operands
 
 
 def eval(type, attr, ops):

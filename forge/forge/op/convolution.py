@@ -1,13 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Optional, Union, Tuple, List
+# Standard Library
+from typing import List, Optional, Tuple, Union
 
-from ..tensor import Tensor
+# Local Imports
+from forge.op.eval.sparse_utils import (
+    conv2d_padding_to_canonical,
+    conv3d_padding_to_canonical,
+)
+
 from ..parameter import Parameter
+from ..tensor import Tensor
 from .common import ForgeOp as op
-
-from forge.op.eval.sparse_utils import conv2d_padding_to_canonical, conv3d_padding_to_canonical
 
 
 def Conv2d(

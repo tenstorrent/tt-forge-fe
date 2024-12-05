@@ -3,10 +3,13 @@
 
 # Stable Diffusion Demo Script
 
+# Standard Library
 from typing import List, Optional, Union
 
+# Third Party
 import torch
 
+# Local Imports
 # from diffusers import StableDiffusionPipeline
 # from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 import forge

@@ -1,12 +1,21 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+# Standard Library
 from test.utils import download_model
-import forge
-from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
-from forge.op.eval.common import compare_with_golden
+
+# Third Party
+import pytest
 import torch
+from transformers import (
+    AlbertForMaskedLM,
+    AlbertForTokenClassification,
+    AlbertTokenizer,
+)
+
+# Local Imports
+import forge
+from forge.op.eval.common import compare_with_golden
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
 variants = ["v1", "v2"]

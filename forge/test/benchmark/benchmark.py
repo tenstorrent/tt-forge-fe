@@ -2,10 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import argparse
 
+# Third Party
 from benchmark import models
-
 
 MODELS = {
     "mnist_linear": models.mnist_linear.mnist_linear_benchmark,

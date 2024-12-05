@@ -1,10 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
 import pytest
 import torch
-from forge.config import _get_global_compiler_config
+
+# Local Imports
 import forge
+from forge.config import _get_global_compiler_config
 
 
 @pytest.mark.nightly

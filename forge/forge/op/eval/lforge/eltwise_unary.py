@@ -2,22 +2,25 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import os
-from loguru import logger
 
-import forge._C.balancer as balancer
-from forge.forgeglobal import TILE_DIM
+# Third Party
 import torch
 import torch.nn.functional
-from forge.utils import align_up_tile
-from forge._C import DataFormat, MathFidelity
-from forge._C.graph import UBlockOrder, Shape
-from forge._C.backend_api import get_op_model_param
-from .tm import eval as tm_eval
-from forge.tensor import pad_pytorch_tensor_to_forge
-from forge._C.backend_api import get_op_model_execution_cycles
+from loguru import logger
 
-from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
+# Local Imports
+import forge._C.balancer as balancer
+from forge._C import DataFormat, MathFidelity
+from forge._C.backend_api import get_op_model_execution_cycles, get_op_model_param
+from forge._C.graph import Shape, UBlockOrder
+from forge.forgeglobal import TILE_DIM
+from forge.tensor import pad_pytorch_tensor_to_forge
+from forge.utils import align_up_tile
+
+from ..common import get_compiler_cached_cycles, op_model_to_desc, to_torch_operands
+from .tm import eval as tm_eval
 
 M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
 M_SQRT2 = 1.41421356237309504880  # sqrt(2)
@@ -42,6 +45,7 @@ def gelu_forward(x, approximate):
     if approximate == "none":
         return torch.nn.functional.gelu(x)
     elif approximate == "tanh":
+        # Standard Library
         import math
 
         return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))

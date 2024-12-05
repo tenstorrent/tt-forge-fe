@@ -4,13 +4,14 @@
 
 # Test data for various test cases
 
+# Third Party
 import pytest
+
+# Local Imports
 import forge
+from forge import DataFormat, MathFidelity
 
-from forge import MathFidelity, DataFormat
-
-from . import InputSource
-from . import TestCollection
+from . import InputSource, TestCollection
 
 
 class TestCollectionCommon:

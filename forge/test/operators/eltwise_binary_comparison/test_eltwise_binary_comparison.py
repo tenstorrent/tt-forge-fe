@@ -7,14 +7,24 @@
 # In this test we use pytorch tensors and operators to verify forge operators
 #
 
-from ast import operator
+# Standard Library
 import os
-import pytest
-import numpy as np
+from ast import operator
 
+# Third Party
+import numpy as np
+import pytest
+
+# Local Imports
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
+from forge import (
+    BackendType,
+    CompilerConfig,
+    DepricatedVerifyConfig,
+    TTDevice,
+    forge_compile,
+)
 
 from . import models
 

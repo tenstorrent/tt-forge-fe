@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # https://github.com/pytorch/pytorch/blob/main/LICENSE
 
-from typing import Dict, List, Optional, Tuple, Iterable
+# Standard Library
+from typing import Dict, Iterable, List, Optional, Tuple
 
-import torch
+# Third Party
 import numpy as np
+import torch
 
 
 def adam_no_bias_correction(

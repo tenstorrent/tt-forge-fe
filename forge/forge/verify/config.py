@@ -1,17 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Dict, List, Optional, Set, Any, Callable, Union, Tuple
+# Standard Library
+import os
 from dataclasses import dataclass, field
 from enum import Enum
-import os
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
-import torch
+# Third Party
 import tensorflow as tf
-import forge
-
-from forge._C import DataFormat
+import torch
 from dataclasses_json import dataclass_json
+
+# Local Imports
+import forge
+from forge._C import DataFormat
 from forge.utils import as_json
 
 
@@ -273,13 +276,17 @@ class VerifyConfig:
     # --- Supported Types --- #
     @property
     def supported_tensor_types(self) -> Tuple:
+        # Local Imports
         from forge import Tensor  # Local import to avoid circular dependency
 
         return (tf.Tensor, tf.Variable, torch.Tensor, Tensor)
 
     @property
     def compiled_model_types(self) -> Tuple:
-        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency
+        # Local Imports
+        from forge.compiled_graph_state import (
+            CompiledModel,  # Local import to avoid circular dependency
+        )
 
         return (CompiledModel,)
 

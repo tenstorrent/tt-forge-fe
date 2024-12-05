@@ -5,10 +5,10 @@
 # Operator repository models
 
 
-from random import Random
-from typing import List, Dict, Tuple, Optional, Callable, Type, Union
+# Standard Library
 from dataclasses import dataclass, field
-
+from random import Random
+from typing import Callable, Dict, List, Optional, Tuple, Type, Union
 
 # Defining a type for tensor shape
 TensorShape = Tuple[int, ...]

@@ -2,12 +2,14 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import copy
-from typing import List, Dict, Set, Optional
 from collections import defaultdict
+from typing import Dict, List, Optional, Set
 
-from loguru import logger
+# Third Party
 import torch
+from loguru import logger
 
 
 class IOTracer:

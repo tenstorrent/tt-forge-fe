@@ -1,28 +1,29 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import importlib
-from types import ModuleType
 from functools import lru_cache
-from .transpose import TransposeTM
-from .exp import Exp
-from .cosine import Cosine
-from .ethernet_datacopy import EthernetDatacopy
-from .reciprocal import Reciprocal
+from types import ModuleType
+
 from .abs import Abs
-from .tanh import Tanh
+from .argmax import Argmax
+from .buffer import Buffer
+from .cast import Cast
+from .clip import Clip
+from .convolution import Conv2d, Conv2dTranspose
+from .cosine import Cosine
+from .cumulativesum import CumulativeSum
+from .ethernet_datacopy import EthernetDatacopy
+from .exp import Exp
 from .log import Log
 from .nop import Nop
-from .buffer import Buffer
-from .sqrt import Sqrt
-from .tilizer import Tilizer
-from .clip import Clip
-from .cumulativesum import CumulativeSum
-from .argmax import Argmax
-from .convolution import Conv2d
-from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
-from .cast import Cast
+from .reciprocal import Reciprocal
+from .sqrt import Sqrt
+from .tanh import Tanh
+from .tilizer import Tilizer
+from .transpose import TransposeTM
 
 op_to_module_map = {
     "add": "eltwise_binary",

@@ -1,14 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
-import pytest
-
-import forge
+# Standard Library
 from test.mlir.llama.utils.utils import load_model
+
+# Third Party
+import pytest
+import torch
 from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
-from forge.verify.verify import verify
+
+# Local Imports
+import forge
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])

@@ -2,17 +2,21 @@
 
 # SPDX-License-Identifier: Apache-2.0
 ## Inception V4
+# Standard Library
 import os
+from test.models.pytorch.vision.inception.utils.model_utils import (
+    get_image,
+    preprocess_timm_model,
+)
+from test.utils import download_model
+
+# Third Party
 import pytest
-
 import torch
-
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
+# Local Imports
 import forge
-
-from test.utils import download_model
-from test.models.pytorch.vision.inception.utils.model_utils import get_image, preprocess_timm_model
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 

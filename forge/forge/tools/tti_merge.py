@@ -1,18 +1,23 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import argparse
-import yaml
-import tempfile
+import copy
+import json
+import os
 import re
 import shutil
-import os
+import subprocess as sp
+import tempfile
+
+# Third Party
+import yaml
+from loguru import logger
+
+# Local Imports
 import forge._C.backend_api as backend_api
 from forge._C import DataFormat
-import subprocess as sp
-import json
-import copy
-from loguru import logger
 
 # Track all temp directories used for intermediate steps
 # Delete them as part of cleanup

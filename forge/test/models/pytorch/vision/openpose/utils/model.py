@@ -1,14 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
+import os
 from collections import OrderedDict
 
+# Third Party
 import torch
-from torch import nn
 from PIL import Image
+from torch import nn
 from torchvision import transforms
-
-import os
 
 
 def get_image_tensor(sample_path):

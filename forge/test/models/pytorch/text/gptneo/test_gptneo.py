@@ -1,19 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+# Standard Library
 from test.utils import download_model
+
+# Third Party
+import pytest
 import torch
-import forge
-import torch
-from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import (
     AutoTokenizer,
-    GPTNeoForCausalLM,
     GPTNeoConfig,
+    GPTNeoForCausalLM,
     GPTNeoForSequenceClassification,
 )
 
+# Local Imports
+import forge
+from forge.transformers.pipeline import pipeline as forge_pipeline
 
 variants = [
     "EleutherAI/gpt-neo-125M",

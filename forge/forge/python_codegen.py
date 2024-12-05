@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
+from typing import List, Tuple
 
-import torch
+# Third Party
 import numpy as np
 import tensorflow as tf
+import torch
 from loguru import logger
+
+# Local Imports
 import forge
 from forge.tensor import forge_dataformat_to_pytorch_dtype
-
-from typing import Tuple, List
 
 
 def forge_df_from_str(df: str, name: str, return_as_str: bool = True):

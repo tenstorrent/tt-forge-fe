@@ -1,21 +1,23 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-from typing import List, Optional
-from dataclasses import dataclass
 import subprocess
-
-import pytest
-import _pytest.skipping
-import torch.multiprocessing as mp
-import torch
-import tensorflow as tf
 
 # This is a workaround to set RTLD_GLOBAL flag to load emulation ZeBu library.
 # Essentially symbol names have to be unique in global scope to work with ZeBu,
 # hence need to be set as GLOBAL. This is a requirement for ZeBu.
 import sys
+from dataclasses import dataclass
+from typing import List, Optional
+
+# Third Party
+import _pytest.skipping
+import pytest
+import tensorflow as tf
+import torch
+import torch.multiprocessing as mp
 
 original_flags = sys.getdlopenflags()
 if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
@@ -25,11 +27,11 @@ if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
 if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
     sys.setdlopenflags(original_flags)
 
+# Local Imports
 import forge
-from forge.verify.config import TestKind
-from forge.torch_compile import reset_state
-
 from forge.config import _get_global_compiler_config
+from forge.torch_compile import reset_state
+from forge.verify.config import TestKind
 
 collect_ignore = ["legacy_tests"]
 
@@ -77,16 +79,19 @@ def clear_forge():
         # For this to work, pytest must be called with --forked
         subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
 
+    # Standard Library
     import random
 
     random.seed(0)
 
+    # Third Party
     import numpy as np
 
     np.random.seed(0)
 
     torch.manual_seed(0)
 
+    # Third Party
     import tensorflow as tf
 
     tf.random.set_seed(0)
@@ -385,6 +390,7 @@ def pytest_runtest_logreport(report):
             forge.set_configuration_options(device_config=device_cfg_global)
 
         if "FORGE_OVERRIDES_VETO" in os.environ:
+            # Local Imports
             from forge.config import _set_forge_override_veto
 
             # This functionality represents one way to control general and env based compiler configuration (enable us to

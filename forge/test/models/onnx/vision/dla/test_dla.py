@@ -1,19 +1,23 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import onnx
+# Standard Library
 import os
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-import requests
+
+# Third Party
+import onnx
 import pytest
+import requests
 
 # from forge.verify.config import TestKind
 # from forge._C.backend_api import BackendDevice
 import torchvision.transforms as transforms
 from PIL import Image
 
+# Local Imports
+import forge
+from forge import DepricatedVerifyConfig
+from forge.verify.backend import verify_module
 
 variants = [
     "dla34",

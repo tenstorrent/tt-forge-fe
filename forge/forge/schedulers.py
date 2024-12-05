@@ -1,13 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 from collections.abc import Iterable
-from typing import Dict, Callable
+from typing import Callable, Dict
 
+# Third Party
 import torch
 
-from .optimizers import Optimizer
+# Local Imports
 from forge.torch_schedulers import TorchLearningRateScheduler
+
+from .optimizers import Optimizer
 
 
 class LearningRateScheduler:

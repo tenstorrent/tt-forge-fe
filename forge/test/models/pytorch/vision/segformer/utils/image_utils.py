@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
 import requests
 from PIL import Image
-
 from transformers import AutoImageProcessor
 
 

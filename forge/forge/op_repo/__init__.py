@@ -12,9 +12,17 @@
 #  - TVM python_codegen.py
 
 
-from .datatypes import OperandNumInt, OperandNumTuple, OperandNumRange
-from .datatypes import TensorShape, OperatorParam, OperatorParamNumber, OperatorDefinition, OperatorRepository
-from .datatypes import ShapeCalculationContext
+from .datatypes import (
+    OperandNumInt,
+    OperandNumRange,
+    OperandNumTuple,
+    OperatorDefinition,
+    OperatorParam,
+    OperatorParamNumber,
+    OperatorRepository,
+    ShapeCalculationContext,
+    TensorShape,
+)
 
 __ALL__ = [
     "OperandNumInt",

@@ -6,13 +6,17 @@
 # Schedule describes the order of execution of FX and Forge graphs, and the mapping of inputs and outputs
 #
 
-from typing import List, Dict, Set, Tuple, Optional
+# Standard Library
 from enum import Enum
+from typing import Dict, List, Optional, Set, Tuple
 
+# Third Party
 import torch
 from loguru import logger
 
+# Local Imports
 from forge.fx.graph_utils import get_output_node
+
 
 # Enum to hold the source of a tensor
 class TensorSource(Enum):

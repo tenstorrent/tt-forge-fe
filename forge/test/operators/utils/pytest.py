@@ -4,14 +4,17 @@
 
 # pytest utilities
 
-import forge
-import pytest
+# Standard Library
+from typing import List, Tuple
 
+# Third Party
 import _pytest
 import _pytest.reports
-
+import pytest
 from _pytest.mark import ParameterSet
-from typing import List, Tuple
+
+# Local Imports
+import forge
 
 
 class PyTestUtils:

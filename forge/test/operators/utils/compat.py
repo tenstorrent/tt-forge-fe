@@ -4,17 +4,20 @@
 
 # Compatibility methods and datatypes for Forge
 
-import forge
+# Standard Library
+from typing import List, Optional, Union
+
+# Third Party
 import torch
-
 from loguru import logger
-from typing import Optional, List, Union
 
-from forge import ForgeModule, Module, DepricatedVerifyConfig
-from forge.op_repo import TensorShape
+# Local Imports
+import forge
+from forge import DepricatedVerifyConfig, ForgeModule, Module
 from forge.op.eval.common import compare_with_golden
+from forge.op_repo import TensorShape
 
-from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
+from .datatypes import OperatorParameterTypes, ValueRange, ValueRanges
 
 
 # TODO - Remove this class once TestDevice is available in Forge

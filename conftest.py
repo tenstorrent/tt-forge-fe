@@ -2,12 +2,15 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import time
-import pytest
-import psutil
+# Standard Library
 import threading
-from loguru import logger
+import time
 from datetime import datetime
+
+# Third Party
+import psutil
+import pytest
+from loguru import logger
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -59,6 +62,7 @@ def memory_usage_tracker():
             time.sleep(0.1)  # Adjust the interval as needed
 
     # Start tracking in a background thread
+    # Standard Library
     import threading
 
     tracker_thread = threading.Thread(target=track_memory)

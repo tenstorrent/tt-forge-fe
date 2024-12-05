@@ -33,14 +33,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 
-import os.path
-import numpy as np
+# Standard Library
 import math
+import os.path
+import sys
+from test.models.pytorch.vision.retinanet.utils import backbone as backbones_mod
+
+# Third Party
+import numpy as np
 import torch
 import torch.nn as nn
-import sys
-
-from test.models.pytorch.vision.retinanet.utils import backbone as backbones_mod
 import torch.nn.functional as F
 
 

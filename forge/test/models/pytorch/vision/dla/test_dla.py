@@ -1,25 +1,29 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import requests
-import pytest
-import torchvision.transforms as transforms
-from PIL import Image
+# Standard Library
 import os
 from test.models.pytorch.vision.dla.utils.dla_model import (
     dla34,
     dla46_c,
     dla46x_c,
-    dla60x_c,
     dla60,
     dla60x,
+    dla60x_c,
     dla102,
     dla102x,
     dla102x2,
     dla169,
 )
 
+# Third Party
+import pytest
+import requests
+import torchvision.transforms as transforms
+from PIL import Image
+
+# Local Imports
+import forge
 
 variants_func = {
     "dla34": dla34,

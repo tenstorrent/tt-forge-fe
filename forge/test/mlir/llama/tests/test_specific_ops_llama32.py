@@ -1,12 +1,15 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-import pytest
 
+# Third Party
+import pytest
 import torch
 from torch import nn
 
+# Local Imports
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify

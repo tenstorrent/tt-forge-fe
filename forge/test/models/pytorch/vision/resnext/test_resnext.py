@@ -1,15 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-import pytest
+from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
+from test.utils import download_model
 
+# Third Party
+import pytest
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
-from test.utils import download_model
-from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
-
+# Local Imports
 import forge
 
 
