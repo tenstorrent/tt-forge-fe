@@ -16,6 +16,9 @@ from forge.op.eval.common import compare_with_golden
 from forge.verify.config import VerifyConfig
 from forge.tensor import to_forge_tensors
 
+import matplotlib
+from pylab import plt
+
 
 @pytest.mark.push
 def test_mnist_training():
@@ -303,6 +306,8 @@ def test_loss_device():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
+            print(f"pred: {pred}")
+            print(f"golden_pred: {golden_pred}")
             assert compare_with_golden(golden_pred, pred, VerifyConfig(pcc=0.95))
 
             loss = tt_loss(pred, target)
@@ -338,17 +343,92 @@ def test_loss_device():
     print(f"Test (total) loss: {test_loss}")
 
 
+def test_golden_mnist():
+    torch.manual_seed(0)
+
+    # Config
+    num_epochs = 10
+    batch_size = 2048
+    learning_rate = 0.1
+
+    # Limit number of batches to run - quicker test
+    limit_num_batches = 1
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size)
+
+    # Load TensorBoard writer (for logging)
+    writer = load_tb_writer("forge_mnist")
+
+    framework_model = MNISTLinear(bias=False)
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
+    framework_loss = torch.nn.CrossEntropyLoss()
+
+    losses = []
+    for epoch_idx in range(num_epochs):
+        # Reset gradients (every epoch) - since our batch size is currently 1,
+        # we accumulate gradients across multiple batches (limit_num_batches),
+        # and then run the optimizer.
+        framework_optimizer.zero_grad()
+
+        print(f"====================== Epoch {epoch_idx} ======================")
+        print("Framework model params:")
+        for name, param in framework_model.named_parameters():
+            print(f"param: {name} value: {param.data}")
+
+        total_loss = 0
+        for batch_idx, (data, target) in enumerate(train_loader):
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).float()
+
+            # Forward pass (prediction) on device
+            golden_pred = framework_model(data)
+            golden_loss = framework_loss(golden_pred, target)
+            golden_loss /= limit_num_batches
+            total_loss += golden_loss.item()
+
+            golden_loss.backward()
+
+            if batch_idx >= limit_num_batches:
+                print(f"target: {target}")
+                print(f"golden.shape: {golden_loss.shape}")
+                break
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+        losses.append(total_loss)
+
+        print(f"Framework model gradients:")
+        for name, param in framework_model.named_parameters():
+            print(f"param: {name} grad: {param.grad}")
+        print(f"=============================================================")
+        framework_optimizer.step()
+
+    # test_loss = 0
+    # for batch_idx, (data, target) in enumerate(test_loader):
+    #     pred = tt_model(data)[0]
+    #     target = nn.functional.one_hot(target, num_classes=10).float()
+    #
+    #     test_loss += tt_loss(pred, target)[0]
+    #
+    #     if batch_idx == 1000:
+    #         break
+    #
+    # print(f"Test (total) loss: {test_loss}")
+    print(f"Losses: {losses}")
+
+
 @pytest.mark.push
 def test_e2e_device():
     torch.manual_seed(0)
 
     # Config
-    num_epochs = 3
-    batch_size = 1
+    num_epochs = 1000
+    batch_size = 2048
     learning_rate = 0.1
 
     # Limit number of batches to run - quicker test
-    limit_num_batches = 1000
+    limit_num_batches = 1
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
@@ -381,6 +461,12 @@ def test_e2e_device():
         # and then run the optimizer.
         framework_optimizer.zero_grad()
 
+        print(f"====================== Epoch {epoch_idx} ======================")
+        print("Framework model params:")
+        for name, param in framework_model.named_parameters():
+            print(f"param: {name} value: {param.data}")
+        print(f"=============================================================")
+
         total_loss = 0
         for batch_idx, (data, target) in enumerate(train_loader):
 
@@ -390,7 +476,7 @@ def test_e2e_device():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            # assert compare_with_golden(golden_pred, pred, VerifyConfig(pcc=0.95))
+            assert compare_with_golden(golden_pred, pred, VerifyConfig(pcc=0.95))
 
             loss = tt_loss(pred, target)
             total_loss += loss[0].item()
@@ -402,6 +488,8 @@ def test_e2e_device():
                 break
 
         print(f"epoch: {epoch_idx} loss: {total_loss}")
+        if total_loss > 10:
+            total_loss = 10
         losses.append(total_loss)
 
         tt_model.print_gradients()
@@ -420,3 +508,5 @@ def test_e2e_device():
     #
     # print(f"Test (total) loss: {test_loss}")
     print(f"Losses: {losses}")
+    plt.plot(losses)
+    plt.savefig("losses.png")
