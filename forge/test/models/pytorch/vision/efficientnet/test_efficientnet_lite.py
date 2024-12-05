@@ -1,13 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-import forge
+# Standard Library
+import os
 
 ## https://github.com/RangiLyu/EfficientNet-Lite/
-from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite as efflite
-import os
+from test.models.pytorch.vision.efficientnet.utils import (
+    src_efficientnet_lite as efflite,
+)
+
+# Third Party
+import pytest
 import torch
+
+# Local Imports
+import forge
 from forge.op.eval.common import compare_with_golden
 
 

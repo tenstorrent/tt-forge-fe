@@ -3,6 +3,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import argparse
 import os
 import re
@@ -39,6 +40,7 @@ def generate_blobgen_cmd(
     temporal_epoch_graph_name = "pipegen_epoch" + str(temporal_epoch)
 
     # parse general spec
+    # Third Party
     import yaml
 
     with open(device_yaml) as fd:
@@ -193,8 +195,11 @@ def pipegen(
 
 
 def net2pipe_stats(net2pipe_output_dir):
-    import yaml
+    # Standard Library
     from collections import defaultdict
+
+    # Third Party
+    import yaml
 
     class CoreInfo:
         def __init__(self):

@@ -1,19 +1,23 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-
-import torch
-import pytest
-from transformers import GemmaConfig
-from transformers import AutoTokenizer, GemmaForCausalLM
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
-import forge
-from forge import (
-    CompileDepth,
-)
 from test.utils import download_model
+
+# Third Party
+import pytest
+import torch
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    GemmaConfig,
+    GemmaForCausalLM,
+)
+
+# Local Imports
+import forge
+from forge import CompileDepth
 from forge.transformers.pipeline import pipeline as forge_pipeline
 
 

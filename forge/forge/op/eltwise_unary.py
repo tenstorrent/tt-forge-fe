@@ -1,10 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Union, Tuple
+# Standard Library
+from typing import Tuple, Union
+
+# Third Party
 import torch
 
+# Local Imports
 from forge._C import DataFormat
+
 from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 from .common import ForgeOp as op
 

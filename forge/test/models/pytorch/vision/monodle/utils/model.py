@@ -29,13 +29,16 @@ SOFTWARE.
 """
 
 
-import torch
-import os
-import torch.nn as nn
+# Standard Library
 import math
-import torch.utils.model_zoo as model_zoo
-import numpy as np
+import os
 from collections import OrderedDict
+
+# Third Party
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.utils.model_zoo as model_zoo
 
 
 def get_model_url(data="imagenet", name="dla34", hash="ba72cf86"):

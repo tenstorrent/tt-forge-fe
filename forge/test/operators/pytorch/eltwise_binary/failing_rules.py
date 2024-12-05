@@ -5,13 +5,17 @@
 # Failing rules for element-wise binary operators
 
 
-import forge
+# Standard Library
+from test.operators.utils import (
+    FailingReasons,
+    InputSource,
+    TestCollection,
+    TestCollectionCommon,
+    TestResultFailing,
+)
 
-from test.operators.utils import InputSource
-from test.operators.utils import TestCollection
-from test.operators.utils import TestResultFailing
-from test.operators.utils import FailingReasons
-from test.operators.utils import TestCollectionCommon
+# Local Imports
+import forge
 
 
 class FailingRulesData:

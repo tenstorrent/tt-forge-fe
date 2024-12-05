@@ -2,13 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # BART Demo Script - SQuADv1.1 QA
+# Standard Library
 from test.utils import download_model
-import torch
-from transformers import BartTokenizer, BartForSequenceClassification
-from transformers.models.bart.modeling_bart import shift_tokens_right
-import pytest
-import forge
 
+# Third Party
+import pytest
+import torch
+from transformers import BartForSequenceClassification, BartTokenizer
+from transformers.models.bart.modeling_bart import shift_tokens_right
+
+# Local Imports
+import forge
 from forge.config import CompileDepth, _get_global_compiler_config
 
 

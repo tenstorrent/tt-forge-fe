@@ -1,18 +1,26 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
-import os
-import math
+# Standard Library
 import argparse
-from elasticsearch import Elasticsearch
+import math
+import os
+import sys
+
+# Third Party
 import pandas as pd
+from elasticsearch import Elasticsearch
 
 # add project root to search path
 project_root_path = os.path.join(os.path.dirname(__file__), "..")
 sys.path.append(project_root_path)
 
-from third_party.confidential_keys.elastic_search import ES_ENDPOINT, ES_USERNAME, ES_PASSWORD
+# Third Party
+from third_party.confidential_keys.elastic_search import (
+    ES_ENDPOINT,
+    ES_PASSWORD,
+    ES_USERNAME,
+)
 
 
 def get_perf_from_es(es, build_id):

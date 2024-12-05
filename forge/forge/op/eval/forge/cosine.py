@@ -2,17 +2,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 import os
 
+# Third Party
+import numpy as np
 import torch
 import torch.nn.functional
-from ..interface import PyEltwiseUnaryOp
 from loguru import logger
-from ..common import to_torch_operands
+
+# Local Imports
+from forge.op.eval.common import calculate_tile_size
+
 from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
-import numpy as np
-from forge.op.eval.common import calculate_tile_size
+from ..common import to_torch_operands
+from ..interface import PyEltwiseUnaryOp
 from ..lforge.cosine import Cosine as ForgeCosine
 
 

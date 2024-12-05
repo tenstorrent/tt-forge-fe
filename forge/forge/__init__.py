@@ -1,12 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
+
 
 # Set home directory paths for forge and forge
 def set_home_paths():
-    import sys
+    # Standard Library
     import pathlib
+    import sys
+
+    # Third Party
     from loguru import logger
 
     forge_path = pathlib.Path(__file__).parent.parent.resolve()
@@ -33,41 +38,56 @@ set_home_paths()
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
-from .module import Module, PyTorchModule, ForgeModule, TFGraphDefModule, OnnxModule, JaxModule, TFLiteModule
-from .torch_compile import compile_torch
-from .compiled_graph_state import CompiledGraphState
-from .config import (
-    CompilerConfig,
-    CompileDepth,
-    set_configuration_options,
-    set_epoch_break,
-    set_chip_break,
-    override_op_size,
-    PerfTraceLevel,
-    insert_buffering_nop,
-    insert_nop,
-    _internal_insert_fj_buffering_nop,
-    override_dram_queue_placement,
-    configure_mixed_precision,
-)
-from .verify import DepricatedVerifyConfig
-from .forgeglobal import forge_reset, set_device_pipeline, is_silicon, get_tenstorrent_device
-from .parameter import Parameter
-from .tensor import Tensor, SomeTensor, TensorShape
-from .optimizers import SGD, Adam, AdamW, LAMB, LARS
-from ._C import DataFormat, MathFidelity
-from ._C import k_dim
-
-import forge.op as op
-import forge.transformers
-
-import forge.typing
-from .compile import forge_compile_torch, compile_main as compile
+# Third Party
+from torch._dynamo import register_backend
 
 # Torch backend registration
 # TODO: move this in a separate file / module.
 from torch._dynamo.backends.registry import _BACKENDS
-from torch._dynamo import register_backend
+
+# Local Imports
+import forge.op as op
+import forge.transformers
+import forge.typing
+
+from ._C import DataFormat, MathFidelity, k_dim
+from .compile import compile_main as compile
+from .compile import forge_compile_torch
+from .compiled_graph_state import CompiledGraphState
+from .config import (
+    CompileDepth,
+    CompilerConfig,
+    PerfTraceLevel,
+    _internal_insert_fj_buffering_nop,
+    configure_mixed_precision,
+    insert_buffering_nop,
+    insert_nop,
+    override_dram_queue_placement,
+    override_op_size,
+    set_chip_break,
+    set_configuration_options,
+    set_epoch_break,
+)
+from .forgeglobal import (
+    forge_reset,
+    get_tenstorrent_device,
+    is_silicon,
+    set_device_pipeline,
+)
+from .module import (
+    ForgeModule,
+    JaxModule,
+    Module,
+    OnnxModule,
+    PyTorchModule,
+    TFGraphDefModule,
+    TFLiteModule,
+)
+from .optimizers import LAMB, LARS, SGD, Adam, AdamW
+from .parameter import Parameter
+from .tensor import SomeTensor, Tensor, TensorShape
+from .torch_compile import compile_torch
+from .verify import DepricatedVerifyConfig
 
 # register backend with torch:
 # - enables backend to be shown when calling torch._dynamo.list_backends()

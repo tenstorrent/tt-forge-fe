@@ -1,13 +1,16 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 from typing import Optional, Union
 
-from ..tensor import Tensor
-from ..parameter import Parameter
-from .common import ForgeOp as op
-from forge.forgeglobal import get_unique_node_id
+# Local Imports
 from forge import DataFormat
+from forge.forgeglobal import get_unique_node_id
+
+from ..parameter import Parameter
+from ..tensor import Tensor
+from .common import ForgeOp as op
 
 
 def Matmul(

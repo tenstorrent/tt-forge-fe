@@ -1,18 +1,21 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import subprocess
-import os
-import time
-from loguru import logger
-import math
+# Standard Library
 import argparse
-import pandas as pd
-from tabulate import tabulate
-from enum import IntEnum, Enum
-from typing import Union, Dict, List, Tuple
-from dataclasses import dataclass, asdict
 import inspect
+import math
+import os
+import subprocess
+import time
+from dataclasses import asdict, dataclass
+from enum import Enum, IntEnum
+from typing import Dict, List, Tuple, Union
+
+# Third Party
+import pandas as pd
+from loguru import logger
+from tabulate import tabulate
 
 
 class CompilerComponent(IntEnum):

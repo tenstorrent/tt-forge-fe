@@ -2,77 +2,78 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from .matmul import Matmul, SparseMatmul
+# Local Imports
+import forge.op.loss
 
+from .constant import Constant
 from .convolution import Conv2d, Conv2dTranspose, Conv3d
-from .pooling import MaxPool1d, MaxPool2d, MaxPool3d, AvgPool1d, AvgPool2d, AvgPool3d
+from .dram_queue import DRAMQueue
 from .eltwise_binary import (
     Add,
-    Divide,
-    Subtract,
-    Multiply,
-    Max,
-    Min,
-    Heaviside,
     BinaryStack,
-    Power,
+    Divide,
+    Equal,
     Greater,
     GreaterEqual,
+    Heaviside,
     Less,
     LessEqual,
-    Equal,
-    NotEqual,
     LogicalAnd,
+    Max,
+    Min,
+    Multiply,
+    NotEqual,
+    Power,
     Remainder,
+    Subtract,
 )
+from .eltwise_nary import Concatenate, IndexCopy, Interleave, Stack, Where
 from .eltwise_unary import (
+    Abs,
+    Argmax,
+    Buffer,
+    Cast,
+    Clip,
+    Cosine,
+    CumSum,
+    Dropout,
     Exp,
+    Gelu,
     Identity,
+    LeakyRelu,
+    Log,
+    LogicalNot,
+    Pow,
     Reciprocal,
     Relu,
-    Gelu,
-    Sqrt,
-    Log,
-    Buffer,
     Sigmoid,
-    Argmax,
-    Abs,
-    Clip,
     Sine,
-    Cosine,
+    Sqrt,
     Tanh,
-    LeakyRelu,
-    CumSum,
-    LogicalNot,
-    Dropout,
-    Pow,
     Tilize,
-    Cast,
 )
-from .reduce import ReduceSum, ReduceAvg, ReduceMax, GroupedReduceAvg
+from .embedding import Embedding
+from .matmul import Matmul, SparseMatmul
+from .nn import Batchnorm, Layernorm, LogSoftmax, MaxPool2dModule, Softmax
+from .pooling import AvgPool1d, AvgPool2d, AvgPool3d, MaxPool1d, MaxPool2d, MaxPool3d
+from .quantize import Dequantize, ForgeRequantize, Quantize, Requantize
+from .reduce import GroupedReduceAvg, ReduceAvg, ReduceMax, ReduceSum
+from .resize import Resize2d, Resize3d
 from .tm import (
-    Transpose,
-    Reshape,
-    Index,
-    Select,
-    Pad,
-    PadTile,
-    Broadcast,
-    Repeat,
-    RepeatInterleave,
     AdvIndex,
-    Narrow,
-    Unsqueeze,
-    Squeeze,
-    PixelShuffle,
+    Broadcast,
     ForgePad,
     ForgeUnpad,
+    Index,
+    Narrow,
+    Pad,
+    PadTile,
+    PixelShuffle,
+    Repeat,
+    RepeatInterleave,
+    Reshape,
+    Select,
+    Squeeze,
+    Transpose,
+    Unsqueeze,
 )
-from .constant import Constant
-from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, MaxPool2dModule
-from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
-from .resize import Resize2d, Resize3d
-from .embedding import Embedding
-from .dram_queue import DRAMQueue
-from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
-import forge.op.loss

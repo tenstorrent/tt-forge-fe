@@ -37,14 +37,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 
-import torch
-from torch import nn
-import torch.utils.model_zoo as model_zoo
-
-from os.path import join
+# Standard Library
 import math
 from collections import namedtuple
+from os.path import join
 
+# Third Party
+import torch
+import torch.utils.model_zoo as model_zoo
+from torch import nn
 
 BatchNorm = nn.BatchNorm2d
 WEB_ROOT = "http://dl.yf.io/dla/models"

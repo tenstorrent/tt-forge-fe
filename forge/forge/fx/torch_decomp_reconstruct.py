@@ -2,9 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
+from typing import Any, Tuple
+
+# Third Party
 import torch
 from torch.fx import subgraph_rewriter
-from typing import Any, Tuple
+
 
 # Decompose
 def decompose_split(self: torch.Tensor, split_size: int, dim: int = 0) -> Tuple[torch.Tensor, ...]:

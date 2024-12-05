@@ -1,21 +1,27 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
-from forge.forgeglobal import TILE_DIM
-from forge import CompileDepth
+# Standard Library
 import os
-import forge
+from test.utils import download_model
+
+# Third Party
+import pytest
 import torch
-from forge.transformers.pipeline import pipeline as forge_pipeline
-from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
+from transformers import T5Config, T5ForConditionalGeneration, T5Tokenizer
+
+# Local Imports
+import forge
+from forge import CompileDepth
+from forge.forgeglobal import TILE_DIM
 from forge.op.eval.common import compare_with_golden
+from forge.transformers.pipeline import pipeline as forge_pipeline
 
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
 def test_t5_loop_tiny_tile(test_device):
+    # Standard Library
     import os
 
     os.environ["FORGE_ENABLE_TINY_TILE"] = "1"
@@ -66,6 +72,7 @@ def test_t5_loop_tiny_tile(test_device):
             encoder_outputs,
         ),
     )
+    # Standard Library
     import time
 
     start_time = time.time()
@@ -195,6 +202,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_past_cache_enc_dec(variant, test_device):
 
+    # Standard Library
     import os
 
     os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
@@ -309,6 +317,7 @@ def test_t5_past_cache_enc_dec(variant, test_device):
         ),
     )
 
+    # Standard Library
     import time
 
     start = time.time()
@@ -379,6 +388,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_past_cache_forge_pipeline(variant, test_device):
+    # Standard Library
     import os
 
     os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
@@ -662,6 +672,7 @@ def test_t5_past_cache_forge_pipeline(variant, test_device):
     stops = []
     start = 0.0
     stop = 0.0
+    # Standard Library
     import time
 
     def wrap_generate(inputs):
@@ -716,6 +727,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 def test_t5_forge_pipeline(variant, test_device):
     # Too slow for post-commit ci
 
+    # Standard Library
     import os
 
     os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
@@ -767,6 +779,7 @@ def test_t5_small_tiny_tile(test_device):
             "Grayskull test failing with TM ERROR (producer = matmul_49, consumer = matmul_53): input using kernel_broadcast but post-TM input canonical form is not periodic"
         )
 
+    # Standard Library
     import os
 
     os.environ["FORGE_ENABLE_TINY_TILE"] = "1"

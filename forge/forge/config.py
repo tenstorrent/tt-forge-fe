@@ -1,26 +1,29 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-
-from enum import Enum
-import pkg_resources
-from typing import Tuple, Dict, List, Optional, Union, Set
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from forge._C import DataFormat, MathFidelity, AMPNodeProperties
-import forge.query as query
-from dataclasses_json import dataclass_json, config
+from enum import Enum
+from typing import Dict, List, Optional, Set, Tuple, Union
 
+# Third Party
+import pkg_resources
+from dataclasses_json import config, dataclass_json
+from loguru import logger
+
+# Local Imports
+import forge.query as query
+from forge._C import AMPNodeProperties, DataFormat, MathFidelity
 from forge.utils import (
     as_json,
     dict_as_json,
     list_as_json,
     optional_as_json,
-    resolve_output_build_directory,
     resolve_device_descriptor_path,
+    resolve_output_build_directory,
 )
-from loguru import logger
 
 
 class CompileDepth(Enum):
@@ -1268,6 +1271,7 @@ def _set_global_compiler_config(config: CompilerConfig):
 
 
 def _set_forge_override_veto(general_config_dict, environ_config_dict):
+    # Standard Library
     import json
 
     env_dict = {

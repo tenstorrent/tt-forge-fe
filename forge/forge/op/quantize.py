@@ -1,9 +1,11 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
+import torch
+
 from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
 from .common import ForgeOp as op
-import torch
 
 
 def Quantize(

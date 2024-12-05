@@ -2,14 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Standard Library
 #
 # Various utility functions for working with FX graphs
 #
 from typing import List, Tuple, Union
 
+# Third Party
 import torch
 from loguru import logger
 
+# Local Imports
 from forge.fx.nodes import call_function_is_nop, call_function_is_reshape
 
 

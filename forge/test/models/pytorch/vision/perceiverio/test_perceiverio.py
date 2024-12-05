@@ -1,19 +1,24 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import requests
-from PIL import Image
+# Standard Library
+import os
+
+# Third Party
 import pytest
+import requests
+import torch
 from loguru import logger
+from PIL import Image
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
-    PerceiverForImageClassificationLearned,
     PerceiverForImageClassificationFourier,
+    PerceiverForImageClassificationLearned,
 )
-import os
+
+# Local Imports
+import forge
 from forge.op.eval.common import compare_with_golden
 
 

@@ -1,11 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
 import torch
-from ..common import to_torch_operands
+
+# Local Imports
 from forge._C import DataFormat
 from forge._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType
+
 from ....forgeglobal import TILE_DIM
+from ..common import to_torch_operands
 
 
 def eval(type, attr, ops):

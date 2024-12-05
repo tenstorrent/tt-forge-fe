@@ -1,9 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
+import os
+
+# Third Party
 import numpy as np
 import skimage
-import os
 
 
 def load_image(image_path):

@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
+import numpy as np
 import tensorflow as tf
 import torch
-import numpy as np
 
 tf_to_pt_type_map = {
     tf.bfloat16: torch.bfloat16,
@@ -48,6 +49,7 @@ def map_pt_dtype_to_tf(pt_dtype):
 
 
 def flatten_inputs(inputs, names=None, force_float32=False):
+    # Local Imports
     from forge.tensor import Tensor
 
     new_inputs = []
@@ -101,6 +103,7 @@ def flatten_inputs(inputs, names=None, force_float32=False):
 
 
 def flatten_structured_output(outputs):
+    # Local Imports
     from forge.tensor import Tensor
 
     new_outputs = []

@@ -1,11 +1,16 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
-import torch
-import forge
+# Standard Library
 import os
+from test.utils import download_model
+
+# Third Party
+import pytest
+import torch
+
+# Local Imports
+import forge
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size):

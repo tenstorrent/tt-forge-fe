@@ -33,12 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 
+# Standard Library
+import sys
+
+# Third Party
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision.models import resnet as vrn
 import torch.utils.model_zoo as model_zoo
-import sys
-import torch
+from torchvision.models import resnet as vrn
 from torchvision.models.resnet import (
     ResNet18_Weights,
     ResNet34_Weights,

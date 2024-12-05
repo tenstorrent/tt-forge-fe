@@ -2,18 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
-
+# Third Party
 import pytest
 import tensorflow as tf
 
+# Local Imports
 import forge
-from forge.tensor import to_pt_tensors
-from forge.op.eval.common import compare_with_golden
-from forge.config import _get_global_compiler_config
-from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 from forge._C import DataFormat
+from forge.config import _get_global_compiler_config
+from forge.op.eval.common import compare_with_golden
+from forge.tensor import to_pt_tensors
+from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 @pytest.mark.parametrize(

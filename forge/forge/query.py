@@ -1,8 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 from enum import Enum
 
+# Local Imports
 import forge._C.graph.query as query
 
 

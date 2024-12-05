@@ -1,18 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
+import platform
 import re
+import subprocess
 import sys
 import sysconfig
-import platform
-import subprocess
 
 __requires__ = ["pip >= 24.0"]
 
-from setuptools import setup, Extension, find_packages
+# Third Party
+from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
-
 
 forge_files = {"test": {"path": "forge/test", "files": ["conftest.py", "__init__.py", "utils.py", "test_user.py"]}}
 

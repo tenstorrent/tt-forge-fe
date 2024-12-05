@@ -5,15 +5,15 @@
 # Tests for testing of where operator
 #
 
+# Third Party
 import pytest
-
 import torch
 
+# Local Imports
 import forge
 import forge.op
 import forge.tensor
-
-from forge import ForgeModule, DepricatedVerifyConfig
+from forge import DepricatedVerifyConfig, ForgeModule
 from forge.verify import TestKind, verify_module
 
 

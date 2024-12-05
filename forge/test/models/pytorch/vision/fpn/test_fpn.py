@@ -1,10 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
-import forge
-import pytest
+# Standard Library
 from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
+
+# Third Party
+import pytest
+import torch
+
+# Local Imports
+import forge
 
 
 @pytest.mark.nightly

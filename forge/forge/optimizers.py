@@ -5,15 +5,18 @@
 Training optimizers
 """
 
-from typing import Dict, List, Optional, Tuple
+# Standard Library
 import copy
+from typing import Dict, List, Optional, Tuple
 
+# Third Party
 import numpy as np
 import torch
 
-from forge.tensor import Tensor
-from forge.parameter import Parameter
+# Local Imports
 import forge.torch_optimizers
+from forge.parameter import Parameter
+from forge.tensor import Tensor
 from forge.torch_optimizers import AdamNoBiasCorrection
 
 
@@ -329,6 +332,7 @@ class Adam(Optimizer):
         else:
             weight_decay = None
         ## import locally to avoid circular dependency from Dataformat, fix it later
+        # Local Imports
         from forge.op.eval.forge.buffer import Buffer
 
         # we copy the grad accum. queue since it only accepts a single consumer/pop
@@ -354,6 +358,7 @@ class Adam(Optimizer):
         gradient_squared = ac.op("multiply", (gradient_copy, gradient_copy))
         gradient_squared_times_one_minus_beta2 = ac.op("multiply", (gradient_squared, one_minus_beta2))
         updated_variance = ac.op("add", (variance_times_beta2, gradient_squared_times_one_minus_beta2))
+        # Local Imports
         from forge.op.eval.forge.reciprocal import Reciprocal
 
         # import Sqrt module locally to avoid circular dependency
@@ -647,6 +652,7 @@ class LAMB(Optimizer):
 
         # g(t) -> gradient at current timestep
         # temp fix to avoid circular dependency by importing locally
+        # Local Imports
         from forge.op.eval.forge.buffer import Buffer
 
         grad = ac.op(Buffer.create(), (gradient,))
@@ -692,6 +698,7 @@ class LAMB(Optimizer):
         phi_norm = ac.op("reduce_sum", (phi_norm,), (-1,))
 
         # importing locally to avoid circular dependency from Dataformats
+        # Local Imports
         from forge.op.eval.forge.sqrt import Sqrt
 
         phi_norm = ac.op(Sqrt.create(), (phi_norm,))
@@ -702,6 +709,7 @@ class LAMB(Optimizer):
         # adam ratio, ratio of corrected mean and corrected variance stabilized with epsilon
         r_t = ac.op(Sqrt.create(), (updated_variance,))
         r_t = ac.op("add", (r_t, epsilon))
+        # Local Imports
         from forge.op.eval.forge.reciprocal import Reciprocal
 
         r_t = ac.op("multiply", (updated_mean, ac.op(Reciprocal.create(), (r_t,))))
@@ -746,6 +754,7 @@ class LAMB(Optimizer):
         r_t_norm_eq = ac.op("equal", (r_t_norm, zero))
         trust_ratio = ac.op(Reciprocal.create(), (r_t_norm,))
         trust_ratio = ac.op("multiply", (phi_norm, trust_ratio))
+        # Local Imports
         from forge.op.eval.forge.clip import Clip
 
         trust_ratio = ac.op(Clip.create(min=self.clip_value[0], max=self.clip_value[1]), (trust_ratio,))
@@ -945,6 +954,7 @@ class LARS(Optimizer):
 
         # g(t) -> gradient at current timestep
         # temp fix for circular dependency
+        # Local Imports
         from forge.op.eval.forge.buffer import Buffer
 
         grad = ac.op(Buffer.create(), (gradient,))
@@ -956,6 +966,7 @@ class LARS(Optimizer):
             weight_norm = ac.op("reduce_sum", (weight_norm,), (-2,))
         weight_norm = ac.op("reduce_sum", (weight_norm,), (-1,))
         # importing locally to avoid circular dependency from Dataformats
+        # Local Imports
         from forge.op.eval.forge.sqrt import Sqrt
 
         weight_norm = ac.op(Sqrt.create(), (weight_norm,))
@@ -1006,6 +1017,7 @@ class LARS(Optimizer):
         local_learning_rate = ac.op("multiply", (weight_decay, weight_norm))
         local_learning_rate = ac.op("add", (grad_norm, local_learning_rate))
         local_learning_rate = ac.op("add", (epsilon, local_learning_rate))
+        # Local Imports
         from forge.op.eval.forge.reciprocal import Reciprocal
 
         local_learning_rate = ac.op(Reciprocal.create(), (local_learning_rate,))

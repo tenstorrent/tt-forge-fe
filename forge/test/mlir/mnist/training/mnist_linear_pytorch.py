@@ -2,9 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Third Party
 import torch
-from torchvision import datasets, transforms
 from torch.utils.tensorboard import SummaryWriter
+from torchvision import datasets, transforms
 
 
 class FeedForward(torch.nn.Module):

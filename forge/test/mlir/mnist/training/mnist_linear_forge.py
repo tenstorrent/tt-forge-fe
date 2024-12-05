@@ -2,22 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Third Party
 import torch
-from torchvision import datasets, transforms
 from torch.utils.tensorboard import SummaryWriter
+from torchvision import datasets, transforms
 
+# Local Imports
 import forge
-from forge import (
-    CPUDevice,
-    PyTorchModule,
-)
-from utils import (
-    MNISTLinear,
-    Identity,
-    load_tb_writer,
-    load_dataset,
-)
+from forge import CPUDevice, PyTorchModule
 from forge.config import _get_global_compiler_config
+from utils import Identity, MNISTLinear, load_dataset, load_tb_writer
 
 
 class FeedForward(torch.nn.Module):

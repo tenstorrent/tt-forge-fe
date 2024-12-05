@@ -2,24 +2,26 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict, List, Optional
-
-import filelock
+# Standard Library
 import functools
-import json
-import torch
-import math
-import numpy as np
-import hashlib
 import getpass
+import hashlib
+import json
+import math
 import os
 import shutil
-import sys
 import subprocess
+import sys
+from typing import Dict, List, Optional
+
+# Third Party
 import dataclasses_json
+import filelock
+import numpy as np
+import torch
 from loguru import logger
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, PatternFill, Side, Font
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 from .forgeglobal import TILE_DIM
 
@@ -50,6 +52,7 @@ def clamp(a, lower=None, upper=None):
 
 
 def calculate_output_dimensions(original_x, original_y, stride, padding):
+    # Standard Library
     import math
 
     return math.ceil(original_x / stride), math.ceil(original_y / stride)
@@ -177,6 +180,7 @@ def get_padded_tensors(parameters):
 
 
 def get_forge_parameters_from_state_dict(state_dict: Dict[str, torch.Tensor]):
+    # Local Imports
     from forge.parameter import Parameter
 
     forge_parameters = {}
@@ -327,6 +331,7 @@ def get_current_pytest():
     if "PYTEST_CURRENT_TEST" in os.environ:
         return os.environ.get("PYTEST_CURRENT_TEST", "").replace(" (call)", "")
     else:
+        # Standard Library
         import sys
 
         return " ".join(sys.argv)

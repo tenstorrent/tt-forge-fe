@@ -1,14 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+# Standard Library
+import os
 from test.utils import download_model
-import forge
+
+# Third Party
+import pytest
 import requests
 from datasets import load_dataset
 from PIL import Image
 from transformers import AutoImageProcessor, ViTForImageClassification
-import os
+
+# Local Imports
+import forge
 
 dataset = load_dataset("huggingface/cats-image")
 image_1 = dataset["test"]["image"][0]

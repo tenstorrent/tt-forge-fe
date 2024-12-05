@@ -1,14 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-import pytest
+from test.utils import download_model
 
+# Third Party
+import pytest
 import torch
 import torch.nn as nn
 
+# Local Imports
 import forge
-from test.utils import download_model
 
 
 # SPDX-FileCopyrightText: Copyright (c) 2017 LoRnaTang

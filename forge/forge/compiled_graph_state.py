@@ -2,24 +2,25 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict, List, Any, Tuple, Optional
+# Standard Library
+from dataclasses import dataclass, field
 from enum import IntEnum
+from typing import Any, Dict, List, Optional, Tuple
+
+# Third Party
+import torch
+from dataclasses_json import config, dataclass_json
 from loguru import logger
 
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
-
+# Local Imports
+import forge._C.graph as pygraph
 from forge._C import DataFormat, ForgeGraphModule, GraphType
 from forge._C.graph import Graph, RuntimeTensorTransform
-import forge._C.graph as pygraph
-from forge._C.runtime import run_binary, Binary
-from forge.utils import list_as_json
-from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors
+from forge._C.runtime import Binary, run_binary
 from forge.module import Module
-from forge.typing import AnyTensor, AnyModule
-
-
-import torch
+from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors
+from forge.typing import AnyModule, AnyTensor
+from forge.utils import list_as_json
 
 
 def no_encoding(obj):

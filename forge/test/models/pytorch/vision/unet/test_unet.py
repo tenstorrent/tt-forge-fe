@@ -1,19 +1,31 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
+# Standard Library
+import os
 import urllib
 from test.utils import download_model
-import torch
-from torchvision import transforms
-from torchvision.transforms import Compose, ConvertImageDtype, Normalize, PILToTensor, Resize, CenterCrop
-from loguru import logger
-import os
-from PIL import Image
+
+# Third Party
 import numpy as np
 import pytest
-from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
+from torchvision import transforms
+from torchvision.transforms import (
+    CenterCrop,
+    Compose,
+    ConvertImageDtype,
+    Normalize,
+    PILToTensor,
+    Resize,
+)
+
+# Local Imports
+import forge
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
@@ -69,6 +81,7 @@ def get_imagenet_sample():
 @pytest.mark.skip(reason="Model script not found")
 @pytest.mark.nightly
 def test_unet_holocron_pytorch(test_device):
+    # Third Party
     from holocron.models.segmentation.unet import unet_tvvgg11
 
     # STEP 1: Set Forge configuration parameters

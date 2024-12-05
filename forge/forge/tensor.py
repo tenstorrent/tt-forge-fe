@@ -2,30 +2,36 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Union, Tuple, List, Optional, Dict
-from forge.tvm_utils import map_tf_dtype_to_pt
-
-import torch
-import tensorflow as tf
-import numpy as np
-import math
-from loguru import logger
+# Standard Library
 import copy
-import jaxlib
-import jax.numpy as jnp
 import json
-
-from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
-from forge._C import DataFormat
-from forge._C.graph import OpType, RuntimeTensorTransform, RuntimeTensorTransformType, get_constant_input_value
-from forge.utils import detach_tensors
+import math
 from functools import reduce
 from operator import mul
-from .utils import align_up
+from typing import Dict, List, Optional, Tuple, Union
 
-from forge.tvm_utils import map_tf_dtype_to_pt, map_pt_dtype_to_tf
+# Third Party
+import jax.numpy as jnp
+import jaxlib
+import numpy as np
+import tensorflow as tf
+import torch
+from loguru import logger
 
+# Local Imports
 import forge
+from forge._C import DataFormat
+from forge._C.graph import (
+    OpType,
+    RuntimeTensorTransform,
+    RuntimeTensorTransformType,
+    get_constant_input_value,
+)
+from forge.tvm_utils import map_pt_dtype_to_tf, map_tf_dtype_to_pt
+from forge.utils import detach_tensors
+
+from .forgeglobal import TILE_DIM, align_up_tile, round_up_div
+from .utils import align_up
 
 SomeTensor = Union[torch.Tensor, "Tensor", np.ndarray]
 
@@ -1301,6 +1307,7 @@ def get_constant_inputs(
 
 
 def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor], is_forge: bool) -> torch.Tensor:
+    # Local Imports
     import forge.op.eval.forge as eval_module
 
     consteval_graph = consteval_trace.get(name, None)

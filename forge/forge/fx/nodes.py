@@ -6,16 +6,19 @@
 # Functions that convert FX nodes to Forge
 #
 
-import sys
+# Standard Library
 import math
+import sys
 from typing import List, Set, Tuple
 
+# Third Party
 import torch
 from loguru import logger
 
+# Local Imports
 from forge._C.graph import OpType
-from forge.tensor import pytorch_dtype_to_forge_dataformat
 from forge.config import CompilerConfig, _get_global_compiler_config
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 
 
 class ForgeNode:

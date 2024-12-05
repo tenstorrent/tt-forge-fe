@@ -1,33 +1,36 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-from typing import Optional, Tuple, List, Dict
-from collections import deque, OrderedDict
+# Standard Library
 import itertools
+import os
+from collections import OrderedDict, deque
+from typing import Dict, List, Optional, Tuple
 
-import torch
+# Third Party
+import jax.numpy as jnp
+import numpy as np
+import onnx
+import onnxruntime
 import tensorflow as tf
+import torch
 from loguru import logger
 
+# Local Imports
 import forge
-from .forgeglobal import register_module, lazy_trace_data
+from forge.tvm_utils import flatten_structured_output, map_pt_dtype_to_tf
+
+from .forgeglobal import lazy_trace_data, register_module
+from .parameter import Parameter
 from .tensor import (
     SomeTensor,
     Tensor,
+    forge_dataformat_to_pytorch_dtype,
+    pytorch_dtype_to_forge_dataformat,
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
-    pytorch_dtype_to_forge_dataformat,
-    forge_dataformat_to_pytorch_dtype,
 )
-from .parameter import Parameter
-import onnx
-import onnxruntime
-import jax.numpy as jnp
-import numpy as np
-
-from forge.tvm_utils import map_pt_dtype_to_tf, flatten_structured_output
 
 
 class Module:
@@ -396,6 +399,7 @@ class OnnxModule(Module):
         self.onnx_path = onnx_path
 
     def forward(self, *args, **kwargs):
+        # Third Party
         import onnxruntime as ort
 
         assert self.onnx_path != None, "Onnx compile needs path to onnx file on disk."
@@ -584,6 +588,7 @@ class TFGraphDefModule(Module):
         detached_args = to_pt_tensors(args)
         detached_args = [x.detach() for x in detached_args]
         inp_dict = dict(zip(input_names, detached_args))
+        # Third Party
         import tensorflow.compat.v1 as tf
 
         tf.reset_default_graph()
@@ -791,6 +796,7 @@ class ForgeModule(Module):
                 data, constant=True, dev_data_format=pytorch_dtype_to_forge_dataformat(data.dtype)
             )
 
+        # Third Party
         import numpy as np
 
         if isinstance(data, np.ndarray):

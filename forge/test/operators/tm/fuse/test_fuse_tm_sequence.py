@@ -2,15 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import forge
-import forge.op
-from forge import ForgeModule
-
-import torch
+# Standard Library
 import os
 
+# Third Party
+import torch
+
+# Local Imports
+import forge
+import forge.op
+from forge import DepricatedVerifyConfig, ForgeModule
 from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
 from forge.verify.config import TestKind
 
 

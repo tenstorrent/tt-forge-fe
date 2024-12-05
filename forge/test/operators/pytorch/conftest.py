@@ -2,17 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
+# Standard Library
+from test.operators.utils import FailingReasonsValidation, PyTestUtils
+
+# Third Party
 import _pytest
 import _pytest.python
 import _pytest.reports
 import _pytest.runner
 import pluggy.callers
-
+import pytest
 from loguru import logger
-
-from test.operators.utils import PyTestUtils
-from test.operators.utils import FailingReasonsValidation
 
 
 @pytest.hookimpl(hookwrapper=True)

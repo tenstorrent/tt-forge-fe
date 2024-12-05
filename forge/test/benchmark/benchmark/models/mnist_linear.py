@@ -2,16 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
-import time
+# Standard Library
+import json
 import socket
 import subprocess
-import json
+import time
+
+# Third Party
+import pytest
 import torch
 from torch import nn
+
+# Local Imports
 import forge
 from forge.op.eval.common import compare_with_golden_pcc
-
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7

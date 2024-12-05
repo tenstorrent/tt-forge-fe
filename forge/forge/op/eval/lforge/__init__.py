@@ -1,23 +1,25 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import importlib
-from types import ModuleType
 from functools import lru_cache
-from .transpose import TransposeTM
-from .splice import Splice
-from .exp import Exp
+from types import ModuleType
+
+from .abs import Abs
+from .buffer import Buffer
+from .clip import Clip
 from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
-from .reciprocal import Reciprocal
-from .abs import Abs
-from .tanh import Tanh
+from .exp import Exp
 from .log import Log
 from .nop import Nop
-from .buffer import Buffer
+from .reciprocal import Reciprocal
+from .splice import Splice
 from .sqrt import Sqrt
+from .tanh import Tanh
 from .tilizer import Tilizer
-from .clip import Clip
+from .transpose import TransposeTM
 
 op_to_module_map = {
     "add": "eltwise_binary",

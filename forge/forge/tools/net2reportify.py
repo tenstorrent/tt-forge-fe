@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
+# Standard Library
 # SPDX-License-Identifier: Apache-2.0
 import argparse
 import json
 import os
 import sys
-import yaml
 
+# Third Party
+import yaml
 
 TILE_DIM = 32
 

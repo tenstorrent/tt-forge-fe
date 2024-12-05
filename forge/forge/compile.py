@@ -1,47 +1,51 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-from typing import Optional, List, Dict, Any, Tuple, Union
 from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-import torch
+# Third Party
 import tensorflow as tf
+import torch
 from loguru import logger
 
+# Local Imports
 import forge
-from forge.compiled_graph_state import CompiledGraphState, CompiledModel, CompileResults
-from forge.config import (
-    CompilerConfig,
-    CompileDepth,
-    _get_global_compiler_config,
-)
-from forge._C import (
-    link_past_cache_ios,
-    move_index_to_mm_weights,
-    run_post_initial_graph_passes,
-    run_optimization_graph_passes,
-    run_post_optimize_decompose_graph_passes,
-    run_consteval_graph_pass,
-    run_post_autograd_graph_passes,
-    run_pre_lowering_passes,
-    dump_graph,
-    extract_unique_op_configuration,
-)
-from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
+import forge.ci as ci
+import forge.query as query
+from forge._C import (
+    ForgeGraphModule,
+    GraphType,
+    dump_graph,
+    extract_unique_op_configuration,
+    link_past_cache_ios,
+    move_index_to_mm_weights,
+    run_consteval_graph_pass,
+    run_optimization_graph_passes,
+    run_post_autograd_graph_passes,
+    run_post_initial_graph_passes,
+    run_post_optimize_decompose_graph_passes,
+    run_pre_lowering_passes,
+)
 from forge._C.graph import Graph
 from forge._C.runtime import Binary
-import forge.ci as ci
-from forge.module import Module, ForgeModule, wrap_module
+from forge.compiled_graph_state import CompiledGraphState, CompiledModel, CompileResults
+from forge.config import CompileDepth, CompilerConfig, _get_global_compiler_config
+from forge.forgeglobal import clear_state_changed, state_changed
+from forge.module import ForgeModule, Module, wrap_module
 from forge.parameter import Parameter
-from forge.forgeglobal import state_changed, clear_state_changed
-import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors
 from forge.typing import *
-from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
-
+from forge.verify import (
+    DepricatedVerifyConfig,
+    _generate_random_losses,
+    _run_pytorch_backward,
+    do_verify,
+)
 
 LAST_SUCCESSFUL_STAGE = None
 
@@ -52,6 +56,7 @@ def init_log_last_successful_compile_stage():
 
 
 def dump_compiler_cfg(backend_output_directory, compiler_cfg, graph_name):
+    # Third Party
     import yaml
 
     try:
@@ -64,8 +69,11 @@ def dump_compiler_cfg(backend_output_directory, compiler_cfg, graph_name):
 
 
 def load_compiler_cfg(compiler_cfg, clobber=False):
-    import yaml
+    # Standard Library
     import json
+
+    # Third Party
+    import yaml
 
     path = os.environ["FORGE_LOAD_CONFIG"]
     loader = json.load if os.path.splitext(path)[1] == ".json" else lambda f: yaml.load(f, yaml.SafeLoader)
@@ -78,6 +86,7 @@ def load_compiler_cfg(compiler_cfg, clobber=False):
 
 
 def generate_override_config(graph, balancer_solution, placer_solution, nop_instructions, graph_name):
+    # Third Party
     import yaml
 
     try:
@@ -1020,20 +1029,23 @@ def generate_graph(
     TODO: This function was copied over from ttdevice.py with some modifications. Probably needs to be refactored (possibly moved to cpp)
     """
 
-    from .forgeglobal import start_tracing, stop_tracing
-    from forge.tvm_utils import flatten_inputs
-    from collections import deque
+    # Standard Library
     import inspect
+    from collections import deque
 
+    # Local Imports
     from forge._C.graph import (
-        create_output,
-        create_parameter_input,
-        create_data_edge,
         create_activation_input,
         create_constant_input,
+        create_data_edge,
         create_op_node,
+        create_output,
+        create_parameter_input,
         create_target_input,
     )
+    from forge.tvm_utils import flatten_inputs
+
+    from .forgeglobal import start_tracing, stop_tracing
 
     output_to_module_name_prefix = {}
     output_to_subgraph_index = {}

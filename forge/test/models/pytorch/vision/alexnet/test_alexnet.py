@@ -2,15 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from test.utils import download_model
-import torch
-from PIL import Image
-from torchvision import transforms
-from loguru import logger
-import pytest
-import forge
-from pytorchcv.model_provider import get_model as ptcv_get_model
+# Standard Library
 import os
+from test.utils import download_model
+
+# Third Party
+import pytest
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
+from torchvision import transforms
+
+# Local Imports
+import forge
 
 
 @pytest.mark.nightly

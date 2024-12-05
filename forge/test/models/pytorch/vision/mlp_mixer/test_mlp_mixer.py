@@ -1,20 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
-import pytest
-from PIL import Image
-import requests
-from loguru import logger
-
-import torch
-import timm
-from timm.data import resolve_data_config
-from timm.data.transforms_factory import create_transform
 from test.utils import download_model
 
-import forge
+# Third Party
+import pytest
+import requests
+import timm
+import torch
+from loguru import logger
+from PIL import Image
+from timm.data import resolve_data_config
+from timm.data.transforms_factory import create_transform
 
+# Local Imports
+import forge
 
 varaints = [
     "mixer_b16_224",

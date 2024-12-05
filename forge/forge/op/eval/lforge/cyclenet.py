@@ -1,11 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import argparse
+
+# Third Party
 import pandas as pd
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
+
 
 # Might be an overkill for predicting simple functions, consider parameterizing # of layers too
 class CycleNet(nn.Module):

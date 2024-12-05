@@ -2,14 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # STEP 0: import Forge library
-import forge
-import pytest
+# Standard Library
 import os
-from transformers import ViTImageProcessor
-import timm
 from test.utils import download_model
-from PIL import Image
+
+# Third Party
+import pytest
 import requests
+import timm
+from PIL import Image
+from transformers import ViTImageProcessor
+
+# Local Imports
+import forge
 
 
 @pytest.mark.nightly

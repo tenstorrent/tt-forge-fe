@@ -1,11 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
 import torch
 import torch.nn.functional
-from .buffer import Buffer
 
 from ..common import to_torch_operands
+from .buffer import Buffer
 
 
 def eval(type, attr, ops):

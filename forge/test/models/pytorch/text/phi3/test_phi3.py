@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Third Party
+import pytest
+import torch
 from transformers import (
+    AutoTokenizer,
     Phi3Config,
     Phi3ForCausalLM,
-    AutoTokenizer,
-    Phi3ForTokenClassification,
     Phi3ForSequenceClassification,
+    Phi3ForTokenClassification,
 )
-import pytest
+
+# Local Imports
 import forge
-import torch
 from forge.op.eval.common import compare_with_golden
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]

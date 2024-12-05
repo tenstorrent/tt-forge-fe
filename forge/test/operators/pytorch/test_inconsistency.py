@@ -11,15 +11,18 @@
 # pytest -svv forge/test/operators/pytorch/test_inconsistency.py::test_binary_with_reset
 
 
+# Standard Library
 import os
+from test.operators.utils import (
+    DeviceUtils,
+    TestCollection,
+    TestPlanScanner,
+    TestVector,
+)
+
+# Third Party
 import pytest
-
 from loguru import logger
-
-from test.operators.utils import DeviceUtils
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestPlanScanner
 
 
 class TestParamsData:

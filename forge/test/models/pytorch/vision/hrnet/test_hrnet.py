@@ -1,24 +1,24 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
+import urllib
+from test.utils import download_model
+
+# Third Party
 import pytest
+import timm
+import torch
 from loguru import logger
 from PIL import Image
-import urllib
-
-import torch
-from torchvision import transforms
-
 from pytorchcv.model_provider import get_model as ptcv_get_model
-
-import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from torchvision import transforms
 
+# Local Imports
 import forge
-
-from test.utils import download_model
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 

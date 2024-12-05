@@ -2,13 +2,15 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from datetime import datetime
+# Standard Library
 import operator
+from datetime import datetime
 
+# Third Party
 import torch
+import torchvision.transforms as transforms
 from torch import nn
 from torch.utils.data import DataLoader
-import torchvision.transforms as transforms
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.datasets import MNIST as mnist_dataset
 

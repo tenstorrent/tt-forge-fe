@@ -1,15 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
+# Standard Library
+import os
+from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
+from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
+
+# Third Party
+import pytest
 import torch
 import torchvision.transforms as transforms
 from datasets import load_dataset
+
+# Local Imports
+import forge
 from forge.op.eval.common import compare_with_golden
-import os
-import pytest
-from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
-from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
 
 
 @pytest.mark.nightly

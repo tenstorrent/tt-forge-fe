@@ -1,9 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 from argparse import ArgumentError
 
+# Local Imports
 import forge._C.balancer as balancer
+
 from ..common import to_torch_operands
 
 

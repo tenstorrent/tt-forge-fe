@@ -1,9 +1,14 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+# Standard Library
 import os
+
+# Third Party
 import pytest
 import torch
+
+# Local Imports
 import forge
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))

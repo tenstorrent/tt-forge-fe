@@ -20,8 +20,10 @@ or implied). Copyright © 2020 Element AI Inc. All rights reserved.
 
 """
 
+# Standard Library
 from typing import Tuple
 
+# Third Party
 import numpy as np
 import torch as t
 
