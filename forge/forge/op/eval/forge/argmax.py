@@ -92,7 +92,10 @@ class Argmax(PyEltwiseUnaryOp):
         )
         softmax = dc.op("softmax", [mult_1], (axis, 1))
         mult_2 = dc.op("multiply", [softmax, range_tensor])
-        reduce_sum = dc.op("reduce_sum", [mult_2], (axis,))
+        reduce_sum = dc.op_with_named_attrs(
+            "reduce_sum", (mult_2,), {"dim_arg": [axis], "keep_dim": True}, (axis, True)
+        )
+
         dc.fuse(reduce_sum)
 
     def lower(self, lc, tensors, outputs):

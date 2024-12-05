@@ -88,7 +88,7 @@ def test_opt_qa(variant, test_device):
 def test_opt_sequence_classification(variant, test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.POST_INITIAL_GRAPH_PASS
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
