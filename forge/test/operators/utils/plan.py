@@ -13,6 +13,7 @@ import re
 import os
 import importlib
 import inspect
+import torch
 from types import ModuleType
 from itertools import chain
 
