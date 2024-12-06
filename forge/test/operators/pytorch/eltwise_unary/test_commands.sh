@@ -16,7 +16,11 @@ OPERATORS=\
 "neg",\
 "rsqrt",\
 "sin",\
-"square" \
+"square",\
+"pow",\
+"clamp",\
+"log",\
+"log1p" \
 pytest -svv forge/test/operators/pytorch/test_all.py::test_query -rap
 
 # Run not-implemented unary operators tests:
@@ -49,9 +53,7 @@ OPERATORS=\
 "floor",\
 "frac",\
 "lgamma",\
-"log",\
 "log10",\
-"log1p",\
 "log2",\
 "logit",\
 "i0",\
@@ -132,5 +134,6 @@ OPERATORS=\
 "sinh",\
 "tan",\
 "tanh",\
-"trunc" \
+"trunc",\
+"clamp" \
 pytest -svv forge/test/operators/pytorch/test_all.py::test_query -rap
