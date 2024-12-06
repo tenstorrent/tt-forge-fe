@@ -21,7 +21,11 @@ from forge.tensor import to_forge_tensors
 def test_mnist_training():
     torch.manual_seed(0)
 
-    # Model and data type. To use bfloat16 follow the instructions found at test_forge_vs_torch() in this file.
+    # Model and data type.
+    # For bfloat16, the following line should be added to the test_forge_vs_torch function:
+    # In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
+    # That sets relu threshold to bfloat16 tensor.
+    # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
     dtype = torch.float32
 
     # Set training hyperparameters
