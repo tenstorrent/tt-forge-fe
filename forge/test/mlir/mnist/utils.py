@@ -126,25 +126,33 @@ def write_grads(writer, named_params, step):
 def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, is_tt=False, verbose=False):
     size = len(dataloader.dataset)
     for batch, (X, y) in enumerate(dataloader):
-        optimizer.zero_grad()
+        if not is_tt:
+            optimizer.zero_grad()
         pred = model(X)
         pred = pred[0] if is_tt else pred
 
         y = nn.functional.one_hot(y, num_classes=10).to(pred.dtype)
         loss = loss_fn(pred, y)
-
-        loss.backward()
         if is_tt:
+            loss_fn.backward()
             model.backward()
+        else:
+            loss.backward()
+
+        if is_tt:
+            loss = float(loss[0][0,0])
+        else:
+            loss = float(loss.item())
 
         yield loss, pred, get_param_grads(named_params)
 
         optimizer.step()
-        optimizer.zero_grad()
+        if not is_tt:
+            optimizer.zero_grad()
 
         if verbose and batch % 100 == 0:
-            loss, current = loss.item(), batch * batch_size + len(X)
-            print(f"{'Forge' if is_tt else 'Torch'} loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            current = batch * batch_size + len(X)
+            print(f"{'Forge' if is_tt else 'Torch'} loss: {loss}  [{current:>5d}/{size:>5d}]")
 
 
 def validation_loop(dataloader, model, loss_fn, batch_size, is_tt=False, verbose=False):
