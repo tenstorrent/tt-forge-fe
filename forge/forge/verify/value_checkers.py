@@ -4,7 +4,7 @@
 from abc import ABC, abstractmethod
 
 import torch
-from forge.verify.compare import compare_with_golden
+from forge.verify.compare import compare_with_golden, compute_required_tolerances
 
 
 class ValueChecker(ABC):
@@ -51,8 +51,15 @@ class AllCloseValueChecker(ValueChecker):
         ], f"AllCloseValueChecker (all_close): all_close doesn't make sense for integer/bool types"
 
         if not torch.allclose(fw_out, co_out, rtol=self.rtol, atol=self.atol):
+            atol, rtol = compute_required_tolerances(fw_out, co_out)
             raise ValueError(
-                f"Data mismatch -> AllCloseValueChecker (all_close): framework_model={fw_out}, compiled_model={co_out}"
+                f"Data mismatch -> AllCloseValueChecker (all_close):\n"
+                f"- Current tolerances: rtol={self.rtol}, atol={self.atol}\n"
+                f"- Required tolerances for test to pass: rtol={rtol}, atol={atol}\n"
+                f"- Framework output: ({fw_out.shape})\n"
+                f"{fw_out}\n"
+                f"- Compiled model output: ({co_out.shape})\n"
+                f"{co_out}"
             )
 
 
@@ -85,6 +92,13 @@ class FullChecker(AutomaticValueChecker):
             all_close_check = torch.allclose(fw_out, co_out, rtol=self.rtol, atol=self.atol)
 
         if not all_close_check:
+            atol, rtol = compute_required_tolerances(fw_out, co_out)
             raise ValueError(
-                f"Data mismatch -> FullChecker (all_close): framework_model={fw_out}, compiled_model={co_out}"
+                f"Data mismatch -> FullChecker (all_close):\n"
+                f"- Current tolerances: rtol={self.rtol}, atol={self.atol}\n"
+                f"- Required tolerances for test to pass: rtol={rtol}, atol={atol}\n"
+                f"- Framework output: ({fw_out.shape})\n"
+                f"{fw_out}\n"
+                f"- Compiled model output: ({co_out.shape})\n"
+                f"{co_out}"
             )

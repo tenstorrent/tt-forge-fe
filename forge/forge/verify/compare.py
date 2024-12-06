@@ -31,7 +31,18 @@ def compare_with_golden(
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
-        return torch.allclose(golden, calculated, rtol=rtol, atol=atol)
+
+        all_close = torch.allclose(golden, calculated, rtol=rtol, atol=atol)
+        if not all_close:
+            req_atol, req_rtol = compute_required_tolerances(golden, calculated)
+            logger.error("Tensor mismatch. Current rtol={}, atol={}", rtol, atol)
+            logger.error("Required to pass the test rtol={}, atol={}", req_rtol, req_atol)
+            logger.error("Golden: (shape = {}", golden.shape)
+            logger.error(golden)
+            logger.error("Calculated: (shape = {}", calculated.shape)
+            logger.error(calculated)
+
+        return all_close
 
 
 # Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
@@ -54,7 +65,9 @@ def compare_with_golden_pcc(
     else:
         logger.error("Tensor mismatch. PCC = {}, but required = {}", pcc_value, pcc)
         logger.trace("Golden: (shape = {}", golden.shape)
+        logger.trace(golden)
         logger.trace("Calculated: (shape = {}", calculated.shape)
+        logger.trace(calculated)
         return False
 
 
@@ -266,3 +279,21 @@ def compare_tensor_to_golden(
         logger.debug("Tensors match on {}", name)
 
     return True
+
+
+def compute_required_tolerances(a, b):
+    if a.shape != b.shape:
+        raise ValueError("Tensors must have the same shape")
+
+    diff = torch.abs(a - b)
+    abs_b = torch.abs(b)
+
+    # Compute the required atol (assuming rtol=0)
+    required_atol = torch.max(diff)
+
+    # Compute the required rtol (assuming atol=0)
+    # Avoid division by zero by setting a high rtol for zero values in b
+    safe_abs_b = torch.where(abs_b == 0, torch.tensor(float("inf")), abs_b)
+    required_rtol = torch.max(diff / safe_abs_b)
+
+    return required_atol.item(), required_rtol.item()
