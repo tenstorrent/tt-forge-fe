@@ -261,7 +261,9 @@ class VerifyConfig:
 
     # --- Tensor Verification Settings --- #
     enabled: bool = True  # enable/disable verification
-    verify_tensor_metadata: VerifyTensorMetadata = VerifyTensorMetadata.ALL_CHECKS
+    verify_size: bool = True  # Check output size
+    verify_dtype: bool = True  # Check output dtype
+    verify_shape: bool = True  # Check output shape
     value_checker: ValueChecker = AutomaticValueChecker()
 
     # --- Logging settings --- #
