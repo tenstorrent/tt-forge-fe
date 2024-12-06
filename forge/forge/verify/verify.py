@@ -316,18 +316,18 @@ def verify(
     # - dtype check
     # - shape check
     # - compare with golden
-    if verify_cfg.verify_tensor_metadata in [VerifyTensorMetadata.ONLY_SIZE, VerifyTensorMetadata.ALL_CHECKS]:
+    if verify_cfg.verify_size:
         if len(fw_out) != len(co_out):
             raise ValueError(
                 f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_out)} outputs, compiled model has {len(co_out)} outputs"
             )
 
     for fw, co in zip(fw_out, co_out):
-        if verify_cfg.verify_tensor_metadata in [VerifyTensorMetadata.ONLY_DTYPE, VerifyTensorMetadata.ALL_CHECKS]:
+        if verify_cfg.verify_dtype:
             if fw.dtype != co.dtype:
                 raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
 
-        if verify_cfg.verify_tensor_metadata in [VerifyTensorMetadata.ONLY_SHAPE, VerifyTensorMetadata.ALL_CHECKS]:
+        if verify_cfg.verify_shape:
             if fw.shape != co.shape:
                 raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
 
