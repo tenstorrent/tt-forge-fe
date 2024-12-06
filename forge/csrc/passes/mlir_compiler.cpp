@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "mlir_compiler.hpp"
 
+#include <filesystem>
 #include <memory>
 
 #include "graph_lib/defines.hpp"
@@ -78,7 +79,7 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
 
     // save what's dumped to a file named "{name}.mlir"
     reportify::dump_mlir("ttnn", mlir_module->getName()->str(), mlir_module.get());
-
+    std::string moduleName = mlir_module->getName()->str();
     // Generate binary from the MLIR module.
     auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
     tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
@@ -87,6 +88,23 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
     {
         throw std::runtime_error("Failed to generate flatbuffer binary.");
     }
+    const std::string folderPath = "bin_and_json/";
+    std::filesystem::create_directories(folderPath);
+    const std::string binaryFilePath = folderPath + moduleName + ".bin";
+    const std::string jsonFilePath = folderPath + moduleName + ".json";
+
+    runtime::Binary binary_obj = runtime::Binary(binary);
+    std::string json_str = binary_obj.asJson();
+    binary_obj.store(binaryFilePath.c_str());
+    tt::log_info(LogMLIRCompiler, "Flatbuffer JSON generated successfully.");
+
+    std::ofstream jsonFile(jsonFilePath);
+    if (!jsonFile)
+    {
+        throw std::runtime_error("Failed to open JSON file for saving: " + jsonFilePath);
+    }
+    jsonFile << json_str;
+    jsonFile.close();
 
     return binary;
 }
