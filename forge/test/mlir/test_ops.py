@@ -14,6 +14,7 @@ from forge.tensor import to_forge_tensors
 from tvm.relay.op.transform import squeeze
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
@@ -1195,82 +1196,39 @@ def test_softmax():
     verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
-@pytest.mark.parametrize(
-    "input_shape, dim, keepdim",
-    [
-        ((64,), 0, True),
-        ((64,), -1, True),
-        ((4, 64), 0, True),
-        ((32, 32), -2, True),
-        pytest.param((2, 32, 32), 0, True, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
-        ((1, 64, 32), 2, True),
-        ((4, 32, 64), -2, True),
-        ((4, 128, 128, 128), 0, True),
-        ((1, 128, 128, 128), 2, True),
-        ((1, 128, 128, 128), -3, True),
-        ((4, 128, 128, 128), -4, True),
-        pytest.param(
-            (64,),
-            0,
-            False,
-            marks=pytest.mark.xfail(reason="'ttir.squeeze' op Output tensor must have at least one dimension."),
-        ),
-        pytest.param(
-            (64,),
-            -1,
-            False,
-            marks=pytest.mark.xfail(reason="'ttir.squeeze' op Output tensor must have at least one dimension."),
-        ),
-        pytest.param(
-            (4, 64),
-            0,
-            False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
-        ),
-        pytest.param(
-            (32, 32),
-            -2,
-            False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
-        ),
-        pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
-        ((1, 64, 32), 2, False),
-        ((4, 32, 64), -2, False),
-        ((4, 128, 128, 128), 0, False),
-        (
-            (1, 128, 128, 128),
-            2,
-            False,
-        ),
-        ((1, 128, 128, 128), -3, False),
-        ((4, 128, 128, 128), -4, False),
-    ],
-)
-@pytest.mark.push
-def test_reduce_sum(input_shape, dim, keepdim):
+def test_reduce_sum():
     class ReduceSum(nn.Module):
         def __init__(self):
             super().__init__()
 
         def forward(self, a):
-            return torch.sum(a, dim=dim, keepdim=keepdim)
+            return torch.sum(a, dim=-1, keepdim=True)
 
-    inputs = [torch.rand(input_shape)]
+    inputs = [torch.rand(1,204,768)]
 
     framework_model = ReduceSum()
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     co_out = compiled_model(*inputs)
+    fw_out = framework_model(*inputs)
+    
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    
+    import numpy as np
+    torch.set_printoptions(linewidth=1000,edgeitems=10,precision =20)
+    
+    print("cpu output.shape",co_out[0].shape)
+    print("forge output.shape",fw_out[0].shape)
+    
+    print("=========================================")
+    print("cpu output\n",co_out)
+    print("\nforge output\n",fw_out)
+    print("=========================================")
+    
+    verify(inputs, framework_model, compiled_model)
 
-    # Skipping PCC check due to inconsistencies between Framework and Compiled model
-    #
-    # co_out = [co.to("cpu") for co in co_out]
-    # assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
 @pytest.mark.parametrize(

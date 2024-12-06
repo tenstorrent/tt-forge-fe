@@ -217,10 +217,13 @@ def compare_with_golden(
     verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     if golden.dtype == torch.bool:
+        logger.info("inside if golden.dtype == torch.bool:")
         return compare_with_golden_bool(golden, calculated, verify_cfg)
     if golden.flatten().size() != (1,):  # PCC for single values doesn't work
+        logger.info("inside if golden.flatten().size() != (1,):")
         return compare_with_golden_pcc(golden, calculated, verify_cfg)
     else:
+        logger.info("inisde else")
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
@@ -240,6 +243,7 @@ def compare_with_golden_pcc(
 
     pcc_value = calculate_pcc(golden, calculated)
     if pcc_value >= verify_cfg.pcc:
+        logger.info("pcc_value={}",pcc_value)
         logger.trace("PCC is correct")
         logger.trace("Golden: (shape = {}", golden.shape)
         logger.trace(golden)

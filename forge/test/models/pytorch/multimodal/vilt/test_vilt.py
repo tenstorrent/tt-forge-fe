@@ -10,7 +10,7 @@ import torch
 from PIL import Image
 from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
 from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
-from forge.op.eval.common import compare_with_golden
+from forge.verify.verify import verify
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image = Image.open(requests.get(url, stream=True).raw)
@@ -96,7 +96,7 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="pcc=0.9498278562793674")
+# @pytest.mark.xfail(reason="pcc=0.9498278562793674")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(
@@ -109,5 +109,16 @@ def test_vilt_maskedlm_hf_pytorch(variant, test_device):
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    
+    import numpy as np
+    torch.set_printoptions(linewidth=1000,edgeitems=10,precision =20)
+    
+    print("cpu output.shape",co_out[0].shape)
+    print("forge output.shape",fw_out[0].shape)
+    
+    print("=========================================")
+    print("cpu output\n",co_out)
+    print("\nforge output\n",fw_out)
+    print("=========================================")
+    
+    verify(inputs, model, compiled_model) 
