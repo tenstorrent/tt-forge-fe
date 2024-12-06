@@ -12,8 +12,6 @@ import tensorflow as tf
 import forge
 import forge.config
 from forge.tensor import to_forge_tensors, to_pt_tensors
-from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 
 def test_torch():

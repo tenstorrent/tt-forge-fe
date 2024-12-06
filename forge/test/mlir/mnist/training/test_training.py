@@ -13,7 +13,6 @@ import forge
 from forge.op.loss import CrossEntropyLoss, L1Loss
 from ..utils import *
 from forge.verify.compare import compare_with_golden
-from forge.verify.config import VerifyConfig
 from forge.tensor import to_forge_tensors
 
 
@@ -69,7 +68,7 @@ def test_mnist_training():
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
             assert golden_pred.dtype == dtype
-            assert compare_with_golden(golden_pred, pred, verify_cfg=VerifyConfig(pcc=0.95))
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)
@@ -140,7 +139,7 @@ def test_mnist_training_with_grad_accumulation():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, verify_cfg=VerifyConfig(pcc=0.95))
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)
@@ -384,7 +383,7 @@ def test_loss_device():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, VerifyConfig(pcc=0.95))
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
             loss = tt_loss(pred, target)
             total_loss += loss[0].item()

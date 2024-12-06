@@ -11,7 +11,6 @@ from torch import nn
 import forge
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.push
@@ -28,7 +27,7 @@ def test_multiple_inputs():
     framework_model = MultipleInputs()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -59,7 +58,7 @@ def test_input_order(a_shape, b_shape, c_shape):
     framework_model = InputOrderWithConstants()
     compiled_model = forge.compile(framework_model, sample_inputs=[a, b, c])
 
-    verify([a, b, c], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify([a, b, c], framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("batch_size", [1, 4, 16, 32, 64])
@@ -81,7 +80,7 @@ def test_matmul_bias(batch_size, linear_features):
     framework_model = Linear()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
@@ -103,7 +102,7 @@ def test_batch_size_inference(batch_size, in_features, out_features):
     framework_model = SimpleModel()
     compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, in_features)])
 
-    verify(in_data, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(in_data, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
@@ -134,9 +133,7 @@ def test_batch_size_training(batch_size, in_features, out_features):
 
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    assert compare_with_golden(
-        golden_pred, pred, verify_cfg=VerifyConfig(pcc=0.95)
-    )  # 0.95 is the minimum value for which the test passes
+    assert compare_with_golden(golden_pred, pred, pcc=0.95)  # 0.95 is the minimum value for which the test passes
 
     loss = loss_fn(pred, target)
     golden_loss = loss_fn(golden_pred, target)
