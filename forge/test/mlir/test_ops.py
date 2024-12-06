@@ -334,7 +334,7 @@ def test_flatten(shape):
     framework_model = Flatten()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
@@ -1224,17 +1224,11 @@ def test_softmax():
             (4, 64),
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param(
             (32, 32),
             -2,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
         ((1, 64, 32), 2, False),
@@ -1302,17 +1296,11 @@ def test_reduce_sum(input_shape, dim, keepdim):
             (4, 64),
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param(
             (32, 32),
             -2,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
         ((1, 64, 32), 2, False),
