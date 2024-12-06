@@ -30,11 +30,8 @@ def test_mnist_training():
 
     # Set training hyperparameters
     num_epochs = 3
-    batch_size = 64
+    batch_size = 2048
     learning_rate = 0.001
-
-    # Limit number of batches to run - quicker test
-    limit_num_batches = 1000
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
@@ -89,9 +86,6 @@ def test_mnist_training():
             # Adjust weights (on CPU)
             framework_optimizer.step()
 
-            if batch_idx >= limit_num_batches:
-                break
-
         print(f"epoch: {epoch_idx} loss: {total_loss}")
 
     test_loss = 0
@@ -100,9 +94,6 @@ def test_mnist_training():
         target = nn.functional.one_hot(target, num_classes=10).to(dtype)
 
         test_loss += loss_fn(pred, target)
-
-        if batch_idx == limit_num_batches:
-            break
 
     print(f"Test (total) loss: {test_loss}")
 
