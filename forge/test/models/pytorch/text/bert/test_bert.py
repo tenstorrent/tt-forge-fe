@@ -12,7 +12,7 @@ from transformers import (
     BertForQuestionAnswering,
 )
 import torch
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):

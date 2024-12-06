@@ -154,7 +154,7 @@ class ForgeWriter(PythonWriter):
         if include_pytest_imports:
             self.wl("")
             self.wl("from forge import Tensor, compile")
-            self.wl("from forge.op.eval.common import compare_with_golden")
+            self.wl("from forge.verify.compare import compare_with_golden")
             self.wl("import pytest")
 
         if self.framework == "tensorflow":
