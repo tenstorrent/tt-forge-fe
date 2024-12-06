@@ -123,6 +123,10 @@ common_failure_matching_rules_list = [
                 "ttmetal vs Forge Output Data mismatch",
                 ["AssertionError", "assert False", "where False = all([False])"],
             ),
+            MatchingExceptionRule(
+                "Forge Verification Data mismatch",
+                ["ValueError", "forge/forge/verify/verify.py", "Data mismatch (compare_with_golden)"],
+            ),
             # Compiled model Runtime
             MatchingExceptionRule(
                 "Runtime Data mismatch", ["RuntimeError", "Tensor", "data type mismatch: expected", "got"]
@@ -172,6 +176,9 @@ common_failure_matching_rules_list = [
                 ],
             ),
             MatchingExceptionRule("mlir pipeline", ["RuntimeError", "Failed to run MLIR compiler pass pipeline"]),
+            MatchingExceptionRule(
+                "MLIR runtime ttnn ", ["tt::exception", "tt-mlir/runtime/lib/ttnn/runtime.cpp", "Unsupported data type"]
+            ),
         ],
     ),
     MatchingCompilerComponentException(
@@ -266,6 +273,15 @@ common_failure_matching_rules_list = [
                     "tt-metal/ttnn/cpp/ttnn/operations/data_movement/reshape_view/reshape.cpp",
                     "tensor_shape.rank() <= 4",
                     "Only up to 4D tensors",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn permute",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/data_movement/permute/device/permute_device_operation.cpp",
+                    "attributes.dims.back() == tensor_args.input_tensor.get_logical_shape().rank() - 1",
+                    "Last dimension of permute must be the last dimension of the input tensor as page-breaking is not supported at the moment",
                 ],
             ),
             MatchingExceptionRule(
