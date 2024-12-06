@@ -12,39 +12,39 @@ import numpy as np
 from loguru import logger
 from scipy.spatial import distance
 
-from forge.verify.config import VerifyConfig
 from forge.tensor import narrow_forge_tensor_to_pytorch
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    verify_cfg: VerifyConfig = VerifyConfig(),
+    pcc: float = 0.99,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    dissimilarity_threshold: float = 1e-03,
 ):
     if golden.dtype == torch.bool:
-        return compare_with_golden_bool(golden, calculated, verify_cfg)
+        return compare_with_golden_bool(golden, calculated, dissimilarity_threshold)
     if golden.flatten().size() != (1,):  # PCC for single values doesn't work
-        return compare_with_golden_pcc(golden, calculated, verify_cfg)
+        return compare_with_golden_pcc(golden, calculated, pcc)
     else:
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
-        return torch.allclose(
-            golden, calculated, rtol=verify_cfg.rtol[golden.dtype], atol=verify_cfg.atol[golden.dtype]
-        )
+        return torch.allclose(golden, calculated, rtol=rtol, atol=atol)
 
 
 # Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
 def compare_with_golden_pcc(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    verify_cfg: VerifyConfig = VerifyConfig(),
+    pcc: float = 0.99,
 ):
-    assert verify_cfg.pcc is not None and verify_cfg.pcc >= 0, "PCC threshold must be >= 0"
+    assert pcc >= 0, "PCC threshold must be >= 0"
     assert golden.flatten().size() != (1,), "PCC for single values doesn't work"
 
     pcc_value = calculate_pcc(golden, calculated)
-    if pcc_value >= verify_cfg.pcc:
+    if pcc_value >= pcc:
         logger.trace("PCC is correct")
         logger.trace("Golden: (shape = {}", golden.shape)
         logger.trace(golden)
@@ -52,7 +52,7 @@ def compare_with_golden_pcc(
         logger.trace(calculated)
         return True
     else:
-        logger.error("Tensor mismatch. PCC = {}, but required = {}", pcc_value, verify_cfg.pcc)
+        logger.error("Tensor mismatch. PCC = {}, but required = {}", pcc_value, pcc)
         logger.trace("Golden: (shape = {}", golden.shape)
         logger.trace("Calculated: (shape = {}", calculated.shape)
         return False
@@ -61,7 +61,7 @@ def compare_with_golden_pcc(
 def compare_with_golden_bool(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    verify_cfg: VerifyConfig = VerifyConfig(),
+    dissimilarity_threshold: float = 1e-03,  # threshold picked empirically. We will update it as TTNN evolves
 ):
     if calculated.dtype != torch.bool:
         calculated = calculated.to(torch.bool)
@@ -70,8 +70,7 @@ def compare_with_golden_bool(
     calculated_squeezed = calculated.view(-1).detach().numpy()
     dissimilarity = distance.rogerstanimoto(golden_squeezed, calculated_squeezed)
 
-    # threshold picked empirically. We will update it as TTNN evolves
-    if dissimilarity <= verify_cfg.dissimilarity_threshold:
+    if dissimilarity <= dissimilarity_threshold:
         logger.trace("Bool vectors are not dissimilar. Dissimiliarity = {}", dissimilarity)
         logger.trace("Golden: (shape = {}", golden.shape)
         logger.trace(golden)
