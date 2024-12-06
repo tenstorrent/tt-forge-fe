@@ -7,11 +7,11 @@ import pytest
 import forge
 from test.mlir.llama.utils.utils import load_model
 from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
-from forge.op.eval.common import compare_with_golden_pcc
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
 @pytest.mark.push
 def test_llama_rotary_emb(model_path):
     class Llama_Rotary_Embedding(torch.nn.Module):
@@ -54,15 +54,7 @@ def test_llama_rotary_emb(model_path):
         torch.rand((batch_size, kv_heads, kv_seq_len, head_dim)),  # Key states
     ]
 
-    # Sanity run
-    fw_out = framework_model(*inputs)
-
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    # Run on TT device
-    tt_out = compiled_model(*inputs)
-    tt_out = [out.to("cpu") for out in tt_out]
-
-    # Validate results
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, tt_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))

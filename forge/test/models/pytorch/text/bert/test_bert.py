@@ -11,6 +11,8 @@ from transformers import (
     BertForSequenceClassification,
     BertForQuestionAnswering,
 )
+import torch
+from forge.op.eval.common import compare_with_golden
 
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):
@@ -20,7 +22,6 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
     model = BertForMaskedLM.from_pretrained(model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -38,10 +39,20 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_bert_masked_lm_pytorch(test_device):
     model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch("bert-base-uncased")
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_masked_lm")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def generate_model_bert_qa_hf_pytorch(variant):
@@ -51,7 +62,6 @@ def generate_model_bert_qa_hf_pytorch(variant):
     model = download_model(BertForQuestionAnswering.from_pretrained, model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -79,10 +89,20 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_bert_question_answering_pytorch(test_device):
     model, inputs, _ = generate_model_bert_qa_hf_pytorch("bert-large-cased-whole-word-masking-finetuned-squad")
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_qa")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def generate_model_bert_seqcls_hf_pytorch(variant):
@@ -110,12 +130,21 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_bert_sequence_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(
         "textattack/bert-base-uncased-SST-2",
     )
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_sequence_classification")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def generate_model_bert_tkcls_hf_pytorch(variant):
@@ -125,7 +154,6 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
     model = download_model(BertForTokenClassification.from_pretrained, model_ckpt)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -143,7 +171,17 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_bert_token_classification_pytorch(test_device):
     model, inputs, _ = generate_model_bert_tkcls_hf_pytorch("dbmdz/bert-large-cased-finetuned-conll03-english")
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_sequence_classification")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

@@ -8,7 +8,7 @@ import onnx
 import tensorflow as tf
 import forge
 from forge.verify.backend import verify_module
-from forge import VerifyConfig
+from forge import DepricatedVerifyConfig
 from forge._C.backend_api import BackendType, BackendDevice
 from forge.verify.config import TestKind
 
@@ -37,7 +37,7 @@ def test_lstm_valence_onnx(test_device):
         forge.OnnxModule("onnx_lstm", model, load_path),
         input_shapes=(inputs.shape,),
         inputs=[(inputs,)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

@@ -6,11 +6,11 @@ import pytest
 
 import forge
 from test.mlir.llama.utils.utils import load_model
-from forge.op.eval.common import compare_with_golden_pcc
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
 @pytest.mark.push
 def test_llama_self_attn(model_path):
     if model_path == "meta-llama/Llama-3.2-1B":
@@ -41,15 +41,7 @@ def test_llama_self_attn(model_path):
         torch.arange(12).unsqueeze(0).float(),  # Position IDs
     ]
 
-    # Sanity run
-    golden_output = framework_model(*inputs)
-
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    # Run on TT device
-    tt_out = compiled_model(*inputs)
-    tt_out = [out.to("cpu") for out in tt_out]
-
-    # Validate results
-    assert compare_with_golden_pcc(golden=golden_output, calculated=tt_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))

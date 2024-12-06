@@ -8,18 +8,29 @@ import urllib
 from PIL import Image
 from torchvision import transforms
 import os
+from forge.op.eval.common import compare_with_golden
 
-variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
+variants = [
+    pytest.param("hardnet68", id="hardnet68"),
+    pytest.param("hardnet85", id="hardnet85"),
+    pytest.param(
+        "hardnet68ds", id="hardnet68ds", marks=pytest.mark.xfail(reason="Runtime error: Invalid arguments to reshape")
+    ),
+    pytest.param(
+        "hardnet39ds", id="hardnet39ds", marks=pytest.mark.xfail(reason="Runtime error: Invalid arguments to reshape")
+    ),
+]
 
 
-@pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    if variant in ["hardnet68", "hardnet39"]:
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
@@ -58,3 +69,12 @@ def test_hardnet_pytorch(test_device, variant):
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
+        co_out = compiled_model(input_batch)
+
+        fw_out = model(input_batch)
+
+        co_out = [co.to("cpu") for co in co_out]
+        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

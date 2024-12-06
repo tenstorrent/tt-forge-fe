@@ -17,6 +17,7 @@ import forge
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_rcnn_pytorch(test_device):
 
     # Load Alexnet Model

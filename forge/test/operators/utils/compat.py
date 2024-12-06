@@ -10,7 +10,7 @@ import torch
 from loguru import logger
 from typing import Optional, List, Union
 
-from forge import ForgeModule, Module, VerifyConfig
+from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.op_repo import TensorShape
 from forge.op.eval.common import compare_with_golden
 

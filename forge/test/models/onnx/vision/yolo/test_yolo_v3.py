@@ -10,11 +10,10 @@ import numpy as np
 import onnx
 import torch
 import forge
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
-# from forge._C.backend_api import BackendType, BackendDevice
-# from forge.verify.config import TestKind
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
+from forge._C.backend_api import BackendType, BackendDevice
+from forge.verify.config import TestKind
 
 
 ########
@@ -70,7 +69,7 @@ def test_yolov3_tiny_onnx(test_device):
         tt_model,
         input_shapes=[image_data.shape, image_size.shape],
         inputs=[(image_data, image_size)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
@@ -103,7 +102,7 @@ def test_yolov3_onnx(test_device):
         tt_model,
         input_shapes=[image_data.shape, image_size.shape],
         inputs=[(image_data, image_size)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

@@ -11,11 +11,10 @@ import cv2
 import numpy as np
 from yolov5.utils.dataloaders import exif_transpose, letterbox
 import onnx, pytest
-
-# from forge.verify.backend import verify_module
-# from forge import VerifyConfig
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+from forge.verify.backend import verify_module
+from forge import DepricatedVerifyConfig
+from forge.verify.config import TestKind
+from forge._C.backend_api import BackendDevice
 
 
 def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:
@@ -94,7 +93,7 @@ def test_yolo_v5_320x320_onnx(test_device, variant):
         forge.OnnxModule(model_name, onnx_model, onnx_model_path),
         input_shapes=([pixel_values.shape]),
         inputs=([pixel_values]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
@@ -176,7 +175,7 @@ def test_yolo_v5_480x480_onnx(test_device, variant):
         forge.OnnxModule(model_name, onnx_model, onnx_model_path),
         input_shapes=([pixel_values.shape]),
         inputs=([pixel_values]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,
@@ -274,7 +273,7 @@ def test_yolo_v5_640x640_onnx(test_device, variant):
         forge.OnnxModule(model_name, onnx_model, onnx_model_path),
         input_shapes=([pixel_values.shape]),
         inputs=([pixel_values]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

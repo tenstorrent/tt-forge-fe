@@ -13,8 +13,9 @@ from test.models.pytorch.vision.yolo.utils.yolov6_utils import check_img_size, p
 variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants)
 def test_yolo_v6_pytorch(variant, test_device):
 
     # STEP 1 : Set Forge configuration parameters

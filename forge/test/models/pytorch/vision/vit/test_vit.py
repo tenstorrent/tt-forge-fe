@@ -34,8 +34,9 @@ def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
 variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classify_224_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
         test_device,
@@ -43,5 +44,5 @@ def test_vit_classify_224_hf_pytorch(variant, test_device):
     )
 
     compiled_model = forge.compile(
-        model, sample_inputs=[inputs[0]], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )

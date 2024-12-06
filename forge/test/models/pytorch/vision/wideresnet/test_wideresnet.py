@@ -18,7 +18,7 @@ def generate_model_wideresnet_imgcls_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
@@ -45,8 +45,9 @@ def generate_model_wideresnet_imgcls_pytorch(test_device, variant):
 variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_pytorch(variant, test_device):
     (model, inputs,) = generate_model_wideresnet_imgcls_pytorch(
         test_device,
@@ -60,7 +61,7 @@ def generate_model_wideresnet_imgcls_timm(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.FINISH_COMPILE
+    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -81,8 +82,9 @@ def generate_model_wideresnet_imgcls_timm(test_device, variant):
 variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_timm(variant, test_device):
     (model, inputs,) = generate_model_wideresnet_imgcls_timm(
         test_device,

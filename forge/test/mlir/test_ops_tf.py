@@ -3,14 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-
-import pytest
 import tensorflow as tf
 
 import forge
 from forge.tensor import to_pt_tensors
-from forge.op.eval.common import compare_tensor_to_golden, compare_with_golden
+from forge.op.eval.common import compare_with_golden
 from forge.config import _get_global_compiler_config
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 from forge._C import DataFormat
 
 
@@ -99,39 +99,7 @@ def test_conv2d(
     co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
     co_out[0] = co_out[0].reshape(fw_out[0].shape)
 
-    ok = compare_with_golden(fw_out[0], co_out[0])
-
-    # We have some combinations of test params for which the PCC check fails.
-    # They can't be marked as xfail as they are a combination of multiple test params.
-    # So, manually simulating the xfail behaviour here...
-    test_param = (
-        batch_size,
-        output_channels,
-        input_channels,
-        input_height,
-        input_width,
-        filter_height,
-        filter_width,
-        stride_h,
-        stride_w,
-    )
-    if (
-        test_param
-        in [
-            (1, 64, 64, 56, 56, 3, 3, 1, 1),
-            (1, 128, 128, 56, 56, 3, 3, 2, 2),
-            (1, 64, 64, 8, 8, 3, 3, 1, 1),
-            (1, 64, 64, 16, 16, 3, 3, 1, 1),
-            (1, 256, 64, 56, 56, 1, 1, 2, 2),
-        ]
-        and activations_dtype == tf.bfloat16
-        and weights_dtype == tf.float32
-    ):
-        if ok:
-            pytest.fail("Test passed but expected to fail (simulating xpass)")
-        pytest.xfail("PCC check failed")
-
-    assert ok
+    assert compare_with_golden(fw_out[0], co_out[0])
 
 
 @pytest.mark.push
@@ -155,12 +123,9 @@ def test_dual_conv2d():
     inputs = [tf.random.uniform((1, 128, 128, 3))]
 
     framework_model = DualConv2d()
-    fw_out = to_pt_tensors(framework_model(*inputs))
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-    co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
-    assert compare_tensor_to_golden("dual_conv2d", fw_out[0], co_out[0].reshape(fw_out[0].shape))
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -218,11 +183,8 @@ def test_maxpool2d(
 
     _get_global_compiler_config().default_df_override = DataFormat.Float16_b
     inputs = [tf.random.uniform(act_shape, dtype=tf.bfloat16)]
+
     framework_model = MaxPool()
-    fw_out = to_pt_tensors(framework_model(*inputs))
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
-    co_out = [co.to("cpu").to(fw_out[0].dtype) for co in co_out]
 
-    assert compare_tensor_to_golden("max_pool", fw_out[0], co_out[0])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))

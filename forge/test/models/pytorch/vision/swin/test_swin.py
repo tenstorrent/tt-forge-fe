@@ -13,6 +13,7 @@ import requests
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     # pytest.skip() # Working on it
     # STEP 1: Set Forge configuration parameters

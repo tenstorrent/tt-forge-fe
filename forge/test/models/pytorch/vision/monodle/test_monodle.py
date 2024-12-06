@@ -11,6 +11,7 @@ import os
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_monodle_pytorch(test_device):
     # PyBuda configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

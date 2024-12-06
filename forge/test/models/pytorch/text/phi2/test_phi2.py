@@ -11,12 +11,13 @@ from transformers import (
 )
 import pytest
 import forge
-from forge.op.eval.common import compare_with_golden_pcc
+from forge.op.eval.common import compare_with_golden
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.xfail(reason="weights.get_dtype() == DataType::BFLOAT16")
 def test_phi2_clm(variant, test_device):
@@ -62,12 +63,13 @@ def test_phi2_clm(variant, test_device):
 
     co_out = [co.to("cpu") for co in co_out]
     assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail(reason="Indices tensor must be in row major layout.")
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_phi2_token_classification(variant, test_device):
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
@@ -98,15 +100,17 @@ def test_phi2_token_classification(variant, test_device):
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
     )
     co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail(reason="Indices tensor must be in row major layout.")
+@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_phi2_sequence_classification(variant, test_device):
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
@@ -138,7 +142,8 @@ def test_phi2_sequence_classification(variant, test_device):
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
     )
     co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)

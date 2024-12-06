@@ -7,9 +7,12 @@ import torch
 import forge
 import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
+from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got BFloat16")
 def test_gpt2_text_gen(test_device):
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained("gpt2")
@@ -20,7 +23,6 @@ def test_gpt2_text_gen(test_device):
     model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Wrapper to get around past key values
     class Wrapper(torch.nn.Module):
@@ -37,6 +39,14 @@ def test_gpt2_text_gen(test_device):
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name="pt_gpt2_generation")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 class Wrapper(torch.nn.Module):

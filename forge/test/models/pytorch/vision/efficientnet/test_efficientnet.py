@@ -16,6 +16,7 @@ from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4
 from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
 import os
+from forge.op.eval.common import compare_with_golden
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
@@ -43,8 +44,9 @@ variants = [
 ]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(variant, test_device):
 
     # Configuration
@@ -75,9 +77,10 @@ def test_efficientnet_timm(variant, test_device):
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = framework_model(img_tensor)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def get_state_dict(self, *args, **kwargs):
@@ -100,6 +103,7 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail(reason="Runtime Error: Reshape Operation Fails Due to Mismatched Tensor Volume")
 def test_efficientnet_torchvision(variant, test_device):
@@ -134,6 +138,7 @@ def test_efficientnet_torchvision(variant, test_device):
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]
+    fw_out = framework_model(img_tensor)
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

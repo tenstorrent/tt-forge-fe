@@ -10,12 +10,14 @@ from transformers import (
 )
 import pytest
 import forge
-
+import torch
+from forge.op.eval.common import compare_with_golden
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(variant, test_device):
 
@@ -60,6 +62,7 @@ def test_phi3_causal_lm(variant, test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Indices tensor must be in row major layout.")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(variant, test_device):
@@ -96,10 +99,11 @@ def test_phi3_token_classification(variant, test_device):
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Embedding Device Operation Layout Mismatch - Expected ROW_MAJOR")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(variant, test_device):
@@ -135,4 +139,4 @@ def test_phi3_sequence_classification(variant, test_device):
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

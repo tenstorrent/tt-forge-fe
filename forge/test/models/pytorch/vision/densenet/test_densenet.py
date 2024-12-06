@@ -14,8 +14,9 @@ from test.models.pytorch.vision.densenet.utils.densenet_utils import get_input_i
 variants = ["densenet121", "densenet121_hf_xray"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -42,6 +43,7 @@ def test_densenet_121_pytorch(variant, test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_densenet_161_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -59,6 +61,7 @@ def test_densenet_161_pytorch(test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_densenet_169_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
@@ -76,6 +79,7 @@ def test_densenet_169_pytorch(test_device):
 
 
 @pytest.mark.nightly
+@pytest.mark.model_analysis
 def test_densenet_201_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters

@@ -17,7 +17,7 @@ import torch
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, VerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
 
 from forge.verify.config import TestKind
 
@@ -92,5 +92,5 @@ def test_grouped_reduce(
             compiler_cfg=CompilerConfig(
                 enable_training=test_kind.is_training(), enable_recompute=test_kind.is_recompute()
             ),
-            verify_cfg=VerifyConfig(),
+            verify_cfg=DepricatedVerifyConfig(),
         )

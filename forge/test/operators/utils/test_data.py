@@ -295,3 +295,17 @@ class TestCollectionCommon:
             forge.DataFormat.Int8,
         ],
     )
+
+    specific = TestCollection(
+        # input_shapes=[param for param in all.input_shapes if param.marks and pytest.mark.specific in param.marks]
+        input_shapes=[
+            (1, 45, 17),  # 3.1 Full tensor (i.e. full expected shape)
+            (1, 100, 100),  # 4.3 Very large (thousands, 10s of thousands)
+            (1, 10000, 1),  # 4.4 Extreme ratios between height/width
+            (1, 17, 41),  # 4.2 Prime numbers
+            (11, 1, 23),  # 3.2 Tensor reduce on one or more dims to 1
+            (1, 11, 1, 23),  # 3.2 Tensor reduce on one or more dims to 1
+            (1, 1, 10, 1000),  # 4.4 Extreme ratios between height/width
+            (14, 13, 89, 3),  # 4.2 Prime numbers
+        ]
+    )

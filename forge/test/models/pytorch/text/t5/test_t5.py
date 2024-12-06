@@ -10,6 +10,7 @@ import forge
 import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
+from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.nightly
@@ -80,22 +81,29 @@ variants = [
     pytest.param("t5-small", id="t5-small", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
     pytest.param("t5-base", id="t5-base", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
     pytest.param("t5-large", id="t5-large", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
-    pytest.param("google/flan-t5-small", id="google_flan_t5_small"),
-    pytest.param("google/flan-t5-base", id="google_flan_t5_base"),
+    pytest.param(
+        "google/flan-t5-small",
+        id="google_flan_t5_small",
+        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
+    ),
+    pytest.param(
+        "google/flan-t5-base",
+        id="google_flan_t5_base",
+        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
+    ),
     pytest.param("google/flan-t5-large", id="google_flan_t5_large"),
 ]
 
 
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.parametrize("variant", variants)
 def test_t5_generation(variant, test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()
 
     if variant == "google/flan-t5-large":
         compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
-    elif variant in ["google/flan-t5-small", "google/flan-t5-base"]:
-        compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -129,11 +137,11 @@ def test_t5_generation(variant, test_device):
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(*inputs)
-
+        fw_out = model(*inputs)
         co_out = [co.to("cpu") for co in co_out]
         fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-        assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+        assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 class T5_encoder(torch.nn.Module):
@@ -808,7 +816,7 @@ def test_t5_small_tiny_tile(test_device):
             )
         ],
         inputs=[(decoder_input_ids, encoder_outputs)],
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

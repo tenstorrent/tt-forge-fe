@@ -3,14 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import pytest
 
 import pytest
 import torch
 from torch import nn
 
 import forge
-from forge.op.eval.common import compare_with_golden_pcc, compare_with_golden
+from forge.op.eval.common import compare_with_golden
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.push
@@ -25,13 +26,9 @@ def test_multiple_inputs():
     inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
 
     framework_model = MultipleInputs()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)]
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -60,12 +57,9 @@ def test_input_order(a_shape, b_shape, c_shape):
     c = torch.rand(*c_shape)
 
     framework_model = InputOrderWithConstants()
-    fw_out = framework_model(a, b, c)
-
     compiled_model = forge.compile(framework_model, sample_inputs=[a, b, c])
-    co_out = compiled_model(a, b, c)
 
-    assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0][0], pcc=0.99)
+    verify([a, b, c], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("batch_size", [1, 4, 16, 32, 64])
@@ -85,14 +79,9 @@ def test_matmul_bias(batch_size, linear_features):
     inputs = [torch.rand(batch_size, input_features)]
 
     framework_model = Linear()
-    fw_out = framework_model(*inputs)
-
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
@@ -109,16 +98,12 @@ def test_batch_size_inference(batch_size, in_features, out_features):
             y = self.linear(x)
             return nn.functional.softmax(y, dim=-1)
 
-    in_data = torch.rand(batch_size, in_features)
-    out_data = torch.randint(0, out_features, (batch_size,))
+    in_data = [torch.rand(batch_size, in_features)]
 
-    model = SimpleModel()
+    framework_model = SimpleModel()
+    compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, in_features)])
 
-    tt_model = forge.compile(model, sample_inputs=[torch.rand(batch_size, in_features)])
-
-    pred = tt_model(in_data)[0]
-    golden_pred = model(in_data)
-    assert compare_with_golden(golden_pred, pred, pcc=0.95)  # 0.95 is the minimum value for which the test passes
+    verify(in_data, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
@@ -143,15 +128,15 @@ def test_batch_size_training(batch_size, in_features, out_features):
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
-    tt_model = forge.compile(
-        model, sample_inputs=[torch.rand(batch_size, in_features)], loss=loss_fn, optimizer=optimizer
-    )
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(batch_size, in_features)], optimizer=optimizer)
 
     optimizer.zero_grad()
 
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    assert compare_with_golden(golden_pred, pred, pcc=0.95)  # 0.95 is the minimum value for which the test passes
+    assert compare_with_golden(
+        golden_pred, pred, verify_cfg=VerifyConfig(pcc=0.95)
+    )  # 0.95 is the minimum value for which the test passes
 
     loss = loss_fn(pred, target)
     golden_loss = loss_fn(golden_pred, target)

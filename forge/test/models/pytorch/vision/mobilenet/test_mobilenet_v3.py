@@ -18,12 +18,12 @@ from timm.data.transforms_factory import create_transform
 
 import forge
 from test.utils import download_model
+from forge.op.eval.common import compare_with_golden
 
 
 def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
 
@@ -40,20 +40,29 @@ def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
 variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_basic(variant, test_device):
     model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Both options are good
     # model = timm.create_model('mobilenetv3_small_100', pretrained=True)
@@ -85,12 +94,22 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
 variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
+@pytest.mark.model_analysis
+@pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
+@pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(variant, test_device):
     model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         test_device,
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+
+    co_out = compiled_model(*inputs)
+    fw_out = model(*inputs)
+
+    co_out = [co.to("cpu") for co in co_out]
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

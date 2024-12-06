@@ -9,10 +9,9 @@ import urllib
 
 # from forge.verify.backend import verify_module
 import pytest
-
-# from forge import VerifyConfig
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+from forge import DepricatedVerifyConfig
+from forge.verify.config import TestKind
+from forge._C.backend_api import BackendDevice
 
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
@@ -69,7 +68,7 @@ def test_hardnet_onnx(variant, test_device):
         tt_model,
         input_shapes=([img_tensor.shape]),
         inputs=([img_tensor]),
-        verify_cfg=VerifyConfig(
+        verify_cfg=DepricatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

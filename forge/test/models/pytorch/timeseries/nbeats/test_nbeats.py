@@ -12,10 +12,13 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
     NBeatsWithTrendBasis,
     NBeatsWithSeasonalityBasis,
 )
+import torch
+from forge.op.eval.common import compare_with_golden
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="Failing with pcc=0.82")
+@pytest.mark.model_analysis
+# @pytest.mark.xfail(reason="Failing with pcc=0.82")
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -33,15 +36,17 @@ def test_nbeats_with_seasonality_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_seasonality")
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
+    fw_out = pytorch_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="Failing with pcc=0.83")
+@pytest.mark.model_analysis
+# @pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -53,15 +58,17 @@ def test_nbeats_with_generic_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_generic")
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
+    fw_out = pytorch_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(eason="Failing with pcc=0.83")
+@pytest.mark.model_analysis
+# @pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -80,8 +87,9 @@ def test_nbeats_with_trend_basis(test_device):
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_trend")
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
+    fw_out = pytorch_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
