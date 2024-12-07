@@ -18,7 +18,7 @@ from timm.data.transforms_factory import create_transform
 
 import forge
 from test.utils import download_model
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
