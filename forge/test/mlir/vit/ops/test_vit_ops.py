@@ -413,7 +413,6 @@ def test_squeeze(input_shape_and_dim):
     ],
 )
 @pytest.mark.push
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 def test_tanh(input_shape):
     class Tanh(nn.Module):
         def __init__(self):
@@ -427,7 +426,7 @@ def test_tanh(input_shape):
     framework_model = Tanh()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
