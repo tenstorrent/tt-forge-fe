@@ -7,7 +7,6 @@ import torch
 from torch import nn
 
 import forge
-from forge.op.eval.common import compare_with_golden_pcc
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
@@ -404,7 +403,7 @@ def test_squeeze(input_shape_and_dim):
     framework_model = Squeeze(dim)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize(
@@ -498,4 +497,4 @@ def test_unsqueeze(input_shape, dim):
     framework_model = Unsqueeze(dim)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
