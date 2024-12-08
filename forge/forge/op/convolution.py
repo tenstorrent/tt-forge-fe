@@ -77,7 +77,7 @@ def Conv2dTranspose(
     weights: Union[Tensor, Parameter],
     bias: Optional[Union[Tensor, Parameter]] = None,
     stride: int = 1,
-    padding: Union[int, str] = "same",
+    padding: Union[int, str, Tuple[int, int, int, int]] = "same",
     dilation: int = 1,
     groups: int = 1,
     channel_last: bool = False,
@@ -113,6 +113,9 @@ def Conv2dTranspose(
     if isinstance(padding, int):
         padding = [padding] * 4  # [left, right, top, bottom]
 
+    if isinstance(padding, tuple):
+        padding = list(padding)
+
     inputs = [activations, weights]
     if bias is not None:
         inputs.append(bias)
@@ -140,10 +143,10 @@ def Conv2dTranspose(
         dilation_height=dilation,
         dilation_width=dilation,
         groups=groups,
-        padding_left=padding[0],
-        padding_right=padding[1],
-        padding_top=padding[2],
-        padding_bottom=padding[3],
+        padding_top=padding[0],
+        padding_left=padding[1],
+        padding_bottom=padding[2],
+        padding_right=padding[3],
         channel_last=channel_last,
     ).get_tensor()
 
