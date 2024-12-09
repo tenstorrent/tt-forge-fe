@@ -14,7 +14,7 @@ from test.utils import download_model
 
 import forge
 import torch
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 variants = ["ghostnet_100"]
 

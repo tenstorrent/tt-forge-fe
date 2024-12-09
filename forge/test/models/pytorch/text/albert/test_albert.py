@@ -5,7 +5,7 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 import torch
 
 sizes = ["base", "large", "xlarge", "xxlarge"]

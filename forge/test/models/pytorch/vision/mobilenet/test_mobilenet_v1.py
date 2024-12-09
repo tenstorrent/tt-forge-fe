@@ -13,7 +13,7 @@ from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
 import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
