@@ -21,6 +21,7 @@ from .plan import TestPlan
 from .plan import TestSuite
 from .plan import TestQuery
 from .plan import TestPlanUtils
+from .plan import FailingRulesConverter
 from .plan import TestPlanScanner
 from .test_data import TestCollectionCommon
 from .failing_reasons import FailingReasons
@@ -49,6 +50,7 @@ __all__ = [
     "TestSuite",
     "TestQuery",
     "TestPlanUtils",
+    "FailingRulesConverter",
     "TestPlanScanner",
     "TestCollectionCommon",
     "FailingReasons",
