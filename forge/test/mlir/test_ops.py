@@ -1951,3 +1951,26 @@ def test_repeat_interleave():
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 768),
+    ],
+)
+@pytest.mark.push
+def test_tanh(input_shape):
+    class Tanh(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.tanh(a)
+
+    inputs = [torch.rand(input_shape)]
+
+    framework_model = Tanh()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
