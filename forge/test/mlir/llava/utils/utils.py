@@ -2,30 +2,24 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from transformers import CLIPProcessor, AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
 
 
-def load_llava_model(model_path="liuhaotian/LLaVA-7b-v0", **kwargs):
+def load_llava_model(model_path="llava-hf/llava-1.5-7b-hf"):
     """
     Load the LLaVA model and processor.
 
     Args:
         model_path (str): Path or name of the pre-trained model.
-        **kwargs: Additional arguments for customization.
 
     Returns:
         Tuple: A tuple containing the framework model and processor.
     """
-    # Load Text Decoder
-    framework_model = AutoModelForCausalLM.from_pretrained(
-        model_path,
-        device_map="auto",
-    )
-    framework_model.eval()
+    model = LlavaForConditionalGeneration.from_pretrained(model_path)
+    model = model.eval()
 
-    # Load Image Encoder and Processor
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
+    processor = AutoProcessor.from_pretrained(model_path)
 
-    return framework_model, processor
+    return model, processor
