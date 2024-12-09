@@ -16,6 +16,26 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+def test_einsum():
+    class einsum(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.normalize_fact = 0.1767766952966369
+
+        def forward(self, queries_per_head,keys_per_head):
+            op = torch.einsum("bqnc,bnchw->bqnhw", queries_per_head * self.normalize_fact, keys_per_head)
+            from loguru import logger
+            logger.info("op.shape={}",op.shape)
+            return op
+
+    inputs = [torch.randn(1, 100, 8, 32),torch.randn(1, 8, 32, 14, 20)]
+    framework_model = einsum()
+    framework_model.eval()
+    c_out = framework_model(torch.randn(1, 100, 8, 32),torch.randn(1, 8, 32, 14, 20))
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    
+    verify(inputs, framework_model, compiled_model)
+
 @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
 @pytest.mark.parametrize(
     "input_shape, sequence_lengths",
