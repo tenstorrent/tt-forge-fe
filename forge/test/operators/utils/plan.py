@@ -651,6 +651,79 @@ class TestPlanUtils:
         return [cls.test_id_to_test_vector(test_id) for test_id in test_ids]
 
 
+class FailingRulesConverter:
+    """Helper class for building failing rules for test plans"""
+
+    @classmethod
+    def build_rules(
+        cls,
+        rules: List[
+            Union[
+                Tuple[
+                    Union[Optional[InputSource], List[InputSource]],
+                    Union[Optional[TensorShape], List[TensorShape]],
+                    Union[Optional[OperatorParameterTypes.Kwargs], List[OperatorParameterTypes.Kwargs]],
+                    Union[Optional[forge.DataFormat], List[forge.DataFormat]],
+                    Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
+                    Optional[TestResultFailing],
+                ],
+                TestCollection,
+            ]
+        ],
+    ) -> List[TestCollection]:
+        """Convert failing rules to TestCollection(s)"""
+        test_collections = [
+            cls.build_rule(
+                input_source=rule[0],
+                input_shape=rule[1],
+                kwargs=rule[2],
+                dev_data_format=rule[3],
+                math_fidelity=rule[4],
+                result_failing=rule[5],
+            )
+            if isinstance(rule, tuple)
+            else rule  # if rule is already TestCollection there is no need to convert it
+            for rule in rules
+        ]
+
+        return test_collections
+
+    @classmethod
+    def build_rule(
+        cls,
+        input_source: Optional[Union[InputSource, List[InputSource]]],
+        input_shape: Optional[Union[TensorShape, List[TensorShape]]],
+        kwargs: Optional[Union[OperatorParameterTypes.Kwargs, List[OperatorParameterTypes.Kwargs]]],
+        dev_data_format: Optional[Union[forge.DataFormat, List[forge.DataFormat]]],
+        math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
+        result_failing: Optional[TestResultFailing],
+    ) -> TestCollection:
+        """Convert failing rule tuple to TestCollection"""
+
+        if input_source is not None and not isinstance(input_source, list):
+            input_source = [input_source]
+        if input_shape is not None and not isinstance(input_shape, list):
+            input_shape = [input_shape]
+        if kwargs is not None and not isinstance(kwargs, list):
+            kwargs = [kwargs]
+        if dev_data_format is not None and not isinstance(dev_data_format, list):
+            dev_data_format = [dev_data_format]
+        if math_fidelity is not None and not isinstance(math_fidelity, list):
+            math_fidelity = [math_fidelity]
+
+        test_collection = TestCollection(
+            input_sources=input_source,
+            input_shapes=input_shape,
+            dev_data_formats=dev_data_format,
+            math_fidelities=math_fidelity,
+            kwargs=kwargs,
+            failing_reason=result_failing.failing_reason if result_failing is not None else None,
+            skip_reason=result_failing.skip_reason if result_failing is not None else None,
+        )
+
+        return test_collection
+
+
 class TestPlanScanner:
 
     METHOD_COLLECT_TEST_PLANS = "get_test_plans"

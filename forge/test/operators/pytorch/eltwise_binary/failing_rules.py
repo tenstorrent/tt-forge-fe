@@ -408,33 +408,33 @@ class FailingRulesData:
         common[2],
         # fmt: off
         # Exceptions for failing_rules[1]
-        (InputSource.FROM_ANOTHER_OP,   (1, 1),             None,                               None,   None),
-        (InputSource.FROM_HOST,         (1, 1),             None,                               None,   None),
-        (InputSource.FROM_DRAM_QUEUE,   (1, 1),             None,                               None,   None),
+        (InputSource.FROM_ANOTHER_OP,   (1, 1),             None,   None,                               None,   None),
+        (InputSource.FROM_HOST,         (1, 1),             None,   None,                               None,   None),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 1),             None,   None,                               None,   None),
         # Exceptions for failing_rules[3]
-        (InputSource.FROM_HOST,         (1, 4),             forge.DataFormat.Int8,              None,   None),
-        (InputSource.FROM_HOST,         (1, 2, 3, 4),       forge.DataFormat.RawUInt32,         None,   None),
-        (InputSource.FROM_HOST,         (1, 2, 3, 4),       forge.DataFormat.Int32,             None,   None),
+        (InputSource.FROM_HOST,         (1, 4),             None,   forge.DataFormat.Int8,              None,   None),
+        (InputSource.FROM_HOST,         (1, 2, 3, 4),       None,   forge.DataFormat.RawUInt32,         None,   None),
+        (InputSource.FROM_HOST,         (1, 2, 3, 4),       None,   forge.DataFormat.Int32,             None,   None),
         # PCC check fails for Int8
-        (InputSource.FROM_DRAM_QUEUE,   None,               forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.CONST_EVAL_PASS,   None,               forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   None,               None,   forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.CONST_EVAL_PASS,   None,               None,   forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
         # Exceptions for PCC check fails for Int8
-        (InputSource.FROM_DRAM_QUEUE,   (1, 4),             forge.DataFormat.Int8,              None,   None),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 4),             None,   forge.DataFormat.Int8,              None,   None),
         # PCC check fails for buggy shapes
-        (InputSource.FROM_HOST,         (1, 1000),          None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_DRAM_QUEUE,   (1, 1000),          None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_HOST,         (5, 11, 64, 1),     None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_DRAM_QUEUE,   (5, 11, 64, 1),     None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (1, 1000),          None,   None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 1000),          None,   None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (5, 11, 64, 1),     None,   None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (5, 11, 64, 1),     None,   None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
         # PCC check fails for buggy shapes
-        (InputSource.FROM_HOST,         (11, 45, 17),       [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_DRAM_QUEUE,   (11, 45, 17),       [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_HOST,         (1, 11, 45, 17),    [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_DRAM_QUEUE,   (1, 11, 45, 17),    [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (11, 45, 17),       None,   [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (11, 45, 17),       None,   [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (1, 11, 45, 17),    None,   [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 11, 45, 17),    None,   [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
         # PCC check fails for buggy shapes
-        (InputSource.FROM_HOST,         (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_DRAM_QUEUE,   (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_HOST,         (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-        (InputSource.FROM_DRAM_QUEUE,   (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (45, 17),           None,   forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (45, 17),           None,   forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_HOST,         (1, 45, 17),        None,   forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
+        (InputSource.FROM_DRAM_QUEUE,   (1, 45, 17),        None,   forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
         # fmt: on
     ]
 
