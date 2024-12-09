@@ -14,6 +14,7 @@ jobs:
   model-analysis:
     needs: docker-build
     runs-on: runner
+    timeout-minutes: 10080 # Set job execution time to 7 days(default: 6 hours)
 
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
@@ -24,6 +25,9 @@ jobs:
         - /etc/udev/rules.d:/etc/udev/rules.d
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
 
@@ -41,6 +45,7 @@ jobs:
         with:
             submodules: recursive
             fetch-depth: 0 # Fetch all history and tags
+            token: ${{ env.GITHUB_TOKEN }}
 
       # Clean everything from submodules (needed to avoid issues
       # with cmake generated files leftover from previous builds)
@@ -107,6 +112,6 @@ jobs:
           body: "This PR will update model analysis docs"
           labels: automatic_model_analysis
           delete-branch: true
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ env.GITHUB_TOKEN }}
           add-paths: |
               model_analysis_docs/
