@@ -102,6 +102,7 @@ class FailingReasonsValidation:
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Data mismatch"),
+            lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Data mismatch"),
         ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",

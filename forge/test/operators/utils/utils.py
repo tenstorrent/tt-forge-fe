@@ -23,8 +23,10 @@ from forge.verify import TestKind  # , verify_module
 from forge.config import _get_global_compiler_config
 from forge._C import MathFidelity
 
+from forge.verify.config import VerifyConfig
+
 from .compat import TestDevice
-from .compat import create_torch_inputs, verify_module_for_inputs
+from .compat import create_torch_inputs, verify_module_for_inputs, verify_module_for_inputs_deprecated
 from .datatypes import ValueRanges
 
 
@@ -126,6 +128,8 @@ class VerifyUtils:
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
         warm_reset: bool = False,
+        deprecated_verification: bool = True,
+        verify_config: Optional[VerifyConfig] = VerifyConfig(),
     ):
         """Perform Forge verification on the model
 
@@ -141,6 +145,7 @@ class VerifyUtils:
             value_range: Value range of input tensors
             random_seed: Random seed
             warm_reset: Warm reset the device before verification
+            deprecated_verification: Use deprecated verification method
         """
 
         cls.setup(
@@ -156,12 +161,20 @@ class VerifyUtils:
             random_seed=random_seed,
         )
 
-        cls.verify_module_for_inputs(
-            model=model,
-            inputs=inputs,
-            pcc=pcc,
-            dev_data_format=dev_data_format,
-        )
+        if deprecated_verification:
+            cls.verify_module_for_inputs_deprecated(
+                model=model,
+                inputs=inputs,
+                pcc=pcc,
+                dev_data_format=dev_data_format,
+            )
+        else:
+            cls.verify_module_for_inputs(
+                model=model,
+                inputs=inputs,
+                verify_config=verify_config,
+                dev_data_format=dev_data_format,
+            )
 
     @classmethod
     def setup(
@@ -201,7 +214,7 @@ class VerifyUtils:
         return inputs
 
     @classmethod
-    def verify_module_for_inputs(
+    def verify_module_for_inputs_deprecated(
         cls,
         model: Module,
         inputs: List[torch.Tensor],
@@ -209,10 +222,26 @@ class VerifyUtils:
         dev_data_format: forge.DataFormat = None,
     ):
 
-        verify_module_for_inputs(
+        verify_module_for_inputs_deprecated(
             model=model,
             inputs=inputs,
             pcc=pcc,
+            dev_data_format=dev_data_format,
+        )
+
+    @classmethod
+    def verify_module_for_inputs(
+        cls,
+        model: Module,
+        inputs: List[torch.Tensor],
+        verify_config: Optional[VerifyConfig] = VerifyConfig(),
+        dev_data_format: forge.DataFormat = None,
+    ):
+
+        verify_module_for_inputs(
+            model=model,
+            inputs=inputs,
+            verify_config=verify_config,
             dev_data_format=dev_data_format,
         )
 

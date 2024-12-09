@@ -13,6 +13,8 @@ from typing import Optional, List, Union
 from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.op_repo import TensorShape
 from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
 
@@ -271,7 +273,7 @@ def create_torch_inputs(
     return inputs
 
 
-def verify_module_for_inputs(
+def verify_module_for_inputs_deprecated(
     model: Module,
     inputs: List[torch.Tensor],
     pcc: Optional[float] = None,
@@ -300,3 +302,15 @@ def verify_module_for_inputs(
         assert all(
             [compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)]
         ), "PCC check failed"
+
+
+def verify_module_for_inputs(
+    model: Module,
+    inputs: List[torch.Tensor],
+    verify_config: Optional[VerifyConfig] = VerifyConfig(),
+    dev_data_format: forge.DataFormat = None,
+):
+
+    forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+    compiled_model = forge.compile(model, sample_inputs=forge_inputs)
+    verify(inputs, model, compiled_model, verify_config)
