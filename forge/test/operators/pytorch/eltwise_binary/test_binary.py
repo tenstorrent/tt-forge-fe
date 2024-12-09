@@ -67,6 +67,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestPlan
 from test.operators.utils import TestSuite
 from test.operators.utils import TestResultFailing
+from test.operators.utils import FailingRulesConverter
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
@@ -372,77 +373,6 @@ class TestCollectionData:
     )
 
 
-class FailingRulesUtils:
-    """Helper class for building failing rules for test plans"""
-
-    # TODO move to shared utils
-
-    __test__ = False  # Avoid collecting FailingRulesUtils as a pytest test
-
-    @classmethod
-    def build_rules(
-        cls,
-        rules: List[
-            Union[
-                Tuple[
-                    Union[Optional[InputSource], List[InputSource]],
-                    Union[Optional[TensorShape], List[TensorShape]],
-                    Union[Optional[forge.DataFormat], List[forge.DataFormat]],
-                    Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
-                    Optional[TestResultFailing],
-                ],
-                TestCollection,
-            ]
-        ],
-    ) -> List[TestCollection]:
-        """Convert failing rules to TestCollection(s)"""
-        test_collections = [
-            cls.build_rule(
-                input_source=rule[0],
-                input_shape=rule[1],
-                dev_data_format=rule[2],
-                math_fidelity=rule[3],
-                result_failing=rule[4],
-            )
-            if isinstance(rule, tuple)
-            else rule  # if rule is already TestCollection there is no need to convert it
-            for rule in rules
-        ]
-
-        return test_collections
-
-    @classmethod
-    def build_rule(
-        cls,
-        input_source: Optional[Union[InputSource, List[InputSource]]],
-        input_shape: Optional[Union[TensorShape, List[TensorShape]]],
-        dev_data_format: Optional[Union[forge.DataFormat, List[forge.DataFormat]]],
-        math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
-        result_failing: Optional[TestResultFailing],
-    ) -> TestCollection:
-        """Convert failing rule tuple to TestCollection"""
-
-        if input_source is not None and not isinstance(input_source, list):
-            input_source = [input_source]
-        if input_shape is not None and not isinstance(input_shape, list):
-            input_shape = [input_shape]
-        if dev_data_format is not None and not isinstance(dev_data_format, list):
-            dev_data_format = [dev_data_format]
-        if math_fidelity is not None and not isinstance(math_fidelity, list):
-            math_fidelity = [math_fidelity]
-
-        test_collection = TestCollection(
-            input_sources=input_source,
-            input_shapes=input_shape,
-            dev_data_formats=dev_data_format,
-            math_fidelities=math_fidelity,
-            failing_reason=result_failing.failing_reason if result_failing is not None else None,
-            skip_reason=result_failing.skip_reason if result_failing is not None else None,
-        )
-
-        return test_collection
-
-
 class BinaryTestPlanBuilder:
     """Helper class for building test plans for binary operators"""
 
@@ -519,7 +449,7 @@ class BinaryTestPlanBuilder:
 
         failing_rules = getattr(FailingRulesData, operator)
 
-        failing_rules = FailingRulesUtils.build_rules(failing_rules)
+        failing_rules = FailingRulesConverter.build_rules(failing_rules)
 
         test_plan = TestPlan(
             verify=lambda test_device, test_vector: TestVerification.verify(
