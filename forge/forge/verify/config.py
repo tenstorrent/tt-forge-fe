@@ -243,6 +243,21 @@ def _set_global_verify_config(config: DepricatedVerifyConfig):
     g_compiler_config = config
 
 
+class VerifyTensorValues(Enum):
+    ALL_CHECKS = "all_checks"  # default
+    TORCH_ALL_CLOSE = "torch_all_close"
+    AUTOMATIC = "automatic"
+    NONE = "none"
+
+
+class VerifyTensorMetadata(Enum):
+    ALL_CHECKS = "all_checks"  # default
+    ONLY_SHAPE = "only_shape"
+    ONLY_DTYPE = "only_dtype"
+    ONLY_SIZE = "only_size"
+    NONE = "none"
+
+
 # TODO: 1. Add support for backward pass verification
 #       2. Add support for intermediate representation verification
 @dataclass_json
@@ -251,11 +266,8 @@ class VerifyConfig:
 
     # --- Tensor Verification Settings --- #
     enabled: bool = True  # enable/disable verification
-    verify_size: bool = True  # Check output size
-    verify_dtype: bool = True  # Check output dtype
-    verify_shape: bool = True  # Check output shape
-    verify_data: bool = True  # Check output similarity using pcc
-    verify_allclose: bool = True  # Check output similarity using allclose
+    tensor_values_verification: VerifyTensorValues = VerifyTensorValues.ALL_CHECKS
+    tensor_metadata_verification: VerifyTensorMetadata = VerifyTensorMetadata.ALL_CHECKS
 
     # --- Thresholds and Metrics --- #
     rtol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
