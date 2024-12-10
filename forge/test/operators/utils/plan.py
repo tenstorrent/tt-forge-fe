@@ -651,6 +651,93 @@ class TestPlanUtils:
         return [cls.test_id_to_test_vector(test_id) for test_id in test_ids]
 
 
+class FailingRulesConverter:
+    """Helper class for building failing rules for test plans"""
+
+    @classmethod
+    def build_rules(
+        cls,
+        rules: List[
+            Union[
+                Tuple[
+                    Union[Optional[InputSource], List[InputSource]],
+                    Union[Optional[TensorShape], List[TensorShape]],
+                    Union[Optional[OperatorParameterTypes.Kwargs], List[OperatorParameterTypes.Kwargs]],
+                    Union[Optional[forge.DataFormat], List[forge.DataFormat]],
+                    Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
+                    Optional[TestResultFailing],
+                ],
+                TestCollection,
+            ]
+        ],
+        params: List[str] = [
+            "input_source",
+            "input_shape",
+            "kwargs",
+            "dev_data_format",
+            "math_fidelity",
+            "result_failing",
+        ],
+    ) -> List[TestCollection]:
+        """Convert failing rules to TestCollection(s)"""
+        input_soource_index = params.index("input_source") if "input_source" in params else None
+        input_shape_index = params.index("input_shape") if "input_shape" in params else None
+        kwargs_index = params.index("kwargs") if "kwargs" in params else None
+        dev_data_format_index = params.index("dev_data_format") if "dev_data_format" in params else None
+        math_fidelity_index = params.index("math_fidelity") if "math_fidelity" in params else None
+        result_failing_index = params.index("result_failing") if "result_failing" in params else None
+        test_collections = [
+            cls.build_rule(
+                input_source=rule[input_soource_index] if input_soource_index is not None else None,
+                input_shape=rule[input_shape_index] if input_shape_index is not None else None,
+                kwargs=rule[kwargs_index] if kwargs_index is not None else None,
+                dev_data_format=rule[dev_data_format_index] if dev_data_format_index is not None else None,
+                math_fidelity=rule[math_fidelity_index] if math_fidelity_index is not None else None,
+                result_failing=rule[result_failing_index] if result_failing_index is not None else None,
+            )
+            if isinstance(rule, tuple)
+            else rule  # if rule is already TestCollection there is no need to convert it
+            for rule in rules
+        ]
+
+        return test_collections
+
+    @classmethod
+    def build_rule(
+        cls,
+        input_source: Optional[Union[InputSource, List[InputSource]]],
+        input_shape: Optional[Union[TensorShape, List[TensorShape]]],
+        kwargs: Optional[Union[OperatorParameterTypes.Kwargs, List[OperatorParameterTypes.Kwargs]]],
+        dev_data_format: Optional[Union[forge.DataFormat, List[forge.DataFormat]]],
+        math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
+        result_failing: Optional[TestResultFailing],
+    ) -> TestCollection:
+        """Convert failing rule tuple to TestCollection"""
+
+        if input_source is not None and not isinstance(input_source, list):
+            input_source = [input_source]
+        if input_shape is not None and not isinstance(input_shape, list):
+            input_shape = [input_shape]
+        if kwargs is not None and not isinstance(kwargs, list):
+            kwargs = [kwargs]
+        if dev_data_format is not None and not isinstance(dev_data_format, list):
+            dev_data_format = [dev_data_format]
+        if math_fidelity is not None and not isinstance(math_fidelity, list):
+            math_fidelity = [math_fidelity]
+
+        test_collection = TestCollection(
+            input_sources=input_source,
+            input_shapes=input_shape,
+            dev_data_formats=dev_data_format,
+            math_fidelities=math_fidelity,
+            kwargs=kwargs,
+            failing_reason=result_failing.failing_reason if result_failing is not None else None,
+            skip_reason=result_failing.skip_reason if result_failing is not None else None,
+        )
+
+        return test_collection
+
+
 class TestPlanScanner:
 
     METHOD_COLLECT_TEST_PLANS = "get_test_plans"
