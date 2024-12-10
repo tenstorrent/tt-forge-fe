@@ -114,8 +114,10 @@ void set_bcast_dims(graphlib::Graph *graph, std::vector<int> &volumes, graphlib:
     }
 }
 
-void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> const &path)
+void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> const &path, int widx, int fidx)
 {
+    reportify::dump_graph(
+        graph->name(), "commute_and_bypass_start_" + std::to_string(widx) + "_" + std::to_string(fidx), graph);
     TT_ASSERT(path.size() >= 2);
     graphlib::OpNode *first = path.front()->as<graphlib::OpNode>();
     graphlib::OpNode *last = path.back()->as<graphlib::OpNode>();
@@ -126,9 +128,14 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
 
     graphlib::Shape commute_shape = shape_of_only_operand(graph, first);
     graphlib::Shape clone_shape = first->shape();
+    reportify::dump_graph(graph->name(), "cb_1_" + std::to_string(widx) + "_" + std::to_string(fidx), graph);
 
     for (std::size_t i = 1; i < path.size(); ++i)
     {
+        reportify::dump_graph(
+            graph->name(),
+            "cb_for_start_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" + std::to_string(i),
+            graph);
         retain_operand_dim = false;
 
         graphlib::Node *producer = path[i - 1];
@@ -173,6 +180,10 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             handle_change_rank(graph, clone);
             clone->set_output_df(graph->node_by_id(incoming_edge.producer_node_id)->output_df());
         }
+        reportify::dump_graph(
+            graph->name(),
+            "cb_for_1_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" + std::to_string(i),
+            graph);
 
         // Set the shape to the desired final shape for this whole path
         if (graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(consumer))
@@ -251,11 +262,18 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             }
             log_trace(LogGraphCompiler, "  Op node: {} -> shape set to {}", consumer->name(), commute_shape);
         }
+        reportify::dump_graph(
+            graph->name(),
+            "cb_for_2_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" + std::to_string(i),
+            graph);
 
         // Handle nary operands (not on this `path`)
         std::vector<graphlib::Edge> consumer_operands = graph->operand_data_edges(consumer);
+        log_info(LogGraphCompiler, "consumer_operands.size(): {}", consumer_operands.size());
+        int ffidx = 0;
         for (graphlib::Edge operand_edge : consumer_operands)
         {
+            ffidx++;
             if (operand_edge.producer_node_id == producer->id())
                 continue;
 
@@ -272,6 +290,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 graph->node_by_id(operand_edge.producer_node_id)->name());
 
             // Updating op type to reshape to support update_reshape_attr
+            // and correct shape will be set at update_reshape_attr
             if (op->op_name() == "squeeze" || op->op_name() == "unsqueeze")
                 op->change_op_type("reshape");
 
@@ -311,11 +330,26 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             // (1024,) Placing an unsqueeze clone will cause the input to be (1, 1024) which isn't wrong but also is not
             // correct. In this case we shall convert the clone to a reshape which contains the correct number of
             // unsqueezes implicitly.
+
+            reportify::dump_graph(
+                graph->name(),
+                "cb_for_21_befif_befine_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" +
+                    std::to_string(i) + "_" + std::to_string(ffidx),
+                graph);
+
             auto [in_edge, out_edge] = insert_node_on_edge(graph, operand_edge, clone);
+
+            reportify::dump_graph(
+                graph->name(),
+                "cb_for_21_befif_aftine_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" +
+                    std::to_string(i) + "_" + std::to_string(ffidx),
+                graph);
+
             if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze"))
             {
                 op->change_op_type("reshape");
                 std::vector<graphlib::Edge> clone_data_edges = graph->operand_data_edges(clone);
+                log_info(LogGraphCompiler, "clone_data_edges.size() = {}", clone_data_edges.size());
                 for (const graphlib::Edge &clone_data_edge : clone_data_edges)
                 {
                     graphlib::InputNode *input =
@@ -345,21 +379,27 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                                 "After this point all dims should be 1 else the squeeze op is not valid.");
                         }
                     }
-                    std::vector<graphlib::OpType> tms = graph->get_edge_attributes(clone_data_edge)->get_tms();
-                    for (graphlib::OpType &tm : tms)
-                    {
-                        if (tm.op == "broadcast")
-                        {
-                            log_info("Here 2");
-                            int dim = std::get<int>(tm.attr[0]);
-                            int volume = std::get<int>(tm.attr[1]);
-                            op_shape[dim] *= volume;
-                        }
-                    }
-                    op->set_shape(op_shape);
-                    update_reshape_attr(op, op_shape);
+                    graph->get_edge_attributes(clone_data_edge)->set_tms({});
+                    // std::vector<graphlib::OpType> tms = graph->get_edge_attributes(clone_data_edge)->get_tms();
+                    // for (graphlib::OpType &tm : tms)
+                    // {
+                    //     if (tm.op == "broadcast")
+                    //     {
+                    //         log_info("Here 2");
+                    //         int dim = std::get<int>(tm.attr[0]);
+                    //         int volume = std::get<int>(tm.attr[1]);
+                    //         op_shape[dim] *= volume;
+                    //     }
+                    // }
+                    // op->set_shape(op_shape);
+                    // update_reshape_attr(op, op_shape);
                 }
             }
+            reportify::dump_graph(
+                graph->name(),
+                "cb_for_21_aftif_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" + std::to_string(i) + "_" +
+                    std::to_string(ffidx),
+                graph);
 
             // auto [in_edge, out_edge] = insert_node_on_edge(graph, operand_edge, clone);
             // Set dataformat to match producer on operand edge
@@ -369,10 +409,15 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             if (graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(graph->data_operands(clone)[0]))
                 try_consteval_input_no_operand_forks(graph, input, true);
         }
+        reportify::dump_graph(
+            graph->name(),
+            "cb_for_3_" + std::to_string(widx) + "_" + std::to_string(fidx) + "_" + std::to_string(i),
+            graph);
 
         // Maintain df from before commute
         consumer->set_output_df(consumer_df_before);
     }
+    reportify::dump_graph(graph->name(), "cb_" + std::to_string(widx) + "_" + std::to_string(fidx), graph);
     // if first and last are inverse due to broadcast, broadcast dims need to be updated
     size_t broadcast_volume = total_broadcast_volume(graph, graph->operand_data_edges(last)[0]);
     auto are_inverse = are_inverse_with_broadcast(shape_of_only_operand(graph, first), last->shape(), broadcast_volume);
@@ -399,8 +444,14 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             handle_change_rank(graph, new_edge);
         }
     };
+    reportify::dump_graph(
+        graph->name(), "cb_bef_bypass_node_1_" + std::to_string(widx) + "_" + std::to_string(fidx), graph);
     bypass_node(graph, first, true, change_rank);
+    reportify::dump_graph(
+        graph->name(), "cb_bef_bypass_node_2_" + std::to_string(widx) + "_" + std::to_string(fidx), graph);
     bypass_node(graph, last, true, change_rank);
+    reportify::dump_graph(
+        graph->name(), "cb_bef_bypass_node_3_" + std::to_string(widx) + "_" + std::to_string(fidx), graph);
 }
 
 bool erase_inverse_ops(graphlib::Graph *graph)
@@ -413,12 +464,16 @@ bool erase_inverse_ops(graphlib::Graph *graph)
     // 3. Repeat step 1 to eliminate newly created ops and their inverse
     bool attempt_update = true;
     bool updated_anything = false;
+    int widx = 0;
     while (attempt_update)
     {
+        widx++;
         // Set to false here because we want to stop looping if no update occurs
         attempt_update = false;
+        int fidx = 0;
         for (auto *node : graphlib::topological_sort(*graph))
         {
+            fidx++;
             graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
             if (not op)
                 continue;
@@ -433,7 +488,7 @@ bool erase_inverse_ops(graphlib::Graph *graph)
             if (path.empty())
                 continue;
 
-            commute_and_bypass(graph, path);
+            commute_and_bypass(graph, path, widx, fidx);
             attempt_update = true;
             updated_anything = true;
             break;
