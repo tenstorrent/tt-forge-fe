@@ -9,7 +9,7 @@ from test.mlir.llava.utils.utils import load_llava_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="Model isn't supported yet.")
+@pytest.mark.xfail(reason="AttributeError: module 'jaxlib.xla_extension' has no attribute 'DeviceArray'")
 @pytest.mark.parametrize("model_path", ["llava-hf/llava-1.5-7b-hf"])
 def test_llava_compile(model_path):
     model, processor = load_llava_model(model_path)
@@ -26,11 +26,11 @@ def test_llava_compile(model_path):
 
     prompt = processor.apply_chat_template(conversation, add_generation_prompt=True)
 
-    image = torch.randint(0, 256, (3, 224, 224))
-
+    image = torch.randint(0, 256, (3, 224, 224))  # Generate random image
     inputs = processor(images=image, text=prompt, return_tensors="pt")
 
-    compiled_model = forge.compile(model, **inputs)
+    # Compile the model
+    compiled_model = forge.compile(model, inputs)
 
 
 @pytest.mark.nightly
