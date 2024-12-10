@@ -224,19 +224,6 @@ class MLIRGenerator
             argument_types.push_back(get_node_type(input));
         }
 
-        for (auto *input : graph->nodes_by_type(graphlib::NodeType::kInput))
-        {
-            if (!input->as<graphlib::InputNode>()->is_gradient() || !input->is_optimizer())
-            {
-                continue;
-            }
-
-            log_trace(LogMLIRCompiler, "Adding gradient input {} to the argument list.", input->name());
-
-            argument_nodes.push_back(input);
-            argument_types.push_back(get_node_type(input));
-        }
-
         // Add the graph constants to the argument list.
         for (auto *constant : graph->get_constant_nodes())
         {
@@ -247,10 +234,10 @@ class MLIRGenerator
         }
 
         // Add the graph parameters to the argument list.
+        // Both optimizer parameters and regular parameters are added.
         auto opt_params = graph->get_optimizer_parameter_nodes();
         auto params = graph->get_parameter_nodes();
-        params.insert(
-            params.end(), std::make_move_iterator(opt_params.begin()), std::make_move_iterator(opt_params.end()));
+        params.insert(params.end(), opt_params.begin(), opt_params.end());
         for (auto *parameter : params)
         {
             log_trace(LogMLIRCompiler, "Adding parameter {} to the argument list.", parameter->name());

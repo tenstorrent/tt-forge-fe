@@ -4,6 +4,7 @@
 
 #include "split_graph.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <utils/assert.hpp>
 #include <utils/logger.hpp>
@@ -455,6 +456,15 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         }
     }
 
+    // Ensure that all inputs to the optimizer graph are gradient inputs.
+    auto is_input_gradient = [&opt_graph](graphlib::NodeId node_id)
+    { return opt_graph->node_by_id(node_id)->as<graphlib::InputNode>()->is_gradient(); };
+
+    TT_ASSERT(
+        std::all_of(opt_module_inputs.begin(), opt_module_inputs.end(), is_input_gradient),
+        "Expect all inputs to the optimizer graph to be Gradient inputs");
+
+    opt_graph->register_module_inputs(opt_module_inputs);
     opt_graph->register_module_outputs(opt_module_outputs);
 
     return opt_graph;
