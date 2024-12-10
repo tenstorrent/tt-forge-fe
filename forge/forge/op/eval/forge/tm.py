@@ -135,7 +135,7 @@ def eval(type, attr, ops):
         target_shape = list(tensor.shape)
         assert dim < len(target_shape), f"Trying to broadcast on dim that doesn't exist: {dim} on {target_shape}"
         target_shape[dim] = size
-        return torch.broadcast_to(tensor, target_shape)
+        return tensor
 
     if type == "repeat":
         sizes = attr
@@ -481,7 +481,7 @@ def shape(type, attr, ops):
             while dim >= len(target_shape):
                 target_shape = [1] + target_shape
 
-        target_shape[dim] = size
+        # target_shape[dim] = size
         return tuple(target_shape), []
 
     if type == "repeat":

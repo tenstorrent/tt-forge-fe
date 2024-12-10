@@ -14,6 +14,7 @@
 #include "passes/constant_folding.hpp"
 #include "passes/dataformat.hpp"
 #include "passes/decomposing_context.hpp"
+#include "passes/remove_broadcast.hpp"
 #include "passes/erase_consecutive_reshape.hpp"
 #include "passes/erase_inverse_ops.hpp"
 #include "passes/erase_unnecessary_4d_tm_sequence.hpp"
@@ -87,6 +88,8 @@ run_post_initial_graph_passes(
     passes::fuse_pad_conv2d(graph);
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
+    passes::remove_broadcast(graph);
+    recalculate_shapes(graph);
 
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
