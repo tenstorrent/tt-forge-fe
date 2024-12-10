@@ -233,13 +233,7 @@ class Conv2dTranspose(PyOp):
         stride = [self.stride_height, self.stride_width]
         dilation = [self.dilation_height, self.dilation_width]
         groups = self.groups
-        # TODO: Add support for asymmetric padding cases in convtranspose2d
-        if self.padding_left == self.padding_right and self.padding_top == self.padding_bottom:
-            padding = (self.padding_top, self.padding_left)
-        else:
-            assert (
-                False
-            ), "Currently, different left and right padding or different top and bottom padding isn't supported. Please check out this issue (https://github.com/tenstorrent/tt-forge-fe/issues/665) for more details."
+        padding = (self.padding_top, self.padding_left)
 
         channel_last = self.channel_last
         if channel_last:

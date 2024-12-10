@@ -683,12 +683,22 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
     )
 
     padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    args.append(
-        (
-            "padding",
-            f"{padding[0]}",
+    if len(set(padding)) == 1:
+        # Uniform padding
+        args.append(
+            (
+                "padding",
+                f"{padding[0]}",
+            )
         )
-    )
+    else:
+        # Tuple padding
+        args.append(
+            (
+                "padding",
+                f"{tuple(padding)}",
+            )
+        )
 
     dilation = [int(dilation) for dilation in node["attrs"]["dilation"][0]]
     assert all([dim == dilation[0] for dim in dilation])
