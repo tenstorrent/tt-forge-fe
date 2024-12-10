@@ -13,7 +13,7 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
     NBeatsWithSeasonalityBasis,
 )
 import torch
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 @pytest.mark.nightly

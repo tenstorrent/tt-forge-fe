@@ -12,7 +12,7 @@ from typing import Optional, List, Union
 
 from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.op_repo import TensorShape
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
 

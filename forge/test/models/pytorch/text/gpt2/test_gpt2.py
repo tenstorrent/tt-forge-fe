@@ -7,7 +7,7 @@ import torch
 import forge
 import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 @pytest.mark.nightly
@@ -46,7 +46,7 @@ def test_gpt2_text_gen(test_device):
     co_out = [co.to("cpu") for co in co_out]
     fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 class Wrapper(torch.nn.Module):
