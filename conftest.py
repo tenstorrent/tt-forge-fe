@@ -137,6 +137,8 @@ def memory_usage_tracker():
 
     # Log memory usage statistics
     logger.info(f"Test memory usage:")
+    logger.info(f"    Start:   {start_mem:.2f} MB")
+    logger.info(f"    End:     {end_mem:.2f} MB")
     logger.info(f"    By test: {end_mem - start_mem:.2f} MB")
     logger.info(f"    Minimum: {min_mem:.2f} MB")
     logger.info(f"    Maximum: {max_mem:.2f} MB")
