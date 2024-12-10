@@ -1953,7 +1953,7 @@ def test_repeat_interleave():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast")
+# @pytest.mark.xfail(reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast")
 @pytest.mark.push
 def test_squeeze_operand_commute_clone():
     class SqueezeOperandCommuteClone(nn.Module):
