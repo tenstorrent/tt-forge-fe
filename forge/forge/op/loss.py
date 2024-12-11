@@ -73,3 +73,26 @@ class L1Loss(ForgeModule):
             return c_reduce
 
         raise RuntimeError("Unsupported reduce type: " + self.reduction)
+
+
+class KLDivLoss(ForgeModule):
+    def __init__(self, name: str, reduction: str = "avg"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+
+    def forward(self, prediction, labels):
+        log_labels = Log("log", labels)
+        diff = Subtract("sub", log_labels, prediction)
+        product = Multiply("mul", labels, diff)
+
+        if self.reduction == "avg":
+            r_reduced = ReduceAvg("r_avg", product, 0)
+            c_reduced = ReduceAvg("c_avg", r_reduced, 1)
+            return c_reduced
+        elif self.reduction == "sum":
+            r_reduced = ReduceSum("r_sum", product, 0)
+            c_reduced = ReduceSum("c_sum", r_reduced, 1)
+            return c_reduced
+
+        return RuntimeError("Unsupported reduce type: " + self.reduction)
