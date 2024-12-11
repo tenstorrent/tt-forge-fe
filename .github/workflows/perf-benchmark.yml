@@ -1,0 +1,98 @@
+name: Build and Test
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+
+  docker-build:
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  build-and-run-perf:
+
+    needs: docker-build
+    strategy:
+      fail-fast: false
+    runs-on:
+      - in-service
+      - n150
+      - performance
+
+    container:
+      image: ${{ needs.docker-build.outputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+    steps:
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      env:
+        job-name: "${{ github.job }}"
+      run: |
+        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
+        echo "Expected job name: ${{ env.job-name }}"
+        JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" | \
+          jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
+        echo "Current job id: $JOB_ID"
+
+        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
+
+    - name: Git safe dir
+      run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+    - uses: actions/checkout@v4
+      with:
+          submodules: recursive
+          fetch-depth: 0 # Fetch all history and tags
+
+    # Clean everything from submodules (needed to avoid issues
+    # with cmake generated files leftover from previous builds)
+    - name: Cleanup submodules
+      run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        create-symlink: true
+        key: runner-runtime--
+
+    - name: Build
+      shell: bash
+      run: |
+        source env/activate
+        cmake -G Ninja \
+        -B ${{ steps.strings.outputs.build-output-dir }} \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_C_COMPILER=clang \
+        -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+
+    - name: Run Perf Benchmark
+      shell: bash
+      run: |
+        source env/activate
+        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -o ${{ steps.strings.outputs.perf_report_path }}
+
+    - name: Upload Perf Report
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: perf-reports
+        path: ${{ steps.strings.outputs.perf_report_path }}
