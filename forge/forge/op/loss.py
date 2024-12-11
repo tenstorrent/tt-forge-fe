@@ -73,3 +73,29 @@ class L1Loss(ForgeModule):
             return c_reduce
 
         raise RuntimeError("Unsupported reduce type: " + self.reduction)
+
+
+class MSELoss(ForgeModule):
+    def __init__(self, name: str, reduction: str = "avg"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+
+    def forward(self, prediction, labels):
+        diff = Subtract("sub", prediction, labels)
+        square = Multiply("square", diff, diff)
+
+        if self.reduction == "none":
+            return square
+
+        if self.reduction == "avg":
+            r_reduced = ReduceAvg("r_avg", square, -2)
+            c_reduced = ReduceAvg("c_avg", r_reduced, -1)
+            return c_reduced
+
+        if self.reduction == "sum":
+            r_reduced = ReduceSum("r_sum", square, -2)
+            c_reduced = ReduceSum("c_sum", r_reduced, -1)
+            return c_reduced
+
+        raise RuntimeError("Unsupported reduce type: " + self.reduction)
