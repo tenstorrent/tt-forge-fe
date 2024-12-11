@@ -963,6 +963,12 @@ class ForgeModule(Module):
         for submodule in self.get_submodules().values():
             submodule._set_device(device)
 
+    def process_framework_parameters(self):
+        """
+        Loads parameters and buffers from the model pt file and sets them to the ForgeModule parameters and constants data members.
+        """
+        pass
+
 
 class IntQueueHandle:
     """

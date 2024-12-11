@@ -154,7 +154,8 @@ class ForgeWriter(PythonWriter):
         if include_pytest_imports:
             self.wl("")
             self.wl("from forge import Tensor, compile")
-            self.wl("from forge.op.eval.common import compare_with_golden")
+            self.wl("from forge.verify.verify import verify")
+            self.wl("from forge.verify.config import VerifyConfig")
             self.wl("import pytest")
 
         if self.framework == "tensorflow":
@@ -1024,50 +1025,43 @@ class ForgeWriter(PythonWriter):
         forge_module_names: List[str],
         framework: str,
         pytest_input_shapes_and_dtypes_list: List[List[Tuple]],
-        process_framework_parameters_func_status_list: List[bool],
     ):
         """
         Generates a pytest function that tests modules with input shapes and data types.
 
         This function writes a pytest function that:
-        1. Creates a list of forge module names, their associated input shapes, and data types into a pytest parameter list. It also includes a flag indicating whether each module needs to process framework parameters.
+        1. Creates a list of forge module names, their associated input shapes, and data types into a pytest parameter list.
         2. Creates inputs(i.e TensorFromPyTorch) for the forge module by calling the create_from_shape Tensor class method with shapes and dtypes from the pytest parameter.
-        3. Initializes the framework model using the forge module from the pytest parameter.
-        4. Calls the `process_framework_parameters` function for modules that need it (if the process_framework_parameters_func_status is `True`).
-        5. Runs the framework model with the created inputs.
-        6. Compiles the framework model.
-        7. Runs the compiled model with the same inputs.
-        8. Asserts that the outputs of the framework model and the compiled model are similar within a specified tolerance.
+        3. Initializes the framework model using the forge module from the pytest parameter and call the `process_framework_parameters` function for module.
+        4. Runs the framework model with the created inputs.
+        5. Compiles the framework model.
+        6. Runs the compiled model with the same inputs.
+        7. Asserts that the outputs of the framework model and the compiled model are similar within a specified tolerance.
 
         Args:
             forge_module_names (List[str]): List of names of the modules to be tested, each corresponding to a forge module.
             framework (str): The name of the framework under which the model is to be tested (e.g., "pytorch").
             pytest_input_shapes_and_dtypes_list (List[List[Tuple]]): A list of input shapes and corresponding data types for each module. Each tuple contains the shape and dtype to be tested.
-            process_framework_parameters_func_status_list (List[bool]): A list indicating whether each module requires processing of framework parameters.
         """
         self.wl("")
         self.wl("")
         self.wl("forge_modules_and_shapes_dtypes_list = [")
         self.indent += 1
-        for forge_module_name, process_framework_parameters_func_status, pytest_input_shapes_and_dtypes in zip(
-            forge_module_names, process_framework_parameters_func_status_list, pytest_input_shapes_and_dtypes_list
+        for forge_module_name, pytest_input_shapes_and_dtypes in zip(
+            forge_module_names, pytest_input_shapes_and_dtypes_list
         ):
             pytest_input_shapes_and_dtypes = [
                 (shape, forge_dataformat_to_pytorch_dtype(forge_df_from_str(dtype, "", False)))
                 for shape, dtype in pytest_input_shapes_and_dtypes
             ]
-            self.wl(
-                f"(({forge_module_name}, {process_framework_parameters_func_status}), {pytest_input_shapes_and_dtypes}), "
-            )
+            self.wl(f"({forge_module_name}, {pytest_input_shapes_and_dtypes}), ")
         self.indent -= 1
         self.wl("]")
         self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
         self.wl("def test_module(forge_module_and_shapes_dtypes):")
         self.indent += 1
         self.wl("")
-        self.wl(
-            "(forge_module, need_process_framework_parameters_func), operand_shapes_dtypes = forge_module_and_shapes_dtypes"
-        )
+        self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
         self.wl("")
         need_model_parameter_function = any(
             [
@@ -1086,26 +1080,11 @@ class ForgeWriter(PythonWriter):
             )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
-        self.wl("")
-        self.wl("if need_process_framework_parameters_func:")
-        self.indent += 1
         self.wl("framework_model.process_framework_parameters()")
-        self.indent -= 1
-        self.wl("")
-        self.wl("framework_output = framework_model(*inputs)")
         self.wl("")
         self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
-        self.wl("tt_output = compiled_model(*inputs)")
         self.wl("")
-        self.wl('tt_output = [tt_out.to("cpu") for tt_out in tt_output]')
-        self.wl(
-            "framework_output = [framework_output] if isinstance(framework_output, forge.tensor.TensorFromTrace) else framework_output"
-        )
-        self.wl(f'framework_output = [fw_out.to_framework("{framework}") for fw_out in framework_output]')
-        self.wl("")
-        self.wl(
-            "assert all([compare_with_golden(golden=fw_out, calculated=tt_out) for fw_out, tt_out in zip(framework_output, tt_output)])"
-        )
+        self.wl("verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))")
         self.wl("")
         self.wl("")
         self.indent -= 1
