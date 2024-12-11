@@ -2,10 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from functools import wraps
+from forge.op.tm import Broadcast, Unsqueeze
 from ..module import ForgeModule
 from .constant import Constant
 from .eltwise_unary import Log, Abs
-from .eltwise_binary import Subtract, Multiply
+from .eltwise_binary import Add, GreaterEqual, Less, Subtract, Multiply
 from .nn import Softmax
 from .reduce import ReduceSum, ReduceAvg
 
@@ -166,3 +167,59 @@ class KLDivLoss(ForgeModule):
         product = Multiply("mul", labels, diff)
         loss = reduce_loss(self.reduction, product)
         return loss
+
+
+class HuberLoss(ForgeModule):
+    """
+    Huber Loss
+
+    Huber loss is computed as follows:
+    loss = if abs(x - y) < delta then 0.5 * (x - y)**2
+    loss = if abs(x - y) >= delta then delta * (abs(x - y) - 0.5 * delta)
+    """
+
+    def __init__(self, name: str, delta: float = 1.0, reduction: str = "mean"):
+        super().__init__(name)
+        self.delta = delta
+        self.reduction = reduction
+        self.is_loss = True
+
+    @validate_shapes(min_dim=1, max_dim=2)
+    def forward(self, prediction, labels):
+        diff = Subtract("sub", prediction, labels)
+        abs_diff = Abs("abs", diff)
+
+        # delta
+        const_delta = Constant("delta", constant=self.delta)
+        # doing manual broadcasting because of the following issue:
+        # https://github.com/tenstorrent/tt-metal/issues/15965
+        delta = Broadcast("broadcast_delta_1", const_delta, dim=0, shape=abs_diff.shape[0])
+        if abs_diff.ndim() != 1:
+            delta = Unsqueeze("cast_delta", delta, dim=1)
+            delta = Broadcast("broadcast_delta_2", delta, dim=1, shape=abs_diff.shape[1])
+        lt_delta = Less("lt_delta", abs_diff, delta)
+        ge_delta = GreaterEqual("ge_delta", abs_diff, delta)
+
+        # 0.5 * (x - y)**2
+        square = Multiply("square", diff, diff)
+        half_const = Constant("half", constant=0.5)
+        half = Broadcast("broad_cast_half_dim0", half_const, dim=0, shape=square.shape[0])
+        if square.ndim() != 1:
+            half = Unsqueeze("half_unsqueeze", half, dim=1)
+            half = Broadcast("broad_cast_half_dim1", half, dim=1, shape=square.shape[1])
+        half_square = Multiply("half_square", half, square)
+
+        # delta * (abs_diff - 0.5 * delta)
+        half_delta = Multiply("half_delta", half, delta)
+        delta_diff = Subtract("delta_diff", abs_diff, half_delta)
+        mul_delta_diff = Multiply("mul_delta_diff", delta, delta_diff)
+
+        # mask the loss
+        # if abs_diff < delta, do 0.5 * (x - y)**2
+        # else do delta * (abs_diff - 0.5 * delta)
+        loss_lt = Multiply("loss_lt", lt_delta, half_square)
+        loss_ge = Multiply("loss_ge", ge_delta, mul_delta_diff)
+
+        # combine masks to get the final loss
+        loss = Add("loss", loss_lt, loss_ge)
+        return reduce_loss(self.reduction, loss)
