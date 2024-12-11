@@ -73,3 +73,18 @@ class L1Loss(ForgeModule):
             return c_reduce
 
         raise RuntimeError("Unsupported reduce type: " + self.reduction)
+
+
+class NLLLoss(ForgeModule):
+    def __init__(self, name: str, reduction: str = "avg"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+
+    def forward(self, prediction, labels):
+        zeroed_prediction = Multiply("mul_pred_labels", prediction, labels)
+        rows = ReduceSum("r_sum", zeroed_prediction, -1)
+        loss = ReduceAvg("r_avg", rows, -2)
+        negative_one = Constant("negative_one", constant=-1.0)
+        loss = Multiply("mul_neg_loss", loss, negative_one)
+        return loss
