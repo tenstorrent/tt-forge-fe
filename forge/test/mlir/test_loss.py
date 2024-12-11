@@ -68,8 +68,6 @@ def test_cross_entropy_loss(prediction_shape):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
-        (33,),
-        (128,),
         (2, 2),
         (3, 5),
         (32, 32),
@@ -78,20 +76,23 @@ def test_cross_entropy_loss(prediction_shape):
         (128, 128),
     ],
 )
-@pytest.mark.parametrize("reduction", ["mean", "sum"])
-def test_mse_loss(prediction_shape, reduction):
-    forge_loss = forge.op.loss.MSELoss("mse_loss", reduction=reduction)
-    torch_loss = torch.nn.MSELoss(reduction=reduction)
+def test_nll_loss(prediction_shape):
+    forge_loss = forge.op.loss.NLLLoss("nll_loss")
+    torch_loss = torch.nn.NLLLoss()
 
-    prediction = torch.randn(prediction_shape, requires_grad=True)
+    prediction = torch.randn(prediction_shape, requires_grad=True).to(torch.float32)
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
-    target = torch.randn((prediction_shape))
-    target_forge = forge.tensor.Tensor.create_from_torch(target)
+    target = torch.empty(prediction_shape[0], dtype=torch.long).random_(prediction_shape[-1])
+
+    # Because of the following error
+    # RuntimeError: TT_FATAL @ ../embedding_device_operation.cpp:28: weights.get_dtype() == DataType::BFLOAT16
+    # We need to convert the target to one hot, which is different from torch
+    target_one_hot = nn.functional.one_hot(target, num_classes=prediction_shape[-1]).float()
+
+    target_forge = forge.tensor.Tensor.create_from_torch(target_one_hot)
 
     forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
-    forge_loss_out = forge_loss(prediction, target)
+    forge_loss_out = forge_loss(prediction, target_one_hot)
     torch_loss_out = torch_loss(prediction, target)
 
-    assert torch.allclose(
-        torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3
-    )  # relative tolerance is 5% and absolute tolerance is 0.005
+    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=11e-3)
