@@ -12,11 +12,26 @@ from test.mlir.llama.utils.utils import load_model
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-def test_llama_inference(model_path):
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b"])
+def test_llama_3b_inference(model_path):
+    # Load Model and Tokenizer
+    framework_model, tokenizer = load_model(model_path)
 
+    prompt = "Q: What is the largest animal?\nA:"
+    input_ids = tokenizer(prompt, return_tensors="pt").input_ids
+
+    # Sanity run
+    generation_output = framework_model.generate(input_ids=input_ids, max_new_tokens=32)
+    print(tokenizer.decode(generation_output[0]))
+
+    # Compile the model
+    compiled_model = forge.compile(framework_model, input_ids)
+
+
+@pytest.mark.nightly
+@pytest.mark.skip(reason="Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
+@pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B"])
+def test_llama_32_inference(model_path):
     # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path)
 
