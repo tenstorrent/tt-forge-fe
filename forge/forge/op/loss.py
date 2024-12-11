@@ -143,3 +143,25 @@ class NLLLoss(ForgeModule):
         loss = ReduceSum("r_sum", loss, -1)
         loss = reduce_loss(self.reduction, loss)
         return loss
+
+
+class KLDivLoss(ForgeModule):
+    """
+    KLDivLoss
+
+    KLDivLoss is sum(labels * (log(labels) - predictions), dim=-1), optionally reduced using ReduceAvg(default) or ReduceSum.
+
+    Note: This loss expects the input to be log probabilities.
+    """
+    def __init__(self, name: str, reduction: str = "mean"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+
+    @validate_shapes(min_dim=1, max_dim=2)
+    def forward(self, prediction, labels):
+        log_labels = Log("log", labels)
+        diff = Subtract("sub", log_labels, prediction)
+        product = Multiply("mul", labels, diff)
+        loss = reduce_loss(self.reduction, product)
+        return loss
