@@ -26,17 +26,17 @@ from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect
 
 def generate_target_shape(source_shape, max_dims=4, seed=4):
     """Generates a meaningful target shape based on the source_shape with a limit on the number of dimensions.
-       Ensures that the target shape is not the same as the source shape and that the number of dimensions 
-       does not exceed the max_dims parameter."""
-    
+    Ensures that the target shape is not the same as the source shape and that the number of dimensions
+    does not exceed the max_dims parameter."""
+
     rng = random.Random(seed)
-    
+
     total_elements = torch.prod(torch.tensor(source_shape)).item()
     num_attempts = 0  # To prevent infinite loops
-    
+
     while True:
         num_dims = rng.randint(1, max_dims)  # Limit the maximum number of dimensions
-        
+
         # Attempt to divide total_elements into a random number of factors
         target_shape = []
         remaining = total_elements
@@ -49,17 +49,17 @@ def generate_target_shape(source_shape, max_dims=4, seed=4):
                 dim_size = random.randint(1, remaining)
             target_shape.append(dim_size)
             remaining //= dim_size
-        
+
         target_shape.append(remaining)  # Add the final dimension
         random.shuffle(target_shape)  # Shuffle the dimensions for additional randomness
-        
+
         if tuple(target_shape) != source_shape and len(target_shape) <= max_dims:  # Ensure target shape is valid
             break
-        
+
         num_attempts += 1
         if num_attempts > 100:  # Prevent infinite loop if no valid shape can be found
             raise ValueError(f"Failed to generate a target shape different from {source_shape} after 100 attempts.")
-    
+
     return tuple(target_shape)
 
 
@@ -119,6 +119,18 @@ class TestParamsData:
 
     test_plan: TestPlan = None
 
+    # fmt: off
+    specific_reshapes = {
+        (8, 8):           [(64,)],                 # Flatten Reshape
+        (1, 49, 2304):    [(1, 49, 3, 24, 32)],    # Dynamic Shape Reshape
+        (2, 3, 4, 5):     [(6, 4, 5), (4, 6, 5)],  # Collapse Rank Reshape
+        (6, 4, 5):        [(2, 3, 4, 5)],          # Expand Rank Reshape
+        (1, 32, 2560):    [(1, 32, 20, 128)],      # Channel Manipulation Reshape
+        (1, 512, 1, 261): [(1, 512, 1, 261)],      # Broadcasting Reshape
+        (0,):             [(0, 0, 1)],             # Edge Case Reshape
+    }
+    # fmt: on
+
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
         input_shape = test_vector.input_shape
@@ -129,6 +141,14 @@ class TestParamsData:
         return [
             {"shape": target_shape},
         ]
+    
+    @classmethod
+    def generate_specific_kwargs(cls, test_vector: TestVector):
+        input_shape = test_vector.input_shape
+        target_shapes = []
+        for item in cls.specific_reshapes[input_shape]:
+            target_shapes.append({"shape": item})
+        return target_shapes
 
 
 TestParamsData.test_plan = TestPlan(
@@ -165,6 +185,13 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=TestCollectionCommon.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
+        ),
+        # Test specific classes of reshape operations collection:
+        TestCollection(
+            operators=["reshape"],
+            input_sources=TestCollectionCommon.all.input_sources,
+            input_shapes=TestParamsData.specific_reshapes.keys(),
+            kwargs=lambda test_vector: TestParamsData.generate_specific_kwargs(test_vector),
         ),
     ],
     failing_rules=[
