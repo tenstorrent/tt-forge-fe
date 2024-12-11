@@ -2,9 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+import json
 from enum import Enum
 from loguru import logger
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 import torch
 
@@ -16,6 +17,14 @@ class NodeType(Enum):
     Activation = 1
     Parameter = 2
     Constant = 3
+
+    @classmethod
+    def to_json(cls, value):
+        return value.name
+
+    @classmethod
+    def from_json(cls, value):
+        return cls[value]
 
 
 class Operation:
@@ -34,12 +43,13 @@ class Operation:
         inputs_to_delete (list): A list of inputs to delete.
         loop_with (list): A list of loop variables.
         src_layer (optional): The source layer associated with the operation.
+        metadata (dict): It contains additional information associated with the operation like model, variant, framework
     """
 
     def __init__(
         self,
         function_name,
-        output_name,
+        output_name="",
         node_name="",
         input_names=[],
         args=[],
@@ -47,6 +57,7 @@ class Operation:
         input_shapes=[],
         input_dtypes=[],
         input_node_types=[],
+        metadata={},
     ):
         self.function_name = function_name
         self.node_name = node_name
@@ -60,6 +71,7 @@ class Operation:
         self.inputs_to_delete = []
         self.loop_with = []
         self.src_layer = src_layer
+        self.metadata = metadata
 
 
 class OpArgs(dict):
@@ -121,7 +133,7 @@ class OpArgs(dict):
         return len(self) == 0
 
     def __str__(self):
-        return f"Opargs({super().__str__()})"
+        return super().__str__()
 
 
 class OperandsInfo:
@@ -194,114 +206,130 @@ class OperandsInfo:
 
     def __str__(self):
         if len(self.operand_types) > 0 and len(self.operand_shapes) > 0 and len(self.operand_dtypes) > 0:
-            operand_info = "["
+            operands_info = "["
             for operand_type, operand_shape, operand_dtype in zip(
                 self.operand_types, self.operand_shapes, self.operand_dtypes
             ):
                 if isinstance(operand_shape, torch.Tensor):
-                    operand_info += f"Operand(type={operand_type}, shape=Tensor, dtype={operand_dtype}), "
+                    operands_info += f"Operand(type={operand_type}, shape=Tensor, dtype={operand_dtype}), "
                 else:
-                    operand_info += f"Operand(type={operand_type}, shape={operand_shape}, dtype={operand_dtype}), "
-            operand_info += "]"
-            return operand_info
+                    operands_info += f"Operand(type={operand_type}, shape={operand_shape}, dtype={operand_dtype}), "
+            operands_info += "]"
+            return operands_info
 
         else:
             return "OperandsInfo is empty!"
 
 
-class OpArgsOpNames:
+class OpArgsOpMetadata:
     """
-    Stores OpArgs and associated operand names.
+    Stores Operation Args and associated metadata.
 
-    Initializes OpArgsOpNames with a given OpArgs and operand names.
+    Initializes OpArgsOpMetadata with a given OpArgs and operation metadata like operand_names.
 
     Args:
-        args (OpArgs): The OpArgs object to associate with operand names.
-        operand_names (list): List of operand names to associate with args.
+        args (OpArgs): The OpArgs object to associate with operation metadata.
+        operation_metadata (Dict): Operation metadata to associate with args.
 
     Data Members:
-        opargs_opnames (list of tuples): Each tuple contains an OpArgs object and a list of operand names.
+        op_args_and_metadata (list of tuples): Each tuple contains an OpArgs object and a dict of operation metadata.
     """
 
-    def __init__(self, args: OpArgs, operand_names: List[str]):
-        self.opargs_opnames = [(args, [operand_names])]
+    def __init__(self, args: OpArgs, operation_metadata: Dict[str, Any]):
+        operation_metadata = self.transform_operation_metadata(operation_metadata)
+        self.op_args_and_metadata = [(args, operation_metadata)]
 
-    def get_opargs_opnames(self):
-        return self.opargs_opnames
+    def get_op_args_and_metadata(self):
+        return self.op_args_and_metadata
 
-    def update(self, new_args, new_operand_names):
+    def transform_operation_metadata(self, operation_metadata):
+        new_operation_metadata = {}
+        for name, value in operation_metadata.items():
+            new_operation_metadata[name] = [value]
+        return new_operation_metadata
+
+    def update(self, new_args, new_operation_metadata):
         """
-        Append operand names if arguments match, otherwise adds new OpArgs and operand names.
+        Append Operation metadata if arguments match, otherwise adds new OpArgs and Operation metadata.
 
         Args:
             new_args (OpArgs): New arguments to match against existing ones.
-            new_operand_names (list): New operand names to associate if new_args matches.
+            new_operation_metadata (list): New operation metadata to associate if new_args matches.
         """
         args_matched = False
-        for idx, (arg, opnames_list) in enumerate(self.opargs_opnames):
+        for idx, (arg, metadata) in enumerate(self.op_args_and_metadata):
             if (arg.is_empty() and new_args.is_empty()) or arg == new_args:
-                self.opargs_opnames[idx][1].append(new_operand_names)
+                for name, value in new_operation_metadata.items():
+                    if value not in self.op_args_and_metadata[idx][1][name]:
+                        self.op_args_and_metadata[idx][1][name].append(value)
                 args_matched = True
                 break
         if not args_matched:
-            self.opargs_opnames.append((new_args, [new_operand_names]))
+            new_operation_metadata = self.transform_operation_metadata(new_operation_metadata)
+            self.op_args_and_metadata.append((new_args, new_operation_metadata))
 
     def __str__(self):
-        if len(self.opargs_opnames) > 0:
-            uniqueoperation_info = ""
-            for idx, (args, opnames_list) in enumerate(self.opargs_opnames, start=1):
-                uniqueoperation_info += f"\t\t\t\t {idx})" + str(args) + "\n"
-                for opnames_idx, opnames in enumerate(opnames_list):
-                    uniqueoperation_info += f"\t\t\t\t\t\t {opnames_idx})" + str(opnames) + "\n"
-            return uniqueoperation_info
+        if len(self.op_args_and_metadata) > 0:
+            op_args_and_metadata_info = ""
+            for idx, (args, metadata) in enumerate(self.op_args_and_metadata, start=1):
+                op_args_and_metadata_info += f"\t\t\t\t {idx})Opargs(" + str(args) + ")\n"
+                for metadata_name, metadata_values in metadata.items():
+                    op_args_and_metadata_info += f"\t\t\t\t\t\t" + str(metadata_name) + ":\n"
+                    for metadata_value_idx, metadata_value in enumerate(metadata_values):
+                        op_args_and_metadata_info += (
+                            f"\t\t\t\t\t\t\t\t {metadata_value_idx})" + str(metadata_value) + "\n"
+                        )
+            return op_args_and_metadata_info
         else:
-            return "OpArgsOpNames is empty!"
+            return "OpArgsOpMetadata is empty!"
 
 
 class UniqueOperationInfo:
     """
-    Stores operands and argument associated with operand names.
+    Stores operands and argument associated with operation metadata.
 
     Args:
         operands (OperandsInfo): Information about operand types, shapes, and dtypes.
-        oparg_opnames (OpArgsOpNames): Argument associated with the operand names.
+        opargs_opmetadata (OpArgsOpMetadata): Argument associated with the operation metadata.
 
     Data Members:
-        unique_operands_and_opargs_opnames (list of tuples): Each tuple contains an OperandsInfo object
-                                                             and an OpArgsOpNames object.
+        unique_operands_and_opargs_opmetadata (list of tuples): Each tuple contains an OperandsInfo object
+                                                             and an OpArgsOpMetadata object.
     """
 
-    def __init__(self, operands: OperandsInfo, oparg_opnames: OpArgsOpNames):
-        self.unique_operands_and_opargs_opnames = [(operands, oparg_opnames)]
+    def __init__(self, operands: OperandsInfo, opargs_opmetadata: OpArgsOpMetadata):
+        self.unique_operands_and_opargs_opmetadata = [(operands, opargs_opmetadata)]
 
-    def get_unique_operands_and_opargs_opnames(self):
-        return self.unique_operands_and_opargs_opnames
+    def get_unique_operands_and_opargs_opmetadata(self):
+        return self.unique_operands_and_opargs_opmetadata
 
-    def add_operands_args(self, new_operands, new_args, new_operand_names):
+    def add_operands_args(self, new_operands, new_args, new_operation_metadata):
         """
-        Adds or updates operandsInfo and Opargs and operand names.
+        Adds or updates operandsInfo and Opargs and Operation metadata.
 
         Args:
             new_operands (OperandsInfo): Operands information.
             new_args (OpArgs): Operation arguments.
-            new_operand_names (list): Operand names.
+            new_operation_metadata (Dict): Operation metadata.
         """
         operands_matched = False
-        for idx, (operands, oparg_opnames) in enumerate(self.unique_operands_and_opargs_opnames):
+        for idx, (operands, opargs_opmetadata) in enumerate(self.unique_operands_and_opargs_opmetadata):
             if operands == new_operands:
                 operands_matched = True
-                self.unique_operands_and_opargs_opnames[idx][1].update(new_args, new_operand_names)
+                self.unique_operands_and_opargs_opmetadata[idx][1].update(new_args, new_operation_metadata)
                 break
         if not operands_matched:
-            self.unique_operands_and_opargs_opnames.append((new_operands, OpArgsOpNames(new_args, new_operand_names)))
+            self.unique_operands_and_opargs_opmetadata.append(
+                (new_operands, OpArgsOpMetadata(new_args, new_operation_metadata))
+            )
 
     def __str__(self):
-        if len(self.unique_operands_and_opargs_opnames) > 0:
-            uniqueoperation_info = ""
-            for idx, (operands, oparg_opnames) in enumerate(self.unique_operands_and_opargs_opnames, start=1):
-                uniqueoperation_info += f"\t\t {idx})" + str(operands) + "\n"
-                uniqueoperation_info += str(oparg_opnames) + "\n"
-            return uniqueoperation_info
+        if len(self.unique_operands_and_opargs_opmetadata) > 0:
+            unique_operation_info = ""
+            for idx, (operands, opargs_opmetadata) in enumerate(self.unique_operands_and_opargs_opmetadata, start=1):
+                unique_operation_info += f"\t\t {idx})" + str(operands) + "\n"
+                unique_operation_info += str(opargs_opmetadata) + "\n"
+            return unique_operation_info
 
         else:
             return "UniqueOperationInfo is empty!"
@@ -340,15 +368,18 @@ class UniqueOperations(dict):
 
     @classmethod
     def create_unique_operations(
-        cls, ops: Dict[int, Operation], node_name_to_node_type: Dict[str, NodeType], named_parameters
+        cls,
+        ops: Dict[int, Operation],
+        named_parameters: Dict[str, torch.Tensor],
+        node_name_to_node_type: Optional[Dict[str, NodeType]] = None,
     ):
         """
-        Creates unique operations by mapping operand and argument information to function names.
+        Creates unique operations by mapping operand and argument information to forge op names.
 
         Args:
             ops (dict): Dictionary of operation.
-            node_name_to_node_type (dict): Mapping of node names to types.
             named_parameters (dict): Mapping of node name to model parameters and buffers.
+            node_name_to_node_type (dict): Mapping of node names to types.
 
         Returns:
             UniqueOperations: Populated UniqueOperations dictionary.
@@ -358,12 +389,18 @@ class UniqueOperations(dict):
             forge_op_function_name = ops[nid].function_name
             operand_names = ops[nid].input_names
             operand_types = ops[nid].input_node_types
-            assert UniqueOperations.validate_node_types(
-                operand_names, operand_types, node_name_to_node_type
-            ), "Operand node types is not matching with node_name_to_node_type"
+            if node_name_to_node_type is not None:
+                assert UniqueOperations.validate_node_types(
+                    operand_names, operand_types, node_name_to_node_type
+                ), "Operand node types is not matching with node_name_to_node_type"
             operand_shapes = ops[nid].input_shapes
             operand_dtypes = ops[nid].input_dtypes
             args = ops[nid].args
+            metadata = ops[nid].metadata
+            operation_metadata = {"operand_names": operand_names}
+            if len(metadata) != 0:
+                for name, value in metadata.items():
+                    operation_metadata[name] = value
             assert (
                 len(operand_types) == len(operand_names)
                 and len(operand_names) == len(operand_shapes)
@@ -378,30 +415,30 @@ class UniqueOperations(dict):
             new_operands = OperandsInfo(operand_types, operand_shapes, operand_dtypes)
             new_args = OpArgs(args)
             if forge_op_function_name in unique_operations.keys():
-                unique_operations[forge_op_function_name].add_operands_args(new_operands, new_args, operand_names)
+                unique_operations[forge_op_function_name].add_operands_args(new_operands, new_args, operation_metadata)
             else:
                 unique_operations[forge_op_function_name] = UniqueOperationInfo(
-                    new_operands, OpArgsOpNames(new_args, operand_names)
+                    new_operands, OpArgsOpMetadata(new_args, operation_metadata)
                 )
 
         return unique_operations
 
     def __str__(self):
         if len(self) > 0:
-            uniqueoperations_info = ""
+            unique_operations_info = ""
             for forge_op_function_name, unique_operation in self.items():
-                uniqueoperations_info += forge_op_function_name + ": \n"
-                uniqueoperations_info += str(unique_operation) + "\n"
-            return uniqueoperations_info
+                unique_operations_info += forge_op_function_name + ": \n"
+                unique_operations_info += str(unique_operation) + "\n"
+            return unique_operations_info
         else:
             return "UniqueOperations is empty!"
 
 
-def export_unique_op_tests_details_to_excel(module_name, unique_operation_data):
-    headers = ["Framework", "Op", "Operands", "Args", "Testfile"]
+def export_unique_op_configuration_info(module_name, unique_operation_data, unique_ops_metadata):
+    headers = ["Op", "Operand_Names", "Operand_Shapes", "Operand_Types", "Operand_Dtypes", "Args", "Testfile"]
     rows = []
     for operation_info in unique_operation_data:
-        rows.append(list(operation_info.values()))
+        rows.append([operation_info[header] for header in headers])
 
     export_tvm_generated_unique_op_tests_details_dir_path = os.getenv(
         "FORGE_EXPORT_TVM_GENERATED_UNIQUE_OP_TESTS_DETAILS_DIR_PATH", f"generated_modules/unique_ops/"
@@ -414,8 +451,15 @@ def export_unique_op_tests_details_to_excel(module_name, unique_operation_data):
 
     export_tvm_generated_unique_op_tests_details_file_path = os.path.join(
         export_tvm_generated_unique_op_tests_details_dir_path,
-        "tvm_generated_op_test_details.xlsx",
+        "tvm_generated_unique_op_test_details.xlsx",
     )
+
+    unique_ops_metadata_path = os.path.join(
+        export_tvm_generated_unique_op_tests_details_dir_path,
+        "tvm_generated_unique_ops_metadata.json",
+    )
+    with open(unique_ops_metadata_path, "w") as json_file:
+        json.dump(unique_ops_metadata, json_file, indent=4)
 
     create_excel_file(
         title=module_name,
@@ -457,9 +501,7 @@ def generate_unique_op_tests(
     named_parameters.update(named_buffers)
 
     # Extract unique operations by comparing operands types, shapes and dtypes and arguments if any
-    unique_operations = UniqueOperations.create_unique_operations(ops, node_name_to_node_type, named_parameters)
-
-    logger.info(f"Unique Operations:\n{unique_operations}")
+    unique_operations = UniqueOperations.create_unique_operations(ops, named_parameters, node_name_to_node_type)
 
     def get_param_const(name):
         for nid, param in params.items():
@@ -489,23 +531,41 @@ def generate_unique_op_tests(
         writer.write_header(include_pytest_imports=True)
 
         # Get the unique operands and operation arguments assiocated the operand names
-        unique_operands_and_opargs_opnames = unique_operations[
+        unique_operands_and_opargs_opmetadata = unique_operations[
             forge_op_function_name
-        ].get_unique_operands_and_opargs_opnames()
+        ].get_unique_operands_and_opargs_opmetadata()
 
         pytest_input_shapes_and_dtypes_list = []
         forge_module_names = []
         module_idx = 0
         forge_module_list = []
         test_count = 0
-        for operands_idx, (operands, opargs_opnames) in enumerate(unique_operands_and_opargs_opnames):
+        for operands_idx, (operands, opargs_opmetadata) in enumerate(unique_operands_and_opargs_opmetadata):
 
-            for args_idx, (args, opnames_list) in enumerate(opargs_opnames.get_opargs_opnames()):
+            for args_idx, (args, operation_metadata) in enumerate(opargs_opmetadata.get_op_args_and_metadata()):
 
                 operand_types = operands.get_operand_types()
                 operand_shapes = operands.get_operand_shapes()
                 operand_dtypes = operands.get_operand_dtypes()
-                operand_names = opnames_list[0]
+                operand_names = operation_metadata["operand_names"][0]
+
+                if compiler_cfg.export_tvm_generated_unique_op_tests_details:
+                    operation_info = {}
+                    operation_info["Op"] = forge_op_function_name
+                    operation_info["Operand_Names"] = str(operand_names)
+                    operation_info["Operand_Shapes"] = str(
+                        [
+                            operand_name if operand_type == NodeType.Constant else operand_shape
+                            for operand_type, operand_shape, operand_name in zip(
+                                operand_types, operand_shapes, operand_names
+                            )
+                        ]
+                    )
+                    operation_info["Operand_Types"] = str(
+                        [NodeType.to_json(operand_type) for operand_type in operand_types]
+                    )
+                    operation_info["Operand_Dtypes"] = str(operand_dtypes)
+                    operation_info["Args"] = str(args)
 
                 # Check if all operands types are parameters or constants and change the operand type from
                 # parameters or constants to activation and pass it as activation to forge module forward function
@@ -670,25 +730,7 @@ def generate_unique_op_tests(
                 pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
 
                 if compiler_cfg.export_tvm_generated_unique_op_tests_details:
-                    operation_info = {}
-                    operands_info = []
-                    for node_type, name, shape, dtype in zip(
-                        operand_types, operand_names, operand_shapes, operand_dtypes
-                    ):
-                        name_or_shape_val = name if node_type == NodeType.Constant else shape
-                        operands_info.append(
-                            f"Operand(type={node_type.name}, name/shape={name_or_shape_val}, dtype={dtype})"
-                        )
-                    operation_info["Framework"] = framework
-                    operation_info["Op"] = op_name
-                    operation_info["Operands"] = "\n".join(operands_info)
-                    if args.is_empty():
-                        operation_info["Args"] = ""
-                    else:
-                        operation_info["Args"] = "\n".join(
-                            [f"{arg_name} : {arg_value}" for arg_name, arg_value in args.items()]
-                        )
-                    operation_info["tests"] = (
+                    operation_info["Testfile"] = (
                         writer.module_directory
                         + "/"
                         + writer.filename
@@ -721,4 +763,11 @@ def generate_unique_op_tests(
         writer.close_file()
 
         if compiler_cfg.export_tvm_generated_unique_op_tests_details:
-            export_unique_op_tests_details_to_excel(current_module_name, unique_operation_details)
+            unique_ops_metadata = {
+                "framework": framework,
+                "module_name": current_module_name,
+                "param_file_name": param_file_name,
+                "named_params_file_name": named_params_file_name,
+                "named_buffers_file_name": named_buffers_file_name,
+            }
+            export_unique_op_configuration_info(current_module_name, unique_operation_details, unique_ops_metadata)
