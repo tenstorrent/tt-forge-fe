@@ -4,12 +4,13 @@
 
 import pytest
 import torch
+import transformers
 import forge
 from test.mlir.llava.utils.utils import load_llava_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="AttributeError: module 'jaxlib.xla_extension' has no attribute 'DeviceArray'")
+# @pytest.mark.xfail(reason="AttributeError: module 'jaxlib.xla_extension' has no attribute 'DeviceArray'")
 @pytest.mark.parametrize("model_path", ["llava-hf/llava-1.5-7b-hf"])
 def test_llava_compile(model_path):
     model, processor = load_llava_model(model_path)
@@ -28,6 +29,10 @@ def test_llava_compile(model_path):
 
     image = torch.randint(0, 256, (3, 224, 224))  # Generate random image
     inputs = processor(images=image, text=prompt, return_tensors="pt")
+
+    # Ensure inputs is a dictionary of tensors
+    if isinstance(inputs, transformers.feature_extraction_utils.BatchFeature):
+        inputs = {key: value for key, value in inputs.items() if isinstance(value, torch.Tensor)}
 
     # Compile the model
     compiled_model = forge.compile(model, inputs)

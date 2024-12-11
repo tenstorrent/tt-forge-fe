@@ -1165,7 +1165,7 @@ def to_pt_tensors(
 
         elif isinstance(t, np.ndarray):
             pytorch_tensors.append(torch.Tensor(t))
-        elif isinstance(t, jaxlib.xla_extension.DeviceArray):
+        elif isinstance(t, jaxlib.xla_extension.ArrayImpl):
             pytorch_tensors.append(torch.Tensor(np.array(t)))
         else:
             raise RuntimeError(f"Unknown type of tensor: {type(t)}")
