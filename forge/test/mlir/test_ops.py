@@ -1703,7 +1703,7 @@ def test_convtranspose2d(
 
 
 @pytest.mark.xfail(
-    reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
+    reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Invalid arguments to reshape. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1574"
 )
 @pytest.mark.push
 def test_avg_pool2d():
