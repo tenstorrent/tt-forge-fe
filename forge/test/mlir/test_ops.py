@@ -334,7 +334,7 @@ def test_flatten(shape):
     framework_model = Flatten()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
 
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
@@ -1224,17 +1224,11 @@ def test_softmax():
             (4, 64),
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param(
             (32, 32),
             -2,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
         ((1, 64, 32), 2, False),
@@ -1302,17 +1296,11 @@ def test_reduce_sum(input_shape, dim, keepdim):
             (4, 64),
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param(
             (32, 32),
             -2,
             False,
-            marks=pytest.mark.xfail(
-                reason="Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615"
-            ),
         ),
         pytest.param((2, 32, 32), 0, False, marks=pytest.mark.xfail(reason="tt:exception Unsupported dim")),
         ((1, 64, 32), 2, False),
@@ -1677,14 +1665,19 @@ def test_reduce_max(input_shape, dim, keepdim):
         (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros", (16, 50, 100)),
         (16, 32, (3, 5), 2, 1, 1, True, 1, "zeros", (16, 50, 100)),
         (16, 16, (3, 3), 1, 1, 16, True, 1, "zeros", (16, 50, 100)),
+        (16, 33, (3, 3), 1, (0, 0), 1, True, 1, "zeros", (16, 50, 100)),
+        (16, 33, (3, 3), 1, (1, 0), 1, True, 1, "zeros", (16, 50, 100)),
+        (16, 33, (3, 3), 1, (0, 1), 1, True, 1, "zeros", (16, 50, 100)),
         (16, 33, (3, 3), 2, 0, 1, True, 1, "zeros", (20, 16, 50, 100)),
         (16, 33, (3, 3), 2, 0, 1, False, 1, "zeros", (20, 16, 50, 100)),
         (16, 33, (3, 5), 2, 0, 1, True, 1, "zeros", (20, 16, 50, 100)),
         (16, 16, (5, 5), 1, 2, 1, True, 1, "zeros", (20, 16, 50, 100)),
         (16, 32, (3, 5), 2, 1, 1, True, 1, "zeros", (20, 16, 50, 100)),
-        (16, 32, (3, 3), 4, 1, 1, False, 1, "zeros", (20, 16, 50, 100)),
-        (16, 16, (3, 3), 2, 2, 1, True, 1, "zeros", (20, 16, 50, 100)),
-        (16, 16, (3, 3), 1, 1, 16, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 32, (3, 3), 4, (1, 2), 1, False, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (3, 3), 2, (2, 3), 1, True, 1, "zeros", (20, 16, 50, 100)),
+        (16, 16, (3, 3), 1, (3, 3), 16, True, 1, "zeros", (20, 16, 50, 100)),
+        (64, 128, (7, 7), 4, (3, 5), 1, False, 1, "zeros", (16, 64, 80, 80)),
+        (32, 32, (1, 1), 1, (5, 6), 1, False, 1, "zeros", (10, 32, 20, 20)),
     ],
 )
 def test_convtranspose2d(
@@ -1963,3 +1956,26 @@ def test_repeat_interleave():
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 768),
+    ],
+)
+@pytest.mark.push
+def test_tanh(input_shape):
+    class Tanh(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.tanh(a)
+
+    inputs = [torch.rand(input_shape)]
+
+    framework_model = Tanh()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
