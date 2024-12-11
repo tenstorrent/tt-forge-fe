@@ -15,6 +15,39 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+@pytest.mark.xfail(reason="error: 'ttnn.conv2d' op Bias must only have data on the final dimenstion")
+@pytest.mark.parametrize(
+    "input_shape, in_channels, out_channels, kernel_size, padding_value",
+    [
+        ((1, 512, 6, 20), 512, 256, 3, 1),
+        ((1, 128, 32, 32), 128, 64, 5, 2),
+        ((1, 64, 64, 64), 64, 128, 3, 1),
+        ((1, 32, 128, 128), 32, 64, 7, 3),
+        ((1, 256, 16, 16), 256, 128, 5, 2),
+    ],
+)
+def test_conv2d_reflect_padding_mode(input_shape, in_channels, out_channels, kernel_size, padding_value):
+    class Conv2dReflectPad(nn.Module):
+        def __init__(self, in_channels, out_channels, kernel_size, padding_value):
+            super().__init__()
+            self.pad = nn.ReflectionPad2d(padding_value)
+            self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
+
+        def forward(self, input):
+            out = self.pad(input)
+            out = self.conv(out)
+            return out
+
+    framework_model = Conv2dReflectPad(in_channels, out_channels, kernel_size, padding_value)
+    framework_model.eval()
+
+    inputs = torch.rand(input_shape)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=[inputs])
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
 @pytest.mark.parametrize(
     "input_shape, sequence_lengths",
