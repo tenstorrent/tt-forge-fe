@@ -410,3 +410,84 @@ def test_loss_device():
             break
 
     print(f"Test (total) loss: {test_loss}")
+
+
+@pytest.mark.push
+def test_lora():
+    torch.manual_seed(0)
+
+    # Config
+    num_epochs = 3
+    batch_size = 1
+    learning_rate = 0.001
+
+    # Limit number of batches to run - quicker test
+    limit_num_batches = 1000
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size)
+
+    # Load TensorBoard writer (for logging)
+    writer = load_tb_writer("forge_mnist")
+
+    framework_model = MNISTLinear(bias=False)
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
+
+    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, 784)], training=True)
+
+    loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
+
+    loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
+    loss_inputs = to_forge_tensors(loss_inputs)
+
+    tt_loss = forge.compile(loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+    losses = []
+    for epoch_idx in range(num_epochs):
+        # Reset gradients (every epoch) - since our batch size is currently 1,
+        # we accumulate gradients across multiple batches (limit_num_batches),
+        # and then run the optimizer.
+        framework_optimizer.zero_grad()
+
+        total_loss = 0
+        for batch_idx, (data, target) in enumerate(train_loader):
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).float()
+
+            # Forward pass (prediction) on device
+            pred = tt_model(data)[0]
+            golden_pred = framework_model(data)
+            assert compare_with_golden(golden_pred, pred, VerifyConfig(pcc=0.95))
+
+            loss = tt_loss(pred, target)
+            total_loss += loss[0].item()
+
+            # Run backward pass on device
+            tt_loss.backward()
+
+            if batch_idx >= limit_num_batches:
+                break
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+        losses.append(total_loss)
+
+        # Adjust weights (on CPU)
+        framework_optimizer.step()
+
+    for idx, loss in enumerate(losses):
+        print(f"Epoch: {idx+1}: {loss}")
+
+    # test_loss = 0
+    # for batch_idx, (data, target) in enumerate(test_loader):
+    #     pred = tt_model(data)[0]
+    #     target = nn.functional.one_hot(target, num_classes=10).float()
+# 
+    #     test_loss += tt_loss(pred, target)[0]
+# 
+    #     if batch_idx == 1000:
+    #         break
+
+    # print(f"Test (total) loss: {test_loss}")
