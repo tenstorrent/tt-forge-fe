@@ -1251,15 +1251,28 @@ def decompose(type, attr, dc, inputs):
                     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
 
                     orig_shape = result.shape
-                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                    result = dc.op_with_named_attrs(
+                        "reshape",
+                        [result],
+                        {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
+                        (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
+                    )
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     spm = create_pad_reflect_sparse_picker(c, r, top, bottom, left, right)
                     spm = dc.tensor(spm)
-                    result = dc.op("sparse_matmul", [spm, result])
+                    result = dc.op("matmul", [spm, result])
                     result = dc.op(TransposeTM.create(-2, -1), [result])
-                    result = dc.op(
+                    result = dc.op_with_named_attrs(
                         "reshape",
                         [result],
+                        {
+                            "shape": (
+                                1,
+                                orig_shape[-3],
+                                orig_shape[-1] + total_padding_r,
+                                orig_shape[-2] + total_padding_c,
+                            )
+                        },
                         (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
                     )
 
@@ -1267,22 +1280,43 @@ def decompose(type, attr, dc, inputs):
                 else:
                     orig_shape = result.shape
                     if len(orig_shape) == 2:
-                        result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
+                        result = dc.op_with_named_attrs(
+                            "reshape",
+                            [result],
+                            {"shape": (1, orig_shape[-2] * orig_shape[-1])},
+                            (1, orig_shape[-2] * orig_shape[-1]),
+                        )
                     else:
-                        result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                        result = dc.op_with_named_attrs(
+                            "reshape",
+                            [result],
+                            {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
+                            (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
+                        )
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     spm = create_pad_reflect_sparse_picker(r, c, left, right, top, bottom)
                     spm = dc.tensor(spm)
-                    result = dc.op("sparse_matmul", [spm, result])
+                    result = dc.op("matmul", [spm, result])
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     if len(orig_shape) == 2:
-                        result = dc.op(
-                            "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-                        )
-                    else:
-                        result = dc.op(
+                        result = dc.op_with_named_attrs(
                             "reshape",
                             [result],
+                            {"shape": (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)},
+                            (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
+                        )
+                    else:
+                        result = dc.op_with_named_attrs(
+                            "reshape",
+                            [result],
+                            {
+                                "shape": (
+                                    1,
+                                    orig_shape[-3],
+                                    orig_shape[-2] + total_padding_r,
+                                    orig_shape[-1] + total_padding_c,
+                                )
+                            },
                             (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
                         )
 
