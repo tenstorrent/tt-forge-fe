@@ -62,3 +62,31 @@ def test_cross_entropy_loss(prediction_shape):
     torch_loss_out = torch_loss(prediction, target)
 
     assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=11e-3)
+
+
+@pytest.mark.parametrize(
+    "prediction_shape",
+    [
+        (2, 2),
+        (3, 5),
+        (32, 32),
+        (33, 127),
+        (128, 20),
+        (128, 128),
+    ],
+)
+def test_kl_div_loss(prediction_shape):
+    forge_loss = forge.op.loss.KLDivLoss("kl_div_loss", reduction="avg")
+    torch_loss = torch.nn.KLDivLoss(reduction="mean")
+
+    prediction = torch.randn(prediction_shape, requires_grad=True).to(torch.float32)
+    prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
+    target = torch.randn(prediction_shape).to(torch.float32)
+    # softmax the target
+    target = nn.functional.softmax(target, dim=-1)
+    target_forge = forge.tensor.Tensor.create_from_torch(target)
+
+    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss_out = forge_loss(prediction, target)[0]
+    torch_loss_out = torch_loss(prediction, target)
+    assert torch.allclose(torch_loss_out, forge_loss_out, rtol=5e-2)
