@@ -13,12 +13,20 @@ on:
           - nightly
           - nightly_sweeps
           - push or nightly
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
+        required: false
+        type: string
   workflow_call:
     inputs:
       test_mark:
         description: 'Test mark to run'
         required: false
         default: 'push'
+        type: string
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
+        required: false
         type: string
 
 jobs:
@@ -71,6 +79,7 @@ jobs:
         echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
         echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
 
+
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
@@ -85,6 +94,21 @@ jobs:
       run: |
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
+
+    - name: Update submodule if mlir_override is set
+      if: ${{ inputs.mlir_override }}
+      run: |
+        cd third_party/tt-mlir
+        git fetch
+        git checkout ${{ inputs.mlir_override }}
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
+        commit_sha=$(git rev-parse HEAD)
+        commit_title=$(git log -1 --pretty=%s)
+        echo "Branch name: $branch_name"
+        echo "Commit SHA: $commit_sha"
+        echo "Commit title: $commit_title"
+        echo "::notice::Using tt-mlir branch: $branch_name, commit: $commit_sha, title: $commit_title"
+        cd ../..
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
