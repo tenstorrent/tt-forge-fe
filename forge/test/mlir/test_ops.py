@@ -1979,3 +1979,20 @@ def test_tanh(input_shape):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+
+
+def test_adaptive_avgpool2d(test_device):
+    class AdaptiveAvgPool2D(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.pooler = nn.AdaptiveAvgPool2d((1, 1))
+
+        def forward(self, x):
+            return self.pooler(x)
+
+    compiler_cfg = forge.config._get_global_compiler_config()
+    framework_model = AdaptiveAvgPool2D()
+    inputs = torch.randn(1, 1088, 7, 7)
+    compiled_model = forge.compile(framework_model, sample_inputs=[inputs])
+
+    verify([inputs], framework_model, compiled_model)
