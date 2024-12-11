@@ -32,6 +32,68 @@ class MNISTLinear(nn.Module):
         return logits
 
 
+class LoraLayer(nn.Module):
+    def __init__(self, input_size, output_size, rank=8, alpha=4, dtype=torch.float32):
+        super(LoraLayer, self).__init__()
+        import math
+        # self.a = nn.Parameter(torch.empty(input_size, output_size, dtype=dtype), requires_grad=True)
+        # self.b = nn.Parameter(torch.zeros(rank, output_size, dtype=dtype), requires_grad=True)
+        self.a = nn.Linear(in_features=input_size, out_features=rank, bias=False)
+        self.b = nn.Linear(in_features=rank, out_features=output_size, bias=False)
+        self.alpha = alpha / rank
+
+        # nn.init.normal_(self.a, mean=0, std=1)
+        nn.init.kaiming_uniform_(self.a.weight, a=math.sqrt(5))
+        nn.init.zeros_(self.b.weight)
+
+    def forward(self, x):
+        logits = self.a(x)
+        logits = self.alpha * self.b(logits)
+        return logits
+
+
+class MNISTLora(nn.Module):
+    def __init__(
+        self, input_size=784, output_size=10, hidden_size=512, bias=True, rank=8, alpha=4, dtype=torch.float32
+    ):
+        super(MNISTLora, self).__init__()
+        self.linear1 = nn.Linear(input_size, hidden_size, bias=bias, dtype=dtype)
+        self.lora1 = LoraLayer(input_size, hidden_size, rank=rank, alpha=alpha, dtype=dtype)
+        self.relu1 = nn.ReLU()
+
+        # self.linear2 = nn.Linear(hidden_size, hidden_size, bias=bias, dtype=dtype)
+        # self.lora2 = LoraLayer(hidden_size, hidden_size, rank=rank, alpha=alpha, dtype=dtype)
+        # self.relu2 = nn.ReLU()
+
+        self.linear3 = nn.Linear(hidden_size, output_size, bias=bias, dtype=dtype)
+
+        self.freeze_linear_layers()
+
+    def forward(self, x):
+        first_layer_logits = self.relu1(self.linear1(x) + self.lora1(x))
+        # second_layer_logits = self.relu2(self.linear2(first_layer_logits) + self.lora2(first_layer_logits))
+        final_logits = self.linear3(first_layer_logits)
+
+        return final_logits
+
+    def freeze_linear_layers(self):
+        # for layer in [self.linear1, self.linear2, self.linear3]:
+        for layer in [self.linear1, self.linear3]:
+            for param in layer.parameters():
+                param.requires_grad = False
+
+def print_grads(named_params):
+    for name, params in named_params():
+        if params.requires_grad:
+            print(f"Layer {name}:\n{params.grad}\n")
+
+
+def print_trainable_weights(named_params):
+    for name, params in named_params():
+        if params.requires_grad:
+            print(f"Layer {name}:\n{params}\n")
+
+
 class EarlyStopping:
     def __init__(self, patience=3, mode="max"):
         assert mode in ["min", "max"]
