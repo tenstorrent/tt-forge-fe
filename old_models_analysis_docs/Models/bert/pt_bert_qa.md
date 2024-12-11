@@ -1,0 +1,492 @@
+<h1>Unique ops configuration and compiler support info</h1>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th colspan="3" halign="left">Operation Details</th>
+      <th colspan="4" halign="left">Component Passing Check</th>
+      <th>Issues</th>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <th>Operands</th>
+      <th>Arguments</th>
+      <th>Forge-Fe</th>
+      <th>MLIR</th>
+      <th>Metalium</th>
+      <th>N/A</th>
+      <th>Failure Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>add</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>add</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(1024,), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>add</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 384), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name/shape=const_10, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>add</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(4096,), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>add</td>
+      <td>Operand(type=Activation, name/shape=(384, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(1,), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>embedding</td>
+      <td>Operand(type=Activation, name/shape=(1, 384), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(28996, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][ttnn.embedding validation] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp a.get_dtype() == DataType::UINT32 or a.get_dtype() == DataType::BFLOAT16 Input must be UINT32 or BFLOAT16</td>
+    </tr>
+    <tr>
+      <td>embedding</td>
+      <td>Operand(type=Activation, name/shape=(1, 384), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(2, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][ttnn.embedding validation] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp a.get_dtype() == DataType::UINT32 or a.get_dtype() == DataType::BFLOAT16 Input must be UINT32 or BFLOAT16</td>
+    </tr>
+    <tr>
+      <td>embedding</td>
+      <td>Operand(type=Activation, name/shape=(1, 384), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(512, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][ttnn.embedding validation] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp a.get_dtype() == DataType::UINT32 or a.get_dtype() == DataType::BFLOAT16 Input must be UINT32 or BFLOAT16</td>
+    </tr>
+    <tr>
+      <td>gelu</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 4096), dtype=float32)</td>
+      <td>approximate : "none"</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>identity</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>identity</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 384), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>index</td>
+      <td>Operand(type=Activation, name/shape=bert.embeddings.token_type_ids, dtype=int64)</td>
+      <td>dim : -1<br>start : 0<br>stop : 384<br>stride : 1</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Runtime Data mismatch] RuntimeError Tensor data type mismatch: expected got</td>
+    </tr>
+    <tr>
+      <td>index</td>
+      <td>Operand(type=Activation, name/shape=bert.embeddings.position_ids, dtype=int64)</td>
+      <td>dim : -1<br>start : 0<br>stop : 384<br>stride : 1</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Runtime Data mismatch] RuntimeError Tensor data type mismatch: expected got</td>
+    </tr>
+    <tr>
+      <td>index</td>
+      <td>Operand(type=Activation, name/shape=qa_outputs.weight, dtype=float32)</td>
+      <td>dim : -2<br>start : 0<br>stop : 1<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>index</td>
+      <td>Operand(type=Activation, name/shape=qa_outputs.weight, dtype=float32)</td>
+      <td>dim : -2<br>start : 1<br>stop : 2<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>index</td>
+      <td>Operand(type=Activation, name/shape=qa_outputs.bias, dtype=float32)</td>
+      <td>dim : -1<br>start : 0<br>stop : 1<br>stride : 1</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
+    </tr>
+    <tr>
+      <td>index</td>
+      <td>Operand(type=Activation, name/shape=qa_outputs.bias, dtype=float32)</td>
+      <td>dim : -1<br>start : 1<br>stop : 2<br>stride : 1</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
+    </tr>
+    <tr>
+      <td>layernorm</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(1024,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, name/shape=(1024,), dtype=float32)</td>
+      <td>dim : -1<br>epsilon : 0.0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>matmul</td>
+      <td>Operand(type=Activation, name/shape=(384, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(1024, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Forge Verification Data mismatch] ValueError forge/forge/verify/verify.py Data mismatch (compare_with_golden)</td>
+    </tr>
+    <tr>
+      <td>matmul</td>
+      <td>Operand(type=Activation, name/shape=(16, 384, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(16, 64, 384), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>matmul</td>
+      <td>Operand(type=Activation, name/shape=(16, 384, 384), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(16, 384, 64), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>matmul</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(1024, 4096), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>matmul</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(4096, 1024), dtype=float32)</td>
+      <td></td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Forge Verification Data mismatch] ValueError forge/forge/verify/verify.py Data mismatch (compare_with_golden)</td>
+    </tr>
+    <tr>
+      <td>matmul</td>
+      <td>Operand(type=Activation, name/shape=(384, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, name/shape=(1024, 1), dtype=float32)</td>
+      <td></td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Forge Verification Data mismatch] ValueError forge/forge/verify/verify.py Data mismatch (compare_with_golden)</td>
+    </tr>
+    <tr>
+      <td>multiply</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 384), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name/shape=const_00, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>repeatinterleave</td>
+      <td>Operand(type=Activation, name/shape=(1, 384), dtype=int64)</td>
+      <td>repeats : 1<br>dim : 0</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph</td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)</td>
+      <td>shape : (384, 1024)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1024), dtype=float32)</td>
+      <td>shape : (1, 384, 16, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(384, 1024), dtype=float32)</td>
+      <td>shape : (1, 384, 1024)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 64), dtype=float32)</td>
+      <td>shape : (16, 384, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(16, 384, 384), dtype=float32)</td>
+      <td>shape : (1, 16, 384, 384)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 384), dtype=float32)</td>
+      <td>shape : (16, 384, 384)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 64, 384), dtype=float32)</td>
+      <td>shape : (16, 64, 384)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(16, 384, 64), dtype=float32)</td>
+      <td>shape : (1, 16, 384, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 16, 64), dtype=float32)</td>
+      <td>shape : (384, 1024)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>reshape</td>
+      <td>Operand(type=Activation, name/shape=(384, 1), dtype=float32)</td>
+      <td>shape : (1, 384, 1)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>softmax</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 384), dtype=float32)</td>
+      <td>dim : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>squeeze</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 1), dtype=float32)</td>
+      <td>dim : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=bert.encoder.layer.0.attention.self.query.weight, dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=(1, 384, 16, 64), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=(16, 384, 64), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 64), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=(1, 16, 384, 64), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=(16, 64, 384), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=bert.encoder.layer.0.intermediate.dense.weight, dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=bert.encoder.layer.0.output.dense.weight, dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>transpose</td>
+      <td>Operand(type=Activation, name/shape=(1, 1024), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
