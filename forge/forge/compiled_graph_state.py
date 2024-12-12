@@ -255,6 +255,17 @@ class CompiledModel:
             logger.info("Converting inputs and parameters to PyTorch tensors...")
             inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
 
+        if self.training():
+            for name, param in self.framework_module.module.named_parameters():
+                if param.requires_grad:
+                    our_tensor = self.fwd_compiled_graph_state.get_parameter_tensor(name)
+
+                    # For parameters that require gradients, we want to share the same tensor with the PyTorch module.
+                    # This is done in order to be able to run optimizer step on the cpu (via torch optimizers).
+                    # Ensure that this is the case:
+                    assert param is our_tensor
+                    assert id(param) == id(our_tensor)
+
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
@@ -272,7 +283,7 @@ class CompiledModel:
                 self.outputs[output_name] = output
                 model_outputs.append(output)
 
-        if self.fwd_compiled_graph_state.graph.training():
+        if self.training():
             # For executing loss and its backward graph on CPU, we need to tell torch to compute gradients.
             for idx, output in enumerate(model_outputs):
                 output.requires_grad = True
@@ -284,7 +295,7 @@ class CompiledModel:
         return self(inputs)
 
     def backward(self) -> List[torch.Tensor]:
-        assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
+        assert self.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
         consts_and_params = [
             *self.bwd_compiled_graph_state.get_ordered_constant_tensors(),
@@ -342,3 +353,6 @@ class CompiledModel:
             self.attached_module.backward()
 
         return grads
+
+    def training(self) -> bool:
+        return self.fwd_compiled_graph_state.graph.training()
