@@ -521,7 +521,12 @@ def decompose(type, attr, dc, inputs):
         if axis is None:
             import math
 
-            inp_node = dc.op("reshape", [inp_node], (1, math.prod(inp_node.shape.as_list())))
+            inp_node = dc.op_with_named_attrs(
+                "reshape",
+                [inp_node],
+                {"shape": (1, math.prod(inp_node.shape.as_list()))},
+                (1, math.prod(inp_node.shape.as_list())),
+            )
             axis = -1
 
         input_shape = inp_node.shape.as_list()
@@ -559,7 +564,9 @@ def decompose(type, attr, dc, inputs):
             "multiply",
             (inp_node, factor_tensor),
         )
-        max_1 = dc.op("reduce_max", [scaled_input], [axis])
+        max_1 = dc.op_with_named_attrs(
+            "reduce_max", [scaled_input], {"dim_arg": [axis], "keep_dim": True}, [axis, scaled_input.shape[axis], True]
+        )
         scaled_input = dc.op("subtract", (scaled_input, max_1))
         scaled_input = dc.op(
             "add",
@@ -582,7 +589,12 @@ def decompose(type, attr, dc, inputs):
             [mul_1, mul_2],
         )
         negative_add_1 = dc.op("multiply", [add_1, negative_ones])
-        negative_argmax = dc.op("reduce_max", [negative_add_1], [axis])
+        negative_argmax = dc.op_with_named_attrs(
+            "reduce_max",
+            [negative_add_1],
+            {"dim_arg": [axis], "keep_dim": True},
+            [axis, negative_add_1.shape[axis], True],
+        )
 
         output_neg_ones = torch.ones((negative_argmax.shape.as_list()), dtype=data_type) * (-1)
         output_neg_ones_tensor = dc.tensor(output_neg_ones)

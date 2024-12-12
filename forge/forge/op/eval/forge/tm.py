@@ -1034,7 +1034,7 @@ def decompose(type, attr, dc, inputs):
         if is_one_dim:
             # If input is a one-dimensional tensor, reshape it to a 2D tensor with one dimension equal to 1
             # and the other equal to the length. Use unsqueeze to add a dimension to the tensor.
-            act = dc.op("unsqueeze", [act], (0, len(act.shape)))
+            act = dc.op_with_named_attrs("unsqueeze", [act], {"dim": 0}, (0, len(act.shape)))
 
         row_indices = list(range(start, stop, stride))
 
@@ -1163,15 +1163,28 @@ def decompose(type, attr, dc, inputs):
                     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
 
                     orig_shape = result.shape
-                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                    result = dc.op_with_named_attrs(
+                        "reshape",
+                        [result],
+                        {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
+                        (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
+                    )
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     spm = create_pad_replicate_sparse_picker(c, r, top, bottom, left, right)
                     spm = dc.tensor(spm)
                     result = dc.op("sparse_matmul", [spm, result])
                     result = dc.op(TransposeTM.create(-2, -1), [result])
-                    result = dc.op(
+                    result = dc.op_with_named_attrs(
                         "reshape",
                         [result],
+                        {
+                            "shape": (
+                                1,
+                                orig_shape[-3],
+                                orig_shape[-1] + total_padding_r,
+                                orig_shape[-2] + total_padding_c,
+                            )
+                        },
                         (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
                     )
 
@@ -1179,24 +1192,21 @@ def decompose(type, attr, dc, inputs):
                 else:
                     orig_shape = result.shape
                     if len(orig_shape) == 2:
-                        result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
+                        shape = (1, orig_shape[-2] * orig_shape[-1])
                     else:
-                        result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                        shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
+                    result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     spm = create_pad_replicate_sparse_picker(r, c, left, right, top, bottom)
                     spm = dc.tensor(spm)
                     result = dc.op("sparse_matmul", [spm, result])
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     if len(orig_shape) == 2:
-                        result = dc.op(
-                            "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-                        )
+                        shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
                     else:
-                        result = dc.op(
-                            "reshape",
-                            [result],
-                            (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
-                        )
+                        shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
+
+                result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
 
                 dc.fuse(result)
                 return
@@ -1212,7 +1222,12 @@ def decompose(type, attr, dc, inputs):
                     pad_shape[c_dim_axis] = left
                     tensor = torch.zeros(pad_shape)
                     const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [const_tensor, result], [c_dim_axis])
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [const_tensor, result], {"dim": c_dim_axis}, [c_dim_axis]
+                    )
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [const_tensor, result], {"dim": c_dim_axis}, [c_dim_axis]
+                    )
 
                 if right > 0:
                     pad_shape = result.shape.as_list().copy()
@@ -1221,14 +1236,24 @@ def decompose(type, attr, dc, inputs):
                     )
                     tensor = torch.zeros(pad_shape)
                     const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [result, const_tensor], [c_dim_axis])
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [result, const_tensor], {"dim": c_dim_axis}, [c_dim_axis]
+                    )
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [result, const_tensor], {"dim": c_dim_axis}, [c_dim_axis]
+                    )
 
                 if top > 0:
                     pad_shape = result.shape.as_list().copy()
                     pad_shape[r_dim_axis] = top
                     tensor = torch.zeros(pad_shape)
                     const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [const_tensor, result], [r_dim_axis])
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [const_tensor, result], {"dim": r_dim_axis}, [r_dim_axis]
+                    )
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [const_tensor, result], {"dim": r_dim_axis}, [r_dim_axis]
+                    )
 
                 if bottom > 0:
                     pad_shape = result.shape.as_list().copy()
@@ -1237,7 +1262,12 @@ def decompose(type, attr, dc, inputs):
                     )
                     tensor = torch.zeros(pad_shape)
                     const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [result, const_tensor], [r_dim_axis])
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [result, const_tensor], {"dim": r_dim_axis}, [r_dim_axis]
+                    )
+                    result = dc.op_with_named_attrs(
+                        "concatenate", [result, const_tensor], {"dim": r_dim_axis}, [r_dim_axis]
+                    )
 
                 result = dc.op("narrow", [result], (c_dim_axis, 0, total_padding_c + c, result.shape[c_dim_axis]))
                 if channel_last:

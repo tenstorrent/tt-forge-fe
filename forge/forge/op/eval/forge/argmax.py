@@ -70,7 +70,12 @@ class Argmax(PyEltwiseUnaryOp):
         if axis is None:
             import math
 
-            inp_node = dc.op("reshape", [inp_node], (1, math.prod(inp_node.shape.as_list())))
+            inp_node = dc.op_with_named_attrs(
+                "reshape",
+                [inp_node],
+                {"shape": (1, math.prod(inp_node.shape.as_list()))},
+                (1, math.prod(inp_node.shape.as_list())),
+            )
             axis = -1
 
         input_shape = inp_node.shape.as_list()
@@ -90,7 +95,7 @@ class Argmax(PyEltwiseUnaryOp):
             "multiply",
             [inp_node, factor_tensor],
         )
-        softmax = dc.op("softmax", [mult_1], (axis, 1))
+        softmax = dc.op_with_named_attrs("softmax", [mult_1], {"dimension": axis}, (axis, 1))
         mult_2 = dc.op("multiply", [softmax, range_tensor])
         reduce_sum = dc.op_with_named_attrs(
             "reduce_sum", (mult_2,), {"dim_arg": [axis], "keep_dim": True}, (axis, True)

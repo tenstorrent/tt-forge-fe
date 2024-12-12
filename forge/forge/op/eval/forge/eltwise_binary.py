@@ -398,11 +398,11 @@ def decompose(op_type, attr, dc, inputs):
     ops0_dims = len(inputs[0].shape)
     ops1_dims = len(inputs[1].shape)
     if ops0_dims > ops1_dims and ops0_dims == 5:
-        ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+        ops1 = dc.op_with_named_attrs("reshape", [inputs[1]], {"shape": list(inputs[0].shape)}, list(inputs[0].shape))
         result = dc.op(op_type, [inputs[0], ops1])
         dc.fuse(result)
     elif ops1_dims > ops0_dims and ops1_dims == 5:
-        ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+        ops0 = dc.op_with_named_attrs("reshape", [inputs[0]], {"shape": list(inputs[1].shape)}, list(inputs[1].shape))
         result = dc.op(op_type, [ops0, inputs[1]])
         dc.fuse(result)
 
@@ -449,13 +449,17 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
 
         if slice_factor != None:
             concat_z = dc.op("interleave", [operand0, operand1], (-3, 1))
-            result = dc.op("reduce_max", [concat_z], (-3, 2))
+            result = dc.op_with_named_attrs(
+                "reduce_max", [concat_z], {"dim_arg": [-3], "keep_dim": True}, (-3, 2, True)
+            )
         else:
-            concat_z = dc.op("concatenate", [operand0, operand1], (-3,))
-            result = dc.op("reduce_max", [concat_z], (-3,))
+            concat_z = dc.op_with_named_attrs("concatenate", [operand0, operand1], {"dim": -3}, (-3,))
+            result = dc.op_with_named_attrs(
+                "reduce_max", [concat_z], {"dim_arg": [-3], "keep_dim": True}, (-3, concat_z.shape[-3], True)
+            )
 
         while len(result.shape) > max_operand_nd:
-            result = dc.op("squeeze", [result], (0,))
+            result = dc.op_with_named_attrs("squeeze", [result], {"dim": 0}, (0,))
 
         dc.fuse(result)
         return
@@ -463,11 +467,15 @@ def decompose_post_autograd(op_type, attr, dc, inputs):
         ops0_dims = len(inputs[0].shape)
         ops1_dims = len(inputs[1].shape)
         if ops0_dims > ops1_dims and ops0_dims == 5:
-            ops1 = dc.op("reshape", [inputs[1]], list(inputs[0].shape))
+            ops1 = dc.op_with_named_attrs(
+                "reshape", [inputs[1]], {"shape": list(inputs[0].shape)}, list(inputs[0].shape)
+            )
             result = dc.op(op_type, [inputs[0], ops1])
             dc.fuse(result)
         elif ops1_dims > ops0_dims and ops1_dims == 5:
-            ops0 = dc.op("reshape", [inputs[0]], list(inputs[1].shape))
+            ops0 = dc.op_with_named_attrs(
+                "reshape", [inputs[0]], {"shape": list(inputs[0].shape)}, list(inputs[1].shape)
+            )
             result = dc.op(op_type, [ops0, inputs[1]])
             dc.fuse(result)
 
