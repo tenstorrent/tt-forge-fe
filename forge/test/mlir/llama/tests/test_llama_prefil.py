@@ -7,7 +7,7 @@ from transformers import LlamaTokenizer
 
 import forge
 from test.mlir.llama.utils.utils import load_model
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 def prefil_on_cpu(model, input_ids):
