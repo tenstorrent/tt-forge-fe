@@ -255,7 +255,7 @@ class CompiledModel:
             logger.info("Converting inputs and parameters to PyTorch tensors...")
             inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
 
-        if self.training():
+        if self.training() and isinstance(self.framework_module, PyTorchModule):
             for name, param in self.framework_module.module.named_parameters():
                 if param.requires_grad:
                     our_tensor = self.fwd_compiled_graph_state.get_parameter_tensor(name)
