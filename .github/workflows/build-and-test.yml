@@ -115,6 +115,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        apt-get update
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
