@@ -8,7 +8,7 @@ import forge
 from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite as efflite
 import os
 import torch
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
