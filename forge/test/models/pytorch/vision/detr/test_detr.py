@@ -17,11 +17,14 @@ from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_d
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")
+@pytest.mark.xfail(reason="Tensor mismatch on Framework vs. Forge codegen output 0")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection(variant):
 
     # Load the model
+    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.enable_tvm_constant_prop = True
+    compiler_cfg.convert_framework_params_to_tvm = True
     framework_model = DetrForObjectDetection.from_pretrained(variant)
 
     # Preprocess the image for the model
