@@ -77,7 +77,8 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          apt install -y libgl1-mesa-glx
+          apt-get update
+          apt install -y libgl1 libglx-mesa0
           set -o pipefail # Ensures that the exit code reflects the first command that fails
           python scripts/model_analysis.py \
             --test_directory_or_file_path forge/test/models/pytorch \
