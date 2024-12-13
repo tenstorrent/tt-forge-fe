@@ -7,6 +7,7 @@ from forge._C import DataFormat
 from forge._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType
 from ....forgeglobal import TILE_DIM
 
+
 def eval(type, attr, ops):
     assert type == "embedding"
     assert len(ops) == 2

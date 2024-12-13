@@ -10,7 +10,6 @@ import torch
 
 
 def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int) -> Tensor:
-
     """
     Tranpose X and Y (i.e. rows and columns) dimensions.
 
@@ -85,9 +84,7 @@ def Reshape(name: str, operandA: Tensor, shape: Tuple[int, ...]) -> Tensor:
     return op("reshape", name, operandA, attrs=shape, shape=shape).get_tensor()
 
 
-def Index(
-    name: str, operandA: Tensor, dim: int, start: int, stop: int = None, stride: int = 1
-) -> Tensor:
+def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, stride: int = 1) -> Tensor:
     """
     TM
 
@@ -198,7 +195,7 @@ def Select(
     Tensor
         Forge tensor
     """
-    dims = len(operandA.shape.dims)
+    dims = len(operandA.shape)
     if dim < 0:
         dim += dims
 
@@ -208,21 +205,17 @@ def Select(
         index = (index, 1)
 
     if stride == 0:
-        stride = operandA.shape.get_pytorch_shape()[dim]
+        stride = operandA.shape[dim]
 
     start, length = index
-    assert (
-        start < operandA.shape.get_pytorch_shape()[dim]
-    ), f"start = {start} should be < operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
-    assert (start + length) <= operandA.shape.get_pytorch_shape()[
+    assert start < operandA.shape[dim], f"start = {start} should be < operandA.shape[{dim}] = {operandA.shape[dim]}"
+    assert (start + length) <= operandA.shape[
         dim
-    ], f"(start = {start} + length = {length}) should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
+    ], f"(start = {start} + length = {length}) should be <= operandA.shape[{dim}] = {operandA.shape[dim]}"
     assert (
-        stride <= operandA.shape.get_pytorch_shape()[dim]
-    ), f"stride = {stride} should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
-    assert (
-        start + length
-    ) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
+        stride <= operandA.shape[dim]
+    ), f"stride = {stride} should be <= operandA.shape[{dim}] = {operandA.shape[dim]}"
+    assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
     return op(
@@ -409,7 +402,14 @@ def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Ten
     Tensor
         Forge tensor
     """
-    return op("repeat_interleave", name, operandA, attrs=(repeats, dim), repeats=repeats, dim=dim).get_tensor()
+    return op(
+        "repeat_interleave",
+        name,
+        operandA,
+        attrs=(repeats, dim),
+        repeats=repeats,
+        dim=dim,
+    ).get_tensor()
 
 
 def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
@@ -433,9 +433,7 @@ def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
         Forge tensor
     """
 
-    return op(
-        "unsqueeze", name, operandA, attrs=(dim, len(operandA.shape)), dim=dim
-    ).get_tensor()
+    return op("unsqueeze", name, operandA, attrs=(dim, len(operandA.shape)), dim=dim).get_tensor()
 
 
 def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
@@ -462,9 +460,7 @@ def Squeeze(name: str, operandA: Tensor, dim: int) -> Tensor:
     return op("squeeze", name, operandA, attrs=(dim,), dim=dim).get_tensor()
 
 
-def Narrow(
-    name: str, operandA: Tensor, dim: int, start: int, length: int, original_length: int
-) -> Tensor:
+def Narrow(name: str, operandA: Tensor, dim: int, start: int, length: int, original_length: int) -> Tensor:
     """
     TM
 
@@ -494,9 +490,7 @@ def Narrow(
         Forge tensor
     """
 
-    return op(
-        "narrow", name, operandA, attrs=(dim, start, length, original_length)
-    ).get_tensor()
+    return op("narrow", name, operandA, attrs=(dim, start, length, original_length)).get_tensor()
 
 
 def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
@@ -519,9 +513,7 @@ def PixelShuffle(name: str, operandA: Tensor, upscale_factor: int) -> Tensor:
     return op("pixel_shuffle", name, operandA, attrs=(upscale_factor,)).get_tensor()
 
 
-def ForgePad(
-    name: str, operandA: Tensor, paddings: Tuple[int, int], value: float
-) -> Tensor:
+def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: float) -> Tensor:
     """
     Pad operation that expands a given tensor with arbitrary number of tiles by any dimension.
 
@@ -539,9 +531,7 @@ def ForgePad(
     value: float
         Value to pad with
     """
-    return op(
-        "forge_pad", name, operandA, attrs=(paddings[0], paddings[1], value)
-    ).get_tensor()
+    return op("forge_pad", name, operandA, attrs=(paddings[0], paddings[1], value)).get_tensor()
 
 
 def ForgeUnpad(

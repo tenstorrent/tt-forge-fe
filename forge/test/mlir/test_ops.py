@@ -1978,7 +1978,7 @@ def test_tanh(input_shape):
     framework_model = Tanh()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
@@ -1998,7 +1998,7 @@ def test_select(shape, dim, begin, length, stride):
             x = forge.op.Select("select_op", x, dim, [begin, length], stride)
             return x
 
-    inputs = [torch.rand(*shape)]
+    inputs = to_forge_tensors([torch.rand(*shape)])
     framework_model = Select()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 

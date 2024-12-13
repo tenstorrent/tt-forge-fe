@@ -7,6 +7,7 @@ from forge._C import DataFormat
 from forge._C.graph import RuntimeTensorTransform, RuntimeTensorTransformType
 from ....forgeglobal import TILE_DIM
 
+
 def eval(type, attr, ops):
     assert type == "embedding_bw"
     assert len(ops) == 2
@@ -27,12 +28,12 @@ def shape(type, attr, tensor_shapes):
 
 
 def lower(type, attr, lc, ops, outputs):
-    pass
+    assert False, "embedding_bw should not be lowered"
 
 
 def decompose(type, attr, dc, inputs):
-    pass
+    assert False, "embedding_bw should not be decomposed"
 
 
 def backward(type, attr, ac, operand, inputs, output, grad):
-    pass
+    assert False, "embedding_bw should not be backwarded"

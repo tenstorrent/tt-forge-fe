@@ -35,9 +35,7 @@ def eval(type, attr, ops):
 
         # Check operands
         for t_op in t_ops:
-            assert (
-                len(t_op.shape) == 4
-            ), f"Tensor must have 4 dimensions, given {len(t_op.shape)}"
+            assert len(t_op.shape) == 4, f"Tensor must have 4 dimensions, given {len(t_op.shape)}"
 
         # To forge shape
         for i in range(len(t_ops)):
@@ -124,9 +122,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
     if type == "conv_sum":
         shapes = []
         for op in ops:
-            assert (
-                len(op) <= 4
-            ), "Shape of an operand must be smaller than or equal to 4"
+            assert len(op) <= 4, "Shape of an operand must be smaller than or equal to 4"
             if len(op) < 4:
                 op = (4 - len(op)) * (1,) + op
             if len(shapes) > 0:
@@ -205,9 +201,7 @@ def lower(type, attr, lc, ops, outputs):
         assert len(attr) == 2, "Interleave should have 2 attr"
         axis, stride = attr
         assert axis == -3 and stride == 1
-        return lc.op(
-            Splice.create_interleave(axis, stride, list(op.shape for op in ops)), ops
-        )
+        return lc.op(Splice.create_interleave(axis, stride, list(op.shape for op in ops)), ops)
 
     assert False, f"{type} not defined in eltwise_nary"
 
@@ -218,9 +212,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         x = attr[1]
         shifts = attr[2:]
 
-        return ac.op(
-            "conv_sum", [grad], [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]]
-        )
+        return ac.op("conv_sum", [grad], [y, x, -shifts[operand * 2], -shifts[operand * 2 + 1]])
 
     elif op_type == "concatenate":
         axis = attr[0]
@@ -256,9 +248,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             result = ac.op("pad_tile", (result,), (-2, grad.shape[-2]))
         result = ac.op("hstack", (result,), (num_operands,))
         if grad.shape[-2] % TILE_DIM != 0:
-            result = ac.op(
-                "narrow", (result,), (-2, 0, grad.shape[-2], result.shape[-2])
-            )
+            result = ac.op("narrow", (result,), (-2, 0, grad.shape[-2], result.shape[-2]))
         result = ac.op(
             "select",
             (result,),
@@ -270,9 +260,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
             ),
         )
         if grad.shape[-1] % TILE_DIM != 0:
-            result = ac.op(
-                "narrow", (result,), (-1, 0, grad.shape[-1], result.shape[-1])
-            )
+            result = ac.op("narrow", (result,), (-1, 0, grad.shape[-1], result.shape[-1]))
         return result
 
     assert False, f"{op_type} not defined in eltwise_nary"
@@ -293,14 +281,10 @@ def decompose(type, attr, dc, inputs):
                 inp_shape.insert(axis + 1, 1)
             else:
                 inp_shape.insert(axis, 1)
-            new_inp = dc.op_with_named_attrs(
-                "reshape", [inp], {"shape": (*inp_shape,)}, (*inp_shape,)
-            )
+            new_inp = dc.op_with_named_attrs("reshape", [inp], {"shape": (*inp_shape,)}, (*inp_shape,))
             new_inputs.append(new_inp)
 
-        output = dc.op_with_named_attrs(
-            "concatenate", new_inputs, {"dim": (axis)}, (axis,)
-        )
+        output = dc.op_with_named_attrs("concatenate", new_inputs, {"dim": (axis)}, (axis,))
         dc.fuse(output)
 
     if type == "concatenate":

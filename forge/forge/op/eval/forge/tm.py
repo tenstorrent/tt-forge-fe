@@ -881,8 +881,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 break
 
             # pass the gradient for selected part
-            grad_slice = ac.op("select", (grad,), (dim, grad_offset, length, current_size),
-                               named_attrs={"dim": dim, "begin": grad_offset, "length": length, "stride": current_size})
+            grad_slice = ac.op(
+                "select",
+                (grad,),
+                (dim, grad_offset, length, current_size),
+                named_attrs={"dim": dim, "begin": grad_offset, "length": length, "stride": current_size},
+            )
             if grad_return is None:
                 grad_return = grad_slice
             else:
@@ -955,7 +959,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         dim = attr[0]
         if grad.shape.len() == 4:  # Cannot unsqueeze beyond 4D
             return ac.op(Nop.create(), (grad,))
-        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()),  named_attrs={"dim": dim})
+        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()), named_attrs={"dim": dim})
 
     elif type == "broadcast":
         assert len(attr) == 3

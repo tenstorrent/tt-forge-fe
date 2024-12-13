@@ -25,6 +25,4 @@ def test_llama_backward(model_path):
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=1e-3)
 
     # Compile the model with loss and optimizer, this will invoke an autograd pass which produces bwd graph.
-    compiled_model = forge.compile(
-        framework_model, input_ids, loss=loss_fn, optimizer=framework_optimizer
-    )
+    compiled_model = forge.compile(framework_model, input_ids, loss=loss_fn, optimizer=framework_optimizer)
