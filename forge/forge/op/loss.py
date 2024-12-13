@@ -16,15 +16,15 @@ def validate_shapes(min_dim=None, max_dim=None):
         def wrapper(self, predictions, labels, *args, **kwargs):
             assert (
                 predictions.ndim() == labels.ndim()
-            ), f"Number of dimensions must match. Got {predictions.ndim()} and {labels.ndim()}."
+            ), f"Number of dimensions for predictions and labels must match. Got {predictions.ndim()} and {labels.ndim()}."
             if min_dim is not None:
                 assert (
                     predictions.ndim() >= min_dim
-                ), f"Number of dimensions must be at least {min_dim}. Got {predictions.ndim()}."
+                ), f"Number of dimensions of predictions and labels must be at least {min_dim}. Got {predictions.ndim()}."
             if max_dim is not None:
                 assert (
                     predictions.ndim() <= max_dim
-                ), f"Number of dimensions must be at most {max_dim}. Got {predictions.ndim()}."
+                ), f"Number of dimensions of predictions and labels must be at most {max_dim}. Got {predictions.ndim()}."
             assert (
                 predictions.shape == labels.shape
             ), f"Shapes of predictions and labels must match. predictions.shape={predictions.shape} labels.shape={labels.shape}."
@@ -49,6 +49,8 @@ def reduce_loss(reduction, loss):
 
     op = reduction_op[reduction]
     dims = loss.ndim()
+    # hack for 1D tensors described in issue
+    # https://github.com/tenstorrent/tt-forge-fe/issues/907
     for i in range(-1, -1 - dims, -1):
         loss = op(f"reduce_loss_{reduction}_dim_{i}", loss, i)
     return loss
