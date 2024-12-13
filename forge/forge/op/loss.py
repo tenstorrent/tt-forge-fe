@@ -111,7 +111,6 @@ class MSELoss(ForgeModule):
         self.reduction = reduction
         self.is_loss = True
 
-
     # ndim > 2 does not work all the time because of the following issue:
     # https://github.com/tenstorrent/tt-metal/issues/15996
     @validate_shapes(min_dim=1, max_dim=2)
@@ -123,9 +122,8 @@ class MSELoss(ForgeModule):
 
 
 class NLLLoss(ForgeModule):
-    def __init__(self, name: str, reduction: str = "avg"):
+    def __init__(self, name: str):
         super().__init__(name)
-        self.reduction = reduction
         self.is_loss = True
 
     @validate_shapes(min_dim=2, max_dim=2)
