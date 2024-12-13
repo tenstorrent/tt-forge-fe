@@ -54,8 +54,8 @@ class AllCloseValueChecker(ValueChecker):
             atol, rtol = compute_required_tolerances(fw_out, co_out)
             raise ValueError(
                 f"Data mismatch -> AllCloseValueChecker (all_close):\n"
-                f"- Current tolerances: rtol={self.rtol}, atol={self.atol}\n"
-                f"- Required tolerances for test to pass: rtol={rtol}, atol={atol}\n"
+                f"- Tensor mismatch. Required rtol={self.rtol}, atol={self.atol}\n"
+                f"- Observed maximum relative diff: {rtol}, maximum absolute diff: {atol}\n"
                 f"- Framework output: ({fw_out.shape})\n"
                 f"{fw_out}\n"
                 f"- Compiled model output: ({co_out.shape})\n"
@@ -63,8 +63,8 @@ class AllCloseValueChecker(ValueChecker):
             )
 
 
-class FullChecker(AutomaticValueChecker):
-    """Performs all checks including PCC and all_close."""
+class FullValueChecker(ValueChecker):
+    """Performs PCC and all_close for float tensors."""
 
     def __init__(
         self, pcc: float = 0.99, rtol: float = 1e-05, atol: float = 1e-08, dissimilarity_threshold: float = 1e-03
@@ -76,8 +76,6 @@ class FullChecker(AutomaticValueChecker):
         )
 
     def check(self, fw_out, co_out):
-        # Combines all checks (PCC and allclose)
-
         if not compare_with_golden(fw_out, co_out, self.pcc, self.rtol, self.atol, self.dissimilarity_threshold):
             raise ValueError(
                 f"Data mismatch -> FullChecker (compare_with_golden): framework_model={fw_out}, compiled_model={co_out}"
@@ -95,8 +93,8 @@ class FullChecker(AutomaticValueChecker):
             atol, rtol = compute_required_tolerances(fw_out, co_out)
             raise ValueError(
                 f"Data mismatch -> FullChecker (all_close):\n"
-                f"- Current tolerances: rtol={self.rtol}, atol={self.atol}\n"
-                f"- Required tolerances for test to pass: rtol={rtol}, atol={atol}\n"
+                f"- Tensor mismatch. Required rtol={self.rtol}, atol={self.atol}\n"
+                f"- Observed maximum relative diff: {rtol}, maximum absolute diff: {atol}\n"
                 f"- Framework output: ({fw_out.shape})\n"
                 f"{fw_out}\n"
                 f"- Compiled model output: ({co_out.shape})\n"

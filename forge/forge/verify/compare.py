@@ -35,8 +35,8 @@ def compare_with_golden(
         all_close = torch.allclose(golden, calculated, rtol=rtol, atol=atol)
         if not all_close:
             req_atol, req_rtol = compute_required_tolerances(golden, calculated)
-            logger.error("Tensor mismatch. Current rtol={}, atol={}", rtol, atol)
-            logger.error("Required to pass the test rtol={}, atol={}", req_rtol, req_atol)
+            logger.error("Tensor mismatch. Required rtol={}, atol={}", rtol, atol)
+            logger.error("Observed maximum relative diff: {}, maximum absolute diff: {}", req_rtol, req_atol)
             logger.error("Golden: (shape = {}", golden.shape)
             logger.error(golden)
             logger.error("Calculated: (shape = {}", calculated.shape)
