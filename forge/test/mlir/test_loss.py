@@ -7,7 +7,6 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.compare import compare_with_golden
 
 
 @pytest.mark.parametrize(

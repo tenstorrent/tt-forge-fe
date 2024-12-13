@@ -10,7 +10,6 @@ from forge.tensor import to_pt_tensors
 from forge.verify.compare import compare_with_golden
 from forge.config import _get_global_compiler_config
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 from forge._C import DataFormat
 
 
@@ -125,7 +124,7 @@ def test_dual_conv2d():
     framework_model = DualConv2d()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -187,4 +186,4 @@ def test_maxpool2d(
     framework_model = MaxPool()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
