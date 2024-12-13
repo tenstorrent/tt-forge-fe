@@ -19,7 +19,7 @@ from transformers import MobileNetV2ForSemanticSegmentation
 
 import forge
 from test.utils import download_model
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):

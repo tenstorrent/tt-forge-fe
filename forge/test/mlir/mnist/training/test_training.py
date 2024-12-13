@@ -12,7 +12,7 @@ from loguru import logger
 import forge
 from forge.op.loss import CrossEntropyLoss, L1Loss
 from ..utils import *
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 from forge.verify.config import VerifyConfig
 from forge.tensor import to_forge_tensors
 
