@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 
 import torch
@@ -9,6 +8,7 @@ from torch import nn
 
 import forge
 from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 
@@ -39,7 +39,7 @@ def test_add(shapes):
     framework_model = Add()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -167,7 +167,7 @@ def test_matmul(shapes):
     framework_model = Matmul()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(pcc=0.95, verify_allclose=False))
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
 
 
 @pytest.mark.parametrize(
@@ -206,7 +206,7 @@ def test_multiply(shapes):
     framework_model = Multiply()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -215,7 +215,6 @@ def test_multiply(shapes):
         (1, 11, 2048),
     ],
 )
-@pytest.mark.xfail(reason="pcc < 0.75")
 @pytest.mark.push
 def test_reduce_avg(shapes):
     class ReduceAvg(nn.Module):
@@ -230,7 +229,7 @@ def test_reduce_avg(shapes):
     framework_model = ReduceAvg()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(pcc=0.75))
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))
 
 
 @pytest.mark.parametrize(
@@ -253,7 +252,7 @@ def test_sigmoid(shapes):
     framework_model = Sigmoid()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -276,7 +275,7 @@ def test_reciprocal(shapes):
     framework_model = Reciprocal()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -350,7 +349,7 @@ def test_softmax(shapes):
     framework_model = Softmax(dim)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -434,4 +433,4 @@ def test_transpose(params):
     framework_model = Transpose(dims)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)

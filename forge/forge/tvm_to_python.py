@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import re
 import json
-from collections import OrderedDict
 from typing import Dict, List
 from enum import Enum
 
