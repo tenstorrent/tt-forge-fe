@@ -20,7 +20,7 @@ from forge.op.eval.common import compare_with_golden
 @pytest.mark.model_analysis
 # @pytest.mark.xfail(reason="Failing with pcc=0.82")
 def test_nbeats_with_seasonality_basis(test_device):
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -33,7 +33,7 @@ def test_nbeats_with_seasonality_basis(test_device):
         layer_size=2048,
     )
     pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_seasonality")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_seasonality", compiler_cfg=compiler_cfg)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
     fw_out = pytorch_model(*inputs)
@@ -48,14 +48,14 @@ def test_nbeats_with_seasonality_basis(test_device):
 @pytest.mark.model_analysis
 # @pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_generic_basis(test_device):
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
     pytorch_model.eval()
 
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_generic")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_generic", compiler_cfg=compiler_cfg)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
     fw_out = pytorch_model(*inputs)
@@ -70,7 +70,7 @@ def test_nbeats_with_generic_basis(test_device):
 @pytest.mark.model_analysis
 # @pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_trend_basis(test_device):
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -84,7 +84,7 @@ def test_nbeats_with_trend_basis(test_device):
     )
     pytorch_model.eval()
 
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_trend")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_trend", compiler_cfg=compiler_cfg)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
     fw_out = pytorch_model(*inputs)

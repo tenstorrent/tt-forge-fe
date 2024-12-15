@@ -15,7 +15,7 @@ from forge.op.eval.common import compare_with_golden
 @pytest.mark.nightly
 def test_efficientnet_lite_0_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
@@ -26,7 +26,7 @@ def test_efficientnet_lite_0_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_0")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_0",compiler_cfg=compiler_cfg)
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
 
@@ -41,7 +41,7 @@ def test_efficientnet_lite_0_pytorch(test_device):
 def test_efficientnet_lite_1_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -53,7 +53,7 @@ def test_efficientnet_lite_1_pytorch(test_device):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
 
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3",compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -69,7 +69,7 @@ def test_efficientnet_lite_1_pytorch(test_device):
 def test_efficientnet_lite_2_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
@@ -80,7 +80,7 @@ def test_efficientnet_lite_2_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -96,7 +96,7 @@ def test_efficientnet_lite_2_pytorch(test_device):
 def test_efficientnet_lite_3_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
@@ -107,8 +107,8 @@ def test_efficientnet_lite_3_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3", compiler_cfg=compiler_cfg)
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -124,7 +124,7 @@ def test_efficientnet_lite_3_pytorch(test_device):
 def test_efficientnet_lite_4_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
@@ -135,9 +135,9 @@ def test_efficientnet_lite_4_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3", compiler_cfg=compiler_cfg)
 
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)

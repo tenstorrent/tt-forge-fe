@@ -18,7 +18,7 @@ from forge.op.eval.common import compare_with_golden
 
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Create Forge module from PyTorch model
     model = MobileNetV1(9)
@@ -26,14 +26,14 @@ def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
     input_shape = (1, 3, 64, 64)
     image_tensor = torch.rand(*input_shape)
 
-    return model, [image_tensor], {}
+    return model, [image_tensor], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Invalid arguments to reshape")
 def test_mobilenetv1_basic(test_device):
-    model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_mobilenetV1_base_custom_pytorch(
         test_device,
         None,
     )
@@ -50,7 +50,7 @@ def test_mobilenetv1_basic(test_device):
 
 def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Create Forge module from PyTorch model
@@ -65,22 +65,22 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model, [image_tensor], {}, compiler_config
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_mobilenetv1_192(test_device):
-    model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_mobilenetv1_imgcls_hf_pytorch(
         test_device,
         "google/mobilenet_v1_0.75_192",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_192")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_192", compiler_cfg=compiler_cfg)
 
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Create Forge module from PyTorch model
@@ -94,14 +94,14 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model, [image_tensor], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_mobilenetv1_224(test_device):
-    model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_mobilenetV1I224_imgcls_hf_pytorch(
         test_device,
         "google/mobilenet_v1_1.0_224",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_224")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_224", compiler_cfg=compiler_cfg)

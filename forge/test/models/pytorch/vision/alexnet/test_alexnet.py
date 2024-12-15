@@ -17,7 +17,7 @@ import os
 @pytest.mark.model_analysis
 def test_alexnet_torchhub(test_device):
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
@@ -44,14 +44,14 @@ def test_alexnet_torchhub(test_device):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_torchhub")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_torchhub", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_osmr(test_device):
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     # Load model
@@ -78,4 +78,4 @@ def test_alexnet_osmr(test_device):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_osmr")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_osmr", compiler_cfg=compiler_cfg)

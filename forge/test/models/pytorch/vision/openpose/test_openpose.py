@@ -26,7 +26,7 @@ variants = [
 
 def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Init config
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
@@ -48,24 +48,24 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Sanity run
     cpu_out = framework_model(img_tensor)
 
-    return framework_model, [img_tensor], {}
+    return framework_model, [img_tensor], {}, compiler_cfg
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_openpose_basic(variant, test_device):
-    model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_openpose_posdet_custom_pytorch(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}", compiler_cfg=compiler_cfg)
 
 
 def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
@@ -78,7 +78,7 @@ def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
     # Sanity run
     cpu_out = framework_model(img_tensor)
 
-    return framework_model, [img_tensor], {}
+    return framework_model, [img_tensor], {}, compiler_cfg
 
 
 variants = [
@@ -91,8 +91,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_openpose_osmr(variant, test_device):
-    model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_openpose_posdet_osmr_pytorch(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}", compiler_cfg=compiler_cfg)

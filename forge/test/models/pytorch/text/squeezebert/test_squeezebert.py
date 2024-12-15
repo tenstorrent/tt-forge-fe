@@ -14,7 +14,7 @@ def test_squeezebert_sequence_classification_pytorch(test_device):
     tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
     model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Example from multi-nli validation set
@@ -30,4 +30,4 @@ def test_squeezebert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_squeezebert")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_squeezebert", compiler_cfg=compiler_cfg)

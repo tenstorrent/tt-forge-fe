@@ -25,7 +25,7 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 
 def generate_model_hrnet_imgcls_osmr_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -66,7 +66,7 @@ def generate_model_hrnet_imgcls_osmr_pytorch(variant):
         input_batch = torch.rand(1, 3, 224, 224)
     print(input_batch.shape)
 
-    return model, [input_batch], {}
+    return model, [input_batch], {}, compiler_cfg
 
 
 variants = [
@@ -86,15 +86,15 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_osmr_pytorch(test_device, variant):
-    model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
+    model, inputs, _, compiler_cfg= generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_osmr_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_osmr_{variant}", compiler_cfg=compiler_cfg)
 
 
 def generate_model_hrnet_imgcls_timm_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -132,7 +132,7 @@ def generate_model_hrnet_imgcls_timm_pytorch(variant):
         input_tensor = torch.rand(1, 3, 224, 224)
     print(input_tensor.shape)
 
-    return model, [input_tensor], {}
+    return model, [input_tensor], {}, compiler_cfg
 
 
 variants = [
@@ -152,7 +152,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(test_device, variant):
-    model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
+    model, inputs, _ , compiler_cfg = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_timm_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_timm_{variant}", compiler_cfg=compiler_cfg)

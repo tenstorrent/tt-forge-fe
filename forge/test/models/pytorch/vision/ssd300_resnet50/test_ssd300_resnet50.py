@@ -15,7 +15,7 @@ from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare
 def test_pytorch_ssd300_resnet50(test_device):
 
     # STEP 1 : Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2 : prepare model
@@ -37,4 +37,4 @@ def test_pytorch_ssd300_resnet50(test_device):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_ssd300_resnet50")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_ssd300_resnet50", compiler_cfg=compiler_cfg)

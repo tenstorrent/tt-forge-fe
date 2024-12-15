@@ -14,7 +14,7 @@ from forge.compiled_graph_state import CompiledGraphState, CompiledModel, Compil
 from forge.config import (
     CompilerConfig,
     CompileDepth,
-    _get_global_compiler_config,
+    _get_compiler_config,
 )
 from forge._C import (
     link_past_cache_ios,
@@ -180,6 +180,7 @@ def compile_main(
     optimizer: Optional[torch.optim.Optimizer] = None,
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
+    compiler_cfg: Optional[CompilerConfig] = None,
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -215,7 +216,9 @@ def compile_main(
 
     assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, and Forge modules are supported."
 
-    compiler_cfg = _get_global_compiler_config()
+    if compiler_cfg is None:
+        compiler_cfg = _get_compiler_config()
+
     compiler_cfg.apply_env_config_overrides()
 
     if module_name is None:
@@ -396,7 +399,7 @@ def forge_compile_torch(
 
     inputs = list(inputs)
 
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = _get_compiler_config()
     compiler_cfg.apply_env_config_overrides()
 
     compile_context: CompileContext = CompileContext(
@@ -462,7 +465,7 @@ def forge_compile(
         verify_cfg = DepricatedVerifyConfig.disabled()  # no verification config provided, disable by default
 
     if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
+        compiler_cfg = _get_compiler_config()
 
     compiler_cfg.apply_env_config_overrides()
 
@@ -1051,7 +1054,7 @@ def generate_graph(
     graph.set_microbatch(1)
 
     if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
+        compiler_cfg = _get_compiler_config()
 
     # Trace through the modules
     all_subgraph_outputs = []

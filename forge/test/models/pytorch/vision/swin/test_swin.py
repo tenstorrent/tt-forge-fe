@@ -17,7 +17,7 @@ import requests
 def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     # pytest.skip() # Working on it
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -35,4 +35,4 @@ def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
     print(img_tensor.shape)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_swin_tiny_patch4_window7_224")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_swin_tiny_patch4_window7_224", compiler_cfg=compiler_cfg)

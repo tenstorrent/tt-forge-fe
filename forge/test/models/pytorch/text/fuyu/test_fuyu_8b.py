@@ -33,7 +33,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
 @pytest.mark.model_analysis
 def test_fuyu8b(test_device):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = FuyuConfig.from_pretrained("adept/fuyu-8b")
@@ -72,7 +72,7 @@ def test_fuyu8b(test_device):
     inputs_embeds = inputs_embeds.clone().detach()
 
     inputs = [inputs_embeds]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fuyu_8b")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fuyu_8b", compiler_cfg=compiler_cfg)
     os.remove("bus.png")
 
 
@@ -83,7 +83,7 @@ def test_fuyu8b_past_cache(test_device):
         pytest.skip("Still under development")
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     compiler_cfg.enable_tvm_cpu_fallback = False

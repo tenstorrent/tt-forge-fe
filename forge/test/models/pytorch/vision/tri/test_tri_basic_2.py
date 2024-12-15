@@ -19,7 +19,7 @@ import os
 def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
 
     # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Sample Input
@@ -41,4 +41,4 @@ def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
 
     print("type(image_tensor)", type(image_tensor))
     inputs = image_tensor
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_tri_basic_2_semseg")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_tri_basic_2_semseg", compiler_cfg=compiler_cfg)

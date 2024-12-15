@@ -22,7 +22,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 def test_phi3_causal_lm(variant, test_device):
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
@@ -57,7 +57,7 @@ def test_phi3_causal_lm(variant, test_device):
     inputs = [input_ids, attn_mask]
 
     compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm", compiler_cfg=compiler_cfg
     )
 
 
@@ -68,7 +68,7 @@ def test_phi3_causal_lm(variant, test_device):
 def test_phi3_token_classification(variant, test_device):
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -92,7 +92,7 @@ def test_phi3_token_classification(variant, test_device):
     inputs = [inputs["input_ids"]]
 
     compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls", compiler_cfg=compiler_cfg
     )
     co_out = compiled_model(*inputs)
 
@@ -109,7 +109,7 @@ def test_phi3_token_classification(variant, test_device):
 def test_phi3_sequence_classification(variant, test_device):
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -132,7 +132,7 @@ def test_phi3_sequence_classification(variant, test_device):
     inputs = [inputs["input_ids"]]
 
     compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls", compiler_cfg=compiler_cfg
     )
     co_out = compiled_model(*inputs)
 

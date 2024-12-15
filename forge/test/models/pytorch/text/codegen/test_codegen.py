@@ -25,7 +25,7 @@ from forge.op.eval.common import compare_with_golden
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(test_device, variant):
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -64,7 +64,7 @@ def test_codegen(test_device, variant):
 
     inputs = [input_ids, attn_mask]
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")), compiler_cfg=compiler_cfg
     )
 
     co_out = compiled_model(*inputs)

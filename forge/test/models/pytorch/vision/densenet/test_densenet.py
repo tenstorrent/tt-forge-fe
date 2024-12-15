@@ -20,7 +20,7 @@ variants = ["densenet121", "densenet121_hf_xray"]
 def test_densenet_121_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     if variant == "densenet121_hf_xray":
         compiler_cfg.compile_depth = forge.CompileDepth.GENERATE_INITIAL_GRAPH
     else:
@@ -39,7 +39,7 @@ def test_densenet_121_pytorch(variant, test_device):
     model(img_tensor)
     inputs = [img_tensor]
     variant_name = variant.replace("-", "_")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant_name}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant_name}", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -47,7 +47,7 @@ def test_densenet_121_pytorch(variant, test_device):
 def test_densenet_161_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -57,7 +57,7 @@ def test_densenet_161_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_161")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_161", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -65,7 +65,7 @@ def test_densenet_161_pytorch(test_device):
 def test_densenet_169_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -75,7 +75,7 @@ def test_densenet_169_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_169")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_169", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -83,7 +83,7 @@ def test_densenet_169_pytorch(test_device):
 def test_densenet_201_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -93,4 +93,4 @@ def test_densenet_201_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_201")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_201", compiler_cfg=compiler_cfg)

@@ -13,7 +13,7 @@ import re
 def test_qwen1_5_causal_lm(test_device):
 
     # Set PyBuda configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Setup model configuration
@@ -44,7 +44,7 @@ def test_qwen1_5_causal_lm(test_device):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_causal_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_causal_lm", compiler_cfg=compiler_cfg)
 
 
 def parse_chat_completion(text: str):
@@ -63,7 +63,7 @@ def parse_chat_completion(text: str):
 def test_qwen1_5_chat(test_device):
 
     # Set PyBuda configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Setup model configuration
@@ -108,4 +108,4 @@ def test_qwen1_5_chat(test_device):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_chat")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_chat", compiler_cfg=compiler_cfg)

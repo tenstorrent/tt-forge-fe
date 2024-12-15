@@ -16,7 +16,7 @@ def test_opt_causal_lm(variant, test_device):
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = OPTConfig.from_pretrained(variant)
@@ -43,6 +43,7 @@ def test_opt_causal_lm(variant, test_device):
         model,
         sample_inputs=inputs,
         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
+        compiler_cfg=compiler_cfg
     )
 
 
@@ -55,7 +56,7 @@ def test_opt_qa(variant, test_device):
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -79,6 +80,7 @@ def test_opt_qa(variant, test_device):
         model,
         sample_inputs=inputs,
         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_qa",
+        compiler_cfg=compiler_cfg
     )
 
 
@@ -87,7 +89,7 @@ def test_opt_qa(variant, test_device):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_sequence_classification(variant, test_device):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.POST_INITIAL_GRAPH_PASS
 
     # Load tokenizer and model from HuggingFace
@@ -115,4 +117,5 @@ def test_opt_sequence_classification(variant, test_device):
         model,
         sample_inputs=inputs,
         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_seq_cls",
+        compiler_cfg=compiler_cfg
     )

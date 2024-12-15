@@ -14,7 +14,7 @@ import os
 @pytest.mark.model_analysis
 def test_monodle_pytorch(test_device):
     # PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model_name = "monodle_pytorch"
@@ -36,4 +36,4 @@ def test_monodle_pytorch(test_device):
 
     pytorch_model = CenterNet3D(backbone="dla34")
     pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name="pt_monodle")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name="pt_monodle", compiler_cfg=compiler_cfg)

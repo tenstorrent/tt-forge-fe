@@ -23,7 +23,7 @@ from forge.op.eval.common import compare_with_golden
 
 def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
 
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
 
@@ -34,7 +34,7 @@ def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
     preprocessor = AutoImageProcessor.from_pretrained("google/mobilenet_v2_1.0_224")
     image_tensor = preprocessor(images=image, return_tensors="pt").pixel_values
 
-    return model, [image_tensor], {}
+    return model, [image_tensor], {}, compiler_cfg
 
 
 variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
@@ -45,11 +45,11 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_basic(variant, test_device):
-    model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
@@ -62,7 +62,7 @@ def test_mobilenetv3_basic(variant, test_device):
 
 def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Both options are good
     # model = timm.create_model('mobilenetv3_small_100', pretrained=True)
@@ -88,7 +88,7 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
         )
         image_tensor = torch.rand(1, 3, 224, 224)
 
-    return model, [image_tensor], {}
+    return model, [image_tensor], {}, compiler_cfg
 
 
 variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
@@ -99,12 +99,12 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(variant, test_device):
-    model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_mobilenetV3_imgcls_timm_pytorch(
         test_device,
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)

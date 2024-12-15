@@ -21,7 +21,7 @@ from transformers import (
 from forge.forgeglobal import TILE_DIM
 import forge
 from test.utils import download_model
-from forge.config import _get_global_compiler_config
+from forge.config import _get_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
 import time
 
@@ -36,7 +36,7 @@ variants = [
 
 def generate_model_whisper_congen_hf_pytorch(test_device, variant):
     # Configurations
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = _get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.POST_INITIAL_GRAPH_PASS
 
     class Wrapper(torch.nn.Module):
@@ -95,7 +95,7 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
     # Sanity run
     out = framework_model(decoder_input_ids, encoder_outputs)
 
-    return framework_model, [decoder_input_ids, encoder_outputs]
+    return framework_model, [decoder_input_ids, encoder_outputs], compiler_cfg
 
 
 @pytest.mark.nightly
@@ -103,13 +103,13 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(test_device, variant):
 
-    model, inputs = generate_model_whisper_congen_hf_pytorch(
+    model, inputs, compiler_cfg = generate_model_whisper_congen_hf_pytorch(
         test_device,
         variant,
     )
 
     compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")), compiler_cfg=compiler_cfg
     )
 
 
@@ -122,7 +122,7 @@ def test_whisper_pipeline(test_device, variant):
         pytest.skip("Grayskull test failing with no valid grids (50 nodes)")
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.enable_auto_fusing = False  # tenstorrent/forge#844
     compiler_cfg.amp_level = 2
     compiler_cfg.enable_link_past_cache_ios = False
@@ -184,7 +184,7 @@ def test_whisper_encoder(test_device, variant):
         pytest.skip("Still under development")
 
     # Configurations
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = _get_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.input_queues_on_host = True
     compiler_cfg.enable_link_past_cache_ios = True

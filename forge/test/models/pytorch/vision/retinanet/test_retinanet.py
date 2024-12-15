@@ -28,7 +28,7 @@ variants = [
 def test_retinanet(variant, test_device):
 
     # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Prepare model
@@ -57,7 +57,7 @@ def test_retinanet(variant, test_device):
     # Prepare input
     input_batch = img_preprocess()
     inputs = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)

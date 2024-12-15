@@ -27,7 +27,7 @@ variants_img_classification = [
 def test_segformer_image_classification_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Set model configurations
@@ -44,7 +44,7 @@ def test_segformer_image_classification_pytorch(test_device, variant):
     pixel_values = get_sample_data(variant)
 
     compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")), compiler_cfg=compiler_cfg
     )
 
 
@@ -63,7 +63,7 @@ variants_semseg = [
 def test_segformer_semantic_segmentation_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load the model from HuggingFace
@@ -73,5 +73,5 @@ def test_segformer_semantic_segmentation_pytorch(test_device, variant):
     # Load the sample image
     pixel_values = get_sample_data(variant)
     compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")), compiler_cfg=compiler_cfg
     )

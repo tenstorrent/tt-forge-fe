@@ -30,7 +30,7 @@ def test_gptneo_causal_lm(variant, test_device):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load tokenizer and model
@@ -66,6 +66,7 @@ def test_gptneo_causal_lm(variant, test_device):
         Wrapper(model),
         sample_inputs=inputs,
         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
+        compiler_cfg=compiler_cfg
     )
 
 
@@ -84,7 +85,7 @@ def test_gptneo_sequence_classification(variant, test_device):
     # EleutherAI/gpt-neo-2.7B
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -117,4 +118,5 @@ def test_gptneo_sequence_classification(variant, test_device):
         Wrapper(model),
         sample_inputs=inputs,
         module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_seq_cls",
+        compiler_cfg=compiler_cfg
     )

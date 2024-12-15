@@ -28,7 +28,7 @@ variants = [
 def test_hardnet_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     if variant in ["hardnet68", "hardnet39"]:
         compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
@@ -68,7 +68,7 @@ def test_hardnet_pytorch(test_device, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(input_batch)
 

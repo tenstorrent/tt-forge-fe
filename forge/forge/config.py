@@ -1250,19 +1250,8 @@ def configure_mixed_precision(
     )
 
 
-def _get_global_compiler_config() -> CompilerConfig:
-    return g_compiler_config
-
-
-def _clear_global_compiler_config():
-    global g_compiler_config
-    g_compiler_config = CompilerConfig()
-
-
-def _set_global_compiler_config(config: CompilerConfig):
-    global g_compiler_config
-    g_compiler_config = config
-
+def _get_compiler_config() -> CompilerConfig:
+    return CompilerConfig()
 
 def _set_forge_override_veto(general_config_dict, environ_config_dict):
     import json

@@ -28,7 +28,7 @@ variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 @pytest.mark.parametrize("variant", variants)
 def test_vgg_osmr_pytorch(variant, test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -54,7 +54,7 @@ def test_vgg_osmr_pytorch(variant, test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}_osmr")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}_osmr", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -62,7 +62,7 @@ def test_vgg_osmr_pytorch(variant, test_device):
 def test_vgg_19_hf_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     """
@@ -95,7 +95,7 @@ def test_vgg_19_hf_pytorch(test_device):
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
         )
         input_batch = torch.rand(1, 3, 224, 224)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_19_hf")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_19_hf", compiler_cfg=compiler_cfg)
 
 
 def preprocess_timm_model(model_name):
@@ -125,10 +125,10 @@ def test_vgg_bn19_timm_pytorch(test_device):
     model, image_tensor = download_model(preprocess_timm_model, model_name)
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
-    compiled_model = forge.compile(model, sample_inputs=[image_tensor], module_name=f"pt_{model_name}_timm")
+    compiled_model = forge.compile(model, sample_inputs=[image_tensor], module_name=f"pt_{model_name}_timm", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -136,7 +136,7 @@ def test_vgg_bn19_timm_pytorch(test_device):
 def test_vgg_bn19_torchhub_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
@@ -162,4 +162,4 @@ def test_vgg_bn19_torchhub_pytorch(test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_bn19_torchhub")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_bn19_torchhub", compiler_cfg=compiler_cfg)

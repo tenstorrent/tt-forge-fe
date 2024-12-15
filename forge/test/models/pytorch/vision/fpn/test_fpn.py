@@ -10,7 +10,7 @@ from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_fpn_pytorch(test_device):
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load FPN model
@@ -21,4 +21,4 @@ def test_fpn_pytorch(test_device):
     feat2 = torch.rand(1, 2048, 8, 8)
 
     inputs = [feat0, feat1, feat2]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fpn")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fpn", compiler_cfg=compiler_cfg)

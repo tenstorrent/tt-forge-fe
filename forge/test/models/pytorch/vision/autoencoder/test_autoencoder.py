@@ -16,7 +16,7 @@ from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import Line
 @pytest.mark.model_analysis
 def test_conv_ae_pytorch(test_device):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Instantiate model
@@ -37,14 +37,14 @@ def test_conv_ae_pytorch(test_device):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
 
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_conv_ae")
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_conv_ae", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_linear_ae_pytorch(test_device):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -69,7 +69,7 @@ def test_linear_ae_pytorch(test_device):
     fw_out = model(sample_tensor)
 
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_linear_ae")
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_linear_ae", compiler_cfg=compiler_cfg)
     co_out = compiled_model(sample_tensor)
 
     co_out = [co.to("cpu") for co in co_out]

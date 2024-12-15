@@ -24,7 +24,7 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 def test_pidnet_pytorch(variant, test_device):
 
     # STEP 1: Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load and pre-process image
@@ -52,4 +52,4 @@ def test_pidnet_pytorch(variant, test_device):
     model.load_state_dict(model_dict)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)

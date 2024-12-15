@@ -19,7 +19,7 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 
 def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
@@ -28,29 +28,29 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
     # Load and pre-process image
     img_tensor = get_image()
 
-    return framework_model, [img_tensor]
+    return framework_model, [img_tensor], compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_inception_v4_osmr_pytorch(test_device):
-    model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_osmr_inception_v4")
+    model, inputs, compiler_cfg = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_osmr_inception_v4", compiler_cfg=compiler_cfg)
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model & Preprocess image
     framework_model, img_tensor = download_model(preprocess_timm_model, variant)
-    return framework_model, [img_tensor]
+    return framework_model, [img_tensor], compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_inception_v4_timm_pytorch(test_device):
-    model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
+    model, inputs, compiler_cfg = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_timm_inception_v4")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_timm_inception_v4", compiler_cfg=compiler_cfg)
