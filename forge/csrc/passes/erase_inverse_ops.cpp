@@ -114,6 +114,21 @@ void set_bcast_dims(graphlib::Graph *graph, std::vector<int> &volumes, graphlib:
     }
 }
 
+void update_attr(graphlib::OpNode *op, graphlib::Shape new_shape)
+{
+    graphlib::OpType::Attrs named_attrs;
+    std::vector<graphlib::OpType::Attr> attr;
+    std::vector<int> shape_vector;
+    for (auto dim : new_shape)
+    {
+        int dim_value = static_cast<int>(dim);
+        shape_vector.push_back(dim);
+        attr.push_back(dim_value);
+    }
+    named_attrs["shape"] = shape_vector;
+    op->overwrite_op_named_attrs(attr, named_attrs);
+}
+
 void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> const &path)
 {
     TT_ASSERT(path.size() >= 2);
@@ -251,7 +266,6 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             }
             log_trace(LogGraphCompiler, "  Op node: {} -> shape set to {}", consumer->name(), commute_shape);
         }
-
         // Handle nary operands (not on this `path`)
         std::vector<graphlib::Edge> consumer_operands = graph->operand_data_edges(consumer);
         for (graphlib::Edge operand_edge : consumer_operands)
@@ -275,15 +289,29 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 auto updated_commute_shape = commute_shape;
                 updated_commute_shape[operand_dims.second] =
                     graph->node_by_id(operand_edge.producer_node_id)->shape()[operand_dims.first];
-                update_reshape_attr(op, updated_commute_shape);
+
+                if (op->op_type() == "reshape")
+                {
+                    update_reshape_attr(op, updated_commute_shape);
+                }
+                else
+                {
+                    update_attr(op, updated_commute_shape);
+                }
+
                 clone->set_shape(updated_commute_shape);
-                log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", updated_commute_shape);
             }
             else
             {
-                update_reshape_attr(op, commute_shape);
+                if (op->op_type() == "reshape")
+                {
+                    update_reshape_attr(op, commute_shape);
+                }
+                else
+                {
+                    update_attr(op, commute_shape);
+                }
                 clone->set_shape(commute_shape);
-                log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", commute_shape);
             }
 
             // Operand commute clones for squeeze/unsqueeze need to be swapped to the opposite op
@@ -306,43 +334,65 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
             // (1024,) Placing an unsqueeze clone will cause the input to be (1, 1024) which isn't wrong but also is not
             // correct. In this case we shall convert the clone to a reshape which contains the correct number of
             // unsqueezes implicitly.
-            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze") and
-                dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id)))
-            {
-                op->change_op_type("reshape");
-                graphlib::Shape op_shape = graphlib::Shape::create(std::vector<uint32_t>(consumer->shape().size(), 1));
-                auto input = dynamic_cast<graphlib::InputNode *>(graph->node_by_id(operand_edge.producer_node_id));
-
-                for (int i = -1; i >= -(int)input->shape().size(); i--)
-                {
-                    if (i + (int)op_shape.size() >= 0)
-                        op_shape[i] = input->shape()[i];
-                    else
-                    {
-                        TT_ASSERT(
-                            input->shape()[i] == 1,
-                            "After this point all dims should be 1 else the squeeze op is not valid.");
-                    }
-                }
-                std::vector<graphlib::OpType> tms = graph->get_edge_attributes(operand_edge)->get_tms();
-
-                for (graphlib::OpType &tm : tms)
-                {
-                    if (tm.op == "broadcast")
-                    {
-                        int dim = std::get<int>(tm.attr[0]);
-                        int volume = std::get<int>(tm.attr[1]);
-                        op_shape[dim] *= volume;
-                    }
-                }
-                op->set_shape(op_shape);
-                update_reshape_attr(op, op_shape);
-            }
 
             auto [in_edge, out_edge] = insert_node_on_edge(graph, operand_edge, clone);
+
             // Set dataformat to match producer on operand edge
             clone->set_output_df(graph->node_by_id(in_edge.producer_node_id)->output_df());
-            handle_change_rank(graph, clone);
+
+            if ((first->op_name() == "unsqueeze" or first->op_name() == "squeeze"))
+            {
+                op->change_op_type("reshape");
+                std::vector<graphlib::Edge> clone_data_edges = graph->operand_data_edges(clone);
+                log_info(LogGraphCompiler, "clone_data_edges.size() = {}", clone_data_edges.size());
+                for (const graphlib::Edge &clone_data_edge : clone_data_edges)
+                {
+                    graphlib::InputNode *input =
+                        dynamic_cast<graphlib::InputNode *>(graph->node_by_id(clone_data_edge.producer_node_id));
+                    if (!input)
+                        continue;
+                    graphlib::Node *producer_node = graph->node_by_id(clone_data_edge.producer_node_id);
+                    graphlib::Shape op_shape =
+                        graphlib::Shape::create(std::vector<uint32_t>(producer_node->shape().size(), 1));
+
+                    for (int i = -1; i >= -(int)input->shape().size(); i--)
+                    {
+                        if (i + (int)op_shape.size() >= 0)
+                        {
+                            op_shape[i] = input->shape()[i];
+                        }
+                        else
+                        {
+                            log_info("Here 1");
+                            TT_ASSERT(
+                                input->shape()[i] == 1,
+                                "After this point all dims should be 1 else the squeeze op is not valid.");
+                        }
+                    }
+
+                    std::vector<graphlib::OpType> tms = graph->get_edge_attributes(clone_data_edge)->get_tms();
+                    for (graphlib::OpType &tm : tms)
+                    {
+                        if (tm.op == "broadcast")
+                        {
+                            graph->get_edge_attributes(clone_data_edge)->set_tms({});
+                        }
+                    }
+                    op->set_shape(op_shape);
+                    update_reshape_attr(op, op_shape);
+                }
+            }
+
+            // Set dataformat to match producer on operand edge
+            std::vector<graphlib::Edge> clone_data_edges = graph->operand_data_edges(clone);
+            for (const graphlib::Edge &clone_data_edge : clone_data_edges)
+            {
+                if (graph->get_edge_attributes(clone_data_edge)->has_tms())
+                {
+                    handle_change_rank(graph, clone);
+                }
+            }
+
             try_commute_bcast_through_clone(graph, op);
             if (graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(graph->data_operands(clone)[0]))
                 try_consteval_input_no_operand_forks(graph, input, true);
@@ -403,7 +453,6 @@ bool erase_inverse_ops(graphlib::Graph *graph)
 
             if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
                 continue;
-
             if (match_fns.find(op->op_name()) == match_fns.end())
                 continue;
 
