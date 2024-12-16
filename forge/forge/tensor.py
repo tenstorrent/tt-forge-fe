@@ -1378,12 +1378,9 @@ def compare_tensors(t0, t1):
 def const_eval_tensor(inputs, consteval_trace, input_name, is_forge=True):
     contains_recorded_operations = consteval_trace[input_name]
     if contains_recorded_operations:
-        value = consteval_input(
-            consteval_trace,
-            input_name,
-            inputs,
-            is_forge,
-        )
+        value = detach_tensors(
+            [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguos=True
+        )[0]
     else:
         value = pad_pytorch_tensor_to_forge(inputs[input_name], []) if is_forge else inputs[input_name]
     # cast if necessary
@@ -1426,17 +1423,12 @@ def get_post_const_eval_tensors(
             constant_nodes, device_constant_and_parameters, consteval_trace, input_name, is_forge
         )
 
-        post_const_eval_constants[input_name] = detach_tensors(
-            [
-                const_eval_tensor(
-                    inputs,
-                    consteval_trace,
-                    input_name,
-                    is_forge,
-                )
-            ],
-            fix_non_contiguos=True,
-        )[0]
+        post_const_eval_constants[input_name] = const_eval_tensor(
+            inputs,
+            consteval_trace,
+            input_name,
+            is_forge,
+        )
 
     return post_const_eval_constants
 

@@ -255,6 +255,18 @@ class CompiledModel:
             logger.info("Converting inputs and parameters to PyTorch tensors...")
             inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
 
+        if self.training() and isinstance(self.framework_module, PyTorchModule):
+            for name, param in self.framework_module.module.named_parameters():
+                if param.requires_grad:
+                    our_tensor = self.fwd_compiled_graph_state.get_parameter_tensor(name)
+
+                    # NOTE: for parameters that require gradients, we want to share the same tensor with the PyTorch module.
+                    # This is because we want to be able to optimize the parameters both on the device (through our runtime)
+                    # and via the torch optimizers. So this ensures that whichever side updates the parameter value, the other side can see the change.
+                    #
+                    # This could change in the future, but for now ensure that our premise is correct.
+                    assert param is our_tensor
+
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
@@ -272,11 +284,13 @@ class CompiledModel:
                 self.outputs[output_name] = output
                 model_outputs.append(output)
 
-        if self.fwd_compiled_graph_state.graph.training():
+        if self.training():
             # For executing loss and its backward graph on CPU, we need to tell torch to compute gradients.
             for idx, output in enumerate(model_outputs):
                 output.requires_grad = True
-                output.register_hook(lambda grad: self.tie_grad_fn(idx, grad))
+                # NOTE: the default idx parameter for the lambda is used to capture the idx by value. Otherwise, the lambda
+                # would capture the idx by reference, and all the lambdas would have the same idx value.
+                output.register_hook(lambda grad, idx=idx: self.tie_grad_fn(idx, grad))
 
         return model_outputs
 
@@ -284,7 +298,7 @@ class CompiledModel:
         return self(inputs)
 
     def backward(self) -> List[torch.Tensor]:
-        assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
+        assert self.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
         consts_and_params = [
             *self.bwd_compiled_graph_state.get_ordered_constant_tensors(),
@@ -342,3 +356,6 @@ class CompiledModel:
             self.attached_module.backward()
 
         return grads
+
+    def training(self) -> bool:
+        return self.fwd_compiled_graph_state.graph.training()
