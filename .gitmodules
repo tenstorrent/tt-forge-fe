@@ -16,3 +16,6 @@
 [submodule "third_party/pybind11_json"]
 	path = third_party/pybind11_json
 	url = https://github.com/pybind/pybind11_json
+[submodule "third_party/TT_AI_Example"]
+	path = third_party/TT_AI_Example
+	url = git@github.com:RDietze/TT-AI-Example.git
