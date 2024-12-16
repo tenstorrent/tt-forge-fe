@@ -8,7 +8,6 @@ import pytest
 import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.push

@@ -8,7 +8,6 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b"])
@@ -54,7 +53,7 @@ def test_llama_3b_rotary_emb(model_path):
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
