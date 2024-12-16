@@ -87,6 +87,7 @@ def test_nll_loss(prediction_shape):
     # Because of the following error
     # RuntimeError: TT_FATAL @ ../embedding_device_operation.cpp:28: weights.get_dtype() == DataType::BFLOAT16
     # We need to convert the target to one hot, which is different from torch
+    # https://github.com/tenstorrent/tt-mlir/issues/1503
     target_one_hot = nn.functional.one_hot(target, num_classes=prediction_shape[-1]).float()
 
     target_forge = forge.tensor.Tensor.create_from_torch(target_one_hot)
