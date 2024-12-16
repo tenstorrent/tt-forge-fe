@@ -121,6 +121,7 @@ class MSELoss(ForgeModule):
         loss = reduce_loss(self.reduction, square)
         return loss
 
+
 class HuberLoss(ForgeModule):
     def __init__(self, name: str, delta: float = 1.0, reduction: str = "avg"):
         super().__init__(name)
