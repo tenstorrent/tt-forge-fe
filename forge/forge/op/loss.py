@@ -165,7 +165,7 @@ class TripletMarginLoss(ForgeModule):
 
         dist_with_margin = Add("dist_with_margin", dist_diff, margin)
 
-        # clip
+        # clip to (0, inf)
         clip_dist = Clip("clip_dist", dist_with_margin, 0.0, float("inf"))
         loss = reduce_loss(self.reduction, clip_dist)
         return loss
