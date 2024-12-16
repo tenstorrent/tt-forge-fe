@@ -80,7 +80,7 @@ def test_nll_loss(prediction_shape):
     forge_loss = forge.op.loss.NLLLoss("nll_loss")
     torch_loss = torch.nn.NLLLoss()
 
-    prediction = torch.randn(prediction_shape, requires_grad=True).to(torch.float32)
+    prediction = torch.randn(prediction_shape, requires_grad=True)
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
     target = torch.empty(prediction_shape[0], dtype=torch.long).random_(prediction_shape[-1])
 
