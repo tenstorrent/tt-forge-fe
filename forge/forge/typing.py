@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import torch
 import tensorflow as tf
+import torch
 
 from .module import ForgeModule
 from .tensor import Tensor

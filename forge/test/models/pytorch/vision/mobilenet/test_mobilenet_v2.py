@@ -2,23 +2,24 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import pytest
 import urllib
-import requests
-from PIL import Image
-from loguru import logger
+from test.utils import download_model
 
-import torch
+import pytest
+import requests
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-
-
-from transformers import AutoImageProcessor, AutoModelForImageClassification
-from transformers import MobileNetV2ForSemanticSegmentation
+from transformers import (
+    AutoImageProcessor,
+    AutoModelForImageClassification,
+    MobileNetV2ForSemanticSegmentation,
+)
 
 import forge
-from test.utils import download_model
 from forge.verify.compare import compare_with_golden
 
 

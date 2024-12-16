@@ -3,23 +3,24 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 
+import numpy as np
 import torch
 import torch.nn.functional
 from loguru import logger
-from ..common import to_torch_operands
+
+from forge.op.eval.common import calculate_tile_size
+
 from ....forgeglobal import TILE_DIM
 from ....tensor import forge_dataformat_to_pytorch_dtype
-import numpy as np
-from forge.op.eval.common import calculate_tile_size
-from .tanh import Tanh
+from ..common import to_torch_operands
+from ..lforge.exp import Exp as ForgeExp
 from ..lforge.log import Log as ForgeLog
-from .nop import Nop
 from ..lforge.nop import Nop as ForgeNop
 from .buffer import Buffer
-
-from ..lforge.exp import Exp as ForgeExp
 from .exp import Exp
+from .nop import Nop
 from .reciprocal import Reciprocal
+from .tanh import Tanh
 
 M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
 M_SQRT2 = 1.41421356237309504880  # sqrt(2)

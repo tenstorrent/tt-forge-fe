@@ -2,18 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+from test.utils import download_model
 
-import torch
 import pytest
-from transformers import GemmaConfig
-from transformers import AutoTokenizer, GemmaForCausalLM
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    GemmaConfig,
+    GemmaForCausalLM,
+)
 
 import forge
-from forge import (
-    CompileDepth,
-)
-from test.utils import download_model
+from forge import CompileDepth
 from forge.transformers.pipeline import pipeline as forge_pipeline
 
 

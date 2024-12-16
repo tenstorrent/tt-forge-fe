@@ -1,24 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+import os
+import urllib
 from test.utils import download_model
 
-import forge
-
-from pytorchcv.model_provider import get_model as ptcv_get_model
-import os
-import torch
-from PIL import Image
-from torchvision import transforms
-from vgg_pytorch import VGG
-from loguru import logger
+import pytest
 import timm
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-import urllib
 from torchvision import transforms
+from vgg_pytorch import VGG
 
+import forge
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 

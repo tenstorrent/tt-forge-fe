@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 import torch.nn.functional
-from .buffer import Buffer
 
 from ..common import to_torch_operands
+from .buffer import Buffer
 
 
 def eval(type, attr, ops):

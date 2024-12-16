@@ -1,15 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+from test.mlir.llama.utils.utils import load_model
 
+import pytest
 import torch
 from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 import forge
 from forge.verify.compare import compare_with_golden
-from test.mlir.llama.utils.utils import load_model
 
 
 class LlamaModelWrapper(torch.nn.Module):

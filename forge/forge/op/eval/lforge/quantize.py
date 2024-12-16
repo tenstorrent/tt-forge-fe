@@ -2,23 +2,27 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 from argparse import ArgumentError
 from random import random
-import numpy as np
-import os
-import torch
 
+import numpy as np
+import torch
 from loguru import logger
 
 import forge._C.balancer as balancer
 from forge._C import DataFormat, MathFidelity
 from forge._C.backend_api import get_op_model_execution_cycles
-from forge.forgeglobal import TILE_DIM
-from forge.utils import align_up_tile, align_up
 from forge._C.graph import UBlockOrder
+from forge.forgeglobal import TILE_DIM
+from forge.op.eval.forge.quantize import (
+    STRING_TO_LOWER_LIMIT,
+    STRING_TO_TORCH_DTYPE,
+    STRING_TO_UPPER_LIMIT,
+)
+from forge.utils import align_up, align_up_tile
 
-from ..common import op_model_to_desc, get_compiler_cached_cycles
-from forge.op.eval.forge.quantize import STRING_TO_LOWER_LIMIT, STRING_TO_UPPER_LIMIT, STRING_TO_TORCH_DTYPE
+from ..common import get_compiler_cached_cycles, op_model_to_desc
 
 
 def eval(type, attr, ops):

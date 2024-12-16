@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+
 import pytest
+import tensorflow as tf
 import torch
 import torch.nn as nn
-
-import tensorflow as tf
 
 import forge
 import forge.config

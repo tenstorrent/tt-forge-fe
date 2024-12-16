@@ -6,7 +6,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Dict, Union, Tuple, TypeAlias
+from typing import Dict, Optional, Tuple, TypeAlias, Union
 
 
 class OperatorParameterTypes:

@@ -2,11 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import torch
-from .utils import *
-import forge
 import pytest
+import torch
+
+import forge
 from forge.verify.verify import verify
+
+from .utils import *
 
 
 @pytest.mark.push

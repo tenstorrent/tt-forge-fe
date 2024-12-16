@@ -3,21 +3,21 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+
+import torch
+import torch.nn.functional
 from loguru import logger
 
 import forge._C.balancer as balancer
-from forge.forgeglobal import TILE_DIM
-import torch
-import torch.nn.functional
-from forge.utils import align_up_tile
 from forge._C import DataFormat, MathFidelity
-from forge._C.graph import UBlockOrder, Shape
-from forge._C.backend_api import get_op_model_param
-from .tm import eval as tm_eval
+from forge._C.backend_api import get_op_model_execution_cycles, get_op_model_param
+from forge._C.graph import Shape, UBlockOrder
+from forge.forgeglobal import TILE_DIM
 from forge.tensor import pad_pytorch_tensor_to_forge
-from forge._C.backend_api import get_op_model_execution_cycles
+from forge.utils import align_up_tile
 
-from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
+from ..common import get_compiler_cached_cycles, op_model_to_desc, to_torch_operands
+from .tm import eval as tm_eval
 
 M_2_SQRTPI = 1.12837916709551257390  # 2/sqrt(pi)
 M_SQRT2 = 1.41421356237309504880  # sqrt(2)

@@ -2,18 +2,24 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from loguru import logger
 from typing import List, Tuple
-from forge.utils import align_up_tile, round_up_div, align_up
+
+import torch
+from loguru import logger
 
 import forge._C.balancer as balancer
-import torch
 from forge._C import DataFormat, MathFidelity
-from forge._C.graph import UBlockOrder
 from forge._C.backend_api import get_op_model_execution_cycles
+from forge._C.graph import UBlockOrder
+from forge.utils import align_up, align_up_tile, round_up_div
 
 from ....forgeglobal import TILE_DIM
-from ..common import to_torch_operands, math_fidelity_to_multiplier, op_model_to_desc, get_compiler_cached_cycles
+from ..common import (
+    get_compiler_cached_cycles,
+    math_fidelity_to_multiplier,
+    op_model_to_desc,
+    to_torch_operands,
+)
 
 
 def eval(type, attr, ops):

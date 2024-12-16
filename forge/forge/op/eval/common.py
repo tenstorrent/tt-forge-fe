@@ -4,22 +4,20 @@
 
 import os
 import struct
-
-from typing import List, Tuple, Union
-from math import prod
-
-import torch
-import tensorflow as tf
-import numpy as np
-
 from collections import defaultdict
+from math import prod
+from typing import List, Tuple, Union
+
+import numpy as np
+import tensorflow as tf
+import torch
 from loguru import logger
 from scipy.spatial import distance
 
-from ...forgeglobal import TILE_DIM
-
-from ...tensor import pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
 from forge import DataFormat, MathFidelity
+
+from ...forgeglobal import TILE_DIM
+from ...tensor import forge_dataformat_to_pytorch_dtype, pad_pytorch_tensor_to_forge
 
 
 def to_torch_operands(*ops):

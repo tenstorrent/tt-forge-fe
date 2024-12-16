@@ -3,21 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 import urllib
+from test.utils import download_model
+
 import pytest
-from PIL import Image
 import requests
-from loguru import logger
-
-import torch
-
-from transformers import AutoImageProcessor
-
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from transformers import AutoImageProcessor
 
 import forge
-from test.utils import download_model
 from forge.verify.compare import compare_with_golden
 
 

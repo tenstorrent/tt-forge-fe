@@ -2,10 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from test.utils import download_model
-import forge
+
 import pytest
 import torch
-from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequenceClassification
+from transformers import (
+    AutoModelForMaskedLM,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+)
+
+import forge
 
 
 @pytest.mark.nightly

@@ -52,25 +52,26 @@
 # (/) Reuse inputs for selected operators
 
 
-import pytest
+from test.operators.utils import (
+    FailingReasons,
+    InputSource,
+    InputSourceFlags,
+    ShapeUtils,
+    TestCollection,
+    TestCollectionCommon,
+    TestPlan,
+    TestVector,
+    VerifyUtils,
+)
+from test.operators.utils.compat import TestDevice
+from typing import Any, Dict, List, Optional, Type
 
-from typing import List, Dict, Type, Optional, Any
+import pytest
+import torch
 from loguru import logger
 
-import torch
 import forge
 import forge.op
-
-
-from test.operators.utils import InputSourceFlags, VerifyUtils
-from test.operators.utils import ShapeUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
 
 
 class ModelFromAnotherOp(torch.nn.Module):

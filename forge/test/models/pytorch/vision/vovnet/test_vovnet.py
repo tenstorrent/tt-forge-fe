@@ -1,15 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+from test.models.pytorch.vision.vovnet.utils.model_utils import (
+    get_image,
+    preprocess_steps,
+    preprocess_timm_model,
+)
+from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
 from test.utils import download_model
 
-import forge
-
+import pytest
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
-from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
-from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, preprocess_steps, preprocess_timm_model
+
+import forge
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(test_device, variant):

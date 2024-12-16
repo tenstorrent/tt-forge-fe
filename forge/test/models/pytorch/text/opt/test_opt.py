@@ -1,10 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 from test.utils import download_model
+
+import pytest
+from transformers import (
+    AutoTokenizer,
+    OPTConfig,
+    OPTForCausalLM,
+    OPTForQuestionAnswering,
+    OPTForSequenceClassification,
+)
+
 import forge
-from transformers import AutoTokenizer, OPTForCausalLM, OPTConfig, OPTForQuestionAnswering, OPTForSequenceClassification
 
 variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 

@@ -1,12 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from loguru import logger
-import requests
-import time
 import os
 import shutil
+import time
 import urllib
+
+import requests
+from loguru import logger
 
 
 def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):

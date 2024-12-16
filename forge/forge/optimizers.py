@@ -5,15 +5,15 @@
 Training optimizers
 """
 
-from typing import Dict, List, Optional, Tuple
 import copy
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
 
-from forge.tensor import Tensor
-from forge.parameter import Parameter
 import forge.torch_optimizers
+from forge.parameter import Parameter
+from forge.tensor import Tensor
 from forge.torch_optimizers import AdamNoBiasCorrection
 
 

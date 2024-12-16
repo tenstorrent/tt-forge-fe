@@ -4,14 +4,14 @@
 
 # pytest utilities
 
-import forge
-import pytest
+from typing import List, Tuple
 
 import _pytest
 import _pytest.reports
-
+import pytest
 from _pytest.mark import ParameterSet
-from typing import List, Tuple
+
+import forge
 
 
 class PyTestUtils:

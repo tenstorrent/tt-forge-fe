@@ -1,20 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Dict, List, Optional, Set, Any, Callable, Union, Tuple
+import os
 from dataclasses import dataclass, field
 from enum import Enum
-import os
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
-
-import torch
 import tensorflow as tf
-import forge
-
-from forge._C import DataFormat
+import torch
 from dataclasses_json import dataclass_json
+
+import forge
+from forge._C import DataFormat
 from forge.utils import as_json
-from forge.verify.value_checkers import ValueChecker, AutomaticValueChecker
+from forge.verify.value_checkers import AutomaticValueChecker, ValueChecker
 
 
 class TestKind(Enum):
@@ -281,7 +280,9 @@ class VerifyConfig:
 
     @property
     def compiled_model_types(self) -> Tuple:
-        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency
+        from forge.compiled_graph_state import (
+            CompiledModel,  # Local import to avoid circular dependency
+        )
 
         return (CompiledModel,)
 

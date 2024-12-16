@@ -1,23 +1,24 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import List, Tuple
-from math import gcd
 import ast
-import os
-import torch
 import math
-import forge
-from ..common import to_torch_operands
-from .transpose import TransposeTM
-from .nop import Nop
-from .buffer import Buffer
-from ..lforge.splice import Splice
-from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
-from ..sparse_utils import (
-    create_flattened_padding_removal_sparse_picker_matrix,
-)
+import os
+from math import gcd
+from typing import List, Tuple
+
+import torch
 from loguru import logger
+
+import forge
+from forge.forgeglobal import TILE_DIM, align_up_tile, is_tile_dim_aligned
+
+from ..common import to_torch_operands
+from ..lforge.splice import Splice
+from ..sparse_utils import create_flattened_padding_removal_sparse_picker_matrix
+from .buffer import Buffer
+from .nop import Nop
+from .transpose import TransposeTM
 
 
 def eval(type, attr, ops):
@@ -270,8 +271,8 @@ def decompose(type, attr, dc, inputs):
             dc.fuse(dc.op(Nop.create(), [inputs[0]]))
 
 
-from math import gcd
 from functools import reduce
+from math import gcd
 
 
 def find_gcd(list):

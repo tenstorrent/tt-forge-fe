@@ -6,17 +6,18 @@ from typing import Optional
 import torch
 from loguru import logger
 
+import forge
+from forge._C import DataFormat
+
+from .forgeglobal import lazy_trace_data
 from .tensor import (
     Tensor,
-    TensorShape,
     TensorBase,
-    pytorch_dtype_to_forge_dataformat,
-    pad_pytorch_tensor_to_forge,
+    TensorShape,
     forge_dataformat_to_pytorch_dtype,
+    pad_pytorch_tensor_to_forge,
+    pytorch_dtype_to_forge_dataformat,
 )
-from .forgeglobal import lazy_trace_data
-from forge._C import DataFormat
-import forge
 
 
 class Parameter(TensorBase):

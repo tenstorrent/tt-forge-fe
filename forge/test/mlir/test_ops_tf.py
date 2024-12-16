@@ -6,11 +6,11 @@ import pytest
 import tensorflow as tf
 
 import forge
+from forge._C import DataFormat
+from forge.config import _get_global_compiler_config
 from forge.tensor import to_pt_tensors
 from forge.verify.compare import compare_with_golden
-from forge.config import _get_global_compiler_config
 from forge.verify.verify import verify
-from forge._C import DataFormat
 
 
 @pytest.mark.parametrize(

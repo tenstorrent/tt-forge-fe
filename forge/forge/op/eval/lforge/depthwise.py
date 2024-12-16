@@ -2,27 +2,27 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 from argparse import ArgumentError
 from random import random
-import numpy as np
-import os
-import torch
 
+import numpy as np
+import torch
 from loguru import logger
 
 import forge._C.balancer as balancer
 from forge._C import DataFormat, MathFidelity
 from forge._C.backend_api import get_op_model_execution_cycles
+from forge._C.graph import UBlockOrder
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
-from forge._C.graph import UBlockOrder
 
 from ..common import (
-    to_torch_operands,
-    math_fidelity_to_multiplier,
-    data_format_to_int,
-    op_model_to_desc,
     cast_for_cpu_eval,
+    data_format_to_int,
+    math_fidelity_to_multiplier,
+    op_model_to_desc,
+    to_torch_operands,
 )
 
 

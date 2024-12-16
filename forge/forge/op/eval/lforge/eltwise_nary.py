@@ -4,12 +4,14 @@
 from typing import List, Tuple
 
 import torch
+
 import forge
 import forge._C.balancer as balancer
 from forge._C.backend_api import get_op_model_execution_cycles
-from ....forgeglobal import TILE_DIM
-from ..common import to_torch_operands, op_model_to_desc, get_compiler_cached_cycles
 from forge.utils import align_up_tile, round_up_div
+
+from ....forgeglobal import TILE_DIM
+from ..common import get_compiler_cached_cycles, op_model_to_desc, to_torch_operands
 from .tm import eval as tm_eval
 
 

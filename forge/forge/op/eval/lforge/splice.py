@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from ..interface import ForgeEltwiseNaryOp
-
 import torch
+
 import forge
 from forge._C import UnsupportedHWOpsError
-from ....forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div
+
+from ....forgeglobal import TILE_DIM
+from ..interface import ForgeEltwiseNaryOp
 from .tm import eval as tm_eval
 
 

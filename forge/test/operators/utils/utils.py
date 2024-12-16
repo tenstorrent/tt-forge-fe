@@ -4,29 +4,26 @@
 
 # Operator test utilities
 
-import random
 import os
+import random
 import sys
-import forge
-import torch
-import pytest
-
-
-from enum import Enum
 from dataclasses import dataclass
-from loguru import logger
-from typing import Optional, List, Dict, Type, Union
+from enum import Enum
+from typing import Dict, List, Optional, Type, Union
 
-from forge import ForgeModule, Module, DepricatedVerifyConfig
+import pytest
+import torch
+from loguru import logger
+
+import forge
+from forge import DepricatedVerifyConfig, ForgeModule, Module
+from forge._C import MathFidelity
+from forge.config import _get_global_compiler_config
 from forge.op_repo import TensorShape
 from forge.verify import TestKind  # , verify_module
-from forge.config import _get_global_compiler_config
-from forge._C import MathFidelity
 
-from .compat import TestDevice
-from .compat import create_torch_inputs, verify_module_for_inputs
+from .compat import TestDevice, create_torch_inputs, verify_module_for_inputs
 from .datatypes import ValueRanges
-
 
 # All supported framework model types
 FrameworkModelType = Union[

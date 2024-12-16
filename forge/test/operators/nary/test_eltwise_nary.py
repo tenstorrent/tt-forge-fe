@@ -5,16 +5,16 @@
 # Tests for testing of element-wise nary operators
 #
 
-import forge.tensor
-import pytest
-
-import torch
 import os
+from test.common import run
+
+import pytest
+import torch
 
 import forge
 import forge.op
-from forge import ForgeModule, Tensor, DepricatedVerifyConfig
-from test.common import run
+import forge.tensor
+from forge import DepricatedVerifyConfig, ForgeModule, Tensor
 from forge.verify import TestKind, verify_module
 
 verify_cfg = DepricatedVerifyConfig(run_golden=True, run_net2pipe=True)  # Run backend golden check on all tests in here

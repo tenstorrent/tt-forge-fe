@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import pytest
+import os
 import urllib
+
+import pytest
+import torch
 from PIL import Image
 from torchvision import transforms
-import os
+
+import forge
 from forge.verify.compare import compare_with_golden
 
 variants = [

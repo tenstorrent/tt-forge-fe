@@ -3,11 +3,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Union
+
 import torch
 
-from ..interface import PyEltwiseUnaryOp
-from ....tensor import forge_dataformat_to_pytorch_dtype, pytorch_dtype_to_forge_dataformat
 from forge._C import DataFormat
+
+from ....tensor import (
+    forge_dataformat_to_pytorch_dtype,
+    pytorch_dtype_to_forge_dataformat,
+)
+from ..interface import PyEltwiseUnaryOp
 
 
 class Cast(PyEltwiseUnaryOp):

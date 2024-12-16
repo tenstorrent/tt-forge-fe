@@ -1,12 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Union, Tuple, List, Dict
-from ..forgeglobal import TILE_DIM
-from .common import ForgeOp as op
-from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
+from typing import Dict, List, Tuple, Union
 
 import torch
+
+from ..forgeglobal import TILE_DIM
+from ..tensor import Tensor, pytorch_dtype_to_forge_dataformat
+from .common import ForgeOp as op
 
 
 def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int) -> Tensor:

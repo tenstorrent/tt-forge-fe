@@ -7,21 +7,32 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any, Union
+from typing import Any, Dict, List, Tuple, Union
 
-from loguru import logger
-from forge.forgeglobal import align_up_tile
-import torch
 import tensorflow as tf
-from forge.tensor import to_pt_tensors
+import torch
+from loguru import logger
 
-from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
-from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
-from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
-from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
+from forge.forgeglobal import align_up_tile
+from forge.tensor import to_pt_tensors
+from forge.tools.run_net2pipe import net2pipe
 from forge.verify.compare import compare_tensor_to_golden
+
+from ..config import PerfTraceLevel
+from ..tensor import (
+    Tensor,
+    TensorShape,
+    narrow_forge_tensor_to_pytorch,
+    pad_pytorch_tensor_to_forge,
+)
+from .config import (
+    DepricatedVerifyConfig,
+    VerifyConfig,
+    VerifyTensorMetadata,
+    should_waive_gradient,
+)
 
 
 def _generate_random_losses(outputs, is_forge):

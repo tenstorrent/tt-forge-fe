@@ -6,14 +6,12 @@
 #
 
 import pytest
-
 import torch
 
 import forge
 import forge.op
 import forge.tensor
-
-from forge import ForgeModule, DepricatedVerifyConfig
+from forge import DepricatedVerifyConfig, ForgeModule
 from forge.verify import TestKind, verify_module
 
 

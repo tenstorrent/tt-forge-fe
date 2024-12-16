@@ -7,12 +7,12 @@ import os
 import pytest
 import torch
 from torch import nn
+from tvm.relay.op.transform import squeeze
 
 import forge
 from forge.tensor import to_forge_tensors
-from tvm.relay.op.transform import squeeze
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")

@@ -193,8 +193,9 @@ def pipegen(
 
 
 def net2pipe_stats(net2pipe_output_dir):
-    import yaml
     from collections import defaultdict
+
+    import yaml
 
     class CoreInfo:
         def __init__(self):

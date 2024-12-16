@@ -1,18 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import onnx
-
 import os
+
+import onnx
+import pytest
 import requests
 from PIL import Image
-import pytest
-
 from transformers import AutoImageProcessor
 
-from forge.verify.backend import verify_module
+import forge
 from forge import DepricatedVerifyConfig
+from forge.verify.backend import verify_module
 from forge.verify.config import TestKind
 
 

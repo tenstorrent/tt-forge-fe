@@ -2,13 +2,12 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import pytest
 import sys
 
 import cv2
 import numpy as np
+import pytest
 import torch
-
 
 import forge
 

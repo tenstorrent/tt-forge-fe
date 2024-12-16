@@ -1,27 +1,27 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from forge.op.matmul import SparseMatmul
 import math
-import torch
+import os
 from typing import Union
 
-from ..tensor import Tensor, TensorShape
-from ..parameter import Parameter
-from ..module import ForgeModule
-from .common import ForgeOp as op
+import torch
 
-from .eltwise_unary import Exp, Reciprocal, Sqrt
-from .eltwise_binary import Multiply, Subtract, Add
-from .reduce import ReduceSum, ReduceAvg
+from forge.forgeglobal import get_unique_node_id
+from forge.op.matmul import SparseMatmul
+
+from ..module import ForgeModule
+from ..parameter import Parameter
+from ..tensor import Tensor, TensorShape
+from .common import ForgeOp as op
 from .constant import Constant
 from .convolution import Conv2d, Conv2dTranspose
-from .pooling import MaxPool1d, MaxPool2d, AvgPool2d
+from .eltwise_binary import Add, Multiply, Subtract
+from .eltwise_unary import Exp, Reciprocal, Sqrt
 from .matmul import Matmul
+from .pooling import AvgPool2d, MaxPool1d, MaxPool2d
+from .reduce import ReduceAvg, ReduceSum
 from .tm import Reshape, Transpose, Unsqueeze
-from forge.forgeglobal import get_unique_node_id
-
-import os
 
 
 def Softmax(name: str, operandA: Tensor, *, dim: int, stable: bool = True) -> Tensor:

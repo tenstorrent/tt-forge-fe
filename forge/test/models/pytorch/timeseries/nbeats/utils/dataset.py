@@ -35,10 +35,9 @@ import patoolib
 from tqdm import tqdm
 
 from .http_utils import download, url_file_name
-from .settings import DATASETS_PATH
 from .sampler import TimeseriesSampler
+from .settings import DATASETS_PATH
 from .utils import to_tensor
-
 
 """
 Hourly aggregated dataset from https://archive.ics.uci.edu/ml/datasets/ElectricityLoadDiagrams20112014

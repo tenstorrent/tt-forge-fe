@@ -2,10 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+from test.utils import download_model
+
 import requests
 from PIL import Image
 from transformers import AutoImageProcessor
-from test.utils import download_model
 
 
 def preprocess_input_data(image_url, variant):

@@ -4,14 +4,16 @@
 
 import os
 
+import numpy as np
 import torch
 import torch.nn.functional
-from ..interface import PyEltwiseUnaryOp
 from loguru import logger
-from ..common import to_torch_operands
-from ....forgeglobal import TILE_DIM
-import numpy as np
+
 from forge.op.eval.common import calculate_tile_size
+
+from ....forgeglobal import TILE_DIM
+from ..common import to_torch_operands
+from ..interface import PyEltwiseUnaryOp
 from ..lforge.buffer import Buffer as ForgeBuffer
 
 

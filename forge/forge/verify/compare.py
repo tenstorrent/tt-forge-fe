@@ -3,16 +3,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from typing import Union
 import os
+from typing import Union
 
-import torch
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
+import torch
 from loguru import logger
 from scipy.spatial import distance
 
 from forge.tensor import narrow_forge_tensor_to_pytorch
+
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(

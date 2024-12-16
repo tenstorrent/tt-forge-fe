@@ -7,12 +7,11 @@
 Devices and modules register with ForgeGlobal as they are created
 """
 
-from typing import Tuple
 import os
 import queue
+from typing import Tuple
 
 from loguru import logger
-
 
 devices = []  # Ordered list of devices running in a pipeline
 modules = []

@@ -6,8 +6,8 @@ import argparse
 import json
 import os
 import sys
-import yaml
 
+import yaml
 
 TILE_DIM = 32
 

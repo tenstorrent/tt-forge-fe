@@ -1,39 +1,42 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import ast
+import math
+import os
 from argparse import ArgumentError
 from json.encoder import py_encode_basestring
 from ssl import OP_NO_RENEGOTIATION
-from ..common import to_torch_operands
-from ..sparse_utils import (
-    create_index_sparse_picker_matrix,
-    create_all_around_padding_picker_matrix,
-    create_padding_shift_sparse_picker_matrix,
-    create_real_row_sparse_picker_matrix,
-    create_reshape_flatten_sparse_picker_matrix,
-    create_flattened_padding_removal_sparse_picker_matrix,
-    create_sparse_interleave_picker_matrix,
-    create_reshape_flatten_sparse_picker_matrix_narrower,
-    create_repeat_sparse_picker_matrix,
-    calculate_conv2d_prestride_weights_and_padding,
-    create_pad_replicate_sparse_picker,
-    create_pad_reflect_sparse_picker,
-)
+
 import numpy as np
 import torch
-import math
-import ast
-import os
 from loguru import logger
+
 import forge
-from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
-from forge.utils import align_up_tile, round_up_div, align_up
-from .transpose import TransposeTM
-from ..lforge.splice import Splice
-from .nop import Nop
+from forge.tensor import change_rank
+from forge.utils import align_up, align_up_tile, round_up_div
+
+from ..common import to_torch_operands
 from ..lforge.nop import Nop as ForgeNop
+from ..lforge.splice import Splice
+from ..sparse_utils import (
+    calculate_conv2d_prestride_weights_and_padding,
+    create_all_around_padding_picker_matrix,
+    create_flattened_padding_removal_sparse_picker_matrix,
+    create_index_sparse_picker_matrix,
+    create_pad_reflect_sparse_picker,
+    create_pad_replicate_sparse_picker,
+    create_padding_shift_sparse_picker_matrix,
+    create_real_row_sparse_picker_matrix,
+    create_repeat_sparse_picker_matrix,
+    create_reshape_flatten_sparse_picker_matrix,
+    create_reshape_flatten_sparse_picker_matrix_narrower,
+    create_sparse_interleave_picker_matrix,
+)
 from .buffer import Buffer
+from .nop import Nop
+from .transpose import TransposeTM
 
 
 def eval(type, attr, ops):

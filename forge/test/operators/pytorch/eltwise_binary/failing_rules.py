@@ -5,14 +5,16 @@
 # Failing rules for element-wise binary operators
 
 
-import forge
+from test.operators.utils import (
+    FailingReasons,
+    FailingRulesConverter,
+    InputSource,
+    TestCollection,
+    TestCollectionCommon,
+    TestResultFailing,
+)
 
-from test.operators.utils import InputSource
-from test.operators.utils import TestCollection
-from test.operators.utils import TestResultFailing
-from test.operators.utils import FailingReasons
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import FailingRulesConverter
+import forge
 
 
 class FailingRulesData:

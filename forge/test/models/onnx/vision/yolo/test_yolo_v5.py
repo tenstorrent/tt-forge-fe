@@ -1,20 +1,23 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge, os
-import requests
-import pytest
-import torch
-from PIL import Image
+import os
 from pathlib import Path
+
 import cv2
 import numpy as np
+import onnx
+import pytest
+import requests
+import torch
+from PIL import Image
 from yolov5.utils.dataloaders import exif_transpose, letterbox
-import onnx, pytest
-from forge.verify.backend import verify_module
+
+import forge
 from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
 from forge._C.backend_api import BackendDevice
+from forge.verify.backend import verify_module
+from forge.verify.config import TestKind
 
 
 def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:

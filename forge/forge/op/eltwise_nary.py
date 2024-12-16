@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from typing import Union, List
+from typing import List, Union
 
-from ..tensor import Tensor
 from ..parameter import Parameter
+from ..tensor import Tensor
 from .common import ForgeOp as op
 
 

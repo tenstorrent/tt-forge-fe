@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import pytest
-import numpy as np
-import torch
-import requests
 import os
 from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
+
+import numpy as np
+import pytest
+import requests
+import torch
+
+import forge
 
 
 @pytest.mark.nightly
