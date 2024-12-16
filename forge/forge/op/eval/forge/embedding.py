@@ -47,5 +47,4 @@ def decompose(type, attr, dc, inputs):
 
 def backward(type, attr, ac, operand, inputs, output, grad):
     assert type == "embedding"
-    assert len(ops) == 2
-    raise NotImplementedError("embedding backwards not implemented")
+    return ac.op("embedding_bw", [inputs[0], inputs[1], grad])

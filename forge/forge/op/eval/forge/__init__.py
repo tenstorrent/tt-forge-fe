@@ -77,6 +77,7 @@ op_to_module_map = {
     "sparse_matmul": "matmul",
     "depthwise": "depthwise",
     "embedding": "embedding",
+    "embedding_bw": "embedding_bw",
     "ethernet_datacopy": EthernetDatacopy,
     "transpose": TransposeTM,
     "adv_index": "tm",
