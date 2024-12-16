@@ -75,7 +75,6 @@ class MNISTLora(nn.Module):
 
     def freeze_linear_layers(self):
         for layer in [self.linear1, self.linear2, self.linear3]:
-        # for layer in [self.linear1, self.linear3]:
             for param in layer.parameters():
                 param.requires_grad = False
 
