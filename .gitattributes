@@ -1,0 +1,8 @@
+/proj_sw/user_dev/mramanathan/lab71_dec12forge/tt-forge-fe/forge/test/models/pytorch/vision/pointpillars/hv_pointpillars_secfpn_sbn-all_4x8_2x_nus-3d_20210826_225857-f19d00a3.pth filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-08-01-15-16-36-0400__CAM_FRONT_RIGHT__1533151603520482.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/LIDAR_TOP/n008-2018-08-01-15-16-36-0400__LIDAR_TOP__1533151603547590.pcd.bin filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/CAM_BACK/n008-2018-08-01-15-16-36-0400__CAM_BACK__1533151603537558.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-08-01-15-16-36-0400__CAM_BACK_LEFT__1533151603547405.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-08-01-15-16-36-0400__CAM_BACK_RIGHT__1533151603528113.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151603512404.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/pointpillars/data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-08-01-15-16-36-0400__CAM_FRONT_LEFT__1533151603504799.jpg filter=lfs diff=lfs merge=lfs -text
