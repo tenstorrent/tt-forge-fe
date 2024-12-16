@@ -27,7 +27,7 @@ def test_llama_3b_lm_head(model_path):
     # Compile the model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
