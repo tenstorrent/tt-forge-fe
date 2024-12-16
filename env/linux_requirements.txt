@@ -18,7 +18,7 @@ sacremoses==0.0.53
 seaborn
 scikit-image==0.20.0 # For DenseNet 121 HF XRay model
 segmentation_models_pytorch==0.3.2
-#sentencepiece==0.1.96
+sentencepiece==0.2.0
 subword-nmt==0.3.8
 tensorflow-hub==0.12.0
 timm==0.6.12
