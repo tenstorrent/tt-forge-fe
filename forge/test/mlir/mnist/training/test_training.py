@@ -430,7 +430,7 @@ def test_lora():
     # Load TensorBoard writer (for logging)
     writer = load_tb_writer("forge_mnist")
 
-    framework_model = MNISTLinear(bias=False)
+    framework_model = MNISTLora(bias=False)
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
 
     tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, 784)], training=True)
@@ -477,17 +477,13 @@ def test_lora():
         # Adjust weights (on CPU)
         framework_optimizer.step()
 
-    for idx, loss in enumerate(losses):
-        print(f"Epoch: {idx+1}: {loss}")
+    test_loss = 0
+    for batch_idx, (data, target) in enumerate(test_loader):
+        pred = tt_model(data)[0]
+        target = nn.functional.one_hot(target, num_classes=10).float()
 
-    # test_loss = 0
-    # for batch_idx, (data, target) in enumerate(test_loader):
-    #     pred = tt_model(data)[0]
-    #     target = nn.functional.one_hot(target, num_classes=10).float()
-# 
-    #     test_loss += tt_loss(pred, target)[0]
-# 
-    #     if batch_idx == 1000:
-    #         break
+        test_loss += tt_loss(pred, target)[0]
 
-    # print(f"Test (total) loss: {test_loss}")
+        if batch_idx == 1000:
+            break
+    print(f"Test (total) loss: {test_loss}")
