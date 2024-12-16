@@ -95,6 +95,7 @@ std::vector<torch::Tensor> run_binary_from_file(
 void verify_input_tensors(
     const std::vector<torch::Tensor>& input_tensors, const std::vector<runtime::TensorDesc>& input_descs)
 {
+    std::cout << "Iput tensor: " << input_tensors[0] << std::endl;
     if (input_tensors.size() != input_descs.size())
     {
         log_fatal(LogTTDevice, "Input count mismatch: expected {}, got {}", input_descs.size(), input_tensors.size());
