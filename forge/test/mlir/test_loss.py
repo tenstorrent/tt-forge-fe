@@ -95,3 +95,36 @@ def test_mse_loss(prediction_shape, reduction):
     assert torch.allclose(
         torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3
     )  # relative tolerance is 5% and absolute tolerance is 0.005
+
+
+@pytest.mark.parametrize(
+    "prediction_shape",
+    [
+        (33,),
+        (128,),
+        (2, 2),
+        (3, 5),
+        (32, 32),
+        (33, 127),
+        (128, 20),
+        (128, 128),
+    ],
+)
+def test_triplet_margin_loss(prediction_shape):
+    forge_loss = forge.op.loss.TripletMarginLoss("triplet_margin_loss")
+    torch_loss = torch.nn.TripletMarginLoss()
+
+    anchor = torch.randn(prediction_shape, requires_grad=True)
+    anchor_forge = forge.tensor.Tensor.create_from_torch(anchor)
+    positive = torch.randn(prediction_shape, requires_grad=True)
+    positive_forge = forge.tensor.Tensor.create_from_torch(positive)
+    negative = torch.randn(prediction_shape, requires_grad=True)
+    negative_forge = forge.tensor.Tensor.create_from_torch(negative)
+
+    forge_loss = forge.compile(forge_loss, sample_inputs=[anchor_forge, positive_forge, negative_forge])
+    forge_loss_out = forge_loss(anchor_forge, positive_forge, negative_forge)
+    torch_loss_out = torch_loss(anchor, positive, negative)
+    print(f"torch_loss_out: {torch_loss_out}")
+    print(f"forge_loss_out: {forge_loss_out[0]} {forge_loss_out[0].shape}")
+
+    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2)
