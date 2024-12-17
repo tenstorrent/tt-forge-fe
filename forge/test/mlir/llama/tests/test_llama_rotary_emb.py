@@ -57,6 +57,7 @@ def test_llama_3b_rotary_emb(model_path):
 
 
 @pytest.mark.push
+@pytest.mark.skip(reason="Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B"])
 def test_llama_32_rotary_emb(model_path):
     class Llama_Rotary_Embedding(torch.nn.Module):
