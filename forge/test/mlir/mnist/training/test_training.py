@@ -421,9 +421,6 @@ def test_lora():
     batch_size = 64
     learning_rate = 0.001
 
-    # Limit number of batches to run - quicker test
-    limit_num_batches = 1000
-
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
 
@@ -452,7 +449,7 @@ def test_lora():
         framework_optimizer.zero_grad()
 
         total_loss = 0
-        for batch_idx, (data, target) in enumerate(train_loader):
+        for _, (data, target) in enumerate(train_loader):
 
             # Create target tensor and leave on CPU
             target = nn.functional.one_hot(target, num_classes=10).float()
@@ -475,7 +472,7 @@ def test_lora():
         framework_optimizer.step()
 
     test_loss = 0
-    for batch_idx, (data, target) in enumerate(test_loader):
+    for _, (data, target) in enumerate(test_loader):
         pred = tt_model(data)[0]
         target = nn.functional.one_hot(target, num_classes=10).float()
 
