@@ -30,7 +30,6 @@ def test_llama_3b_mlp(model_path):
 
 
 @pytest.mark.push
-@pytest.mark.skip(reason="Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B"])
 def test_llama_32_mlp(model_path):
     # Load Llama model and tokenizer

@@ -57,8 +57,6 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     - The first part is the prefilling of the model on the device.
     - The second part is the decoding of the model on the CPU without KV cache.
     """
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
 
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, return_dict=True)
