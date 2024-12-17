@@ -418,7 +418,7 @@ def test_lora():
 
     # Config
     num_epochs = 3
-    batch_size = 1
+    batch_size = 64
     learning_rate = 0.001
 
     # Limit number of batches to run - quicker test
@@ -468,9 +468,6 @@ def test_lora():
             # Run backward pass on device
             tt_loss.backward()
 
-            if batch_idx >= limit_num_batches:
-                break
-
         print(f"epoch: {epoch_idx} loss: {total_loss}")
         losses.append(total_loss)
 
@@ -484,6 +481,4 @@ def test_lora():
 
         test_loss += tt_loss(pred, target)[0]
 
-        if batch_idx == 1000:
-            break
     print(f"Test (total) loss: {test_loss}")
