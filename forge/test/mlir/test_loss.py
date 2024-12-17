@@ -185,9 +185,10 @@ def test_nll_loss(prediction_shape, reduction):
         (128, 128),
     ],
 )
-def test_huber_loss(prediction_shape):
-    forge_loss = forge.op.loss.HuberLoss("huber_loss", delta=1.0, reduction="mean")
-    torch_loss = torch.nn.HuberLoss(reduction="mean", delta=1.0)
+@pytest.mark.parametrize("reduction", ["mean", "sum"])
+def test_huber_loss(prediction_shape, reduction):
+    forge_loss = forge.op.loss.HuberLoss("huber_loss", delta=1.0, reduction=reduction)
+    torch_loss = torch.nn.HuberLoss(reduction=reduction, delta=1.0)
 
     prediction = torch.randn(prediction_shape, requires_grad=True)
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
