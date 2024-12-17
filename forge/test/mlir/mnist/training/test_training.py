@@ -460,7 +460,7 @@ def test_lora():
             # Forward pass (prediction) on device
             pred = tt_model(data)[0]
             golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, VerifyConfig(pcc=0.95))
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
 
             loss = tt_loss(pred, target)
             total_loss += loss[0].item()
