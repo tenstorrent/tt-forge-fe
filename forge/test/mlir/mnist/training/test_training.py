@@ -424,9 +424,6 @@ def test_lora():
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
 
-    # Load TensorBoard writer (for logging)
-    writer = load_tb_writer("forge_mnist")
-
     framework_model = MNISTLora(bias=False)
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
 
@@ -436,20 +433,14 @@ def test_lora():
 
     loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
     loss_inputs = to_forge_tensors(loss_inputs)
-
     tt_loss = forge.compile(loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
 
     logger.info("Starting training loop... (logger will be disabled)")
     logger.disable("")
-    losses = []
     for epoch_idx in range(num_epochs):
-        # Reset gradients (every epoch) - since our batch size is currently 1,
-        # we accumulate gradients across multiple batches (limit_num_batches),
-        # and then run the optimizer.
-        framework_optimizer.zero_grad()
-
         total_loss = 0
         for _, (data, target) in enumerate(train_loader):
+            framework_optimizer.zero_grad()
 
             # Create target tensor and leave on CPU
             target = nn.functional.one_hot(target, num_classes=10).float()
@@ -465,11 +456,10 @@ def test_lora():
             # Run backward pass on device
             tt_loss.backward()
 
-        print(f"epoch: {epoch_idx} loss: {total_loss}")
-        losses.append(total_loss)
+            # Adjust weights (on CPU)
+            framework_optimizer.step()
 
-        # Adjust weights (on CPU)
-        framework_optimizer.step()
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
 
     test_loss = 0
     for _, (data, target) in enumerate(test_loader):
