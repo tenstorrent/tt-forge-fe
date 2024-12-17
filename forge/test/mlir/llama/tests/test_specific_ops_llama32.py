@@ -186,9 +186,6 @@ def test_matmul(shapes):
 )
 @pytest.mark.push
 def test_multiply(shapes):
-    if shapes == ((1, 32, 11, 64), (1, 1, 11, 64)) or shapes == ((1, 8, 11, 64), (1, 1, 11, 64)):
-        pytest.xfail("eltwise multiply broadcast not supported")
-
     shape1, shape2 = shapes
 
     class Multiply(nn.Module):
