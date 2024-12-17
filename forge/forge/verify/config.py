@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 import os
 
+
 import torch
 import tensorflow as tf
 import forge
@@ -13,6 +14,7 @@ import forge
 from forge._C import DataFormat
 from dataclasses_json import dataclass_json
 from forge.utils import as_json
+from forge.verify.value_checkers import ValueChecker, AutomaticValueChecker
 
 
 class TestKind(Enum):
@@ -243,6 +245,14 @@ def _set_global_verify_config(config: DepricatedVerifyConfig):
     g_compiler_config = config
 
 
+class VerifyTensorMetadata(Enum):
+    ALL_CHECKS = "all_checks"  # default
+    ONLY_SHAPE = "only_shape"
+    ONLY_DTYPE = "only_dtype"
+    ONLY_SIZE = "only_size"
+    NONE = "none"
+
+
 # TODO: 1. Add support for backward pass verification
 #       2. Add support for intermediate representation verification
 @dataclass_json
@@ -254,15 +264,7 @@ class VerifyConfig:
     verify_size: bool = True  # Check output size
     verify_dtype: bool = True  # Check output dtype
     verify_shape: bool = True  # Check output shape
-    verify_data: bool = True  # Check output similarity using pcc
-    verify_allclose: bool = True  # Check output similarity using allclose
-
-    # --- Thresholds and Metrics --- #
-    rtol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
-    atol: Dict[Any, Optional[float]] = field(default_factory=lambda: {})  # values per data format
-    relative_atol: float = 0.1  # set atol at 10% of the max value in tensor
-    pcc: Optional[float] = None  # Pearson Coefficient Check
-    dissimilarity_threshold: Optional[float] = None  # use dissimilarity check for bool tensors
+    value_checker: ValueChecker = AutomaticValueChecker()
 
     # --- Logging settings --- #
     dump_tensors: bool = False  # dump tensors to the bellow path
@@ -286,37 +288,3 @@ class VerifyConfig:
     @property
     def framework_model_types(self) -> Tuple:
         return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule)
-
-    # set defaults if not set explicitly by user. Relax under silicon, focus on pcc more.
-    def __post_init__(self):
-        if isinstance(self.rtol, (int, float)):
-            # User set one value, instead of dict
-            self.rtol = {torch.float32: self.rtol, torch.float16: self.rtol, torch.bfloat16: self.rtol}
-
-        if isinstance(self.atol, (int, float)):
-            # User set one value, instead of dict
-            self.atol = {torch.float32: self.atol, torch.float16: self.atol, torch.bfloat16: self.atol}
-
-        rtol_defaults = {
-            torch.float32: 1e-05,
-            torch.float16: 1e-05,
-            torch.bfloat16: 1e-05,
-        }
-        atol_defaults = {
-            torch.float32: 1e-08,
-            torch.float16: 1e-08,
-            torch.bfloat16: 1e-08,
-        }
-
-        for dt in [torch.float32, torch.float16, torch.bfloat16]:
-            if not dt in self.rtol:
-                self.rtol[dt] = rtol_defaults[dt]
-            if not dt in self.atol:
-                self.atol[dt] = atol_defaults[dt]
-
-        if self.pcc is None:
-            self.pcc = 0.99
-
-        if self.dissimilarity_threshold is None:
-            # threshold picked empirically. We will update it as TTNN evolves
-            self.dissimilarity_threshold = 0.001

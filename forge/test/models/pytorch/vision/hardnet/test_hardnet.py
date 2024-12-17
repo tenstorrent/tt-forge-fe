@@ -8,7 +8,7 @@ import urllib
 from PIL import Image
 from torchvision import transforms
 import os
-from forge.op.eval.common import compare_with_golden
+from forge.verify.compare import compare_with_golden
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),

@@ -836,7 +836,7 @@ bool compare_tensor_to_golden(
     graphlib::IRLevel ir_level,
     bool warning_only = false)
 {
-    py::object eval_module = py::module_::import("forge.op.eval");
+    py::object eval_module = py::module_::import("forge.verify.compare");
     bool is_forge = ir_level == graphlib::IRLevel::IR_FORGE;
 
     if (pcc == 0.0)
