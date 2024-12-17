@@ -358,15 +358,7 @@ class MLIRGenerator
         ::llvm::ArrayRef<::llvm::StringRef> operation_attributes = TTIROp::getAttributeNames();
         for (auto attribute_name : operation_attributes)
         {
-            if (attribute_name == "operand_constraints")
-            {
-                // Create operation constraint attributes
-                mlir::NamedAttribute operand_constraints_attribute = builder_.getNamedAttr(
-                    "operand_constraints",
-                    builder_.getArrayAttr(get_mlir_operand_constraint_attributes(graph, op_node)));
-                attributes.push_back(operand_constraints_attribute);
-            }
-            else if (attribute_name == mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr())
+            if (attribute_name == mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr())
             {
                 // Create operation segment sizes attributes
                 mlir::NamedAttribute operand_segment_sizes_attribute = builder_.getNamedAttr(
@@ -429,29 +421,6 @@ class MLIRGenerator
 
         operands.push_back(emit_mlir_empty_tensor(graph, op_node));
         return operands;
-    }
-
-    // Get the MLIR operand constraint attributes for a TTForge operation.
-    llvm::SmallVector<mlir::Attribute> get_mlir_operand_constraint_attributes(
-        tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
-    {
-        llvm::SmallVector<mlir::Attribute> operand_constraints;
-
-        for ([[maybe_unused]] auto &operand : graph->operands(op_node))
-        {
-            mlir::Attribute operand_constraint_attribute =
-                builder_.getAttr<mlir::tt::OperandConstraintAttr>(mlir::tt::OperandConstraint::AnyDevice);
-            operand_constraints.push_back(operand_constraint_attribute);
-        }
-
-        for ([[maybe_unused]] auto &user : graph->data_users(op_node))
-        {
-            mlir::Attribute operand_constraint_attribute =
-                builder_.getAttr<mlir::tt::OperandConstraintAttr>(mlir::tt::OperandConstraint::AnyDevice);
-            operand_constraints.push_back(operand_constraint_attribute);
-        }
-
-        return operand_constraints;
     }
 
     /// Emit an MLIR operation for an empty tensor.
