@@ -6,7 +6,7 @@ from functools import wraps
 from forge.op.tm import Broadcast, Unsqueeze
 from ..module import ForgeModule
 from .constant import Constant
-from .eltwise_unary import Log, Abs
+from .eltwise_unary import Log, Abs, Sigmoid
 from .eltwise_binary import Add, Subtract, Multiply
 from .nn import Softmax
 from .reduce import ReduceSum, ReduceAvg
@@ -162,4 +162,18 @@ class BCELoss(ForgeModule):
         neg_one = align_shape(neg_one, sum_terms, "neg_one")
         negative_sum_terms = Multiply("negative_sum_terms", sum_terms, neg_one)
         loss = reduce_loss(self.reduction, negative_sum_terms)
+        return loss
+
+
+class BCEWithLogitsLoss(ForgeModule):
+    def __init__(self, name: str, reduction: str = "mean"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+        self.bce_loss = BCELoss("bce_loss", reduction=self.reduction)
+
+    @validate_shapes(min_dim=1, max_dim=2)
+    def forward(self, prediction, labels):
+        sigmoid_prediction = Sigmoid("sigmoid", prediction)
+        loss = self.bce_loss(sigmoid_prediction, labels)
         return loss
