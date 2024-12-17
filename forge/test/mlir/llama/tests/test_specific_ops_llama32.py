@@ -24,9 +24,6 @@ from forge.verify.verify import verify
 )
 @pytest.mark.push
 def test_add(shapes):
-    if shapes[0] != shapes[1]:
-        pytest.xfail("eltwise_add broadcast not supported")
-
     class Add(nn.Module):
         def __init__(self):
             super().__init__()
