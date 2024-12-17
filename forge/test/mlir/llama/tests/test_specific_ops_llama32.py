@@ -141,15 +141,12 @@ def test_embedding(shapes):
         ((32, 11, 64), (32, 64, 11)),
         ((32, 11, 11), (32, 11, 64)),
         ((11, 2048), (2048, 8192)),
-        ((1, 11, 8192), (8192, 2048)),
+        pytest.param(((1, 11, 8192), (8192, 2048)), marks=pytest.mark.xfail(reason="pcc ~ 0.65")),
         ((1, 11, 2048), (2048, 128256)),
     ],
 )
 @pytest.mark.push
 def test_matmul(shapes):
-    if shapes == ((1, 11, 8192), (8192, 2048)):
-        pytest.xfail("pcc < 0.95")
-
     shape1, shape2 = shapes
 
     class Matmul(nn.Module):
