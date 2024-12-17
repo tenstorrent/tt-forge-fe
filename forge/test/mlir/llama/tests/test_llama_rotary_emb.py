@@ -10,8 +10,8 @@ from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
 from forge.verify.verify import verify
 
 
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b"])
 @pytest.mark.push
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b"])
 def test_llama_3b_rotary_emb(model_path):
     class Llama_Rotary_Embedding(torch.nn.Module):
         def __init__(self, model):
