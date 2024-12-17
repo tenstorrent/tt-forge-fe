@@ -123,7 +123,7 @@ class MSELoss(ForgeModule):
 
 
 class HuberLoss(ForgeModule):
-    def __init__(self, name: str, delta: float = 1.0, reduction: str = "avg"):
+    def __init__(self, name: str, delta: float = 1.0, reduction: str = "mean"):
         super().__init__(name)
         self.delta = delta
         self.reduction = reduction
@@ -159,8 +159,12 @@ class HuberLoss(ForgeModule):
         delta_diff = Subtract("delta_diff", abs_diff, half_delta)
         mul_delta_diff = Multiply("mul_delta_diff", delta, delta_diff)
 
+        # mask the loss
+        # if abs_diff < delta, do 0.5 * (x - y)**2
+        # else do delta * (abs_diff - 0.5 * delta)
         loss_lt = Multiply("loss_lt", lt_delta, half_square)
         loss_ge = Multiply("loss_ge", ge_delta, mul_delta_diff)
 
+        # combine masks to get the final loss
         loss = Add("loss", loss_lt, loss_ge)
         return reduce_loss(self.reduction, loss)
