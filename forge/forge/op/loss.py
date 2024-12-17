@@ -16,8 +16,9 @@ class CrossEntropyLoss(ForgeModule):
     loss = reduce_avg(-1 * sum(labels * log(softmax(predictions)), dim=-1), dim=0)
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, reduction: str = "mean"):
         super().__init__(name)
+        self.reduction = reduction
         self.is_loss = True
 
     def forward(self, predictions, labels):
@@ -39,8 +40,14 @@ class CrossEntropyLoss(ForgeModule):
             negative_one_constant,
         )
 
-        reduction_avg = ReduceAvg("reduction_avg", negative_log_loss, dim=0)
-        return reduction_avg
+        if self.reduction == "none":
+            return negative_log_loss
+        elif self.reduction == "sum":
+            reduction_sum = ReduceSum("reduction_sum", negative_log_loss)
+            return reduction_sum
+        else:
+            reduction_avg = ReduceAvg("reduction_avg", negative_log_loss, dim=0)
+            return reduction_avg
 
 
 class L1Loss(ForgeModule):
