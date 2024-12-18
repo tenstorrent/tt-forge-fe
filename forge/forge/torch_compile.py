@@ -202,7 +202,7 @@ def _compile(module, aten_module, module_name, sample_inputs, device, compiler_c
     # Frontend Compile
     logger.debug("Appending to Graph")
     device_graph_changed, graph_inputs, intermediate_tensors, output_tensors, schedule = _capture.append_to_graph(
-        module_name, module, aten_module, sample_inputs, _subgraph_index
+        module_name, module, aten_module, sample_inputs, _subgraph_index, compiler_cfg
     )
 
     _subgraph_index += 1
@@ -462,7 +462,7 @@ def _torch_compile(
     device = _device
 
     if compiler_cfg is None:
-        compiler_cfg = forge.config._get_global_compiler_config()
+        compiler_cfg = forge.config.CompilerConfig()
         compiler_cfg.compile_subgraphs = True
 
     if module_name is None:

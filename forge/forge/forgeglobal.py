@@ -89,9 +89,6 @@ def forge_reset():
     devices = []
     modules = []
 
-    from forge.config import _clear_global_compiler_config
-
-    _clear_global_compiler_config()
     set_state_changed()
 
 

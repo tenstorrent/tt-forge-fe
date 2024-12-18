@@ -22,10 +22,8 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 def test_ddrnet(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
 
     if test_device.arch == BackendDevice.Wormhole_B0:
         # These overrides are planned to be ON by default
@@ -85,10 +83,8 @@ variants = ["ddrnet_23_slim_1024"]
 def test_ddrnet_semantic_segmentation_onnx(variant, test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
 
     if test_device.arch == BackendDevice.Wormhole_B0:
         os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "36864"

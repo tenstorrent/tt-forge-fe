@@ -10,7 +10,6 @@ from forge._C.graph import NodeType
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, clamp
 from forge import Tensor
-from forge.config import _get_global_compiler_config
 from .transpose import TransposeTM
 
 

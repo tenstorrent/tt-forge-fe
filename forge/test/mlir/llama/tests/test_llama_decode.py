@@ -89,11 +89,6 @@ def calculate_attention_mask_and_postion_ids(
 
 @pytest.mark.parametrize("run_on_tt_device", [False, True])
 def test_llama_prefill_on_cpu_decode_on_tt_no_cache(run_on_tt_device):
-
-    if run_on_tt_device:
-        compiler_cfg = forge.config._get_global_compiler_config()
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
     model, tokenizer = load_model(model_path, return_dict=True, use_cache=False, use_fast=False)
@@ -132,9 +127,13 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(run_on_tt_device):
     padding_seq_len = attention_mask.shape[1] - non_padding_seq_len
 
     if run_on_tt_device:
+        compiler_cfg = forge.config.CompilerConfig()
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
         # Compile the model on TT
-        compiled_model = forge.compile(framework_model, sample_inputs=[input_ids, attention_mask])
+        compiled_model = forge.compile(
+            framework_model, sample_inputs=[input_ids, attention_mask], compiler_cfg=compiler_cfg
+        )
         pytest.xfail("Found Unsupported operations while lowering from TTForge to TTIR in forward graph.")
 
     # Run decode stage on TT device and generate tokens by appending predicted token into sequence of input tokens
@@ -186,10 +185,6 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(run_on_tt_device):
 
 @pytest.mark.parametrize("run_on_tt_device", [False, True])
 def test_llama_prefill_on_cpu_decode_on_tt_cache(run_on_tt_device):
-
-    if run_on_tt_device:
-        compiler_cfg = forge.config._get_global_compiler_config()
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load Llama 3B model and tokenizer
     model_path = "openlm-research/open_llama_3b"
@@ -243,9 +238,14 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(run_on_tt_device):
             padded_past_key_values_seq_length, non_padding_seq_length, input_seq_length
         )
 
+        compiler_cfg = forge.config.CompilerConfig()
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+
         # Compile the model
         compiled_model = forge.compile(
-            framework_model, sample_inputs=[model_inputs[0], attention_mask, position_ids, model_inputs[1]]
+            framework_model,
+            sample_inputs=[model_inputs[0], attention_mask, position_ids, model_inputs[1]],
+            compiler_cfg=compiler_cfg,
         )
         pytest.xfail("Found Unsupported operations while lowering from TTForge to TTIR in forward graph.")
 

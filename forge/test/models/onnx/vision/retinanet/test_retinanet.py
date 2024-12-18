@@ -53,25 +53,9 @@ def img_preprocess(scal_val=1):
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.nightly
 def test_retinanet_r101_640x480_onnx(test_device):
-    os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
-    os.environ["FORGE_DISABLE_CONV_MULTI_OP_FRACTURE"] = "1"
-    os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{76*1024}"
-    os.environ["FORGE_RIBBON2"] = "1"
-    os.environ["FORGE_BALANCER_PREPASS_DISABLED"] = "1"
-    os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
-
-    # Temp mitigations for net2pipe errors, should be removed.
-    #
-    os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-    os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-    os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
-    compiler_cfg.graph_solver_self_cut_type = "ConsumerOperandDataEdgesFirst"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    compiler_cfg.conv_multi_op_fracture_factor_override["conv2d_356"] = 3
 
     # STEP 2: Create Forge module from PyTorch model
     load_path = "third_party/confidential_customer_models/model_2/onnx/retinanet/retinanet-9.onnx"
@@ -129,58 +113,8 @@ variants = [
 def test_retinanet_onnx(variant, test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_DECOMPOSE_SIGMOID"] = "1"
-    os.environ["FORGE_RIBBON2"] = "1"
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "73728"
-
-        if variant == "retinanet_rn18fpn":
-            compiler_cfg.place_on_new_epoch("conv2d_117.dc.matmul.11")
-            compiler_cfg.balancer_op_override("conv2d_82.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_60.dc.matmul.11", "grid_shape", (1, 1))
-
-        elif variant == "retinanet_rn34fpn":
-            compiler_cfg.place_on_new_epoch("conv2d_157.dc.matmul.11")
-            compiler_cfg.balancer_op_override("conv2d_122.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_100.dc.matmul.11", "grid_shape", (1, 1))
-
-        elif variant == "retinanet_rn50fpn":
-            compiler_cfg.place_on_new_epoch("conv2d_190.dc.matmul.11")
-            compiler_cfg.balancer_op_override("conv2d_155.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_133.dc.matmul.11", "grid_shape", (1, 1))
-
-        elif variant == "retinanet_rn152fpn":
-            compiler_cfg.place_on_new_epoch("conv2d_428.dc.matmul.11")
-            compiler_cfg.balancer_op_override("conv2d_393.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_371.dc.matmul.11", "grid_shape", (1, 1))
-
-    if test_device.arch == BackendDevice.Grayskull:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "69632"
-        # Temp mitigations for net2pipe errors, should be removed.
-        #
-        os.environ["FORGE_TEMP_ENABLE_NEW_FUSED_ESTIMATES"] = "0"
-        os.environ["FORGE_TEMP_SCALE_SPARSE_ESTIMATE_ARGS"] = "0"
-        os.environ["FORGE_TEMP_ENABLE_NEW_SPARSE_ESTIMATES"] = "0"
-
-        if variant == "retinanet_rn18fpn":
-            compiler_cfg.balancer_op_override("conv2d_82.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_60.dc.matmul.11", "t_stream_shape", (1, 1))
-
-        elif variant == "retinanet_rn34fpn":
-            compiler_cfg.balancer_op_override("conv2d_122.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_100.dc.matmul.11", "t_stream_shape", (1, 1))
-
-        elif variant == "retinanet_rn50fpn":
-            compiler_cfg.balancer_op_override("conv2d_155.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_133.dc.matmul.11", "t_stream_shape", (1, 1))
-
-        elif variant == "retinanet_rn152fpn":
-            compiler_cfg.balancer_op_override("conv2d_393.dc.matmul.11", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("conv2d_371.dc.matmul.11", "t_stream_shape", (1, 1))
 
     # Prepare model
     load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"

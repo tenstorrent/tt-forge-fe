@@ -46,7 +46,7 @@ def test_nan_to_num(shape, dtype):
         def forward(self, x1):
             return torch.nan_to_num(x1)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config.CompilerConfig()
 
     if dtype == torch.float16:
         # set compie depth to avoid Unsupported ttnn::DataType , Fatal Python error: Aborted
@@ -63,7 +63,7 @@ def test_nan_to_num(shape, dtype):
     inputs[0][mask_neginf] = float("-inf")
 
     framework_model = nan_to_num()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
     if dtype == torch.float32:
         verify(inputs, framework_model, compiled_model)
 

@@ -15,7 +15,7 @@ from loguru import logger
 
 from forge._C.graph import OpType
 from forge.tensor import pytorch_dtype_to_forge_dataformat
-from forge.config import CompilerConfig, _get_global_compiler_config
+from forge.config import CompilerConfig
 
 
 class ForgeNode:
@@ -273,7 +273,7 @@ def process_maxpool2d(node, forge_op_name):
     if len(node.args) >= 6:
         ceil_mode = node.args[5]
 
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = CompilerConfig()
     add_sub_surround = compiler_cfg.max_pool_add_sub_surround
     add_sub_surround_value = compiler_cfg.max_pool_add_sub_surround_value
     attrs = (
@@ -918,7 +918,7 @@ def get_unsupported_nodes(
             continue
 
         if op_name in config.cpu_fallback_ops:
-            unsuppored_nodes.add(node)
+            unsupported_nodes.add(node)
             continue
 
         if is_supported_op(op_name, node):

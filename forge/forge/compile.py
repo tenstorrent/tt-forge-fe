@@ -14,7 +14,6 @@ from forge.compiled_graph_state import CompiledGraphState, CompiledModel, Compil
 from forge.config import (
     CompilerConfig,
     CompileDepth,
-    _get_global_compiler_config,
 )
 from forge._C import (
     link_past_cache_ios,
@@ -183,6 +182,7 @@ def compile_main(
     optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None,
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
+    compiler_cfg: CompilerConfig = CompilerConfig(),
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -217,9 +217,6 @@ def compile_main(
     """
 
     assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, and Forge modules are supported."
-
-    compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.apply_env_config_overrides()
 
     if module_name is None:
         module_name = module.__class__.__name__
@@ -440,7 +437,7 @@ def forge_compile_torch(
 
     inputs = list(inputs)
 
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = CompilerConfig()
     compiler_cfg.apply_env_config_overrides()
 
     compile_context: CompileContext = CompileContext(
@@ -461,7 +458,7 @@ def forge_compile(
     graph_name: str,
     *inputs: Union[Tensor, List[Any], Dict[str, Any]],
     targets: List[Tensor] = [],
-    compiler_cfg: Optional[CompilerConfig] = None,
+    compiler_cfg: CompilerConfig = CompilerConfig(),
     verify_cfg: Optional[DepricatedVerifyConfig] = None,
     losses: Optional[List[Tensor]] = None,
     microbatch_size: int = 1,
@@ -504,9 +501,6 @@ def forge_compile(
     inputs = list(inputs)
     if verify_cfg is None:
         verify_cfg = DepricatedVerifyConfig.disabled()  # no verification config provided, disable by default
-
-    if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
 
     compiler_cfg.apply_env_config_overrides()
 
@@ -641,9 +635,6 @@ def init_compile(context: CompileContext) -> CompileDepth:
     force_full = bool(int(os.environ.get("FORGE_FORCE_FULL_COMPILE_DEPTH", "0")))
     if force_full:
         compiler_cfg.compile_depth = CompileDepth.FULL
-
-    context.backend_output_directory = compiler_cfg.backend_output_dir
-    ci.initialize_output_build_directory(context.backend_output_directory)
 
     # compiler_cfg is fully formed
     if "FORGE_LOAD_CONFIG" in os.environ:
@@ -1097,9 +1088,6 @@ def generate_graph(
     # Create the graph
     graph = Graph(graph_name)
     graph.set_microbatch(1)
-
-    if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
 
     # Trace through the modules
     all_subgraph_outputs = []
