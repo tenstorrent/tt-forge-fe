@@ -36,6 +36,7 @@
 #include "passes/post_autograd_graph_passes.hpp"
 #include "passes/pre_lowering_passes.hpp"
 #include "passes/print_graph.hpp"
+#include "passes/remove_broadcast.hpp"
 #include "passes/remove_nops.hpp"
 #include "passes/replace_incommutable_patterns.hpp"
 #include "passes/set_tile_dim.hpp"
@@ -87,6 +88,7 @@ run_post_initial_graph_passes(
     passes::fuse_pad_conv2d(graph);
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
+    passes::remove_broadcast(graph);
 
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
