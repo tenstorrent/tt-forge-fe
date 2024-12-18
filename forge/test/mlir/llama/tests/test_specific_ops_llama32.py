@@ -15,18 +15,15 @@ from forge.verify.verify import verify
 @pytest.mark.parametrize(
     "shapes",
     [
-        [(1, 11, 1), (1,)],
-        [(1, 32, 11, 64), (1, 32, 11, 64)],
-        [(1, 8, 11, 64), (1, 8, 11, 64)],
-        [(1, 32, 11, 11), (1, 1, 11, 11)],
-        [(1, 11, 2048), (1, 11, 2048)],
+        ((1, 11, 1), (1,)),
+        ((1, 32, 11, 64), (1, 32, 11, 64)),
+        ((1, 8, 11, 64), (1, 8, 11, 64)),
+        ((1, 32, 11, 11), (1, 1, 11, 11)),
+        ((1, 11, 2048), (1, 11, 2048)),
     ],
 )
 @pytest.mark.push
 def test_add(shapes):
-    if shapes[0] != shapes[1]:
-        pytest.xfail("eltwise_add broadcast not supported")
-
     class Add(nn.Module):
         def __init__(self):
             super().__init__()
@@ -141,15 +138,12 @@ def test_embedding(shapes):
         ((32, 11, 64), (32, 64, 11)),
         ((32, 11, 11), (32, 11, 64)),
         ((11, 2048), (2048, 8192)),
-        ((1, 11, 8192), (8192, 2048)),
+        pytest.param(((1, 11, 8192), (8192, 2048)), marks=pytest.mark.xfail(reason="pcc ~ 0.65")),
         ((1, 11, 2048), (2048, 128256)),
     ],
 )
 @pytest.mark.push
 def test_matmul(shapes):
-    if shapes == ((1, 11, 8192), (8192, 2048)):
-        pytest.xfail("pcc < 0.95")
-
     shape1, shape2 = shapes
 
     class Matmul(nn.Module):
@@ -186,9 +180,6 @@ def test_matmul(shapes):
 )
 @pytest.mark.push
 def test_multiply(shapes):
-    if shapes == ((1, 32, 11, 64), (1, 1, 11, 64)) or shapes == ((1, 8, 11, 64), (1, 1, 11, 64)):
-        pytest.xfail("eltwise multiply broadcast not supported")
-
     shape1, shape2 = shapes
 
     class Multiply(nn.Module):
@@ -287,8 +278,14 @@ def test_reciprocal(shapes):
         ((1, 32, 11, 64), (32, 11, 64)),
         ((1, 32, 11, 64), (1, 32, 11, 64)),
         ((11, 512), (1, 11, 8, 64)),
-        ((1, 8, 4, 11, 64), (32, 11, 64)),
-        ((1, 8, 4, 11, 64), (1, 32, 11, 64)),
+        pytest.param(
+            ((1, 8, 4, 11, 64), (32, 11, 64)),
+            marks=pytest.mark.xfail(reason="Only 2D, 3D, and 4D tensors are supported"),
+        ),
+        pytest.param(
+            ((1, 8, 4, 11, 64), (1, 32, 11, 64)),
+            marks=pytest.mark.xfail(reason="Only 2D, 3D, and 4D tensors are supported"),
+        ),
         ((32, 11, 11), (1, 32, 11, 11)),
         ((32, 11, 11), (32, 11, 11)),
         ((1, 32, 64, 11), (32, 64, 11)),
@@ -299,16 +296,6 @@ def test_reciprocal(shapes):
 @pytest.mark.push
 def test_reshape(source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
-
-    if len(source_shape) > 4 or len(target_shape) > 4:
-        pytest.xfail("Only 2D, 3D, and 4D tensors are supported")
-
-    if (
-        source_and_target_shape == ((32, 11, 11), (1, 32, 11, 11))
-        or source_and_target_shape == ((32, 11, 11), (32, 11, 11))
-        or source_and_target_shape == ((1, 32, 64, 11), (32, 64, 11))
-    ):
-        pytest.xfail("pcc < 0.99")
 
     class Reshape(nn.Module):
         def __init__(self, target_shape):
