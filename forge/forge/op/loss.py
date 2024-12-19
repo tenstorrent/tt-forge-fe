@@ -123,6 +123,14 @@ class MSELoss(ForgeModule):
 
 
 class HuberLoss(ForgeModule):
+    """
+    Huber Loss
+
+    Huber loss is computed as follows:
+    loss = if abs(x - y) < delta then 0.5 * (x - y)**2
+    loss = if abs(x - y) >= delta then delta * (abs(x - y) - 0.5 * delta)
+    """
+
     def __init__(self, name: str, delta: float = 1.0, reduction: str = "mean"):
         super().__init__(name)
         self.delta = delta
