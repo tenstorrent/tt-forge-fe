@@ -68,6 +68,8 @@ def test_cross_entropy_loss(prediction_shape):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
+        (33,),
+        (128,),
         (2, 2),
         (3, 5),
         (32, 32),
@@ -76,19 +78,26 @@ def test_cross_entropy_loss(prediction_shape):
         (128, 128),
     ],
 )
-def test_nll_loss(prediction_shape):
-    forge_loss = forge.op.loss.NLLLoss("nll_loss")
-    torch_loss = torch.nn.NLLLoss()
+@pytest.mark.parametrize("reduction", ["mean", "sum"])
+def test_nll_loss(prediction_shape, reduction):
+    forge_loss = forge.op.loss.NLLLoss("nll_loss", reduction=reduction)
+    torch_loss = torch.nn.NLLLoss(reduction=reduction)
 
     prediction = torch.randn(prediction_shape, requires_grad=True)
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
-    target = torch.empty(prediction_shape[0], dtype=torch.long).random_(prediction_shape[-1])
+
+    batch_size = prediction_shape[0] if len(prediction_shape) > 1 else 1
+    target = torch.randint(0, prediction_shape[-1], (batch_size,), dtype=torch.long)
 
     # Because of the following error
     # RuntimeError: TT_FATAL @ ../embedding_device_operation.cpp:28: weights.get_dtype() == DataType::BFLOAT16
     # We need to convert the target to one hot, which is different from torch
     # https://github.com/tenstorrent/tt-mlir/issues/1503
     target_one_hot = nn.functional.one_hot(target, num_classes=prediction_shape[-1]).float()
+
+    if batch_size == 1:  # Handle 1D case, remove the batch dimension
+        target_one_hot = target_one_hot.squeeze(0)
+        target = target.squeeze(0)
 
     target_forge = forge.tensor.Tensor.create_from_torch(target_one_hot)
 

@@ -122,15 +122,22 @@ class MSELoss(ForgeModule):
 
 
 class NLLLoss(ForgeModule):
-    def __init__(self, name: str):
+    """
+    NLLLoss
+
+    NLLLoss is -1 * sum(labels * log(predictions), dim=-1), optionally reduced using ReduceAvg(default) or ReduceSum.
+    """
+
+    def __init__(self, name: str, reduction: str = "mean"):
         super().__init__(name)
         self.is_loss = True
+        self.reduction = reduction
 
-    @validate_shapes(min_dim=2, max_dim=2)
+    @validate_shapes(min_dim=1, max_dim=2)
     def forward(self, prediction, labels):
         weighted_prediction = Multiply("mul_pred_labels", prediction, labels)
-        rows = ReduceSum("r_sum", weighted_prediction, -1)
-        loss = ReduceAvg("r_avg", rows, -2)
         negative_one = Constant("negative_one", constant=-1.0)
-        loss = Multiply("mul_neg_loss", loss, negative_one)
+        loss = Multiply("mul_neg_loss", weighted_prediction, negative_one)
+        loss = ReduceSum("r_sum", loss, -1)
+        loss = reduce_loss(self.reduction, loss)
         return loss
