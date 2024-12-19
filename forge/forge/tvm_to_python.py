@@ -28,6 +28,15 @@ from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytor
 from forge.tvm_unique_op_generation import Operation, NodeType, generate_unique_op_tests
 
 
+def import_from_path(module_name, file_path):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    assert spec is not None, f"Could not load module {module_name} from {file_path}"
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def populate_torch_all_to_args(graph, nid, compiler_cfg):
     curr_node, args = _populate_torch_init_args(graph, nid)
 
@@ -2082,8 +2091,10 @@ def generate_forge_module(
     forge_mods = []
     devices = []
     for writer in module_writers:
-        module = importlib.import_module(writer.import_module_path())
-        module = importlib.reload(module)
+        # Load the generated module
+        module_name = writer.module_name
+        file_path = os.path.join(writer.module_directory, writer.filename)
+        module = import_from_path(module_name, file_path)
 
         TestClass = getattr(module, writer.class_name)
 
