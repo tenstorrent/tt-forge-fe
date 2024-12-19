@@ -161,7 +161,8 @@ def verify(
         input_source_flag=input_source_flag,
         dev_data_format=dev_data_format,
         math_fidelity=math_fidelity,
-        value_range=ValueRanges.SMALL,
+        # Old behavior when dev_data_format was not set
+        value_range=ValueRanges.SMALL if dev_data_format is not None else ValueRanges.SMALL_POSITIVE,
     )
 
 
