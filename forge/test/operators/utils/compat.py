@@ -194,7 +194,10 @@ class TestTensorsUtils:
     ) -> List[torch.Tensor]:
 
         if dtype is None:
-            return torch.rand(input_shape, generator=generator)
+            input = torch.rand(input_shape, generator=generator)
+            range = cls.get_value_range(dev_data_format=dev_data_format, dtype=dtype, value_range=value_range)
+            min, max = range
+            return cls.move_from_small_to_big_value_range(input, min, max)
         elif dtype in cls.DTypes.floats:
             input = torch.rand(input_shape, dtype=dtype, generator=generator)
             range = cls.get_value_range(dev_data_format=dev_data_format, dtype=dtype, value_range=value_range)
