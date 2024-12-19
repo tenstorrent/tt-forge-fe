@@ -115,7 +115,8 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
-            value_range=ValueRanges.SMALL,
+            # Old behavior when dev_data_format was not set
+            value_range=ValueRanges.SMALL if test_vector.dev_data_format is not None else ValueRanges.SMALL_POSITIVE,
         )
 
 
