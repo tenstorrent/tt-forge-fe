@@ -8,6 +8,7 @@
 
 #include "tt/runtime/runtime.h"
 #include "tt_device.hpp"
+#include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
 namespace tt
@@ -178,7 +179,13 @@ std::vector<torch::Tensor> run_binary(
         rt_outputs.emplace_back(create_tensor(outputs.back()));
     }
 
-    runtime::Event _ = runtime::submit(device, binary, program_idx, rt_inputs, rt_outputs);
+    std::vector<runtime::Tensor> submit_outputs = runtime::submit(device, binary, program_idx, rt_inputs);
+    TT_ASSERT(submit_outputs.size() == rt_outputs.size(), "Output count mismatch");
+    for (size_t i = 0; i < submit_outputs.size(); ++i)
+    {
+        runtime::memcpy(rt_outputs[i], submit_outputs[i]);
+        runtime::deallocateTensor(submit_outputs[i], true);
+    }
 
     return outputs;
 }

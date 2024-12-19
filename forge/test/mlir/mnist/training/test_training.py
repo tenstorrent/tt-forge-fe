@@ -410,3 +410,62 @@ def test_loss_device():
             break
 
     print(f"Test (total) loss: {test_loss}")
+
+
+@pytest.mark.push
+def test_lora():
+    torch.manual_seed(0)
+
+    # Config
+    num_epochs = 3
+    batch_size = 64
+    learning_rate = 0.001
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size)
+
+    framework_model = MNISTLora(bias=False)
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
+
+    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, 784)], training=True)
+
+    loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
+
+    loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
+    loss_inputs = to_forge_tensors(loss_inputs)
+    tt_loss = forge.compile(loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+    for epoch_idx in range(num_epochs):
+        total_loss = 0
+        for _, (data, target) in enumerate(train_loader):
+            framework_optimizer.zero_grad()
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).float()
+
+            # Forward pass (prediction) on device
+            pred = tt_model(data)[0]
+            golden_pred = framework_model(data)
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+
+            loss = tt_loss(pred, target)
+            total_loss += loss[0].item()
+
+            # Run backward pass on device
+            tt_loss.backward()
+
+            # Adjust weights (on CPU)
+            framework_optimizer.step()
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+
+    test_loss = 0
+    for _, (data, target) in enumerate(test_loader):
+        pred = tt_model(data)[0]
+        target = nn.functional.one_hot(target, num_classes=10).float()
+
+        test_loss += tt_loss(pred, target)[0]
+
+    print(f"Test (total) loss: {test_loss}")

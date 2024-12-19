@@ -10,7 +10,6 @@ import torch
 
 
 def Transpose(name: str, operandA: Tensor, dim0: int, dim1: int) -> Tensor:
-
     """
     Tranpose X and Y (i.e. rows and columns) dimensions.
 
@@ -163,7 +162,13 @@ def AdvIndex(
     return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
 
-def Select(name: str, operandA: Tensor, dim: int, index: Union[int, Tuple[int, int]], stride: int = 0) -> Tensor:
+def Select(
+    name: str,
+    operandA: Tensor,
+    dim: int,
+    index: Union[int, Tuple[int, int]],
+    stride: int = 0,
+) -> Tensor:
     """
     TM
 
@@ -190,7 +195,7 @@ def Select(name: str, operandA: Tensor, dim: int, index: Union[int, Tuple[int, i
     Tensor
         Forge tensor
     """
-    dims = len(operandA.shape.dims)
+    dims = len(operandA.shape)
     if dim < 0:
         dim += dims
 
@@ -200,22 +205,31 @@ def Select(name: str, operandA: Tensor, dim: int, index: Union[int, Tuple[int, i
         index = (index, 1)
 
     if stride == 0:
-        stride = operandA.shape.get_pytorch_shape()[dim]
+        stride = operandA.shape[dim]
 
     start, length = index
-    assert (
-        start < operandA.shape.get_pytorch_shape()[dim]
-    ), f"start = {start} should be < operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
-    assert (start + length) <= operandA.shape.get_pytorch_shape()[
+    assert start < operandA.shape[dim], f"start = {start} should be < operandA.shape[{dim}] = {operandA.shape[dim]}"
+    assert (start + length) <= operandA.shape[
         dim
-    ], f"(start = {start} + length = {length}) should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
+    ], f"(start = {start} + length = {length}) should be <= operandA.shape[{dim}] = {operandA.shape[dim]}"
     assert (
-        stride <= operandA.shape.get_pytorch_shape()[dim]
-    ), f"stride = {stride} should be <= operandA.shape.get_pytorch_shape()[{dim}] = {operandA.shape.get_pytorch_shape()[dim]}"
+        stride <= operandA.shape[dim]
+    ), f"stride = {stride} should be <= operandA.shape[{dim}] = {operandA.shape[dim]}"
     assert (start + length) <= stride, f"(start = {start} + length = {length}) should be <= stride = {stride}"
     assert (start + length) > 0, f"(start = {start} + length = {length}) should be > 0"
 
-    return op("select", name, operandA, attrs=(dim, index[0], index[1], stride)).get_tensor()
+    return op(
+        "select",
+        name,
+        operandA,
+        attrs=(dim, index[0], index[1], stride),
+        **{
+            "dim": dim,
+            "begin": index[0],
+            "length": index[1],
+            "stride": stride,
+        },
+    ).get_tensor()
 
 
 def Pad(
@@ -388,7 +402,14 @@ def RepeatInterleave(name: str, operandA: Tensor, repeats: int, dim: int) -> Ten
     Tensor
         Forge tensor
     """
-    return op("repeat_interleave", name, operandA, attrs=(repeats, dim), repeats=repeats, dim=dim).get_tensor()
+    return op(
+        "repeat_interleave",
+        name,
+        operandA,
+        attrs=(repeats, dim),
+        repeats=repeats,
+        dim=dim,
+    ).get_tensor()
 
 
 def Unsqueeze(name: str, operandA: Tensor, dim: int) -> Tensor:
@@ -513,7 +534,12 @@ def ForgePad(name: str, operandA: Tensor, paddings: Tuple[int, int], value: floa
     return op("forge_pad", name, operandA, attrs=(paddings[0], paddings[1], value)).get_tensor()
 
 
-def ForgeUnpad(name: str, operandA: Tensor, original_length: Tuple[int, ...], paddings: Tuple[int, int]) -> Tensor:
+def ForgeUnpad(
+    name: str,
+    operandA: Tensor,
+    original_length: Tuple[int, ...],
+    paddings: Tuple[int, int],
+) -> Tensor:
     """
     Unpad operation that removes arbitrary number of tiles by any dimension.
 
@@ -532,5 +558,8 @@ def ForgeUnpad(name: str, operandA: Tensor, original_length: Tuple[int, ...], pa
         Tuple of paddings for R and C dimensions
     """
     return op(
-        "forge_unpad", name, operandA, attrs=(paddings[0], paddings[1], original_length[0], original_length[1])
+        "forge_unpad",
+        name,
+        operandA,
+        attrs=(paddings[0], paddings[1], original_length[0], original_length[1]),
     ).get_tensor()

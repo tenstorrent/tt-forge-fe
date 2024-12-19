@@ -848,7 +848,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
     elif type == "reshape":
         shape = inputs[0].shape
-        return ac.op(type, (grad,), attributes=(shape))
+        return ac.op(type, (grad,), attributes=(shape), named_attrs={"shape": shape})
 
     elif type == "conv2d_depthwise_weights":
         return ac.op("conv2d_depthwise_weights_bw", (grad,), attributes=attr)
@@ -881,7 +881,12 @@ def backward(type, attr, ac, operand, inputs, output, grad):
                 break
 
             # pass the gradient for selected part
-            grad_slice = ac.op("select", (grad,), (dim, grad_offset, length, current_size))
+            grad_slice = ac.op(
+                "select",
+                (grad,),
+                (dim, grad_offset, length, current_size),
+                named_attrs={"dim": dim, "begin": grad_offset, "length": length, "stride": current_size},
+            )
             if grad_return is None:
                 grad_return = grad_slice
             else:
@@ -954,7 +959,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         dim = attr[0]
         if grad.shape.len() == 4:  # Cannot unsqueeze beyond 4D
             return ac.op(Nop.create(), (grad,))
-        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()))
+        return ac.op("unsqueeze", (grad,), attributes=(dim, grad.shape.len()), named_attrs={"dim": dim})
 
     elif type == "broadcast":
         assert len(attr) == 3
@@ -1251,15 +1256,28 @@ def decompose(type, attr, dc, inputs):
                     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
 
                     orig_shape = result.shape
-                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    spm = create_pad_reflect_sparse_picker(c, r, top, bottom, left, right)
-                    spm = dc.tensor(spm)
-                    result = dc.op("sparse_matmul", [spm, result])
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    result = dc.op(
+                    result = dc.op_with_named_attrs(
                         "reshape",
                         [result],
+                        {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
+                        (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
+                    )
+                    result = dc.op(TransposeTM.create(-2, -1), [result])
+                    spm = create_pad_reflect_sparse_picker(c, r, top, bottom, left, right)
+                    spm = dc.tensor(spm.to_dense())
+                    result = dc.op("matmul", [spm, result])
+                    result = dc.op(TransposeTM.create(-2, -1), [result])
+                    result = dc.op_with_named_attrs(
+                        "reshape",
+                        [result],
+                        {
+                            "shape": (
+                                1,
+                                orig_shape[-3],
+                                orig_shape[-1] + total_padding_r,
+                                orig_shape[-2] + total_padding_c,
+                            )
+                        },
                         (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
                     )
 
@@ -1267,24 +1285,23 @@ def decompose(type, attr, dc, inputs):
                 else:
                     orig_shape = result.shape
                     if len(orig_shape) == 2:
-                        result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
+                        shape = (1, orig_shape[-2] * orig_shape[-1])
                     else:
-                        result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                        shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
+
+                    result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
                     result = dc.op(TransposeTM.create(-2, -1), [result])
                     spm = create_pad_reflect_sparse_picker(r, c, left, right, top, bottom)
-                    spm = dc.tensor(spm)
-                    result = dc.op("sparse_matmul", [spm, result])
+                    spm = dc.tensor(spm.to_dense())
+                    result = dc.op("matmul", [spm, result])
                     result = dc.op(TransposeTM.create(-2, -1), [result])
+
                     if len(orig_shape) == 2:
-                        result = dc.op(
-                            "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-                        )
+                        shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
                     else:
-                        result = dc.op(
-                            "reshape",
-                            [result],
-                            (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
-                        )
+                        shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
+
+                    result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
 
                 dc.fuse(result)
                 return
@@ -2009,10 +2026,6 @@ def decompose_post_optimize(type, attr, dc, inputs):
 
 
 def decompose_post_autograd(type, attr, dc, inputs):
-    if type == "select":
-        decompose_select(attr, dc, inputs)
-        return
-
     if type == "reshape":
         assert len(inputs) == 1
         input_shape = inputs[0].shape.as_list()
