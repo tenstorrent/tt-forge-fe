@@ -200,8 +200,14 @@ std::vector<torch::Tensor> dispatch(
         device.open_device();
     }
 
-    runtime::Event event = runtime::submit(device.rt_device.value(), binary, program_idx, rt_inputs, rt_outputs);
-    (void)event;
+    std::vector<runtime::Tensor> submit_outputs =
+        runtime::submit(device.rt_device.value(), binary, program_idx, rt_inputs);
+    TT_ASSERT(submit_outputs.size() == rt_outputs.size(), "Output count mismatch");
+    for (size_t i = 0; i < submit_outputs.size(); ++i)
+    {
+        runtime::memcpy(rt_outputs[i], submit_outputs[i]);
+        runtime::deallocateTensor(submit_outputs[i], true);
+    }
 
     // Clear old tensor uids and update with new ones
     if (device.subgraph_to_tensor_uid_on_device.count(program_idx) != 0)

@@ -15,6 +15,39 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+@pytest.mark.xfail(reason="error: 'ttnn.conv2d' op Bias must only have data on the final dimenstion")
+@pytest.mark.parametrize(
+    "input_shape, in_channels, out_channels, kernel_size, padding_value",
+    [
+        ((1, 512, 6, 20), 512, 256, 3, 1),
+        ((1, 128, 32, 32), 128, 64, 5, 2),
+        ((1, 64, 64, 64), 64, 128, 3, 1),
+        ((1, 32, 128, 128), 32, 64, 7, 3),
+        ((1, 256, 16, 16), 256, 128, 5, 2),
+    ],
+)
+def test_conv2d_reflect_padding_mode(input_shape, in_channels, out_channels, kernel_size, padding_value):
+    class Conv2dReflectPad(nn.Module):
+        def __init__(self, in_channels, out_channels, kernel_size, padding_value):
+            super().__init__()
+            self.pad = nn.ReflectionPad2d(padding_value)
+            self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
+
+        def forward(self, input):
+            out = self.pad(input)
+            out = self.conv(out)
+            return out
+
+    framework_model = Conv2dReflectPad(in_channels, out_channels, kernel_size, padding_value)
+    framework_model.eval()
+
+    inputs = torch.rand(input_shape)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=[inputs])
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.xfail(reason="RuntimeError: Input must be UINT32 or BFLOAT16")
 @pytest.mark.parametrize(
     "input_shape, sequence_lengths",
@@ -1703,7 +1736,7 @@ def test_convtranspose2d(
 
 
 @pytest.mark.xfail(
-    reason="Unable to reshape a tensor in TILE_LAYOUT to non-tile height and width! Please convert the tensor to ROW_MAJOR_LAYOUT first"
+    reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Invalid arguments to reshape. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1574"
 )
 @pytest.mark.push
 def test_avg_pool2d():
@@ -1976,6 +2009,30 @@ def test_tanh(input_shape):
     inputs = [torch.rand(input_shape)]
 
     framework_model = Tanh()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
+@pytest.mark.parametrize("dim", [-1, -2])
+@pytest.mark.parametrize("begin", [0, 16])
+@pytest.mark.parametrize("length", [4, 16])
+@pytest.mark.parametrize("stride", [16, 32])
+def test_select(shape, dim, begin, length, stride):
+    if stride <= begin + length:
+        pytest.skip("Skipping since stride <= begin + length")
+
+    class Select(forge.ForgeModule):
+        def __init__(self):
+            super().__init__("Select")
+
+        def forward(self, x):
+            x = forge.op.Select("select_op", x, dim, [begin, length], stride)
+            return x
+
+    inputs = to_forge_tensors([torch.rand(*shape)])
+    framework_model = Select()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)

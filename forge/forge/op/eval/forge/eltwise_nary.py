@@ -47,7 +47,8 @@ def eval(type, attr, ops):
         res = 0
         for i in range(len(t_ops)):
             res += torch.nn.functional.pad(
-                t_ops[i], (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1])
+                t_ops[i],
+                (shifts[2 * i], -shifts[2 * i], shifts[2 * i + 1], -shifts[2 * i + 1]),
             )
 
         # To forge shape
@@ -108,7 +109,13 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
                     assert (
                         ops[op_index][dim_index] == 1
                     ), f"Eltwise nary ops must have same shape or operand must be 1 wide to broadcast: {ops}"
-                    broadcast.append((op_index, dim_index - len(output_shape), output_shape[dim_index]))
+                    broadcast.append(
+                        (
+                            op_index,
+                            dim_index - len(output_shape),
+                            output_shape[dim_index],
+                        )
+                    )
 
         return tuple(output_shape), broadcast
 
@@ -212,11 +219,21 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         dim_offset = grad.shape[axis]
 
         index_offset = 0
-        for (i, input_) in enumerate(inputs):
+        for i, input_ in enumerate(inputs):
             if operand is not i:
                 index_offset += input_.shape[axis]
                 continue
-            return ac.op("select", (grad,), (axis, index_offset, input_.shape[axis], dim_offset))
+            return ac.op(
+                "select",
+                (grad,),
+                (axis, index_offset, input_.shape[axis], dim_offset),
+                named_attrs={
+                    "dim": axis,
+                    "begin": index_offset,
+                    "length": input_.shape[axis],
+                    "stride": dim_offset,
+                },
+            )
 
     elif op_type == "interleave":
         axis = attr[0]
@@ -235,7 +252,12 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
         result = ac.op(
             "select",
             (result,),
-            (-1, operand * align_up_tile(grad.shape[-1]), align_up_tile(grad.shape[-1]), result.shape[-1]),
+            (
+                -1,
+                operand * align_up_tile(grad.shape[-1]),
+                align_up_tile(grad.shape[-1]),
+                result.shape[-1],
+            ),
         )
         if grad.shape[-1] % TILE_DIM != 0:
             result = ac.op("narrow", (result,), (-1, 0, grad.shape[-1], result.shape[-1]))
