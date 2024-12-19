@@ -12,8 +12,9 @@
 # ...
 
 
+from typing import Optional, Type
+
 from loguru import logger
-from typing import Type, Optional
 
 
 class FailingReasons:

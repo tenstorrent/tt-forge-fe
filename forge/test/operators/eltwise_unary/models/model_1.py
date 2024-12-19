@@ -11,7 +11,6 @@
 import torch
 
 import forge
-
 from forge import ForgeModule, Tensor
 
 

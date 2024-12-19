@@ -2,18 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
 import time
 
+import pytest
 import torch
-from torch import nn
 from loguru import logger
+from torch import nn
 
 import forge
 from forge.op.loss import CrossEntropyLoss, L1Loss
-from ..utils import *
-from forge.verify.compare import compare_with_golden
 from forge.tensor import to_forge_tensors
+from forge.verify.compare import compare_with_golden
+
+from ..utils import *
 
 
 @pytest.mark.push

@@ -8,12 +8,19 @@
 #
 
 import os
-import pytest
+
 import numpy as np
+import pytest
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
+from forge import (
+    BackendType,
+    CompilerConfig,
+    DepricatedVerifyConfig,
+    TTDevice,
+    forge_compile,
+)
 from forge.config import CompileDepth, _get_global_compiler_config
 
 from . import models

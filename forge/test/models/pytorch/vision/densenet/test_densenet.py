@@ -1,15 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
-import forge
 import os
+from test.models.pytorch.vision.densenet.utils.densenet_utils import (
+    get_input_img,
+    get_input_img_hf_xray,
+)
+from test.utils import download_model
 
+import pytest
 import torch
 import torchxrayvision as xrv
-from test.models.pytorch.vision.densenet.utils.densenet_utils import get_input_img, get_input_img_hf_xray
 
+import forge
 
 variants = ["densenet121", "densenet121_hf_xray"]
 

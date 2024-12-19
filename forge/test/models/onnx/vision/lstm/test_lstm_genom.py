@@ -1,17 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-
 import os
-import onnx
-import tensorflow as tf
-import forge
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
 from test.utils import download_model
+
+import onnx
+import pytest
+import tensorflow as tf
+
+import forge
+from forge import DepricatedVerifyConfig
+from forge._C.backend_api import BackendDevice, BackendType
+from forge.verify.backend import verify_module
+from forge.verify.config import TestKind
 
 
 @pytest.mark.skip(reason="Not supported")

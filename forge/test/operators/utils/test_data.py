@@ -5,12 +5,11 @@
 # Test data for various test cases
 
 import pytest
+
 import forge
+from forge import DataFormat, MathFidelity
 
-from forge import MathFidelity, DataFormat
-
-from . import InputSource
-from . import TestCollection
+from . import InputSource, TestCollection
 
 
 class TestCollectionCommon:

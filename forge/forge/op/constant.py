@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+from typing import List, Tuple, Union
+
 from ..tensor import Tensor
 from .common import ForgeOp as op
-from typing import Union, Tuple, List
 
 
 def Constant(name: str, *, constant: float) -> Tensor:

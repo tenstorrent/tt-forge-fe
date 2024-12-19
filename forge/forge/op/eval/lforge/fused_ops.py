@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from ..common import op_model_to_desc, get_compiler_cached_cycles
-from forge._C.graph import UBlockOrder
 from forge._C.backend_api import get_op_model_execution_cycles
+from forge._C.graph import UBlockOrder
+
+from ..common import get_compiler_cached_cycles, op_model_to_desc
 
 DEST_INPUT_OR_OUTPUT_COEFF = 0.5
 DEST_INPUT_AND_OUTPUT_COEFF = 0.2

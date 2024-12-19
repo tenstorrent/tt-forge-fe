@@ -3,20 +3,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Dict
-
-import os
-import sys
-import curses
 import csv
-import yaml
+import curses
 import curses.ascii
-import textwrap
-import re
+import os
 import pickle
+import re
+import sys
+import textwrap
 from collections import defaultdict
-from loguru import logger
+from typing import Dict, List
 
+import yaml
+from loguru import logger
 
 __MAX_NUM_INPUTS = 8
 __DEFAULT_SCREEN_DUMP_DIRECTORY = "perf_analysis_screens"

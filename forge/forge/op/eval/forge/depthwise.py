@@ -4,7 +4,8 @@
 import torch
 
 from forge.forgeglobal import TILE_DIM
-from ..common import to_torch_operands, cast_for_cpu_eval
+
+from ..common import cast_for_cpu_eval, to_torch_operands
 
 
 def eval(type, attr, ops):

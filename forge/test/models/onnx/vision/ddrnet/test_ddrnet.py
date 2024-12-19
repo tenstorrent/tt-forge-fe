@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge, os
+import os
+
+import onnx
 import pytest
-from torchvision import transforms
 import requests
 from PIL import Image
-import onnx
-from forge.verify.backend import verify_module
+from torchvision import transforms
+
+import forge
 from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
 from forge._C.backend_api import BackendDevice
+from forge.verify.backend import verify_module
+from forge.verify.config import TestKind
 
 variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 

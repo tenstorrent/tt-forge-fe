@@ -2,23 +2,24 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import typing
 from math import sqrt
-import os
 
-from forge._C import DataFormat
 import torch
 
+from forge._C import DataFormat
 from forge.forgeglobal import TILE_DIM
-from ..common import to_torch_operands, cast_for_cpu_eval
-from ..sparse_utils import (
-    transpose_sparse_picker_matrix,
-    create_sparse_forge,
-    shapeify_sparse_tiles_and_encodings,
-    is_kernel_fracturing_candidate,
-)
-from forge.utils import round_up_div
 from forge.op.eval.common import calculate_tile_size
+from forge.utils import round_up_div
+
+from ..common import cast_for_cpu_eval, to_torch_operands
+from ..sparse_utils import (
+    create_sparse_forge,
+    is_kernel_fracturing_candidate,
+    shapeify_sparse_tiles_and_encodings,
+    transpose_sparse_picker_matrix,
+)
 from .transpose import TransposeTM
 
 

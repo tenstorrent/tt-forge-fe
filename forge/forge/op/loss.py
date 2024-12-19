@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from functools import wraps
+
 from ..module import ForgeModule
 from .constant import Constant
-from .eltwise_unary import Log, Abs
-from .eltwise_binary import Subtract, Multiply
+from .eltwise_binary import Multiply, Subtract
+from .eltwise_unary import Abs, Log
 from .nn import Softmax
-from .reduce import ReduceSum, ReduceAvg
+from .reduce import ReduceAvg, ReduceSum
 
 
 def validate_shapes(min_dim=None, max_dim=None):

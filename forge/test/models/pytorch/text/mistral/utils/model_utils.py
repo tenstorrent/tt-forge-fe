@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
 from typing import Optional
+
+import torch
 
 
 class BaseModelWrapper(torch.nn.Module):

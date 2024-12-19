@@ -2,25 +2,24 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-# STEP 0: import Forge library
-import pytest
-
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig, PyTorchModule
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
-import forge
 import os
 
-import onnx
-import torch
-import tensorflow as tf
-
-from PIL import Image
 import numpy as np
+import onnx
 
+# STEP 0: import Forge library
+import pytest
 import requests
+import tensorflow as tf
+import torch
+from PIL import Image
 from torchvision import transforms
+
+import forge
+from forge import DepricatedVerifyConfig, PyTorchModule
+from forge._C.backend_api import BackendDevice, BackendType
+from forge.verify.backend import verify_module
+from forge.verify.config import TestKind
 
 ## https://github.com/onnx/models/tree/main/vision/object_detection_segmentation/retinanet
 

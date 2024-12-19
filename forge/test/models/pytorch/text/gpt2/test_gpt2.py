@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
-import torch
-import forge
 import os
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
+from test.utils import download_model
+
+import pytest
+import torch
+from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
+
+import forge
 from forge.verify.compare import compare_with_golden
 
 

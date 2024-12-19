@@ -1,21 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import os
+from test.utils import download_model
+
 import pytest
 import requests
-from PIL import Image
-from loguru import logger
-import os
-
-import torch
-
-from transformers import AutoFeatureExtractor, ResNetForImageClassification
-
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from transformers import AutoFeatureExtractor, ResNetForImageClassification
 
-from test.utils import download_model
 import forge
 
 

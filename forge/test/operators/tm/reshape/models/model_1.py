@@ -8,13 +8,12 @@
 #
 
 
-import torch
 import numpy as np
+import torch
 
 import forge
 import forge.op
 import forge.op.nn as nn
-
 from forge import ForgeModule, Tensor
 
 

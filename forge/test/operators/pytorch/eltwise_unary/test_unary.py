@@ -49,25 +49,28 @@
 #    (/) Reuse inputs for selected operators
 
 
+from test.operators.utils import (
+    FailingReasons,
+    InputSource,
+    InputSourceFlags,
+    TestCollection,
+    TestCollectionCommon,
+    TestPlan,
+    TestVector,
+    ValueRanges,
+    VerifyUtils,
+)
+from test.operators.utils.compat import TestDevice
+from typing import Dict, List
+
 import pytest
 import torch
 import torch.nn as nn
-import forge
-from forge.op_repo import TensorShape
-
-from typing import List, Dict
 from loguru import logger
-from forge import MathFidelity, DataFormat
 
-from test.operators.utils import InputSourceFlags, VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import ValueRanges
+import forge
+from forge import DataFormat, MathFidelity
+from forge.op_repo import TensorShape
 
 
 class ModelFromAnotherOp(nn.Module):

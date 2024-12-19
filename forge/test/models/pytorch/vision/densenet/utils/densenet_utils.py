@@ -3,16 +3,23 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import skimage
-from PIL import Image
 import urllib
 import urllib.request
-from loguru import logger
 
+import skimage
 import torch
 import torchvision
-from torchvision.transforms import Compose, ConvertImageDtype, Normalize, PILToTensor, Resize, CenterCrop
 import torchxrayvision as xrv
+from loguru import logger
+from PIL import Image
+from torchvision.transforms import (
+    CenterCrop,
+    Compose,
+    ConvertImageDtype,
+    Normalize,
+    PILToTensor,
+    Resize,
+)
 
 
 def get_input_img():

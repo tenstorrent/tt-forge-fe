@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 from typing import Union
 
-from ..tensor import Tensor
 from ..parameter import Parameter
+from ..tensor import Tensor
 from .common import ForgeOp as op
 
 

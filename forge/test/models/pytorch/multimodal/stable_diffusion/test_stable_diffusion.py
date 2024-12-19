@@ -1,19 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
-import pytest
+from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
+    denoising_loop,
+    initialize_compiler_overrides,
+    stable_diffusion_postprocessing,
+    stable_diffusion_preprocessing,
+)
 
+import pytest
 import torch
 
 # from diffusers import StableDiffusionPipeline
 # from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 import forge
-
-from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
-    stable_diffusion_preprocessing,
-    initialize_compiler_overrides,
-    denoising_loop,
-    stable_diffusion_postprocessing,
-)
 
 
 @pytest.mark.skip(reason="unsupported for now")

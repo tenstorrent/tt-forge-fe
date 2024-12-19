@@ -1,15 +1,16 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import pytest
 import torch
 from transformers import (
-    PhiForCausalLM,
     AutoTokenizer,
     PhiConfig,
-    PhiForTokenClassification,
+    PhiForCausalLM,
     PhiForSequenceClassification,
+    PhiForTokenClassification,
 )
-import pytest
+
 import forge
 from forge.verify.compare import compare_with_golden
 

@@ -4,6 +4,7 @@
 
 
 from math import gamma
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -11,8 +12,8 @@ import torch.nn.functional as F
 from ..common import to_torch_operands
 from . import reduce
 from .exp import Exp
-from .reciprocal import Reciprocal
 from .log import Log
+from .reciprocal import Reciprocal
 from .sqrt import Sqrt
 
 

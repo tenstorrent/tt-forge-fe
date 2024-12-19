@@ -4,13 +4,14 @@
 
 from typing import Tuple, Union
 
-from ..tensor import Tensor
-from ..parameter import Parameter
-from forge.op.eval.forge import get_f_forge_eval, get_f_forge_shape
+import forge
 from forge._C import DataFormat
 from forge._C.graph import OpType
-import forge
 from forge.forgeglobal import get_unique_node_id, tracing
+from forge.op.eval.forge import get_f_forge_eval, get_f_forge_shape
+
+from ..parameter import Parameter
+from ..tensor import Tensor
 
 depracated_name_dict = {}
 deprecated_op_id = 0

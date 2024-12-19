@@ -1,16 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 from test.utils import download_model
-import forge
+
+import pytest
 from transformers import (
     DistilBertForMaskedLM,
-    DistilBertTokenizer,
     DistilBertForQuestionAnswering,
-    DistilBertForTokenClassification,
     DistilBertForSequenceClassification,
+    DistilBertForTokenClassification,
+    DistilBertTokenizer,
 )
+
+import forge
 
 variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
 

@@ -1,20 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
 import ast
-import os
 import math
+import os
+
+import torch
 import torch.nn.functional as F
+
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile
-from .transpose import TransposeTM
-from .nop import Nop
-from .nop import Nop
-from .convolution import Conv2d
-from ..interface import PyOp
 
 from ..common import to_torch_operands
+from ..interface import PyOp
 from ..sparse_utils import (
     calculate_conv2d_output_dimensions,
     calculate_conv3d_output_dimensions,
@@ -22,6 +20,9 @@ from ..sparse_utils import (
     create_avg_pool2d_count_include_pad_False_picker_matrix,
     create_conv2d_sparse_picker_matrix,
 )
+from .convolution import Conv2d
+from .nop import Nop
+from .transpose import TransposeTM
 
 
 class MaxPool2d(PyOp):

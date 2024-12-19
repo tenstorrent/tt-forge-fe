@@ -6,29 +6,33 @@
 # Capture the FX graph and convert to MixedGraph of Forge and CPU graphs
 #
 
-from typing import Dict, List, Optional
 import copy
+from typing import Dict, List, Optional
 
 import torch
 from loguru import logger
 
-from forge._C.graph import (
-    create_op_node,
-    create_data_edge,
-    create_parameter_input,
-    create_activation_input,
-    create_output,
-    create_constant_input,
-    add_subgraph_io_link_edge,
-)
-from forge.tensor import pytorch_dtype_to_forge_dataformat
-from forge.fx.nodes import get_forge_node, torch_constant_ops, is_supported_op, get_unsupported_nodes
-from forge.config import _get_global_compiler_config
-from forge.fx.mixed_graph import MixedGraph
-from forge.fx.schedule import TensorSource, Schedule
-from forge.fx.graph_utils import reduce_graph, graph_lint
-
 import forge
+from forge._C.graph import (
+    add_subgraph_io_link_edge,
+    create_activation_input,
+    create_constant_input,
+    create_data_edge,
+    create_op_node,
+    create_output,
+    create_parameter_input,
+)
+from forge.config import _get_global_compiler_config
+from forge.fx.graph_utils import graph_lint, reduce_graph
+from forge.fx.mixed_graph import MixedGraph
+from forge.fx.nodes import (
+    get_forge_node,
+    get_unsupported_nodes,
+    is_supported_op,
+    torch_constant_ops,
+)
+from forge.fx.schedule import Schedule, TensorSource
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 
 
 class CaptureFX:

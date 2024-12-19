@@ -4,17 +4,17 @@
 ## Source
 ## https://github.com/stigma0617/VoVNet.pytorch/blob/039d9dcbd07de73fb5b8cc14bdde483a3807225c/models_vovnet/vovnet.py
 
+from collections import OrderedDict
+
+import requests
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from collections import OrderedDict
+from PIL import Image
 
 # from torch.hub import load_state_dict_from_url
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
-
 from transformers import AutoImageProcessor
-from PIL import Image
-import requests
 
 __all__ = ["VoVNet", "vovnet27_slim", "vovnet39", "vovnet57"]
 

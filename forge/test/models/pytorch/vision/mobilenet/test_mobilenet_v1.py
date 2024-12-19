@@ -2,17 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import pytest
-
-import torch
-
-import forge
-from test.utils import download_model
 from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
+from test.utils import download_model
 
+import pytest
 import requests
+import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
+
+import forge
 from forge.verify.compare import compare_with_golden
 
 

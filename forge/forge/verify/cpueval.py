@@ -5,17 +5,18 @@
 Golden verification on CPU
 """
 
-from typing import Tuple, Dict, List
+from typing import Dict, List, Tuple
 
-from loguru import logger
-import torch
 import tensorflow as tf
+import torch
+from loguru import logger
 
-from ..tensor import to_pt_tensors
-from ..forgeglobal import get_devices
-from ..utils import detach_tensors
 import forge
-from forge.tvm_utils import map_tf_dtype_to_pt, map_pt_dtype_to_tf
+from forge.tvm_utils import map_pt_dtype_to_tf, map_tf_dtype_to_pt
+
+from ..forgeglobal import get_devices
+from ..tensor import to_pt_tensors
+from ..utils import detach_tensors
 
 
 def cpueval_inference(
@@ -41,8 +42,8 @@ def cpueval_inference(
     devices = get_devices()
     assert len(devices) == len(parameters), "Mismatched number of devices and parameters"
 
-    from forge.run.impl import _run_command
     from forge.run.commands import Command
+    from forge.run.impl import _run_command
 
     ret = []
     for input in inputs:
@@ -113,8 +114,8 @@ def cpueval_training(
     """
     devices = get_devices()
 
-    from forge.run.impl import _run_command
     from forge.run.commands import Command
+    from forge.run.impl import _run_command
 
     ret = TrainingEvalData()
     ret.devices = []

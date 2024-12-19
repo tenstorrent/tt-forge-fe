@@ -8,12 +8,12 @@
 #
 
 
-from pickletools import pyunicode
 import random
+from pickletools import pyunicode
+
 import torch
 
 import forge
-
 from forge import ForgeModule, Tensor
 
 

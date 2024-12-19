@@ -4,15 +4,14 @@
 # Detr model having both object detection and segmentation model
 # https://huggingface.co/docs/transformers/en/model_doc/detr
 
-import pytest
-from transformers import (
-    DetrForObjectDetection,
-    DetrForSegmentation,
-)
-import forge
-from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
+
+import pytest
+from transformers import DetrForObjectDetection, DetrForSegmentation
+
+import forge
+from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly

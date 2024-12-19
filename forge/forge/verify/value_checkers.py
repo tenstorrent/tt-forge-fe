@@ -4,6 +4,7 @@
 from abc import ABC, abstractmethod
 
 import torch
+
 from forge.verify.compare import compare_with_golden, compute_required_tolerances
 
 

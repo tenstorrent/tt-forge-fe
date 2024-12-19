@@ -1,15 +1,25 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
 import os
-import forge
+from test.models.pytorch.multimodal.vilt.utils.model import (
+    ViLtEmbeddingWrapper,
+    ViltModelWrapper,
+)
+from test.utils import download_model
+
+import pytest
 import requests
 import torch
 from PIL import Image
-from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
-from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
+from transformers import (
+    ViltConfig,
+    ViltForMaskedLM,
+    ViltForQuestionAnswering,
+    ViltProcessor,
+)
+
+import forge
 from forge.verify.compare import compare_with_golden
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"

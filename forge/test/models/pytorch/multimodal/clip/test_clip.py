@@ -1,19 +1,21 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import os
+from test.models.pytorch.multimodal.clip.utils.clip_model import (
+    CLIPPostProcessingWrapper,
+    CLIPTextWrapper,
+    CLIPVisionWrapper,
+)
 from test.utils import download_model
-import forge
-import requests
+
 import pytest
+import requests
 import torch
 from PIL import Image
-from transformers import CLIPProcessor, CLIPModel
-from test.models.pytorch.multimodal.clip.utils.clip_model import (
-    CLIPVisionWrapper,
-    CLIPTextWrapper,
-    CLIPPostProcessingWrapper,
-)
-import os
+from transformers import CLIPModel, CLIPProcessor
+
+import forge
 
 
 @pytest.mark.nightly

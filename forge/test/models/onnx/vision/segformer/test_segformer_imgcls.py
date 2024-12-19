@@ -2,16 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import forge
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
-from transformers import AutoImageProcessor
 import os
+
+import onnx
 import pytest
 import requests
 from PIL import Image
-import onnx
+from transformers import AutoImageProcessor
+
+import forge
+from forge import DepricatedVerifyConfig
+from forge.verify.backend import verify_module
+from forge.verify.config import TestKind
 
 
 def get_sample_data(model_name):

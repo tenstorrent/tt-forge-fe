@@ -4,31 +4,28 @@
 
 # Test plan management utilities
 
-import types
-import pytest
-import forge
-import re
-
-import os
 import importlib
 import inspect
-from types import ModuleType
-from itertools import chain
-
-from _pytest.mark import Mark
-from _pytest.mark import ParameterSet
-
+import os
+import re
+import types
 from dataclasses import dataclass, field
 from enum import Enum
-from loguru import logger
-from typing import Callable, Generator, Optional, List, Dict, Union, Tuple, TypeAlias
+from itertools import chain
+from types import ModuleType
+from typing import Callable, Dict, Generator, List, Optional, Tuple, TypeAlias, Union
 
-from forge import MathFidelity, DataFormat
+import pytest
+from _pytest.mark import Mark, ParameterSet
+from loguru import logger
+
+import forge
+from forge import DataFormat, MathFidelity
 from forge.op_repo import TensorShape
 
+from .compat import TestDevice
 from .datatypes import OperatorParameterTypes
 from .pytest import PytestParamsUtils
-from .compat import TestDevice
 
 
 class InputSource(Enum):

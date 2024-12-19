@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 from enum import Enum
-from loguru import logger
 from typing import Dict, List
 
 import torch
+from loguru import logger
 
 from forge.python_codegen import ForgeWriter
 from forge.utils import create_excel_file

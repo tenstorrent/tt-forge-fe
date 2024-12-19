@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from typing import List, Dict, Set, Optional
 from collections import defaultdict
+from typing import Dict, List, Optional, Set
 
-from loguru import logger
 import torch
+from loguru import logger
 
 
 class IOTracer:

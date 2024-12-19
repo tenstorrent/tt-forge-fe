@@ -1,9 +1,13 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch.nn as nn
 from collections import OrderedDict
-from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
+
+import torch.nn as nn
+from torchvision.models.detection import (
+    FasterRCNN_ResNet50_FPN_V2_Weights,
+    fasterrcnn_resnet50_fpn_v2,
+)
 
 
 class FPNWrapper(nn.Module):

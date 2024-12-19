@@ -2,16 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from test.utils import download_model
+
 import pytest
-import forge
+import torch
 from transformers import (
     BertForMaskedLM,
-    BertTokenizer,
-    BertForTokenClassification,
-    BertForSequenceClassification,
     BertForQuestionAnswering,
+    BertForSequenceClassification,
+    BertForTokenClassification,
+    BertTokenizer,
 )
-import torch
+
+import forge
 from forge.verify.compare import compare_with_golden
 
 

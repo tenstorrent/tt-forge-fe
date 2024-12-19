@@ -2,33 +2,33 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from forge._C.graph import (
-    Graph,
-    create_op_node,
-    create_data_edge,
-    create_parameter_input,
-    create_activation_input,
-    create_output,
-    create_constant_input,
-    remove_node,
-)
-from .forgeglobal import TILE_DIM
-from forge.module import ForgeModule
-import forge
-from forge.tensor import pytorch_dtype_to_forge_dataformat
-from forge._C import DataFormat
-from forge._C.graph import OpType
-from forge.op.resize import RESIZE2d_METHOD_TO_INT
+import json
+import sys
+from collections import deque
+
+import numpy as np
+import torch
+from loguru import logger
 from tvm.contrib.forge_compile import load_tvm_graph
 
-from collections import deque
-from loguru import logger
+import forge
+from forge._C import DataFormat
+from forge._C.graph import (
+    Graph,
+    OpType,
+    create_activation_input,
+    create_constant_input,
+    create_data_edge,
+    create_op_node,
+    create_output,
+    create_parameter_input,
+    remove_node,
+)
+from forge.module import ForgeModule
+from forge.op.resize import RESIZE2d_METHOD_TO_INT
+from forge.tensor import pytorch_dtype_to_forge_dataformat
 
-import torch
-import numpy as np
-
-import sys
-import json
+from .forgeglobal import TILE_DIM
 
 
 def populate_binary_stack_attrs(graph, nid, attrs):
@@ -610,9 +610,9 @@ def str_to_dataformat(t: str) -> DataFormat:
 
 
 def compile_tvm_for_forge(forge_graph, torchmod, inputs, compiler_cfg, graph_name, verify_cfg=None):
-    from forge.op.eval.forge import get_f_forge_shape  # avoid circular import
-    from forge.op.eval.forge import get_f_forge_eval  # avoid circular import
     from forge._C.graph import OpType
+    from forge.op.eval.forge import get_f_forge_eval  # avoid circular import
+    from forge.op.eval.forge import get_f_forge_shape  # avoid circular import
 
     framework = forge.tvm_to_python.get_framework(module)
     module = torchmod.module

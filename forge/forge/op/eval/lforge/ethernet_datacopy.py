@@ -3,16 +3,17 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 
-from ..interface import ForgeEltwiseUnaryOp
-
 import torch
+
 import forge
-from forge.utils import align_up_tile, round_up_div
-from .tm import eval as tm_eval
-from ..common import to_torch_operands
-from forge.tensor import pad_pytorch_tensor_to_forge
+from forge._C.graph import Shape, UBlockOrder
 from forge.forgeglobal import TILE_DIM
-from forge._C.graph import UBlockOrder, Shape
+from forge.tensor import pad_pytorch_tensor_to_forge
+from forge.utils import align_up_tile, round_up_div
+
+from ..common import to_torch_operands
+from ..interface import ForgeEltwiseUnaryOp
+from .tm import eval as tm_eval
 
 
 class EthernetDatacopy(ForgeEltwiseUnaryOp):

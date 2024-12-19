@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import torch
+from test.mlir.llama.utils.utils import load_model
+
 import pytest
+import torch
 from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
 
 import forge
-from test.mlir.llama.utils.utils import load_model
 
 
 @pytest.mark.nightly

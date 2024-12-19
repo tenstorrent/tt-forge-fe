@@ -8,17 +8,22 @@
 #
 
 import os
-import pytest
+
 import numpy as np
+import pytest
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
-
+from forge import (
+    BackendType,
+    CompilerConfig,
+    DepricatedVerifyConfig,
+    TTDevice,
+    forge_compile,
+)
 from forge.verify.config import TestKind
 
-from .models import generic
-from .models import custom
+from .models import custom, generic
 
 MODELS_PATH = "./forge/test/operators/matmul/models/"
 MODELS_GENERIC_PATH = MODELS_PATH + "generic/"

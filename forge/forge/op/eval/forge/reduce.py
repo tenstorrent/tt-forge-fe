@@ -2,15 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from ..common import to_torch_operands
+import math
+
+import numpy as np
+import torch
+
 from ....forgeglobal import TILE_DIM, align_up_tile
 from ....tensor import forge_dataformat_to_pytorch_dtype
-from .transpose import TransposeTM
-from .nop import Nop
+from ..common import to_torch_operands
 from ..lforge.nop import Nop as ForgeNop
-import torch
-import numpy as np
-import math
+from .nop import Nop
+from .transpose import TransposeTM
 
 
 def eval(type, attr, ops):

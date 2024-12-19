@@ -1,11 +1,12 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
+from test.mlir.llama.utils.utils import load_model
+
 import pytest
+import torch
 
 import forge
-from test.mlir.llama.utils.utils import load_model
 from forge.verify.verify import verify
 
 

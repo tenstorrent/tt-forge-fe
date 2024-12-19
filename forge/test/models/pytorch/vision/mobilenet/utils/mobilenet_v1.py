@@ -2,13 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import pytest
+from test.utils import download_model
 
+import pytest
 import torch
 import torch.nn as nn
 
 import forge
-from test.utils import download_model
 
 
 # SPDX-FileCopyrightText: Copyright (c) 2017 LoRnaTang

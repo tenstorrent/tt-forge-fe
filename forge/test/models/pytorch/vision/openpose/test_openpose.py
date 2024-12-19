@@ -1,22 +1,21 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 import os
-
-import torch
-from torchvision import transforms
-from pytorchcv.model_provider import get_model as ptcv_get_model
-
-import forge
-from test.utils import download_model
 from test.models.pytorch.vision.openpose.utils.model import (
     OpenPoseBodyModel,
     OpenPoseHandModel,
     get_image_tensor,
     transfer,
 )
+from test.utils import download_model
 
+import pytest
+import torch
+from pytorchcv.model_provider import get_model as ptcv_get_model
+from torchvision import transforms
+
+import forge
 
 variants = [
     "body_basic",

@@ -6,7 +6,6 @@ import argparse
 
 from benchmark import models
 
-
 MODELS = {
     "mnist_linear": models.mnist_linear.mnist_linear_benchmark,
 }

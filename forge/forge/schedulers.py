@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from collections.abc import Iterable
-from typing import Dict, Callable
+from typing import Callable, Dict
 
 import torch
 
-from .optimizers import Optimizer
 from forge.torch_schedulers import TorchLearningRateScheduler
+
+from .optimizers import Optimizer
 
 
 class LearningRateScheduler:

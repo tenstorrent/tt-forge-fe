@@ -2,9 +2,11 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoImageProcessor, RegNetModel, RegNetForImageClassification
+from transformers import AutoImageProcessor, RegNetForImageClassification, RegNetModel
+
 import forge
 from forge.verify.verify import verify
+
 from .utils.image_utils import preprocess_input_data
 
 

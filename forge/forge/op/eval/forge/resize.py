@@ -1,22 +1,23 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import os
+
 import torch
-from forge.forgeglobal import TILE_DIM
-from forge.utils import align_up_tile, round_up_div, clamp
+
 from forge import Tensor
+from forge.forgeglobal import TILE_DIM
 from forge.op.resize import INT_TO_RESIZE2d_METHOD
-from .transpose import TransposeTM
-from .nop import Nop
+from forge.utils import align_up_tile, clamp, round_up_div
 
 from ..common import to_torch_operands
 from ..sparse_utils import (
-    create_nearest_neighbor_upsample_picker_matrix,
     create_bilinear_upsample_picker_matrix,
     create_nearest_neighbor_downsample_picker_matrix,
+    create_nearest_neighbor_upsample_picker_matrix,
 )
-
-import os
+from .nop import Nop
+from .transpose import TransposeTM
 
 
 def eval(type, attr, ops):

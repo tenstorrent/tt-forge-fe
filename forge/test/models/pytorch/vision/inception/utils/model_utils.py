@@ -3,16 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 ## Inception V4
 import os
-from loguru import logger
-from PIL import Image
 import urllib
 
-import torch
-from torchvision import transforms
-
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from torchvision import transforms
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 

@@ -1,31 +1,34 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import re
+import importlib
 import json
-from typing import Dict, List
+import os
+import re
+import sys
 from enum import Enum
+from typing import Dict, List
 
-from loguru import logger
-
-import torch
 import numpy as np
 import pytest
+import torch
+from loguru import logger
+
+import forge
+from forge.config import _get_global_compiler_config
 
 # import forge._C.pattern_matcher as pypattern_matcher
-from forge.module import OnnxModule, ForgeModule, TFLiteModule
-from forge.config import _get_global_compiler_config
-from forge.verify.config import _get_global_verify_config
-import forge
+from forge.module import ForgeModule, OnnxModule, TFLiteModule
+from forge.python_codegen import (
+    ForgeWriter,
+    PythonWriter,
+    PyTorchWriter,
+    pytorch_df_str_from_str,
+)
 from forge.tensor import to_pt_tensors
+from forge.tvm_unique_op_generation import NodeType, Operation, generate_unique_op_tests
 from forge.tvm_utils import flatten_inputs
-
-import os
-import sys
-import importlib
-
-from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_str_from_str
-from forge.tvm_unique_op_generation import Operation, NodeType, generate_unique_op_tests
+from forge.verify.config import _get_global_verify_config
 
 
 def populate_torch_all_to_args(graph, nid, compiler_cfg):

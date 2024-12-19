@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from transformers import LlamaConfig, LlamaForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer, LlamaConfig, LlamaForCausalLM
 
 import forge
 

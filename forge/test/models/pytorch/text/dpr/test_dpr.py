@@ -1,18 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 from test.utils import download_model
-import forge
+
+import pytest
+import torch
 from transformers import (
     DPRContextEncoder,
     DPRContextEncoderTokenizer,
-    DPRReader,
-    DPRReaderTokenizer,
     DPRQuestionEncoder,
     DPRQuestionEncoderTokenizer,
+    DPRReader,
+    DPRReaderTokenizer,
 )
-import torch
+
+import forge
 from forge.verify.compare import compare_with_golden
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]

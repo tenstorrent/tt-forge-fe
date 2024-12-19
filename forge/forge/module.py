@@ -1,33 +1,33 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-from typing import Optional, Tuple, List, Dict
-from collections import deque, OrderedDict
 import itertools
+import os
+from collections import OrderedDict, deque
+from typing import Dict, List, Optional, Tuple
 
-import torch
+import jax.numpy as jnp
+import numpy as np
+import onnx
+import onnxruntime
 import tensorflow as tf
+import torch
 from loguru import logger
 
 import forge
-from .forgeglobal import register_module, lazy_trace_data
+from forge.tvm_utils import flatten_structured_output, map_pt_dtype_to_tf
+
+from .forgeglobal import lazy_trace_data, register_module
+from .parameter import Parameter
 from .tensor import (
     SomeTensor,
     Tensor,
+    forge_dataformat_to_pytorch_dtype,
+    pytorch_dtype_to_forge_dataformat,
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
-    pytorch_dtype_to_forge_dataformat,
-    forge_dataformat_to_pytorch_dtype,
 )
-from .parameter import Parameter
-import onnx
-import onnxruntime
-import jax.numpy as jnp
-import numpy as np
-
-from forge.tvm_utils import map_pt_dtype_to_tf, flatten_structured_output
 
 
 class Module:

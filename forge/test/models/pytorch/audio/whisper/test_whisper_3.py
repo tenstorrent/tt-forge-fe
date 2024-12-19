@@ -9,7 +9,12 @@
 
 import pytest
 import torch
-from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
+from transformers import (
+    WhisperConfig,
+    WhisperForConditionalGeneration,
+    WhisperProcessor,
+)
+
 import forge
 
 

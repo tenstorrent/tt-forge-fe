@@ -5,9 +5,9 @@
 # Model for binary operators
 
 
-import torch
-
 from test.operators.utils import ShapeUtils
+
+import torch
 
 
 class ModelFromAnotherOp(torch.nn.Module):

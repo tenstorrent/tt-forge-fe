@@ -3,8 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from forge.config import _get_global_compiler_config
+
 import forge
+from forge.config import _get_global_compiler_config
 
 
 @pytest.mark.nightly

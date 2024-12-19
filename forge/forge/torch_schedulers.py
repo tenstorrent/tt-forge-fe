@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 from collections.abc import Iterable
 
-from torch.optim.lr_scheduler import _LRScheduler
 import torch
+from torch.optim.lr_scheduler import _LRScheduler
 
 
 class TorchLearningRateScheduler(torch.optim.lr_scheduler._LRScheduler):

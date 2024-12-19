@@ -2,20 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-from typing import List, Optional
-from dataclasses import dataclass
 import subprocess
-
-import pytest
-import _pytest.skipping
-import torch.multiprocessing as mp
-import torch
-import tensorflow as tf
 
 # This is a workaround to set RTLD_GLOBAL flag to load emulation ZeBu library.
 # Essentially symbol names have to be unique in global scope to work with ZeBu,
 # hence need to be set as GLOBAL. This is a requirement for ZeBu.
 import sys
+from dataclasses import dataclass
+from typing import List, Optional
+
+import _pytest.skipping
+import pytest
+import tensorflow as tf
+import torch
+import torch.multiprocessing as mp
 
 original_flags = sys.getdlopenflags()
 if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
@@ -26,10 +26,9 @@ if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
     sys.setdlopenflags(original_flags)
 
 import forge
-from forge.verify.config import TestKind
-from forge.torch_compile import reset_state
-
 from forge.config import _get_global_compiler_config
+from forge.torch_compile import reset_state
+from forge.verify.config import TestKind
 
 collect_ignore = ["legacy_tests"]
 

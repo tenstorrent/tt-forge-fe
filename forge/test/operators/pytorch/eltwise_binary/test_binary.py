@@ -52,29 +52,31 @@
 # (/) Reuse inputs for selected operators
 
 
-from typing import Callable, List, Tuple, Dict, Union, Optional
+from test.operators.utils import (
+    FailingReasons,
+    FailingRulesConverter,
+    InputSource,
+    InputSourceFlags,
+    TestCollection,
+    TestCollectionCommon,
+    TestPlan,
+    TestResultFailing,
+    TestSuite,
+    TestVector,
+    ValueRanges,
+    VerifyUtils,
+)
+from test.operators.utils.compat import TestDevice
+from typing import Callable, Dict, List, Optional, Tuple, Union
+
+import torch
 from loguru import logger
 
 import forge
-import torch
-
-from test.operators.utils import ValueRanges
-from test.operators.utils import InputSourceFlags, VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestCollection
-from test.operators.utils import TestPlan
-from test.operators.utils import TestSuite
-from test.operators.utils import TestResultFailing
-from test.operators.utils import FailingRulesConverter
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
-
 from forge.op_repo import TensorShape
 
-from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 from .failing_rules import FailingRulesData
+from .models import ModelConstEvalPass, ModelDirect, ModelFromAnotherOp
 
 
 class DivVerifyUtils(VerifyUtils):

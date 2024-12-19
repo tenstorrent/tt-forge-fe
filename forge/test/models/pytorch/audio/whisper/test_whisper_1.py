@@ -4,32 +4,33 @@
 # Whisper Demo - Conditional Generation
 # Example of ASR pipeline: https://github.com/huggingface/transformers/blob/ae54e3c3b18bac0832ad62ea9b896dfd52a09850/tests/pipelines/test_pipelines_automatic_speech_recognition.py#L695
 
-import os
 import copy
-import pytest
-
-import torch
-from transformers import pipeline
-from transformers import (
-    AutoProcessor,
-    WhisperConfig,
-    WhisperTokenizer,
-    WhisperFeatureExtractor,
-    WhisperForConditionalGeneration,
-    LogitsProcessorList,
-)
-from datasets import load_dataset
-from typing import Optional
-from forge.forgeglobal import TILE_DIM
-import forge
-from test.utils import download_model
-from forge.config import _get_global_compiler_config
-from forge.transformers.pipeline import pipeline as forge_pipeline
+import os
 from test.models.pytorch.audio.whisper.utils.model import (
-    Whisper_encoder,
     Whisper_decoder,
+    Whisper_encoder,
     generate_model_whisper_decoder_past_cache,
 )
+from test.utils import download_model
+from typing import Optional
+
+import pytest
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoProcessor,
+    LogitsProcessorList,
+    WhisperConfig,
+    WhisperFeatureExtractor,
+    WhisperForConditionalGeneration,
+    WhisperTokenizer,
+    pipeline,
+)
+
+import forge
+from forge.config import _get_global_compiler_config
+from forge.forgeglobal import TILE_DIM
+from forge.transformers.pipeline import pipeline as forge_pipeline
 
 variants = [
     "openai/whisper-tiny",

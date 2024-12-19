@@ -8,12 +8,12 @@
 #
 
 
-from audioop import add
 import random
+from audioop import add
+
 import torch
 
 import forge
-
 from forge import ForgeModule, Tensor
 
 
