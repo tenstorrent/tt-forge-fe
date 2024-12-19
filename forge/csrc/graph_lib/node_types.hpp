@@ -320,6 +320,8 @@ class OutputNode : public QueueNode
 {
    protected:
     bool requires_grad_;
+    bool aliased_tensor_;
+    std::string alias_;
     bool is_loss_output_;
     bool is_intermediate_;
     bool untilize_;
@@ -333,6 +335,7 @@ class OutputNode : public QueueNode
     OutputNode(std::string name) :
         QueueNode(name, QueueNodeType::Output, NodeType::kOutput),
         requires_grad_(false),
+        aliased_tensor_(false),
         is_loss_output_(false),
         is_intermediate_(false),
         untilize_(true),
@@ -349,6 +352,23 @@ class OutputNode : public QueueNode
     void set_intermediate(bool intermediate) { is_intermediate_ = intermediate; }
     void set_untilize(bool should_untilize) { untilize_ = should_untilize; }
     void set_output_type(OutputType output_type) { output_type_ = output_type; }
+
+    void set_alias(const InputNode *node)
+    {
+        alias_ = node->name();
+        aliased_tensor_ = true;
+    }
+
+    // Indicates if this output node is actually an alias to an input node. This is used in optimizer graphs, where
+    // we want to update a parameter (e.g. `param = param - lr * grad`), but since the rest of the stack doesn't support
+    // this yet, we create a new output node that is an alias to the parameter (input) node. So we'll end up with
+    // something like this: `updated_param = param - lr * grad`, where `updated_param` is aliased to `param`. Then in
+    // the runtime we'll make sure to update the `param` tensor to point to the new data.
+    bool is_aliased_tensor() const { return aliased_tensor_; }
+
+    // Returns the name of the input node that this output node is aliased to.
+    std::string alias() const { return alias_; }
+
     virtual std::unique_ptr<Node> clone(std::string const &name = "") const override;
 
     void set_runtime_tensor_transform(RuntimeTensorTransform transform) { this->runtime_tensor_transform = transform; }
