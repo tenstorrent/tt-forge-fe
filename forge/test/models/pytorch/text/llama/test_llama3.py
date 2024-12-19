@@ -11,7 +11,14 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequen
 import forge
 from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
 
-variants = ["meta-llama/Meta-Llama-3-8B", "meta-llama/Meta-Llama-3-8B-Instruct"]
+variants = [
+    "meta-llama/Meta-Llama-3-8B",
+    "meta-llama/Meta-Llama-3-8B-Instruct",
+    "meta-llama/Llama-3.1-8B",
+    "meta-llama/Llama-3.1-8B-Instruct",
+    "meta-llama/Llama-3.2-1B",
+    "meta-llama/Llama-3.2-1B-Instruct",
+]
 
 
 # Monkey Patching Casual Mask Update
@@ -148,7 +155,7 @@ def test_llama3_causal_lm(variant, test_device):
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm",
+        module_name="pt_" + (str(variant.split("/")[-1].replace("-", "_"))).replace(".", "_") + "_causal_lm",
     )
 
 
@@ -179,5 +186,5 @@ def test_llama3_sequence_classification(variant, test_device):
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls",
+        module_name="pt_" + (str(variant.split("/")[-1].replace("-", "_"))).replace(".", "_") + "_seq_cls",
     )
