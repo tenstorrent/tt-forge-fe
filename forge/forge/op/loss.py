@@ -126,6 +126,8 @@ class NLLLoss(ForgeModule):
     NLLLoss
 
     NLLLoss is -1 * sum(labels * log(predictions), dim=-1), optionally reduced using ReduceAvg(default) or ReduceSum.
+
+    Note: This loss expects the input to be log probabilities.
     """
 
     def __init__(self, name: str, reduction: str = "mean"):

@@ -84,6 +84,7 @@ def test_nll_loss(prediction_shape, reduction):
     torch_loss = torch.nn.NLLLoss(reduction=reduction)
 
     prediction = torch.randn(prediction_shape, requires_grad=True)
+    prediction = nn.functional.log_softmax(prediction, dim=-1)
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
 
     batch_size = prediction_shape[0] if len(prediction_shape) > 1 else 1
