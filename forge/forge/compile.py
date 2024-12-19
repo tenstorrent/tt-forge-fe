@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 
 import torch
 import tensorflow as tf
+import numpy as np
+from tensorflow.python.framework.ops import EagerTensor
 from loguru import logger
 
 import forge
@@ -38,7 +40,7 @@ from forge.module import Module, ForgeModule, wrap_module
 from forge.parameter import Parameter
 from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
-from forge.tensor import Tensor, to_pt_tensors
+from forge.tensor import Tensor, to_pt_tensors, TensorFromPytorch
 from forge.typing import *
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 
@@ -173,6 +175,39 @@ def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Di
     return losses
 
 
+def preprocess_input_decorator(func):
+    """
+    A decorator function to preprocess sample_inputs passed to compile_main()
+
+    Issue: https://github.com/tenstorrent/tt-forge-fe/issues/161
+
+    Tensorflow inputs, numpy arrays, torch tensors and forge tensors can be passed to the compile_main()
+
+    The above input types are converted to torch tensors as compile_main() can handle only torch tensor inputs
+    """
+
+    def wrapper(*args, **kwargs):
+
+        assert kwargs["sample_inputs"] is not None
+
+        for idx, i in enumerate(kwargs["sample_inputs"]):
+
+            # if input is a forge tensor, then it is converted to torch tensor using to_pytorch()
+            if isinstance(i, TensorFromPytorch):
+                kwargs["sample_inputs"][idx] = forge.tensor.Tensor.to_pytorch(i)
+            # if input is a tensorflow tensor, it is converted to numpy array, then it is converted to a torch tensor
+            elif isinstance(i, EagerTensor):
+                kwargs["sample_inputs"][idx] = torch.tensor(i.numpy())
+            # if input is a numpy array, it is converted to torch tensor using torch.tensor()
+            elif isinstance(i, np.ndarray):
+                kwargs["sample_inputs"][idx] = torch.tensor(i)
+
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+@preprocess_input_decorator
 def compile_main(
     module: AnyModule,
     sample_inputs: List[torch.Tensor],
