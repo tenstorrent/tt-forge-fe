@@ -153,6 +153,7 @@ class KLDivLoss(ForgeModule):
 
     Note: This loss expects the input to be log probabilities.
     """
+
     def __init__(self, name: str, reduction: str = "mean"):
         super().__init__(name)
         self.reduction = reduction
