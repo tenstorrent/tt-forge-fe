@@ -19,7 +19,7 @@ import forge
 
 def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = Yolov3Tiny(num_classes=80, use_wrong_previous_anchors=True)
@@ -32,22 +32,22 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
     img_resized = img_org.resize((sz, sz))
     img_tensor = utils.image2torch(img_resized)
 
-    return model, [img_tensor], {}
+    return model, [img_tensor], {}, compiler_cfg
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_yolov3_tiny_holli_pytorch(test_device):
-    model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch(
+    model, inputs, _ , compiler_cfg = generate_model_yolotinyV3_imgcls_holli_pytorch(
         test_device,
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_tiny_holli")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_tiny_holli", compiler_cfg=compiler_cfg)
 
 
 def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
     model = Yolov3(num_classes=80)
     model.load_state_dict(
@@ -64,15 +64,15 @@ def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
     img_resized = img_org.resize((sz, sz))
     img_tensor = utils.image2torch(img_resized)
 
-    return model, [img_tensor], {"pcc": pcc}
+    return model, [img_tensor], {"pcc": pcc}, compiler_cfg
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_yolov3_holli_pytorch(test_device):
-    model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch(
+    model, inputs, other, compiler_cfg = generate_model_yoloV3_imgcls_holli_pytorch(
         test_device,
         None,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_holli")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_holli", compiler_cfg=compiler_cfg)

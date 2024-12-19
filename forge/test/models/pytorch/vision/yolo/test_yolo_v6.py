@@ -19,7 +19,7 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 def test_yolo_v6_pytorch(variant, test_device):
 
     # STEP 1 : Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2 :prepare model
@@ -47,7 +47,7 @@ def test_yolo_v6_pytorch(variant, test_device):
     input_batch = img.unsqueeze(0)
 
     # STEP 4 : Inference
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

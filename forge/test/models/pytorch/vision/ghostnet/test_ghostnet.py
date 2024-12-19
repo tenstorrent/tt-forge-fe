@@ -26,7 +26,7 @@ variants = ["ghostnet_100"]
 def test_ghostnet_timm(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -43,7 +43,7 @@ def test_ghostnet_timm(variant, test_device):
     transforms = create_transform(**data_config, is_training=False)
     img_tensor = transforms(img).unsqueeze(0)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
     co_out = compiled_model(img_tensor)
     fw_out = framework_model(img_tensor)
 

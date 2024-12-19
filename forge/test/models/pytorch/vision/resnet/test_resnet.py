@@ -26,7 +26,7 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
     model = download_model(ResNetForImageClassification.from_pretrained, model_ckpt)
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
@@ -43,18 +43,18 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
     inputs = feature_extractor(image, return_tensors="pt")
     pixel_values = inputs["pixel_values"]
 
-    return model, [pixel_values], {}
+    return model, [pixel_values], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnet(test_device):
 
-    model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_resnet_imgcls_hf_pytorch(
         "microsoft/resnet-50",
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50", compiler_cfg=compiler_cfg)
 
 
 def generate_model_resnet_imgcls_timm_pytorch(variant):
@@ -64,7 +64,7 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
     transform = create_transform(**config)
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
@@ -80,13 +80,13 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
     # Data preprocessing
     pixel_values = transform(image).unsqueeze(0)
 
-    return model, [pixel_values], {}
+    return model, [pixel_values], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnet_timm(test_device):
-    model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_resnet_imgcls_timm_pytorch(
         "resnet50",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50_timm")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50_timm", compiler_cfg=compiler_cfg)

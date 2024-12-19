@@ -50,7 +50,7 @@ variants = [
 def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     if variant != "deepmind/vision-perceiver-fourier":
         compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
@@ -73,7 +73,7 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
     model.eval()
     # Run inference on Tenstorrent device
     compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")), compiler_cfg=compiler_cfg
     )
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:

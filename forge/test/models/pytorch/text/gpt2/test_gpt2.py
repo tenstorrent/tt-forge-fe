@@ -22,7 +22,7 @@ def test_gpt2_text_gen(test_device):
     config = GPT2Config(**config_dict)
     model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
 
     # Wrapper to get around past key values
     class Wrapper(torch.nn.Module):
@@ -38,7 +38,7 @@ def test_gpt2_text_gen(test_device):
     ).to(torch.int64)
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name="pt_gpt2_generation")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name="pt_gpt2_generation", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
@@ -68,7 +68,7 @@ class Wrapper(torch.nn.Module):
 def test_gpt2_past_cache(test_device):
     os.environ["GOLDEN_WORMHOLE_B0"] = "1"
     os.environ["FORGE_DEVMODE"] = "1"
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.enable_auto_fusing = False

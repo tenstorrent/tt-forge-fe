@@ -22,7 +22,7 @@ text2 = "a bunch of cats laying on a [MASK]."
 def generate_model_vilt_question_answering_hf_pytorch(test_device, variant):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Set model configurations
@@ -44,7 +44,7 @@ def generate_model_vilt_question_answering_hf_pytorch(test_device, variant):
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}, compiler_cfg
 
 
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
@@ -54,19 +54,19 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(variant, test_device):
-    model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_vilt_question_answering_hf_pytorch(
         test_device,
         variant,
     )
     compiled_model = forge.compile(
-        model, sample_inputs=[inputs[0], inputs[1]], module_name="pt_ViLt_question_answering"
+        model, sample_inputs=[inputs[0], inputs[1]], module_name="pt_ViLt_question_answering", compiler_cfg=compiler_cfg
     )
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
@@ -88,7 +88,7 @@ def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}, compiler_cfg
 
 
 variants = ["dandelin/vilt-b32-mlm"]
@@ -99,11 +99,11 @@ variants = ["dandelin/vilt-b32-mlm"]
 @pytest.mark.xfail(reason="pcc=0.9498278562793674")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(variant, test_device):
-    model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_vilt_maskedlm_hf_pytorch(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_ViLt_maskedlm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_ViLt_maskedlm", compiler_cfg=compiler_cfg)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 

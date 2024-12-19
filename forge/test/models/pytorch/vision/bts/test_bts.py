@@ -26,7 +26,7 @@ variants = ["densenet161_bts", "densenet121_bts"]
 def test_bts_pytorch(test_device, variant):
 
     # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load sample image
@@ -64,4 +64,4 @@ def test_bts_pytorch(test_device, variant):
 
     inputs = [image]
 
-    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name="pt_" + str(variant))
+    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name="pt_" + str(variant), compiler_cfg=compiler_cfg)

@@ -15,7 +15,7 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(variant, test_device):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     config = XGLMConfig.from_pretrained(variant)
@@ -39,5 +39,5 @@ def test_xglm_causal_lm(variant, test_device):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
     compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_"))
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")), compiler_cfg=compiler_cfg
     )

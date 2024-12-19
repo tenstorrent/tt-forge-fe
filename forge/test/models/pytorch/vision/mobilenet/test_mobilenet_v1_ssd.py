@@ -15,7 +15,7 @@ import forge
 def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load PASCAL VOC dataset class labels
@@ -31,4 +31,4 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     input_shape = (1, 3, 300, 300)
     inputs = [torch.rand(input_shape)]
-    compiled_model = forge.compile(net, sample_inputs=inputs, module_name="pt_mobilenet_v1_ssd")
+    compiled_model = forge.compile(net, sample_inputs=inputs, module_name="pt_mobilenet_v1_ssd", compiler_cfg=compiler_cfg)

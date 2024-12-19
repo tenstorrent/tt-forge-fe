@@ -24,7 +24,7 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
     model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -41,7 +41,7 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
     varaint_name = model_ckpt.replace("-", "_")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_masked_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_masked_lm", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
@@ -63,7 +63,7 @@ variants = ["v1", "v2"]
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_token_classification_pytorch(size, variant, test_device):
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
@@ -90,7 +90,7 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
     varaint_name = model_ckpt.replace("-", "_")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_token_cls")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_token_cls", compiler_cfg=compiler_cfg)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)

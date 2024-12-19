@@ -50,7 +50,7 @@ variants = [
 def test_efficientnet_timm(variant, test_device):
 
     # Configuration
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -73,7 +73,7 @@ def test_efficientnet_timm(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_timm")
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_timm", compiler_cfg=compiler_cfg)
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -108,7 +108,7 @@ variants = [
 @pytest.mark.xfail(reason="Runtime Error: Reshape Operation Fails Due to Mismatched Tensor Volume")
 def test_efficientnet_torchvision(variant, test_device):
     # Configuration
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     if variant == "efficientnet_b0":
@@ -134,7 +134,7 @@ def test_efficientnet_torchvision(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_torchvision")
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_torchvision", compiler_cfg=compiler_cfg)
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]

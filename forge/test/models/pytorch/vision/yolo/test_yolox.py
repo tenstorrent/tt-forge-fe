@@ -39,7 +39,7 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 def test_yolox_pytorch(variant, test_device):
 
     # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # prepare model
@@ -82,7 +82,7 @@ def test_yolox_pytorch(variant, test_device):
 
     inputs = [img_tensor]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(*inputs)

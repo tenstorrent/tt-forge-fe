@@ -23,7 +23,7 @@ import os
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(test_device):
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePose Detector
@@ -38,7 +38,7 @@ def test_blazepose_detector_pytorch(test_device):
     _, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name="pt_blazepose_detector")
+    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name="pt_blazepose_detector", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -60,7 +60,7 @@ def test_blazepose_regressor_pytorch(test_device):
 def test_blaze_palm_pytorch(test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePalm Detector
@@ -76,7 +76,7 @@ def test_blaze_palm_pytorch(test_device):
     img1, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name="pt_palm_detector")
+    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name="pt_palm_detector", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -84,7 +84,7 @@ def test_blaze_palm_pytorch(test_device):
 def test_blaze_hand_pytorch(test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load BlazePalm Detector
@@ -92,4 +92,4 @@ def test_blaze_hand_pytorch(test_device):
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
     sample_tensor = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name="pt_hand_regressor")
+    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name="pt_hand_regressor", compiler_cfg=compiler_cfg)

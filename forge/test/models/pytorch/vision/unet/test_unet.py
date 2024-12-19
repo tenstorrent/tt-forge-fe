@@ -20,23 +20,23 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     # Also, golden test segfaults when pushing params to golden: tenstorrent/forge#637
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(ptcv_get_model, variant, pretrained=False)
 
     img_tensor = x = torch.randn(1, 3, 224, 224)
 
-    return model, [img_tensor], {}
+    return model, [img_tensor], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_osmr_cityscape_pytorch(test_device):
-    model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_cityscapes_osmr")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_cityscapes_osmr", compiler_cfg=compiler_cfg)
 
 
 def get_imagenet_sample():
@@ -72,18 +72,18 @@ def test_unet_holocron_pytorch(test_device):
     from holocron.models.segmentation.unet import unet_tvvgg11
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
 
     model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_unet_holocron")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_unet_holocron", compiler_cfg=compiler_cfg)
 
 
 def generate_model_unet_imgseg_smp_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # encoder_name = "vgg19"
@@ -109,21 +109,21 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
     img_tensor = (img_tensor - mean) / std
     print(img_tensor.shape)
 
-    return model, [img_tensor], {}
+    return model, [img_tensor], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_qubvel_pytorch(test_device):
-    model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_unet_imgseg_smp_pytorch(
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_qubvel_pt")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_qubvel_pt", compiler_cfg=compiler_cfg)
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(
@@ -157,13 +157,13 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
     input_tensor = preprocess(input_image)
     img_batch = input_tensor.unsqueeze(0)
 
-    return model, [img_batch], {}
+    return model, [img_batch], {}, compiler_cfg
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_torchhub_pytorch(test_device):
-    model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_torchhub")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_torchhub", compiler_cfg=compiler_cfg)

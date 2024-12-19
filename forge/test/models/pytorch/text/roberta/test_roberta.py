@@ -15,7 +15,7 @@ def test_roberta_masked_lm(test_device):
     tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
     model = download_model(AutoModelForMaskedLM.from_pretrained, "xlm-roberta-base")
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Input processing
@@ -31,7 +31,7 @@ def test_roberta_masked_lm(test_device):
     attention_mask[input_tokens != 1] = 1
 
     inputs = [input_tokens, attention_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_masked_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_masked_lm", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -43,7 +43,7 @@ def test_roberta_sentiment_pytorch(test_device):
         AutoModelForSequenceClassification.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment"
     )
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Example from multi-nli validation set
@@ -58,4 +58,4 @@ def test_roberta_sentiment_pytorch(test_device):
         return_tensors="pt",
     )
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_sentiment")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_sentiment", compiler_cfg=compiler_cfg)

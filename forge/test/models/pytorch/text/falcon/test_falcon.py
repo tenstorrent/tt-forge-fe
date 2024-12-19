@@ -11,7 +11,7 @@ import forge
 @pytest.mark.model_analysis
 def test_falcon(test_device):
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = AutoTokenizer.from_pretrained("tiiuae/falcon-7b-instruct")
@@ -36,4 +36,4 @@ def test_falcon(test_device):
     output = model(input_tokens["input_ids"], input_tokens["attention_mask"])
 
     # Forge inference
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_falcon")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_falcon", compiler_cfg=compiler_cfg)

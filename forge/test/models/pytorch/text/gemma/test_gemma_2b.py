@@ -57,7 +57,7 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -87,7 +87,7 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     print(out)
 
     inputs = [x, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rotary_embedding")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rotary_embedding", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -98,7 +98,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -126,7 +126,7 @@ def test_gemma_2b_rms_norm(test_device, variant):
     out = pytorch_model(x)
     print(out)
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rms_norm")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rms_norm", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -137,7 +137,7 @@ def test_gemma_2b_attention(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -168,7 +168,7 @@ def test_gemma_2b_attention(test_device, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_attention")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_attention", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -179,7 +179,7 @@ def test_gemma_2b_mlp(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -208,7 +208,7 @@ def test_gemma_2b_mlp(test_device, variant):
     print(out)
 
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_mlp")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_mlp", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -219,7 +219,7 @@ def test_gemma_2b_single_decoder(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -250,7 +250,7 @@ def test_gemma_2b_single_decoder(test_device, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_single_decoder")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_single_decoder", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -261,7 +261,7 @@ def test_gemma_2b(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
     config = download_model(GemmaConfig.from_pretrained, variant)
     config_dict = config.to_dict()
@@ -290,7 +290,7 @@ def test_gemma_2b(test_device, variant):
     attn_mask = inputs["attention_mask"]
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -301,7 +301,7 @@ def test_gemma_2b_gen(test_device, variant):
     torch.manual_seed(42)
 
     # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.balancer_policy = "Ribbon"
     os.environ["FORGE_RIBBON2"] = "1"
 
@@ -385,7 +385,7 @@ def test_gemma_2b_1x1_gen(test_device, variant):
     # Random seed for reproducibility
     torch.manual_seed(42)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     if test_device.devtype == BackendType.Silicon and "CI_PROJECT_DIR" in os.environ:
         pytest.skip("Failing on CI with Read 0xffffffff from ARC scratch[6]: you should reset the board")

@@ -26,7 +26,7 @@ def test_mistral_decoder_layer(variant, test_device):
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
     module = model.model.layers[0]
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a problem with valid node placement can occur
@@ -36,7 +36,7 @@ def test_mistral_decoder_layer(variant, test_device):
 
     sample_inputs = torch.randn(batch_size, seqlen, hidden_dim)
     inputs = [sample_inputs]
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral_decoder")
+    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral_decoder", compiler_cfg=compiler_cfg)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -52,7 +52,7 @@ def test_mistral(variant, test_device):
     configuration.sliding_window = None
     configuration.use_cache = False
     configuration.return_dict = False
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     module = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
@@ -68,7 +68,7 @@ def test_mistral(variant, test_device):
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
     inputs = [sample_inputs]
 
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral")
+    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral", compiler_cfg=compiler_cfg)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -84,7 +84,7 @@ def test_mistral_decode(variant, test_device):
     configuration.use_cache = False
     configuration.return_dict = False
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     pytorch_model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)

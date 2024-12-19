@@ -26,7 +26,7 @@ def test_t5_loop_tiny_tile(test_device):
     os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
     # os.environ["TT_BACKEND_PROFILER"] = "1"
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.default_df_override = forge._C.Float16_b
     compiler_cfg.default_dram_parameters = False
@@ -100,7 +100,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(variant, test_device):
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
 
     if variant == "google/flan-t5-large":
         compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
@@ -134,7 +134,7 @@ def test_t5_generation(variant, test_device):
 
     inputs = [decoder_input_ids, encoder_outputs]
     variant_name = variant.replace("-", "_").replace("/", "_")
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}", compiler_cfg=compiler_cfg)
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(*inputs)
         fw_out = model(*inputs)
@@ -209,7 +209,7 @@ def test_t5_past_cache_enc_dec(variant, test_device):
     os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
     os.environ["TT_BACKEND_EPOCH_BIN_NUM_SLOTS"] = "64"
     os.environ["FORGE_ROTATE_PAST_CACHE_PARAMS"] = "1"
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.default_df_override = forge._C.Float16_b
     compiler_cfg.default_dram_parameters = False
@@ -387,7 +387,7 @@ def test_t5_past_cache_forge_pipeline(variant, test_device):
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
     os.environ["FORGE_NLP_MANUAL_TARGET"] = "30000"
     os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.default_df_override = forge._C.Float16_b
     compiler_cfg.default_dram_parameters = False
@@ -723,7 +723,7 @@ def test_t5_forge_pipeline(variant, test_device):
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
     os.environ["FORGE_NLP_MANUAL_TARGET"] = "30000"
     os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.default_df_override = forge._C.Float16_b
     compiler_cfg.default_dram_parameters = False
@@ -772,7 +772,7 @@ def test_t5_small_tiny_tile(test_device):
     os.environ["FORGE_ENABLE_TINY_TILE"] = "1"
     os.environ["FORGE_LEGACY_UBLOCK_SHAPE"] = "1"
     # Add Forge configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.enable_auto_fusing = False  # tenstorrent/forge#844
     compiler_cfg.amp_level = 1

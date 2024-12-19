@@ -21,7 +21,7 @@ import os
 def test_clip_pytorch(test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load processor and model from HuggingFace
@@ -44,4 +44,4 @@ def test_clip_pytorch(test_device):
     text_model = CLIPTextWrapper(model)
     inputs = [inputs[0], inputs[2]]
 
-    compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name="pt_clip_text_model")
+    compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name="pt_clip_text_model", compiler_cfg=compiler_cfg)

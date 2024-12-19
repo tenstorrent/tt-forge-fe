@@ -17,7 +17,7 @@ import forge
 @pytest.mark.model_analysis
 def test_resnext_50_torchhub_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -29,14 +29,14 @@ def test_resnext_50_torchhub_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_torchhub")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_torchhub", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_101_torchhub_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -48,7 +48,7 @@ def test_resnext_101_torchhub_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_torchhub")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_torchhub", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -56,7 +56,7 @@ def test_resnext_101_torchhub_pytorch(test_device):
 def test_resnext_101_32x8d_fb_wsl_pytorch(test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -69,14 +69,14 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_fb_wsl")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_fb_wsl", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_14_osmr_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -89,14 +89,14 @@ def test_resnext_14_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext14_osmr")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext14_osmr", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_26_osmr_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -108,14 +108,14 @@ def test_resnext_26_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext26_osmr")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext26_osmr", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_50_osmr_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -127,14 +127,14 @@ def test_resnext_50_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_osmr")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_osmr", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_101_osmr_pytorch(test_device):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load global compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -146,4 +146,4 @@ def test_resnext_101_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_osmr")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_osmr", compiler_cfg=compiler_cfg)

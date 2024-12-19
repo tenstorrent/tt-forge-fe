@@ -14,7 +14,7 @@ import os
 
 def generate_model_xception_imgcls_timm(test_device, variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -32,7 +32,7 @@ def generate_model_xception_imgcls_timm(test_device, variant):
     img = Image.open(filename).convert("RGB")
     img_tensor = transform(img).unsqueeze(0)
 
-    return framework_model, [img_tensor]
+    return framework_model, [img_tensor], compiler_cfg
 
 
 variants = ["xception", "xception41", "xception65", "xception71"]
@@ -43,8 +43,8 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xception_timm(variant, test_device):
 
-    (model, inputs,) = generate_model_xception_imgcls_timm(
+    (model, inputs, compiler_cfg) = generate_model_xception_imgcls_timm(
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm", compiler_cfg=compiler_cfg)

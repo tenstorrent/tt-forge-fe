@@ -42,7 +42,7 @@ variants = list(variants_func.keys())
 def test_dla_pytorch(variant, test_device):
 
     # Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
     func = variants_func[variant]
 
@@ -63,4 +63,4 @@ def test_dla_pytorch(variant, test_device):
 
     pytorch_model = func(pretrained="imagenet")
     pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)

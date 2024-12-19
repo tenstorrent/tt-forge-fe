@@ -24,7 +24,7 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 def test_ddrnet_pytorch(variant, test_device):
 
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -62,7 +62,7 @@ def test_ddrnet_pytorch(variant, test_device):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)
 
 
 variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
@@ -74,7 +74,7 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # prepare model
@@ -112,4 +112,4 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     input_image = Image.open(image_path)
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}", compiler_cfg=compiler_cfg)

@@ -18,7 +18,7 @@ import os
 @pytest.mark.nightly
 def test_fchardnet(test_device):
     # STEP 1: Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load and pre-process image
@@ -39,4 +39,4 @@ def test_fchardnet(test_device):
     model = fuse_bn_recursively(model)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name="fchardnet")
+    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name="fchardnet", compiler_cfg=compiler_cfg)

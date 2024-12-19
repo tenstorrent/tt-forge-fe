@@ -27,7 +27,7 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
     model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
@@ -43,7 +43,7 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_masked_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_masked_lm", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -54,7 +54,7 @@ def test_distilbert_question_answering_pytorch(test_device):
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
     model = download_model(DistilBertForQuestionAnswering.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample from SQuADv1.1
@@ -80,7 +80,7 @@ def test_distilbert_question_answering_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_question_answering")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_question_answering", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -92,7 +92,7 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
     model = download_model(DistilBertForSequenceClassification.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
@@ -108,7 +108,7 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_sequence_classification")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_sequence_classification", compiler_cfg=compiler_cfg)
 
 
 @pytest.mark.nightly
@@ -119,7 +119,7 @@ def test_distilbert_token_classification_pytorch(test_device):
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
     model = download_model(DistilBertForTokenClassification.from_pretrained, model_ckpt)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    compiler_cfg = forge.config._get_compiler_config()  # load compiler config object
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
@@ -135,4 +135,4 @@ def test_distilbert_token_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_token_classification")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_token_classification", compiler_cfg=compiler_cfg)

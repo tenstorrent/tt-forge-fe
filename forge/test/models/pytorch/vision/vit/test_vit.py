@@ -18,7 +18,7 @@ image_2 = Image.open(requests.get(url, stream=True).raw)
 
 def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
     # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config._get_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # STEP 2: Create Forge module from PyTorch model
@@ -28,7 +28,7 @@ def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
     img_tensor = image_processor(image_1, return_tensors="pt").pixel_values
     # output = model(img_tensor).logits
 
-    return model, [img_tensor], {}
+    return model, [img_tensor], {}, compiler_cfg
 
 
 variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
@@ -38,11 +38,11 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classify_224_hf_pytorch(variant, test_device):
-    model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
+    model, inputs, _, compiler_cfg = generate_model_vit_imgcls_hf_pytorch(
         test_device,
         variant,
     )
 
     compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"), compiler_cfg=compiler_cfg)
     )
