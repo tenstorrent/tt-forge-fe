@@ -467,7 +467,9 @@ def decompose(type, attr, dc, inputs):
 
         activations = inputs[0]
         if kernel_size == activations.shape[-1]:
-            reduce_avg = dc.op_with_named_attrs("reduce_avg", [activations], {"dim": -1, "keep_dim": True}, (-1, True))
+            reduce_avg = dc.op_with_named_attrs(
+                "reduce_avg", [activations], {"dim_arg": -1, "keep_dim": True}, (-1, True)
+            )
             dc.fuse(reduce_avg)
             return
         else:
@@ -527,14 +529,14 @@ def decompose(type, attr, dc, inputs):
                 result = dc.op_with_named_attrs(
                     "reshape", [activations], {"shape": (w, 1, y * x, cin)}, (w, 1, y * x, cin)
                 )
-                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": -2, "keep_dim": True}, (-2, True))
+                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim_arg": -2, "keep_dim": True}, (-2, True))
                 result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, 1, cin)}, (w, 1, 1, cin))
             else:
                 result = dc.op_with_named_attrs(
                     "reshape", [activations], {"shape": (w, 1, cin, y * x)}, (w, 1, cin, y * x)
                 )
                 result = dc.op(TransposeTM.create(2, 3), [result])
-                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": -2, "keep_dim": True}, (-2, True))
+                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim_arg": -2, "keep_dim": True}, (-2, True))
                 result = dc.op(TransposeTM.create(2, 3), [result])
                 result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, 1, 1)}, (w, cin, 1, 1))
             dc.fuse(result)
@@ -776,9 +778,9 @@ def decompose(type, attr, dc, inputs):
         if channel_last:
             # result = dc.op("vstack", [activations], (y,))
             _, yout, xout, _ = shape("max_pool2d", attr, [activations.shape])[0]
-            result = dc.op("reshape", [activations], (w, 1, y * x, cin))
+            result = dc.op_with_named_attrs("reshape", [activations], {"shape": (w, 1, y * x, cin)}, (w, 1, y * x, cin))
         else:
-            result = dc.op("reshape", [activations], (w, 1, cin, y * x))
+            result = dc.op_with_named_attrs("reshape", [activations], {"shape": (w, 1, cin, y * x)}, (w, 1, cin, y * x))
             result = dc.op(TransposeTM.create(2, 3), [result])
             _, _, yout, xout = shape("max_pool2d", attr, [activations.shape])[0]
         result = dc.op("pad_tile", [result], (3, cin))
@@ -812,10 +814,12 @@ def decompose(type, attr, dc, inputs):
             pad_shape = result.shape.as_list()
             pad_shape[-1] = (result_c_padding[result_c] - result_c) * TILE_DIM
             zeros_tensor = dc.tensor(torch.zeros(pad_shape))
-            result = dc.op("concatenate", [result, zeros_tensor], (-1,))
+            result = dc.op_with_named_attrs("concatenate", [result, zeros_tensor], {"dim": -1}, (-1,))
 
         result = dc.op("sparse_matmul", [picker_tensor, result])
-        result = dc.op("reduce_max", [result], (1,))  # z dim
+        result = dc.op_with_named_attrs(
+            "reduce_max", [result], {"dim_arg": [1], "keep_dim": True}, (1, result.shape[1], True)
+        )  # z dim
 
         if pad_for_factorization:
             if sparse_r in sparse_r_padding:
@@ -835,10 +839,10 @@ def decompose(type, attr, dc, inputs):
         result = dc.op("narrow", [result], (2, 0, yout * xout, result.shape[2]))
         result = dc.op("narrow", [result], (3, 0, cin, result.shape[3]))
         if channel_last:
-            result = dc.op("reshape", [result], (w, yout, xout, cin))
+            result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, yout, xout, cin)}, (w, yout, xout, cin))
         else:
             result = dc.op(TransposeTM.create(2, 3), [result])
-            result = dc.op("reshape", [result], (w, cin, yout, xout))
+            result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, yout, xout)}, (w, cin, yout, xout))
 
         if max_pool_add_sub_surround:
             add_sub_val = dc.tensor(torch.zeros((1,)) + max_pool_add_sub_surround_value)
@@ -907,7 +911,9 @@ def decompose(type, attr, dc, inputs):
         #     _, yout, xout, _ = shape('max_pool2d', attr, [activations.shape])[0]
         #     result = dc.op("reshape", [activations], (w, 1, y * x, cin))
         # else:
-        result = dc.op("reshape", [activations], (w, 1, cin * din, y * x))
+        result = dc.op_with_named_attrs(
+            "reshape", [activations], {"shape": (w, 1, cin * din, y * x)}, (w, 1, cin * din, y * x)
+        )
         result = dc.op(TransposeTM.create(-2, -1), [result])
         _, cout, dout, yout, xout = shape("max_pool3d", attr, [activations.shape])[0]
         result = dc.op("pad_tile", [result], (-1, cin * din))
@@ -958,7 +964,9 @@ def decompose(type, attr, dc, inputs):
         )
         picker_tensor = dc.tensor(picker.unsqueeze(0))  # (1, kH*kW, yout*xout, yin*xin)
         result = dc.op("sparse_matmul", [picker_tensor, result])  # (1, kH*kW, yout*xout, cin*din)
-        result = dc.op("reduce_max", [result], (-3,))  # z dim  # (1, 1, yout*xout, cin*din)
+        result = dc.op_with_named_attrs(
+            "reduce_max", [result], {"dim_arg": [-3], "keep_dim": True}, (-3, result.shape[-3], True)
+        )  # z dim  # (1, 1, yout*xout, cin*din)
 
         # Run max pool on the depth dimension in a separate step
         if kD > 1:
@@ -976,7 +984,9 @@ def decompose(type, attr, dc, inputs):
             # Transpose the activations to allow sparse mm to work on the depth dim
             result = dc.op(TransposeTM.create(-2, -1), [result])
             result = dc.op("sparse_matmul", [depth_picker, result])  # (1, kD, cout*dout, yout*xout)
-            result = dc.op("reduce_max", [result], (-3,))  # z dim  # (1, 1, cout*dout, yout*xout)
+            result = dc.op_with_named_attrs(
+                "reduce_max", [result], {"dim_arg": [-3], "keep_dim": True}, (-3, result.shape[-3], True)
+            )  # z dim  # (1, 1, cout*dout, yout*xout)
 
             # Transpose back
             result = dc.op(TransposeTM.create(-2, -1), [result])
@@ -989,7 +999,9 @@ def decompose(type, attr, dc, inputs):
         # if channel_last:
         #    result = dc.op("reshape", [result], (w, yout, xout, cin))
         # else:
-        result = dc.op("reshape", [result], (w, cin, dout, yout, xout))
+        result = dc.op_with_named_attrs(
+            "reshape", [result], {"shape": (w, cin, dout, yout, xout)}, (w, cin, dout, yout, xout)
+        )
 
         # if max_pool_add_sub_surround:
         #    add_sub_val = dc.tensor(torch.zeros((1,)) + max_pool_add_sub_surround_value)

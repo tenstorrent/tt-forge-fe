@@ -394,7 +394,7 @@ def decompose(op_type, attr, dc, inputs):
         x = inputs[0]
         dim = attr[0]
         stable = attr[1]
-        result = dc.op("softmax", (x,), (dim, stable))
+        result = dc.op_with_named_attrs("softmax", (x,), {"dimension": dim}, (dim, stable))
         result = dc.op(Log.create(), (result,))
         dc.fuse(result)
         return
