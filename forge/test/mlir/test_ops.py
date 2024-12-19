@@ -6,10 +6,13 @@ import os
 
 import pytest
 import torch
+import tensorflow as tf
+import numpy as np
 from torch import nn
 
 import forge
 from forge.tensor import to_forge_tensors
+from forge.tensor import Tensor
 from tvm.relay.op.transform import squeeze
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
@@ -2036,3 +2039,37 @@ def test_select(shape, dim, begin, length, stride):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input1,input2",
+    [
+        (torch.randn([2, 3, 4]), torch.rand([2, 3, 4])),  # both inputs as torch tensors
+        (Tensor.create_from_torch(torch.randn(2, 2)), np.array([[12, 4], [7, 9]])),  # 1 forge tensor and 1 numpy array
+        (Tensor.create_from_torch(torch.randn(2, 2)), torch.randn([2, 2])),  # 1 forge tesnsor and 1 torch tensor
+        (np.array([1, 2, 3, 4]), np.array([2, 4, 6, 8])),  # both inputs as numpy arrays
+        (
+            torch.randn([2, 4, 6]),
+            tf.random.uniform((2, 4, 6), minval=0, maxval=10, dtype=tf.int32),
+        ),  # 1 torch tensor and 1 tensorflow tensor
+        (
+            tf.random.normal((2, 3), mean=0, stddev=1),
+            Tensor.create_from_torch(torch.randn(2, 3)),
+        ),  # 1 tensorflow tensor and 1 forge tensor
+    ],
+)
+def test_input_types(input1, input2):
+    class AddOp(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, input_1, input_2):
+            output = torch.add(input_1, input_2)
+            return output
+
+    inputs = [input1, input2]
+
+    framework_model = AddOp()
+    framework_model.eval()
+
+    forge.compile(framework_model, sample_inputs=inputs)
