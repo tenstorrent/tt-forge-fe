@@ -4,6 +4,7 @@
 # Whisper Demo - Conditional Generation
 # Example of ASR pipeline: https://github.com/huggingface/transformers/blob/ae54e3c3b18bac0832ad62ea9b896dfd52a09850/tests/pipelines/test_pipelines_automatic_speech_recognition.py#L695
 
+
 import os
 import copy
 import pytest
