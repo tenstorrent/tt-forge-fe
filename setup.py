@@ -115,7 +115,6 @@ setup(
     description="AI/ML framework for Tenstorrent devices",
     python_requires=">=3.8",
     packages=packages,
-    package_data={"forge": ["tti/runtime_param_yamls/*.yaml"]},
     package_dir={"forge": "forge/forge"},
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -120,6 +120,7 @@ set_target_properties(ttforge_csrc PROPERTIES PREFIX "")
 
 set_target_properties(ttforge_csrc PROPERTIES SUFFIX ".so")
 
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
 ### End of ttforge_csrc ###
 
 #### Copy python module extension to ttforge directory ####
