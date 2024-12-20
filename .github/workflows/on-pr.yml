@@ -22,5 +22,6 @@ jobs:
     with:
       test_mark: 'push'
   perf-benchmark:
+    needs: docker-build
     uses: ./.github/workflows/perf-benchmark.yml
     secrets: inherit
