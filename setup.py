@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+import pathlib
 import re
 import sys
 import sysconfig
@@ -22,36 +23,44 @@ class TTExtension(Extension):
         Extension.__init__(self, name, sources=[])
 
 
-class MyBuild(build_ext):
+class CMakeBuild(build_ext):
     def run(self):
         for ext in self.extensions:
+
             fullname = self.get_ext_fullname(ext.name)
             filename = self.get_ext_filename(fullname)
+            print(f"Building {filename}")
+
+            print(f"Building {fullname}")
+            extension_path = pathlib.Path(self.get_ext_fullpath(ext.name))
+            print(f"Extension path: {extension_path}")
+
             build_lib = self.build_lib
             if not os.path.exists(build_lib):
                 continue  # editable install?
 
             # Build using our make flow, and then copy the file over
+            cwd = pathlib.Path().absolute()
 
-            # Pass the required variables for building Wormhole or Grayskull
-            if "BACKEND_ARCH_NAME" not in os.environ:
-                print("Please provide environment variable `BACKEND_ARCH_NAME` to the build process.")
-                sys.exit(1)
+            build_dir = cwd / "wheel" / "build"
+            install_dir = cwd / "wheel" / "install"
 
-            additional_env_variables = {
-                "BACKEND_ARCH_NAME": os.environ.get("BACKEND_ARCH_NAME"),
-            }
-            env = os.environ.copy()
-            env.update(additional_env_variables)
-            nproc = os.cpu_count()
-            subprocess.check_call(
-                ["make", f"-j{nproc}", "forge", r"DEVICE_VERSIM_INSTALL_ROOT=\$$ORIGIN/../.."], env=env
-            )
+            cmake_args = [
+                "-G",
+                "Ninja",
+                "-B",
+                str(build_dir),
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_INSTALL_PREFIX=" + str(install_dir),
+                "-DCMAKE_C_COMPILER=clang",
+                "-DCMAKE_CXX_COMPILER=clang++",
+            ]
 
-            src = "build/lib/libforge_csrc.so"
-            self.copy_file(src, os.path.join(build_lib, filename))
-
-            self._copy_forge(build_lib)
+            self.spawn(["cmake", *cmake_args])
+            self.spawn(["cmake", "--build", str(build_dir)])
+            self.spawn(["cmake", "--install", str(build_dir)])
+            #
+            # self.copy_tree(install_dir / "lib", build_lib + "/forge", preserve_symlinks=False)
 
     def _copy_forge(self, target_path):
 
@@ -72,16 +81,16 @@ with open("README.md", "r") as f:
 
 # Read the requirements from the core list that is shared between
 # dev and test.
-with open("python_env/core_requirements.txt", "r") as f:
+with open("env/core_requirements.txt", "r") as f:
     requirements = f.read().splitlines()
 
 # Add specific requirements for distribution
 # due to how we use the requirements file we can not use include requirements files
-with open("python_env/dist_requirements.txt", "r") as f:
+with open("env/linux_requirements.txt", "r") as f:
     requirements += [r for r in f.read().splitlines() if not r.startswith("-r")]
 
 # forge._C
-forge_c = TTExtension("forge._C")
+forge_c = TTExtension("libttforge_csrc.so")
 
 
 ext_modules = [forge_c]
@@ -95,16 +104,13 @@ date = (
     .strip()
 )
 
-arch_codes = {"wormhole_b0": "wh_b0", "grayskull": "gs", "blackhole": "bh"}
-arch_code = arch_codes[os.environ["BACKEND_ARCH_NAME"]]
-
-version = "0.1." + date + "+dev." + arch_code + "." + short_hash
+version = "0.1." + date + "+dev." + short_hash
 
 setup(
-    name="forge",
+    name="tt-forge-fe",
     version=version,
     author="Tenstorrent",
-    url="http://www.tenstorrent.com",
+    url="https://github.com/tenstorrent/tt-forge-fe",
     author_email="info@tenstorrent.com",
     description="AI/ML framework for Tenstorrent devices",
     python_requires=">=3.8",
@@ -114,7 +120,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     ext_modules=ext_modules,
-    cmdclass=dict(build_ext=MyBuild),
+    cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     install_requires=requirements,
     license="TBD",
