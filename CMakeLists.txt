@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20.0)
+
 project(ttforge LANGUAGES CXX)
 
 find_program(CLANG_17 clang++-17)
@@ -52,6 +53,10 @@ set(SHARED_LIB_FLAGS -fPIC)
 add_subdirectory(third_party)
 add_subdirectory(forge)
 add_subdirectory(docs)
+
+
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
+install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/forge)
 
 ### Generate stubs for ttforge
 ### Run `cmake --build build -- make_stubs` to generate stubs

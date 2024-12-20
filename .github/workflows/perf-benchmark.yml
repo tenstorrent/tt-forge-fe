@@ -55,7 +55,11 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
-          submodules: recursive
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            .test_durations
           fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
@@ -65,29 +69,25 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+    - name: Use build artifacts
+      uses: actions/download-artifact@v4
       with:
-        create-symlink: true
-        key: runner-runtime--
+        name: build-forge-ubuntu-latest
 
-    - name: Build
+    - name: Install wheel
       shell: bash
       run: |
-        source env/activate
-        cmake -G Ninja \
-        -B ${{ steps.strings.outputs.build-output-dir }} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install tvm*.whl
+        pip install forge*.whl
+        pip freeze
 
     - name: Run Perf Benchmark
       shell: bash
       run: |
-        source env/activate
+        source venv/bin/activate
+        export TT_METAL_HOME=$(pwd)/venv/lib/python3.10/site-packages/forge/lib
         python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
 
     - name: Upload Perf Report
