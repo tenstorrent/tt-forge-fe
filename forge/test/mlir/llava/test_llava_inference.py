@@ -55,19 +55,20 @@ def test_llava_compile(model_path):
             self.model = model
 
         def forward(self, input_ids, attention_mask, pixel_values):
+            # Step 1: Obtain embeddings from input IDs
+            inputs_embeds = self.language_model.get_input_embeddings()(input_ids)
 
-            # first we use the vision encoder to extract the tokens from the image
-            vision_tokens = self.vision_encoder(pixel_values).last_hidden_state
+            # Step 2: Extract vision features
+            vision_features = self.vision_encoder(pixel_values).last_hidden_state
+            projected_vision_features = self.projector(vision_features)
 
-            # then we use the multi-modal projector to project the tokens into the text embedding space
-            projected_tokens = self.projector(vision_tokens)
-
-            # we concatenate the projected tokens with the input_ids
-            input_ids = torch.cat([input_ids, projected_tokens], dim=1)
+            # Step 3: Inject vision features into input embeddings
+            image_token_mask = (input_ids == self.model.config.image_token_index).unsqueeze(-1).expand_as(inputs_embeds)
+            inputs_embeds = inputs_embeds.masked_scatter(image_token_mask, projected_vision_features)
 
             # finally we use the language model to generate the text
             return self.language_model.generate(
-                input_ids=input_ids, attention_mask=attention_mask, max_new_tokens=200, do_sample=False
+                inputs_embeds=inputs_embeds, attention_mask=attention_mask, max_new_tokens=200, do_sample=False
             )
 
     # Wrap the model in our torch.nn.Module
