@@ -54,7 +54,7 @@ file(GLOB CPP_FILES
 
 add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})
 target_compile_options(ttforge_csrc_objs PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
-add_dependencies(ttforge_csrc_objs build_tt_mlir)
+add_dependencies(ttforge_csrc_objs tt-mlir)
 
 ### End of ttforge_csrc_objs ###
 
@@ -111,6 +111,14 @@ target_link_directories(ttforge_csrc PRIVATE
     ${TTRUNTIME_LIB_DIR}
     ${METAL_LIB_DIR}
     ${TORCH_LIB_DIR})
+
+# Change the output name (the part after 'lib' and before '.so')
+set_target_properties(ttforge_csrc PROPERTIES
+    OUTPUT_NAME "_C" # Rename to _C instead of ttforge_csrc, so that it can be imported in python as `import forge._C`
+    PREFIX "" # Remove the 'lib' prefix
+    SUFFIX ".so"
+    INSTALL_RPATH "$ORIGIN:$ORIGIN/lib"
+)
 
 ### End of ttforge_csrc ###
 
