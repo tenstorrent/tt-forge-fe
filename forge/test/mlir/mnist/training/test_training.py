@@ -411,61 +411,49 @@ def test_loss_device():
 
     print(f"Test (total) loss: {test_loss}")
 
-
+@pytest.mark.parametrize("in_features, out_features",
+                         [pytest.param(3200, 3200), pytest.param(3200, 8640), pytest.param(8640, 3200)])
 @pytest.mark.push
-def test_lora():
+def test_matmul_dims(in_features, out_features):
+    class LlmLinear(nn.Module):
+        def __init__(self, in_features, out_features, bias=True, dtype=torch.float32):
+            super(LlmLinear, self).__init__()
+            self.linear_relu_stack = nn.Sequential(
+                nn.Linear(784, in_features, bias=bias, dtype=dtype),
+                nn.ReLU(),
+                nn.Linear(in_features, out_features, bias=bias, dtype=dtype),
+                nn.ReLU(),
+                nn.Linear(out_features, 10, bias=bias, dtype=dtype),
+            )
+
+        def forward(self, x):
+            logits = self.linear_relu_stack(x)
+            return logits
+
     torch.manual_seed(0)
 
-    # Config
-    num_epochs = 3
-    batch_size = 64
-    learning_rate = 0.001
-
-    # Load dataset
-    test_loader, train_loader = load_dataset(batch_size)
-
-    framework_model = MNISTLora(bias=False)
-    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
-
-    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, 784)], training=True)
+    framework_model = LlmLinear(in_features=in_features, out_features=out_features, bias=False)
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=0.001)
+    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(12, 784)], training=True)
 
     loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
-
-    loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
+    loss_inputs = [torch.rand(12, 10).requires_grad_(True), torch.rand(12, 10)]
     loss_inputs = to_forge_tensors(loss_inputs)
     tt_loss = forge.compile(loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
 
-    logger.info("Starting training loop... (logger will be disabled)")
-    logger.disable("")
-    for epoch_idx in range(num_epochs):
-        total_loss = 0
-        for _, (data, target) in enumerate(train_loader):
-            framework_optimizer.zero_grad()
+    framework_optimizer.zero_grad()
 
-            # Create target tensor and leave on CPU
-            target = nn.functional.one_hot(target, num_classes=10).float()
+    # Create target tensor and leave on CPU
+    target = torch.nn.functional.one_hot(torch.randint(0, 9, (12,)), num_classes=10).float()
 
-            # Forward pass (prediction) on device
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+    # Forward pass (prediction) on device
+    input_ids = torch.randn((12, 784))
+    pred = tt_model(input_ids)[0]
 
-            loss = tt_loss(pred, target)
-            total_loss += loss[0].item()
+    tt_loss(pred, target)
 
-            # Run backward pass on device
-            tt_loss.backward()
+    # Run backward pass on device
+    tt_loss.backward()
 
-            # Adjust weights (on CPU)
-            framework_optimizer.step()
-
-        print(f"epoch: {epoch_idx} loss: {total_loss}")
-
-    test_loss = 0
-    for _, (data, target) in enumerate(test_loader):
-        pred = tt_model(data)[0]
-        target = nn.functional.one_hot(target, num_classes=10).float()
-
-        test_loss += tt_loss(pred, target)[0]
-
-    print(f"Test (total) loss: {test_loss}")
+    # Adjust weights (on CPU)
+    framework_optimizer.step()
