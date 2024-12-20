@@ -321,7 +321,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         dim = attr[0]
         size = ac.get_shape(inputs[0])[dim]
         broadcast = ac.op("broadcast", (grad,), (dim, size))
-        return ac.op("multiply", (broadcast, ac.constant(1 / size)))
+        consts = ac.tensor(torch.full(broadcast.shape.as_list(), 1 / size))
+        return ac.op("multiply", (broadcast, consts))
 
     if type == "grouped_reduce_avg":
         dim = attr[0]
