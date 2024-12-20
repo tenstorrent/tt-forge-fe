@@ -5,7 +5,7 @@ from functools import wraps
 from forge.op.tm import Broadcast, Unsqueeze
 from ..module import ForgeModule
 from .constant import Constant
-from .eltwise_unary import Log, Abs
+from .eltwise_unary import Log, Abs, Sigmoid
 from .eltwise_binary import Add, GreaterEqual, Less, Subtract, Multiply
 from .nn import Softmax
 from .reduce import ReduceSum, ReduceAvg
@@ -223,3 +223,71 @@ class HuberLoss(ForgeModule):
         # combine masks to get the final loss
         loss = Add("loss", loss_lt, loss_ge)
         return reduce_loss(self.reduction, loss)
+
+
+def align_shape(target, reference, name):
+    unsqueezes = 0
+    while target.ndim() < reference.ndim():
+        target = Unsqueeze(f"unsqueeze_{name}_{unsqueezes}", target, unsqueezes)
+        unsqueezes += 1
+    for i in range(target.ndim()):
+        if target.shape[i] != reference.shape[i]:
+            target = Broadcast(f"broadcast_{name}_{i}", target, i, reference.shape[i])
+    return target
+
+
+class BCELoss(ForgeModule):
+    """
+    Binary Cross-Entropy Loss
+
+    loss = reduce(-1 * (labels * log(predictions) + (1 - labels) * log(1 - predictions)), dim=0)
+    """
+
+    def __init__(self, name: str, reduction: str = "mean"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+
+    @validate_shapes(min_dim=1, max_dim=2)
+    def forward(self, prediction, labels):
+        # BCE: -1 * (y * log(p) + (1 - y) * log(1 - p))
+        # First term: y * log(p)
+        log_prediction = Log("log", prediction)
+        first_term = Multiply("mul_lab_pred", labels, log_prediction)
+
+        one = Constant("one", constant=1.0)
+        one = align_shape(one, labels, "one")
+
+        # Second term: (1 - y) * log(1 - p)
+        one_minus_labels = Subtract("one_minus_labels", one, labels)
+        one_minus_prediction = Subtract("one_minus_prediction", one, prediction)
+        log_one_minus_prediction = Log("log_one_minus_prediction", one_minus_prediction)
+        second_term = Multiply("second_term", one_minus_labels, log_one_minus_prediction)
+
+        # -1 * (y * log(p) + (1 - y) * log(1 - p))
+        sum_terms = Add("sum_terms", first_term, second_term)
+        neg_one = Constant("neg_one", constant=-1.0)
+        neg_one = align_shape(neg_one, sum_terms, "neg_one")
+        negative_sum_terms = Multiply("negative_sum_terms", sum_terms, neg_one)
+        loss = reduce_loss(self.reduction, negative_sum_terms)
+        return loss
+
+
+class BCEWithLogitsLoss(ForgeModule):
+    """
+    Binary Cross-Entropy Loss with Logits
+
+    loss = BCELoss(Sigmoid(predictions), labels)
+    """
+
+    def __init__(self, name: str, reduction: str = "mean"):
+        super().__init__(name)
+        self.reduction = reduction
+        self.is_loss = True
+        self.bce_loss = BCELoss("bce_loss", reduction=self.reduction)
+
+    @validate_shapes(min_dim=1, max_dim=2)
+    def forward(self, prediction, labels):
+        sigmoid_prediction = Sigmoid("sigmoid", prediction)
+        loss = self.bce_loss(sigmoid_prediction, labels)
+        return loss
