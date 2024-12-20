@@ -29,6 +29,10 @@ on:
         required: false
         type: string
 
+permissions:
+  checks: write
+  pull-requests: write # only required if `comment: true` was enabled
+
 jobs:
 
   docker-build:
@@ -171,3 +175,4 @@ jobs:
       with:
         report_paths: ${{ steps.strings.outputs.test_report_path }}
         check_name: TT-Forge-FE Tests
+        comment: true
