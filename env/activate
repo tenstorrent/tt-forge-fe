@@ -17,12 +17,6 @@ export TTFORGE_VENV_DIR="${TTFORGE_VENV_DIR:-${TTFORGE_TOOLCHAIN_DIR}/venv}"
 
 [ -f $TTFORGE_VENV_DIR/bin/activate ] && source $TTFORGE_VENV_DIR/bin/activate
 
-if [ -n "$PROJECT_ROOT" ]; then
-    export TT_METAL_HOME="$PROJECT_ROOT/third_party/tt-mlir/third_party/tt-metal/src/tt-metal"
-else
-    export TT_METAL_HOME="$(pwd)/third_party/tt-mlir/third_party/tt-metal/src/tt-metal"
-fi
-
 export TTMLIR_TOOLCHAIN_DIR="${TTMLIR_TOOLCHAIN_DIR:-/opt/ttmlir-toolchain}"
 
 export TTMLIR_VENV_DIR="${TTMLIR_VENV_DIR:-${TTMLIR_TOOLCHAIN_DIR}/venv}"
@@ -30,3 +24,5 @@ export TTMLIR_VENV_DIR="${TTMLIR_VENV_DIR:-${TTMLIR_TOOLCHAIN_DIR}/venv}"
 export TTMLIR_ENV_ACTIVATED=1
 
 export ARCH_NAME="${ARCH_NAME:-wormhole_b0}"
+
+export PATH="$TTMLIR_TOOLCHAIN_DIR/bin:$TTMLIR_TOOLCHAIN_DIR/venv/bin:$PATH"

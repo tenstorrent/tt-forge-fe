@@ -59,59 +59,39 @@ jobs:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
 
-  build-and-test:
-
+  forge-build:
     needs: docker-build
     strategy:
       fail-fast: false
       matrix:
         build:
-          - runs-on: runner
-        test_group_id: ${{ fromJson(inputs.test_group_ids) }}
+          - runs-on: [runner]
 
     runs-on:
       - in-service
       - ${{ matrix.build.runs-on }}
-
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
-      options: --device /dev/tenstorrent/0
-      volumes:
-        - /dev/hugepages:/dev/hugepages
-        - /dev/hugepages-1G:/dev/hugepages-1G
-        - /etc/udev/rules.d:/etc/udev/rules.d
-        - /lib/modules:/lib/modules
-        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-        - /mnt/dockercache:/mnt/dockercache
-    steps:
 
+    steps:
     - name: Set reusable strings
       id: strings
       shell: bash
       env:
-        job-name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        job-name: "${{ github.job }} (${{ matrix.build.runs-on }})"
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
 
-        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
-        echo "Expected job name: ${{ env.job-name }}"
-        JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" | \
-          jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
-        echo "Current job id: $JOB_ID"
-
-        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
-        echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=reports/forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
-
-
     - name: Git safe dir
-      run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+      run: |
+        git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
+        chown -R root:root ${{ steps.strings.outputs.work-dir }}
 
     - uses: actions/checkout@v4
       with:
           submodules: recursive
+          clean: true
           fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
@@ -142,24 +122,109 @@ jobs:
         create-symlink: true
         key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
 
-    - name: Build
+    - name: Build (creates tvm and tt-forge-fe wheels)
       shell: bash
       run: |
         source env/activate
-        cmake -G Ninja \
-        -B ${{ steps.strings.outputs.build-output-dir }} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        python3 setup.py bdist_wheel
+        cd third_party/tvm/python
+        python3 setup.py bdist_wheel
+        cd ../../..
+        cp third_party/tvm/python/dist/*.whl dist/
 
     - name: Run Unit Tests
       shell: bash
       run: |
         source env/activate
+        pip install dist/forge*.whl --force-reinstall
         cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+
+    - name: Upload Build
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: build-forge-ubuntu-latest
+        path: dist/*.whl
+
+  run-tests:
+    needs:
+      - forge-build
+      - docker-build
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          [
+            {runs-on: n150 },
+            {runs-on: n300 },
+          ]
+        test_group_id: ${{ fromJson(inputs.test_group_ids) }}
+
+    runs-on:
+      - in-service
+      - ${{ matrix.build.runs-on }}
+
+    container:
+      image: ${{ needs.docker-build.outputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+    steps:
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      env:
+        job-name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+      run: |
+        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
+        echo "Expected job name: ${{ env.job-name }}"
+        JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" | \
+          jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
+        echo "Current job id: $JOB_ID"
+
+        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
+        echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=reports/forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
+
+    - name: Git safe dir
+      run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+    - uses: actions/checkout@v4
+      with:
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+            .test_durations
+          fetch-depth: 0 # Fetch all history and tags
+
+    # Clean everything from submodules (needed to avoid issues
+    # with cmake generated files leftover from previous builds)
+    - name: Cleanup submodules
+      run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
+
+    - name: Use build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-forge-ubuntu-latest
+
+    - name: Install wheel
+      shell: bash
+      run: |
+        source env/activate
+        pip install tvm*.whl --force-reinstall
+        pip install forge*.whl --force-reinstall
 
     - name: Run Test
       env:
