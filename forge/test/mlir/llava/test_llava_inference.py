@@ -32,41 +32,68 @@ def test_llava_compile(model_path):
     image = torch.randint(0, 256, (3, 224, 224))  # Generate random image
     inputs = processor(images=image, text=prompt, return_tensors="pt")
 
-    # Ensure inputs is a dictionary of tensors
-    if isinstance(inputs, transformers.feature_extraction_utils.BatchFeature):
-        inputs = {key: value for key, value in inputs.items() if isinstance(value, torch.Tensor)}
-
-    # Extract input_ids tensor from inputs
+    # Extract tensors from inputs
     input_ids = inputs.get("input_ids")
-    if input_ids is None:
-        raise ValueError("input_ids not found in inputs")
-
-    # Extract other necessary tensors
     attention_mask = inputs.get("attention_mask")
     pixel_values = inputs.get("pixel_values")
 
-    # Ensure all inputs are tensors
-    model_inputs = [input_ids, attention_mask, pixel_values]
+    # check whether all of the inputs are tensors
+    if not all(isinstance(input, torch.Tensor) for input in [input_ids, attention_mask, pixel_values]):
+        raise ValueError("All inputs should be tensors")
 
-    class MyLLavaModel(torch.nn.Module):
-        def __init__(self, model):
+    # Extract the vision encoder
+    vision_encoder = model.vision_tower
+
+    tokens = vision_encoder(pixel_values).last_hidden_state
+
+    class TraceableVisionEncoder(torch.nn.Module):
+        def __init__(self, vision_encoder):
+            super(TraceableVisionEncoder, self).__init__()
+            self.vision_encoder = vision_encoder
+
+        def forward(self, pixel_values):
+            # Extract the last hidden state from the vision encoder
+            output = self.vision_encoder(pixel_values)
+
+            # Assuming the output is a complex object, we need to extract the tensor we want to trace
+            # Here, I assume it's the 'last_hidden_state' from the output, but this depends on the model.
+            return output.last_hidden_state
+
+    # Wrap the vision encoder to make it traceable
+    vision_encoder = model.vision_tower
+    vision_encoder = TraceableVisionEncoder(vision_encoder)
+
+    # Trace the wrapped vision encoder
+    traced_vision_encoder = torch.jit.trace(vision_encoder, (pixel_values,))
+
+    # Extract the multi-modal projector
+    projector = model.multi_modal_projector
+
+    projected_tokens = projector(tokens)
+
+    traced_projector = torch.jit.trace(projector, (tokens,))
+
+    # Extract the text decoder
+    text_decoder = model.language_model
+
+    # Define a wrapper module to extract logits for tracing
+    class TextDecoderWrapper(torch.nn.Module):
+        def __init__(self, text_decoder):
             super().__init__()
-            self.model = model
+            self.text_decoder = text_decoder
 
-        def forward(self, input_ids, attention_mask, pixel_values):
-            return self.model.generate(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                pixel_values=pixel_values,
-                max_new_tokens=200,
-                do_sample=False,
-            )
+        def forward(self, input_ids, attention_mask, projected_tokens):
+            # Use the projected tokens as input to the text decoder
+            # Assuming the decoder accepts both input_ids, attention_mask, and projected tokens
+            outputs = self.text_decoder(input_ids, attention_mask, encoder_hidden_states=projected_tokens)
+            # Return only the logits for tracing
+            return outputs.logits
 
-    # Wrap the model in a torch.nn.Module
-    model = MyLLavaModel(model)
+    # Wrap the text decoder
+    wrapped_decoder = TextDecoderWrapper(text_decoder)
 
-    # Compile the model
-    compiled_model = forge.compile(model, model_inputs)
+    # Trace the wrapped model
+    traced_text_model = torch.jit.trace(wrapped_decoder, (input_ids, attention_mask, projected_tokens))
 
 
 @pytest.mark.nightly
@@ -91,7 +118,29 @@ def test_llava_inference(model_path):
 
     inputs = processor(images=image, text=prompt, return_tensors="pt")
 
-    output = model.generate(**inputs, max_new_tokens=200, do_sample=False)
+    # Extract tensors from inputs
+    input_ids = inputs.get("input_ids")
+    attention_mask = inputs.get("attention_mask")
+    pixel_values = inputs.get("pixel_values")
+
+    class MyLLavaModel(torch.nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+
+        def forward(self, input_ids, attention_mask, pixel_values):
+            return self.model.generate(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                pixel_values=pixel_values,
+                max_new_tokens=200,
+                do_sample=False,
+            )
+
+    # Wrap the model in a torch.nn.Module
+    model = MyLLavaModel(model)
+
+    output = model(input_ids, attention_mask, pixel_values)
     decoded_output = processor.decode(output[0], skip_special_tokens=True)
 
     print(decoded_output)

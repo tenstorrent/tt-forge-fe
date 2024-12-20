@@ -20,6 +20,8 @@ def load_llava_model(model_path="llava-hf/llava-1.5-7b-hf"):
     model = LlavaForConditionalGeneration.from_pretrained(model_path)
     model = model.eval()
 
+    print(model)
+
     processor = AutoProcessor.from_pretrained(model_path)
 
     return model, processor
