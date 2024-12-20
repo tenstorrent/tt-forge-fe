@@ -47,7 +47,6 @@ PYBIND11_MODULE(_C, m)
     // Register signal handlers when loading forge module.
     static SignalHandlers signal_handlers;
 
-    m.attr("__name__") = "forge._C";
     m.doc() = "python bindings to forge framwork";
 
     m.attr("VERSION") = py::int_(1);

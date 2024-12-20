@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20.0)
+
 project(ttforge LANGUAGES CXX)
 
 find_program(CLANG_17 clang++-17)
@@ -52,6 +53,30 @@ set(SHARED_LIB_FLAGS -fPIC)
 add_subdirectory(third_party)
 add_subdirectory(forge)
 add_subdirectory(docs)
+
+# find_package(TTMLIR CONFIG REQUIRED)
+
+# include(CMakePackageConfigHelpers)
+# configure_package_config_file(
+#     "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/cmake/modules/TTMLIRConfig.cmake.in"
+#     "${CMAKE_BINARY_DIR}/TTMLIRConfig.cmake"
+#     INSTALL_DESTINATION lib/TTMLIR
+# )
+#
+# find_package(TTMLIR CONFIG REQUIRED)
+
+# Install the generated configuration files
+# install(FILES
+#     "${CMAKE_BINARY_DIR}/TTMLIRConfig.cmake"
+#     DESTINATION lib/TTMLIR
+# )
+
+install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+# # Copy all shared library dependencies
+# set_target_properties(cpp_extension PROPERTIES INSTALL_RPATH "$ORIGIN")
+# fixup_bundle("${CMAKE_INSTALL_PREFIX}/my_library/cpp_extension" "" "")
+
 
 ### Generate stubs for ttforge
 ### Run `cmake --build build -- make_stubs` to generate stubs
