@@ -200,3 +200,65 @@ def test_huber_loss(prediction_shape, reduction):
     torch_loss_out = torch_loss(prediction, target)
 
     assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2)
+
+
+@pytest.mark.parametrize(
+    "prediction_shape",
+    [
+        (33,),
+        (128,),
+        (2, 2),
+        (3, 5),
+        (32, 32),
+        (33, 127),
+        (128, 20),
+        (128, 128),
+    ],
+)
+@pytest.mark.parametrize("reduction", ["sum", "mean"])
+def test_bce_loss(prediction_shape, reduction):
+    forge_loss = forge.op.loss.BCELoss("bce_loss", reduction=reduction)
+    torch_loss = torch.nn.BCELoss(reduction=reduction)
+
+    prediction = nn.functional.sigmoid(torch.randn(prediction_shape, requires_grad=True))
+    target = torch.rand(prediction_shape)
+
+    prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
+    target_forge = forge.tensor.Tensor.create_from_torch(target)
+
+    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss_out = forge_loss(prediction, target)
+    torch_loss_out = torch_loss(prediction, target)
+
+    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3)
+
+
+@pytest.mark.parametrize(
+    "prediction_shape",
+    [
+        (33,),
+        (128,),
+        (2, 2),
+        (3, 5),
+        (32, 32),
+        (33, 127),
+        (128, 20),
+        (128, 128),
+    ],
+)
+@pytest.mark.parametrize("reduction", ["sum", "mean"])
+def test_bce_with_logits_loss(prediction_shape, reduction):
+    forge_loss = forge.op.loss.BCEWithLogitsLoss("bce_with_logits_loss", reduction=reduction)
+    torch_loss = torch.nn.BCEWithLogitsLoss(reduction=reduction)
+
+    prediction = torch.randn(prediction_shape, requires_grad=True)
+    target = torch.rand(prediction_shape)
+
+    prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
+    target_forge = forge.tensor.Tensor.create_from_torch(target)
+
+    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss_out = forge_loss(prediction, target)
+    torch_loss_out = torch_loss(prediction, target)
+
+    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3)
