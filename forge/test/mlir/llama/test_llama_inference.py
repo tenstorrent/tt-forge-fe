@@ -11,8 +11,13 @@ from test.mlir.llama.utils.utils import load_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.parametrize(
+    "model_path",
+    [
+        "openlm-research/open_llama_3b",
+        pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail(reason="Unsupported Op: repeat_interleave")),
+    ],
+)
 def test_llama_inference(model_path):
     # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path)
