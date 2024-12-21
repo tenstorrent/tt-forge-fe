@@ -11,17 +11,18 @@ import forge.config
 from forge.verify.compare import compare_with_golden
 
 
+class MatmulParam(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.p = nn.Parameter(torch.rand(1024, 1024))
+        nn.init.xavier_uniform_(self.p)
+
+    def forward(self, x):
+        return torch.matmul(x, self.p)
+
+
 @pytest.mark.push
 def test_torch_training():
-    class MatmulParam(nn.Module):
-        def __init__(self):
-            super().__init__()
-            self.p = nn.Parameter(torch.rand(1024, 1024))
-            nn.init.xavier_uniform_(self.p)
-
-        def forward(self, x):
-            return torch.matmul(x, self.p)
-
     model = MatmulParam()
     shape = (1, 1024)
     inputs = torch.rand(shape)
@@ -63,3 +64,13 @@ def test_torch_training():
         model.p.grad = grad[0]
 
         optimizer.step()
+
+
+@pytest.mark.push
+@pytest.mark.parametrize("optimizer", [forge.optimizers.SGD, forge.optimizers.Adam, forge.optimizers.AdamW])
+def test_compile_optimizers(optimizer):
+    model = MatmulParam()
+    shape = (1, 1024)
+
+    optimizer = optimizer(learning_rate=0.1)
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], optimizer=optimizer)
