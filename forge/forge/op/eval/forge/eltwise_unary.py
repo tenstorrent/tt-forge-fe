@@ -415,7 +415,9 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         if len(attr) > 0:
             f32_epsilon = 1.19209289551e-07
             threshold = attr[0] - f32_epsilon
-        threshold_tensor = ac.tensor(torch.zeros(shape) + threshold)
+        # HACK: not sure how to check if the input is bfloat16 or float32
+        zeros = torch.zeros(shape, dtype=torch.bfloat16 if inputs[0].output_df.__index__() == 5 else torch.float32)
+        threshold_tensor = ac.tensor(zeros + threshold)
 
         # handle different modes
         mode = "min"
