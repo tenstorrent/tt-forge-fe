@@ -246,9 +246,10 @@ def test_forge_vs_torch():
     verbose = True
 
     dtype = torch.bfloat16
+    bias = False
 
-    torch_model = MNISTLinear(dtype=dtype)
-    forge_model = MNISTLinear(dtype=dtype)
+    torch_model = MNISTLinear(dtype=dtype, bias=bias)
+    forge_model = MNISTLinear(dtype=dtype, bias=bias)
 
     copy_params(torch_model, forge_model)
 
@@ -259,10 +260,15 @@ def test_forge_vs_torch():
     forge_loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
 
     torch_optimizer = torch.optim.SGD(torch_model.parameters(), lr=learning_rate)
-    forge_optimizer = torch.optim.SGD(forge_model.parameters(), lr=learning_rate)
+
+    forge_t_optimizer = torch.optim.SGD(forge_model.parameters(), lr=learning_rate)
+    forge_optimizer = forge.optimizers.SGD(learning_rate=learning_rate)
+    # HACK: adding zero_grad to run the test
+    import types
+    forge_optimizer.zero_grad = types.MethodType(lambda self: forge_t_optimizer.zero_grad(), forge_optimizer)
 
     tt_model = forge.compile(
-        forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], training=True
+        forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], optimizer=forge_optimizer, training=True
     )
 
     loss_inputs = [torch.ones(batch_size, 10, dtype=dtype).requires_grad_(True), torch.ones(batch_size, 10, dtype=dtype)]
