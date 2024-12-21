@@ -137,6 +137,9 @@ jobs:
         cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
 
     - name: Run Test
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_HUB_DISABLE_PROGRESS_BARS: 1
       shell: bash
       run: |
         source env/activate
