@@ -255,13 +255,19 @@ def test_forge_vs_torch():
     torch_writer = load_tb_writer("torch")
     forge_writer = load_tb_writer("forge")
 
-    loss_fn = nn.CrossEntropyLoss()
+    torch_loss_fn = nn.CrossEntropyLoss()
+    forge_loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
+
     torch_optimizer = torch.optim.SGD(torch_model.parameters(), lr=learning_rate)
     forge_optimizer = torch.optim.SGD(forge_model.parameters(), lr=learning_rate)
 
     tt_model = forge.compile(
-        forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], optimizer=forge_optimizer, training=True
+        forge_model, sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)], training=True
     )
+
+    loss_inputs = [torch.ones(batch_size, 10, dtype=dtype).requires_grad_(True), torch.ones(batch_size, 10, dtype=dtype)]
+    loss_inputs = to_forge_tensors(loss_inputs)
+    tt_loss = forge.compile(forge_loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
 
     test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
     step = 0
@@ -275,7 +281,7 @@ def test_forge_vs_torch():
         torch_loop = train_loop(
             train_loader,
             torch_model,
-            loss_fn,
+            torch_loss_fn,
             torch_optimizer,
             batch_size,
             torch_model.named_parameters,
@@ -285,7 +291,7 @@ def test_forge_vs_torch():
         forge_loop = train_loop(
             train_loader,
             tt_model,
-            loss_fn,
+            tt_loss,
             forge_optimizer,
             batch_size,
             forge_model.named_parameters,
@@ -300,9 +306,9 @@ def test_forge_vs_torch():
 
             if step % 100 == 0:
                 torch_val_loss, torch_val_acc = validation_loop(
-                    test_loader, torch_model, loss_fn, batch_size, is_tt=False
+                    test_loader, torch_model, torch_loss_fn, batch_size, is_tt=False
                 )
-                forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, is_tt=True)
+                forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, tt_loss, batch_size, is_tt=True)
 
                 torch_writer.add_scalar("train_loss", torch_loss.float(), step)
                 forge_writer.add_scalar("train_loss", forge_loss.float(), step)
@@ -315,7 +321,7 @@ def test_forge_vs_torch():
         if verbose:
             print(f"Epoch {i} took {time.time() - start_time} seconds")
 
-        forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, is_tt=True)
+        forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, tt_loss, batch_size, is_tt=True)
         early_stop.step(forge_val_acc, i)
 
         if early_stop.is_best():
@@ -329,8 +335,8 @@ def test_forge_vs_torch():
     torch_model.load_state_dict(torch.load(f"runs/models/torch_model_{early_stop.get_best_model()}.pth"))
     forge_model.load_state_dict(torch.load(f"runs/models/forge_model_{early_stop.get_best_model()}.pth"))
 
-    torch_val_loss, torch_val_acc = validation_loop(test_loader, torch_model, loss_fn, batch_size, is_tt=False)
-    forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, loss_fn, batch_size, is_tt=True)
+    torch_val_loss, torch_val_acc = validation_loop(test_loader, torch_model, torch_loss_fn, batch_size, is_tt=False)
+    forge_val_loss, forge_val_acc = validation_loop(test_loader, tt_model, tt_loss, batch_size, is_tt=True)
 
     print(f"Validation accuracy for Torch: {torch_val_acc} in epoch {early_stop.get_best_model()}")
     print(f"Validation accuracy for Forge: {forge_val_acc} in epoch {early_stop.get_best_model()}")

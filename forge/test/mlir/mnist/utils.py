@@ -180,9 +180,11 @@ def train_loop(dataloader, model, loss_fn, optimizer, batch_size, named_params, 
         y = nn.functional.one_hot(y, num_classes=10).to(pred.dtype)
         loss = loss_fn(pred, y)
 
-        loss.backward()
         if is_tt:
-            model.backward()
+            loss = loss[0]
+            loss_fn.backward()
+        else:
+            loss.backward()
 
         yield loss, pred, get_param_grads(named_params)
 
@@ -203,7 +205,9 @@ def validation_loop(dataloader, model, loss_fn, batch_size, is_tt=False, verbose
             pred = model(X)
             pred = pred[0] if is_tt else pred
             y = nn.functional.one_hot(y, num_classes=10).to(pred.dtype)
-            loss += loss_fn(pred, y).item()
+            curr_loss = loss_fn(pred, y)
+            curr_loss = curr_loss[0] if is_tt else curr_loss
+            loss += curr_loss.item()
             accuracy += (pred.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
 
     loss /= size
