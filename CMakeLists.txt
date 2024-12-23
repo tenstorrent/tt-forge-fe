@@ -54,6 +54,7 @@ add_subdirectory(third_party)
 add_subdirectory(forge)
 add_subdirectory(docs)
 
+
 # find_package(TTMLIR CONFIG REQUIRED)
 
 # include(CMakePackageConfigHelpers)
@@ -71,7 +72,8 @@ add_subdirectory(docs)
 #     DESTINATION lib/TTMLIR
 # )
 
-install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
+install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/forge)
 
 # # Copy all shared library dependencies
 # set_target_properties(cpp_extension PROPERTIES INSTALL_RPATH "$ORIGIN")
