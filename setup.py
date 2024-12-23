@@ -117,7 +117,6 @@ date = (
 version = "0.1." + date + "+dev." + short_hash
 
 forge_c = TTExtension("forge")
-tvm = TTExtension("libtvm.so")
 
 # Find packages as before
 packages = [p for p in find_packages("forge") if not p.startswith("test")]
@@ -127,7 +126,7 @@ setup(
     install_requires=requirements,
     packages=packages,
     package_dir={"forge": "forge/forge"},
-    ext_modules=[forge_c, tvm],
+    ext_modules=[forge_c],
     cmdclass={"build_ext": CMakeBuild},
     long_description=long_description,
     long_description_content_type="text/markdown",
