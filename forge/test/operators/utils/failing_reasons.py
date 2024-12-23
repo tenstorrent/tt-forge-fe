@@ -195,6 +195,11 @@ class FailingReasonsValidation:
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/types.cpp:192: normalized_index >= 0 and normalized_index < rank"
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "Fatal error" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "mat1 and mat2 must have the same dtype, but got Int and Float" in f"{ex}",
+        ],
+        FailingReasons.MICROBATCHING_UNSUPPORTED: [
+            lambda ex: isinstance(ex, RuntimeError) and "The expanded size of the tensor" in f"{ex}",
         ],
     }
 
