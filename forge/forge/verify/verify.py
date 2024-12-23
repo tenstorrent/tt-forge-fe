@@ -331,4 +331,14 @@ def verify(
             if fw.shape != co.shape:
                 raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
 
-        verify_cfg.value_checker.check(fw, co)
+        try:
+            verify_cfg.value_checker.check(fw, co)
+        except ValueError as e:
+            torch.set_printoptions(profile="default", linewidth=1000, precision=4, edgeitems=12)
+            print(f"Data mismatch detected:")
+            print("FW SHAPE:", fw.shape)
+            print("CO SHAPE:", co.shape)
+            print(f"Framework output (first 10 columns):\n{fw[0,:, :10]}")
+            print(f"Compiled output (first 10 columns):\n{co[0,:, :10]}")
+            print(f"Error: {e}")
+            raise  # Re-raise the exception to stop execution if needed

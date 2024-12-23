@@ -160,8 +160,15 @@ std::vector<torch::Tensor> run_binary(
     verify_input_tensors(inputs, input_descs);
 
     std::vector<runtime::Tensor> rt_inputs;
+    bool print = true;
     for (auto const& input : inputs)
     {
+        if (print)
+        {
+            std::cout<<"input indices tensor in run_binary: "<<input<<std::endl;
+            input.print();
+            print = false;
+        }
         rt_inputs.emplace_back(create_tensor(input));
     }
 
