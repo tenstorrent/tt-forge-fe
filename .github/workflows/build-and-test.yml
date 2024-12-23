@@ -45,13 +45,22 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - runs-on: [ubuntu-latest]
+          - runs-on: [runner]
 
     runs-on: ${{ matrix.build.runs-on }}
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
 
     steps:
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      env:
+        job-name: "${{ github.job }} (${{ matrix.build.runs-on }})"
+      run: |
+        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
@@ -108,7 +117,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: build-forge-${{ matrix.build.runs-on }}
+        name: build-forge-ubuntu-latest
         path: dist/*.whl
 
   run-tests:
@@ -172,7 +181,7 @@ jobs:
     - name: Use build artifacts
       uses: actions/download-artifact@v4
       with:
-        name: build-forge-${{ matrix.build.name }}
+        name: build-forge-ubuntu-latest
 
     - name: Install wheel
       shell: bash
