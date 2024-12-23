@@ -9,6 +9,8 @@ import pytest
 
 import forge
 from forge.verify.verify import verify
+from forge.op.loss import CrossEntropyLoss
+from forge.tensor import to_forge_tensors
 
 
 @pytest.mark.parametrize(
@@ -62,3 +64,51 @@ def test_mean_bwd(input_shape, dim):
     compiled_model = forge.compile(framework_model, input_ids, optimizer=framework_optimizer, training=True)
 
     verify([input_ids], framework_model, compiled_model)
+
+
+@pytest.mark.parametrize("in_features, out_features",
+                         [pytest.param(3200, 3200), pytest.param(3200, 8640), pytest.param(8640, 3200)])
+@pytest.mark.push
+def test_matmul_dims(in_features, out_features):
+    class MatMulDimsCheck(nn.Module):
+        def __init__(self, in_features, out_features, bias=True, dtype=torch.float32):
+            super(MatMulDimsCheck, self).__init__()
+            self.linear_relu_stack = nn.Sequential(
+                nn.Linear(784, in_features, bias=bias, dtype=dtype),
+                nn.ReLU(),
+                nn.Linear(in_features, out_features, bias=bias, dtype=dtype),
+                nn.ReLU(),
+                nn.Linear(out_features, 10, bias=bias, dtype=dtype),
+            )
+
+        def forward(self, x):
+            logits = self.linear_relu_stack(x)
+            return logits
+
+    torch.manual_seed(0)
+
+    framework_model = MatMulDimsCheck(in_features=in_features, out_features=out_features, bias=False)
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=0.001)
+    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(12, 784)], training=True)
+
+    loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
+    loss_inputs = [torch.rand(12, 10).requires_grad_(True), torch.rand(12, 10)]
+    loss_inputs = to_forge_tensors(loss_inputs)
+    tt_loss = forge.compile(loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
+
+    framework_optimizer.zero_grad()
+
+    # Create target tensor and leave on CPU
+    target = torch.nn.functional.one_hot(torch.randint(0, 9, (12,)), num_classes=10).float()
+
+    # Forward pass (prediction) on device
+    input_ids = torch.randn((12, 784))
+    pred = tt_model(input_ids)[0]
+
+    tt_loss(pred, target)
+
+    # Run backward pass on device
+    tt_loss.backward()
+
+    # Adjust weights (on CPU)
+    framework_optimizer.step()
