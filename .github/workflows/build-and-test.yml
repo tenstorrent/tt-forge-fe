@@ -127,9 +127,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          {runs-on: n150, test_group_id: [1,2]},
-          {runs-on: n300, test_group_id: [1,2]},
+          {runs-on: n150 },
+          {runs-on: n300 },
           ]
+        test_group_id: [1,2]
 
     runs-on:
       - ${{ matrix.build.runs-on }}
