@@ -9,6 +9,9 @@ import _pytest.reports
 import _pytest.runner
 import pluggy.callers
 
+import json
+import pandas as pd
+
 from loguru import logger
 
 from test.operators.utils import PyTestUtils
@@ -37,3 +40,40 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
                 # if reason is not valid, mark the test as failed
                 if valid_reason == False:
                     report.outcome = "failed"
+
+
+def analyze_report(report_path):
+    with open(report_path, "r") as f:
+        data = json.load(f)
+    tests = data["tests"]
+
+    df = pd.DataFrame(tests)
+
+    df.drop(labels=["lineno", "keywords", "setup", "call", "user_properties", "teardown"], axis=1, inplace=True)
+    df[["operator", "input_source"]] = df["nodeid"].str.extract(r"-(\w+)-(\w+)-")
+    df.drop("nodeid", axis=1, inplace=True)
+    df = df[["operator", "input_source", "outcome"]]
+    df = df.rename(columns={"outcome": "test_result"})
+
+    aggregated_df = df.groupby(["operator", "input_source", "test_result"]).size().reset_index(name="count")
+
+    return aggregated_df.to_string()
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_sessionfinish(session, exitstatus):
+    report_path = "report.json"
+
+    try:
+        output = analyze_report(report_path)
+        session.config._final_report = output
+    except FileNotFoundError:
+        session.config._final_report = "\n ANALYSIS REPORT: \nReport file not found!"
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_unconfigure(config):
+    if hasattr(config, "_final_report"):
+        print("\n ANALYSIS REPORT: \n")
+        print(config._final_report)
+        print("\n\n\n")
