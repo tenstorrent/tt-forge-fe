@@ -67,7 +67,7 @@ def test_mean_bwd(input_shape, dim):
 
 
 @pytest.mark.parametrize(
-        "in_features, out_features", [pytest.param(3200, 3200), pytest.param(3200, 8640), pytest.param(8640, 3200)]
+    "in_features, out_features", [pytest.param(3200, 3200), pytest.param(3200, 8640), pytest.param(8640, 3200)]
 )
 @pytest.mark.push
 def test_matmul_dims(in_features, out_features):
