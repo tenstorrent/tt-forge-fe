@@ -85,6 +85,7 @@ class CMakeBuild(build_ext):
             "-DCMAKE_INSTALL_PREFIX=" + str(install_dir),
             "-DCMAKE_C_COMPILER=clang",
             "-DCMAKE_CXX_COMPILER=clang++",
+            "-DTTMLIR_RUNTIME_DEBUG=OFF",
         ]
 
         self.spawn(["cmake", *cmake_args])
@@ -122,6 +123,7 @@ forge_c = TTExtension("forge")
 packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
 setup(
+    name="tt-forge-fe",
     version=version,
     install_requires=requirements,
     packages=packages,
