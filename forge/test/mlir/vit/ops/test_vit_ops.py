@@ -459,12 +459,7 @@ def test_transpose(params):
 @pytest.mark.parametrize(
     "input_shape",
     [
-        pytest.param(
-            (768,),
-            marks=pytest.mark.xfail(
-                reason="error: 'ttnn.reshape' op Shape attribute size must match output tensor rank"
-            ),
-        ),
+        (768,),
         (768, 1),
     ],
 )
