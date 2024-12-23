@@ -97,6 +97,8 @@ target_link_libraries(ttforge_csrc PRIVATE
     c10
     ${TTFORGE_PYTHON_VERSION}
     ${TORCH_LIBRARIES}
+
+
 )
 
 target_compile_options(ttforge_csrc PRIVATE
@@ -113,14 +115,19 @@ target_link_directories(ttforge_csrc PRIVATE
     ${TORCH_LIB_DIR})
 
 # Change the output name (the part after 'lib' and before '.so')
-set_target_properties(ttforge_csrc PROPERTIES OUTPUT_NAME "_C")
+set_target_properties(ttforge_csrc PROPERTIES
+    OUTPUT_NAME "_C" # Rename to _C instead of ttforge_csrc, so that it can be imported in python as `import forge._C`
+    PREFIX "" # Remove the 'lib' prefix
+    SUFFIX ".so"
+    INSTALL_RPATH "$ORIGIN:$ORIGIN/lib"
+)
 
-# Remove the 'lib' prefix
-set_target_properties(ttforge_csrc PROPERTIES PREFIX "")
-
-set_target_properties(ttforge_csrc PROPERTIES SUFFIX ".so")
-
-set(CMAKE_INSTALL_RPATH "$ORIGIN")
+# # Remove the 'lib' prefix
+# set_target_properties(ttforge_csrc PROPERTIES PREFIX "")
+#
+# set_target_properties(ttforge_csrc PROPERTIES SUFFIX ".so")
+# set_target_properties(ttforge_csrc PROPERTIES INSTALL_RPATH "$ORIGIN")
+#
 ### End of ttforge_csrc ###
 
 #### Copy python module extension to ttforge directory ####
