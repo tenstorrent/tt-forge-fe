@@ -152,6 +152,12 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp"
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:106: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::FLOAT32"
+            in f"{ex}",
         ],
     }
 
