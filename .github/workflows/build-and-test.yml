@@ -190,19 +190,11 @@ jobs:
       with:
         name: build-forge-ubuntu-latest
 
-    - name: unzip build artifacts
-      shell: bash
-      run: |
-        apt-get install -y unzip
-        ls -l
-        mkdir -p dist
-        unzip *.zip -d dist
-
     - name: Install wheel
       shell: bash
       run: |
-        pip install dist/*tvm*.whl
-        pip install dist/*tt_forge_fe*.whl
+        pip install tvm*.whl
+        pip install tt_forge_fe*.whl
 
     - name: Run Test
       env:
