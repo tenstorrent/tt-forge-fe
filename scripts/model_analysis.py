@@ -18,7 +18,7 @@ import ast
 
 import torch
 
-from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
+from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations, generate_nightly_tests
 
 
 class CompilerComponent(IntEnum):
@@ -589,6 +589,19 @@ def check_path(directory_or_file_path: str):
     return False
 
 
+def create_python_package(package_path: str):
+
+    if not check_path(package_path):
+        os.makedirs(package_path, exist_ok=True)
+    if not check_path(os.path.join(package_path, "__init__.py")):
+        try:
+            f = open(os.path.join(package_path, "__init__.py"), "x")
+            f.close()
+            logger.info(f"Created package in this path {package_path}")
+        except FileExistsError:
+            logger.info(f"__init__.py file already exists inside {package_path} path")
+
+
 def dump_logs(log_files: Union[str, List[str]], content: str):
     if isinstance(log_files, str):
         log_files = [log_files]
@@ -705,7 +718,9 @@ def generate_and_export_unique_ops_tests(test_directory_or_file_path: str, uniqu
     return model_output_dir_paths
 
 
-def extract_unique_op_tests_from_models(model_output_dir_paths: List[str], unique_ops_output_directory_path: str):
+def extract_unique_op_tests_from_models(
+    model_output_dir_paths: List[str], unique_op_config_file_path: str, use_constant_value: bool = True
+):
     """
     Extract unique op configuration across all the models which will avoid running the redudant
     op configuration again by using the exported unique op configuration test details and models metadata
@@ -783,6 +798,7 @@ def extract_unique_op_tests_from_models(model_output_dir_paths: List[str], uniqu
                 operand_names = ast.literal_eval(row["Operand_Names"])
                 operand_types = ast.literal_eval(row["Operand_Types"])
                 operand_types = [NodeType.from_json(operand_type) for operand_type in operand_types]
+                operand_shapes = ast.literal_eval(row["Operand_Shapes"])
 
                 # Prepare metadata associated with the operation
                 metadata = {}
@@ -792,30 +808,43 @@ def extract_unique_op_tests_from_models(model_output_dir_paths: List[str], uniqu
                 metadata["model_variant_info"]["framework"] = model_variant_metadata["framework"]
                 metadata["model_variant_info"]["Testfile"] = row["Testfile"]
 
+                # Replace the contant node operand name with operand shape which can be extracted from the model parameters and buffers
+                if not use_constant_value:
+                    new_operand_shapes = []
+                    for operand_type, operand_shape in zip(operand_types, operand_shapes):
+                        if operand_type == NodeType.Constant:
+                            if len(named_parameters[operand_shape].shape) == 0:
+                                new_operand_shapes.append((torch.numel(named_parameters[operand_shape]),))
+                            else:
+                                new_operand_shapes.append(tuple(named_parameters[operand_shape].shape))
+                        else:
+                            new_operand_shapes.append(operand_shape)
+                    operand_shapes = list(new_operand_shapes)
+
                 # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
                 models_operations[unique_op_count] = Operation(
                     function_name=row["Op"],
                     input_names=operand_names,
                     args=ast.literal_eval(row["Args"]),
-                    input_shapes=ast.literal_eval(row["Operand_Shapes"]),
+                    input_shapes=operand_shapes,
                     input_dtypes=ast.literal_eval(row["Operand_Dtypes"]),
                     input_node_types=operand_types,
                     metadata=metadata,
                 )
 
-                # Store tensor which has constant nodetype as operands
-                for operand_type, operand_name in zip(operand_types, operand_names):
-                    if operand_type == NodeType.Constant:
-                        models_contants[operand_name] = named_parameters[operand_name]
+                if use_constant_value:
+                    # Store tensor which has constant nodetype as operands
+                    for operand_type, operand_name in zip(operand_types, operand_names):
+                        if operand_type == NodeType.Constant:
+                            models_contants[operand_name] = named_parameters[operand_name]
 
     # Extract unique operation configuration configuration across all the model variants
-    unique_operations = UniqueOperations.create_unique_operations(models_operations, models_contants)
-
-    # Dump the extracted unique operation configurations across all the model variants to a log file
-    models_unique_op_config_file_path = os.path.join(
-        unique_ops_output_directory_path, "extracted_unique_configuration_across_models.log"
+    unique_operations = UniqueOperations.create_unique_operations(
+        models_operations, models_contants, use_constant_value=use_constant_value
     )
-    dump_logs(models_unique_op_config_file_path, str(unique_operations))
+
+    # Dump the extracted unique op configuration across all the model varaiants into log file.
+    dump_logs(unique_op_config_file_path, str(unique_operations))
 
     return unique_operations
 
@@ -1169,6 +1198,17 @@ def main():
         required=False,
         help="Specify the output directory path for saving models unique op tests outputs(i.e failure logs, xlsx file)",
     )
+    parser.add_argument(
+        "--generate_nightly_test",
+        action="store_true",
+        help="Specify the flag to generate nightly test from unique operation configuration extracted across all the models",
+    )
+    parser.add_argument(
+        "--nightly_tests_directory_path",
+        default=os.path.join(os.getcwd(), "forge/test/nightly"),
+        required=False,
+        help="Specify the directory path for saving generated nightly tests",
+    )
 
     args = parser.parse_args()
 
@@ -1177,13 +1217,28 @@ def main():
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
     )
 
-    unique_operations = extract_unique_op_tests_from_models(
+    unique_op_config_across_all_models_file_path = os.path.join(
+        args.unique_ops_output_directory_path, "extracted_unique_op_config_across_all_models.log"
+    )
+    unique_operations_across_all_models = extract_unique_op_tests_from_models(
         model_output_dir_paths=model_output_dir_paths,
-        unique_ops_output_directory_path=args.unique_ops_output_directory_path,
+        unique_op_config_file_path=unique_op_config_across_all_models_file_path,
     )
 
+    if args.generate_nightly_test:
+        unique_op_config_across_all_models_nightly_file_path = os.path.join(
+            args.unique_ops_output_directory_path, "extracted_unique_op_config_across_all_models_nightly.log"
+        )
+        unique_operations_across_all_models_nightly = extract_unique_op_tests_from_models(
+            model_output_dir_paths=model_output_dir_paths,
+            unique_op_config_file_path=unique_op_config_across_all_models_nightly_file_path,
+            use_constant_value=False,
+        )
+        create_python_package(package_path=args.nightly_tests_directory_path)
+        generate_nightly_tests(unique_operations_across_all_models_nightly, args.nightly_tests_directory_path)
+
     models_details = run_models_unique_op_tests(
-        unique_operations=unique_operations,
+        unique_operations=unique_operations_across_all_models,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
         dump_failure_logs=args.dump_failure_logs,
     )

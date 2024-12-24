@@ -722,7 +722,14 @@ class ForgeModule(Module):
         else:
             parameter._set_auto_name(name)
 
-    def add_constant(self, name: str, prepend_name: bool = False, shape: Tuple[int] = None):
+    def add_constant(
+        self,
+        name: str,
+        prepend_name: bool = False,
+        shape: Tuple[int] = None,
+        dtype: torch.dtype = torch.float32,
+        use_random_value: bool = False,
+    ):
         """
         Adds a new constant.
 
@@ -733,6 +740,15 @@ class ForgeModule(Module):
 
         prepend_name: Bool
             Whether to prepend module name to constant name
+
+        shape: Tuple[int]
+            Shape of the constant forge tensor
+
+        dtype: torch.dtype
+            Datatype of the constant forge tensor
+
+        use_random_value: Bool
+            If the use_random_value is set to True, the constant tensor will be randomly generated based upon the shape and dtype (default: False)
         """
 
         if name in self._constants:
@@ -741,7 +757,12 @@ class ForgeModule(Module):
         _name = name
 
         if shape:
-            self._constants[_name] = Tensor.create_from_torch(torch.empty(shape), constant=True)
+            if use_random_value:
+                self._constants[_name] = Tensor.create_from_torch(
+                    Tensor.create_torch_tensor(shape, dtype), constant=True
+                )
+            else:
+                self._constants[_name] = Tensor.create_from_torch(torch.empty(shape), constant=True)
         else:
             self._constants[_name] = None
 

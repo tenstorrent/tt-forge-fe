@@ -275,6 +275,23 @@ class Tensor(TensorBase):
         return TensorFromPytorch(torch_tensor, dev_data_format, constant)
 
     @classmethod
+    def create_torch_tensor(
+        cls,
+        shape: Union[List, Tuple, torch.Size],
+        dtype: Optional[torch.dtype] = None,
+        integer_high_value: int = 1000,
+    ) -> torch.Tensor:
+
+        if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
+            torch_tensor = torch.rand(shape, dtype=dtype)
+        elif dtype in [torch.int8, torch.int, torch.int16, torch.int32, torch.int64]:
+            torch_tensor = torch.randint(high=integer_high_value, size=shape, dtype=dtype)
+        else:
+            torch_tensor = torch.rand(shape, dtype=torch.float32)
+
+        return torch_tensor
+
+    @classmethod
     def create_from_shape(
         cls,
         tensor_shape: Union[List, Tuple, torch.Size],
@@ -283,12 +300,7 @@ class Tensor(TensorBase):
         constant: bool = False,
     ) -> "TensorFromPytorch":
 
-        if torch_dtype in [torch.float16, torch.bfloat16, torch.float32]:
-            torch_tensor = torch.rand(tensor_shape, dtype=torch_dtype)
-        elif torch_dtype in [torch.int8, torch.int, torch.int32]:
-            torch_tensor = torch.randint(high=integer_tensor_high_value, size=tensor_shape, dtype=torch_dtype)
-        else:
-            torch_tensor = torch.rand(tensor_shape, dtype=torch.float32)
+        torch_tensor = Tensor.create_torch_tensor(shape=tensor_shape, dtype=torch_dtype, integer_high_value=1000)
 
         return TensorFromPytorch(
             torch_tensor, dev_data_format=pytorch_dtype_to_forge_dataformat(torch_dtype), constant=constant
