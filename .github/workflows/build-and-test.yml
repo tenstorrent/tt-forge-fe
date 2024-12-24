@@ -195,7 +195,7 @@ jobs:
       run: |
         apt-get install -y unzip
         mkdir -p dist
-        unzip build-forge-ubuntu-latest -d dist
+        unzip *.zip -d dist
 
     - name: Install wheel
       shell: bash
