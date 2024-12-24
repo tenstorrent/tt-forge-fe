@@ -7,6 +7,7 @@
 # Project setup
 - [Building](./build.md)
 - [Testing](./test.md)
+- [Verification](./verification.md)
 - [Tools](./tools.md)
 
 # Dev Notes
