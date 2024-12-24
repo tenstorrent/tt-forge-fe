@@ -178,6 +178,11 @@ jobs:
           submodules: recursive
           fetch-depth: 0 # Fetch all history and tags
 
+    - name: unzip build artifacts
+      run: |
+        mkdir -p dist
+        unzip build-forge-ubuntu-latest -d dist
+
     # Clean everything from submodules (needed to avoid issues
     # with cmake generated files leftover from previous builds)
     - name: Cleanup submodules
