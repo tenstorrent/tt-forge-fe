@@ -4,6 +4,7 @@
 import subprocess
 import os
 import time
+import json
 from loguru import logger
 import math
 import argparse
@@ -13,6 +14,11 @@ from enum import IntEnum, Enum
 from typing import Union, Dict, List, Tuple
 from dataclasses import dataclass, asdict
 import inspect
+import ast
+
+import torch
+
+from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
 
 
 class CompilerComponent(IntEnum):
@@ -333,6 +339,89 @@ common_failure_matching_rules_list = [
 ]
 
 
+class UniqueOpTestInfo:
+    """
+    Represents information about a unique operation test, that includes op name, operands
+    arguments, and the status of various compiler components.
+
+    Attributes:
+        Op (str): The name of the operation.
+        Operands (List[str]): List of operands associated with the operation.
+        Args (List[str]): List of Operation Arguments if any
+        components (dict): A dictionary indicating the support status for each compiler component.
+        failure_reason (str): The reason for failure, if any, during testing.
+    """
+
+    def __init__(
+        self,
+        Op: str,
+        Operands: List[str],
+        Args: List[str],
+    ):
+        self.Op = str(Op)
+        self.Operands = Operands
+        self.Args = Args
+        self.components = {}
+        for compiler_component in CompilerComponent:
+            self.components[str(compiler_component.name)] = False
+        self.failure_reason = ""
+
+    @classmethod
+    def create(cls, op_name, operand_names, operand_types, operand_shapes, operand_dtypes, args):
+
+        operands = UniqueOpTestInfo.create_operands(operand_names, operand_types, operand_shapes, operand_dtypes)
+
+        args = UniqueOpTestInfo.create_args(args)
+
+        return cls(Op=op_name, Operands=operands, Args=args)
+
+    @classmethod
+    def create_operands(cls, operand_names, operand_types, operand_shapes, operand_dtypes):
+        operands = []
+        for operand_name, operand_type, operand_shape, operand_dtype in zip(
+            operand_names, operand_types, operand_shapes, operand_dtypes
+        ):
+            if isinstance(operand_shape, torch.Tensor):
+                operands.append(f"Operand(type={operand_type}, name={operand_name}, dtype={operand_dtype})")
+            else:
+                operands.append(f"Operand(type={operand_type}, shape={operand_shape}, dtype={operand_dtype})")
+        return operands
+
+    @classmethod
+    def create_args(cls, args):
+        arg_info = []
+        if not args.is_empty():
+            for arg_name, arg_value in args.items():
+                arg_info.append(f"{arg_name} : {arg_value}")
+        return arg_info
+
+    def update_compiler_components(self, error_message: str = ""):
+        if error_message:
+            updated_compiler_component_status = False
+            # Iterate over all failure matching rules to find a match.
+            for rule in common_failure_matching_rules_list:
+                matched_compiler_component, match_err_msg = rule.match_rule(error_message)
+                if matched_compiler_component is not None:
+                    updated_compiler_component_status = True
+                    self.failure_reason = match_err_msg
+                    # Set all the compiler components less than matched compiler component to True.
+                    for compiler_component in CompilerComponent:
+                        if compiler_component < matched_compiler_component:
+                            self.components[str(compiler_component.name)] = True
+                    break
+            # If no match is found, mark the UNKNOWN compiler component alone to True.
+            if not updated_compiler_component_status:
+                self.components[str(CompilerComponent.UNKNOWN.name)] = True
+        else:
+            # If no error message is provided, mark all compiler components (except UNKNOWN) to True.
+            for compiler_component in CompilerComponent:
+                if compiler_component != CompilerComponent.UNKNOWN:
+                    self.components[str(compiler_component.name)] = True
+
+    def __str__(self):
+        return f"UniqueOpTestInfo(op={self.Op}, Operands={self.Operands}, Args={self.Args}, components={self.components}, self.failure_reason={self.failure_reason})"
+
+
 @dataclass
 class ModelVariantInfo:
     """
@@ -342,6 +431,7 @@ class ModelVariantInfo:
         model_name (str): The name of the model.
         variant_name (str): The name of the model variant.
         framework (str): The framework used for the model.
+        unique_ops (List[UniqueOpTestInfo]): List of unique op configuration test info
         forge_support_rate (float): The support rate for the Forge compiler component. Defaults to 0.0.
         mlir_support_rate (float): The support rate for the MLIR compiler component. Defaults to 0.0.
         ttmetal_support_rate (float): The support rate for the TT_METAL compiler component. Defaults to 0.0.
@@ -351,6 +441,7 @@ class ModelVariantInfo:
     model_name: str
     variant_name: str
     framework: str
+    unique_ops: List[UniqueOpTestInfo]
     forge_support_rate: float = 0.0
     mlir_support_rate: float = 0.0
     ttmetal_support_rate: float = 0.0
@@ -383,71 +474,18 @@ class ModelVariantInfo:
         else:
             logger.error(f"There is no compilercomponent {compiler_component.name}")
 
-
-class UniqueOpTestInfo:
-    """
-    Represents information about a unique operation test, that includes op name, operands
-    arguments, and the status of various compiler components.
-
-    Attributes:
-        Op (str): The name of the operation.
-        Operands (str): The operands associated with the operation.
-        Args (str): Operation Arguments if any
-        components (dict): A dictionary indicating the support status for each compiler component.
-        failure_reason (str): The reason for failure, if any, during testing.
-    """
-
-    def __init__(
-        self,
-        Op: str,
-        Operands: str,
-        Args: str,
-    ):
-        self.Op = str(Op)
-        self.Operands = str(Operands)
-        self.Args = " " if pd.isna(Args) else str(Args)
-        self.components = {}
-        for compiler_component in CompilerComponent:
-            self.components[str(compiler_component.name)] = False
-        self.failure_reason = ""
-
-    @classmethod
-    def create_from_dict(cls, data: Dict[str, str]):
-
-        # Extract the names of parameters for the __init__ method (excluding 'self').
-        unique_op_test_info_params = list(inspect.signature(cls.__init__).parameters.keys())[1:]
-
-        # Filter the dictionary to include only relevant keys for initialization.
-        unique_op_test_data = {key: data[key] for key in unique_op_test_info_params if key in data}
-
-        # Create and return an instance of the UniqueOpTestInfo class.
-        return cls(**unique_op_test_data)
-
-    def update_compiler_components(self, error_message: str = ""):
-        if error_message:
-            updated_compiler_component_status = False
-            # Iterate over all failure matching rules to find a match.
-            for rule in common_failure_matching_rules_list:
-                matched_compiler_component, match_err_msg = rule.match_rule(error_message)
-                if matched_compiler_component is not None:
-                    updated_compiler_component_status = True
-                    self.failure_reason = match_err_msg
-                    # Set all the compiler components less than matched compiler component to True.
-                    for compiler_component in CompilerComponent:
-                        if compiler_component < matched_compiler_component:
-                            self.components[str(compiler_component.name)] = True
-                    break
-            # If no match is found, mark the UNKNOWN compiler component alone to True.
-            if not updated_compiler_component_status:
-                self.components[str(CompilerComponent.UNKNOWN.name)] = True
-        else:
-            # If no error message is provided, mark all compiler components (except UNKNOWN) to True.
-            for compiler_component in CompilerComponent:
-                if compiler_component != CompilerComponent.UNKNOWN:
-                    self.components[str(compiler_component.name)] = True
-
     def __str__(self):
-        return f"UniqueOpTestInfo(op={self.Op}, Operands={self.Operands}, Args={self.Args}, components={self.components}, self.failure_reason={self.failure_reason})"
+        model_variant_info = ""
+        model_variant_info += f"\t\tModel : {model_name}\n"
+        model_variant_info += f"\t\tVariant : {variant_name}\n"
+        model_variant_info += f"\t\tframework : {framework}\n"
+        model_variant_info += f"\t\tforge_support_rate : {forge_support_rate}\n"
+        model_variant_info += f"\t\tmlir_support_rate : {mlir_support_rate}\n"
+        model_variant_info += f"\t\tttmetal_support_rate : {ttmetal_support_rate}\n"
+        model_variant_info += f"\t\tunknown_rate : {unknown_rate}\n"
+        model_variant_info += f"\t\tlast_update_datetime : {last_update_datetime}\n"
+        for idx, unique_op in enumerate(unique_ops):
+            model_variant_info += f"\t\t\t\t{idx}){str(unique_op)}\n"
 
 
 class HtmlSymbol(Enum):
@@ -491,7 +529,8 @@ class MarkDownWriter:
         markdown_table = tabulate(rows, headers, tablefmt="github", colalign=("center",) * len(headers))
         self.write_line(markdown_table)
 
-    def get_component_names_for_header(self, compiler_component: CompilerComponent):
+    @classmethod
+    def get_component_names_for_header(cls, compiler_component: CompilerComponent):
         if compiler_component == CompilerComponent.FORGE:
             return "Forge-Fe"
         elif compiler_component == CompilerComponent.MLIR:
@@ -550,24 +589,32 @@ def check_path(directory_or_file_path: str):
     return False
 
 
-def dump_logs(log_file_dir_path: str, log_file_name: str, content: str):
-    os.makedirs(log_file_dir_path, exist_ok=True)
-    log_file = os.path.join(log_file_dir_path, log_file_name)
-    with open(log_file, "w") as f:
-        f.write(content)
-        logger.info(f"Dumped test logs in {log_file}")
+def dump_logs(log_files: Union[str, List[str]], content: str):
+    if isinstance(log_files, str):
+        log_files = [log_files]
+    for log_file in log_files:
+        log_file_dir_path = "/".join(log_file.split("/")[:-1])
+        os.makedirs(log_file_dir_path, exist_ok=True)
+        with open(log_file, "w") as f:
+            f.write(content)
+            logger.info(f"Dumped test logs in {log_file}")
 
 
-def collect_all_model_analysis_test(directory_or_file_path, output_directory_path):
+def collect_all_model_analysis_test(directory_or_file_path: str, output_directory_path: str):
+    """
+    Collect all the tests marked with the `model_analysis` marker in a specified directory or file.
+    """
 
+    # Ensure the directory or file path exists
     assert check_path(
         directory_or_file_path
     ), f"The directory path for collecting test {directory_or_file_path} doesn't exists"
 
-    logger.info(f"Collecting all test that has model_analysis marker in {directory_or_file_path}")
+    logger.info(f"Collecting all the test that has model_analysis marker in {directory_or_file_path}")
 
     collected_test_outputs = ""
     try:
+        # Run pytest to collect tests with the `model_analysis` marker
         result = subprocess.run(
             ["pytest", directory_or_file_path, "-m", "model_analysis", "--collect-only"],
             capture_output=True,
@@ -575,18 +622,20 @@ def collect_all_model_analysis_test(directory_or_file_path, output_directory_pat
             check=True,
         )
 
-        collected_test_outputs += "STDOUT:\n"
-        collected_test_outputs += result.stdout
-        collected_test_outputs += "STDERR:\n"
-        collected_test_outputs += result.stderr
+        # Append stdout and stderr to the collected outputs
+        collected_test_outputs += "STDOUT:\n" + result.stdout
+        collected_test_outputs += "STDERR:\n" + result.stderr
 
     except subprocess.CalledProcessError as e:
         collected_test_outputs += e.output
 
-    dump_logs(output_directory_path, "collected_tests.txt", collected_test_outputs)
+    # Save the collected test outputs to a file
+    collected_test_file_path = os.path.join(output_directory_path, "collected_tests.txt")
+    dump_logs(collected_test_file_path, collected_test_outputs)
 
+    # Extract tests from the collected test outputs
     test_list = []
-    with open(os.path.join(output_directory_path, "collected_tests.txt"), "r") as collected_test_file:
+    with open(collected_test_file_path, "r") as collected_test_file:
         lines = collected_test_file.readlines()
         test_lines = False
         for line in lines:
@@ -601,7 +650,12 @@ def collect_all_model_analysis_test(directory_or_file_path, output_directory_pat
     return test_list
 
 
-def generate_and_export_unique_ops_tests(test_directory_or_file_path, unique_ops_output_directory_path):
+def generate_and_export_unique_ops_tests(test_directory_or_file_path: str, unique_ops_output_directory_path: str):
+    """
+    Collect the test with model_analysis marker in the test_directory_or_file_path specified by the user
+    and then generate unique op test for all the collected test and return the list of directory path
+    containing exported models unique op configuration as xlsx file
+    """
 
     # Collect all the pytest inside the test_directory_or_file_path specified by the user with model_analysis marker
     test_list = collect_all_model_analysis_test(test_directory_or_file_path, unique_ops_output_directory_path)
@@ -651,36 +705,18 @@ def generate_and_export_unique_ops_tests(test_directory_or_file_path, unique_ops
     return model_output_dir_paths
 
 
-def run_model_unique_op_tests_and_generate_markdowns(
-    model_output_dir_paths, markdown_directory_path, dump_failure_logs
-):
+def extract_unique_op_tests_from_models(model_output_dir_paths: List[str], unique_ops_output_directory_path: str):
     """
-    Execute unique operation tests for specified models, gather compiler support details and
-    generate detailed Markdown reports summarizing the results.
-
-    Workflow:
-        1. Locate and Process Model Variants:
-            - Iterate through the list of model directories (`model_output_dir_paths`).
-            - For each model:
-                - Identify its variants by listing the contents of the model directory.
-                - Search for the unique operation tests information file (`.xlsx`) for each variant.
-        2. Extract test details and Run unique operation tests:
-            - Load the `.xlsx` file for each model variant and extract the operation test information (e.g., framework, ops, operands, args, and test files).
-            - For each test in the extracted details:
-                - Execute the test and track pass or fail status for each compiler component (e.g., Forge-FE, MLIR, Metal) based on the test results.
-                - if `dump_failure_logs` is True, save the failure logs
-            - Calculate the percentage of successful tests for each compiler component.
-        3. Generate Markdown Reports:
-            - Sub Markdown Files:
-                - Create a Markdown file for each model variant.
-                - Include details about unique operation configurations, pass/fail status for each compiler component, and failure reasons.
-            - Root Markdown File:
-                - Summarize the results for all models in a single file (`ModelsInfo.md`).
-                - Include details such as the model name, its variants, framework, and passing rate percentages for each compiler component.
+    Extract unique op configuration across all the models which will avoid running the redudant
+    op configuration again by using the exported unique op configuration test details and models metadata
     """
 
-    # List to store information about all processed model variants
-    models_details = []
+    # Dictionary to store all the operations found in model variants
+    models_operations = {}
+    unique_op_count = 0
+
+    # Dictionary to store constants (name and tensor) used in the model variants
+    models_contants = {}
 
     # Iterate through all provided model directories
     for model_output_dir_path in model_output_dir_paths:
@@ -696,51 +732,156 @@ def run_model_unique_op_tests_and_generate_markdowns(
 
             model_variant_dir_path = os.path.join(model_output_dir_path, model_variant)
 
-            # Look for a single `.xlsx` file containing unique operation test details
-            model_variant_tvm_generated_op_test_file = [
-                f for f in os.listdir(model_variant_dir_path) if f.endswith(".xlsx")
-            ]
-            if len(model_variant_tvm_generated_op_test_file) != 1:
+            # Look for `.xlsx` and `.json` file containing unique operation details and metadata
+            model_variant_tvm_generated_unique_op_xslx_file_path = None
+            model_variant_tvm_generated_unique_op_metadata_file_path = None
+            for f in os.listdir(model_variant_dir_path):
+                if f.endswith(".xlsx"):
+                    model_variant_tvm_generated_unique_op_xslx_file_path = os.path.join(model_variant_dir_path, f)
+                elif f.endswith(".json"):
+                    model_variant_tvm_generated_unique_op_metadata_file_path = os.path.join(model_variant_dir_path, f)
+
+            # Skip if either `.xlsx` or `.json` file is missing
+            if (
+                model_variant_tvm_generated_unique_op_xslx_file_path is None
+                or model_variant_tvm_generated_unique_op_metadata_file_path is None
+            ):
                 continue
 
-            # Read the `.xlsx` file for the model variant
-            model_variant_tvm_generated_op_test_file_path = os.path.join(
-                model_variant_dir_path, model_variant_tvm_generated_op_test_file[0]
-            )
+            # Read the `.xlsx` file contains model variant unique op configuration details
             model_variant_df = pd.read_excel(
-                model_variant_tvm_generated_op_test_file_path,
+                model_variant_tvm_generated_unique_op_xslx_file_path,
                 header=0,
-                usecols=["Framework", "Op", "Operands", "Args", "Testfile"],
+                usecols=[
+                    "Op",
+                    "Operand_Names",
+                    "Operand_Shapes",
+                    "Operand_Types",
+                    "Operand_Dtypes",
+                    "Args",
+                    "Testfile",
+                ],
             )
 
-            # Create a UniqueOpTestInfo object to store details about model and variant name and framework of the model variant.
-            model_variant_info: ModelVariantInfo = ModelVariantInfo(
-                model_name=model_name,
-                variant_name=model_variant,
-                framework=model_variant_df["Framework"].unique()[0],
-            )
+            # Read the `.json` file contains model variant metadata information
+            with open(model_variant_tvm_generated_unique_op_metadata_file_path, "r") as json_file:
+                model_variant_metadata = json.load(json_file)
 
-            # List to store unique operation test results for the model variant
-            model_variant_unique_op_tests_info = []
+            # Load model variants parameters and buffers as tensors from specified files
+            named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
+            if model_variant_metadata["param_file_name"] is not None:
+                serialized_params = torch.load(model_variant_metadata["param_file_name"])
+                named_parameters.update(serialized_params)
+            named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
+            named_parameters.update(named_buffers)
 
-            # Iterate over each row in the DataFrame (each row corresponds to a test for a specific operation)
+            # Process each row in the `.xlsx` file to extract operation configurations
             for index, row in model_variant_df.iterrows():
                 row = row.to_dict()
+                unique_op_count += 1
+
+                operand_names = ast.literal_eval(row["Operand_Names"])
+                operand_types = ast.literal_eval(row["Operand_Types"])
+                operand_types = [NodeType.from_json(operand_type) for operand_type in operand_types]
+
+                # Prepare metadata associated with the operation
+                metadata = {}
+                metadata["model_variant_info"] = {}
+                metadata["model_variant_info"]["model_name"] = model_name
+                metadata["model_variant_info"]["variant_name"] = model_variant_metadata["module_name"]
+                metadata["model_variant_info"]["framework"] = model_variant_metadata["framework"]
+                metadata["model_variant_info"]["Testfile"] = row["Testfile"]
+
+                # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
+                models_operations[unique_op_count] = Operation(
+                    function_name=row["Op"],
+                    input_names=operand_names,
+                    args=ast.literal_eval(row["Args"]),
+                    input_shapes=ast.literal_eval(row["Operand_Shapes"]),
+                    input_dtypes=ast.literal_eval(row["Operand_Dtypes"]),
+                    input_node_types=operand_types,
+                    metadata=metadata,
+                )
+
+                # Store tensor which has constant nodetype as operands
+                for operand_type, operand_name in zip(operand_types, operand_names):
+                    if operand_type == NodeType.Constant:
+                        models_contants[operand_name] = named_parameters[operand_name]
+
+    # Extract unique operation configuration configuration across all the model variants
+    unique_operations = UniqueOperations.create_unique_operations(models_operations, models_contants)
+
+    # Dump the extracted unique operation configurations across all the model variants to a log file
+    models_unique_op_config_file_path = os.path.join(
+        unique_ops_output_directory_path, "extracted_unique_configuration_across_models.log"
+    )
+    dump_logs(models_unique_op_config_file_path, str(unique_operations))
+
+    return unique_operations
+
+
+def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_path, dump_failure_logs):
+    """
+    Run unique op configuration test that has been collected across all the models and populate the test result in the model variants
+    """
+
+    models_details = {}
+
+    # Iterate over each unique operation
+    for forge_op_function_name in sorted(unique_operations):
+
+        # Extract operation name from forge op function name
+        op_name = forge_op_function_name.split(".")[-1]
+
+        # Get the unique operands and operation arguments assiocated the operand metadata
+        unique_operands_and_opargs_opmetadata = unique_operations[
+            forge_op_function_name
+        ].get_unique_operands_and_opargs_opmetadata()
+
+        for operands, opargs_opmetadata in unique_operands_and_opargs_opmetadata:
+
+            for args, operation_metadata in opargs_opmetadata.get_op_args_and_metadata():
+
+                # Extract operands details such as names types, shapes, and data types
+                operand_types = [NodeType.to_json(operand_type) for operand_type in operands.get_operand_types()]
+                operand_shapes = operands.get_operand_shapes()
+                operand_dtypes = operands.get_operand_dtypes()
+
+                # Extract model varaiant info such as model, variant and framework name
+                model_variant_info_list = operation_metadata["model_variant_info"]
+                framework = model_variant_info_list[0]["framework"]
+                operand_names = operation_metadata["operand_names"][0]
 
                 # Create a UniqueOpTestInfo object to store details about the operation (name, operands, args)
-                unique_op_test_info = UniqueOpTestInfo.create_from_dict(row)
+                unique_op_test_info = UniqueOpTestInfo.create(
+                    op_name=op_name,
+                    operand_names=operand_names,
+                    operand_types=operand_types,
+                    operand_shapes=operand_shapes,
+                    operand_dtypes=operand_dtypes,
+                    args=args,
+                )
 
                 # Extract the test file path
-                test = row["Testfile"]
+                test = model_variant_info_list[0]["Testfile"]
                 logger.info(f"Running the test: {test}")
 
-                # If dump_failure_logs is set to True, prepare the log file path for storing logs
+                # If dump_failure_logs is set to True, prepare the log file paths for storing logs
                 if dump_failure_logs:
-                    op_name = row["Op"]  # Get the operation name
-                    log_file_dir_path = os.path.join(model_variant_dir_path, op_name)
-
-                    test_name = test.split("::")[-1]  # Extract the test name from the test path
-                    log_file_name = str(test_name) + "_log.txt"
+                    log_files = []
+                    for model_variant_info in model_variant_info_list:
+                        log_file_dir_path = os.path.join(
+                            unique_ops_output_directory_path,
+                            model_variant_info["model_name"],
+                            model_variant_info["variant_name"],
+                            op_name,
+                        )
+                        test_name = model_variant_info["Testfile"].split("::")[
+                            -1
+                        ]  # Extract the test name from the test path
+                        log_file_name = str(test_name) + "_log.txt"
+                        log_file = os.path.join(log_file_dir_path, log_file_name)
+                        log_files.append(log_file)
 
                 # Start the timer to measure test execution time
                 start_time = time.time()
@@ -752,7 +893,7 @@ def run_model_unique_op_tests_and_generate_markdowns(
                         check=True,
                         capture_output=True,
                         text=True,
-                        timeout=60,
+                        timeout=180,
                         env=dict(
                             os.environ,
                             FORGE_DISABLE_REPORTIFY_DUMP="1",
@@ -780,7 +921,7 @@ def run_model_unique_op_tests_and_generate_markdowns(
 
                         # Save failure logs if dump_failure_logs is set to True
                         if dump_failure_logs:
-                            dump_logs(log_file_dir_path, log_file_name, error_message)
+                            dump_logs(log_files, error_message)
 
                     else:
                         # If the test passed (return code is 0), update the UniqueOpTestInfo instance
@@ -792,13 +933,13 @@ def run_model_unique_op_tests_and_generate_markdowns(
                 except subprocess.TimeoutExpired as e:
                     elapsed_time = time.time() - start_time
 
-                    error_message = "Test timed out after 60 seconds"
+                    error_message = "Test timed out after 180 seconds"
                     unique_op_test_info.update_compiler_components(error_message)
 
                     logger.info(f"\tFailed ({elapsed_time:.2f} seconds) due to {error_message}")
 
                     if dump_failure_logs:
-                        dump_logs(log_file_dir_path, log_file_name, error_message)
+                        dump_logs(log_files, error_message)
 
                     # Do WH warm reset (potentially hang occurred)
                     logger.info("\tWarm reset...")
@@ -822,7 +963,7 @@ def run_model_unique_op_tests_and_generate_markdowns(
                     unique_op_test_info.update_compiler_components(error_message)
 
                     if dump_failure_logs:
-                        dump_logs(log_file_dir_path, log_file_name, error_message)
+                        dump_logs(log_files, error_message)
 
                 # Handle unexpected exceptions
                 except Exception as ex:
@@ -834,136 +975,175 @@ def run_model_unique_op_tests_and_generate_markdowns(
                     logger.info(error_message)
 
                     if dump_failure_logs:
-                        dump_logs(log_file_dir_path, log_file_name, error_message)
+                        dump_logs(log_files, error_message)
 
-                # Append the current test's info to the list of tests for this model variant
-                model_variant_unique_op_tests_info.append(unique_op_test_info)
-
-            # Prepare the path for the Markdown file to store test results for this model variant
-            model_variant_md_file_directory_path = os.path.join(markdown_directory_path, "Models", model_name)
-
-            # Create a Markdown file for saving model variant unique op test information
-            markdown_writer = MarkDownWriter(model_variant, model_variant_md_file_directory_path)
-
-            # Write a heading for the HTML table in the model variant markdown file
-            markdown_writer.write_html_table_heading("Unique ops configuration and compiler support info")
-
-            # Get the list of compiler component names to use in the table header
-            compiler_component_names = [
-                markdown_writer.get_component_names_for_header(compiler_component)
-                for compiler_component in CompilerComponent
-            ]
-
-            # Define the table header with three main sections
-            table_header = {
-                "Operation Details": ["Name", "Operands", "Arguments"],
-                "Component Passing Check": compiler_component_names,
-                "Issues": ["Failure Reason"],
-            }
-
-            # List to store table rows
-            table_rows = []
-
-            # Iterate over the unique operation test information to populate table rows
-            for unique_op_test_info in model_variant_unique_op_tests_info:
-
-                # Replace newline in Operands with line breaker and X character and Arguments with line breaker
-                unique_op_test_info.Operands = unique_op_test_info.Operands.replace(
-                    "\n", "<br><div align='center'>X</div>"
-                )
-                unique_op_test_info.Args = unique_op_test_info.Args.replace("\n", "<br>")
-                table_data = [unique_op_test_info.Op, unique_op_test_info.Operands, unique_op_test_info.Args]
-
-                # If unknown compiler component is set to True in unique_op_test_info, use the unknown symbol for indicating unknown compiler component status and for other compiler components set empty string
-                # else for unknown compiler component  set empty string for indicating status and for other compiler component set pass or fail symbol
-                if unique_op_test_info.components[str(CompilerComponent.UNKNOWN.name)]:
-                    for component_name, test_status in unique_op_test_info.components.items():
-                        test_status = (
-                            HtmlSymbol.UNKNOWN.value if component_name == str(CompilerComponent.UNKNOWN.name) else " "
+                # Update model details dictionary with variant name as key and ModelVariantInfo as values
+                for model_variant_info in model_variant_info_list:
+                    if model_variant_info["variant_name"] in models_details.keys():
+                        models_details[model_variant_info["variant_name"]].unique_ops.append(unique_op_test_info)
+                    else:
+                        models_details[model_variant_info["variant_name"]] = ModelVariantInfo(
+                            model_name=model_variant_info["model_name"],
+                            variant_name=model_variant_info["variant_name"],
+                            framework=model_variant_info["framework"],
+                            unique_ops=[unique_op_test_info],
                         )
-                        table_data.append(test_status)
-                else:
-                    for component_name, test_status in unique_op_test_info.components.items():
-                        if component_name == str(CompilerComponent.UNKNOWN.name):
-                            test_status = " "
-                        else:
-                            test_status = HtmlSymbol.PASS.value if test_status else HtmlSymbol.FAIL.value
-                        table_data.append(test_status)
-                table_data.append(unique_op_test_info.failure_reason)
-                table_rows.append(table_data)
 
-            # Create and write the HTML table to the Markdown file
-            markdown_writer.create_html_table_and_write(headers=table_header, rows=table_rows)
+    # Calculate and update the compiler support rates for each component for all the model variants
+    for variant_name, model_variant_info in models_details.items():
+        for compiler_component in CompilerComponent:
+            compiler_component_passed_test_count = sum(
+                [
+                    int(unique_op_test_info.components[str(compiler_component.name)])
+                    for unique_op_test_info in model_variant_info.unique_ops
+                ]
+            )
+            total_num_of_test = len(model_variant_info.unique_ops)
+            compiler_component_pass_percentage = (
+                str(math.ceil((compiler_component_passed_test_count / total_num_of_test) * 100.0)) + " %"
+            )
+            models_details[variant_name].update_support_rate(compiler_component, compiler_component_pass_percentage)
 
-            # Close the Markdown file after writing the table
-            markdown_writer.close_file()
+        models_details[variant_name].last_update_datetime = time.strftime("%A, %d %b %Y %I:%M:%S %p", time.gmtime())
 
-            # Calculate and update the compiler support rates for each component
-            for compiler_component in CompilerComponent:
-                compiler_component_passed_test_count = sum(
-                    [
-                        int(unique_op_test_info.components[str(compiler_component.name)])
-                        for unique_op_test_info in model_variant_unique_op_tests_info
-                    ]
-                )
-                total_num_of_test = len(model_variant_unique_op_tests_info)
-                compiler_component_pass_percentage = (
-                    str(math.ceil((compiler_component_passed_test_count / total_num_of_test) * 100.0)) + " %"
-                )
-                model_variant_info.update_support_rate(compiler_component, compiler_component_pass_percentage)
+    return models_details
 
-            model_variant_info.last_update_datetime = time.strftime("%A, %d %b %Y %I:%M:%S %p", time.gmtime())
 
-            # Append the model variant information to the list
-            models_details.append(model_variant_info)
-
+def generate_markdown(
+    markdown_file_name: str,
+    markdown_file_dir_path: str,
+    table_heading: str,
+    table_headers: Dict[str, List[str]],
+    table_rows: List[List[str]],
+):
+    """
+    Generates a Markdown file that contains an HTML table with the given headers and rows.
+    """
     # Create a markdown file for summarizing the results for all models in a single file
-    markdown_writer = MarkDownWriter("ModelsInfo", markdown_directory_path)
+    markdown_writer = MarkDownWriter(markdown_file_name, markdown_file_dir_path)
 
     # Write a heading for the HTML table
-    markdown_writer.write_html_table_heading("List of models and current compiler support rates")
+    markdown_writer.write_html_table_heading(table_heading)
 
-    # Get the list of compiler component names to use in the table header
+    # Generate and write the HTML table to the Markdown file
+    markdown_writer.create_html_table_and_write(headers=table_headers, rows=table_rows)
+
+    # Close the Markdown file after writing the table
+    markdown_writer.close_file()
+
+
+def create_root_and_sub_markdown_file(models_details, markdown_directory_path):
+    """
+    Creates root and sub Markdown files summarizing the models and their unique operation test results.
+
+    The root Markdown file contains an overview of all models and their compiler support rates.
+    The sub Markdown files contain detailed results for each model variant's unique operation tests.
+
+    """
+    # Root markdown file name and directory path for saving the md file
+    root_markdown_file_name = "ModelsInfo"
+    root_markdown_directory_path = markdown_directory_path
+
+    # HTML table heading for the root markdown and sub markdown files
+    root_markdown_table_heading = "List of models and current compiler support rates"
+    sub_markdown_table_heading = "Unique ops configuration and compiler support info"
+
+    # List of compiler component names for table headers
     compiler_component_names = [
-        markdown_writer.get_component_names_for_header(compiler_component) for compiler_component in CompilerComponent
+        MarkDownWriter.get_component_names_for_header(compiler_component) for compiler_component in CompilerComponent
     ]
 
-    # Define the table header with two main sections
-    table_header = {
+    # HTML table header for the root markdown and sub markdown files
+    root_markdown_table_headers = {
         "Model Details": ["Name", "Variant", "Framework"],
         "Passing rate of unique ops for each component": compiler_component_names,
         "Last update(in GMT)": ["Date & time"],
     }
 
-    # List to store table rows
-    table_rows = []
+    sub_markdown_table_headers = {
+        "Operation Details": ["Name", "Operands", "Arguments"],
+        "Component Passing Check": compiler_component_names,
+        "Issues": ["Failure Reason"],
+    }
 
-    # Iterate over the model variant information list to populate table rows
-    for model_variant_info in models_details:
+    root_markdown_table_rows = []
+
+    # Iterate over model variants to generate sub markdown files and populate root markdown rows
+    for model_variant_info in models_details.values():
+
+        # Prepare the path for the sub markdown file to store test results for this model variant
+        sub_markdown_file_name = model_variant_info.variant_name
+        sub_markdown_directory_path = os.path.join(markdown_directory_path, "Models", model_variant_info.model_name)
+
+        # List to store table rows for the sub markdown file
+        sub_markdown_table_rows = []
+
+        # Iterate over the unique operation test information to populate table rows for sub markdown
+        for unique_op_test_info in model_variant_info.unique_ops:
+
+            table_data = [unique_op_test_info.Op]
+            table_data.append("<br><div align='center'>X</div>".join(unique_op_test_info.Operands))
+            table_data.append("<br>".join(unique_op_test_info.Args))
+
+            # If unknown compiler component is set to True in unique_op_test_info, use the unknown symbol for indicating unknown compiler component status and for other compiler components set empty string
+            # else for unknown compiler component  set empty string for indicating status and for other compiler component set pass or fail symbol
+            if unique_op_test_info.components[str(CompilerComponent.UNKNOWN.name)]:
+                for component_name, test_status in unique_op_test_info.components.items():
+                    test_status = (
+                        HtmlSymbol.UNKNOWN.value if component_name == str(CompilerComponent.UNKNOWN.name) else " "
+                    )
+                    table_data.append(test_status)
+            else:
+                for component_name, test_status in unique_op_test_info.components.items():
+                    if component_name == str(CompilerComponent.UNKNOWN.name):
+                        test_status = " "
+                    else:
+                        test_status = HtmlSymbol.PASS.value if test_status else HtmlSymbol.FAIL.value
+                    table_data.append(test_status)
+            table_data.append(unique_op_test_info.failure_reason)
+            sub_markdown_table_rows.append(table_data)
+
+        # Generate sub markdown file that contain model variant unique op test info
+        generate_markdown(
+            markdown_file_name=sub_markdown_file_name,
+            markdown_file_dir_path=sub_markdown_directory_path,
+            table_heading=sub_markdown_table_heading,
+            table_headers=sub_markdown_table_headers,
+            table_rows=sub_markdown_table_rows,
+        )
+
+        # Prepare a row for the root markdown file with summary details of the model variant
+        table_data = [model_variant_info.model_name]
 
         # Create an HTML link for the variant name, linking to its corresponding model variant markdown file
-        model_variant_info.variant_name = MarkDownWriter.create_html_link(
-            model_variant_info.variant_name,
-            os.path.join("./Models", model_variant_info.model_name, model_variant_info.variant_name + ".md"),
+        table_data.append(
+            MarkDownWriter.create_html_link(
+                model_variant_info.variant_name,
+                os.path.join("./Models", model_variant_info.model_name, model_variant_info.variant_name + ".md"),
+            )
         )
-        table_data = [model_variant_info.model_name, model_variant_info.variant_name, model_variant_info.framework]
+
+        table_data.append(model_variant_info.framework)
         for compiler_component in CompilerComponent:
             table_data.append(model_variant_info.get_support_rate(compiler_component))
         table_data.append(model_variant_info.last_update_datetime)
-        table_rows.append(table_data)
+        root_markdown_table_rows.append(table_data)
 
-    # Generate and write the HTML table to the Markdown file
-    markdown_writer.create_html_table_and_write(headers=table_header, rows=table_rows)
-
-    # Close the Markdown file after writing the table
-    markdown_writer.close_file()
+    # Generate root markdown file that contain all the model variants result
+    generate_markdown(
+        markdown_file_name=root_markdown_file_name,
+        markdown_file_dir_path=root_markdown_directory_path,
+        table_heading=root_markdown_table_heading,
+        table_headers=root_markdown_table_headers,
+        table_rows=root_markdown_table_rows,
+    )
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="""Generate unique ops test for the models present in the test_directory_or_file_path
         specified by the user and run the unique ops test and generate markdown files, the root markdown file contains model name,
-        variant name, framework and compiler components supported rate and sub-markdown file contains  model variant unique op tests info"""
+        variant name, framework and compiler components supported rate and sub-markdown file contains model variant unique op tests info"""
     )
 
     parser.add_argument(
@@ -997,10 +1177,19 @@ def main():
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
     )
 
-    run_model_unique_op_tests_and_generate_markdowns(
+    unique_operations = extract_unique_op_tests_from_models(
         model_output_dir_paths=model_output_dir_paths,
-        markdown_directory_path=args.markdown_directory_path,
+        unique_ops_output_directory_path=args.unique_ops_output_directory_path,
+    )
+
+    models_details = run_models_unique_op_tests(
+        unique_operations=unique_operations,
+        unique_ops_output_directory_path=args.unique_ops_output_directory_path,
         dump_failure_logs=args.dump_failure_logs,
+    )
+
+    create_root_and_sub_markdown_file(
+        models_details=models_details, markdown_directory_path=args.markdown_directory_path
     )
 
 

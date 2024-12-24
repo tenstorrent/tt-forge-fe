@@ -1085,7 +1085,7 @@ class ForgeWriter(PythonWriter):
         self.wl("")
         self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
         self.wl("")
-        self.wl("verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))")
+        self.wl("verify(inputs, framework_model, compiled_model)")
         self.wl("")
         self.wl("")
         self.indent -= 1
