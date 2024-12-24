@@ -5,6 +5,7 @@
 # TODO: Add test plan header here
 
 import forge
+import math
 import torch
 import pytest
 import random
@@ -32,43 +33,64 @@ from test.operators.utils import ValueRanges
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
 
-def generate_target_shape(source_shape, max_dims=4, seed=4):
-    """Generates a meaningful target shape based on the source_shape with a limit on the number of dimensions.
-    Ensures that the target shape is not the same as the source shape and that the number of dimensions
-    does not exceed the max_dims parameter."""
+def prime_factors(n):
+    """Return the prime factors of a given number."""
+    factors = []
+    while n % 2 == 0:
+        factors.append(2)
+        n //= 2
 
-    rng = random.Random(seed)
+    for i in range(3, int(math.sqrt(n)) + 1, 2):
+        while n % i == 0:
+            factors.append(i)
+            n //= i
 
-    total_elements = torch.prod(torch.tensor(source_shape)).item()
-    num_attempts = 0  # To prevent infinite loops
+    if n > 2:
+        factors.append(n)
 
-    while True:
-        num_dims = rng.randint(1, max_dims)  # Limit the maximum number of dimensions
+    return factors
 
-        # Attempt to divide total_elements into a random number of factors
-        target_shape = []
-        remaining = total_elements
-        for i in range(num_dims - 1):
-            if remaining == 1:
-                target_shape.extend([1] * (num_dims - len(target_shape)))
-                break
-            dim_size = rng.randint(1, remaining)
-            while remaining % dim_size != 0:  # Ensure that dim_size divides remaining
-                dim_size = rng.randint(1, remaining)
-            target_shape.append(dim_size)
-            remaining //= dim_size
 
-        target_shape.append(remaining)  # Add the final dimension
-        rng.shuffle(target_shape)  # Shuffle the dimensions for additional randomness
+def generate_random_shape(source_shape, max_dims=4):
+    """
+    Generates a random shape with the same volume as the source shape.
+    Args:
+        source_shape (tuple): The original shape of the tensor.
+        max_dims (int, optional): The maximum number of dimensions for the generated shape. Defaults to 4.
+    Returns:
+        tuple: A randomly generated shape with the same volume as the source shape.
+    Raises:
+        ValueError: If the volume or number of dimensions is not a positive integer.
+        ValueError: If the generated shape does not match the desired volume.
+    Notes:
+        - The function ensures that the product of the dimensions of the generated shape equals the product of the dimensions of the source shape.
+        - If the generated shape is the same as the source shape, an additional dimension with size 1 is appended to the shape.
+    """
 
-        if tuple(target_shape) != source_shape and len(target_shape) <= max_dims:  # Ensure target shape is valid
-            break
+    rng = random.Random(math.prod(source_shape) + 1)
 
-        num_attempts += 1
-        if num_attempts > 100:  # Prevent infinite loop if no valid shape can be found
-            raise ValueError(f"Failed to generate a target shape different from {source_shape} after 100 attempts.")
+    vol = math.prod(source_shape)
+    num_dims = rng.randint(1, max_dims)
 
-    return tuple(target_shape)
+    if vol <= 0 or num_dims <= 0:
+        raise ValueError("Volume and number of dimensions must be positive integers.")
+
+    # Step 1: Get the prime factors of vol
+    factors = prime_factors(vol)
+
+    # Step 2: Start with dimensions initialized to 1
+    shape = [1] * num_dims
+
+    # Step 3: Randomly assign factors to dimensions
+    for factor in factors:
+        random_dim = rng.randint(0, num_dims - 1)
+        shape[random_dim] *= factor
+
+    # Step 4: Ensure the final shape has the correct volume
+    if math.prod(shape) != vol:
+        raise ValueError("Generated shape does not match the desired volume.")
+
+    return tuple(shape)
 
 
 class TestVerification:
@@ -190,7 +212,7 @@ class TestParamsData:
         seed = 0
         for i in range(len(input_shape)):
             seed += input_shape[i]
-        target_shape = generate_target_shape(test_vector.input_shape, seed=seed)
+        target_shape = generate_random_shape(test_vector.input_shape)
         return [
             {"shape": target_shape},
         ]
