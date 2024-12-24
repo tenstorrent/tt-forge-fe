@@ -86,6 +86,8 @@ class CMakeBuild(build_ext):
             "-DCMAKE_C_COMPILER=clang",
             "-DCMAKE_CXX_COMPILER=clang++",
             "-DTTMLIR_RUNTIME_DEBUG=OFF",
+            "-DCMAKE_C_COMPILER_LAUNCHER=ccache",
+            "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
         ]
 
         self.spawn(["cmake", *cmake_args])
