@@ -6,9 +6,9 @@ from typing import List
 
 import pytest
 import torch
-import transformers
-import forge
 from test.mlir.llava.utils.utils import load_llava_model
+
+import forge
 
 
 @pytest.mark.nightly
@@ -46,7 +46,9 @@ def test_llava_compile(model_path):
     if not all(isinstance(input, torch.Tensor) for input in [input_ids, attention_mask, pixel_values]):
         raise ValueError("All inputs should be tensors")
 
-    class CustomLLavaModel(torch.nn.Module):
+        # Create a wrapper class that will make the model traceable
+
+    class TraceableLLaVa(torch.nn.Module):
         def __init__(self, model):
             super().__init__()
             self.vision_encoder = model.vision_tower
@@ -54,7 +56,7 @@ def test_llava_compile(model_path):
             self.language_model = model.language_model
             self.model = model
 
-        def forward(self, input_ids, attention_mask, pixel_values):
+        def forward(self, input_ids, pixel_values, attention_mask) -> torch.Tensor:
             # Step 1: Obtain embeddings from input IDs
             inputs_embeds = self.language_model.get_input_embeddings()(input_ids)
 
@@ -66,33 +68,19 @@ def test_llava_compile(model_path):
             image_token_mask = (input_ids == self.model.config.image_token_index).unsqueeze(-1).expand_as(inputs_embeds)
             inputs_embeds = inputs_embeds.masked_scatter(image_token_mask, projected_vision_features)
 
-            # finally we use the language model to generate the text
-            return self.language_model.generate(
-                inputs_embeds=inputs_embeds, attention_mask=attention_mask, max_new_tokens=200, do_sample=False
-            )
+            # finally we use the language model to generate the text and return the logits so that we can trace the model
+            return self.language_model(
+                attention_mask=attention_mask,
+                inputs_embeds=inputs_embeds,
+            ).logits
+
+    inputs = [input_ids, pixel_values, attention_mask]
 
     # Wrap the model in our torch.nn.Module
-    model = CustomLLavaModel(model)
+    # framework_model = TraceableLLaVa(model)
 
-    #     # # Compile the model
-    #     # compiled_model = forge.compile(model, inputs)
-
-    inputs_dict = {
-        "input_ids": input_ids,
-        "attention_mask": attention_mask,
-        "pixel_values": pixel_values,
-    }
-
-    # Forward pass through the custom model
-    output = model(**inputs_dict)
-
-    # Debugging intermediate outputs
-    print("Outputs:", output)  # Check if logits shape is as expecte
-
-    decoded_output = processor.decode(output[0], skip_special_tokens=True)
-
-    # Print the decoded output
-    print("Decoded Output:", decoded_output)
+    # Compile the model
+    compiled_model = forge.compile(model, inputs)
 
 
 @pytest.mark.nightly

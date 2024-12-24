@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from transformers import AutoProcessor, LlavaForConditionalGeneration
+from transformers import AutoProcessor, LlavaForConditionalGeneration, LlavaConfig, CLIPVisionConfig, LlamaConfig
 
 import forge
 
@@ -17,7 +17,8 @@ def load_llava_model(model_path="llava-hf/llava-1.5-7b-hf"):
     Returns:
         Tuple: A tuple containing the framework model and processor.
     """
-    model = LlavaForConditionalGeneration.from_pretrained(model_path)
+
+    model = LlavaForConditionalGeneration.from_pretrained(model_path, return_dict=False)
     model = model.eval()
 
     print(model)
