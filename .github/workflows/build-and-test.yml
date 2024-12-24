@@ -179,7 +179,9 @@ jobs:
           fetch-depth: 0 # Fetch all history and tags
 
     - name: unzip build artifacts
+      shell: bash
       run: |
+        apt-get install -y unzip
         mkdir -p dist
         unzip build-forge-ubuntu-latest -d dist
 
@@ -198,7 +200,6 @@ jobs:
     - name: Install wheel
       shell: bash
       run: |
-        source env/activate
         pip install dist/*tvm*.whl
         pip install dist/*tt_forge_fe*.whl
 
