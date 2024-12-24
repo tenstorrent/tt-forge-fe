@@ -178,13 +178,6 @@ jobs:
           submodules: recursive
           fetch-depth: 0 # Fetch all history and tags
 
-    - name: unzip build artifacts
-      shell: bash
-      run: |
-        apt-get install -y unzip
-        mkdir -p dist
-        unzip build-forge-ubuntu-latest -d dist
-
     # Clean everything from submodules (needed to avoid issues
     # with cmake generated files leftover from previous builds)
     - name: Cleanup submodules
@@ -196,6 +189,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-forge-ubuntu-latest
+
+    - name: unzip build artifacts
+      shell: bash
+      run: |
+        apt-get install -y unzip
+        mkdir -p dist
+        unzip build-forge-ubuntu-latest -d dist
 
     - name: Install wheel
       shell: bash
