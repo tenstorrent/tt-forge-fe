@@ -193,6 +193,7 @@ jobs:
     - name: Install wheel
       shell: bash
       run: |
+        source env/activate
         pip install tvm*.whl
         pip install tt_forge_fe*.whl
 
