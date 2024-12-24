@@ -195,7 +195,8 @@ jobs:
       run: |
         source env/activate
         pip install tvm*.whl
-        pip install tt_forge_fe*.whl
+        pip install tt_forge_fe*.whl --no-deps
+        pip freeze
 
     - name: Run Test
       env:
@@ -204,6 +205,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        pip freeze
         apt-get update
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
