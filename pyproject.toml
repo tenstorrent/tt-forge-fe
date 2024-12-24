@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel", "pip"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tt-forge-fe"
+name = "forge"
 description = "AI/ML framework for Tenstorrent devices"
 readme = "README.md"
 license = { file = "LICENSE" }

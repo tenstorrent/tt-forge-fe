@@ -125,7 +125,7 @@ forge_c = TTExtension("forge")
 packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
 setup(
-    name="tt-forge-fe",
+    name="forge",
     version=version,
     install_requires=requirements,
     packages=packages,
