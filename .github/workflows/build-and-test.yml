@@ -195,7 +195,7 @@ jobs:
       run: |
         source env/activate
         pip install tvm*.whl
-        pip install tt_forge_fe*.whl --no-deps
+        pip install tt_forge_fe*.whl
         pip freeze
 
     - name: Run Test
