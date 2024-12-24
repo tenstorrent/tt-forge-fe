@@ -378,7 +378,7 @@ def decompose(type, attr, dc, inputs):
     if isinstance(attr[0], list):
         x = inputs[0]
         for dim in attr[0]:
-            x = dc.op_with_named_attrs("reduce_avg", [x], (dim,))
+            x = dc.op_with_named_attrs("reduce_avg", [x], {"dim_arg": dim, "keep_dim": True}, (dim, True))
         dc.fuse(x)
         return
 

@@ -202,14 +202,15 @@ def decompose(type, attr, dc, inputs):
         if len(inp_scale_shape) == 1:
             # Match ndim with actiavtion
             for i in range(0, left_ndim):
-                inp_scale = dc.op(
-                    "unsqueeze", [inp_scale], attrs=(0, len(inp_scale_shape)), output_df=inp_scale.output_df
+                inp_scale = dc.op_with_named_attrs(
+                    "unsqueeze", [inp_scale], {"dim": 0}, attrs=(0, len(inp_scale_shape)), output_df=inp_scale.output_df
                 )
                 inp_scale_shape = [1] + inp_scale_shape
             for i in range(0, right_ndim):
-                inp_scale = dc.op(
+                inp_scale = dc.op_with_named_attrs(
                     "unsqueeze",
                     [inp_scale],
+                    {"dim": (len(inp_scale_shape))},
                     attrs=(len(inp_scale_shape), len(inp_scale_shape)),
                     output_df=inp_scale.output_df,
                 )
@@ -219,14 +220,15 @@ def decompose(type, attr, dc, inputs):
         if len(out_scale_shape) == 1:
             # Match ndim with actiavtion
             for i in range(0, left_ndim):
-                out_scale = dc.op(
-                    "unsqueeze", [out_scale], attrs=(0, len(out_scale_shape)), output_df=out_scale.output_df
+                out_scale = dc.op_with_named_attrs(
+                    "unsqueeze", [out_scale], {"dim": 0}, attrs=(0, len(out_scale_shape)), output_df=out_scale.output_df
                 )
                 out_scale_shape = [1] + out_scale_shape
             for i in range(0, right_ndim):
-                out_scale = dc.op(
+                out_scale = dc.op_with_named_attrs(
                     "unsqueeze",
                     [out_scale],
+                    {"dim": len(out_scale_shape)},
                     attrs=(len(out_scale_shape), len(out_scale_shape)),
                     output_df=out_scale.output_df,
                 )
@@ -274,11 +276,17 @@ def decompose(type, attr, dc, inputs):
         if len(scale_shape) == 1:
             # Match ndim with actiavtion
             for i in range(0, left_ndim):
-                scale = dc.op("unsqueeze", [scale], attrs=(0, len(scale_shape)), output_df=scale.output_df)
+                scale = dc.op_with_named_attrs(
+                    "unsqueeze", [scale], {"dim": 0}, attrs=(0, len(scale_shape)), output_df=scale.output_df
+                )
                 scale_shape = [1] + scale_shape
             for i in range(0, right_ndim):
-                scale = dc.op(
-                    "unsqueeze", [scale], attrs=(len(scale_shape), len(scale_shape)), output_df=scale.output_df
+                scale = dc.op_with_named_attrs(
+                    "unsqueeze",
+                    [scale],
+                    {"dim": (len(scale_shape))},
+                    attrs=(len(scale_shape), len(scale_shape)),
+                    output_df=scale.output_df,
                 )
                 scale_shape = scale_shape + [1]
 
