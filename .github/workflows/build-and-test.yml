@@ -46,9 +46,10 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - runs-on: [ubuntu-latest]
+          - runs-on: [runner]
 
     runs-on:
+      - in-service
       - ${{ matrix.build.runs-on }}
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
