@@ -48,7 +48,9 @@ jobs:
         build:
           - runs-on: [runner]
 
-    runs-on: ${{ matrix.build.runs-on }}
+    runs-on:
+      - in-service
+      - ${{ matrix.build.runs-on }}
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}
 
@@ -133,6 +135,7 @@ jobs:
         test_group_id: [1,2]
 
     runs-on:
+      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
