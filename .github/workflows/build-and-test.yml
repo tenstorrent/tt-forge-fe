@@ -194,6 +194,7 @@ jobs:
       shell: bash
       run: |
         apt-get install -y unzip
+        ls -l
         mkdir -p dist
         unzip *.zip -d dist
 
