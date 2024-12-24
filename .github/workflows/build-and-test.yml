@@ -29,6 +29,10 @@ on:
         required: false
         type: string
 
+permissions:
+  checks: write
+  pull-requests: write # only required if `comment: true` was enabled
+
 jobs:
 
   docker-build:
@@ -137,6 +141,9 @@ jobs:
         cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
 
     - name: Run Test
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_HUB_DISABLE_PROGRESS_BARS: 1
       shell: bash
       run: |
         source env/activate
@@ -171,3 +178,4 @@ jobs:
       with:
         report_paths: ${{ steps.strings.outputs.test_report_path }}
         check_name: TT-Forge-FE Tests
+        comment: true
