@@ -124,7 +124,9 @@ jobs:
         path: dist/*.whl
 
   run-tests:
-    needs: forge-build
+    needs:
+      - forge-build
+      - docker-build
     strategy:
       fail-fast: false
       matrix:
