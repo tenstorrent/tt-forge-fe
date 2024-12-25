@@ -175,9 +175,11 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
+          submodules: recursive
           sparse-checkout: |
             env/
             forge/test
+            third_party/
           fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
