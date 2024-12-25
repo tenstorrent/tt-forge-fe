@@ -1,4 +1,4 @@
-# Verification
+# Verification in tests
 
 ## General Overview
 
@@ -61,12 +61,14 @@ def test_add():
 ## Verify Config Overview
 
 If `VerifyConfig` isn't passed as a param, default one will be used. Currently through `VerifyConfig` you can disable/enable:
-| Feature                           | Enabled (default) |
-|-----------------------------------|:-----------------:|
-| Verification as a method          | `True`            |
-| Output size check                 | `True`            |
-| Output type check                 | `True`            |
-| Output shape check                | `True`            |
+
+| Feature                           | Name                | Enabled (default) |
+|-----------------------------------|---------------------|:-----------------:|
+| Verification as a method          | `enabled`           | `True`            |
+| Output length check               | `verify_size`       | `True`            |
+| Output type check                 | `verify_dtype`      | `True`            |
+| Output shape check                | `verify_shape`      | `True`            |
+
 
 For more information about `VerifyConfig` you can check `forge/forge/verify/config.py`.
 
@@ -104,7 +106,7 @@ For more information about **Checkers** you can look at `forge/forge/verify/valu
 <br/>
 <br/>
 
-<img src="imgs/checkers/checkers.svg" alt="Checkers" style="width: 1200%;">
+<img src="imgs/checkers/checkers.svg" alt="Checkers" style="width: 120%;">
 
 
 
