@@ -200,6 +200,7 @@ jobs:
         source env/activate
         pip uninstall tvm
         pip uninstall forge
+        rm -rf $TTFORGE_VENV_DIR/lib/python3.10/site-packages/forge
         pip install tvm*.whl
         pip install forge*.whl
         pip freeze
