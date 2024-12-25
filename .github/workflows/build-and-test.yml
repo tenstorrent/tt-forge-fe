@@ -215,9 +215,13 @@ jobs:
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
         export TT_METAL_HOME=$TTFORGE_VENV_DIR/lib/python3.10/site-packages/forge/lib
-        ls -a $TT_METAL_HOME
-        ls -a $TT_FORGE_VENV_DIR/lib/python3.10/site-packages/forge
+
+        ls -a $TT_FORGE_VENV_DIR
+        ls -a $TT_FORGE_VENV_DIR/lib
+        ls -a $TT_FORGE_VENV_DIR/lib/python3.10
         ls -a $TT_FORGE_VENV_DIR/lib/python3.10/site-packages
+        ls -a $TT_FORGE_VENV_DIR/lib/python3.10/site-packages/forge
+        ls -a $TT_METAL_HOME
         pytest -m push --splits 2 \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
