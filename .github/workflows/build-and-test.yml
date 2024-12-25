@@ -197,7 +197,8 @@ jobs:
     - name: Install wheel
       shell: bash
       run: |
-        source env/activate
+        python3 -m venv venv
+        source venv/bin/activate
         pip install tvm*.whl
         pip install forge*.whl
         pip freeze
@@ -208,20 +209,15 @@ jobs:
         HF_HUB_DISABLE_PROGRESS_BARS: 1
       shell: bash
       run: |
-        source env/activate
+        source venv/bin/activate
         pip freeze
         apt-get update
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        export TT_METAL_HOME=$TTFORGE_VENV_DIR/lib/python3.10/site-packages/forge/lib
-
-        ls -a $TTFORGE_VENV_DIR
-        ls -a $TTFORGE_VENV_DIR/lib
-        ls -a $TTFORGE_VENV_DIR/lib/python3.10
-        ls -a $TTFORGE_VENV_DIR/lib/python3.10/site-packages
-        ls -a $TTFORGE_VENV_DIR/lib/python3.10/site-packages/forge
-        ls -a $TT_METAL_HOME
+        export TT_METAL_HOME=$(pwd)/venv/lib/python3.10/site-packages/forge/lib
+        ls -a venv/lib/python3.10/site-packages/forge
+        ls -a venv/lib/python3.10/site-packages/forge/lib
         pytest -m push --splits 2 \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
