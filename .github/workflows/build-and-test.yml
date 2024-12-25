@@ -210,7 +210,7 @@ jobs:
         HF_HUB_DISABLE_PROGRESS_BARS: 1
       shell: bash
       run: |
-        source venv/bin/activate
+        source env/activate
         pip freeze
         apt-get update
         apt install -y libgl1 libglx-mesa0
