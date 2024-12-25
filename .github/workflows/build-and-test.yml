@@ -198,8 +198,8 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        pip install tvm*.whl --force-reinstall
-        pip install forge*.whl --force-reinstall
+        pip install tvm*.whl
+        pip install forge*.whl
         pip freeze
 
     - name: Run Test
@@ -216,11 +216,11 @@ jobs:
         pip install pytest-split
         export TT_METAL_HOME=$TTFORGE_VENV_DIR/lib/python3.10/site-packages/forge/lib
 
-        ls -a $TT_FORGE_VENV_DIR
-        ls -a $TT_FORGE_VENV_DIR/lib
-        ls -a $TT_FORGE_VENV_DIR/lib/python3.10
-        ls -a $TT_FORGE_VENV_DIR/lib/python3.10/site-packages
-        ls -a $TT_FORGE_VENV_DIR/lib/python3.10/site-packages/forge
+        ls -a $TTFORGE_VENV_DIR
+        ls -a $TTFORGE_VENV_DIR/lib
+        ls -a $TTFORGE_VENV_DIR/lib/python3.10
+        ls -a $TTFORGE_VENV_DIR/lib/python3.10/site-packages
+        ls -a $TTFORGE_VENV_DIR/lib/python3.10/site-packages/forge
         ls -a $TT_METAL_HOME
         pytest -m push --splits 2 \
                --group ${{ matrix.test_group_id }} \
