@@ -1,2 +1,9 @@
+# General
 * @nvukobratTT @pilkicTT @dgolubovicTT
+
+# CI/CD
 /.github/ @vmilosevic
+
+# Models
+## PyTorch
+forge/test/models/pytorch @vkovinicTT @mstojkovicTT
