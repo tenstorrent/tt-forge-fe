@@ -175,11 +175,11 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
-          submodules: recursive
           sparse-checkout: |
             env/
             forge/test
-            third_party/
+            pytest.ini
+            .test_durations
           fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
