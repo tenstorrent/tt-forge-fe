@@ -6,6 +6,9 @@ on:
       - "Build and Test"
       - "On PR"
       - "On push"
+      - "On nightly"
+      - "On nightly_sweeps"
+      
     types:
       - completed
 
