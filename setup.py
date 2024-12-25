@@ -38,8 +38,8 @@ class CMakeBuild(build_ext):
             return
 
         cwd = pathlib.Path().absolute()
-        build_dir = cwd / "wheel" / "build"
-        install_dir = cwd / "wheel" / "install"
+        build_dir = cwd / "build"
+        install_dir = cwd / "install"
 
         cmake_args = [
             "-G",
@@ -73,8 +73,8 @@ class CMakeBuild(build_ext):
             return
 
         cwd = pathlib.Path().absolute()
-        build_dir = cwd / "wheel" / "build"
-        install_dir = cwd / "wheel" / "install"
+        build_dir = cwd / "build"
+        install_dir = cwd / "install"
 
         cmake_args = [
             "-G",
@@ -95,6 +95,12 @@ class CMakeBuild(build_ext):
         self.spawn(["cmake", "--install", str(build_dir)])
 
         self.copy_tree(str(install_dir), str(extension_path.parent))
+
+        ttmetal_home = os.getenv("TT_METAL_HOME")
+        assert ttmetal_home is not None
+        self.copy_tree(ttmetal_home + "/tt_metal", str(extension_path.parent) + "/forge/lib/tt_metal")
+        self.copy_tree(ttmetal_home + "/ttnn", str(extension_path.parent) + "/forge/lib/ttnn")
+        self.copy_tree(ttmetal_home + "/runtime", str(extension_path.parent) + "/forge/lib/runtime")
 
 
 with open("README.md", "r") as f:
