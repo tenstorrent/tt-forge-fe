@@ -20,20 +20,20 @@ Most of the above steps `verify()` function does for us:
 ```python
 def test_add():
 
-	class Add(nn.Module):
-		def __init__(self):
-			super().__init__()
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
 
-		def forward(self, a, b):
-			return a + b
+        def forward(self, a, b):
+            return a + b
 
 
-	inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
+    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
-	framework_model = Add()
-	compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    framework_model = Add()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-	verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model)
 ```
 
 **Notes:**
@@ -41,21 +41,21 @@ def test_add():
 ```python
 def test_add():
 
-	class Add(nn.Module):
-		def __init__(self):
-			super().__init__()
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
 
-		def forward(self, a, b):
-			return a + b
+        def forward(self, a, b):
+            return a + b
 
 
-	inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
+    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
-	framework_model = Add()
-	compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    framework_model = Add()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-	fw_out = framework_model(*inputs)
-	co_out = compiled_model(*inputs)
+    fw_out = framework_model(*inputs)
+    co_out = compiled_model(*inputs)
 ```
 
 ## Verify Config Overview
@@ -65,7 +65,7 @@ If `VerifyConfig` isn't passed as a param, default one will be used. Currently t
 | Feature                           | Name                | Enabled (default) |
 |-----------------------------------|---------------------|:-----------------:|
 | Verification as a method          | `enabled`           | `True`            |
-| Output length check               | `verify_size`       | `True`            |
+| Number of output tensors check    | `verify_size`       | `True`            |
 | Output type check                 | `verify_dtype`      | `True`            |
 | Output shape check                | `verify_shape`      | `True`            |
 
@@ -76,21 +76,21 @@ For more information about `VerifyConfig` you can check `forge/forge/verify/conf
 ```python
 def test_add():
 
-	class Add(nn.Module):
-		def __init__(self):
-			super().__init__()
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
 
-		def forward(self, a, b):
-			return a + b
+        def forward(self, a, b):
+            return a + b
 
 
-	inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
+    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
-	framework_model = Add()
-	compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    framework_model = Add()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-	fw_out = framework_model(*inputs)
-	co_out = compiled_model(*inputs)
+    fw_out = framework_model(*inputs)
+    co_out = compiled_model(*inputs)
 
     verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 ```
