@@ -1563,7 +1563,6 @@ def test_indexing(dim, start, stop, stride, shape):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(reason="ttnn.embedding op fails while reshaping the input_tensor in TILE_LAYOUT")
 @pytest.mark.parametrize(
     "indices_shape",
     [
