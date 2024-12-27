@@ -11,7 +11,7 @@
 
 # Dev Notes
 - [Running standalone FFE generated TTIRs](./dev_notes/standalone_ttir_run.md)
-- [Verification in tests](./verification.md)
+- [Verification in tests](./dev_notes/verification.md)
 
 # User Guide
 - [Getting Started](./getting-started.md)

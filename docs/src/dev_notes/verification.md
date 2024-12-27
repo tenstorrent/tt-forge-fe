@@ -2,13 +2,13 @@
 
 ## General Overview
 
-When comparing our `compiled_model` with the `framework_model` (e.g., `PyTorch`), we aim to verify whether the output from the `compiled_model` is sufficiently similar to the output from the `framework_model` (where required degree of similarity is configurable).
+When comparing our `compiled model` with the `framework model` (e.g., `PyTorch` model running on host), we aim to verify whether the output from the `compiled model` is sufficiently similar to the output from the `framework model` (where required degree of similarity is configurable).
 
 So generally we want to perform the following steps:
-1. Create a framework model
-2. Run a forward pass through the framework model
-3. Compile the framework model using `Forge`
-4. Run a forward pass through the compiled model
+1. Create a framework model.
+2. Run a forward pass through the framework model.
+3. Compile the framework model using `Forge`.
+4. Run a forward pass through the compiled model.
 5. Compare the outputs.
 
 Most of the above steps `verify()` function does for us:
@@ -39,23 +39,11 @@ def test_add():
 **Notes:**
 - If you only want to compile model and perform forward pass without comparing outputs you can just:
 ```python
-def test_add():
+framework_model = Add()
+compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    class Add(nn.Module):
-        def __init__(self):
-            super().__init__()
-
-        def forward(self, a, b):
-            return a + b
-
-
-    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
-
-    framework_model = Add()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-
-    fw_out = framework_model(*inputs)
-    co_out = compiled_model(*inputs)
+fw_out = framework_model(*inputs)
+co_out = compiled_model(*inputs)
 ```
 
 ## Verify Config Overview
@@ -66,33 +54,18 @@ If `VerifyConfig` isn't passed as a param, default one will be used. Currently t
 |-----------------------------------|---------------------|:-----------------:|
 | Verification as a method          | `enabled`           | `True`            |
 | Number of output tensors check    | `verify_size`       | `True`            |
-| Output type check                 | `verify_dtype`      | `True`            |
-| Output shape check                | `verify_shape`      | `True`            |
+| Output tensor data type check     | `verify_dtype`      | `True`            |
+| Output tensor shape check         | `verify_shape`      | `True`            |
 
 
 For more information about `VerifyConfig` you can check `forge/forge/verify/config.py`.
 
 **Example of usage**
 ```python
-def test_add():
+framework_model = Add()
+compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    class Add(nn.Module):
-        def __init__(self):
-            super().__init__()
-
-        def forward(self, a, b):
-            return a + b
-
-
-    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
-
-    framework_model = Add()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-
-    fw_out = framework_model(*inputs)
-    co_out = compiled_model(*inputs)
-
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 ```
 </br>
 
@@ -106,7 +79,7 @@ For more information about **Checkers** you can look at `forge/forge/verify/valu
 <br/>
 <br/>
 
-<img src="imgs/checkers/checkers.svg" alt="Checkers" style="width: 120%;">
+<img src="../imgs/checkers/checkers.svg" alt="Checkers" style="width: 120%;">
 
 
 
