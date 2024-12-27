@@ -68,7 +68,11 @@ def test_mistral(variant, test_device):
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
     inputs = [sample_inputs]
 
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral")
+    compiled_model = forge.compile(
+        module,
+        sample_inputs=inputs,
+        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")),
+    )
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
