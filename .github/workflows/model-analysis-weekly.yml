@@ -74,6 +74,9 @@ jobs:
           cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Run Model Analysis Script
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
         shell: bash
         run: |
           source env/activate
