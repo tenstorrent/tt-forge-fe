@@ -125,17 +125,10 @@ common_failure_matching_rules_list = [
             MatchingExceptionRule(
                 "Convert tt-forge attribute to an MLIR attribute", ["RuntimeError", "Unhandled attribute type"]
             ),
-            MatchingExceptionRule(
-                "ttmetal vs Forge Output Data mismatch",
-                ["AssertionError", "assert False", "where False = all([False])"],
-            ),
-            MatchingExceptionRule(
-                "Forge Verification Data mismatch",
-                ["ValueError", "forge/forge/verify/verify.py", "Data mismatch (compare_with_golden)"],
-            ),
+            MatchingExceptionRule("Runtime Datatype Unsupported", ["RuntimeError", "Unhandled dtype Bool"]),
             # Compiled model Runtime
             MatchingExceptionRule(
-                "Runtime Data mismatch", ["RuntimeError", "Tensor", "data type mismatch: expected", "got"]
+                "Runtime Datatype mismatch", ["RuntimeError", "Tensor", "data type mismatch: expected", "got"]
             ),
             MatchingExceptionRule(
                 "Runtime Shape mismatch", ["RuntimeError", "Tensor", "shape mismatch: expected", "got"]
@@ -190,6 +183,14 @@ common_failure_matching_rules_list = [
     MatchingCompilerComponentException(
         CompilerComponent.TT_METAL,
         [
+            MatchingExceptionRule(
+                "TT-Metal vs Forge Output Data mismatch",
+                [
+                    "ValueError",
+                    "Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model",
+                    ", compiled_model",
+                ],
+            ),
             MatchingExceptionRule(
                 "ttnn.tilize validation",
                 [
@@ -332,6 +333,41 @@ common_failure_matching_rules_list = [
                     "tt-metal/ttnn/cpp/ttnn/operations/core/work_split/work_split_tilize.hpp",
                     "logical_shape.rank() >= 2 && logical_shape.rank() <= 4",
                     "Only 2D, 3D, and 4D tensors are supported",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn softmax",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp",
+                    "input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B",
+                    "Inputs must be of bfloat16 or bfloat8_b type",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn unsqueeze_to_4D",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp",
+                    "Tensor rank is greater than 4",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn matmul",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp",
+                    "(input_tensor_a.get_legacy_shape()[-1] / in0_tile_shape[1]) % program_config.in0_block_w == 0",
+                    "Kt must be divisible by in0_block_w",
+                ],
+            ),
+            MatchingExceptionRule(
+                "tt-metal ncrisc build",
+                [
+                    "RuntimeError",
+                    "tt-metal/tt_metal/impl/program/program.cpp",
+                    "Failed to generate binaries for reader_conv_activations_padded_with_halo_3x3_weights_v2",
+                    "ncrisc build failed",
                 ],
             ),
         ],
