@@ -118,14 +118,14 @@ void optimize_tms(Graph *graph)
 }
 
 // Recalculate all node shapes from inputs
-void recalculate_shapes(graphlib::Graph *graph)
+void recalculate_shapes(graphlib::Graph *graph, bool skip_broadcast)
 {
     for (Node *n : graphlib::topological_sort(*graph))
     {
         if (n->node_type() == graphlib::NodeType::kInput)
             continue;
 
-        graphlib::calculate_and_set_node_shape(graph, n);
+        graphlib::calculate_and_set_node_shape(graph, n, skip_broadcast);
     }
 }
 

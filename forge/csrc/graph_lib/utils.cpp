@@ -1539,7 +1539,7 @@ bool tms_support_kernel_broadcast(
 }
 
 // Calculate node shape from operand shapes, using python callback
-void calculate_and_set_node_shape(Graph *graph, Node *node)
+void calculate_and_set_node_shape(Graph *graph, Node *node, bool skip_broadcast)
 {
     log_trace(LogGraphCompiler, "Calculate and set node shape for: {} {}", node->name(), node->get_type());
     // Apply TMs and get post-TM operand shapes
@@ -1555,16 +1555,20 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
     for (graphlib::Edge &e : graph->operand_data_edges(node))
     {
         auto operand_shape = graph->node_by_id(e.producer_node_id)->shape();
-        std::vector<OpType> tms = graph->get_edge_attributes(e)->get_tms();
-        for (OpType tm : tms)
+        if (!skip_broadcast)
         {
-            std::vector<Shape> shapes = {operand_shape};
-            std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-                get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_FORGE, operand_shape.get_tile_dim());
-            operand_shape = std::get<0>(shape_data);
-            TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
-            log_trace(LogGraphCompiler, "    TM {} {}", tm.as_string(), operand_shape);
+            std::vector<OpType> tms = graph->get_edge_attributes(e)->get_tms();
+            for (OpType tm : tms)
+            {
+                std::vector<Shape> shapes = {operand_shape};
+                std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
+                    get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_FORGE, operand_shape.get_tile_dim());
+                operand_shape = std::get<0>(shape_data);
+                TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
+                log_trace(LogGraphCompiler, "    TM {} {}", tm.as_string(), operand_shape);
+            }
         }
+
         log_trace(
             LogGraphCompiler,
             "  Operand[{}] {} {}",

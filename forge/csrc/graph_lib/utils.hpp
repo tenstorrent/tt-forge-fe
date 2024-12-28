@@ -233,7 +233,7 @@ bool tms_support_kernel_broadcast(
     bool is_forge = true);
 
 // Calculate node shape from operand shapes, using python callback
-void calculate_and_set_node_shape(Graph *graph, Node *node);
+void calculate_and_set_node_shape(Graph *graph, Node *node, bool skip_broadcast = false);
 
 tt::graphlib::Node *get_input_queue_producer(Graph const *graph, tt::graphlib::InputNode const *node);
 std::vector<tt::graphlib::UBlockOrder> get_input_ublock_order(Graph const *graph, Node const *node);
