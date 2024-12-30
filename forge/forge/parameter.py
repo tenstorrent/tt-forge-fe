@@ -30,6 +30,7 @@ class Parameter(TensorBase):
         requires_grad: bool = True,
         name: str = None,
         dev_data_format: Optional[DataFormat] = None,
+        use_random_value: bool = False,
     ):
         """
         Create parameter of given shape.
@@ -49,6 +50,9 @@ class Parameter(TensorBase):
 
         dev_data_format: DataFormat, optional
             If set, forces the data type on device. If not provided, the closest type to given value will be used.
+
+        use_random_value: bool, optional
+            If set, parameter value(i.e self._value) will be randomly generated based upon the provided tensor shape(i.e self._tensor_shape) and dataformat(i.e self._data_format)
         """
 
         if len(args) == 0:
@@ -73,6 +77,11 @@ class Parameter(TensorBase):
             self._data_format = pytorch_dtype_to_forge_dataformat(self._value.dtype)
         else:
             self._data_format = DataFormat.Float32  # default
+
+        if self._value is None and use_random_value:
+            self._value = Tensor.create_torch_tensor(
+                shape=self._tensor_shape.get_pytorch_shape(), dtype=forge_dataformat_to_pytorch_dtype(self._data_format)
+            )
 
     def __repr__(self):
         ret = f"Forge Parameter {self.get_name()} {self.shape}"

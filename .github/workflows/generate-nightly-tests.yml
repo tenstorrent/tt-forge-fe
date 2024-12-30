@@ -1,0 +1,11 @@
+name: Generate Nightly Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-nightly-tests:
+    uses: ./.github/workflows/model-analysis.yml
+    secrets: inherit
+    with:
+      nightly_generation: true
