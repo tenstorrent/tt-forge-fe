@@ -35,6 +35,7 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_yolov3_tiny_holli_pytorch(test_device):
@@ -67,6 +68,7 @@ def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
     return model, [img_tensor], {"pcc": pcc}
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_yolov3_holli_pytorch(test_device):

@@ -41,7 +41,6 @@ def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_mobilenetv2_basic(test_device):
     model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(
         test_device,
@@ -68,7 +67,6 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_mobilenetv2_96(test_device):
     model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(
         test_device,
@@ -95,7 +93,6 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_mobilenetv2_160(test_device):
     model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(
         test_device,
@@ -124,7 +121,6 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_mobilenetv2_224(test_device):
     model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(
         test_device,
@@ -162,7 +158,6 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
 
 # @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_mobilenetv2_timm(test_device):
     model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(
         test_device,
@@ -215,7 +210,6 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv2_deeplabv3(variant, test_device):
     model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(

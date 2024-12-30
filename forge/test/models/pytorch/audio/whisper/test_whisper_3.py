@@ -30,7 +30,6 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(
     reason='RuntimeError: TT_ASSERT @ /tt-forge-fe/forge/csrc/passes/commute_utils.cpp:1103: reshape->op_name() == "reshape"'
 )

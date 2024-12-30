@@ -17,7 +17,6 @@ import os
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_clip_pytorch(test_device):
 
     # Set Forge configuration parameters

@@ -49,6 +49,7 @@ def img_preprocess(scal_val=1):
 #########
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.nightly
 def test_retinanet_r101_640x480_onnx(test_device):
@@ -121,6 +122,7 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly

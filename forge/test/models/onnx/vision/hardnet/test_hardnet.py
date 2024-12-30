@@ -16,6 +16,7 @@ from forge._C.backend_api import BackendDevice
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly

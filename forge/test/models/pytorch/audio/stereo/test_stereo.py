@@ -19,7 +19,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail(reason="[optimized_graph] Trying to access element outside of dimensions: 3")
 def test_stereo(variant):

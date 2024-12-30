@@ -9,7 +9,6 @@ from .utils.image_utils import preprocess_input_data
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(
     reason="RuntimeError: TT_FATAL @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Tracking similar issue on ResNet tenstorrent/tt-mlir#1574 "
 )
@@ -32,7 +31,6 @@ def test_regnet(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(
     reason="RuntimeError: TT_FATAL @ tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Tracking similar issue on ResNet tenstorrent/tt-mlir#1574 "
 )

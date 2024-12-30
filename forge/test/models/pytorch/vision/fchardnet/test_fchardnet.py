@@ -14,6 +14,7 @@ import os
 # from fchardnet import get_model, fuse_bn_recursively
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_fchardnet(test_device):

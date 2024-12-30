@@ -184,16 +184,19 @@ class CompilerConfig:
     # Number of patterns to match for each module
     tvm_module_to_num_patterns: Dict[str, int] = field(default_factory=lambda: dict())
 
-    # If enabled, for given test, it generates Forge Modules in form of PyTest for each unique operation configuration within the given module.
+    # If enabled, for given test, it only extracts the unique operation configuration.
+    extract_tvm_unique_ops_config: bool = False
+
+    # If enabled, for given test, it extracts the unique operation configuration and generates Forge Modules in form of PyTest for each unique operation configuration within the given module.
     # Each configuration is based on:
     # - Operand Type (e.g., Activation, Parameter, Constant)
     # - Operand Shape
     # - Operand DataType
     # - Operation Arguments (if any)
-    tvm_generate_unique_op_tests: bool = False
+    tvm_generate_unique_ops_tests: bool = False
 
-    # Export the generated unique operations configurations information with test file path to the excel file
-    export_tvm_generated_unique_op_tests_details: bool = False
+    # Export the unique operations configurations information to the excel file
+    export_tvm_unique_ops_config_details: bool = False
 
     # Enables a transform for conv that directly reads input, such that it goes from stride > 1 to stride = 1
     # This usually translates to lower DRAM BW and less math as the input better populates tiles
@@ -359,9 +362,9 @@ class CompilerConfig:
                 os.environ["FORGE_OVERRIDE_DEVICE_YAML"]
             )
 
-        if "FORGE_EXPORT_TVM_GENERATED_UNIQUE_OP_TESTS_DETAILS" in os.environ:
-            self.export_tvm_generated_unique_op_tests_details = bool(
-                int(os.environ["FORGE_EXPORT_TVM_GENERATED_UNIQUE_OP_TESTS_DETAILS"])
+        if "FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS" in os.environ:
+            self.export_tvm_unique_ops_config_details = bool(
+                int(os.environ["FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS"])
             )
 
     def __post_init__(self):

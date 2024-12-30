@@ -14,6 +14,7 @@ import os
 # from semseg_tri import resnet34_semseg
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo and Hang observed at post_initial_graph_pass")
 @pytest.mark.nightly
 def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
