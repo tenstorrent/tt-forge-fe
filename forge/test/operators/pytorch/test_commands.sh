@@ -32,6 +32,7 @@ function print_help {
     echo "  test_query          - Run subset of test plan based on a query parameters."
     echo "  test_unique         - Run representative examples of all available tests."
     echo "  test_single         - Run single test based on TEST_ID parameter."
+    echo "  test_ids            - Run tests for multile ids from a test id file defined via ID_FILE parameter."
     print_params
 }
 
@@ -48,6 +49,7 @@ function print_params {
     echo "  SKIP_REASONS=$SKIP_REASONS"
     echo "  RANGE=$RANGE"
     echo "  TEST_ID=$TEST_ID"
+    echo "  ID_FILE=$ID_FILE"
     echo "Pytest options:"
     echo "  PYTEST_ADDOPTS = $PYTEST_ADDOPTS"
 }
@@ -79,6 +81,7 @@ function reset_query_params {
     unset SKIP_REASONS
     unset RANGE
     unset TEST_ID
+    unset ID_FILE
     print_params
 }
 
@@ -165,6 +168,10 @@ function test_unique {
 
 function test_single {
     _run_test_all test_single
+}
+
+function test_ids {
+    _run_test_all test_ids
 }
 
 
