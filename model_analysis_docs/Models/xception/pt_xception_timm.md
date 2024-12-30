@@ -932,6 +932,16 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 1000), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <td>MaxPool2d</td>
+      <td>Operand(type=Activation, shape=(1, 128, 147, 147), dtype=float32)</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
       <td></td>
       <td></td>
       <td></td>
@@ -940,43 +950,33 @@
     </tr>
     <tr>
       <td>MaxPool2d</td>
-      <td>Operand(type=Activation, shape=(1, 128, 147, 147), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[MLIR][ttnn.maxpool2d mlir pipeline] RuntimeError ttnn.max_pool2d currently only supports an input type of bfloat16 Failed to run MLIR compiler pass pipeline</td>
-    </tr>
-    <tr>
-      <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 74, 74), dtype=float32)</td>
       <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][ttnn.maxpool2d mlir pipeline] RuntimeError ttnn.max_pool2d currently only supports an input type of bfloat16 Failed to run MLIR compiler pass pipeline</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 728, 37, 37), dtype=float32)</td>
       <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][ttnn.maxpool2d mlir pipeline] RuntimeError ttnn.max_pool2d currently only supports an input type of bfloat16 Failed to run MLIR compiler pass pipeline</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 19, 19), dtype=float32)</td>
       <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][ttnn.maxpool2d mlir pipeline] RuntimeError ttnn.max_pool2d currently only supports an input type of bfloat16 Failed to run MLIR compiler pass pipeline</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>Multiply</td>

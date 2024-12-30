@@ -1002,11 +1002,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage3.2.branches.0.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2832602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1242,11 +1242,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.0.branches.0.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4692602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1262,11 +1262,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.0.branches.0.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4752602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1282,11 +1282,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.0.branches.1.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4992602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1302,11 +1302,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.0.branches.1.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5052602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1352,11 +1352,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.0.branches.2.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5412602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1462,11 +1462,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.1.branches.0.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5982602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1482,11 +1482,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=stage4.1.branches.0.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6042602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1982,11 +1982,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=incre_modules.1.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_9402602, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -2752,11 +2752,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 1000), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Multiply</td>
@@ -5682,21 +5682,21 @@
       <td>Unsqueeze</td>
       <td>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
       <td>dim : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Unsqueeze</td>
       <td>Operand(type=Parameter, shape=(1024,), dtype=float32)</td>
       <td>dim : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Unsqueeze</td>

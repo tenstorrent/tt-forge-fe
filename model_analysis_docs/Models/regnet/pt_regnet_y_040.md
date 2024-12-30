@@ -1412,11 +1412,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 1088), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1088, 1000), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Multiply</td>
@@ -2902,11 +2902,11 @@
       <td>Unsqueeze</td>
       <td>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
       <td>dim : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Unsqueeze</td>

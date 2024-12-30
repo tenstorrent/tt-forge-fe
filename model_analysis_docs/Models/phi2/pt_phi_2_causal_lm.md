@@ -79,6 +79,26 @@
       <td></td>
     </tr>
     <tr>
+      <td>Cast</td>
+      <td>Operand(type=Activation, shape=(1, 256, 2560), dtype=bfloat16)</td>
+      <td>dtype : torch.float32</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Cast</td>
+      <td>Operand(type=Parameter, shape=(51200, 2560), dtype=float32)</td>
+      <td>dtype : torch.bfloat16</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 256, 16), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 16), dtype=float32)</td>
       <td>axis : -1</td>
@@ -120,13 +140,13 @@
     </tr>
     <tr>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(1, 256), dtype=int32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(51200, 2560), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256), dtype=int32)<br><div align='center'>X</div>Operand(type=Activation, shape=(51200, 2560), dtype=bfloat16)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][ttnn.embedding validation] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp weights.get_dtype() == DataType::BFLOAT16</td>
+      <td></td>
     </tr>
     <tr>
       <td>Gelu</td>

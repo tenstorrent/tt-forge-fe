@@ -79,6 +79,26 @@
       <td></td>
     </tr>
     <tr>
+      <td>Cast</td>
+      <td>Operand(type=Parameter, shape=(51200, 2560), dtype=float32)</td>
+      <td>dtype : torch.bfloat16</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Cast</td>
+      <td>Operand(type=Activation, shape=(1, 11, 2560), dtype=bfloat16)</td>
+      <td>dtype : torch.float32</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 11, 16), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 11, 16), dtype=float32)</td>
       <td>axis : -1</td>
@@ -120,13 +140,13 @@
     </tr>
     <tr>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(1, 11), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(51200, 2560), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 11), dtype=int64)<br><div align='center'>X</div>Operand(type=Activation, shape=(51200, 2560), dtype=bfloat16)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][ttnn.embedding validation] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp a.get_dtype() == DataType::UINT32 or a.get_dtype() == DataType::BFLOAT16 Input must be UINT32 or BFLOAT16</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>Gelu</td>
@@ -234,9 +254,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
@@ -262,30 +282,30 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(11, 2560), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2560, 10240), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
       <td></td>
     </tr>
     <tr>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 11, 10240), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(10240, 2560), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 11, 2560), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2560, 2), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
       <td></td>
     </tr>
     <tr>

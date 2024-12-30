@@ -1102,11 +1102,11 @@
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16, 1024, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][tt-metal ncrisc build] RuntimeError tt-metal/tt_metal/impl/program/program.cpp Failed to generate binaries for reader_conv_activations_padded_with_halo_3x3_weights_v2 ncrisc build failed</td>
     </tr>
     <tr>
       <td>Conv2d</td>
@@ -1312,11 +1312,11 @@
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)</td>
       <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][ttnn.maxpool2d mlir pipeline] RuntimeError ttnn.max_pool2d currently only supports an input type of bfloat16 Failed to run MLIR compiler pass pipeline</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>Multiply</td>

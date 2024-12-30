@@ -232,11 +232,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 334, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4096, 12288), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
@@ -272,31 +272,31 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(334, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4096, 4096), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 334, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4096, 16384), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 334, 16384), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16384, 4096), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Multiply</td>
