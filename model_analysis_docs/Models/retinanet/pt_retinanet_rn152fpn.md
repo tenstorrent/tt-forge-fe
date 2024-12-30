@@ -962,11 +962,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.7.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1811238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -992,11 +992,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.8.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1901238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1052,11 +1052,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.10.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2081238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1112,11 +1112,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.12.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2261238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1142,11 +1142,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.13.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2351238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1232,11 +1232,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.16.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2621238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1262,11 +1262,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.17.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2711238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1292,11 +1292,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.18.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2801238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1322,11 +1322,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.19.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2891238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1352,11 +1352,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.20.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2981238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1382,11 +1382,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.21.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3071238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1412,11 +1412,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.22.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3161238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1442,11 +1442,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.23.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3251238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1472,11 +1472,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.24.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3341238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1502,11 +1502,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.25.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3431238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1532,11 +1532,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.26.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3521238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1562,11 +1562,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.27.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3611238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -1712,11 +1712,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=backbones.ResNet152FPN.features.layer3.32.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4061238, dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Add</td>
@@ -2342,11 +2342,11 @@
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 64, 240, 320), dtype=float32)</td>
       <td>kernel_size : 3<br>stride : 2<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][ttnn.maxpool2d mlir pipeline] RuntimeError ttnn.max_pool2d currently only supports an input type of bfloat16 Failed to run MLIR compiler pass pipeline</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>Multiply</td>

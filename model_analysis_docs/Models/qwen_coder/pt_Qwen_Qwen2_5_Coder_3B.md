@@ -89,6 +89,26 @@
       <td></td>
     </tr>
     <tr>
+      <td>Cast</td>
+      <td>Operand(type=Parameter, shape=(151936, 2048), dtype=float32)</td>
+      <td>dtype : torch.bfloat16</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Cast</td>
+      <td>Operand(type=Activation, shape=(1, 35, 2048), dtype=bfloat16)</td>
+      <td>dtype : torch.float32</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 35, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 35, 64), dtype=float32)</td>
       <td>axis : -1</td>
@@ -130,13 +150,13 @@
     </tr>
     <tr>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(1, 35), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(151936, 2048), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 35), dtype=int64)<br><div align='center'>X</div>Operand(type=Activation, shape=(151936, 2048), dtype=bfloat16)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][ttnn.embedding validation] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/embedding/device/embedding_device_operation.cpp a.get_dtype() == DataType::UINT32 or a.get_dtype() == DataType::BFLOAT16 Input must be UINT32 or BFLOAT16</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td></td>
     </tr>
     <tr>
       <td>Identity</td>
@@ -202,11 +222,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(35, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 2048), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
@@ -252,11 +272,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 35, 11008), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(11008, 2048), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
@@ -610,6 +630,16 @@
     </tr>
     <tr>
       <td>Transpose</td>
+      <td>Operand(type=Parameter, shape=(256, 2048), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 64, 35), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
@@ -632,16 +662,6 @@
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 35, 16, 128), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(256, 2048), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
