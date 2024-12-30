@@ -912,11 +912,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 1024, 1280), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1280, 320), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
@@ -962,11 +962,11 @@
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(1, 256, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 512), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Matmul</td>
@@ -1150,6 +1150,16 @@
     </tr>
     <tr>
       <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)</td>
+      <td>shape : (1, 256, 64, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Reshape</td>
       <td>Operand(type=Activation, shape=(256, 512), dtype=float32)</td>
       <td>shape : (1, 256, 512)</td>
       <td>&#x2705;</td>
@@ -1252,16 +1262,6 @@
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 2, 4096, 256), dtype=float32)</td>
       <td>shape : (2, 4096, 256)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)</td>
-      <td>shape : (1, 256, 64, 64)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2030,6 +2030,16 @@
     </tr>
     <tr>
       <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 64, 256), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 256, 8, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
@@ -2041,16 +2051,6 @@
     <tr>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(64, 64), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 64, 256), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2742,11 +2742,11 @@
       <td>Unsqueeze</td>
       <td>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
       <td>dim : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <td>Unsqueeze</td>
