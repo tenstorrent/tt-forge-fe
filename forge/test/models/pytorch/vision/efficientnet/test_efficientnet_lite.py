@@ -9,6 +9,7 @@ from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite 
 import os
 import torch
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -26,7 +27,8 @@ def test_efficientnet_lite_0_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_0")
+    module_name = build_module_name(framework="pt", model="efficientnet_lite_0")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
 
@@ -53,7 +55,8 @@ def test_efficientnet_lite_1_pytorch(test_device):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
 
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    module_name = build_module_name(framework="pt", model="efficientnet_lite_1")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -80,7 +83,8 @@ def test_efficientnet_lite_2_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    module_name = build_module_name(framework="pt", model="efficientnet_lite_2")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -107,8 +111,8 @@ def test_efficientnet_lite_3_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    module_name = build_module_name(framework="pt", model="efficientnet_lite_3")
+    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name=module_name)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -135,9 +139,9 @@ def test_efficientnet_lite_4_pytorch(test_device):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name="pt_efficientnet_lite_3")
 
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_efficientnet_lite_3")
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)

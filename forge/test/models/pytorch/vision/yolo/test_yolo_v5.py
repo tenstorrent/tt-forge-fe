@@ -6,6 +6,7 @@ from test.utils import download_model
 import torch
 import forge
 import os
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -35,7 +36,8 @@ def test_yolov5_320x320(test_device, size):
     )
     ouputs = model(inputs[0])
     name = "yolov5" + size
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_320x320")
+    module_name = build_module_name(framework="pt", model="yolo_v5", variant="320x320")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -66,7 +68,8 @@ def test_yolov5_640x640(test_device, size):
     )
     ouputs = model(inputs[0])
     name = "yolov5" + size
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_640x640")
+    module_name = build_module_name(framework="pt", model="yolo_v5", variant="640x640")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size):
@@ -92,7 +95,8 @@ def test_yolov5_480x480(test_device, size):
     )
     ouputs = model(inputs[0])
     name = "yolov5" + size
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + name + "_480x480")
+    module_name = build_module_name(framework="pt", model="yolo_v5", variant="480x480")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -108,4 +112,5 @@ def test_yolov5_1280x1280(test_device):
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor]
     ouputs = model(inputs[0])
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_yolov5s_1280x1280")
+    module_name = build_module_name(framework="pt", model="yolov_5", variant="1280x1280")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

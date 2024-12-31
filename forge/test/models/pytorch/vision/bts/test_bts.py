@@ -9,6 +9,7 @@ import forge
 from PIL import Image
 import pytest
 import os
+from forge.test.models.utils import build_module_name
 
 # import sys
 
@@ -64,4 +65,5 @@ def test_bts_pytorch(test_device, variant):
 
     inputs = [image]
 
-    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name="pt_" + str(variant))
+    module_name = build_module_name(framework="pt", model="bts", variant=variant)
+    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name=module_name)

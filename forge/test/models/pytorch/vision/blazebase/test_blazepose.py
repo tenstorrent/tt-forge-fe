@@ -9,6 +9,7 @@ import forge
 import torch
 import sys
 import os
+from forge.test.models.utils import build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -38,7 +39,8 @@ def test_blazepose_detector_pytorch(test_device):
     _, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name="pt_blazepose_detector")
+    module_name = build_module_name(framework="pt", model="blazepose", task="detector")
+    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name=module_name)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -52,7 +54,8 @@ def test_blazepose_regressor_pytorch(test_device):
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
     img2 = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name="pt_blazepose_regressor")
+    module_name = build_module_name(framework="pt", model="blazepose", task="regressor")
+    compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name=module_name)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -76,7 +79,8 @@ def test_blaze_palm_pytorch(test_device):
     img1, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name="pt_palm_detector")
+    module_name = build_module_name(framework="pt", model="blazepose", task="palm")
+    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name=module_name)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -92,4 +96,5 @@ def test_blaze_hand_pytorch(test_device):
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
     sample_tensor = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name="pt_hand_regressor")
+    module_name = build_module_name(framework="pt", model="blazepose", task="hand")
+    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name=module_name)

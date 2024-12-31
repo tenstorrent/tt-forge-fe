@@ -8,6 +8,7 @@ import torch
 import requests
 import os
 from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -37,4 +38,5 @@ def test_pytorch_ssd300_resnet50(test_device):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_ssd300_resnet50")
+    module_name = build_module_name(framework="pt", model="ssd300_resnet50")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

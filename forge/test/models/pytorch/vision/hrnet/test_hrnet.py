@@ -17,6 +17,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge.test.models.utils import build_module_name
 
 from test.utils import download_model
 
@@ -89,7 +90,8 @@ def test_hrnet_osmr_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_osmr_{variant}")
+    module_name = build_module_name(framework="pt", model="hrnet", variant=variant, task="osmr")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_hrnet_imgcls_timm_pytorch(variant):
@@ -155,4 +157,5 @@ def test_hrnet_timm_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_timm_{variant}")
+    module_name = build_module_name(framework="pt", model="hrnet", variant=variant, source="timm")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

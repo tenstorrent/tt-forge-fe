@@ -5,6 +5,7 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
+from forge.test.models.utils import build_module_name
 
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
@@ -38,6 +39,5 @@ def test_xglm_causal_lm(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="xglm", variant=variant, task="causal_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

@@ -15,6 +15,7 @@ from transformers import (
 )
 import os
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 def get_sample_data(model_name):
@@ -72,9 +73,8 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
 
     model.eval()
     # Run inference on Tenstorrent device
-    compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="preciverio", variant=variant, task="image_classification")
+    compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(pixel_values)

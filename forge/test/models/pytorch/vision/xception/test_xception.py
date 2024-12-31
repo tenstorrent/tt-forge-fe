@@ -10,6 +10,7 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 import os
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_xception_imgcls_timm(test_device, variant):
@@ -47,4 +48,5 @@ def test_xception_timm(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")
+    module_name = build_module_name(framework="pt", model="xception", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

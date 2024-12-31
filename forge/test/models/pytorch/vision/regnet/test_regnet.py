@@ -6,6 +6,7 @@ from transformers import AutoImageProcessor, RegNetModel, RegNetForImageClassifi
 import forge
 from forge.verify.verify import verify
 from .utils.image_utils import preprocess_input_data
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -24,9 +25,8 @@ def test_regnet(variant):
     inputs = preprocess_input_data(image_url, variant)
 
     # Compiler test
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="regnet", variant=variant)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify(inputs, framework_model, compiled_model)
 
@@ -47,8 +47,7 @@ def test_regnet_img_classification(variant):
     inputs = preprocess_input_data(image_url, variant)
 
     # Compiler test
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="regnet", variant=variant, task="image_classification")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify(inputs, framework_model, compiled_model)

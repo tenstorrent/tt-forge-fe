@@ -7,6 +7,7 @@ from PIL import Image
 import os
 import torch
 import forge
+from forge.test.models.utils import build_module_name
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
@@ -42,7 +43,8 @@ def test_yolov3_tiny_holli_pytorch(test_device):
         test_device,
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_tiny_holli")
+    module_name = build_module_name(framework="pt", model="yolov_3", variant="tiny_holli_pytorch")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
@@ -75,4 +77,5 @@ def test_yolov3_holli_pytorch(test_device):
         None,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_yolov3_holli")
+    module_name = build_module_name(framework="pt", model="yolo_v3", variant="holli_pytorch")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

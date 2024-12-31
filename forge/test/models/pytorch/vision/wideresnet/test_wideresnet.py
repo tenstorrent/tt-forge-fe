@@ -12,6 +12,7 @@ from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 import urllib
 import os
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_wideresnet_imgcls_pytorch(test_device, variant):
@@ -54,7 +55,8 @@ def test_wideresnet_pytorch(variant, test_device):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_hub")
+    module_name = build_module_name(framework="pt", model="wideresnet_pytorch", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_wideresnet_imgcls_timm(test_device, variant):
@@ -91,4 +93,5 @@ def test_wideresnet_timm(variant, test_device):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")
+    module_name = build_module_name(framework="pt", model="wideresnet", source="timm", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

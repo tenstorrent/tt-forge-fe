@@ -16,6 +16,7 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
+from forge.test.models.utils import build_module_name
 
 
 variants = [
@@ -59,7 +60,8 @@ def test_openpose_basic(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
+    module_name = build_module_name(framework="pt", model="openpose", variant=variant, task="basic")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
@@ -95,4 +97,5 @@ def test_openpose_osmr(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
+    module_name = build_module_name(framework="pt", model="openpose", variant=variant, task="osmr")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

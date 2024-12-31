@@ -7,6 +7,7 @@ import pytest
 
 import forge
 from forge.verify.verify import verify
+from forge.test.models.utils import build_module_name
 
 from .utils import load_inputs, load_model
 
@@ -30,8 +31,7 @@ def test_stereo(variant):
     input_ids, attn_mask, decoder_input_ids = load_inputs(framework_model, processor)
     inputs = [input_ids, attn_mask, decoder_input_ids]
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify(inputs, framework_model, compiled_model)

@@ -17,6 +17,7 @@ variants = [
 ]
 import torch
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -63,9 +64,8 @@ def test_codegen(test_device, variant):
     out = framework_model(input_ids, attn_mask)
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="codegen", variant=variant)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
     fw_out = framework_model(*inputs)

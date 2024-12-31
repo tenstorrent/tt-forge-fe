@@ -8,6 +8,7 @@ from types import SimpleNamespace
 import pytest
 import cv2
 import os
+from forge.test.models.utils import build_module_name
 
 # import sys
 # sys.path.append("third_party/confidential_customer_models/internal/tri_basic_2/scripts")
@@ -41,4 +42,5 @@ def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
 
     print("type(image_tensor)", type(image_tensor))
     inputs = image_tensor
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_tri_basic_2_semseg")
+    module_name = build_module_name(framework="pt", model="tri_basic_2", variant=variant, task="semseg")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

@@ -11,6 +11,7 @@ import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -134,7 +135,8 @@ def test_t5_generation(variant, test_device):
 
     inputs = [decoder_input_ids, encoder_outputs]
     variant_name = variant.replace("-", "_").replace("/", "_")
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
+    module_name = build_module_name(framework="pt", model="t5", variant=variant, task="generation")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(*inputs)
         fw_out = model(*inputs)

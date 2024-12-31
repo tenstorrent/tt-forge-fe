@@ -12,6 +12,7 @@ from transformers import (
 import pytest
 import forge
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
@@ -56,9 +57,8 @@ def test_phi2_clm(variant, test_device):
     fw_out = model(*inputs)
 
     # Inference
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
-    )
+    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="causal_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -96,9 +96,8 @@ def test_phi2_token_classification(variant, test_device):
     fw_out = model(*inputs)
 
     # Inference
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
-    )
+    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="token_classification")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 
@@ -138,9 +137,8 @@ def test_phi2_sequence_classification(variant, test_device):
     fw_out = model(*inputs)
 
     # Inference
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
-    )
+    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="sequence_classification")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 

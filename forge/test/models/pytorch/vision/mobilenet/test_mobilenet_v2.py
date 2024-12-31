@@ -20,6 +20,7 @@ from transformers import MobileNetV2ForSemanticSegmentation
 import forge
 from test.utils import download_model
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
@@ -47,7 +48,8 @@ def test_mobilenetv2_basic(test_device):
         test_device,
         "pytorch/vision:v0.10.0",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_basic")
+    module_name = build_module_name(framework="pt", model="mobilenet_v2_basic")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
@@ -74,7 +76,8 @@ def test_mobilenetv2_96(test_device):
         test_device,
         "google/mobilenet_v2_0.35_96",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_96")
+    module_name = build_module_name(framework="pt", model="mobilenetv2", variant="96")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
@@ -101,7 +104,8 @@ def test_mobilenetv2_160(test_device):
         test_device,
         "google/mobilenet_v2_0.75_160",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_160")
+    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant="160")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
@@ -130,7 +134,8 @@ def test_mobilenetv2_224(test_device):
         test_device,
         "google/mobilenet_v2_1.0_224",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_224")
+    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant="224")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
@@ -168,7 +173,8 @@ def test_mobilenetv2_timm(test_device):
         test_device,
         "mobilenetv2_100",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="mobilenetv2_timm")
+    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant="100", source="timm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
@@ -222,4 +228,5 @@ def test_mobilenetv2_deeplabv3(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="mobilenetv2_deeplabv3")
+    module_name = build_module_name(framework="pt", model="mobilnet_v2", variant="deeplabv3")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

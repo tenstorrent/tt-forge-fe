@@ -10,6 +10,7 @@ import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
 from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, preprocess_steps, preprocess_timm_model
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(test_device, variant):
@@ -35,6 +36,7 @@ def test_vovnet_osmr_pytorch(variant, test_device):
         test_device,
         variant,
     )
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
 
 
@@ -57,6 +59,7 @@ def test_vovnet_v1_39_stigma_pytorch(test_device, enable_default_dram_parameters
         None,
     )
 
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_vovnet_39_stigma")
 
 
@@ -78,6 +81,7 @@ def test_vovnet_v1_57_stigma_pytorch(test_device):
         test_device,
         None,
     )
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"vovnet_57_stigma_pt")
 
 
@@ -101,4 +105,5 @@ def test_vovnet_timm_pytorch(variant, test_device):
         test_device,
         variant,
     )
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")

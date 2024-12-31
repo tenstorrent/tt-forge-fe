@@ -13,6 +13,7 @@ from transformers import (
     GPTNeoConfig,
     GPTNeoForSequenceClassification,
 )
+from forge.test.models.utils import build_module_name
 
 
 variants = [
@@ -62,11 +63,8 @@ def test_gptneo_causal_lm(variant, test_device):
             return self.model(input_ids, None, attention_mask)
 
     inputs = [inputs["input_ids"], inputs["attention_mask"]]
-    compiled_model = forge.compile(
-        Wrapper(model),
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
-    )
+    module_name = build_module_name(framework="pt", model="gptneo", variant=variant, task="causal_lm")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
 
 
 variants = [
@@ -113,8 +111,5 @@ def test_gptneo_sequence_classification(variant, test_device):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
-    compiled_model = forge.compile(
-        Wrapper(model),
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_seq_cls",
-    )
+    module_name = build_module_name(framework="pt", model="gptneo", variant=variant, task="sequence_classification")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)

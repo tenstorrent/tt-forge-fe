@@ -10,6 +10,7 @@ from test.utils import download_model
 import forge
 from forge.verify.verify import verify
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -31,9 +32,8 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     inputs = load_image(url, feature_extractor)
 
     # STEP 3: Run inference on Tenstorrent device
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="swin", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, model, compiled_model)
 
 
@@ -49,9 +49,8 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="swin", variant=variant)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, framework_model, compiled_model)
 
 
@@ -67,9 +66,8 @@ def test_swin_v2_tiny_image_classification(variant):
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="swin", variant=variant, task="image_classification")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, framework_model, compiled_model)
 
 
@@ -85,7 +83,6 @@ def test_swin_v2_tiny_masked(variant):
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="swin", variant=variant, task="masked")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, framework_model, compiled_model)

@@ -14,6 +14,7 @@ from test.models.pytorch.multimodal.clip.utils.clip_model import (
     CLIPPostProcessingWrapper,
 )
 import os
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -44,6 +45,5 @@ def test_clip_pytorch(test_device):
     text_model = CLIPTextWrapper(model)
     inputs = [inputs[0], inputs[2]]
 
-    compiled_model = forge.compile(
-        text_model, sample_inputs=inputs, module_name="pt_" + str(model_ckpt.split("/")[-1].replace("-", "_")) + "_text"
-    )
+    module_name = build_module_name(framework="pt", model="clip_text", variant=model_ckpt)
+    compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name=module_name)

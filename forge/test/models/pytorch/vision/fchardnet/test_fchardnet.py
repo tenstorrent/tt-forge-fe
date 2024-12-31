@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 import sys
 import os
+from forge.test.models.utils import build_module_name
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -39,4 +40,5 @@ def test_fchardnet(test_device):
     model = fuse_bn_recursively(model)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name="fchardnet")
+    module_name = build_module_name(framework="pt", model="fchardnet")
+    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=module_name)

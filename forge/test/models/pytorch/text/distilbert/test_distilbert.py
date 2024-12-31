@@ -4,6 +4,7 @@
 import pytest
 from test.utils import download_model
 import forge
+from forge.test.models.utils import build_module_name
 from transformers import (
     DistilBertForMaskedLM,
     DistilBertTokenizer,
@@ -43,7 +44,8 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_masked_lm")
+    module_name = build_module_name(framework="pt", model="distilbert", variant=variant, task="mlm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -80,7 +82,8 @@ def test_distilbert_question_answering_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_question_answering")
+    module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="qa")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -108,7 +111,8 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_sequence_classification")
+    module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="seqcls")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -135,4 +139,5 @@ def test_distilbert_token_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_token_classification")
+    module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="token_cls")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

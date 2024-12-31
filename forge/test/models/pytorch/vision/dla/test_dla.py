@@ -19,6 +19,7 @@ from test.models.pytorch.vision.dla.utils.dla_model import (
     dla102x2,
     dla169,
 )
+from forge.test.models.utils import build_module_name
 
 
 variants_func = {
@@ -63,4 +64,5 @@ def test_dla_pytorch(variant, test_device):
 
     pytorch_model = func(pretrained="imagenet")
     pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="dla", variant=variant)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=module_name)

@@ -14,6 +14,7 @@ import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
@@ -38,7 +39,8 @@ def test_mobilenetv1_basic(test_device):
         None,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_basic")
+    module_name = build_module_name(framework="pt", model="mobilenet_v1", variant="basic")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -75,7 +77,8 @@ def test_mobilenetv1_192(test_device):
         test_device,
         "google/mobilenet_v1_0.75_192",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_192")
+    module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
@@ -104,4 +107,5 @@ def test_mobilenetv1_224(test_device):
         test_device,
         "google/mobilenet_v1_1.0_224",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_224")
+    module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

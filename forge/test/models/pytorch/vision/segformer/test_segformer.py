@@ -9,6 +9,7 @@ from transformers import SegformerForImageClassification, SegformerForSemanticSe
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
 
 import forge
+from forge.test.models.utils import build_module_name
 
 
 variants_img_classification = [
@@ -43,9 +44,8 @@ def test_segformer_image_classification_pytorch(test_device, variant):
     # Load the sample image
     pixel_values = get_sample_data(variant)
 
-    compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="image_classifcation")
+    compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
 
 
 variants_semseg = [
@@ -72,6 +72,5 @@ def test_segformer_semantic_segmentation_pytorch(test_device, variant):
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="semantic_segmentation")
+    compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)

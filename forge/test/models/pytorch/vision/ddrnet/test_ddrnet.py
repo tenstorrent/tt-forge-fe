@@ -8,6 +8,7 @@ import requests
 from PIL import Image
 import pytest
 import sys
+from forge.test.models.utils import build_module_name
 
 # sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 # from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock
@@ -62,6 +63,7 @@ def test_ddrnet_pytorch(variant, test_device):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
 
 
@@ -112,4 +114,5 @@ def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
     input_image = Image.open(image_path)
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="ddrnet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

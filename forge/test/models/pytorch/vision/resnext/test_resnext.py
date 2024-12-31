@@ -11,6 +11,7 @@ from test.utils import download_model
 from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
 
 import forge
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -29,7 +30,8 @@ def test_resnext_50_torchhub_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_torchhub")
+    module_name = build_module_name(framework="pt", model="resnext_torchhub", variant="50")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -48,7 +50,8 @@ def test_resnext_101_torchhub_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_torchhub")
+    module_name = build_module_name(framework="pt", model="resnext_torchhub", variant="101")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -69,7 +72,8 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_fb_wsl")
+    module_name = build_module_name(framework="pt", model="resnext_fb_wsl", variant="101")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -89,7 +93,8 @@ def test_resnext_14_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext14_osmr")
+    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="14")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -108,7 +113,8 @@ def test_resnext_26_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext26_osmr")
+    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="26")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -127,7 +133,8 @@ def test_resnext_50_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_osmr")
+    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="50")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -146,4 +153,5 @@ def test_resnext_101_osmr_pytorch(test_device):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_osmr")
+    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="101")
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

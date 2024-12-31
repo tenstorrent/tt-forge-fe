@@ -5,6 +5,7 @@ import os
 import pytest
 import torch
 import forge
+from forge.test.models.utils import build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
@@ -31,4 +32,5 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     input_shape = (1, 3, 300, 300)
     inputs = [torch.rand(input_shape)]
-    compiled_model = forge.compile(net, sample_inputs=inputs, module_name="pt_mobilenet_v1_ssd")
+    module_name = build_module_name(framework="pt", model="mobilenet_v1", variant="ssd")
+    compiled_model = forge.compile(net, sample_inputs=inputs, module_name=module_name)

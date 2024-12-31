@@ -105,7 +105,7 @@ class _OSA_stage(nn.Sequential):
             self.add_module("Pooling", nn.MaxPool2d(kernel_size=3, stride=2, ceil_mode=True))
 
         module_name = f"OSA{stage_num}_1"
-        self.add_module(module_name, _OSA_module(in_ch, stage_ch, concat_ch, layer_per_block, module_name))
+        self.add_module(module_name, _OSA_module(in_ch, stage_ch, concat_ch, layer_per_blockmodule_name=module_name))
         for i in range(block_per_stage - 1):
             module_name = f"OSA{stage_num}_{i+2}"
             self.add_module(

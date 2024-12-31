@@ -9,6 +9,7 @@ from PIL import Image
 from torchvision import transforms
 import os
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
@@ -68,7 +69,8 @@ def test_hardnet_pytorch(test_device, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="hardnet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(input_batch)
 

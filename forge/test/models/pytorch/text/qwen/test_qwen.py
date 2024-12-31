@@ -6,6 +6,7 @@ import forge
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import torch
 import re
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -44,7 +45,8 @@ def test_qwen1_5_causal_lm(test_device):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_causal_lm")
+    module_name = build_module_name(framework="pt", model="qwen", variant=variant, task="causal_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def parse_chat_completion(text: str):
@@ -108,4 +110,5 @@ def test_qwen1_5_chat(test_device):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_chat")
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

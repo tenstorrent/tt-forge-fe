@@ -6,6 +6,7 @@ import forge
 import pytest
 import torch
 from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequenceClassification
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -31,7 +32,8 @@ def test_roberta_masked_lm(test_device):
     attention_mask[input_tokens != 1] = 1
 
     inputs = [input_tokens, attention_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_masked_lm")
+    module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="masked_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -58,4 +60,5 @@ def test_roberta_sentiment_pytorch(test_device):
         return_tensors="pt",
     )
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_sentiment")
+    module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="sentiment")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

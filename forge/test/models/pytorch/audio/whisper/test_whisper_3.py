@@ -11,6 +11,8 @@ import pytest
 import torch
 from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
 import forge
+from forge.test.models.utils import build_module_name
+from forge.verify.verify import verify, VerifyConfig
 
 
 class Wrapper(torch.nn.Module):
@@ -54,8 +56,7 @@ def test_whisper_large_v3_speech_translation(variant):
     data_input = [decoder_input_ids, encoder_outputs]
 
     # Compiler test
-    compiled_model = forge.compile(
-        model, sample_inputs=data_input, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=data_input, module_name=module_name)
 
     verify(data_input, model, compiled_model, VerifyConfig(verify_allclose=False))

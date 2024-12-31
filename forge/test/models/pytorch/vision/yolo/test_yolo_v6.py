@@ -7,6 +7,7 @@ import pytest
 import requests
 from yolov6 import YOLOV6
 from test.models.pytorch.vision.yolo.utils.yolov6_utils import check_img_size, process_image
+from forge.test.models.utils import build_module_name
 
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
@@ -47,7 +48,8 @@ def test_yolo_v6_pytorch(variant, test_device):
     input_batch = img.unsqueeze(0)
 
     # STEP 4 : Inference
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="yolo_v6", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

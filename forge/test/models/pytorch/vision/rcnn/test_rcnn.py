@@ -13,6 +13,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 import forge
+from forge.test.models.utils import build_module_name
 
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN
@@ -76,6 +77,7 @@ def test_rcnn_pytorch(test_device):
 
         rect_transform = transform(rect_img)
         inputs = rect_transform.unsqueeze(0)
-        compiled_model = forge.compile(model, sample_inputs=[inputs], module_name="pt_rcnn")
+        module_name = build_module_name(framework="pt", model="rcnn")
+        compiled_model = forge.compile(model, sample_inputs=[inputs], module_name=module_name)
 
         break  # As generated proposals will be around 2000, halt inference after getting result from single proposal.

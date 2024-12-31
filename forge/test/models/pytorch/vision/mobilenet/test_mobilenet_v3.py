@@ -19,6 +19,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from test.utils import download_model
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
@@ -49,7 +50,8 @@ def test_mobilenetv3_basic(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="mobilenetv3", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
@@ -104,7 +106,8 @@ def test_mobilenetv3_timm(variant, test_device):
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="mobilnetv3", source="timm", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)

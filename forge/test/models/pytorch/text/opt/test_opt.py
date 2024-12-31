@@ -5,6 +5,8 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, OPTForCausalLM, OPTConfig, OPTForQuestionAnswering, OPTForSequenceClassification
+from forge.test.models.utils import build_module_name
+
 
 variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 
@@ -39,10 +41,11 @@ def test_opt_causal_lm(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="causal_lm")
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
+        module_name,
     )
 
 
@@ -75,10 +78,11 @@ def test_opt_qa(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="qa")
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_qa",
+        module_name,
     )
 
 
@@ -111,8 +115,9 @@ def test_opt_sequence_classification(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="sequence_classification")
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_seq_cls",
+        module_name,
     )

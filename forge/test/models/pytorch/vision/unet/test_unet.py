@@ -14,6 +14,7 @@ import numpy as np
 import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
@@ -36,7 +37,8 @@ def test_unet_osmr_cityscape_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_cityscapes_osmr")
+    module_name = build_module_name(framework="pt", model="unet", variant="cityscape_osmr")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def get_imagenet_sample():
@@ -78,7 +80,8 @@ def test_unet_holocron_pytorch(test_device):
     model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_unet_holocron")
+    module_name = build_module_name(framework="pt", model="unet", variant="holocron")
+    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
 
 def generate_model_unet_imgseg_smp_pytorch(variant):
@@ -118,7 +121,8 @@ def test_unet_qubvel_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_qubvel_pt")
+    module_name = build_module_name(framework="pt", model="unet", variant="qubvel")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
@@ -166,4 +170,5 @@ def test_unet_torchhub_pytorch(test_device):
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_torchhub")
+    module_name = build_module_name(framework="pt", model="unet")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

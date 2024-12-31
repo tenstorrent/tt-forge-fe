@@ -27,6 +27,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
     FuyuModelImgDecoderWrapper,
     FuyuModelTxtDecoderWrapper,
 )
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -36,7 +37,8 @@ def test_fuyu8b(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
-    config = FuyuConfig.from_pretrained("adept/fuyu-8b")
+    variant = "adept/fuyu-8b"
+    config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
@@ -44,12 +46,12 @@ def test_fuyu8b(test_device):
     config = FuyuConfig(**config_dict)
 
     # Load post-processing modules  (run on CPU)
-    tokenizer = AutoTokenizer.from_pretrained("adept/fuyu-8b")
+    tokenizer = AutoTokenizer.from_pretrained(variant)
     image_processor = FuyuImageProcessor()
     processor = FuyuProcessor(image_processor=image_processor, tokenizer=tokenizer)
 
     # Create Forge module from PyTorch model
-    fuyu_model = FuyuForCausalLM.from_pretrained("adept/fuyu-8b", config=config)
+    fuyu_model = FuyuForCausalLM.from_pretrained(variant, config=config)
     # fuyu_model = FuyuForCausalLM(config=config)
     model = FuyuModelWrapper(fuyu_model)
     model.eval()
@@ -72,7 +74,8 @@ def test_fuyu8b(test_device):
     inputs_embeds = inputs_embeds.clone().detach()
 
     inputs = [inputs_embeds]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fuyu_8b")
+    module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     os.remove("bus.png")
 
 

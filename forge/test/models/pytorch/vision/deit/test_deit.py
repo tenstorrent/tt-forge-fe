@@ -11,6 +11,7 @@ from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
 from test.utils import download_model
+from forge.test.models.utils import build_module_name
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):
@@ -48,6 +49,5 @@ def test_vit_base_classify_224_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="deit", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

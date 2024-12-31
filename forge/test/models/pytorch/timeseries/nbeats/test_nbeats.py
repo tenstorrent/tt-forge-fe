@@ -14,6 +14,7 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -33,7 +34,8 @@ def test_nbeats_with_seasonality_basis(test_device):
         layer_size=2048,
     )
     pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_seasonality")
+    module_name = build_module_name(framework="pt", model="nbeats", variant=variant, task="seasionality_basis")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
     fw_out = pytorch_model(*inputs)
@@ -55,7 +57,8 @@ def test_nbeats_with_generic_basis(test_device):
     pytorch_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
     pytorch_model.eval()
 
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_generic")
+    module_name = build_module_name(framework="pt", model="nbeats", variant=variant, task="generic_basis")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
     fw_out = pytorch_model(*inputs)
@@ -84,7 +87,8 @@ def test_nbeats_with_trend_basis(test_device):
     )
     pytorch_model.eval()
 
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name="nbeats_trend")
+    module_name = build_module_name(framework="pt", model="nbeats", variant=variant, task="trend_basis")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
     fw_out = pytorch_model(*inputs)
