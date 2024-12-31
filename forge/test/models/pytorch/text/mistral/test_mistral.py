@@ -13,6 +13,7 @@ from test.models.pytorch.text.mistral.utils.model_utils import (
     multinomial_sample_one_no_sync,
     logits_to_probs,
 )
+from forge.test.models.utils import build_module_name
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -36,7 +37,7 @@ def test_mistral_decoder_layer(variant, test_device):
 
     sample_inputs = torch.randn(batch_size, seqlen, hidden_dim)
     inputs = [sample_inputs]
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral_decoder")
+    compiled_model = forge.compile(module, sample_inputs=inputs, module_name=module_name)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -68,10 +69,11 @@ def test_mistral(variant, test_device):
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
     inputs = [sample_inputs]
 
+    module_name = build_module_name(framework="pt", model="mistral", variant=variant)
     compiled_model = forge.compile(
         module,
         sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")),
+        module_name,
     )
 
 

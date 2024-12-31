@@ -15,6 +15,7 @@ from test.utils import download_model
 import forge
 import torch
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 variants = ["ghostnet_100"]
 
@@ -43,7 +44,8 @@ def test_ghostnet_timm(variant, test_device):
     transforms = create_transform(**data_config, is_training=False)
     img_tensor = transforms(img).unsqueeze(0)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="ghostnet", variant=variant, source="timm")
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
     fw_out = framework_model(img_tensor)
 

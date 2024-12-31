@@ -9,6 +9,7 @@ import os
 import torch
 import torchxrayvision as xrv
 from test.models.pytorch.vision.densenet.utils.densenet_utils import get_input_img, get_input_img_hf_xray
+from forge.test.models.utils import build_module_name
 
 
 variants = ["densenet121", "densenet121_hf_xray"]
@@ -39,7 +40,8 @@ def test_densenet_121_pytorch(variant, test_device):
     model(img_tensor)
     inputs = [img_tensor]
     variant_name = variant.replace("-", "_")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant_name}")
+    module_name = build_module_name(framework="pt", model="densenet121", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -57,7 +59,8 @@ def test_densenet_161_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_161")
+    module_name = build_module_name(framework="pt", model="densenet161", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -75,7 +78,8 @@ def test_densenet_169_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_169")
+    module_name = build_module_name(framework="pt", model="densenet169", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -93,4 +97,5 @@ def test_densenet_201_pytorch(test_device):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_densenet_201")
+    module_name = build_module_name(framework="pt", model="densenet201", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

@@ -5,6 +5,7 @@ import torch
 import forge
 import pytest
 from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -21,4 +22,6 @@ def test_fpn_pytorch(test_device):
     feat2 = torch.rand(1, 2048, 8, 8)
 
     inputs = [feat0, feat1, feat2]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_fpn")
+
+    module_name = build_module_name(framework="pt", model="fpn")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

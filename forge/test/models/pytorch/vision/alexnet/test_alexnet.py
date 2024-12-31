@@ -11,6 +11,7 @@ import pytest
 import forge
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import os
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -44,7 +45,8 @@ def test_alexnet_torchhub(test_device):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_torchhub")
+    module_name = build_module_name(framework="pt", model="alexnet")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -78,4 +80,5 @@ def test_alexnet_osmr(test_device):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_osmr")
+    module_name = build_module_name(framework="pt", model="alexnet", task="osmr")
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

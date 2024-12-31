@@ -10,6 +10,7 @@ import os
 import pytest
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -37,7 +38,8 @@ def test_conv_ae_pytorch(test_device):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
 
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_conv_ae")
+    module_name = build_module_name(framework="pt", model="conv_autoencoder")
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -69,7 +71,8 @@ def test_linear_ae_pytorch(test_device):
     fw_out = model(sample_tensor)
 
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_linear_ae")
+    module_name = build_module_name(framework="pt", model="linear_autoencoder")
+    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name=module_name)
     co_out = compiled_model(sample_tensor)
 
     co_out = [co.to("cpu") for co in co_out]

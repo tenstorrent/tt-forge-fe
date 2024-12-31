@@ -28,6 +28,7 @@ import pytest
 import os
 import forge
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
+from forge.test.models.utils import build_module_name
 
 
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
@@ -82,7 +83,8 @@ def test_yolox_pytorch(variant, test_device):
 
     inputs = [img_tensor]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="yolox", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         co_out = compiled_model(*inputs)

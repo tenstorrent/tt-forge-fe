@@ -17,6 +17,7 @@ from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
 import os
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
@@ -73,7 +74,8 @@ def test_efficientnet_timm(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_timm")
+    module_name = build_module_name(framework="pt", model="efficientnet", variant=variant, source="timm")
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -134,7 +136,8 @@ def test_efficientnet_torchvision(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_torchvision")
+    module_name = build_module_name(framework="pt", model="efficientnet_torchvision", variant=variant)
+    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
 
     co_out = [co.to("cpu") for co in co_out]

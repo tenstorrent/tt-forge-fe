@@ -11,6 +11,7 @@ import shutil
 from test.models.pytorch.vision.retinanet.utils.model import Model
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 import forge
+from forge.test.models.utils import build_module_name
 
 
 variants = [
@@ -57,7 +58,8 @@ def test_retinanet(variant, test_device):
     # Prepare input
     input_batch = img_preprocess()
     inputs = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="retinanet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)

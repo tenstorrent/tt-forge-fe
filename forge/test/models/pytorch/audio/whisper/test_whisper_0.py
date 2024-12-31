@@ -23,6 +23,7 @@ import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
+from forge.test.models.utils import build_module_name
 import time
 
 variants = [
@@ -108,9 +109,8 @@ def test_whisper(test_device, variant):
         variant,
     )
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly

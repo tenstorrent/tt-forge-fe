@@ -9,6 +9,7 @@ import forge
 from PIL import Image
 from loguru import logger
 import os
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -44,4 +45,5 @@ def test_googlenet_pytorch(test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
     input_batch_list = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=input_batch_list, module_name="pt_googlenet")
+    module_name = build_module_name(framework="pt", model="googlenet")
+    compiled_model = forge.compile(model, sample_inputs=input_batch_list, module_name=module_name)

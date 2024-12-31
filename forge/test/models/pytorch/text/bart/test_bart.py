@@ -10,6 +10,7 @@ import pytest
 import forge
 
 from forge.config import CompileDepth, _get_global_compiler_config
+from forge.test.models.utils import build_module_name
 
 
 class BartWrapper(torch.nn.Module):
@@ -52,4 +53,5 @@ def test_pt_bart_classifier(test_device):
     # Compile & feed data
     pt_mod = BartWrapper(model.model)
 
-    compiled_model = forge.compile(pt_mod, sample_inputs=inputs, module_name="pt_bart")
+    module_name = build_module_name(framework="pt", model="bart", variant=model_name)
+    compiled_model = forge.compile(pt_mod, sample_inputs=inputs, module_name=module_name)

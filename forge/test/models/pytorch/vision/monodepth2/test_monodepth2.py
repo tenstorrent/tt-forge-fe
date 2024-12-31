@@ -5,6 +5,7 @@
 import pytest
 import forge
 from test.models.pytorch.vision.monodepth2.utils.utils import download_model, load_model, load_input
+from forge.test.models.utils import build_module_name
 
 variants = [
     "mono_640x192",
@@ -32,6 +33,5 @@ def test_monodepth2(variant):
     input_tensor = load_input(height, width)
 
     # Forge inference
-    compiled_model = forge.compile(
-        model, sample_inputs=[input_tensor], module_name=f"pt_{variant.replace('x', '_').replace('+', '_')}"
-    )
+    module_name = build_module_name(framework="pt", model="monodepth2", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[input_tensor], module_name=module_name)

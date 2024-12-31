@@ -13,6 +13,7 @@ import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -29,9 +30,8 @@ def test_detr_detection(variant):
     input_batch = preprocess_input_data(image_url)
 
     # Compiler test
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=[input_batch], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="detr", variant=variant, task="detection")
+    compiled_model = forge.compile(framework_model, sample_inputs=[input_batch], module_name=module_name)
 
     verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
 
@@ -52,8 +52,7 @@ def test_detr_segmentation(variant):
     pytest.xfail(reason="AssertionError: TVM einsum decomposition does not support bqnc,bnchw->bqnhw yet.")
 
     # Compiler test
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=[input_batch], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="detr", variant=variant, task="segmentation")
+    compiled_model = forge.compile(framework_model, sample_inputs=[input_batch], module_name=module_name)
 
     verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))

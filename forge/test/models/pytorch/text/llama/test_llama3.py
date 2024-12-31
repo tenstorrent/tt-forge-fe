@@ -10,6 +10,8 @@ from test.utils import download_model
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification
 import forge
 from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
+from forge.test.models.utils import build_module_name
+
 
 variants = [
     "meta-llama/Meta-Llama-3-8B",
@@ -152,10 +154,11 @@ def test_llama3_causal_lm(variant, test_device):
 
     inputs = [input_ids, attn_mask]
 
+    module_name = build_module_name(framework="pt", model="llama3", variant=variant, task="causal_lm")
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        module_name="pt_" + (str(variant.split("/")[-1].replace("-", "_"))).replace(".", "_") + "_causal_lm",
+        module_name,
     )
 
 
@@ -183,8 +186,9 @@ def test_llama3_sequence_classification(variant, test_device):
 
     inputs = [input_ids]
 
+    module_name = build_module_name(framework="pt", model="llama3", variant=variant, task="sequence_classification")
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        module_name="pt_" + (str(variant.split("/")[-1].replace("-", "_"))).replace(".", "_") + "_seq_cls",
+        module_name,
     )

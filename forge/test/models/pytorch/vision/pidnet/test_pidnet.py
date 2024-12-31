@@ -8,6 +8,7 @@ import sys
 import cv2
 import numpy as np
 import torch
+from forge.test.models.utils import build_module_name
 
 
 import forge
@@ -52,4 +53,5 @@ def test_pidnet_pytorch(variant, test_device):
     model.load_state_dict(model_dict)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="pidnet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=module_name)

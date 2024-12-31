@@ -15,6 +15,7 @@ from forge import (
 )
 from test.utils import download_model
 from forge.transformers.pipeline import pipeline as forge_pipeline
+from forge.test.models.utils import build_module_name
 
 
 def cpu_sanity_run_0():
@@ -87,7 +88,8 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     print(out)
 
     inputs = [x, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rotary_embedding")
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rotary_embedding")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -126,7 +128,8 @@ def test_gemma_2b_rms_norm(test_device, variant):
     out = pytorch_model(x)
     print(out)
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_rms_norm")
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rms_norm")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -168,7 +171,8 @@ def test_gemma_2b_attention(test_device, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_attention")
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="attention")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -208,7 +212,8 @@ def test_gemma_2b_mlp(test_device, variant):
     print(out)
 
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_mlp")
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="mlp")
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -250,7 +255,8 @@ def test_gemma_2b_single_decoder(test_device, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b_single_decoder")
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -290,7 +296,8 @@ def test_gemma_2b(test_device, variant):
     attn_mask = inputs["attention_mask"]
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name="pt_gemma_2b")
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly

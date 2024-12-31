@@ -5,6 +5,7 @@ from test.utils import download_model
 import forge
 import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -30,4 +31,7 @@ def test_squeezebert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_squeezebert")
+    module_name = build_module_name(
+        framework="pt", model="squeezebert", variant=variant, task="sequence_classification"
+    )
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

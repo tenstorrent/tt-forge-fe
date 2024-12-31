@@ -14,6 +14,8 @@ from transformers import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
+
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
 
@@ -45,9 +47,8 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="context_encoder")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 
@@ -86,9 +87,8 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="question_encoder")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 
@@ -126,9 +126,8 @@ def test_dpr_reader_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="reader")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 

@@ -8,6 +8,7 @@ import forge
 import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
@@ -38,7 +39,8 @@ def test_gpt2_text_gen(test_device):
     ).to(torch.int64)
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name="pt_gpt2_generation")
+    module_name = build_module_name(framework="pt", model="gpt2", variant=variant, task="text_gen")
+    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)

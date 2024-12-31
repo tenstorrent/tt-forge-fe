@@ -4,6 +4,7 @@
 import pytest
 import forge
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from forge.test.models.utils import build_module_name
 
 
 # Variants for testing
@@ -41,6 +42,5 @@ def test_qwen_response(variant):
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
     inputs = [input_ids, attention_mask]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name=f"pt_{variant.replace('/', '_').replace('.', '_').replace('-', '_')}"
-    )
+    module_name = build_module_name(framework="pt", model="qwen_v2", variant=variant, task="response")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

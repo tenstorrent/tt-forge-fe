@@ -11,6 +11,8 @@ from PIL import Image
 from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
 from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
 from forge.verify.compare import compare_with_golden
+from forge.test.models.utils import build_module_name
+
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image = Image.open(requests.get(url, stream=True).raw)
@@ -58,9 +60,8 @@ def test_vilt_question_answering_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(
-        model, sample_inputs=[inputs[0], inputs[1]], module_name="pt_ViLt_question_answering"
-    )
+    module_name = build_module_name(framework="pt", model="vilt", variant=variant, task="qa", source="hf")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]], module_name=module_name)
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(test_device, variant):
@@ -103,7 +104,8 @@ def test_vilt_maskedlm_hf_pytorch(variant, test_device):
         test_device,
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_ViLt_maskedlm")
+    module_name = build_module_name(framework="pt", model="vilt", variant=variant, task="mlm", source="hf")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
 
