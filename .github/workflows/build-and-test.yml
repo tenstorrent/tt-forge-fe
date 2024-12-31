@@ -143,8 +143,13 @@ jobs:
 
     - name: Run Test
       env:
+        # Setup HuggingFace
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
         HF_HUB_DISABLE_PROGRESS_BARS: 1
+
+        # Configure logging levels for the test
+        LOGGER_LEVEL: INFO
+        LOGURU_LEVEL: INFO
       shell: bash
       run: |
         source env/activate
