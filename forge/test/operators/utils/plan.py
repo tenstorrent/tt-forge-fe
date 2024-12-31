@@ -4,6 +4,7 @@
 
 # Test plan management utilities
 
+from random import Random
 import types
 import pytest
 import forge
@@ -29,6 +30,7 @@ from forge.op_repo import TensorShape
 from .datatypes import OperatorParameterTypes
 from .pytest import PytestParamsUtils
 from .compat import TestDevice
+from .utils import RateLimiter
 
 
 class InputSource(Enum):
@@ -216,6 +218,13 @@ class TestQuery:
             if allow_or_skip == found:
                 yield test_vector
 
+    def _filter_sample(self, percent: float, random_seed: int) -> Generator[TestVector, None, None]:
+        rng = Random(random_seed)
+        rate_limiter = RateLimiter(rng, 100 * 10**5, int(percent * 10**5))
+        for test_vector in self.test_vectors:
+            if rate_limiter.is_allowed():
+                yield test_vector
+
     def _filter_group_limit(self, groups: List[str], limit: int) -> Generator[TestVector, None, None]:
         groups_count = {}
         for test_vector in self.test_vectors:
@@ -266,6 +275,10 @@ class TestQuery:
         """Skip test vectors based on the indices"""
         indices = list(args)
         return TestQuery(self._filter_indices(indices, allow_or_skip=False))
+
+    def sample(self, percent: float, random_seed: int = 0) -> "TestQuery":
+        """Filter test vectors based on sampling percentage"""
+        return TestQuery(self._filter_sample(percent, random_seed))
 
     def group_limit(self, groups: List[str], limit: int) -> "TestQuery":
         """Limit the number of test vectors per group"""
