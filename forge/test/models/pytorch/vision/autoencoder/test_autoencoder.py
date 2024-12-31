@@ -1,27 +1,30 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
+import pytest
 import torchvision.transforms as transforms
 from datasets import load_dataset
-from forge.verify.compare import compare_with_golden
-import os
-import pytest
+
+import forge
+from forge.verify.verify import verify
+
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.nightly
-def test_conv_ae_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_conv_ae_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="conv")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
-    model = ConvAE()
+    framework_model = ConvAE()
 
     # Define transform to normalize data
     transform = transforms.Compose(
@@ -36,18 +39,27 @@ def test_conv_ae_pytorch(test_device):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
 
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_conv_ae")
+    inputs = [sample_tensor]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_linear_ae_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
+def test_linear_ae_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="linear")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
-    model = LinearAE()
+    framework_model = LinearAE()
 
     # Define transform to normalize data
     transform = transforms.Compose(
@@ -63,13 +75,10 @@ def test_linear_ae_pytorch(test_device):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).squeeze(0)
 
-    # Sanity
-    fw_out = model(sample_tensor)
+    inputs = [sample_tensor]
 
-    # Inference
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name="pt_linear_ae")
-    co_out = compiled_model(sample_tensor)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

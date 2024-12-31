@@ -1,37 +1,39 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import urllib
+
 import pytest
-from test.utils import download_model
-
-import forge
-
-from pytorchcv.model_provider import get_model as ptcv_get_model
-import os
-import torch
-from PIL import Image
-from torchvision import transforms
-from vgg_pytorch import VGG
-from loguru import logger
 import timm
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-import urllib
 from torchvision import transforms
+from vgg_pytorch import VGG
 
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_osmr_pytorch(variant, test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_vgg_osmr_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant=variant)
 
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -53,15 +55,22 @@ def test_vgg_osmr_pytorch(variant, test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}_osmr")
+    inputs = [input_batch]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_vgg_19_hf_pytorch(test_device):
+def test_vgg_19_hf_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE)
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -71,8 +80,8 @@ def test_vgg_19_hf_pytorch(test_device):
     vgg16, vgg16_bn
     vgg19, vgg19_bn
     """
-    model = download_model(VGG.from_pretrained, "vgg19")
-    model.eval()
+    framework_model = download_model(VGG.from_pretrained, "vgg19")
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -93,7 +102,14 @@ def test_vgg_19_hf_pytorch(test_device):
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
         )
         input_batch = torch.rand(1, 3, 224, 224)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_19_hf")
+
+    inputs = [input_batch]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def preprocess_timm_model(model_name):
@@ -116,27 +132,39 @@ def preprocess_timm_model(model_name):
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_timm_pytorch(test_device):
+def test_vgg_bn19_timm_pytorch(record_forge_property):
+    variant = "vgg19_bn"
+
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     torch.multiprocessing.set_sharing_strategy("file_system")
-    model_name = "vgg19_bn"
-    model, image_tensor = download_model(preprocess_timm_model, model_name)
+    framework_model, image_tensor = download_model(preprocess_timm_model, variant)
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    inputs = [image_tensor]
 
-    compiled_model = forge.compile(model, sample_inputs=[image_tensor], module_name=f"pt_{model_name}_timm")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_torchhub_pytorch(test_device):
+def test_vgg_bn19_torchhub_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TORCH_HUB
+    )
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -158,4 +186,10 @@ def test_vgg_bn19_torchhub_pytorch(test_device):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_vgg_bn19_torchhub")
+    inputs = [input_batch]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

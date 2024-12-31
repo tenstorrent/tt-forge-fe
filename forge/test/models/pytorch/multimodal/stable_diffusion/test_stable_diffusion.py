@@ -2,33 +2,32 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 
-import torch
-
-# from diffusers import StableDiffusionPipeline
-# from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
-import forge
-
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
-    stable_diffusion_preprocessing,
-    initialize_compiler_overrides,
     denoising_loop,
     stable_diffusion_postprocessing,
+    stable_diffusion_preprocessing,
 )
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
-def test_stable_diffusion_pytorch(variant="CompVis/stable-diffusion-v1-4", batch_size=1):
+@pytest.mark.parametrize("variant", ["CompVis/stable-diffusion-v1-4"])
+def test_stable_diffusion_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    batch_size = 1
 
     # Set inference steps
     num_inference_steps = 50
 
     # Load model
     pipe = StableDiffusionPipeline.from_pretrained(variant)
-
-    # Initialize Model
-    initialize_compiler_overrides()
 
     # Sample prompt
     prompt = "An image of a cat"

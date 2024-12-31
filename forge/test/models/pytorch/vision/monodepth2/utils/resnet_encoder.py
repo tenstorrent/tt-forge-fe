@@ -9,11 +9,10 @@
 # available in the LICENSE file.
 
 import numpy as np
-
 import torch
 import torch.nn as nn
-import torchvision.models as models
 import torch.utils.model_zoo as model_zoo
+import torchvision.models as models
 
 
 class ResNetMultiImageInput(models.ResNet):

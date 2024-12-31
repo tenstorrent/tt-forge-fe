@@ -22,3 +22,15 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-added-large-files
+  - repo: https://github.com/hakancelikdev/unimport
+    rev: 1.2.1
+    hooks:
+      - id: unimport
+        args: ["--ignore-init", "--gitignore"]
+        files: ^forge/test/models/pytorch  # Targets only pytorch models tests
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        files: ^forge/test/models/pytorch  # Targets only pytorch models tests
+        args: ["--settings-path", ".isort.cfg", "--filter-files"]

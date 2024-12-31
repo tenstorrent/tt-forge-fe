@@ -8,8 +8,6 @@
 # which allows for non-commercial use only, the full terms of which are made
 # available in the LICENSE file.
 
-import numpy as np
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 

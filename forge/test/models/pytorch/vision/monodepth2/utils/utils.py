@@ -9,19 +9,20 @@
 # which allows for non-commercial use only, the full terms of which are made
 # available in the LICENSE file.
 
-import os
 import hashlib
+import os
 import zipfile
-from six.moves import urllib
-import torch
 from io import BytesIO
-import requests
-from PIL import Image
+
 import PIL.Image as pil
+import requests
+import torch
+from PIL import Image
+from six.moves import urllib
 from torchvision import transforms
 
-from test.models.pytorch.vision.monodepth2.utils.resnet_encoder import ResnetEncoder
 from test.models.pytorch.vision.monodepth2.utils.depth_decoder import DepthDecoder
+from test.models.pytorch.vision.monodepth2.utils.resnet_encoder import ResnetEncoder
 
 
 def download_model(model_name):

@@ -1,16 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-import pytest
-import sys
-
 import cv2
 import numpy as np
+import pytest
 import torch
 
-
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path.append("tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/model")
 # from model_pidnet import update_model_config, get_seg_model
@@ -22,11 +21,12 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_pidnet_pytorch(variant, test_device):
+def test_pidnet_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="pidnet", variant=variant)
 
-    # STEP 1: Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
@@ -42,15 +42,21 @@ def test_pidnet_pytorch(variant, test_device):
 
     # Load model
     cfg_model_pretrained, cfg_model_state_file = update_model_config(variant)
-    model = get_seg_model(variant, cfg_model_pretrained, imgnet_pretrained=True)
+    framework_model = get_seg_model(variant, cfg_model_pretrained, imgnet_pretrained=True)
     pretrained_dict = torch.load(cfg_model_state_file, map_location=torch.device("cpu"))
 
     if "state_dict" in pretrained_dict:
         pretrained_dict = pretrained_dict["state_dict"]
-    model_dict = model.state_dict()
+    model_dict = framework_model.state_dict()
     pretrained_dict = {k[6:]: v for k, v in pretrained_dict.items() if k[6:] in model_dict.keys()}
     model_dict.update(pretrained_dict)
-    model.load_state_dict(model_dict)
-    model.eval()
+    framework_model.load_state_dict(model_dict)
+    framework_model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=f"pt_{variant}")
+    inputs = [input_image]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
