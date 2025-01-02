@@ -28,7 +28,7 @@ void optimize_tms(std::vector<graphlib::OpType> &tms);
 void optimize_tms(Graph *graph);
 
 // Recalculate all node shapes from inputs
-void recalculate_shapes(graphlib::Graph *graph);
+void recalculate_shapes(graphlib::Graph *graph, bool skip_broadcast = false);
 
 std::vector<int> get_factors(int num);  // !!! This function is unused !!!
 
