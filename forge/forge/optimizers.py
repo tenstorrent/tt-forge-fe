@@ -475,6 +475,167 @@ class Adam(Optimizer):
         return self.torch_optimizer
 
 
+class RMSprop(Optimizer):
+    def __init__(
+        self,
+        learning_rate: float,
+        alpha: float = 0.99,
+        epsilon: float = 1e-8,
+        weight_decay: float = 0.0,
+        momentum: float = 0.0,
+        centered: bool = False,
+        parameters: Optional[List[Parameter]] = None,
+    ):
+        super().__init__(parameters)
+        self.alpha = alpha
+        self.eps = epsilon
+        self.weight_decay = weight_decay
+        self.momentum = momentum
+        self.centered = centered
+        self.learning_rate = learning_rate
+        self.parameter_to_opt_inputs = {}
+        self.parameter_to_opt_torch_inputs = {}
+        self.torch_optimizer = None
+        
+        if parameters:
+            self.set_parameters_to_optimize(parameters)
+
+    def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+        params = {"torch_square_avg": torch.zeros(shape, dtype=dtype)}
+        if self.momentum > 0:
+            params["torch_buffer"] = torch.zeros(shape, dtype=dtype)
+        if self.centered:
+            params["torch_grad_avg"] = torch.zeros(shape, dtype=dtype)
+        return params
+
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+        params = {
+            "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
+            "variance": Tensor.create_from_torch(torch.zeros(shape, dtype=dtype))
+        }
+        if self.momentum > 0:
+            params["buffer"] = Tensor.create_from_torch(torch.zeros(shape, dtype=dtype))
+        if self.centered:
+            params["grad_avg"] = Tensor.create_from_torch(torch.zeros(shape, dtype=dtype))
+        return params
+
+    def set_parameters_to_optimize(self, parameters: List[Parameter]):
+        for parameter in parameters:
+            if parameter.requires_grad:
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+        
+
+    def get_optimizer_state_keys(self) -> List:
+        keys = ["variance"]
+        if self.momentum > 0:
+            keys.append("buffer")
+        if self.centered:
+            keys.append("grad_avg")
+        return keys
+
+    def generate_op_trace(self, ac, parameter, gradient):
+        parameter_shape = parameter.shape.as_list()
+        
+        if self.weight_decay != 0:
+            gradient = ac.op("add", (gradient, ac.op("multiply", (ac.tensor(torch.full(parameter_shape, self.weight_decay)), parameter))))
+
+        # v_t ← αv_{t-1} + (1-α)g_t^2
+        variance = ac.input("variance", parameter.shape, copy_consteval_operations=True)
+        alpha = ac.tensor(torch.full(parameter_shape, self.alpha))
+        one_minus_alpha = ac.tensor(torch.full(parameter_shape, 1 - self.alpha))
+        gradient_squared = ac.op("multiply", (gradient, gradient))
+        updated_square_avg = ac.op("add", (ac.op("multiply", (variance, alpha)), ac.op("multiply", (gradient_squared, one_minus_alpha))))
+
+        
+        if self.centered:
+            # g_t^{ave} ← g_{t-1}^{ave}α + (1-α)g_t
+            grad_avg = ac.input("grad_avg", parameter.shape, copy_consteval_operations=True)
+            updated_grad_avg = ac.op("add",
+                (ac.op("multiply", (grad_avg, alpha)),
+                 ac.op("multiply", (gradient, one_minus_alpha))))
+            
+            # ṽ_t ← v_t - (g_t^{ave})^2
+            grad_avg_squared = ac.op("multiply", (updated_grad_avg, updated_grad_avg))
+            centered_square_avg = ac.op("subtract", (updated_square_avg, grad_avg_squared))
+            ac.loopback(updated_grad_avg, grad_avg)
+        else:
+            centered_square_avg = updated_square_avg
+
+        from forge.op.eval.forge.sqrt import Sqrt
+        from forge.op.eval.forge.reciprocal import Reciprocal
+
+        # Add epsilon and take sqrt
+        sqrt_term = ac.op("add", (ac.op(Sqrt.create(), (centered_square_avg,)), ac.tensor(torch.full(parameter_shape, self.eps))))
+        
+        if self.momentum > 0:
+            # b_t ← μb_{t-1} + g_t/(√ṽ_t + ε)
+            buffer = ac.input("buffer", parameter.shape, copy_consteval_operations=True)
+            momentum = ac.tensor(torch.full(parameter_shape, self.momentum))
+            grad_over_sqrt = ac.op("multiply", (gradient, ac.op(Reciprocal.create(), (sqrt_term,))))
+            updated_buffer = ac.op("add",
+                (ac.op("multiply", (buffer, momentum)),
+                 grad_over_sqrt))
+            step = updated_buffer
+            ac.loopback(updated_buffer, buffer)
+        else:
+            # θ_t ← θ_{t-1} - γg_t/(√ṽ_t + ε)
+            step = ac.op("multiply", (gradient, ac.op(Reciprocal.create(), (sqrt_term,))))
+
+        # Final update
+        parameter_delta = ac.op("multiply", (step, ac.input("lr", parameter.shape)))
+        updated_parameter = ac.op("subtract", (parameter, parameter_delta))
+        ac.loopback(updated_square_avg, variance)
+        
+        return updated_parameter
+
+    def get_type(self) -> str:
+        return "rmsprop"
+
+    def torch_parameter_update(self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor) -> torch.Tensor:
+        if self.weight_decay != 0:
+            gradient = gradient + self.weight_decay * parameter
+
+        square_avg = self.parameter_to_opt_torch_inputs[parameter_name]["torch_square_avg"]
+        square_avg.mul_(self.alpha).addcmul_(gradient, gradient, value=1 - self.alpha)
+
+        if self.centered:
+            grad_avg = self.parameter_to_opt_torch_inputs[parameter_name]["torch_grad_avg"]
+            grad_avg.mul_(self.alpha).add_(gradient, alpha=1 - self.alpha)
+            denominator = square_avg.addcmul(grad_avg, grad_avg, value=-1).add(self.eps).sqrt_()
+        else:
+            denominator = square_avg.add(self.eps).sqrt_()
+
+        if self.momentum > 0:
+            buf = self.parameter_to_opt_torch_inputs[parameter_name]["torch_buffer"]
+            buf.mul_(self.momentum).addcdiv_(gradient, denominator)
+            step = buf
+        else:
+            step = gradient / denominator
+
+        return parameter - self.learning_rate * step
+
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
+        if lr is not None:
+            self.learning_rate = lr
+            
+        if not self.torch_optimizer:
+            self.torch_optimizer = torch.optim.RMSprop(
+                [p for p in parameters.values()],
+                lr=self.learning_rate,
+                alpha=self.alpha,
+                eps=self.eps,
+                weight_decay=self.weight_decay,
+                momentum=self.momentum,
+                centered=self.centered
+            )
+        return self.torch_optimizer
+
+
 def get_optimizer_type_from_string(type_string: str):
     # replace this implementation with one that inspects module classes
     string_to_type = {"sgd": SGD, "adam": Adam, "adamw": AdamW, "lars": LARS, "lamb": LAMB}
