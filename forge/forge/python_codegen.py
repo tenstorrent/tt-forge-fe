@@ -10,7 +10,7 @@ from loguru import logger
 import forge
 from forge.tensor import forge_dataformat_to_pytorch_dtype
 
-from typing import Tuple, List
+from typing import Dict, List, Optional, Tuple
 
 
 def forge_df_from_str(df: str, name: str, return_as_str: bool = True):
@@ -172,7 +172,9 @@ class ForgeWriter(PythonWriter):
 
         self.wl("\n")
 
-    def write_class_definition(self, params, constants, class_name=None, num_submodels=0, is_submodel=False):
+    def write_class_definition(
+        self, params, constants, class_name=None, num_submodels=0, is_submodel=False, use_random_value=False
+    ):
         if class_name is None:
             class_name = self.class_name
         self.num_submodels = num_submodels
@@ -200,18 +202,27 @@ class ForgeWriter(PythonWriter):
                     f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_from_str(dtype, name)}), prepend_name=True)'
                 )
             else:
-                self.wl(
-                    f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_from_str(dtype, name)}))'
-                )
+                if use_random_value:
+                    self.wl(
+                        f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_from_str(dtype, name)}, use_random_value=True))'
+                    )
+                else:
+                    self.wl(
+                        f'self.add_parameter("{name}", forge.Parameter(*{shape}, requires_grad={requires_grad}, dev_data_format={forge_df_from_str(dtype, name)}))'
+                    )
 
         for const in constants.values():
             name = const[0]
             shape = tuple(const[1])
+            dtype = pytorch_df_str_from_str(const[2], name)
             self.const_names.append(name)
             if is_submodel:
                 self.wl(f'self.add_constant("{name}", prepend_name=True, shape={shape})')
             else:
-                self.wl(f'self.add_constant("{name}", shape={shape})')
+                if use_random_value:
+                    self.wl(f'self.add_constant("{name}", shape={shape}, dtype={dtype}, use_random_value=True)')
+                else:
+                    self.wl(f'self.add_constant("{name}", shape={shape})')
 
         self.indent = 0
         self.wl("")
@@ -1024,14 +1035,17 @@ class ForgeWriter(PythonWriter):
     def write_pytest_function(
         self,
         forge_module_names: List[str],
-        framework: str,
         pytest_input_shapes_and_dtypes_list: List[List[Tuple]],
+        markers: Optional[List[str]] = [],
+        module_metadata: Optional[Dict[str, str]] = {},
+        pytest_metadata_list: Optional[List[Dict[str, str]]] = [],
     ):
         """
         Generates a pytest function that tests modules with input shapes and data types.
 
         This function writes a pytest function that:
-        1. Creates a list of forge module names, their associated input shapes, and data types into a pytest parameter list.
+        1. Creates a list of forge module names, their associated input shapes, and data types and metadata (i.e model and variant name which the shape and dtype belongs to) into a pytest parameter list.
+        2. Creates a record_property fixtures for the metadata that are passed from the pytest parameter and for module_metadata argument directly intialize with property name and value
         2. Creates inputs(i.e TensorFromPyTorch) for the forge module by calling the create_from_shape Tensor class method with shapes and dtypes from the pytest parameter.
         3. Initializes the framework model using the forge module from the pytest parameter and call the `process_framework_parameters` function for module.
         4. Runs the framework model with the created inputs.
@@ -1041,28 +1055,50 @@ class ForgeWriter(PythonWriter):
 
         Args:
             forge_module_names (List[str]): List of names of the modules to be tested, each corresponding to a forge module.
-            framework (str): The name of the framework under which the model is to be tested (e.g., "pytorch").
             pytest_input_shapes_and_dtypes_list (List[List[Tuple]]): A list of input shapes and corresponding data types for each module. Each tuple contains the shape and dtype to be tested.
+            markers (Optional[List[str]]): A list of pytest markers that will be added above the test function. Defaults to an empty list.
+            module_metadata (Optional[Dict[str, str]]): A dictionary containing metadata about the test function. Each key-value pair represents a metadata property name and its corresponding value, which will be recorded using the `record_property` pytest fixtures. Defaults to an empty dictionary.
+            pytest_metadata_list (Optional[List[Dict[str, str]]]): A list of dictionaries containing metadata for each pytest parameter.
         """
         self.wl("")
         self.wl("")
         self.wl("forge_modules_and_shapes_dtypes_list = [")
         self.indent += 1
-        for forge_module_name, pytest_input_shapes_and_dtypes in zip(
-            forge_module_names, pytest_input_shapes_and_dtypes_list
+        is_pytest_metadata_list_empty = False
+        if len(pytest_metadata_list) == 0:
+            pytest_metadata_list = [{}] * len(pytest_input_shapes_and_dtypes_list)
+            is_pytest_metadata_list_empty = True
+        for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata in zip(
+            forge_module_names, pytest_input_shapes_and_dtypes_list, pytest_metadata_list
         ):
             pytest_input_shapes_and_dtypes = [
                 (shape, forge_dataformat_to_pytorch_dtype(forge_df_from_str(dtype, "", False)))
                 for shape, dtype in pytest_input_shapes_and_dtypes
             ]
-            self.wl(f"({forge_module_name}, {pytest_input_shapes_and_dtypes}), ")
+            if len(pytest_metadata) == 0:
+                self.wl(f"({forge_module_name}, {pytest_input_shapes_and_dtypes}), ")
+            else:
+                self.wl(f"({forge_module_name}, {pytest_input_shapes_and_dtypes}, {pytest_metadata}), ")
         self.indent -= 1
         self.wl("]")
+        for marker in markers:
+            self.wl(f"@pytest.mark.{marker}")
         self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        self.wl("def test_module(forge_module_and_shapes_dtypes, record_property):")
         self.indent += 1
+        if len(module_metadata) != 0:
+            for metadata_name, metadata_value in module_metadata.items():
+                self.wl(f'record_property("{metadata_name}", "{metadata_value}")')
         self.wl("")
-        self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
+        if is_pytest_metadata_list_empty:
+            self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
+        else:
+            self.wl("forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes")
+            self.wl("")
+            self.wl("for metadata_name, metadata_value in metadata.items():")
+            self.indent += 1
+            self.wl(f"record_property(metadata_name, metadata_value)")
+            self.indent -= 1
         self.wl("")
         need_model_parameter_function = any(
             [

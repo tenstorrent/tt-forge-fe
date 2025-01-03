@@ -12,6 +12,147 @@ import torch
 from forge.python_codegen import ForgeWriter
 from forge.utils import create_excel_file
 
+# In some forge like adv_index, gather, select, we will not use single torch op to excute the behavious what torch op should be mapped in this cases?
+# or what torch op should be mapped for adv_index, gather, select op?
+forge_op_function_name_to_pytorch_op_function_name = {
+    "forge.op.Abs": "torch.abs",
+    "forge.op.Add": "torch.add",
+    "forge.op.Remainder": "torch.remainder",
+    "forge.op.Argmax": "torch.argmax",
+    "forge.op.AvgPool1d": "torch.nn.functional.avg_pool1d",
+    "forge.op.AvgPool2d": "torch.nn.functional.avg_pool2d",
+    "forge.op.AvgPool3d": "torch.nn.functional.avg_pool3d",
+    "forge.op.BinaryStack": "torch.stack",
+    "forge.op.Broadcast": "torch.broadcast_to",
+    "forge.op.Cast": "torch.Tensor.to",
+    "forge.op.Clip": "torch.clip",
+    "forge.op.Concatenate": "torch.cat",
+    "forge.op.Conv2dTranspose": "torch.nn.functional.conv_transpose2d",
+    "forge.op.Conv2d": "torch.nn.functional.conv2d",
+    "forge.op.Conv3d": "torch.nn.functional.conv3d",
+    "forge.op.Cosine": "torch.cos",
+    "forge.op.CumSum": "torch.cumsum",
+    "forge.op.Identity": "torch.nn.Identity",
+    "forge.op.Embedding": "torch.nn.Embedding",
+    "forge.op.Equal": "torch.equal",
+    "forge.op.Exp": "torch.exp",
+    "forge.op.Gelu": "torch.nn.functional.gelu",
+    "forge.op.GreaterEqual": "torch.greater_equal",
+    "forge.op.Greater": "torch.greater",
+    "forge.op.IndexCopy": "torch.Tensor.index_copy_",
+    "forge.op.Layernorm": "torch.nn.functional.layer_norm",
+    "forge.op.LeakyRelu": "torch.nn.functional.leaky_relu",
+    "forge.op.LessEqual": "torch.less_equal",
+    "forge.op.Less": "torch.less",
+    "forge.op.LogSoftmax": "torch.nn.functional.log_softmax",
+    "forge.op.Log": "torch.log",
+    "forge.op.LogicalAnd": "torch.logical_and",
+    "forge.op.LogicalNot": "torch.logical_not",
+    "forge.op.Matmul": "torch.matmul",
+    "forge.op.MaxPool1d": "torch.nn.functional.max_pool1d",
+    "forge.op.MaxPool2d": "torch.nn.functional.max_pool2d",
+    "forge.op.MaxPool3d": "torch.nn.functional.max_pool3d",
+    "forge.op.Max": "torch.maximum",
+    "forge.op.Min": "torch.minimum",
+    "forge.op.Multiply": "torch.multiply",
+    "forge.op.NotEqual": "torch.ne",
+    "forge.op.Pad": "torch.nn.functional.pad",
+    "forge.op.PixelShuffle": "torch.nn.functional.pixel_shuffle",
+    "forge.op.Power": "torch.pow",
+    "forge.op.Prelu": "torch.nn.functional.prelu",
+    "forge.op.Reciprocal": "torch.reciprocal",
+    "forge.op.ReduceAvg": "torch.mean",
+    "forge.op.ReduceMax": "torch.max",
+    "forge.op.ReduceSum": "torch.sum",
+    "forge.op.Relu": "torch.nn.functional.relu",
+    "forge.op.Repeat": "torch.repeat",
+    "forge.op.RepeatInterleave": "torch.repeat_interleave",
+    "forge.op.Reshape": "torch.reshape",
+    "forge.op.Resize2d": "torch.nn.Upsample",
+    "forge.op.Resize3d": "torch.nn.Upsample",
+    "forge.op.Sigmoid": "torch.sigmoid",
+    "forge.op.Sine": "torch.sin",
+    "forge.op.Softmax": "torch.nn.functional.softmax",
+    "forge.op.Sqrt": "torch.sqrt",
+    "forge.op.Stack": "torch.stack",
+    "forge.op.Subtract": "torch.subtract",
+    "forge.op.Tanh": "torch.tanh",
+    "forge.op.Transpose": "torch.transpose",
+    "forge.op.Where": "torch.where",
+    "forge.op.Unsqueeze": "torch.unsqueeze",
+    "forge.op.Squeeze": "torch.squeeze",
+}
+
+# Here the forge op is based upon which file the op is present whether we need to determine the op kind like this it should be mapped based upon the torch documentation like abs to pointwise instead of elementwise unary?
+forge_op_function_name_to_op_kind = {
+    "forge.op.Abs": "eltwise_unary",
+    "forge.op.Add": "eltwise_binary",
+    "forge.op.Remainder": "eltwise_binary",
+    "forge.op.Argmax": "eltwise_unary",
+    "forge.op.AvgPool1d": "pooling",
+    "forge.op.AvgPool2d": "pooling",
+    "forge.op.AvgPool3d": "pooling",
+    "forge.op.BinaryStack": "eltwise_binary",
+    "forge.op.Broadcast": "tm",
+    "forge.op.Cast": "eltwise_unary",
+    "forge.op.Clip": "eltwise_unary",
+    "forge.op.Concatenate": "eltwise_nary",
+    "forge.op.Conv2dTranspose": "convolution",
+    "forge.op.Conv2d": "convolution",
+    "forge.op.Conv3d": "convolution",
+    "forge.op.Cosine": "eltwise_unary",
+    "forge.op.CumSum": "eltwise_unary",
+    "forge.op.Identity": "eltwise_unary",
+    "forge.op.Embedding": "embedding",
+    "forge.op.Equal": "eltwise_binary",
+    "forge.op.Exp": "eltwise_unary",
+    "forge.op.Gelu": "eltwise_unary",
+    "forge.op.GreaterEqual": "eltwise_binary",
+    "forge.op.Greater": "eltwise_binary",
+    "forge.op.IndexCopy": "eltwise_nary",
+    "forge.op.Layernorm": "nn",
+    "forge.op.LeakyRelu": "eltwise_unary",
+    "forge.op.LessEqual": "eltwise_binary",
+    "forge.op.Less": "eltwise_binary",
+    "forge.op.LogSoftmax": "nn",
+    "forge.op.Log": "eltwise_unary",
+    "forge.op.LogicalAnd": "eltwise_binary",
+    "forge.op.LogicalNot": "eltwise_unary",
+    "forge.op.Matmul": "eltwise_binary",
+    "forge.op.MaxPool1d": "pooling",
+    "forge.op.MaxPool2d": "pooling",
+    "forge.op.MaxPool3d": "pooling",
+    "forge.op.Max": "eltwise_binary",
+    "forge.op.Min": "eltwise_binary",
+    "forge.op.Multiply": "eltwise_binary",
+    "forge.op.NotEqual": "eltwise_binary",
+    "forge.op.Pad": "tm",
+    "forge.op.PixelShuffle": "tm",
+    "forge.op.Power": "eltwise_binary",
+    "forge.op.Prelu": "eltwise_unary",
+    "forge.op.Reciprocal": "eltwise_unary",
+    "forge.op.ReduceAvg": "reducution",
+    "forge.op.ReduceMax": "reducution",
+    "forge.op.ReduceSum": "reducution",
+    "forge.op.Relu": "eltwise_unary",
+    "forge.op.Repeat": "tm",
+    "forge.op.RepeatInterleave": "tm",
+    "forge.op.Reshape": "tm",
+    "forge.op.Resize2d": "resize",
+    "forge.op.Resize3d": "resize",
+    "forge.op.Sigmoid": "eltwise_unary",
+    "forge.op.Sine": "eltwise_unary",
+    "forge.op.Softmax": "nn",
+    "forge.op.Sqrt": "eltwise_unary",
+    "forge.op.Stack": "eltwise_nary",
+    "forge.op.Subtract": "eltwise_binary",
+    "forge.op.Tanh": "eltwise_unary",
+    "forge.op.Transpose": "tm",
+    "forge.op.Where": "eltwise_nary",
+    "forge.op.Unsqueeze": "tm",
+    "forge.op.Squeeze": "tm",
+}
+
 
 class NodeType(Enum):
     Activation = 1
@@ -372,6 +513,7 @@ class UniqueOperations(dict):
         ops: Dict[int, Operation],
         named_parameters: Dict[str, torch.Tensor],
         node_name_to_node_type: Optional[Dict[str, NodeType]] = None,
+        use_constant_value: Optional[bool] = True,
     ):
         """
         Creates unique operations by mapping operand and argument information to forge op names.
@@ -380,6 +522,7 @@ class UniqueOperations(dict):
             ops (dict): Dictionary of operation.
             named_parameters (dict): Mapping of node name to model parameters and buffers.
             node_name_to_node_type (dict): Mapping of node names to types.
+            use_constant_value (Bool): If set to true, replace constant node operand shape with contant tensor value from the named_parameter
 
         Returns:
             UniqueOperations: Populated UniqueOperations dictionary.
@@ -408,10 +551,11 @@ class UniqueOperations(dict):
             ), "Operands names, shape, dtypes are not equal"
 
             # Replace constant node operand shape with constant value for comparing with other constant value.
-            operand_shapes = [
-                named_parameters[operand_name] if operand_type == NodeType.Constant else operand_shape
-                for operand_type, operand_shape, operand_name in zip(operand_types, operand_shapes, operand_names)
-            ]
+            if use_constant_value:
+                operand_shapes = [
+                    named_parameters[operand_name] if operand_type == NodeType.Constant else operand_shape
+                    for operand_type, operand_shape, operand_name in zip(operand_types, operand_shapes, operand_names)
+                ]
             new_operands = OperandsInfo(operand_types, operand_shapes, operand_dtypes)
             new_args = OpArgs(args)
             if forge_op_function_name in unique_operations.keys():
@@ -755,9 +899,8 @@ def generate_unique_op_tests(
         # Generate pytest function for the operation with pytest parameter containing list of tuple
         # and each tuple constaints module name, tuple of operand shape/name and dtype
         writer.write_pytest_function(
-            forge_module_names,
-            framework,
-            pytest_input_shapes_and_dtypes_list,
+            forge_module_names=forge_module_names,
+            pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
         )
 
         writer.close_file()
@@ -771,3 +914,235 @@ def generate_unique_op_tests(
                 "named_buffers_file_name": named_buffers_file_name,
             }
             export_unique_op_configuration_info(current_module_name, unique_operation_details, unique_ops_metadata)
+
+
+def generate_nightly_tests(unique_operations: UniqueOperations, nightly_tests_directory_path: str):
+    """
+    Generate nightly test forge modules with test function from the provided unique operation configuration extracted across all the models
+    """
+
+    # Iterate over the unique operations dictonary after sorting it by operation name.
+    for forge_op_function_name in sorted(unique_operations):
+
+        # Extract operation name from forge op function name
+        op_name = forge_op_function_name.split(".")[-1].lower()
+
+        # Dictionary containing module metadata which will used in the test function record_property fixture.
+        module_metadata = {
+            "frontend": "tt-forge-fe",
+            "framework_op_name": forge_op_function_name_to_pytorch_op_function_name[forge_op_function_name]
+            if forge_op_function_name in forge_op_function_name_to_pytorch_op_function_name.keys()
+            else forge_op_function_name,
+            "op_kind": forge_op_function_name_to_op_kind[forge_op_function_name]
+            if forge_op_function_name in forge_op_function_name_to_op_kind.keys()
+            else "UNKNOWN",
+        }
+
+        module_name = "test_" + op_name
+
+        # Initialize Forge writer and generate header with pytest specific imports
+        writer = ForgeWriter(
+            module_name,
+            framework="pytorch",  # Currently unique operation extraction is supported for pytorch framework so explicitly specifying the framework as pytorch
+            module_directory=nightly_tests_directory_path,
+        )
+        writer.write_header(include_pytest_imports=True)
+
+        # Get the unique operands and operation arguments assiocated with the operation metadata
+        unique_operands_and_opargs_opmetadata = unique_operations[
+            forge_op_function_name
+        ].get_unique_operands_and_opargs_opmetadata()
+
+        pytest_input_shapes_and_dtypes_list = []
+        forge_module_names = []
+        module_idx = 0
+        forge_module_list = []
+        pytest_metadata_list = []
+        for operands_idx, (operands, opargs_opmetadata) in enumerate(unique_operands_and_opargs_opmetadata):
+
+            for args_idx, (args, operation_metadata) in enumerate(opargs_opmetadata.get_op_args_and_metadata()):
+
+                operand_shapes = operands.get_operand_shapes()
+                operand_types = operands.get_operand_types()
+                operand_dtypes = operands.get_operand_dtypes()
+
+                model_name = operation_metadata["model_variant_info"][0]["model_name"]
+                variant_name = operation_metadata["model_variant_info"][0]["variant_name"]
+                pytest_metadata_list.append(
+                    {
+                        "model_name": model_name,
+                        "variant_name": variant_name,
+                    }
+                )
+
+                # Check if all operands types are parameters or constants and change the operand type from
+                # parameters or constants to activation and pass it as activation to forge module forward function
+                all_params_const = all(
+                    [
+                        True if (operand_type == NodeType.Parameter or operand_type == NodeType.Constant) else False
+                        for operand_type in operand_types
+                    ]
+                )
+                if all_params_const:
+                    operand_types = [NodeType.Activation] * len(operand_types)
+
+                # Check if an existing Forge module matches the current operation configuration.
+                # This involves comparing the number of inputs, operand types, activation operand count,
+                # and arguments. If a match is found, further checks are made to ensure that the parameter
+                # shapes and data types, or constants, match as well. If a match is found for either parameters
+                # or constants, the new Forge module creation is skipped. If no match is found, a new Forge module
+                # will be created for the current operation configuration.
+                need_to_create_forge_module = True
+                for forge_mod in forge_module_list:
+                    if (
+                        len(forge_mod["operand_types"]) == len(operand_types)
+                        and forge_mod["operand_types"] == operand_types
+                    ):
+                        if (
+                            forge_mod["number_of_activation"]
+                            == len(
+                                list(filter(lambda operand_type: operand_type == NodeType.Activation, operand_types))
+                            )
+                            and forge_mod["args"] == args
+                        ):
+                            param_shape_dtype_list = [
+                                (operand_shape, operand_dtype)
+                                for operand_type, operand_shape, operand_dtype in zip(
+                                    operand_types, operand_shapes, operand_dtypes
+                                )
+                                if operand_type == NodeType.Parameter
+                            ]
+                            const_shape_dtype_list = [
+                                (operand_shape, operand_dtype)
+                                for operand_type, operand_shape, operand_dtype in zip(
+                                    operand_types, operand_shapes, operand_dtypes
+                                )
+                                if operand_type == NodeType.Constant
+                            ]
+
+                            if forge_mod["number_of_parameters"] > 0 and len(param_shape_dtype_list) > 0:
+                                if len(param_shape_dtype_list) == forge_mod["number_of_parameters"]:
+                                    params_shape_dtype_equal = all(
+                                        [
+                                            True if (shape1 == shape2 and dtype1 == dtype2) else False
+                                            for (shape1, dtype1), (shape2, dtype2) in zip(
+                                                forge_mod["param_shape_dtype_list"], param_shape_dtype_list
+                                            )
+                                        ]
+                                    )
+                                    if params_shape_dtype_equal:
+                                        need_to_create_forge_module = False
+                                        forge_module_names.append(forge_mod["class_name"])
+                                        break
+                            elif forge_mod["number_of_constants"] > 0 and len(const_shape_dtype_list) > 0:
+                                if len(const_shape_dtype_list) == forge_mod["number_of_constants"]:
+                                    const_shape_dtype_equal = all(
+                                        [
+                                            True if (shape1 == shape2 and dtype1 == dtype2) else False
+                                            for (shape1, dtype1), (shape2, dtype2) in zip(
+                                                forge_mod["const_shape_dtype_list"], const_shape_dtype_list
+                                            )
+                                        ]
+                                    )
+                                    if const_shape_dtype_equal:
+                                        need_to_create_forge_module = False
+                                        forge_module_names.append(forge_mod["class_name"])
+                                        break
+                            else:
+                                need_to_create_forge_module = False
+                                forge_module_names.append(forge_mod["class_name"])
+                                break
+
+                # If no matching Forge module was found, create a new one for the current operation configuration
+                if need_to_create_forge_module:
+
+                    # Generate class name and append it forge_module_names list for using it as pytest parameter.
+                    class_name = op_name + str(module_idx)
+                    class_name = class_name.title().replace("_", "")
+                    forge_module_names.append(class_name)
+
+                    needed_params = {}
+                    needed_consts = {}
+                    params_shape_dtype_list = []
+                    const_shape_dtype_list = []
+                    forward_method_inputs = {}
+                    operand_names = []
+
+                    # Iterate through operand types to classify them as parameters, constants, or activations.
+                    # Collect the necessary parameters and constants, and use them to generate the class definition and
+                    # handle activations for the forward method inputs.
+                    for idx, (operand_type, operand_shape, operand_dtype) in enumerate(
+                        zip(operand_types, operand_shapes, operand_dtypes)
+                    ):
+                        if operand_type == NodeType.Parameter:
+                            parameter_name = class_name.lower() + ".weight_" + str(idx)
+                            param_tuple = (parameter_name, operand_shape, True, operand_dtype)
+                            needed_params[idx] = param_tuple
+                            params_shape_dtype_list.append([operand_shape, operand_dtype])
+                            operand_names.append(parameter_name)
+                        elif operand_type == NodeType.Constant:
+                            constant_name = class_name.lower() + "_const_" + str(idx)
+                            const_tuple = (constant_name, operand_shape, operand_dtype)
+                            needed_consts[idx] = const_tuple
+                            const_shape_dtype_list.append([operand_shape, operand_dtype])
+                            operand_names.append(constant_name)
+                        else:
+                            forward_method_inputs[idx] = op_name + "_input_" + str(idx)
+                            operand_names.append(forward_method_inputs[idx])
+
+                    # Generate the class definition with the collected parameters and constants.
+                    writer.write_class_definition(
+                        params=needed_params, constants=needed_consts, class_name=class_name, use_random_value=True
+                    )
+
+                    # Create a single operation with the function name, output name,
+                    # input operand names, and arguments and use it for generating forward method
+                    single_op = {
+                        args_idx: Operation(
+                            function_name=forge_op_function_name,
+                            output_name=op_name + "_output_1",
+                            input_names=operand_names,
+                            args=tuple(args.items()),
+                        )
+                    }
+
+                    forward_method_returns = {args_idx: single_op[args_idx].output_name}
+
+                    # Generate forge module forward function
+                    writer.write_forward(single_op, forward_method_inputs, forward_method_returns)
+
+                    module_idx += 1
+                    forge_module_list.append(
+                        {
+                            "class_name": class_name,
+                            "operand_types": operand_types,
+                            "number_of_activation": len(forward_method_inputs),
+                            "number_of_parameters": len(needed_params),
+                            "number_of_constants": len(needed_consts),
+                            "param_shape_dtype_list": params_shape_dtype_list,
+                            "const_shape_dtype_list": const_shape_dtype_list,
+                            "args": args,
+                        }
+                    )
+
+                # Collect activation input shapes and dtypes for using it in pytest parameter
+                pytest_input_shapes_dtypes = []
+                for operand_type, operand_shape, operand_dtype in zip(operand_types, operand_shapes, operand_dtypes):
+                    if operand_type == NodeType.Activation:
+                        pytest_input_shapes_dtypes.append((operand_shape, operand_dtype))
+                pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
+
+        # List of marker that will added at the top of the test function
+        markers = ["model_analysis_nightly"]
+
+        # Generate pytest function for the operation with pytest parameter containing list of tuple
+        # and each tuple constaints module name, tuple of operand shape/name and dtype
+        writer.write_pytest_function(
+            forge_module_names=forge_module_names,
+            pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
+            markers=markers,
+            module_metadata=module_metadata,
+            pytest_metadata_list=pytest_metadata_list,
+        )
+
+        writer.close_file()
