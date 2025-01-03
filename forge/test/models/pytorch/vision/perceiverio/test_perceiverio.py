@@ -15,7 +15,7 @@ from transformers import (
 )
 import os
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 def get_sample_data(model_name):

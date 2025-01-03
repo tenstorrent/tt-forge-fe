@@ -5,7 +5,7 @@ import torch
 import forge
 import pytest
 from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

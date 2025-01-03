@@ -5,7 +5,7 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]

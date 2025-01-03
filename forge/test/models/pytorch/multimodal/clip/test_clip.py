@@ -14,16 +14,16 @@ from test.models.pytorch.multimodal.clip.utils.clip_model import (
     CLIPPostProcessingWrapper,
 )
 import os
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_clip_pytorch(test_device):
+def test_clip_pytorch(record_property):
+    module_name = build_module_name(framework="pt", model="clip_text", variant=model_ckpt)
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
 
     # Load processor and model from HuggingFace
     model_ckpt = "openai/clip-vit-base-patch32"
@@ -45,5 +45,4 @@ def test_clip_pytorch(test_device):
     text_model = CLIPTextWrapper(model)
     inputs = [inputs[0], inputs[2]]
 
-    module_name = build_module_name(framework="pt", model="clip_text", variant=model_ckpt)
     compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name=module_name)

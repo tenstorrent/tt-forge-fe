@@ -17,7 +17,7 @@ from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
 import os
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 

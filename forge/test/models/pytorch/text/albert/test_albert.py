@@ -6,7 +6,7 @@ from test.utils import download_model
 import forge
 from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 import torch
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
@@ -18,14 +18,17 @@ variants = ["v1", "v2"]
 @pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
-def test_albert_masked_lm_pytorch(size, variant, test_device):
+def test_albert_masked_lm_pytorch(size, variant, record_property):
+    module_name = build_module_name(framework="pt", model="albert", variant=variant, task="mlm")
+
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
+
     model_ckpt = f"albert-{size}-{variant}"
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
     model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -41,7 +44,6 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
     model(**input_tokens)
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    module_name = build_module_name(framework="pt", model="albert", variant=variant, task="mlm")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
@@ -62,9 +64,11 @@ variants = ["v1", "v2"]
 @pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
-def test_albert_token_classification_pytorch(size, variant, test_device):
+def test_albert_token_classification_pytorch(size, variant, record_property):
+    module_name = build_module_name(framework="pt", model="albert", variant=variant)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
@@ -91,7 +95,6 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
     varaint_name = model_ckpt.replace("-", "_")
-    module_name = build_module_name(framework="pt", model="albert", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_token_cls")
 
     co_out = compiled_model(*inputs)

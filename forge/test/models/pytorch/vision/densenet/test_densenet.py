@@ -9,7 +9,7 @@ import os
 import torch
 import torchxrayvision as xrv
 from test.models.pytorch.vision.densenet.utils.densenet_utils import get_input_img, get_input_img_hf_xray
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants = ["densenet121", "densenet121_hf_xray"]

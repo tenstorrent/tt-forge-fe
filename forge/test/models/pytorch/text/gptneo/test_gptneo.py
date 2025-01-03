@@ -13,7 +13,7 @@ from transformers import (
     GPTNeoConfig,
     GPTNeoForSequenceClassification,
 )
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants = [

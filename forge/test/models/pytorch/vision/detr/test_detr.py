@@ -13,7 +13,7 @@ import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

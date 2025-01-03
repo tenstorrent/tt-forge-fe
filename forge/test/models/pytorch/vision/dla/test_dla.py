@@ -19,7 +19,7 @@ from test.models.pytorch.vision.dla.utils.dla_model import (
     dla102x2,
     dla169,
 )
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants_func = {

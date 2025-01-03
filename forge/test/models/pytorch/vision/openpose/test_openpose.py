@@ -16,7 +16,7 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants = [

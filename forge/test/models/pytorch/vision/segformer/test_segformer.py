@@ -9,7 +9,7 @@ from transformers import SegformerForImageClassification, SegformerForSemanticSe
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
 
 import forge
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants_img_classification = [

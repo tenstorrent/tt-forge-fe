@@ -8,7 +8,7 @@ import forge
 import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

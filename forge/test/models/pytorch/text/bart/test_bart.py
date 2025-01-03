@@ -9,8 +9,7 @@ from transformers.models.bart.modeling_bart import shift_tokens_right
 import pytest
 import forge
 
-from forge.config import CompileDepth, _get_global_compiler_config
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 class BartWrapper(torch.nn.Module):
@@ -25,9 +24,11 @@ class BartWrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_pt_bart_classifier(test_device):
-    compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
+def test_pt_bart_classifier(record_property):
+    module_name = build_module_name(framework="pt", model="bart", variant=model_name)
+
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
 
     model_name = f"facebook/bart-large-mnli"
     model = download_model(BartForSequenceClassification.from_pretrained, model_name, torchscript=True)
@@ -53,5 +54,4 @@ def test_pt_bart_classifier(test_device):
     # Compile & feed data
     pt_mod = BartWrapper(model.model)
 
-    module_name = build_module_name(framework="pt", model="bart", variant=model_name)
     compiled_model = forge.compile(pt_mod, sample_inputs=inputs, module_name=module_name)

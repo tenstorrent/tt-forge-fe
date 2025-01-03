@@ -13,7 +13,7 @@ from test.models.pytorch.text.mistral.utils.model_utils import (
     multinomial_sample_one_no_sync,
     logits_to_probs,
 )
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]

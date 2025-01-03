@@ -6,7 +6,7 @@ from test.utils import download_model
 import torch
 import forge
 import os
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size):

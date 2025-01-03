@@ -7,7 +7,7 @@ from PIL import Image
 import os
 import torch
 import forge
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))

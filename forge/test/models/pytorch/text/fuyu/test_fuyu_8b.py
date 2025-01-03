@@ -27,7 +27,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
     FuyuModelImgDecoderWrapper,
     FuyuModelTxtDecoderWrapper,
 )
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

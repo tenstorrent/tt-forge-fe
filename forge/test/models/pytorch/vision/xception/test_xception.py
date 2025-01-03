@@ -10,7 +10,7 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 import os
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 def generate_model_xception_imgcls_timm(test_device, variant):
