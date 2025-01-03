@@ -208,7 +208,7 @@ class MLIRGenerator
     /// for the function.
     mlir::func::FuncOp emit_mlir_function(tt::graphlib::Graph *graph, std::string fn_name = "forward")
     {
-        log_info("Emmiting mlir for function {}", fn_name);
+        log_info("Emitting mlir for function {}", fn_name);
         // Assemble the function arguments (inputs and parameters)
         llvm::SmallVector<mlir::Type> argument_types;
         llvm::SmallVector<graphlib::Node *> argument_nodes;
@@ -234,7 +234,11 @@ class MLIRGenerator
         }
 
         // Add the graph parameters to the argument list.
-        for (auto *parameter : graph->get_parameter_nodes())
+        // Both optimizer parameters and regular parameters are added.
+        auto opt_params = graph->get_optimizer_parameter_nodes();
+        auto params = graph->get_parameter_nodes();
+        params.insert(params.end(), opt_params.begin(), opt_params.end());
+        for (auto *parameter : params)
         {
             log_trace(LogMLIRCompiler, "Adding parameter {} to the argument list.", parameter->name());
 
