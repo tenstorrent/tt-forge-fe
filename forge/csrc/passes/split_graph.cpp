@@ -364,7 +364,12 @@ std::unique_ptr<Graph> extract_optimizer_graph(
             clone_and_add(consumer_node, opt_graph.get());
         }
 
-        // create alias the same way as above
+        // For each trainable parameter, we need to create the output node for the updated parameter (aliased to the
+        // input node). E.g. If the parameter is `w`, then the output node will be `w_updated`: `w_updated = w - lr
+        // * gradient`.
+        //
+        // The runtime will look for aliased outputs and will make sure that the appropriate tensors are updated.
+        // See `OutputNode::is_aliased_tensor()` for more details.
         auto output_node = graphlib::create_node<graphlib::OutputNode>(consumer_node->name() + "_updated");
         output_node->set_output_type(graphlib::OutputType::Internal);
         output_node->set_shape(input_node->shape());
