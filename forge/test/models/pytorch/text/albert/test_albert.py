@@ -5,24 +5,31 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
-from forge.verify.compare import compare_with_golden
-import torch
-
-sizes = ["base", "large", "xlarge", "xxlarge"]
-variants = ["v1", "v2"]
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-@pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.parametrize("size", sizes, ids=sizes)
+@pytest.mark.parametrize(
+    "size, variant",
+    [
+        pytest.param("base", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.6316098467731136")),
+        pytest.param("base", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.5737263569625828")),
+        pytest.param("large", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.6624695376021125")),
+        pytest.param("large", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.8457832615464346")),
+        pytest.param("xlarge", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.5107073809463555")),
+        pytest.param("xlarge", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.7043383214518514")),
+        pytest.param("xxlarge", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.316735288718577")),
+        pytest.param("xxlarge", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.28953448796803916")),
+    ],
+)
 def test_albert_masked_lm_pytorch(size, variant, test_device):
     model_ckpt = f"albert-{size}-{variant}"
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
     model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt)
+    model.config.return_dict = False
 
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -43,24 +50,24 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
     varaint_name = model_ckpt.replace("-", "_")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_masked_lm")
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
-
-
-sizes = ["base", "large", "xlarge", "xxlarge"]
-variants = ["v1", "v2"]
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-@pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.parametrize("size", sizes, ids=sizes)
+@pytest.mark.parametrize(
+    "size, variant",
+    [
+        pytest.param("base", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.23732460346007883")),
+        pytest.param("base", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.5505714570243976")),
+        pytest.param("large", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.31874537722414287")),
+        pytest.param("large", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC =  0.22904255796760167")),
+        pytest.param("xlarge", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.2752534682751752")),
+        pytest.param("xlarge", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.13983280346714194")),
+        pytest.param("xxlarge", "v1", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.4852466970038029")),
+        pytest.param("xxlarge", "v2", marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.542805063975442")),
+    ],
+)
 def test_albert_token_classification_pytorch(size, variant, test_device):
 
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -74,6 +81,7 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
     # Load ALBERT tokenizer and model from HuggingFace
     tokenizer = AlbertTokenizer.from_pretrained(model_ckpt)
     model = AlbertForTokenClassification.from_pretrained(model_ckpt)
+    model.config.return_dict = False
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -92,10 +100,4 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
     varaint_name = model_ckpt.replace("-", "_")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_token_cls")
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, model, compiled_model)

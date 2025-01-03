@@ -12,16 +12,24 @@ from transformers import (
     DPRQuestionEncoder,
     DPRQuestionEncoderTokenizer,
 )
-import torch
-from forge.verify.compare import compare_with_golden
-
-variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/dpr-ctx_encoder-single-nq-base",
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.966081010779316"),
+        ),
+        pytest.param(
+            "facebook/dpr-ctx_encoder-multiset-base",
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.9652820314415684"),
+        ),
+    ],
+)
 def test_dpr_context_encoder_pytorch(variant, test_device):
 
     # Load Bert tokenizer and model from HuggingFace
@@ -29,6 +37,7 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     model_ckpt = variant
     tokenizer = download_model(DPRContextEncoderTokenizer.from_pretrained, model_ckpt)
     model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
+    model.config.return_dict = False
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
 
@@ -48,28 +57,29 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
-
-
-variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param("facebook/dpr-question_encoder-single-nq-base"),
+        pytest.param(
+            "facebook/dpr-question_encoder-multiset-base",
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.9871025782806984"),
+        ),
+    ],
+)
 def test_dpr_question_encoder_pytorch(variant, test_device):
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRQuestionEncoderTokenizer.from_pretrained, model_ckpt)
     model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
+    model.config.return_dict = False
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
 
@@ -89,28 +99,32 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
-
-
-variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/dpr-reader-single-nq-base",
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.11557554999858398"),
+        ),
+        pytest.param(
+            "facebook/dpr-reader-multiset-base",
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.199043936670584"),
+        ),
+    ],
+)
 def test_dpr_reader_pytorch(variant, test_device):
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRReaderTokenizer.from_pretrained, model_ckpt)
     model = download_model(DPRReader.from_pretrained, model_ckpt)
+    model.config.return_dict = False
 
     compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
 
@@ -129,10 +143,5 @@ def test_dpr_reader_pytorch(variant, test_device):
     compiled_model = forge.compile(
         model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
     )
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, model, compiled_model)
