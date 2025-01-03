@@ -12,6 +12,7 @@ import pytest
 import forge
 import torch
 from forge.verify.compare import compare_with_golden
+from test.models.utils import build_module_name
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
@@ -56,9 +57,8 @@ def test_phi3_causal_lm(variant, test_device):
 
     inputs = [input_ids, attn_mask]
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
-    )
+    module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="causal_lm")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
@@ -90,10 +90,8 @@ def test_phi3_token_classification(variant, test_device):
     inputs = tokenizer(input_prompt, return_tensors="pt")
 
     inputs = [inputs["input_ids"]]
-
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
-    )
+    module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="token_classfication")
+    compiled_model = forge.compile(model, inputs, module_name)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -131,9 +129,8 @@ def test_phi3_sequence_classification(variant, test_device):
     inputs = tokenizer(input_prompt, return_tensors="pt")
     inputs = [inputs["input_ids"]]
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
-    )
+    module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="sequence_classification")
+    compiled_model = forge.compile(model, inputs, module_name)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]

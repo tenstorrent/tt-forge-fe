@@ -17,15 +17,18 @@ variants = [
 ]
 import torch
 from forge.verify.compare import compare_with_golden
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Tensor 41 - data type mismatch: expected Float32, got BFloat16")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_codegen(test_device, variant):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+def test_codegen(variant, record_property):
+    module_name = build_module_name(framework="pt", model="codegen", variant=variant)
+
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -60,12 +63,9 @@ def test_codegen(test_device, variant):
     # Sanity run
     input_ids = input_ids.to(torch.int32)
     attn_mask = attn_mask.to(torch.float32)
-    out = framework_model(input_ids, attn_mask)
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
     fw_out = framework_model(*inputs)

@@ -11,6 +11,8 @@ import pytest
 import torch
 from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
 import forge
+from test.models.utils import build_module_name
+from forge.verify.verify import verify, VerifyConfig
 
 
 class Wrapper(torch.nn.Module):
@@ -35,7 +37,12 @@ class Wrapper(torch.nn.Module):
     reason='RuntimeError: TT_ASSERT @ /tt-forge-fe/forge/csrc/passes/commute_utils.cpp:1103: reshape->op_name() == "reshape"'
 )
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
-def test_whisper_large_v3_speech_translation(variant):
+def test_whisper_large_v3_speech_translation(variant, record_property):
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant)
+
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
+
     processor = WhisperProcessor.from_pretrained(variant)
     framework_model = WhisperForConditionalGeneration.from_pretrained(variant)
     model_config = WhisperConfig.from_pretrained(variant)
@@ -54,8 +61,6 @@ def test_whisper_large_v3_speech_translation(variant):
     data_input = [decoder_input_ids, encoder_outputs]
 
     # Compiler test
-    compiled_model = forge.compile(
-        model, sample_inputs=data_input, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    compiled_model = forge.compile(model, sample_inputs=data_input, module_name=module_name)
 
     verify(data_input, model, compiled_model, VerifyConfig(verify_allclose=False))

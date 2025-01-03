@@ -5,17 +5,21 @@ import torch
 import pytest
 from transformers import AutoTokenizer, FalconForCausalLM
 import forge
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_falcon(test_device):
+def test_falcon(record_property):
+    variant = "tiiuae/falcon-7b-instruct"
 
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    module_name = build_module_name(framework="pt", model="falcon", variant=variant)
 
-    tokenizer = AutoTokenizer.from_pretrained("tiiuae/falcon-7b-instruct")
-    model = FalconForCausalLM.from_pretrained("tiiuae/falcon-7b-instruct")
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
+
+    tokenizer = AutoTokenizer.from_pretrained(variant)
+    model = FalconForCausalLM.from_pretrained(variant)
     model.config.use_cache = False
     model.config.return_dict = False
 
@@ -36,4 +40,4 @@ def test_falcon(test_device):
     output = model(input_tokens["input_ids"], input_tokens["attention_mask"])
 
     # Forge inference
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_falcon")
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

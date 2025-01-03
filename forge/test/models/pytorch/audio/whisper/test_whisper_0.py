@@ -23,6 +23,7 @@ import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
+from test.models.utils import build_module_name
 import time
 
 variants = [
@@ -34,7 +35,7 @@ variants = [
 ]
 
 
-def generate_model_whisper_congen_hf_pytorch(test_device, variant):
+def generate_model_whisper_congen_hf_pytorch(variant):
     # Configurations
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.compile_depth = forge.CompileDepth.POST_INITIAL_GRAPH_PASS
@@ -101,16 +102,15 @@ def generate_model_whisper_congen_hf_pytorch(test_device, variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_whisper(test_device, variant):
+def test_whisper(variant, record_property):
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant)
 
-    model, inputs = generate_model_whisper_congen_hf_pytorch(
-        test_device,
-        variant,
-    )
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    model, inputs = generate_model_whisper_congen_hf_pytorch(variant)
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
