@@ -707,3 +707,51 @@ TEST_F(UpdateGroupedReduceAvgTest, GroupedReduceAvgDim)
     ASSERT_TRUE(updated_attrs.count("reduce_dim"));
     EXPECT_EQ(std::get<int>(updated_attrs["reduce_dim"]), attr[0]);
 }
+
+struct EraseInverseOpsSqueezeAndUnsqueezeTest : testing::Test
+{
+    graphlib::Graph *graph;
+    graphlib::OpNode *squeeze_node;
+
+    EraseInverseOpsSqueezeAndUnsqueezeTest()
+    {
+        graphlib::Shape mask_shape = graphlib::Shape::create({1, 1, 256, 256});
+        graphlib::Shape weights_shape = graphlib::Shape::create({16, 256, 256});
+
+        graph = new graphlib::Graph(graphlib::IRLevel::IR_TT_FORGE, "EraseInverseOpsSqueezeAndUnsqueezeTest");
+
+        auto mask_node = create_input(*graph, "attention_mask", mask_shape);
+        auto weights_node = create_input(*graph, "attention_weights", weights_shape);
+
+        auto cast_1_node = add_node<graphlib::PyOpNode>(*graph, "cast", "cast", {"Float32"}, {mask_node});
+        auto unsqueeze_node = add_node<graphlib::PyOpNode>(*graph, "unsqueeze", "unsqueeze", {0, 3}, {weights_node});
+
+        tt::graphlib::InputNode *maximum_input_1 =
+            create_input(*graph, "input_1_maximum", graphlib::Shape::create({1}));
+        auto add_1_node = add_node<graphlib::PyOpNode>(*graph, "add", "add", {}, {cast_1_node, unsqueeze_node});
+
+        auto maximum_node =
+            add_node<graphlib::PyOpNode>(*graph, "maximum", "maximum", {}, {maximum_input_1, add_1_node});
+
+        squeeze_node = add_node<graphlib::PyOpNode>(*graph, "squeeze", "squeeze", {0}, {maximum_node});
+
+        create_output(*graph, "out", squeeze_node);
+    }
+};
+
+TEST_F(EraseInverseOpsSqueezeAndUnsqueezeTest, EraseInverseOpsSqueezeAndUnsqueeze)
+{
+    bool erased = passes::erase_inverse_ops(graph);
+    EXPECT_TRUE(erased);
+
+    auto nodes = graphlib::topological_sort(*graph);
+
+    graphlib::OpNode *squeeze_op = nodes[4]->as<graphlib::PyOpNode>();
+    ASSERT_EQ(squeeze_op->op_name(), "squeeze");
+
+    auto reshape_attrs = squeeze_op->named_attrs();
+    ASSERT_TRUE(reshape_attrs.count("dim"));
+
+    int dim = std::get<int>(reshape_attrs["dim"]);
+    EXPECT_EQ(dim, 0);
+}
