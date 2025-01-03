@@ -11,6 +11,7 @@
 
 #include "forge_graph_module.hpp"
 #include "graph_lib/defines.hpp"
+#include "graph_lib/edge.hpp"
 #include "graph_lib/graph.hpp"
 #include "graph_lib/node.hpp"
 #include "graph_lib/node_types.hpp"
@@ -340,33 +341,39 @@ std::unique_ptr<Graph> extract_optimizer_graph(
 
     // Adding all trainable params (which require gradients) from the forward graph as inputs to the optimizer graph.
     std::vector<graphlib::NodeId> opt_module_outputs;
-    for (auto param : graph->get_parameter_nodes())
-    {
-        if (param->as<graphlib::InputNode>()->requires_grad())
-        {
-            TT_ASSERT(
-                has_users_in_opt(graph, param),
-                "Expected parameter node {} to have users in the optimizer graph",
-                param->name());
-            log_debug("Adding parameter node {} as input to opt graph", param->name());
-            clone_and_add(param, opt_graph.get());
 
-            // For each trainable parameter, we need to create the output node for the updated parameter (aliased to the
-            // input node). E.g. If the parameter is `w`, then the output node will be `w_updated`: `w_updated = w - lr
-            // * gradient`.
-            //
-            // The runtime will look for aliased outputs and will make sure that the appropriate tensors are updated.
-            // See `OutputNode::is_aliased_tensor()` for more details.
-            auto grad_output_node = graphlib::create_node<graphlib::OutputNode>(param->name() + "_updated");
-            grad_output_node->set_output_type(graphlib::OutputType::Internal);
-            grad_output_node->set_shape(param->shape());
-            grad_output_node->set_output_df(param->output_df());
-            grad_output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
-            grad_output_node->set_alias(param->as<graphlib::InputNode>());
+    for (auto loopback_edge : graph->edges(graphlib::EdgeType::kDataLoopback)) {
+        auto consumer_node_id = loopback_edge.consumer_node_id;
 
-            opt_graph->add_node(std::move(grad_output_node), 0 /*subgraph_id=*/);
-            opt_module_outputs.push_back(opt_graph->get_node_by_name(param->name() + "_updated")->id());
+        auto consumer_node = graph->node_by_id(consumer_node_id);
+
+        auto input_node = consumer_node->as<graphlib::InputNode>();
+
+        TT_ASSERT(
+            has_users_in_opt(graph, consumer_node),
+            "Expected parameter node {} to have users in the optimizer graph",
+            consumer_node->name()
+        );
+
+        if (input_node->is_parameter()) {
+            if (!input_node->requires_grad()) {
+                log_debug("Skipping parameter node {} as it does not require gradients", consumer_node->name());
+                continue;
+            }
+            log_debug("Adding parameter node {} as input to opt graph", consumer_node->name());
+            clone_and_add(consumer_node, opt_graph.get());
         }
+
+        // create alias the same way as above
+        auto output_node = graphlib::create_node<graphlib::OutputNode>(consumer_node->name() + "_updated");
+        output_node->set_output_type(graphlib::OutputType::Internal);
+        output_node->set_shape(input_node->shape());
+        output_node->set_output_df(input_node->output_df());
+        output_node->set_epoch_type(graphlib::NodeEpochType::Optimizer);
+        output_node->set_alias(input_node);
+
+        opt_graph->add_node(std::move(output_node), 0 /*subgraph_id=*/);
+        opt_module_outputs.push_back(opt_graph->get_node_by_name(consumer_node->name() + "_updated")->id());
     }
 
     std::vector<graphlib::NodeId> opt_module_inputs;
@@ -421,7 +428,7 @@ std::unique_ptr<Graph> extract_optimizer_graph(
         // Check if the user of the node is a parameter node. If so, link it to the aliased output node created above.
         for (auto user : users)
         {
-            if (user->node_type() == graphlib::NodeType::kInput && user->as<graphlib::InputNode>()->is_parameter())
+            if (user->node_type() == graphlib::NodeType::kInput)
             {
                 auto weight_output_node = opt_graph->get_node_by_name(user->name() + "_updated");
                 opt_graph->add_edge(opt_graph->get_node_by_name(node->name()), weight_output_node);
