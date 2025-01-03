@@ -6,7 +6,7 @@ from transformers import AutoImageProcessor, RegNetModel, RegNetForImageClassifi
 import forge
 from forge.verify.verify import verify
 from .utils.image_utils import preprocess_input_data
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

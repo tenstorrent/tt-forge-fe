@@ -7,7 +7,7 @@ import pytest
 
 import forge
 from forge.verify.verify import verify
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 from .utils import load_inputs, load_model
 
@@ -22,16 +22,19 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail(reason="[optimized_graph] Trying to access element outside of dimensions: 3")
-def test_stereo(variant):
+# @pytest.mark.xfail(reason="[optimized_graph] Trying to access element outside of dimensions: 3")
+def test_stereo(variant, record_property):
     # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
+    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+
+    record_property("frontend", "tt-forge-fe")
+    record_property("module_name", module_name)
 
     framework_model, processor = load_model(variant)
 
     input_ids, attn_mask, decoder_input_ids = load_inputs(framework_model, processor)
     inputs = [input_ids, attn_mask, decoder_input_ids]
 
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify(inputs, framework_model, compiled_model)

@@ -9,7 +9,7 @@ from datasets import load_dataset
 from PIL import Image
 from transformers import AutoImageProcessor, ViTForImageClassification
 import os
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 dataset = load_dataset("huggingface/cats-image")

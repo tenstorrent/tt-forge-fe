@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
 import os
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

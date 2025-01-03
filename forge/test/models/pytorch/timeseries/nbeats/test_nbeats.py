@@ -14,7 +14,7 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 @pytest.mark.nightly

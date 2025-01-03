@@ -7,7 +7,7 @@ import pytest
 import requests
 from yolov6 import YOLOV6
 from test.models.pytorch.vision.yolo.utils.yolov6_utils import check_img_size, process_image
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)

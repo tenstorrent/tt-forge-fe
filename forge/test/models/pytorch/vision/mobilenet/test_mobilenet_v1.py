@@ -14,7 +14,7 @@ import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):

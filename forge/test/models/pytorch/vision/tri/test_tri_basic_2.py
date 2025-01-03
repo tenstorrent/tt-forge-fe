@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 import cv2
 import os
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 # import sys
 # sys.path.append("third_party/confidential_customer_models/internal/tri_basic_2/scripts")

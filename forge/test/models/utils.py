@@ -22,6 +22,6 @@ def build_module_name(
     if suffix is not None:
         module_name += f"_{suffix}"
 
-    module_name = re.sub(r"[^a-zA-Z0-9_]", "_", module_name=module_name)
-    module_name = re.sub(r"_+", "_", module_name=module_name)
+    module_name = re.sub(r"[^a-zA-Z0-9_]", "_", module_name)
+    module_name = re.sub(r"_+", "_", module_name)
     return module_name

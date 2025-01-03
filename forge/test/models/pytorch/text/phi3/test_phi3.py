@@ -12,7 +12,7 @@ import pytest
 import forge
 import torch
 from forge.verify.compare import compare_with_golden
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
@@ -91,9 +91,7 @@ def test_phi3_token_classification(variant, test_device):
 
     inputs = [inputs["input_ids"]]
     module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="token_classfication")
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name
-    )
+    compiled_model = forge.compile(model, inputs, module_name)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]
@@ -132,9 +130,7 @@ def test_phi3_sequence_classification(variant, test_device):
     inputs = [inputs["input_ids"]]
 
     module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="sequence_classification")
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name
-    )
+    compiled_model = forge.compile(model, inputs, module_name)
     co_out = compiled_model(*inputs)
 
     co_out = [co.to("cpu") for co in co_out]

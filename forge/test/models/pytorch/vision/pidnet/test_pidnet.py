@@ -8,7 +8,7 @@ import sys
 import cv2
 import numpy as np
 import torch
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name
 
 
 import forge
