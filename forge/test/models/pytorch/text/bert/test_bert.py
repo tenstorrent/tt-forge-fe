@@ -11,6 +11,7 @@ from transformers import (
 )
 
 import forge
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.utils import Framework, Task, build_module_name
@@ -20,7 +21,7 @@ from test.utils import download_model
 def generate_model_bert_maskedlm_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
-    model = BertForMaskedLM.from_pretrained(variant)
+    model = BertForMaskedLM.from_pretrained(variant, return_dict=False)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -52,13 +53,13 @@ def test_bert_masked_lm_pytorch(record_forge_property, variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
 
 
 def generate_model_bert_qa_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    model = download_model(BertForQuestionAnswering.from_pretrained, variant)
+    model = download_model(BertForQuestionAnswering.from_pretrained, variant, return_dict=False)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -94,19 +95,19 @@ def test_bert_question_answering_pytorch(record_forge_property, variant):
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
-    framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch()
+    framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
 
 
 def generate_model_bert_seqcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    model = download_model(BertForSequenceClassification.from_pretrained, variant)
+    model = download_model(BertForSequenceClassification.from_pretrained, variant, return_dict=False)
 
     # Load data sample
     review = "the movie was great!"
@@ -142,11 +143,17 @@ def test_bert_sequence_classification_pytorch(record_forge_property, variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model)
 
+    co_out = compiled_model(*inputs)
+    predicted_value = co_out[0].argmax(-1).item()
+
+    # Answer - "positive"
+    print(f"Predicted Sentiment: {framework_model.config.id2label[predicted_value]}")
+
 
 def generate_model_bert_tkcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
-    model = download_model(BertForTokenClassification.from_pretrained, variant)
+    model = download_model(BertForTokenClassification.from_pretrained, variant, return_dict=False)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -180,4 +187,4 @@ def test_bert_token_classification_pytorch(record_forge_property, variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))

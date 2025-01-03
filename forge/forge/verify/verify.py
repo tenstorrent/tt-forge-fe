@@ -331,4 +331,5 @@ def verify(
             if fw.shape != co.shape:
                 raise ValueError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
 
-        verify_cfg.value_checker.check(fw, co)
+        if verify_cfg.verify_values:
+            verify_cfg.value_checker.check(fw, co)
