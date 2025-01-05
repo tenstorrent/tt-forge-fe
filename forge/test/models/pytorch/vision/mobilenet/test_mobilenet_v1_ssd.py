@@ -5,7 +5,7 @@ import os
 import pytest
 import torch
 import forge
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
@@ -14,7 +14,7 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
-    module_name = build_module_name(framework="pt", model="mobilenet", variant="ssd")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet", variant="ssd")
 
     record_forge_property("module_name", module_name)
 

@@ -7,7 +7,7 @@ import pytest
 
 import forge
 from forge.verify.verify import verify
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 from .utils import load_inputs, load_model
 
@@ -23,7 +23,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="stereo", variant=variant)
 
     record_forge_property("module_name", module_name)
 

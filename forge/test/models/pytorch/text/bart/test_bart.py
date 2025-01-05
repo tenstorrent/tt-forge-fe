@@ -9,7 +9,7 @@ from transformers.models.bart.modeling_bart import shift_tokens_right
 import pytest
 import forge
 
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 class BartWrapper(torch.nn.Module):
@@ -25,7 +25,9 @@ class BartWrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_pt_bart_classifier(record_forge_property):
-    module_name = build_module_name(framework="pt", model="bart", variant=model_name, task="classification")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="bart", variant=model_name, task="classification"
+    )
 
     record_forge_property("module_name", module_name)
 

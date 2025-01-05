@@ -9,13 +9,13 @@ from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite 
 import os
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_0_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_0")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_0")
 
     record_forge_property("module_name", module_name)
 
@@ -41,7 +41,7 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_1_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_1")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_1")
 
     record_forge_property("module_name", module_name)
 
@@ -69,7 +69,7 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_2_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_2")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_2")
 
     record_forge_property("module_name", module_name)
 
@@ -96,7 +96,7 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_3_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_3")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_3")
 
     record_forge_property("module_name", module_name)
 
@@ -123,7 +123,7 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_4_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_4")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_4")
 
     record_forge_property("module_name", module_name)
 
@@ -137,7 +137,7 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
 
-    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_4")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_4")
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)

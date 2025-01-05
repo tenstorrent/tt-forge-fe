@@ -8,7 +8,7 @@ import sys
 import cv2
 import numpy as np
 import torch
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 import forge
@@ -23,7 +23,7 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_pidnet_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="pidnet", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="pidnet", variant=variant)
 
     record_forge_property("module_name", module_name)
 

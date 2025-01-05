@@ -9,7 +9,7 @@ import numpy as np
 from PIL import Image
 import sys
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -18,7 +18,7 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_fchardnet(record_forge_property):
-    module_name = build_module_name(framework="pt", model="fchardnet")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="fchardnet")
 
     record_forge_property("module_name", module_name)
 

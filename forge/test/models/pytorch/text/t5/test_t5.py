@@ -11,13 +11,13 @@ import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
 def test_t5_loop_tiny_tile(record_forge_property):
-    module_name = build_module_name(framework="pt", model="t5", suffix="loop_tiny_tile")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", suffix="loop_tiny_tile")
 
     record_forge_property("module_name", module_name)
 
@@ -96,7 +96,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="t5", variant=variant, task="generation")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task="generation")
 
     record_forge_property("module_name", module_name)
 
@@ -182,7 +182,9 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
-    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="past_cache_enc_dec")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="past_cache_enc_dec"
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -347,7 +349,9 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_device):
-    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="past_cache_forge_pipe")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="past_cache_forge_pipe"
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -686,7 +690,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_forge_pipeline(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="forge_pipe")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="forge_pipe")
 
     record_forge_property("module_name", module_name)
 
@@ -738,7 +742,7 @@ def test_t5_forge_pipeline(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(record_forge_property, test_device):
-    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="small_tiny_tile")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="small_tiny_tile")
 
     record_forge_property("module_name", module_name)
 

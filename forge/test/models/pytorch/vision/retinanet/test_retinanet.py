@@ -11,7 +11,7 @@ import shutil
 from test.models.pytorch.vision.retinanet.utils.model import Model
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 import forge
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = [
@@ -27,7 +27,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_retinanet(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="retinanet", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="retinanet", variant=variant)
 
     record_forge_property("module_name", module_name)
 

@@ -28,7 +28,7 @@ import pytest
 import os
 import forge
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
@@ -38,7 +38,7 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="yolox", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="yolox", variant=variant)
 
     record_forge_property("module_name", module_name)
 

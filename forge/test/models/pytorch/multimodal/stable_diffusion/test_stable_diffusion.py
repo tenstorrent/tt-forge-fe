@@ -13,7 +13,7 @@ from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     denoising_loop,
     stable_diffusion_postprocessing,
 )
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.skip(reason="unsupported for now")
@@ -21,7 +21,7 @@ from test.models.utils import build_module_name
 def test_stable_diffusion_pytorch(record_forge_property):
     variant = "CompVis/stable-diffusion-v1-4"
 
-    module_name = build_module_name(framework="pt", model="stable_diffusion", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
 
     record_forge_property("module_name", module_name)
 

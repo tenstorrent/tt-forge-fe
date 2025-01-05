@@ -9,7 +9,7 @@ import forge
 import torch
 import sys
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -23,7 +23,7 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="blazepose", task="detector")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", task="detector")
 
     record_forge_property("module_name", module_name)
 
@@ -45,7 +45,7 @@ def test_blazepose_detector_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="blazepose", task="regressor")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", task="regressor")
 
     record_forge_property("module_name", module_name)
 
@@ -59,7 +59,7 @@ def test_blazepose_regressor_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="blazepose", task="palm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", task="palm")
 
     record_forge_property("module_name", module_name)
 
@@ -82,7 +82,7 @@ def test_blaze_palm_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="blazepose", task="hand")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", task="hand")
 
     record_forge_property("module_name", module_name)
 

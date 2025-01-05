@@ -15,7 +15,7 @@ from forge import (
 )
 from test.utils import download_model
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def cpu_sanity_run_0():
@@ -54,7 +54,9 @@ variants = [
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rotary_embedding(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rotary_embedding")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gemma", variant=variant, task="rotary_embedding"
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -96,7 +98,7 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rms_norm(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rms_norm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, task="rms_norm")
 
     record_forge_property("module_name", module_name)
 
@@ -136,7 +138,7 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="attention")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, task="attention")
 
     record_forge_property("module_name", module_name)
 
@@ -179,7 +181,7 @@ def test_gemma_2b_attention(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_mlp(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="mlp")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, task="mlp")
 
     record_forge_property("module_name", module_name)
 
@@ -220,7 +222,9 @@ def test_gemma_2b_mlp(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_single_decoder(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="single_decoder")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="single_decoder"
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -263,7 +267,7 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -304,7 +308,7 @@ def test_gemma_2b(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="gen")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="gen")
 
     record_forge_property("module_name", module_name)
 
@@ -366,7 +370,7 @@ def test_gemma_2b_gen(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="gen_1x1")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="gen_1x1")
 
     record_forge_property("module_name", module_name)
 

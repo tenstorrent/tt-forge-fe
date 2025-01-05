@@ -9,13 +9,13 @@ import forge
 from PIL import Image
 from loguru import logger
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_googlenet_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="googlenet")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="googlenet")
 
     record_forge_property("module_name", module_name)
 

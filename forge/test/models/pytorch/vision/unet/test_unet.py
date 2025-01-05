@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
@@ -30,7 +30,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="unet", variant="cityscape", source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="cityscape", source="osmr")
 
     record_forge_property("module_name", module_name)
 
@@ -70,7 +70,7 @@ def get_imagenet_sample():
 @pytest.mark.skip(reason="Model script not found")
 @pytest.mark.nightly
 def test_unet_holocron_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="unet", variant="holocron")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="holocron")
 
     record_forge_property("module_name", module_name)
 
@@ -112,7 +112,7 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_qubvel_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="unet", variant="qubvel")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="qubvel")
 
     record_forge_property("module_name", module_name)
 
@@ -160,7 +160,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_torchhub_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="unet")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet")
 
     record_forge_property("module_name", module_name)
 

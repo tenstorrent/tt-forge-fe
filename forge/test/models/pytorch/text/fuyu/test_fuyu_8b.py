@@ -27,7 +27,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
     FuyuModelImgDecoderWrapper,
     FuyuModelTxtDecoderWrapper,
 )
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
@@ -35,7 +35,7 @@ from test.models.utils import build_module_name
 def test_fuyu8b(record_forge_property):
     variant = "adept/fuyu-8b"
 
-    module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -84,7 +84,7 @@ def test_fuyu8b(record_forge_property):
 def test_fuyu8b_past_cache(record_forge_property, test_device):
     variant = "adept/fuyu-8b"
 
-    module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
 
     record_forge_property("module_name", module_name)
 

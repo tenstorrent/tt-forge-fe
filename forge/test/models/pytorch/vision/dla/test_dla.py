@@ -19,7 +19,7 @@ from test.models.pytorch.vision.dla.utils.dla_model import (
     dla102x2,
     dla169,
 )
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants_func = {
@@ -41,7 +41,7 @@ variants = list(variants_func.keys())
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dla_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="dla", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="dla", variant=variant)
 
     record_forge_property("module_name", module_name)
 

@@ -5,7 +5,7 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, OPTForCausalLM, OPTConfig, OPTForQuestionAnswering, OPTForSequenceClassification
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
@@ -15,7 +15,7 @@ variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_causal_lm(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task="clm")
 
     record_forge_property("module_name", module_name)
 
@@ -53,7 +53,7 @@ def test_opt_causal_lm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_qa(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="qa")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task="qa")
 
     record_forge_property("module_name", module_name)
 
@@ -89,7 +89,7 @@ def test_opt_qa(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_sequence_classification(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="seqcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task="seqcls")
 
     record_forge_property("module_name", module_name)
 

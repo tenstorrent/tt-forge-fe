@@ -17,14 +17,14 @@ variants = [
 ]
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="codegen", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="codegen", variant=variant, task="clm")
 
     record_forge_property("module_name", module_name)
 

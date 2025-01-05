@@ -2,10 +2,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import re
+from enum import Enum
+
+
+class StrEnum(str, Enum):
+    def __str__(self):
+        return self.value
+
+
+class Framework(StrEnum):
+    PYTORCH = "pt"
+    TENSORFLOW = "tf"
+    ONNX = "onnx"
 
 
 def build_module_name(
-    framework: str,
+    framework: Framework,
     model: str,
     variant: str | None = None,
     task: str | None = None,

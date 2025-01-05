@@ -9,7 +9,7 @@ import forge
 from PIL import Image
 import pytest
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 # import sys
 
@@ -25,7 +25,7 @@ variants = ["densenet161_bts", "densenet121_bts"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
 def test_bts_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="bts", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bts", variant=variant)
 
     record_forge_property("module_name", module_name)
 

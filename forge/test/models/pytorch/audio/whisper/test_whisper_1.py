@@ -25,7 +25,7 @@ import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 from test.models.pytorch.audio.whisper.utils.model import (
     Whisper_encoder,
     Whisper_decoder,
@@ -45,7 +45,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
-    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="pipeline")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="pipeline")
 
     record_forge_property("module_name", module_name)
 
@@ -82,7 +82,7 @@ def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_enc_dec(record_forge_property, test_device, variant):
-    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="enc_dec")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="enc_dec")
 
     record_forge_property("module_name", module_name)
 
@@ -315,7 +315,9 @@ def test_whisper_enc_dec(record_forge_property, test_device, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
-    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="enc_dec_pipeline")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="enc_dec_pipeline"
+    )
 
     record_forge_property("module_name", module_name)
 

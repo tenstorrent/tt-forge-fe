@@ -9,7 +9,7 @@ from PIL import Image
 from torchvision import transforms
 import os
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
@@ -23,7 +23,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="hardnet", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="hardnet", variant=variant)
 
     record_forge_property("module_name", module_name)
 

@@ -10,13 +10,13 @@ import os
 import pytest
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_conv_ae_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="conv_autoencoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="conv_autoencoder")
 
     record_forge_property("module_name", module_name)
 
@@ -44,7 +44,7 @@ def test_conv_ae_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_linear_ae_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="linear_autoencoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="linear_autoencoder")
 
     record_forge_property("module_name", module_name)
 

@@ -8,13 +8,13 @@ import torch
 import requests
 import os
 from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_pytorch_ssd300_resnet50(record_forge_property):
-    module_name = build_module_name(framework="pt", model="ssd300_resnet50")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="ssd300_resnet50")
 
     record_forge_property("module_name", module_name)
 

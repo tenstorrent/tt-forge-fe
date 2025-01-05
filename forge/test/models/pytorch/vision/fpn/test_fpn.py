@@ -5,13 +5,13 @@ import torch
 import forge
 import pytest
 from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_fpn_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="fpn", source="torchvision")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="fpn", source="torchvision")
 
     record_forge_property("module_name", module_name)
 

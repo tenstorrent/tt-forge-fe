@@ -14,7 +14,7 @@ import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_mobilenetV1_base_custom_pytorch():
@@ -30,7 +30,7 @@ def generate_model_mobilenetV1_base_custom_pytorch():
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_mobilenetv1_basic(record_forge_property):
-    module_name = build_module_name(framework="pt", model="mobilenet_v1", variant="basic")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v1", variant="basic")
 
     record_forge_property("module_name", module_name)
 
@@ -66,7 +66,7 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv1_192(record_forge_property):
     variant = "google/mobilenet_v1_0.75_192"
-    module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -93,7 +93,7 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv1_224(record_forge_property):
     variant = "google/mobilenet_v1_1.0_224"
-    module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant)
 
     record_forge_property("module_name", module_name)
 

@@ -5,7 +5,7 @@
 import pytest
 import forge
 from test.models.pytorch.vision.monodepth2.utils.utils import download_model, load_model, load_input
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 variants = [
     "mono_640x192",
@@ -22,7 +22,7 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 def test_monodepth2(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="monodepth2", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="monodepth2", variant=variant)
 
     record_forge_property("module_name", module_name)
 

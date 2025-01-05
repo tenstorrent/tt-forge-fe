@@ -8,13 +8,13 @@ import torchvision.transforms as transforms
 from PIL import Image
 from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_monodle_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="monodle")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="monodle")
 
     record_forge_property("module_name", module_name)
 

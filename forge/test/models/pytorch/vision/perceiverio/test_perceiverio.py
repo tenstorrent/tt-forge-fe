@@ -15,7 +15,7 @@ from transformers import (
 )
 import os
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def get_sample_data(model_name):
@@ -48,7 +48,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="perceiverio", variant=variant, task="imgcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="perceiverio", variant=variant, task="imgcls")
 
     record_forge_property("module_name", module_name)
 

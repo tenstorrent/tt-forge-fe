@@ -13,7 +13,7 @@ from transformers import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):
@@ -42,7 +42,7 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 def test_bert_masked_lm_pytorch(record_forge_property):
     variant = "bert-base-uncased"
 
-    module_name = build_module_name(framework="pt", model="bert", variant=variant, task="mlm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task="mlm")
 
     record_forge_property("module_name", module_name)
 
@@ -95,7 +95,7 @@ def generate_model_bert_qa_hf_pytorch(variant):
 def test_bert_question_answering_pytorch(record_forge_property):
     variant = "bert-large-cased-whole-word-masking-finetuned-squad"
 
-    module_name = build_module_name(framework="pt", model="bert", variant=variant, task="qa")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task="qa")
 
     record_forge_property("module_name", module_name)
 
@@ -138,7 +138,7 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 def test_bert_sequence_classification_pytorch(record_forge_property):
     variant = "textattack/bert-base-uncased-SST-2"
 
-    module_name = build_module_name(framework="pt", model="bert", variant=variant, task="seqcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task="seqcls")
 
     record_forge_property("module_name", module_name)
 
@@ -181,7 +181,7 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 def test_bert_token_classification_pytorch(record_forge_property):
     variant = "dbmdz/bert-large-cased-finetuned-conll03-english"
 
-    module_name = build_module_name(framework="pt", model="bert", variant=variant, task="token_cls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task="token_cls")
 
     record_forge_property("module_name", module_name)
 

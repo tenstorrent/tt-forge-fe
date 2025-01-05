@@ -6,7 +6,7 @@ from test.utils import download_model
 import torch
 import forge
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
@@ -29,7 +29,12 @@ def test_yolov5_320x320(record_forge_property, size):
     variant = "yolov5" + size
 
     module_name = build_module_name(
-        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="320x320"
+        framework=Framework.PYTORCH,
+        model="yolo_v5",
+        variant=variant,
+        task="imgcls",
+        source="torchhub",
+        suffix="320x320",
     )
 
     record_forge_property("module_name", module_name)
@@ -61,7 +66,12 @@ def test_yolov5_640x640(record_forge_property, size):
     variant = "yolov5" + size
 
     module_name = build_module_name(
-        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="640x640"
+        framework=Framework.PYTORCH,
+        model="yolo_v5",
+        variant=variant,
+        task="imgcls",
+        source="torchhub",
+        suffix="640x640",
     )
 
     record_forge_property("module_name", module_name)
@@ -88,7 +98,12 @@ def test_yolov5_480x480(record_forge_property, size):
     variant = "yolov5" + size
 
     module_name = build_module_name(
-        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="480x480"
+        framework=Framework.PYTORCH,
+        model="yolo_v5",
+        variant=variant,
+        task="imgcls",
+        source="torchhub",
+        suffix="480x480",
     )
 
     record_forge_property("module_name", module_name)
@@ -106,7 +121,12 @@ def test_yolov5_1280x1280(record_forge_property):
     variant = "yolov5s"
 
     module_name = build_module_name(
-        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="1280x1280"
+        framework=Framework.PYTORCH,
+        model="yolo_v5",
+        variant=variant,
+        task="imgcls",
+        source="torchhub",
+        suffix="1280x1280",
     )
 
     record_forge_property("module_name", module_name)

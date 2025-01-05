@@ -11,7 +11,7 @@ from PIL import Image
 from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
 from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -51,7 +51,7 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="vilt", variant=variant, task="qa", source="hf")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vilt", variant=variant, task="qa", source="hf")
 
     record_forge_property("module_name", module_name)
 
@@ -90,7 +90,7 @@ variants = ["dandelin/vilt-b32-mlm"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="vilt", variant=variant, task="mlm", source="hf")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vilt", variant=variant, task="mlm", source="hf")
 
     record_forge_property("module_name", module_name)
 

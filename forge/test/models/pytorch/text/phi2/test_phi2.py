@@ -12,7 +12,7 @@ from transformers import (
 import pytest
 import forge
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
@@ -21,7 +21,7 @@ variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_phi2_clm(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="phi2", variant=variant, task="clm")
 
     record_forge_property("module_name", module_name)
 
@@ -71,7 +71,7 @@ def test_phi2_clm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="token_cls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="phi2", variant=variant, task="token_cls")
 
     record_forge_property("module_name", module_name)
 
@@ -112,7 +112,7 @@ def test_phi2_token_classification(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="seqcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="phi2", variant=variant, task="seqcls")
 
     record_forge_property("module_name", module_name)
 

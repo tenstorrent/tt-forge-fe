@@ -13,7 +13,7 @@ from transformers import (
     GPTNeoConfig,
     GPTNeoForSequenceClassification,
 )
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = [
@@ -27,7 +27,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_causal_lm(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gptneo", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gptneo", variant=variant, task="clm")
 
     record_forge_property("module_name", module_name)
 
@@ -76,7 +76,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_sequence_classification(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="gptneo", variant=variant, task="seq_cls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gptneo", variant=variant, task="seq_cls")
 
     record_forge_property("module_name", module_name)
 

@@ -10,7 +10,7 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_xception_imgcls_timm(variant):
@@ -39,7 +39,7 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xception_timm(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="xception", variant=variant, source="timm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="xception", variant=variant, source="timm")
 
     record_forge_property("module_name", module_name)
 

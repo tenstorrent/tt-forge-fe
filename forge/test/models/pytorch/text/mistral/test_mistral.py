@@ -13,7 +13,7 @@ from test.models.pytorch.text.mistral.utils.model_utils import (
     multinomial_sample_one_no_sync,
     logits_to_probs,
 )
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -23,7 +23,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
 def test_mistral_decoder_layer(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="mistral", variant=variant, suffix="decoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decoder")
 
     record_forge_property("module_name", module_name)
 
@@ -49,7 +49,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="mistral", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -85,7 +85,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
 def test_mistral_decode(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="mistral", variant=variant, suffix="decode")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decode")
 
     record_forge_property("module_name", module_name)
 
@@ -152,7 +152,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.skip(reason="under development")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral_kv_cache(record_forge_property, variant, test_device):
-    module_name = build_module_name(framework="pt", model="mistral", variant=variant, suffix="kv_cache")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="kv_cache")
 
     record_forge_property("module_name", module_name)
 

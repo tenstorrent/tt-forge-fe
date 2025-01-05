@@ -5,7 +5,7 @@ from test.utils import download_model
 import forge
 import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
@@ -13,7 +13,7 @@ from test.models.utils import build_module_name
 def test_squeezebert_sequence_classification_pytorch(record_forge_property):
     variant = "squeezebert/squeezebert-mnli"
 
-    module_name = build_module_name(framework="pt", model="squeezebert", variant=variant, task="seqcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="squeezebert", variant=variant, task="seqcls")
 
     record_forge_property("module_name", module_name)
 

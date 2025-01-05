@@ -17,7 +17,7 @@ from timm.data.transforms_factory import create_transform
 
 from test.utils import download_model
 import forge
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_resnet_imgcls_hf_pytorch(variant):
@@ -46,7 +46,7 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnet(record_forge_property):
-    module_name = build_module_name(framework="pt", model="resnet", variant="50")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", variant="50")
 
     record_forge_property("module_name", module_name)
 
@@ -82,7 +82,7 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnet_timm(record_forge_property):
-    module_name = build_module_name(framework="pt", model="resnet", source="timm", variant="50")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", source="timm", variant="50")
 
     record_forge_property("module_name", module_name)
 

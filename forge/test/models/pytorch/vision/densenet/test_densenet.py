@@ -9,7 +9,7 @@ import os
 import torch
 import torchxrayvision as xrv
 from test.models.pytorch.vision.densenet.utils.densenet_utils import get_input_img, get_input_img_hf_xray
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = ["densenet121", "densenet121_hf_xray"]
@@ -19,7 +19,7 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="densenet121", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet121", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -42,7 +42,7 @@ def test_densenet_121_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_161_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="densenet161")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet161")
 
     record_forge_property("module_name", module_name)
 
@@ -59,7 +59,7 @@ def test_densenet_161_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_169_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="densenet169")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet169")
 
     record_forge_property("module_name", module_name)
 
@@ -76,7 +76,7 @@ def test_densenet_169_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_201_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="densenet201")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet201")
 
     record_forge_property("module_name", module_name)
 

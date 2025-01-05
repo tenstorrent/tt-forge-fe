@@ -14,13 +14,13 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_seasonality_basis(record_forge_property):
-    module_name = build_module_name(framework="pt", model="nbeats", variant="seasionality_basis")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="seasionality_basis")
 
     record_forge_property("module_name", module_name)
 
@@ -49,7 +49,7 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_generic_basis(record_forge_property):
-    module_name = build_module_name(framework="pt", model="nbeats", variant="generic_basis")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="generic_basis")
 
     record_forge_property("module_name", module_name)
 
@@ -72,7 +72,7 @@ def test_nbeats_with_generic_basis(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_trend_basis(record_forge_property):
-    module_name = build_module_name(framework="pt", model="nbeats", variant="trend_basis")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="trend_basis")
 
     record_forge_property("module_name", module_name)
 

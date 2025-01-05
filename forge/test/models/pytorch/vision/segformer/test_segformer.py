@@ -9,7 +9,7 @@ from transformers import SegformerForImageClassification, SegformerForSemanticSe
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
 
 import forge
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants_img_classification = [
@@ -26,7 +26,7 @@ variants_img_classification = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_img_classification)
 def test_segformer_image_classification_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="imgcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="segformer", variant=variant, task="imgcls")
 
     record_forge_property("module_name", module_name)
 
@@ -59,7 +59,7 @@ variants_semseg = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_semseg)
 def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="semseg")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="segformer", variant=variant, task="semseg")
 
     record_forge_property("module_name", module_name)
 

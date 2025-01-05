@@ -18,7 +18,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 import urllib
 from torchvision import transforms
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
@@ -28,7 +28,7 @@ variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_vgg_osmr_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="vgg", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -61,7 +61,7 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_vgg_19_hf_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="vgg", variant="19", source="hf")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="19", source="hf")
 
     record_forge_property("module_name", module_name)
 
@@ -122,7 +122,7 @@ def preprocess_timm_model(model_name):
 def test_vgg_bn19_timm_pytorch(record_forge_property):
     variant = "vgg19_bn"
 
-    module_name = build_module_name(framework="pt", model="vgg", variant="vgg19_bn", source="timm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source="timm")
 
     record_forge_property("module_name", module_name)
 
@@ -135,7 +135,7 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_vgg_bn19_torchhub_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="vgg", variant="vgg19_bn", source="torchhub")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source="torchhub")
 
     record_forge_property("module_name", module_name)
 

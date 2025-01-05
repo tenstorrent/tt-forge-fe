@@ -6,7 +6,7 @@ import forge
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import torch
 import re
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
@@ -14,7 +14,7 @@ from test.models.utils import build_module_name
 def test_qwen1_5_causal_lm(record_forge_property):
     variant = "Qwen/Qwen1.5-0.5B"
 
-    module_name = build_module_name(framework="pt", model="qwen1.5", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task="clm")
 
     record_forge_property("module_name", module_name)
 
@@ -65,7 +65,7 @@ def parse_chat_completion(text: str):
 def test_qwen1_5_chat(record_forge_property):
     variant = "Qwen/Qwen1.5-0.5B-Chat"
 
-    module_name = build_module_name(framework="pt", model="qwen1.5", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant)
 
     record_forge_property("module_name", module_name)
 

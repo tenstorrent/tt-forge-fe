@@ -14,7 +14,7 @@ from test.models.pytorch.multimodal.clip.utils.clip_model import (
     CLIPPostProcessingWrapper,
 )
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
@@ -22,7 +22,7 @@ from test.models.utils import build_module_name
 def test_clip_pytorch(record_forge_property):
     model_ckpt = "openai/clip-vit-base-patch32"
 
-    module_name = build_module_name(framework="pt", model="clip", variant=model_ckpt, suffix="text")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="clip", variant=model_ckpt, suffix="text")
 
     record_forge_property("module_name", module_name)
 

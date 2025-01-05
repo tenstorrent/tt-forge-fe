@@ -9,7 +9,7 @@ from datasets import load_dataset
 from PIL import Image
 from transformers import AutoImageProcessor, ViTForImageClassification
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 dataset = load_dataset("huggingface/cats-image")
@@ -36,7 +36,9 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classify_224_hf_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="vit", variant=variant, task="classify", source="hf")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="vit", variant=variant, task="classify", source="hf"
+    )
 
     record_forge_property("module_name", module_name)
 

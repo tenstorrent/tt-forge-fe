@@ -23,7 +23,7 @@ import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 import time
 
 variants = [
@@ -96,7 +96,7 @@ def generate_model_whisper_congen_hf_pytorch(variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="whisper", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -109,7 +109,7 @@ def test_whisper(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_pipeline(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="pipeline")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="pipeline")
 
     record_forge_property("module_name", module_name)
 
@@ -171,7 +171,7 @@ def test_whisper_pipeline(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Not supported")
 def test_whisper_encoder(record_forge_property, test_device, variant):
-    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="encoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="encoder")
 
     record_forge_property("module_name", module_name)
 

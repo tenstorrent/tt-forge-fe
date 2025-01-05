@@ -5,7 +5,7 @@ import torch
 import pytest
 from transformers import AutoTokenizer, FalconForCausalLM
 import forge
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly
@@ -13,7 +13,7 @@ from test.models.utils import build_module_name
 def test_falcon(record_forge_property):
     variant = "tiiuae/falcon-7b-instruct"
 
-    module_name = build_module_name(framework="pt", model="falcon", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="falcon", variant=variant)
 
     record_forge_property("module_name", module_name)
 

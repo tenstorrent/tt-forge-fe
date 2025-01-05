@@ -20,7 +20,7 @@ variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="distilbert", variant=variant, task="mlm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=variant, task="mlm")
 
     record_forge_property("module_name", module_name)
 
@@ -51,7 +51,7 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_distilbert_question_answering_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="qa")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=model_ckpt, task="qa")
 
     record_forge_property("module_name", module_name)
 
@@ -89,7 +89,7 @@ def test_distilbert_question_answering_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_distilbert_sequence_classification_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="seqcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=model_ckpt, task="seqcls")
 
     record_forge_property("module_name", module_name)
 
@@ -117,7 +117,9 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_distilbert_token_classification_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="token_cls")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="distilbert", variant=model_ckpt, task="token_cls"
+    )
 
     record_forge_property("module_name", module_name)
 

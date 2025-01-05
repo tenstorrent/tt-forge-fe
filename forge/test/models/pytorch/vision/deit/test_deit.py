@@ -11,7 +11,7 @@ from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
 from test.utils import download_model
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):
@@ -42,7 +42,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="deit", variant=variant, task="imgcls")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="deit", variant=variant, task="imgcls")
 
     record_forge_property("module_name", module_name)
 

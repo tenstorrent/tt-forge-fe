@@ -12,7 +12,7 @@ from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 import urllib
 import os
-from test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_wideresnet_imgcls_pytorch(variant):
@@ -45,7 +45,7 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="wideresnet", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="wideresnet", variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -80,7 +80,7 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_timm(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="wideresnet", source="timm", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="wideresnet", source="timm", variant=variant)
 
     record_forge_property("module_name", module_name)
 
