@@ -22,7 +22,7 @@ from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name
 
 
-def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
+def generate_model_mobilenetV3_imgcls_torchhub_pytorch(variant):
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
 
     # Run inference on Tenstorrent device
@@ -41,9 +41,8 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mobilenetv3_basic(variant, test_device):
+def test_mobilenetv3_basic(variant):
     model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
-        test_device,
         variant,
     )
     module_name = build_module_name(framework="pt", model="mobilenetv3", variant=variant)
@@ -58,7 +57,7 @@ def test_mobilenetv3_basic(variant, test_device):
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
+def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
     # Both options are good
     # model = timm.create_model('mobilenetv3_small_100', pretrained=True)
     if variant == "mobilenetv3_small_100":
@@ -92,9 +91,8 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mobilenetv3_timm(variant, test_device):
+def test_mobilenetv3_timm(variant):
     model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
-        test_device,
         variant,
     )
 

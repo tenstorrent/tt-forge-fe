@@ -23,7 +23,7 @@ from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name
 
 
-def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
+def generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant):
     model = download_model(torch.hub.load, variant, "mobilenet_v2", pretrained=True)
 
     # Image preprocessing
@@ -39,16 +39,14 @@ def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv2_basic(test_device):
-    model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(
-        test_device,
-        "pytorch/vision:v0.10.0",
-    )
-    module_name = build_module_name(framework="pt", model="mobilenet_v2_basic")
+def test_mobilenetv2_basic():
+    variant = "pytorch/vision:v0.10.0"
+    model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant)
+    module_name = build_module_name(framework="pt", model="mobilenet_v2_basic", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
+def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
@@ -63,16 +61,14 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv2_96(test_device):
-    model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v2_0.35_96",
-    )
-    module_name = build_module_name(framework="pt", model="mobilenetv2", variant="96")
+def test_mobilenetv2_96():
+    variant = "google/mobilenet_v2_0.35_96"
+    model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
+    module_name = build_module_name(framework="pt", model="mobilenetv2", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
+def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
@@ -87,16 +83,16 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv2_160(test_device):
+def test_mobilenetv2_160():
+    variant = "google/mobilenet_v2_0.75_160"
     model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v2_0.75_160",
+        variant,
     )
-    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant="160")
+    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
+def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
@@ -113,16 +109,16 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv2_224(test_device):
+def test_mobilenetv2_224():
+    variant = "google/mobilenet_v2_1.0_224"
     model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v2_1.0_224",
+        variant,
     )
-    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant="224")
+    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
+def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
     model = download_model(timm.create_model, variant, pretrained=True)
     # tt_model = forge.PyTorchModule("mobilenet_v2__hf_timm", model)
 
@@ -148,12 +144,10 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv2_timm(test_device):
-    model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(
-        test_device,
-        "mobilenetv2_100",
-    )
-    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant="100", source="timm")
+def test_mobilenetv2_timm():
+    variant = "mobilenetv2_100"
+    model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
+    module_name = build_module_name(framework="pt", model="mobilenet_v2", variant=variant, source="timm")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
@@ -165,7 +159,7 @@ def test_mobilenetv2_timm(test_device):
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-def generate_model_mobilenetV2_semseg_hf_pytorch(test_device, variant):
+def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
     # This variant with input size 3x224x224 works with manual kernel fracturing
     # of the first op. Pad between input activations and first convolution needs
     # to be hoist to the input in order for pre-striding to work (no need for
@@ -199,10 +193,9 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_mobilenetv2_deeplabv3(variant, test_device):
+def test_mobilenetv2_deeplabv3(variant):
     model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(
-        test_device,
         variant,
     )
-    module_name = build_module_name(framework="pt", model="mobilnet_v2", variant="deeplabv3")
+    module_name = build_module_name(framework="pt", model="mobilnet_v2", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

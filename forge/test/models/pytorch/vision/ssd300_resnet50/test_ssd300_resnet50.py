@@ -13,7 +13,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_pytorch_ssd300_resnet50(test_device):
+def test_pytorch_ssd300_resnet50():
     # STEP 2 : prepare model
     model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
     url = "https://api.ngc.nvidia.com/v2/models/nvidia/ssd_pyt_ckpt_amp/versions/19.09.0/files/nvidia_ssdpyt_fp16_190826.pt"

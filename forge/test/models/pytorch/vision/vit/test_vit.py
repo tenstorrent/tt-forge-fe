@@ -18,7 +18,7 @@ url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image_2 = Image.open(requests.get(url, stream=True).raw)
 
 
-def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
+def generate_model_vit_imgcls_hf_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(ViTForImageClassification.from_pretrained, variant)
@@ -35,9 +35,8 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vit_classify_224_hf_pytorch(variant, test_device):
+def test_vit_classify_224_hf_pytorch(variant):
     model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
-        test_device,
         variant,
     )
 

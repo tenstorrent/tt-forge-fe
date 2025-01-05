@@ -20,7 +20,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_causal_lm(variant, test_device):
+def test_phi3_causal_lm(variant):
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -59,7 +59,7 @@ def test_phi3_causal_lm(variant, test_device):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_token_classification(variant, test_device):
+def test_phi3_token_classification(variant):
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -94,7 +94,7 @@ def test_phi3_token_classification(variant, test_device):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_sequence_classification(variant, test_device):
+def test_phi3_sequence_classification(variant):
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)

@@ -109,7 +109,7 @@ def test_whisper(variant, record_property):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
-def test_whisper_pipeline(test_device, variant):
+def test_whisper_pipeline(variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     # Configurations
@@ -190,9 +190,6 @@ def test_whisper_encoder(test_device, variant):
         padded_len = pad_to_tiles * TILE_DIM
         pad_amount = padded_len - config.max_source_positions
         config.max_source_positions = padded_len
-    else:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{150*1024}"
-        os.environ["FORGE_EXTRA_L1_MARGIN"] = f"{100*1024}"
 
     model = download_model(
         WhisperForConditionalGeneration.from_pretrained,

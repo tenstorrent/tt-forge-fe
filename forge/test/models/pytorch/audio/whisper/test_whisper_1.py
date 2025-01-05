@@ -45,7 +45,7 @@ variants = [
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_dec_past_cache(test_device, variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
-    model, inputs, other = generate_model_whisper_decoder_past_cache(test_device, variant)
+    model, inputs, other = generate_model_whisper_decoder_past_cache(variant)
     compile_inputs = other["compile_inputs"]
     max_length = other["max_length"]
     tt0 = forge.TTDevice("tt0", devtype=test_device.devtype, arch=test_device.arch, module=model)

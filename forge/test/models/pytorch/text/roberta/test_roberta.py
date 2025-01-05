@@ -11,7 +11,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_roberta_masked_lm(test_device):
+def test_roberta_masked_lm():
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
     model = download_model(AutoModelForMaskedLM.from_pretrained, "xlm-roberta-base")
@@ -35,7 +35,7 @@ def test_roberta_masked_lm(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_roberta_sentiment_pytorch(test_device):
+def test_roberta_sentiment_pytorch():
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment")
     model = download_model(

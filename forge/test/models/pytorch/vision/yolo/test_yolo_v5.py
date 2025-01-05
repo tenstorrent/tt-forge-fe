@@ -9,7 +9,7 @@ import os
 from test.models.utils import build_module_name
 
 
-def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size):
+def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
 
     model = download_model(torch.hub.load, variant, name, pretrained=True)
@@ -25,9 +25,8 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
-def test_yolov5_320x320(test_device, size):
+def test_yolov5_320x320(size):
     model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
-        test_device,
         "ultralytics/yolov5",
         size=size,
     )
@@ -37,7 +36,7 @@ def test_yolov5_320x320(test_device, size):
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
-def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size):
+def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
 
@@ -52,10 +51,9 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
-def test_yolov5_640x640(test_device, size):
+def test_yolov5_640x640(size):
 
     model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
-        test_device,
         "ultralytics/yolov5",
         size=size,
     )
@@ -65,7 +63,7 @@ def test_yolov5_640x640(test_device, size):
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
-def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size):
+def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
     input_shape = (1, 3, 480, 480)
@@ -76,10 +74,9 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
-def test_yolov5_480x480(test_device, size):
+def test_yolov5_480x480(size):
 
     model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
-        test_device,
         "ultralytics/yolov5",
         size=size,
     )
@@ -91,7 +88,7 @@ def test_yolov5_480x480(test_device, size):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_yolov5_1280x1280(test_device):
+def test_yolov5_1280x1280():
     model = download_model(torch.hub.load, "ultralytics/yolov5", "yolov5s", pretrained=True)
 
     input_shape = (1, 3, 1280, 1280)

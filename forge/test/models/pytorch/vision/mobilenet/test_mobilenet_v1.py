@@ -17,7 +17,7 @@ from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name
 
 
-def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
+def generate_model_mobilenetV1_base_custom_pytorch():
     # Create Forge module from PyTorch model
     model = MobileNetV1(9)
 
@@ -29,11 +29,8 @@ def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv1_basic(test_device):
-    model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch(
-        test_device,
-        None,
-    )
+def test_mobilenetv1_basic():
+    model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
 
     module_name = build_module_name(framework="pt", model="mobilenet_v1", variant="basic")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
@@ -46,7 +43,7 @@ def test_mobilenetv1_basic(test_device):
     assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
 
 
-def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
+def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
@@ -64,16 +61,14 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv1_192(test_device):
-    model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v1_0.75_192",
-    )
+def test_mobilenetv1_192():
+    variant = "google/mobilenet_v1_0.75_192"
+    model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
     module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
-def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
+def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
@@ -90,10 +85,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv1_224(test_device):
-    model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v1_1.0_224",
-    )
+def test_mobilenetv1_224():
+    variant = "google/mobilenet_v1_1.0_224"
+    model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
     module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

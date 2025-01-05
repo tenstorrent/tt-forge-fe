@@ -22,7 +22,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
-def test_mistral_decoder_layer(variant, test_device):
+def test_mistral_decoder_layer(variant):
 
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
@@ -45,7 +45,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral(variant, test_device):
+def test_mistral(variant):
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -79,7 +79,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
-def test_mistral_decode(variant, test_device):
+def test_mistral_decode(variant):
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -144,9 +144,6 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.skip(reason="under development")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral_kv_cache(variant, test_device):
-    if test_device.arch != BackendDevice.Wormhole_B0:
-        pytest.skip("Currently only supported on Wormhole B0 N150 device")
-
     configuration = MistralConfig()
     configuration.sliding_window = None
     configuration.use_cache = True

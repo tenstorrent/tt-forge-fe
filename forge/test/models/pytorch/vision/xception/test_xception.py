@@ -13,7 +13,7 @@ import os
 from test.models.utils import build_module_name
 
 
-def generate_model_xception_imgcls_timm(test_device, variant):
+def generate_model_xception_imgcls_timm(variant):
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -38,10 +38,9 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_xception_timm(variant, test_device):
+def test_xception_timm(variant):
 
     (model, inputs,) = generate_model_xception_imgcls_timm(
-        test_device,
         variant,
     )
     module_name = build_module_name(framework="pt", model="xception", variant=variant)

@@ -121,7 +121,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llama3_causal_lm(variant, test_device):
+def test_llama3_causal_lm(variant):
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -161,7 +161,7 @@ def test_llama3_causal_lm(variant, test_device):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llama3_sequence_classification(variant, test_device):
+def test_llama3_sequence_classification(variant):
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(

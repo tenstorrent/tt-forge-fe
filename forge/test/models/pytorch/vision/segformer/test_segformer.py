@@ -25,7 +25,7 @@ variants_img_classification = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_img_classification)
-def test_segformer_image_classification_pytorch(test_device, variant):
+def test_segformer_image_classification_pytorch(variant):
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -55,7 +55,7 @@ variants_semseg = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_semseg)
-def test_segformer_semantic_segmentation_pytorch(test_device, variant):
+def test_segformer_semantic_segmentation_pytorch(variant):
     # Load the model from HuggingFace
     model = SegformerForSemanticSegmentation.from_pretrained(variant)
     model.eval()

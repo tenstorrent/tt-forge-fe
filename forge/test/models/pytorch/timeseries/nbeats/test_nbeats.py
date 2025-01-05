@@ -19,7 +19,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_nbeats_with_seasonality_basis(test_device):
+def test_nbeats_with_seasonality_basis():
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithSeasonalityBasis(
@@ -45,7 +45,7 @@ def test_nbeats_with_seasonality_basis(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_nbeats_with_generic_basis(test_device):
+def test_nbeats_with_generic_basis():
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
@@ -65,7 +65,7 @@ def test_nbeats_with_generic_basis(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_nbeats_with_trend_basis(test_device):
+def test_nbeats_with_trend_basis():
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithTrendBasis(

@@ -14,7 +14,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_googlenet_pytorch(test_device):
+def test_googlenet_pytorch():
     # Create Forge module from PyTorch model
     # Two ways to load the same model
     # model = torch.hub.load('pytorch/vision:v0.10.0', 'googlenet', pretrained=True)

@@ -69,7 +69,7 @@ class Whisper_decoder(torch.nn.Module):
         return lm_logits, *presents
 
 
-def generate_model_whisper_decoder_past_cache(test_device, variant):
+def generate_model_whisper_decoder_past_cache(variant):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
     compiler_cfg.input_queues_on_host = True
@@ -134,7 +134,7 @@ def generate_model_whisper_decoder_past_cache(test_device, variant):
 
 
 # check the name later # enc-dec
-def generate_model_whisper_enc_dec(test_device, variant):
+def generate_model_whisper_enc_dec(variant):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.amp_level = 1
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon

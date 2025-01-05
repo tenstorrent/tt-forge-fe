@@ -37,7 +37,7 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_yolox_pytorch(variant, test_device):
+def test_yolox_pytorch(variant):
     # prepare model
     weight_name = f"{variant}.pth"
     url = f"https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/{weight_name}"

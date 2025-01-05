@@ -10,7 +10,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_fpn_pytorch(test_device):
+def test_fpn_pytorch():
     # Load FPN model
     model = FPNWrapper()
 

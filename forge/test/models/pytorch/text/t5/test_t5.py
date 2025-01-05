@@ -16,7 +16,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
-def test_t5_loop_tiny_tile(test_device):
+def test_t5_loop_tiny_tile():
     import os
 
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
@@ -91,7 +91,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_t5_generation(variant, test_device):
+def test_t5_generation(variant):
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
 
@@ -720,11 +720,6 @@ def test_t5_forge_pipeline(variant, test_device):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(test_device):
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip(
-            "Grayskull test failing with TM ERROR (producer = matmul_49, consumer = matmul_53): input using kernel_broadcast but post-TM input canonical form is not periodic"
-        )
-
     import os
 
     os.environ["FORGE_ENABLE_TINY_TILE"] = "1"
@@ -736,10 +731,6 @@ def test_t5_small_tiny_tile(test_device):
     compiler_cfg.amp_level = 1
     compiler_cfg.enable_enumerate_u_kt = False
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-
-    # tenstorrent/forge#1353
-    if test_device.devtype == BackendType.Golden:
-        compiler_cfg.compile_depth = CompileDepth.BACKEND_GOLDEN_VERIFY
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large

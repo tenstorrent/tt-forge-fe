@@ -40,7 +40,7 @@ variants = list(variants_func.keys())
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dla_pytorch(variant, test_device):
+def test_dla_pytorch(variant):
     func = variants_func[variant]
 
     # Load data sample

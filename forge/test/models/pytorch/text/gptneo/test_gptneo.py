@@ -26,7 +26,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gptneo_causal_lm(variant, test_device):
+def test_gptneo_causal_lm(variant):
     # Set random seed for repeatability
     torch.manual_seed(42)
 
@@ -72,7 +72,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gptneo_sequence_classification(variant, test_device):
+def test_gptneo_sequence_classification(variant):
     # Load tokenizer and model from HuggingFace
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,
     # EleutherAI/gpt-neo-2.7B

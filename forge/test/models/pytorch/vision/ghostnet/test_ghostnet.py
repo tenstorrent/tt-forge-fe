@@ -23,7 +23,7 @@ variants = ["ghostnet_100"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_ghostnet_timm(variant, test_device):
+def test_ghostnet_timm(variant):
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()

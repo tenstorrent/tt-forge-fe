@@ -13,7 +13,7 @@ from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, prepr
 from test.models.utils import build_module_name
 
 
-def generate_model_vovnet_imgcls_osmr_pytorch(test_device, variant):
+def generate_model_vovnet_imgcls_osmr_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, variant, pretrained=True)
     image_tensor = get_image()
@@ -27,16 +27,15 @@ varaints = ["vovnet27s", "vovnet39", "vovnet57"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
-def test_vovnet_osmr_pytorch(variant, test_device):
+def test_vovnet_osmr_pytorch(variant):
     model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(
-        test_device,
         variant,
     )
     module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
 
 
-def generate_model_vovnet39_imgcls_stigma_pytorch(test_device, variant):
+def generate_model_vovnet39_imgcls_stigma_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet39)
     return model, [image_tensor], {}
@@ -44,18 +43,15 @@ def generate_model_vovnet39_imgcls_stigma_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.parametrize("enable_default_dram_parameters", [True, False])
-def test_vovnet_v1_39_stigma_pytorch(test_device, enable_default_dram_parameters):
-    model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch(
-        test_device,
-        None,
-    )
+def test_vovnet_v1_39_stigma_pytorch():
+    variant = "vovnet39"
+    model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_vovnet_39_stigma")
+    module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_vovnet57_imgcls_stigma_pytorch(test_device, variant):
+def generate_model_vovnet57_imgcls_stigma_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet57)
 
@@ -64,16 +60,14 @@ def generate_model_vovnet57_imgcls_stigma_pytorch(test_device, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_vovnet_v1_57_stigma_pytorch(test_device):
-    model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch(
-        test_device,
-        None,
-    )
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"vovnet_57_stigma_pt")
+def test_vovnet_v1_57_stigma_pytorch():
+    variant = "vovnet_v1_57"
+    model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
+    module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_vovnet_imgcls_timm_pytorch(test_device, variant):
+def generate_model_vovnet_imgcls_timm_pytorch(variant):
     model, image_tensor = download_model(preprocess_timm_model, variant)
 
     return model, [image_tensor], {}
@@ -85,10 +79,9 @@ variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vovnet_timm_pytorch(variant, test_device):
+def test_vovnet_timm_pytorch(variant):
     model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
-        test_device,
         variant,
     )
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
+    module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

@@ -18,7 +18,7 @@ from test.models.utils import build_module_name
 # from yolo_v3.holli_src.yolov3 import *
 
 
-def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
+def generate_model_yolotinyV3_imgcls_holli_pytorch():
     model = Yolov3Tiny(num_classes=80, use_wrong_previous_anchors=True)
     model.load_state_dict(torch.load("weights/yolov3_tiny_coco_01.h5"))
     model.eval()
@@ -34,16 +34,13 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch(test_device, variant):
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_yolov3_tiny_holli_pytorch(test_device):
-    model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch(
-        test_device,
-        None,
-    )
+def test_yolov3_tiny_holli_pytorch():
+    model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
     module_name = build_module_name(framework="pt", model="yolov_3", variant="tiny_holli_pytorch")
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
+def generate_model_yoloV3_imgcls_holli_pytorch():
     model = Yolov3(num_classes=80)
     model.load_state_dict(
         torch.load(
@@ -64,11 +61,8 @@ def generate_model_yoloV3_imgcls_holli_pytorch(test_device, variant):
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_yolov3_holli_pytorch(test_device):
-    model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch(
-        test_device,
-        None,
-    )
+def test_yolov3_holli_pytorch():
+    model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch()
 
     module_name = build_module_name(framework="pt", model="yolo_v3", variant="holli_pytorch")
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

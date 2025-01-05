@@ -41,7 +41,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vit_base_classify_224_hf_pytorch(variant, test_device):
+def test_vit_base_classify_224_hf_pytorch(variant):
     model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )

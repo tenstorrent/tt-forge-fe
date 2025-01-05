@@ -11,7 +11,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_qwen1_5_causal_lm(test_device):
+def test_qwen1_5_causal_lm():
     # Setup model configuration
     config = Qwen2Config.from_pretrained("Qwen/Qwen1.5-0.5B")
     config.use_cache = False
@@ -57,7 +57,7 @@ def parse_chat_completion(text: str):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_qwen1_5_chat(test_device):
+def test_qwen1_5_chat():
     # Setup model configuration
     config = Qwen2Config.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
     config.use_cache = False

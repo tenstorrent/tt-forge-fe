@@ -13,7 +13,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_gpt2_text_gen(test_device):
+def test_gpt2_text_gen():
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained("gpt2")
     config_dict = config.to_dict()
@@ -64,7 +64,7 @@ class Wrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
-def test_gpt2_past_cache(test_device):
+def test_gpt2_past_cache():
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_tvm_cpu_fallback = False

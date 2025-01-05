@@ -22,7 +22,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
-def test_hardnet_pytorch(test_device, variant):
+def test_hardnet_pytorch(variant):
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 

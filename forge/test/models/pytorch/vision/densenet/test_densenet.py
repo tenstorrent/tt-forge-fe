@@ -18,7 +18,7 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_densenet_121_pytorch(variant, test_device):
+def test_densenet_121_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
         model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
@@ -38,7 +38,7 @@ def test_densenet_121_pytorch(variant, test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_densenet_161_pytorch(test_device):
+def test_densenet_161_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
 
@@ -52,7 +52,7 @@ def test_densenet_161_pytorch(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_densenet_169_pytorch(test_device):
+def test_densenet_169_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
 
@@ -66,7 +66,7 @@ def test_densenet_169_pytorch(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_densenet_201_pytorch(test_device):
+def test_densenet_201_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
 

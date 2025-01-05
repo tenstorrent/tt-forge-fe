@@ -25,7 +25,7 @@ variants = [
 ]
 
 
-def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
+def generate_model_openpose_posdet_custom_pytorch(variant):
     # Load model
     if variant == "body_basic":
         model_path = "weights/body_pose_model.pth"
@@ -51,25 +51,21 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_openpose_basic(variant, test_device):
+def test_openpose_basic(variant):
     model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
-        test_device,
         variant,
     )
     module_name = build_module_name(framework="pt", model="openpose", variant=variant, task="basic")
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
-def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
+def generate_model_openpose_posdet_osmr_pytorch(variant):
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
     # Load & pre-process image
     sample_path = "samples/body.jpeg"
     img_tensor = get_image_tensor(sample_path)
-
-    # Sanity run
-    cpu_out = framework_model(img_tensor)
 
     return framework_model, [img_tensor], {}
 
@@ -83,9 +79,8 @@ variants = [
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_openpose_osmr(variant, test_device):
+def test_openpose_osmr(variant):
     model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
-        test_device,
         variant,
     )
     module_name = build_module_name(framework="pt", model="openpose", variant=variant, task="osmr")
