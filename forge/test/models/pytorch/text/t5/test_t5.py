@@ -19,13 +19,7 @@ from test.models.utils import build_module_name
 def test_t5_loop_tiny_tile(test_device):
     import os
 
-    os.environ["FORGE_ENABLE_TINY_TILE"] = "1"
-    # Add Forge configurations
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-    os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-    # os.environ["TT_BACKEND_PROFILER"] = "1"
 
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -184,17 +178,7 @@ def test_t5_past_cache_enc_dec(variant, test_device):
 
     import os
 
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-    os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
-    os.environ["FORGE_EXTRA_L1_MARGIN"] = "120000"
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    if "flan" in variant:
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "35000"
-    else:
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "26000"
-
-    os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-    os.environ["TT_BACKEND_EPOCH_BIN_NUM_SLOTS"] = "64"
     os.environ["FORGE_ROTATE_PAST_CACHE_PARAMS"] = "1"
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -206,14 +190,6 @@ def test_t5_past_cache_enc_dec(variant, test_device):
     compiler_cfg.compile_subgraphs = True
     # compiler_cfg.enable_enumerate_u_kt = False
     compiler_cfg.enable_link_past_cache_ios = True
-
-    if test_device.arch == BackendDevice.Grayskull:
-        os.environ["FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY"] = "1"
-        compiler_cfg.balancer_op_override("matmul_5865", "t_stream_shape", (1, 1))
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        if variant == "google/flan-t5-large":
-            os.environ["FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY"] = "1"
 
     # forge.set_configuration_options(performance_trace=forge.PerfTraceLevel.VERBOSE)
     model_name = variant
@@ -232,11 +208,6 @@ def test_t5_past_cache_enc_dec(variant, test_device):
     num_blocks = len(model.decoder.block)
     if "n_layers" in locals():
         num_blocks = n_layers
-    for i in range(num_blocks):
-        forge.config.override_op_size(f"t5.decoder.block.{i}.layer.0.SelfAttention.k.weight_cache_nop", [1, 1])
-        forge.config.override_op_size(f"t5.decoder.block.{i}.layer.0.SelfAttention.v.weight_cache_nop", [1, 1])
-        forge.config.override_t_stream_shape(f"t5.decoder.block.{i}.layer.0.SelfAttention.k.weight_cache_nop", [15, 1])
-        forge.config.override_t_stream_shape(f"t5.decoder.block.{i}.layer.0.SelfAttention.v.weight_cache_nop", [15, 1])
 
     input_length = 64
     input_text = "translate English to German: The house is wonderful. We have really enjoyed living here for the past eight years. The only problem that I have with it is that it is too small and the parks are not very close."

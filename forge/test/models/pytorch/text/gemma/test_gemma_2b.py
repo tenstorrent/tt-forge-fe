@@ -289,30 +289,6 @@ def test_gemma_2b_gen(test_device, variant):
     # Random seed for reproducibility
     torch.manual_seed(42)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
-
-    if test_device.arch != BackendDevice.Grayskull:
-        compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-
-        # Configure all matmul ops to operate on HiFi4 with Bfp8_b inputs/params and Float16 accumulation
-        forge.config.configure_mixed_precision(
-            op_type="matmul",
-            math_fidelity=MathFidelity.HiFi4,
-            input_df={0: [DataFormat.Bfp8_b, False], 1: [DataFormat.Bfp8_b, False]},
-            accumulate_df=DataFormat.Float16_b,
-        )
-
-        # Configure all other ops to run on HiFi4 with Float16 accumulation
-        forge.config.configure_mixed_precision(
-            op_type="^((?!matmul).)*$", math_fidelity=MathFidelity.HiFi4, accumulate_df=DataFormat.Float16_b
-        )
-
-    if test_device.arch == BackendDevice.Grayskull:
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{65*1024}"
-
     config = download_model(GemmaConfig.from_pretrained, variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
@@ -368,35 +344,8 @@ def test_gemma_2b_gen(test_device, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(test_device, variant):
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Not supporting the Grayskull 1x1 overlay yet")
-
     # Random seed for reproducibility
     torch.manual_seed(42)
-
-    compiler_cfg = forge.config._get_global_compiler_config()
-
-    if test_device.devtype == BackendType.Silicon and "CI_PROJECT_DIR" in os.environ:
-        pytest.skip("Failing on CI with Read 0xffffffff from ARC scratch[6]: you should reset the board")
-
-    # Configurations
-    compiler_cfg.balancer_policy = "Ribbon"
-    os.environ["FORGE_RIBBON2"] = "1"
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_OVERRIDE_DEVICE_YAML"] = "wormhole_b0_1x1.yaml"
-
-    # Configure all matmul ops to operate on HiFi4 with Bfp8_b inputs/params and Float16 accumulation
-    forge.config.configure_mixed_precision(
-        op_type="matmul",
-        math_fidelity=MathFidelity.HiFi4,
-        input_df={0: [DataFormat.Bfp8_b, False], 1: [DataFormat.Bfp8_b, False]},
-        accumulate_df=DataFormat.Float16_b,
-    )
-
-    # Configure all other ops to run on HiFi4 with Float16 accumulation
-    forge.config.configure_mixed_precision(
-        op_type="^((?!matmul).)*$", math_fidelity=MathFidelity.HiFi4, accumulate_df=DataFormat.Float16_b
-    )
 
     config = download_model(GemmaConfig.from_pretrained, variant)
     config_dict = config.to_dict()

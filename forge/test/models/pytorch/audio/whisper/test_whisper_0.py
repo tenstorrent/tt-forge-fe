@@ -111,12 +111,9 @@ def test_whisper(variant, record_property):
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_pipeline(test_device, variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Grayskull test failing with no valid grids (50 nodes)")
 
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.enable_auto_fusing = False  # tenstorrent/forge#844
     compiler_cfg.amp_level = 2
     compiler_cfg.enable_link_past_cache_ios = False
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
@@ -181,33 +178,7 @@ def test_whisper_encoder(test_device, variant):
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.input_queues_on_host = True
     compiler_cfg.enable_link_past_cache_ios = True
-    compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.amp_level = 1
-        compiler_cfg.default_dram_parameters = False
-        os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-        os.environ["FORGE_PAD_OUTPUT_BUFFER_THRESHOLD_TILES"] = "1536"
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "35000"
-        os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
-        os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-        os.environ["FORGE_NOP_ON_DIRECT_SHORT_PATH"] = "1"
-        os.environ["FORGE_SKIP_SMALL_UKT"] = "1"
-    elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.enable_auto_fusing = False
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "2000000"
-        if variant == "openai/whisper-small":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
-
-    pcc = 0.95 if test_device.devtype == BackendType.Silicon else 0.99
-    if variant == "openai/whisper-tiny":
-        pcc = 0.92 if test_device.devtype == BackendType.Silicon else 0.99
-
-    if variant == "openai/whisper-base":
-        pcc = 0.93 if test_device.devtype == BackendType.Silicon else 0.99
-        if test_device.arch == BackendDevice.Wormhole_B0:
-            os.environ["FORGE_NLP_MANUAL_TARGET"] = "55000"
 
     config = WhisperConfig.from_pretrained(variant)
     config.return_dict = False

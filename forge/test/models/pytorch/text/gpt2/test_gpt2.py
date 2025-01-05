@@ -65,8 +65,6 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(test_device):
-    os.environ["GOLDEN_WORMHOLE_B0"] = "1"
-    os.environ["FORGE_DEVMODE"] = "1"
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_tvm_cpu_fallback = False

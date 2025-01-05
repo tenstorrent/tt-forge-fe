@@ -83,7 +83,6 @@ def test_fuyu8b_past_cache(test_device):
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.compile_subgraphs = True
@@ -91,54 +90,19 @@ def test_fuyu8b_past_cache(test_device):
     compiler_cfg.enable_link_past_cache_ios = True
     compiler_cfg.amp_level = 2
     compiler_cfg.default_dram_parameters = True
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "FastCut"
-    os.environ["FORGE_RIBBON2"] = "1"
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    os.environ["TT_BACKEND_USE_PIPEGEN1"] = "1"
     os.environ["FUYU8B_FULL_LAYERS"] = "1"  # flag to run the model wit full-layers, does not affect compile process
 
     if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
         num_layers = 36
-        for i in range(0, 80 * num_layers, 80):
-            compiler_cfg.balancer_op_override(f"matmul_{i+68}", "grid_shape", (1, 8))
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{84*1024}"
     else:
         num_layers = 1
-        os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{80*1024}"
-
-    # Full-layer specific overrides
-    for i in range(0, num_layers):
-        if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img.output_concatenate_{i*80+41}_stack", "grid_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img.output_transpose_{i*80+53}_stack", "grid_shape", (1, 1)
-            )
-        else:
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img_{num_layers}.output_concatenate_{i*80+41}_stack", "grid_shape", (1, 1)
-            )
-            compiler_cfg.balancer_op_override(
-                f"pt_fuyu8b_past_cache_img_{num_layers}.output_transpose_{i*80+53}_stack", "grid_shape", (1, 1)
-            )
-        compiler_cfg.balancer_op_override(f"transpose_{i*80+91}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
-        compiler_cfg.balancer_op_override(f"transpose_{i*80+111}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
-        if num_layers > 1:
-            compiler_cfg.balancer_op_override(f"transpose_{(i-1)*160+281}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
-    if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
-        for i in range(69):
-            compiler_cfg.balancer_op_override(f"transpose_{i*80+262}.dc.sparse_matmul.4.lc2", "grid_shape", (2, 1))
-        for i in range(17):
-            compiler_cfg.balancer_op_override(f"transpose_{i*160+3081}.dc.sparse_matmul.4.lc2", "grid_shape", (8, 1))
 
     config = FuyuConfig.from_pretrained("adept/fuyu-8b")
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
-    if "FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]:
-        pass
-    else:
+    if not ("FUYU8B_FULL_LAYERS" in os.environ and os.environ["FUYU8B_FULL_LAYERS"]):
         config_dict["text_config"]["num_hidden_layers"] = num_layers
     config_dict["text_config"]["max_position_embeddings"] = 448  # 512
     config_dict["text_config"][
