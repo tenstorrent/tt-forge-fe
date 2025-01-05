@@ -34,11 +34,10 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
-def test_whisper_large_v3_speech_translation(variant, record_property):
+def test_whisper_large_v3_speech_translation(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     processor = WhisperProcessor.from_pretrained(variant)
     framework_model = WhisperForConditionalGeneration.from_pretrained(variant)

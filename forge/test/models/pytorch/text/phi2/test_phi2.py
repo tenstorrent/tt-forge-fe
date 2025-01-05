@@ -20,7 +20,7 @@ variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_phi2_clm(variant):
+def test_phi2_clm(record_forge_property, variant):
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -68,7 +68,7 @@ def test_phi2_clm(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_token_classification(variant):
+def test_phi2_token_classification(record_forge_property, variant):
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -107,7 +107,7 @@ def test_phi2_token_classification(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_sequence_classification(variant):
+def test_phi2_sequence_classification(record_forge_property, variant):
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

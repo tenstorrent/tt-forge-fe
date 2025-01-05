@@ -19,11 +19,10 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_clip_pytorch(record_property):
+def test_clip_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="clip_text", variant=model_ckpt)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load processor and model from HuggingFace
     model_ckpt = "openai/clip-vit-base-patch32"

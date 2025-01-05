@@ -10,13 +10,12 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_falcon(record_property):
+def test_falcon(record_forge_property):
     variant = "tiiuae/falcon-7b-instruct"
 
     module_name = build_module_name(framework="pt", model="falcon", variant=variant)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)

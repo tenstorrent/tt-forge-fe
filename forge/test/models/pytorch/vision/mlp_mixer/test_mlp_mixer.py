@@ -34,7 +34,7 @@ varaints = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
-def test_mlp_mixer_timm_pytorch(variant):
+def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
 
     model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)

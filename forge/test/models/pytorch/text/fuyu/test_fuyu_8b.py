@@ -32,7 +32,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_fuyu8b(test_device):
+def test_fuyu8b(record_forge_property):
     variant = "adept/fuyu-8b"
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -77,7 +77,7 @@ def test_fuyu8b(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
-def test_fuyu8b_past_cache(test_device):
+def test_fuyu8b_past_cache(record_forge_property, test_device):
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Still under development")
 

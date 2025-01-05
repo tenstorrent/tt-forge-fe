@@ -14,7 +14,7 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_xglm_causal_lm(variant):
+def test_xglm_causal_lm(record_forge_property, variant):
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False

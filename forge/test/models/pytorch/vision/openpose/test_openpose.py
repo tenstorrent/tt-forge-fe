@@ -51,7 +51,7 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_openpose_basic(variant):
+def test_openpose_basic(record_forge_property, variant):
     model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
@@ -79,7 +79,7 @@ variants = [
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_openpose_osmr(variant):
+def test_openpose_osmr(record_forge_property, variant):
     model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,
     )

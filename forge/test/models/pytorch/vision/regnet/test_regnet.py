@@ -12,7 +12,7 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
-def test_regnet(variant):
+def test_regnet(record_forge_property, variant):
 
     # Load RegNet model
     framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040")
@@ -31,7 +31,7 @@ def test_regnet(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
-def test_regnet_img_classification(variant):
+def test_regnet_img_classification(record_forge_property, variant):
 
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")

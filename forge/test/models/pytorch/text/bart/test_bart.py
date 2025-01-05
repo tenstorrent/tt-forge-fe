@@ -24,11 +24,10 @@ class BartWrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_pt_bart_classifier(record_property):
+def test_pt_bart_classifier(record_forge_property):
     module_name = build_module_name(framework="pt", model="bart", variant=model_name)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model_name = f"facebook/bart-large-mnli"
     model = download_model(BartForSequenceClassification.from_pretrained, model_name, torchscript=True)

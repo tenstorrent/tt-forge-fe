@@ -21,7 +21,7 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
-def test_monodepth2(variant):
+def test_monodepth2(record_forge_property, variant):
     # prepare model and input
     download_model(variant)
     model, height, width = load_model(variant)

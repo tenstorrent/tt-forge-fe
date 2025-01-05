@@ -19,11 +19,10 @@ variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_distilbert_masked_lm_pytorch(variant, record_property):
+def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="distilbert", variant=variant, task="mlm")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
@@ -51,11 +50,10 @@ def test_distilbert_masked_lm_pytorch(variant, record_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_distilbert_question_answering_pytorch(record_property):
+def test_distilbert_question_answering_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="qa")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-cased-distilled-squad"
@@ -90,11 +88,10 @@ def test_distilbert_question_answering_pytorch(record_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_distilbert_sequence_classification_pytorch(record_property):
+def test_distilbert_sequence_classification_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="seqcls")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-uncased-finetuned-sst-2-english"
@@ -119,11 +116,10 @@ def test_distilbert_sequence_classification_pytorch(record_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_distilbert_token_classification_pytorch(record_property):
+def test_distilbert_token_classification_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="token_cls")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
     # Load DistilBERT tokenizer and model from HuggingFace
     model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)

@@ -39,13 +39,12 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_masked_lm_pytorch(record_property):
+def test_bert_masked_lm_pytorch(record_forge_property):
     variant = "bert-base-uncased"
 
     module_name = build_module_name(framework="pt", model="bert", variant=variant, task="mlm")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch(variant)
 
@@ -93,13 +92,12 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_question_answering_pytorch(record_property):
+def test_bert_question_answering_pytorch(record_forge_property):
     variant = "bert-large-cased-whole-word-masking-finetuned-squad"
 
     module_name = build_module_name(framework="pt", model="bert", variant=variant, task="qa")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_bert_qa_hf_pytorch()
 
@@ -137,13 +135,12 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_sequence_classification_pytorch(record_property):
+def test_bert_sequence_classification_pytorch(record_forge_property):
     variant = "textattack/bert-base-uncased-SST-2"
 
     module_name = build_module_name(framework="pt", model="bert", variant=variant, task="seqcls")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
@@ -181,13 +178,12 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_token_classification_pytorch(record_property):
+def test_bert_token_classification_pytorch(record_forge_property):
     variant = "dbmdz/bert-large-cased-finetuned-conll03-english"
 
     module_name = build_module_name(framework="pt", model="bert", variant=variant, task="token_cls")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
 

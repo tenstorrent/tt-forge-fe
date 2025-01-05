@@ -14,7 +14,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_0_pytorch():
+def test_efficientnet_lite_0_pytorch(record_forge_property):
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -37,7 +37,7 @@ def test_efficientnet_lite_0_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_1_pytorch():
+def test_efficientnet_lite_1_pytorch(record_forge_property):
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -62,7 +62,7 @@ def test_efficientnet_lite_1_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_2_pytorch():
+def test_efficientnet_lite_2_pytorch(record_forge_property):
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -86,7 +86,7 @@ def test_efficientnet_lite_2_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_3_pytorch():
+def test_efficientnet_lite_3_pytorch(record_forge_property):
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -110,7 +110,7 @@ def test_efficientnet_lite_3_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_4_pytorch():
+def test_efficientnet_lite_4_pytorch(record_forge_property):
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
     model = efflite.build_efficientnet_lite(model_name, 1000)

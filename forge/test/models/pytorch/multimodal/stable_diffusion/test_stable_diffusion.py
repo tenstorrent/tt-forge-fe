@@ -17,7 +17,9 @@ from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
 
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
-def test_stable_diffusion_pytorch(variant="CompVis/stable-diffusion-v1-4", batch_size=1):
+def test_stable_diffusion_pytorch(record_forge_property):
+    variant = "CompVis/stable-diffusion-v1-4"
+    batch_size = 1
 
     # Set inference steps
     num_inference_steps = 50

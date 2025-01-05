@@ -14,7 +14,7 @@ variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_opt_causal_lm(variant):
+def test_opt_causal_lm(record_forge_property, variant):
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
@@ -49,7 +49,7 @@ def test_opt_causal_lm(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_opt_qa(variant):
+def test_opt_qa(record_forge_property, variant):
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
@@ -82,7 +82,7 @@ def test_opt_qa(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_opt_sequence_classification(variant):
+def test_opt_sequence_classification(record_forge_property, variant):
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"

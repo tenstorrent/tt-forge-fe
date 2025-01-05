@@ -17,7 +17,7 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_yolo_v6_pytorch(variant):
+def test_yolo_v6_pytorch(record_forge_property, variant):
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
     weights = f"{variant}.pt"

@@ -30,7 +30,7 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_inception_v4_osmr_pytorch():
+def test_inception_v4_osmr_pytorch(record_forge_property):
     model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
     module_name = build_module_name(framework="pt", model="inception_v4_pytorch", task="osmr")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
@@ -44,7 +44,7 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_inception_v4_timm_pytorch():
+def test_inception_v4_timm_pytorch(record_forge_property):
     model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 
     module_name = build_module_name(framework="pt", model="inception_v4", task="osmr", source="timm")

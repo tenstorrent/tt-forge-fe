@@ -23,11 +23,10 @@ variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_context_encoder_pytorch(variant, record_property):
+def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="context_encoder")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-ctx_encoder-single-nq-base, facebook/dpr-ctx_encoder-multiset-base
@@ -64,11 +63,10 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_question_encoder_pytorch(variant, record_property):
+def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="question_encoder")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
@@ -105,11 +103,10 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_reader_pytorch(variant, record_property):
+def test_dpr_reader_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="reader")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base

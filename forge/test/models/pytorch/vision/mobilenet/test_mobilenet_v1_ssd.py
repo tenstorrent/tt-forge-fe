@@ -13,7 +13,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_mobilenet_v1_ssd_pytorch_1x1():
+def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"
     class_names = [name.strip() for name in open(label_path).readlines()]

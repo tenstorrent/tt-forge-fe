@@ -27,7 +27,7 @@ variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_osmr_pytorch(variant):
+def test_vgg_osmr_pytorch(record_forge_property, variant):
     model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
 
@@ -57,7 +57,7 @@ def test_vgg_osmr_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_vgg_19_hf_pytorch():
+def test_vgg_19_hf_pytorch(record_forge_property):
     """
     # https://pypi.org/project/vgg-pytorch/
     # Variants:
@@ -113,7 +113,7 @@ def preprocess_timm_model(model_name):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_vgg_bn19_timm_pytorch():
+def test_vgg_bn19_timm_pytorch(record_forge_property):
     torch.multiprocessing.set_sharing_strategy("file_system")
     model_name = "vgg19_bn"
     model, image_tensor = download_model(preprocess_timm_model, model_name)
@@ -124,7 +124,7 @@ def test_vgg_bn19_timm_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_vgg_bn19_torchhub_pytorch():
+def test_vgg_bn19_torchhub_pytorch(record_forge_property):
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     model.eval()
 

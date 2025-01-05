@@ -15,7 +15,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_conv_ae_pytorch():
+def test_conv_ae_pytorch(record_forge_property):
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -40,7 +40,7 @@ def test_conv_ae_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_linear_ae_pytorch():
+def test_linear_ae_pytorch(record_forge_property):
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.

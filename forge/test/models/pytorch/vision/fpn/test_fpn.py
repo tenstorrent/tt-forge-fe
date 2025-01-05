@@ -10,7 +10,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_fpn_pytorch():
+def test_fpn_pytorch(record_forge_property):
     # Load FPN model
     model = FPNWrapper()
 

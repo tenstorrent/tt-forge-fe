@@ -22,12 +22,11 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_stereo(variant, record_property):
+def test_stereo(record_forge_property, variant):
     # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
     module_name = build_module_name(framework="pt", model="stereo", variant=variant)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     framework_model, processor = load_model(variant)
 

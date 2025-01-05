@@ -16,7 +16,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_alexnet_torchhub():
+def test_alexnet_torchhub(record_forge_property):
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
     framework_model.eval()
@@ -47,7 +47,7 @@ def test_alexnet_torchhub():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_alexnet_osmr():
+def test_alexnet_osmr(record_forge_property):
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
     framework_model.eval()

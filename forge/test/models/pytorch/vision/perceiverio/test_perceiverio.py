@@ -47,7 +47,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_perceiverio_for_image_classification_pytorch(variant):
+def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
     # Sample Image
     pixel_values = get_sample_data(variant)
 

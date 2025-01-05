@@ -22,7 +22,7 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_ddrnet_pytorch(variant):
+def test_ddrnet_pytorch(record_forge_property, variant):
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
 
@@ -68,7 +68,7 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_ddrnet_semantic_segmentation_pytorch(variant):
+def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     # prepare model
     if variant == "ddrnet23s_cityscapes":
         model = DualResNet(

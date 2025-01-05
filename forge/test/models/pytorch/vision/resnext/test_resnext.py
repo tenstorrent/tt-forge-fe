@@ -16,7 +16,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_50_torchhub_pytorch():
+def test_resnext_50_torchhub_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "resnext50_32x4d", pretrained=True)
     model.eval()
@@ -32,7 +32,7 @@ def test_resnext_50_torchhub_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_101_torchhub_pytorch():
+def test_resnext_101_torchhub_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "resnext101_32x8d", pretrained=True)
     model.eval()
@@ -48,7 +48,7 @@ def test_resnext_101_torchhub_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_101_32x8d_fb_wsl_pytorch():
+def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     # 4 variants
     model = download_model(torch.hub.load, "facebookresearch/WSL-Images", "resnext101_32x8d_wsl")
@@ -65,7 +65,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_14_osmr_pytorch():
+def test_resnext_14_osmr_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, "resnext14_32x4d", pretrained=True)
     model.eval()
@@ -82,7 +82,7 @@ def test_resnext_14_osmr_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_26_osmr_pytorch():
+def test_resnext_26_osmr_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, "resnext26_32x4d", pretrained=True)
     model.eval()
@@ -98,7 +98,7 @@ def test_resnext_26_osmr_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_50_osmr_pytorch():
+def test_resnext_50_osmr_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, "resnext50_32x4d", pretrained=True)
     model.eval()
@@ -114,7 +114,7 @@ def test_resnext_50_osmr_pytorch():
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_resnext_101_osmr_pytorch():
+def test_resnext_101_osmr_pytorch(record_forge_property):
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, "resnext101_64x4d", pretrained=True)
     model.eval()

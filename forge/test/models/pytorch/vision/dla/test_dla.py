@@ -40,7 +40,7 @@ variants = list(variants_func.keys())
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dla_pytorch(variant):
+def test_dla_pytorch(record_forge_property, variant):
     func = variants_func[variant]
 
     # Load data sample

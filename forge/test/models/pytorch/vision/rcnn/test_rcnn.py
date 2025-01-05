@@ -19,7 +19,7 @@ from test.models.utils import build_module_name
 # Repo - https://github.com/object-detection-algorithm/R-CNN
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_rcnn_pytorch():
+def test_rcnn_pytorch(record_forge_property):
 
     # Load Alexnet Model
     model = torchvision.models.alexnet(pretrained=True)

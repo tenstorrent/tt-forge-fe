@@ -16,7 +16,7 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swin-tiny-patch4-window7-224"])
-def test_swin_v1_tiny_4_224_hf_pytorch(variant):
+def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -37,7 +37,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_4_256_hf_pytorch(variant):
+def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -53,7 +53,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_image_classification(variant):
+def test_swin_v2_tiny_image_classification(record_forge_property, variant):
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -69,7 +69,7 @@ def test_swin_v2_tiny_image_classification(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_masked(variant):
+def test_swin_v2_tiny_masked(record_forge_property, variant):
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)

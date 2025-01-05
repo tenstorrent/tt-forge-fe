@@ -22,7 +22,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
-def test_mistral_decoder_layer(variant):
+def test_mistral_decoder_layer(record_forge_property, variant):
 
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
@@ -45,7 +45,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral(variant):
+def test_mistral(record_forge_property, variant):
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -79,7 +79,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
-def test_mistral_decode(variant):
+def test_mistral_decode(record_forge_property, variant):
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -143,7 +143,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 @pytest.mark.skip(reason="under development")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral_kv_cache(variant, test_device):
+def test_mistral_kv_cache(record_forge_property, variant, test_device):
     configuration = MistralConfig()
     configuration.sliding_window = None
     configuration.use_cache = True

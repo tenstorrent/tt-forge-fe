@@ -95,11 +95,10 @@ def generate_model_whisper_congen_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_whisper(variant, record_property):
+def test_whisper(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model, inputs = generate_model_whisper_congen_hf_pytorch(variant)
 
@@ -109,7 +108,7 @@ def test_whisper(variant, record_property):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
-def test_whisper_pipeline(variant):
+def test_whisper_pipeline(record_forge_property, variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     # Configurations
@@ -167,7 +166,7 @@ def test_whisper_pipeline(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Not supported")
-def test_whisper_encoder(test_device, variant):
+def test_whisper_encoder(record_forge_property, test_device, variant):
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     if variant == "openai/whisper-medium" or variant == "openai/whisper-large":

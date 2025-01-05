@@ -23,7 +23,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.model_analysis
 @pytest.mark.nightly
-def test_qwen_response(variant):
+def test_qwen_response(record_forge_property, variant):
     # Load model and tokenizer
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
     model.config.return_dict = False

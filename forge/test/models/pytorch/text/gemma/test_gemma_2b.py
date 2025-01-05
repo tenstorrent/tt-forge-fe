@@ -53,7 +53,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_rotary_embedding(variant):
+def test_gemma_2b_rotary_embedding(record_forge_property, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -92,7 +92,7 @@ def test_gemma_2b_rotary_embedding(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_rms_norm(variant):
+def test_gemma_2b_rms_norm(record_forge_property, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -129,7 +129,7 @@ def test_gemma_2b_rms_norm(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_attention(variant):
+def test_gemma_2b_attention(record_forge_property, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -169,7 +169,7 @@ def test_gemma_2b_attention(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_mlp(variant):
+def test_gemma_2b_mlp(record_forge_property, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -207,7 +207,7 @@ def test_gemma_2b_mlp(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_single_decoder(variant):
+def test_gemma_2b_single_decoder(record_forge_property, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -247,7 +247,7 @@ def test_gemma_2b_single_decoder(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b(variant):
+def test_gemma_2b(record_forge_property, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -285,7 +285,7 @@ def test_gemma_2b(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_gen(variant):
+def test_gemma_2b_gen(record_forge_property, variant):
     # Random seed for reproducibility
     torch.manual_seed(42)
 
@@ -343,7 +343,7 @@ def test_gemma_2b_gen(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b_1x1_gen(variant):
+def test_gemma_2b_1x1_gen(record_forge_property, variant):
     # Random seed for reproducibility
     torch.manual_seed(42)
 

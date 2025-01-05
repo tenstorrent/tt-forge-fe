@@ -16,7 +16,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
-def test_t5_loop_tiny_tile():
+def test_t5_loop_tiny_tile(record_forge_property):
     import os
 
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
@@ -91,7 +91,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_t5_generation(variant):
+def test_t5_generation(record_forge_property, variant):
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
 
@@ -174,7 +174,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_t5_past_cache_enc_dec(variant, test_device):
+def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
 
     import os
 
@@ -336,7 +336,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
-def test_t5_past_cache_forge_pipeline(variant, test_device):
+def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_device):
     import os
 
     os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
@@ -671,7 +671,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
-def test_t5_forge_pipeline(variant, test_device):
+def test_t5_forge_pipeline(record_forge_property, variant):
     # Too slow for post-commit ci
 
     import os
@@ -719,7 +719,7 @@ def test_t5_forge_pipeline(variant, test_device):
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Redundant")
-def test_t5_small_tiny_tile(test_device):
+def test_t5_small_tiny_tile(record_forge_property, test_device):
     import os
 
     os.environ["FORGE_ENABLE_TINY_TILE"] = "1"

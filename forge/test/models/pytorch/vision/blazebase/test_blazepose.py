@@ -22,7 +22,7 @@ from test.models.utils import build_module_name
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blazepose_detector_pytorch():
+def test_blazepose_detector_pytorch(record_forge_property):
     # Load BlazePose Detector
     pose_detector = BlazePose()
     pose_detector.load_weights("mediapipepytorch/blazepose.pth")
@@ -41,7 +41,7 @@ def test_blazepose_detector_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blazepose_regressor_pytorch():
+def test_blazepose_regressor_pytorch(record_forge_property):
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
@@ -52,7 +52,7 @@ def test_blazepose_regressor_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blaze_palm_pytorch():
+def test_blaze_palm_pytorch(record_forge_property):
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
     palm_detector.load_weights("mediapipepytorch/blazepalm.pth")
@@ -72,7 +72,7 @@ def test_blaze_palm_pytorch():
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blaze_hand_pytorch():
+def test_blaze_hand_pytorch(record_forge_property):
     # Load BlazePalm Detector
     hand_regressor = BlazeHandLandmark()
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")

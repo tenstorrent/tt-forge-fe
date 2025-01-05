@@ -17,11 +17,10 @@ variants = ["v1", "v2"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
-def test_albert_masked_lm_pytorch(size, variant, record_property):
+def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     module_name = build_module_name(framework="pt", model="albert", variant=variant, task="mlm")
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     model_ckpt = f"albert-{size}-{variant}"
 
@@ -62,11 +61,10 @@ variants = ["v1", "v2"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
-def test_albert_token_classification_pytorch(size, variant, record_property):
+def test_albert_token_classification_pytorch(record_forge_property, size, variant):
     module_name = build_module_name(framework="pt", model="albert", variant=variant)
 
-    record_property("frontend", "tt-forge-fe")
-    record_property("module_name", module_name)
+    record_forge_property("module_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.

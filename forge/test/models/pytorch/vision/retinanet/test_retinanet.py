@@ -26,7 +26,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_retinanet(variant):
+def test_retinanet(record_forge_property, variant):
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
     local_zip_path = f"{variant}.zip"
