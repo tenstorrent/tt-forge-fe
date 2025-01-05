@@ -62,7 +62,7 @@ variants = ["v1", "v2"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_token_classification_pytorch(record_forge_property, size, variant):
-    module_name = build_module_name(framework="pt", model="albert", variant=variant)
+    module_name = build_module_name(framework="pt", model="albert", variant=variant, task="token_cls")
 
     record_forge_property("module_name", module_name)
 

@@ -22,11 +22,12 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 def test_monodepth2(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="monodepth2", variant=variant)
+
     # prepare model and input
     download_model(variant)
     model, height, width = load_model(variant)
     input_tensor = load_input(height, width)
 
     # Forge inference
-    module_name = build_module_name(framework="pt", model="monodepth2", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_tensor], module_name=module_name)

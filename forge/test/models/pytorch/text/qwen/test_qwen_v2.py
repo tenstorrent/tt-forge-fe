@@ -23,7 +23,9 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.model_analysis
 @pytest.mark.nightly
-def test_qwen_response(record_forge_property, variant):
+def test_qwen_clm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="qwen_v2", variant=variant, task="clm")
+
     # Load model and tokenizer
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
     model.config.return_dict = False
@@ -39,5 +41,4 @@ def test_qwen_response(record_forge_property, variant):
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
     inputs = [input_ids, attention_mask]
-    module_name = build_module_name(framework="pt", model="qwen_v2", variant=variant, task="response")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

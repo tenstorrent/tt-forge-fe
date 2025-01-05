@@ -20,6 +20,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_seasonality_basis(record_forge_property):
+    module_name = build_module_name(framework="pt", model="nbeats", variant="seasionality_basis")
+
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithSeasonalityBasis(
@@ -31,7 +33,6 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
         layer_size=2048,
     )
     pytorch_model.eval()
-    module_name = build_module_name(framework="pt", model="nbeats", variant=variant, task="seasionality_basis")
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
@@ -46,12 +47,13 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_generic_basis(record_forge_property):
+    module_name = build_module_name(framework="pt", model="nbeats", variant="generic_basis")
+
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
     pytorch_model.eval()
 
-    module_name = build_module_name(framework="pt", model="nbeats", variant=variant, task="generic_basis")
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)
@@ -66,6 +68,8 @@ def test_nbeats_with_generic_basis(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_trend_basis(record_forge_property):
+    module_name = build_module_name(framework="pt", model="nbeats", variant="trend_basis")
+
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithTrendBasis(
@@ -78,7 +82,6 @@ def test_nbeats_with_trend_basis(record_forge_property):
     )
     pytorch_model.eval()
 
-    module_name = build_module_name(framework="pt", model="nbeats", variant=variant, task="trend_basis")
     compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
     co_out = compiled_model(*inputs)

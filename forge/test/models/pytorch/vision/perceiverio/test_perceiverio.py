@@ -48,6 +48,8 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="perceiverio", variant=variant, task="imgcls")
+
     # Sample Image
     pixel_values = get_sample_data(variant)
 
@@ -66,5 +68,4 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
 
     model.eval()
     # Run inference on Tenstorrent device
-    module_name = build_module_name(framework="pt", model="preciverio", variant=variant, task="image_classification")
     compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)

@@ -28,11 +28,12 @@ varaints = ["vovnet27s", "vovnet39", "vovnet57"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_vovnet_osmr_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="vovnet", variant=variant, source="osmr")
+
     model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(
         variant,
     )
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_{variant}")
+    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch():
@@ -45,9 +46,11 @@ def generate_model_vovnet39_imgcls_stigma_pytorch():
 @pytest.mark.model_analysis
 def test_vovnet_v1_39_stigma_pytorch(record_forge_property):
     variant = "vovnet39"
+
+    module_name = build_module_name(framework="pt", model="vovnet_v1", variant=variant)
+
     model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
-    module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
@@ -62,8 +65,10 @@ def generate_model_vovnet57_imgcls_stigma_pytorch(variant):
 @pytest.mark.model_analysis
 def test_vovnet_v1_57_stigma_pytorch(record_forge_property):
     variant = "vovnet_v1_57"
-    model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
+
     module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
+
+    model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
@@ -80,8 +85,9 @@ variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vovnet_timm_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
+
     model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,
     )
-    module_name = build_module_name(framework="pt", model="vovnet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

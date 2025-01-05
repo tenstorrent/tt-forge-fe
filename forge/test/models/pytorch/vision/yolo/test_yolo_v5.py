@@ -26,13 +26,17 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_320x320(record_forge_property, size):
+    variant = "yolov5" + size
+
+    module_name = build_module_name(
+        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="320x320"
+    )
+
     model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
-    ouputs = model(inputs[0])
-    name = "yolov5" + size
-    module_name = build_module_name(framework="pt", model="yolo_v5", variant="320x320")
+
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -52,14 +56,16 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_640x640(record_forge_property, size):
+    variant = "yolov5" + size
+
+    module_name = build_module_name(
+        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="640x640"
+    )
 
     model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
-    ouputs = model(inputs[0])
-    name = "yolov5" + size
-    module_name = build_module_name(framework="pt", model="yolo_v5", variant="640x640")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -75,25 +81,30 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_480x480(record_forge_property, size):
+    variant = "yolov5" + size
+
+    module_name = build_module_name(
+        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="480x480"
+    )
 
     model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
-    ouputs = model(inputs[0])
-    name = "yolov5" + size
-    module_name = build_module_name(framework="pt", model="yolo_v5", variant="480x480")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_yolov5_1280x1280(record_forge_property):
-    model = download_model(torch.hub.load, "ultralytics/yolov5", "yolov5s", pretrained=True)
+    variant = "yolov5s"
+    module_name = build_module_name(
+        framework="pt", model="yolo_v5", variant=variant, task="imgcls", source="torchhub", suffix="1280x1280"
+    )
+
+    model = download_model(torch.hub.load, "ultralytics/yolov5", variant, pretrained=True)
 
     input_shape = (1, 3, 1280, 1280)
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor]
-    ouputs = model(inputs[0])
-    module_name = build_module_name(framework="pt", model="yolov_5", variant="1280x1280")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

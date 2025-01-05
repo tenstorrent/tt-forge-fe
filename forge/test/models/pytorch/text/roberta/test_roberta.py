@@ -12,9 +12,13 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_roberta_masked_lm(record_forge_property):
+    variant = "xlm-roberta-base"
+
+    module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="mlm")
+
     # Load Albert tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
-    model = download_model(AutoModelForMaskedLM.from_pretrained, "xlm-roberta-base")
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
 
     # Input processing
     text = "Hello I'm a <mask> model."
@@ -29,18 +33,19 @@ def test_roberta_masked_lm(record_forge_property):
     attention_mask[input_tokens != 1] = 1
 
     inputs = [input_tokens, attention_mask]
-    module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="masked_lm")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_roberta_sentiment_pytorch(record_forge_property):
+    variant = "cardiffnlp/twitter-roberta-base-sentiment"
+
+    module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="sentiment")
+
     # Load Bart tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment")
-    model = download_model(
-        AutoModelForSequenceClassification.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment"
-    )
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
 
     # Example from multi-nli validation set
     text = """Great road trip views! @ Shartlesville, Pennsylvania"""
@@ -54,5 +59,4 @@ def test_roberta_sentiment_pytorch(record_forge_property):
         return_tensors="pt",
     )
     inputs = [input_tokens]
-    module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="sentiment")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

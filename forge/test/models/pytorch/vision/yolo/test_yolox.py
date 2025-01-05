@@ -38,6 +38,8 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="yolox", variant=variant)
+
     # prepare model
     weight_name = f"{variant}.pth"
     url = f"https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/{weight_name}"
@@ -78,7 +80,6 @@ def test_yolox_pytorch(record_forge_property, variant):
 
     inputs = [img_tensor]
 
-    module_name = build_module_name(framework="pt", model="yolox", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     # remove downloaded weights,image

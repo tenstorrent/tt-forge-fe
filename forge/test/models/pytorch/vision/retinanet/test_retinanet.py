@@ -27,6 +27,8 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_retinanet(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="retinanet", variant=variant)
+
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
     local_zip_path = f"{variant}.zip"
@@ -53,7 +55,6 @@ def test_retinanet(record_forge_property, variant):
     # Prepare input
     input_batch = img_preprocess()
     inputs = [input_batch]
-    module_name = build_module_name(framework="pt", model="retinanet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     # Delete the extracted folder and the zip file

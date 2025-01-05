@@ -14,6 +14,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_monodle_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="monodle")
+
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
     image = Image.open(requests.get(url, stream=True).raw)
@@ -31,5 +33,4 @@ def test_monodle_pytorch(record_forge_property):
 
     pytorch_model = CenterNet3D(backbone="dla34")
     pytorch_model.eval()
-    module_name = build_module_name(framework="pt", model="monodle")
     compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=module_name)

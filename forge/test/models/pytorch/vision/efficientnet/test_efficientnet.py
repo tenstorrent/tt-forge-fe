@@ -43,6 +43,8 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant=variant, source="timm")
+
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -64,7 +66,6 @@ def test_efficientnet_timm(record_forge_property, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    module_name = build_module_name(framework="pt", model="efficientnet", variant=variant, source="timm")
     compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
 
@@ -98,6 +99,8 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant=variant, source="torchvision")
+
     # Load model
     if variant == "efficientnet_b0":
         framework_model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1)
@@ -122,7 +125,6 @@ def test_efficientnet_torchvision(record_forge_property, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    module_name = build_module_name(framework="pt", model="efficientnet_torchvision", variant=variant)
     compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
 

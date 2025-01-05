@@ -122,6 +122,8 @@ LlamaModel._update_causal_mask = _update_causal_mask
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_causal_lm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="llama3", variant=variant, task="clm")
+
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -150,7 +152,6 @@ def test_llama3_causal_lm(record_forge_property, variant):
 
     inputs = [input_ids, attn_mask]
 
-    module_name = build_module_name(framework="pt", model="llama3", variant=variant, task="causal_lm")
     compiled_model = forge.compile(
         framework_model,
         inputs,
@@ -162,6 +163,8 @@ def test_llama3_causal_lm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_sequence_classification(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="llama3", variant=variant, task="seq_cls")
+
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(
@@ -177,7 +180,6 @@ def test_llama3_sequence_classification(record_forge_property, variant):
 
     inputs = [input_ids]
 
-    module_name = build_module_name(framework="pt", model="llama3", variant=variant, task="sequence_classification")
     compiled_model = forge.compile(
         framework_model,
         inputs,

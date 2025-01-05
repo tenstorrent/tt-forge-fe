@@ -19,6 +19,8 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="densenet121", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
         model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
@@ -32,13 +34,14 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     model(img_tensor)
     inputs = [img_tensor]
     variant_name = variant.replace("-", "_")
-    module_name = build_module_name(framework="pt", model="densenet121", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_161_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="densenet161")
+
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
 
@@ -46,13 +49,14 @@ def test_densenet_161_pytorch(record_forge_property):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    module_name = build_module_name(framework="pt", model="densenet161", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_169_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="densenet169")
+
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
 
@@ -60,13 +64,14 @@ def test_densenet_169_pytorch(record_forge_property):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    module_name = build_module_name(framework="pt", model="densenet169", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_201_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="densenet201")
+
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
 
@@ -74,5 +79,4 @@ def test_densenet_201_pytorch(record_forge_property):
     img_tensor = get_input_img()
     model(img_tensor)
     inputs = [img_tensor]
-    module_name = build_module_name(framework="pt", model="densenet201", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

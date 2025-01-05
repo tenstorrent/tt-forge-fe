@@ -25,6 +25,7 @@ import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
+from test.models.utils import build_module_name
 from test.models.pytorch.audio.whisper.utils.model import (
     Whisper_encoder,
     Whisper_decoder,
@@ -44,6 +45,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="pipeline")
+
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
     model, inputs, other = generate_model_whisper_decoder_past_cache(variant)
     compile_inputs = other["compile_inputs"]
@@ -77,6 +80,8 @@ def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_enc_dec(record_forge_property, test_device, variant):
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="enc_dec")
+
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
     compiler_cfg.input_queues_on_host = True
@@ -306,6 +311,8 @@ def test_whisper_enc_dec(record_forge_property, test_device, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="enc_dec_pipeline")
+
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon

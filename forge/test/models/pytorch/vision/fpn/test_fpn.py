@@ -11,6 +11,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_fpn_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="fpn", source="torchvision")
+
     # Load FPN model
     model = FPNWrapper()
 
@@ -20,5 +22,4 @@ def test_fpn_pytorch(record_forge_property):
 
     inputs = [feat0, feat1, feat2]
 
-    module_name = build_module_name(framework="pt", model="fpn")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

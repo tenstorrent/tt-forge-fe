@@ -14,6 +14,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_pytorch_ssd300_resnet50(record_forge_property):
+    module_name = build_module_name(framework="pt", model="ssd300_resnet50")
+
     # STEP 2 : prepare model
     model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
     url = "https://api.ngc.nvidia.com/v2/models/nvidia/ssd_pyt_ckpt_amp/versions/19.09.0/files/nvidia_ssdpyt_fp16_190826.pt"
@@ -33,5 +35,4 @@ def test_pytorch_ssd300_resnet50(record_forge_property):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-    module_name = build_module_name(framework="pt", model="ssd300_resnet50")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

@@ -35,6 +35,7 @@ varaints = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="mlp_mixer", variant=variant, source="timm")
 
     model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
@@ -50,5 +51,4 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
         image = torch.rand(1, 3, 256, 256)
     pixel_values = transform(image).unsqueeze(0)
     inputs = [pixel_values]
-    module_name = build_module_name(framework="pt", model="mlp_mixer", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

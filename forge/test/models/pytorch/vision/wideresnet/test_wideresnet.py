@@ -45,11 +45,12 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="wideresnet", variant=variant)
+
     (model, inputs,) = generate_model_wideresnet_imgcls_pytorch(
         variant,
     )
 
-    module_name = build_module_name(framework="pt", model="wideresnet_pytorch", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -77,9 +78,10 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_timm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="wideresnet", source="timm", variant=variant)
+
     (model, inputs,) = generate_model_wideresnet_imgcls_timm(
         variant,
     )
 
-    module_name = build_module_name(framework="pt", model="wideresnet", source="timm", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

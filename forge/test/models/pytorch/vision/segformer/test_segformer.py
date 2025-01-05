@@ -26,6 +26,8 @@ variants_img_classification = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_img_classification)
 def test_segformer_image_classification_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="imgcls")
+
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -39,7 +41,6 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
     # Load the sample image
     pixel_values = get_sample_data(variant)
 
-    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="image_classifcation")
     compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
 
 
@@ -56,11 +57,12 @@ variants_semseg = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_semseg)
 def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="semseg")
+
     # Load the model from HuggingFace
     model = SegformerForSemanticSegmentation.from_pretrained(variant)
     model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    module_name = build_module_name(framework="pt", model="segformer", variant=variant, task="semantic_segmentation")
     compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)

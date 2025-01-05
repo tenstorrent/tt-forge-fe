@@ -15,6 +15,8 @@ variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_causal_lm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="clm")
+
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
@@ -38,7 +40,6 @@ def test_opt_causal_lm(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="causal_lm")
     compiled_model = forge.compile(
         model,
         inputs,
@@ -50,6 +51,8 @@ def test_opt_causal_lm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_qa(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="qa")
+
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
@@ -71,7 +74,6 @@ def test_opt_qa(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="qa")
     compiled_model = forge.compile(
         model,
         inputs,
@@ -83,6 +85,7 @@ def test_opt_qa(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_sequence_classification(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="seqcls")
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -105,7 +108,6 @@ def test_opt_sequence_classification(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    module_name = build_module_name(framework="pt", model="opt", variant=variant, task="sequence_classification")
     compiled_model = forge.compile(
         model,
         inputs,

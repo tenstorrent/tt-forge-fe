@@ -15,6 +15,8 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_0_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_0")
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -24,7 +26,6 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    module_name = build_module_name(framework="pt", model="efficientnet_lite_0")
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
     fw_out = model(img_tensor)
@@ -38,6 +39,8 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_1_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_1")
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -48,7 +51,6 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
 
-    module_name = build_module_name(framework="pt", model="efficientnet_lite_1")
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)
@@ -63,6 +65,8 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_2_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_2")
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -72,7 +76,6 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    module_name = build_module_name(framework="pt", model="efficientnet_lite_2")
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)
@@ -87,6 +90,8 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_3_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_3")
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -96,7 +101,6 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
     # Image preprocessing
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
-    module_name = build_module_name(framework="pt", model="efficientnet_lite_3")
     compiled_model = forge.compile(model, sample_inputs=img_tensor, module_name=module_name)
 
     co_out = compiled_model(img_tensor)
@@ -111,6 +115,8 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_efficientnet_lite_4_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_4")
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -121,7 +127,7 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
 
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
+    module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_4")
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
     co_out = compiled_model(img_tensor)

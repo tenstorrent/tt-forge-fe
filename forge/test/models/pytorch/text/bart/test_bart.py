@@ -25,7 +25,7 @@ class BartWrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_pt_bart_classifier(record_forge_property):
-    module_name = build_module_name(framework="pt", model="bart", variant=model_name)
+    module_name = build_module_name(framework="pt", model="bart", variant=model_name, task="classification")
 
     record_forge_property("module_name", module_name)
 

@@ -20,12 +20,13 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_clip_pytorch(record_forge_property):
-    module_name = build_module_name(framework="pt", model="clip_text", variant=model_ckpt)
+    model_ckpt = "openai/clip-vit-base-patch32"
+
+    module_name = build_module_name(framework="pt", model="clip", variant=model_ckpt, suffix="text")
 
     record_forge_property("module_name", module_name)
 
     # Load processor and model from HuggingFace
-    model_ckpt = "openai/clip-vit-base-patch32"
     model = download_model(CLIPModel.from_pretrained, model_ckpt, torchscript=True)
     processor = download_model(CLIPProcessor.from_pretrained, model_ckpt)
 

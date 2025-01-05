@@ -41,6 +41,8 @@ variants = list(variants_func.keys())
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dla_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="dla", variant=variant)
+
     func = variants_func[variant]
 
     # Load data sample
@@ -60,5 +62,4 @@ def test_dla_pytorch(record_forge_property, variant):
 
     pytorch_model = func(pretrained="imagenet")
     pytorch_model.eval()
-    module_name = build_module_name(framework="pt", model="dla", variant=variant)
     compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=module_name)

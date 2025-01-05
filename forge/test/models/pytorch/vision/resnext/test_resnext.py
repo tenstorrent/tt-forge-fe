@@ -17,8 +17,12 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_50_torchhub_pytorch(record_forge_property):
+    variant = "resnext50_32x4d"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="torchhub", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "resnext50_32x4d", pretrained=True)
+    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
     model.eval()
 
     input_batch = get_image_tensor()
@@ -26,15 +30,18 @@ def test_resnext_50_torchhub_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_torchhub", variant="50")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_101_torchhub_pytorch(record_forge_property):
+    variant = "resnext101_32x8d"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="torchhub", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "resnext101_32x8d", pretrained=True)
+    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
     model.eval()
 
     input_batch = get_image_tensor()
@@ -42,16 +49,19 @@ def test_resnext_101_torchhub_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_torchhub", variant="101")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
+    variant = "resnext101_32x8d_wsl"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="torchhub", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
     # 4 variants
-    model = download_model(torch.hub.load, "facebookresearch/WSL-Images", "resnext101_32x8d_wsl")
+    model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
     model.eval()
 
     input_batch = get_image_tensor()
@@ -59,15 +69,18 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_fb_wsl", variant="101")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_14_osmr_pytorch(record_forge_property):
+    variant = "resnext14_32x4d"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="osmr", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext14_32x4d", pretrained=True)
+    model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
     # tt_model = forge.PyTorchModule("pt_resnext14_osmr", model)
 
@@ -76,15 +89,18 @@ def test_resnext_14_osmr_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="14")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_26_osmr_pytorch(record_forge_property):
+    variant = "resnext14_32x4d"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="osmr", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext26_32x4d", pretrained=True)
+    model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
 
     input_batch = get_image_tensor()
@@ -92,15 +108,18 @@ def test_resnext_26_osmr_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="26")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_50_osmr_pytorch(record_forge_property):
+    variant = "resnext50_32x4d"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="osmr", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext50_32x4d", pretrained=True)
+    model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
 
     input_batch = get_image_tensor()
@@ -108,15 +127,18 @@ def test_resnext_50_osmr_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="50")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_101_osmr_pytorch(record_forge_property):
+    variant = "resnext101_64x4d"
+
+    module_name = build_module_name(framework="pt", model="resnext", source="osmr", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext101_64x4d", pretrained=True)
+    model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
 
     input_batch = get_image_tensor()
@@ -124,5 +146,4 @@ def test_resnext_101_osmr_pytorch(record_forge_property):
     # STEP 3: Run inference on Tenstorrent device
     # CPU version commented out
     # output = model(input_batch)
-    module_name = build_module_name(framework="pt", model="resnext_osmr", variant="101")
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

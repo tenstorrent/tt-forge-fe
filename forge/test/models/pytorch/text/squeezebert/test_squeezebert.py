@@ -11,6 +11,10 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_squeezebert_sequence_classification_pytorch(record_forge_property):
+    variant = "squeezebert/squeezebert-mnli"
+
+    module_name = build_module_name(framework="pt", model="squeezebert", variant=variant, task="seqcls")
+
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
     model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
@@ -28,7 +32,4 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property):
     )
 
     inputs = [input_tokens]
-    module_name = build_module_name(
-        framework="pt", model="squeezebert", variant=variant, task="sequence_classification"
-    )
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

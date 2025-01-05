@@ -17,6 +17,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_torchhub(record_forge_property):
+    module_name = build_module_name(framework="pt", model="alexnet", source="torchhub")
+
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
     framework_model.eval()
@@ -41,13 +43,14 @@ def test_alexnet_torchhub(record_forge_property):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    module_name = build_module_name(framework="pt", model="alexnet")
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_osmr(record_forge_property):
+    module_name = build_module_name(framework="pt", model="alexnet", source="osmr")
+
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
     framework_model.eval()
@@ -72,5 +75,4 @@ def test_alexnet_osmr(record_forge_property):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    module_name = build_module_name(framework="pt", model="alexnet", task="osmr")
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

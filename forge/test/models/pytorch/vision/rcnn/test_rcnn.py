@@ -20,6 +20,7 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_rcnn_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="rcnn")
 
     # Load Alexnet Model
     model = torchvision.models.alexnet(pretrained=True)

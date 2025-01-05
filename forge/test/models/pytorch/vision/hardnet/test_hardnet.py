@@ -23,6 +23,8 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="hardnet", variant=variant)
+
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
@@ -59,5 +61,4 @@ def test_hardnet_pytorch(record_forge_property, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    module_name = build_module_name(framework="pt", model="hardnet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

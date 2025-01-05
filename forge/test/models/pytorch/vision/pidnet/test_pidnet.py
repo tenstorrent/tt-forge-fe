@@ -23,6 +23,8 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_pidnet_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="pidnet", variant=variant)
+
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
     image = cv2.imread(image_path, cv2.IMREAD_COLOR)
@@ -48,5 +50,4 @@ def test_pidnet_pytorch(record_forge_property, variant):
     model.load_state_dict(model_dict)
     model.eval()
 
-    module_name = build_module_name(framework="pt", model="pidnet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=module_name)

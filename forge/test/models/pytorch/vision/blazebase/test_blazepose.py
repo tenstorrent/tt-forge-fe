@@ -23,6 +23,8 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="blazepose", task="detector")
+
     # Load BlazePose Detector
     pose_detector = BlazePose()
     pose_detector.load_weights("mediapipepytorch/blazepose.pth")
@@ -35,24 +37,26 @@ def test_blazepose_detector_pytorch(record_forge_property):
     _, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    module_name = build_module_name(framework="pt", model="blazepose", task="detector")
     compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name=module_name)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="blazepose", task="regressor")
+
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
     img2 = [torch.rand(1, 3, 256, 256)]
-    module_name = build_module_name(framework="pt", model="blazepose", task="regressor")
     compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name=module_name)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="blazepose", task="palm")
+
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
     palm_detector.load_weights("mediapipepytorch/blazepalm.pth")
@@ -66,17 +70,17 @@ def test_blaze_palm_pytorch(record_forge_property):
     img1, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    module_name = build_module_name(framework="pt", model="blazepose", task="palm")
     compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name=module_name)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="blazepose", task="hand")
+
     # Load BlazePalm Detector
     hand_regressor = BlazeHandLandmark()
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
     sample_tensor = [torch.rand(1, 3, 256, 256)]
-    module_name = build_module_name(framework="pt", model="blazepose", task="hand")
     compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name=module_name)

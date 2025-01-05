@@ -23,6 +23,8 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="ddrnet", variant=variant)
+
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
 
@@ -58,7 +60,6 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
 
 
@@ -69,6 +70,8 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="ddrnet", variant=variant, task="semseg")
+
     # prepare model
     if variant == "ddrnet23s_cityscapes":
         model = DualResNet(
@@ -104,5 +107,4 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     input_image = Image.open(image_path)
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    module_name = build_module_name(framework="pt", model="ddrnet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)

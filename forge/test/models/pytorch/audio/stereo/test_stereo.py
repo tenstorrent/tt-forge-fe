@@ -23,7 +23,6 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(record_forge_property, variant):
-    # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
     module_name = build_module_name(framework="pt", model="stereo", variant=variant)
 
     record_forge_property("module_name", module_name)
@@ -33,6 +32,7 @@ def test_stereo(record_forge_property, variant):
     input_ids, attn_mask, decoder_input_ids = load_inputs(framework_model, processor)
     inputs = [input_ids, attn_mask, decoder_input_ids]
 
+    # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify(inputs, framework_model, compiled_model)

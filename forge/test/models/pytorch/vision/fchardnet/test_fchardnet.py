@@ -18,6 +18,8 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_fchardnet(record_forge_property):
+    module_name = build_module_name(framework="pt", model="fchardnet")
+
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
     img = Image.open(image_path)
@@ -36,5 +38,4 @@ def test_fchardnet(record_forge_property):
     model = fuse_bn_recursively(model)
     model.eval()
 
-    module_name = build_module_name(framework="pt", model="fchardnet")
     compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=module_name)

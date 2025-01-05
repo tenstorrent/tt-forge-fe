@@ -109,6 +109,8 @@ def test_whisper(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_pipeline(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="pipeline")
+
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     # Configurations
@@ -167,10 +169,9 @@ def test_whisper_pipeline(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Not supported")
 def test_whisper_encoder(record_forge_property, test_device, variant):
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
+    module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="encoder")
 
-    if variant == "openai/whisper-medium" or variant == "openai/whisper-large":
-        pytest.skip("Still under development")
+    pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     # Configurations
     compiler_cfg = _get_global_compiler_config()

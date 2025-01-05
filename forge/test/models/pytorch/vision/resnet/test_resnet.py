@@ -46,12 +46,12 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnet(record_forge_property):
+    module_name = build_module_name(framework="pt", model="resnet", variant="50")
 
     model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
         "microsoft/resnet-50",
     )
 
-    module_name = build_module_name(framework="pt", model="resnet_pytorch", variant="50")
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
 
@@ -80,8 +80,9 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnet_timm(record_forge_property):
+    module_name = build_module_name(framework="pt", model="resnet", source="timm", variant="50")
+
     model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
         "resnet50",
     )
-    module_name = build_module_name(framework="pt", model="resnet", source="timm", variant="50")
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)

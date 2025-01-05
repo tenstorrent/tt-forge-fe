@@ -17,6 +17,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
 def test_t5_loop_tiny_tile(record_forge_property):
+    module_name = build_module_name(framework="pt", model="t5", suffix="loop_tiny_tile")
+
     import os
 
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
@@ -92,6 +94,8 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="t5", variant=variant, task="generation")
+
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
 
@@ -121,7 +125,6 @@ def test_t5_generation(record_forge_property, variant):
 
     inputs = [decoder_input_ids, encoder_outputs]
     variant_name = variant.replace("-", "_").replace("/", "_")
-    module_name = build_module_name(framework="pt", model="t5", variant=variant, task="generation")
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
 
 
@@ -175,6 +178,7 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
+    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="past_cache_enc_dec")
 
     import os
 
@@ -337,6 +341,8 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_device):
+    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="past_cache_forge_pipe")
+
     import os
 
     os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
@@ -672,6 +678,8 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_t5_forge_pipeline(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="forge_pipe")
+
     # Too slow for post-commit ci
 
     import os
@@ -720,6 +728,8 @@ def test_t5_forge_pipeline(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(record_forge_property, test_device):
+    module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="small_tiny_tile")
+
     import os
 
     os.environ["FORGE_ENABLE_TINY_TILE"] = "1"

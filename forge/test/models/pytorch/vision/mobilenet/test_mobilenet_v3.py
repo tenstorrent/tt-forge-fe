@@ -42,10 +42,11 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_basic(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="mobilenetv3", variant=variant)
+
     model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
         variant,
     )
-    module_name = build_module_name(framework="pt", model="mobilenetv3", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
@@ -92,11 +93,12 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="mobilnetv3", source="timm", variant=variant)
+
     model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,
     )
 
-    module_name = build_module_name(framework="pt", model="mobilnetv3", source="timm", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)

@@ -14,6 +14,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_gpt2_text_gen(record_forge_property):
+    module_name = build_module_name(framework="pt", model="gpt2", task="text_gen")
+
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained("gpt2")
     config_dict = config.to_dict()
@@ -36,7 +38,6 @@ def test_gpt2_text_gen(record_forge_property):
     ).to(torch.int64)
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
-    module_name = build_module_name(framework="pt", model="gpt2", variant=variant, task="text_gen")
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
 
     co_out = compiled_model(*inputs)
@@ -65,6 +66,8 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(record_forge_property):
+    module_name = build_module_name(framework="pt", model="gpt2", task="text_gen", suffix="past_cache")
+
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_tvm_cpu_fallback = False

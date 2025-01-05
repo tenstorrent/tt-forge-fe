@@ -21,6 +21,7 @@ variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_phi2_clm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="clm")
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -56,7 +57,6 @@ def test_phi2_clm(record_forge_property, variant):
     fw_out = model(*inputs)
 
     # Inference
-    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="causal_lm")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
 
@@ -69,6 +69,7 @@ def test_phi2_clm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="token_cls")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -94,7 +95,6 @@ def test_phi2_token_classification(record_forge_property, variant):
     fw_out = model(*inputs)
 
     # Inference
-    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="token_classification")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)
@@ -108,6 +108,7 @@ def test_phi2_token_classification(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="seqcls")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -134,7 +135,6 @@ def test_phi2_sequence_classification(record_forge_property, variant):
     fw_out = model(*inputs)
 
     # Inference
-    module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="sequence_classification")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     co_out = compiled_model(*inputs)
     fw_out = model(*inputs)

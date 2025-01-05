@@ -24,7 +24,7 @@ from test.models.utils import build_module_name
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(record_forge_property, variant):
-    module_name = build_module_name(framework="pt", model="codegen", variant=variant)
+    module_name = build_module_name(framework="pt", model="codegen", variant=variant, task="clm")
 
     record_forge_property("module_name", module_name)
 

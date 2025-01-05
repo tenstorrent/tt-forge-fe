@@ -25,6 +25,8 @@ variants = ["densenet161_bts", "densenet121_bts"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
 def test_bts_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="bts", variant=variant)
+
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -60,5 +62,4 @@ def test_bts_pytorch(record_forge_property, variant):
 
     inputs = [image]
 
-    module_name = build_module_name(framework="pt", model="bts", variant=variant)
     compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name=module_name)

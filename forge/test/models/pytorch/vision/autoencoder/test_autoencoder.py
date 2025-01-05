@@ -16,6 +16,8 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_conv_ae_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="conv_autoencoder")
+
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -34,13 +36,14 @@ def test_conv_ae_pytorch(record_forge_property):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
 
-    module_name = build_module_name(framework="pt", model="conv_autoencoder")
     compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_linear_ae_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="linear_autoencoder")
+
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -64,7 +67,6 @@ def test_linear_ae_pytorch(record_forge_property):
     fw_out = model(sample_tensor)
 
     # Inference
-    module_name = build_module_name(framework="pt", model="linear_autoencoder")
     compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name=module_name)
     co_out = compiled_model(sample_tensor)
 

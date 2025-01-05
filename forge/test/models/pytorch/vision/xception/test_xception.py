@@ -39,9 +39,9 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xception_timm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="xception", variant=variant, source="timm")
 
     (model, inputs,) = generate_model_xception_imgcls_timm(
         variant,
     )
-    module_name = build_module_name(framework="pt", model="xception", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

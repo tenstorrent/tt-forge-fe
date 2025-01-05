@@ -18,6 +18,8 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_yolo_v6_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="yolo_v6", variant=variant)
+
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
     weights = f"{variant}.pt"
@@ -43,7 +45,6 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     input_batch = img.unsqueeze(0)
 
     # STEP 4 : Inference
-    module_name = build_module_name(framework="pt", model="yolo_v6", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
 
     # STEP 5 : remove downloaded weights

@@ -15,6 +15,8 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="xglm", variant=variant, task="clm")
+
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
@@ -35,5 +37,4 @@ def test_xglm_causal_lm(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    module_name = build_module_name(framework="pt", model="xglm", variant=variant, task="causal_lm")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

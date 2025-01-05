@@ -41,9 +41,10 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vit_base_classify_224_hf_pytorch(record_forge_property, variant):
+def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="deit", variant=variant, task="imgcls")
+
     model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
-    module_name = build_module_name(framework="pt", model="deit", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

@@ -30,10 +30,11 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="unet", variant="cityscape", source="osmr")
+
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
     )
-    module_name = build_module_name(framework="pt", model="unet", variant="cityscape_osmr")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -67,12 +68,13 @@ def get_imagenet_sample():
 @pytest.mark.skip(reason="Model script not found")
 @pytest.mark.nightly
 def test_unet_holocron_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="unet", variant="holocron")
+
     from holocron.models.segmentation.unet import unet_tvvgg11
 
     model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
-    module_name = build_module_name(framework="pt", model="unet", variant="holocron")
     compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
 
 
@@ -106,10 +108,11 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_qubvel_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="unet", variant="qubvel")
+
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
     )
-    module_name = build_module_name(framework="pt", model="unet", variant="qubvel")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -151,8 +154,9 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_torchhub_pytorch(record_forge_property):
+    module_name = build_module_name(framework="pt", model="unet")
+
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
-    module_name = build_module_name(framework="pt", model="unet")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

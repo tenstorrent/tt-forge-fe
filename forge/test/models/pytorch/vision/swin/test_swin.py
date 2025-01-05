@@ -17,6 +17,7 @@ from test.models.utils import build_module_name
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swin-tiny-patch4-window7-224"])
 def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="swin", variant=variant)
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -29,7 +30,6 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     # STEP 3: Run inference on Tenstorrent device
-    module_name = build_module_name(framework="pt", model="swin", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, model, compiled_model)
 
@@ -38,6 +38,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="swin", variant=variant)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -45,7 +46,6 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
-    module_name = build_module_name(framework="pt", model="swin", variant=variant)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, framework_model, compiled_model)
 
@@ -54,6 +54,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="swin", variant=variant, task="imgcls")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -61,7 +62,6 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
-    module_name = build_module_name(framework="pt", model="swin", variant=variant, task="image_classification")
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, framework_model, compiled_model)
 
@@ -70,6 +70,7 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="swin", variant=variant, task="masked")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
@@ -77,6 +78,5 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
-    module_name = build_module_name(framework="pt", model="swin", variant=variant, task="masked")
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
     verify(inputs, framework_model, compiled_model)

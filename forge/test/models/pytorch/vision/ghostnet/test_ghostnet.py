@@ -24,6 +24,8 @@ variants = ["ghostnet_100"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_ghostnet_timm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="ghostnet", variant=variant, source="timm")
+
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -39,7 +41,6 @@ def test_ghostnet_timm(record_forge_property, variant):
     transforms = create_transform(**data_config, is_training=False)
     img_tensor = transforms(img).unsqueeze(0)
 
-    module_name = build_module_name(framework="pt", model="ghostnet", variant=variant, source="timm")
     compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
     co_out = compiled_model(img_tensor)
     fw_out = framework_model(img_tensor)

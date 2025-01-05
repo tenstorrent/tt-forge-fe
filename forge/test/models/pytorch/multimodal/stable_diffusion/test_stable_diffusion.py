@@ -13,12 +13,16 @@ from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     denoising_loop,
     stable_diffusion_postprocessing,
 )
+from test.models.utils import build_module_name
 
 
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
 def test_stable_diffusion_pytorch(record_forge_property):
     variant = "CompVis/stable-diffusion-v1-4"
+
+    module_name = build_module_name(framework="pt", model="stable_diffusion", variant=variant)
+
     batch_size = 1
 
     # Set inference steps

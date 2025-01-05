@@ -12,14 +12,18 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_qwen1_5_causal_lm(record_forge_property):
+    variant = "Qwen/Qwen1.5-0.5B"
+
+    module_name = build_module_name(framework="pt", model="qwen1.5", variant=variant, task="clm")
+
     # Setup model configuration
-    config = Qwen2Config.from_pretrained("Qwen/Qwen1.5-0.5B")
+    config = Qwen2Config.from_pretrained(variant)
     config.use_cache = False
     config.return_dict = False
 
     # Load model and tokenizer with config
-    model = Qwen2ForCausalLM.from_pretrained("Qwen/Qwen1.5-0.5B", config=config)
-    tokenizer = Qwen2Tokenizer.from_pretrained("Qwen/Qwen1.5-0.5B")
+    model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
+    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
     tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Disable DynamicCache
@@ -40,7 +44,6 @@ def test_qwen1_5_causal_lm(record_forge_property):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    module_name = build_module_name(framework="pt", model="qwen", variant=variant, task="causal_lm")
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -58,14 +61,18 @@ def parse_chat_completion(text: str):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_qwen1_5_chat(record_forge_property):
+    variant = "Qwen/Qwen1.5-0.5B-Chat"
+
+    module_name = build_module_name(framework="pt", model="qwen1.5", variant=variant)
+
     # Setup model configuration
-    config = Qwen2Config.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
+    config = Qwen2Config.from_pretrained(variant)
     config.use_cache = False
     config.return_dict = False
 
     # Load model and tokenizer with config
-    model = Qwen2ForCausalLM.from_pretrained("Qwen/Qwen1.5-0.5B-Chat", config=config)
-    tokenizer = Qwen2Tokenizer.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
+    model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
+    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
     tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Disable DynamicCache
@@ -100,5 +107,4 @@ def test_qwen1_5_chat(record_forge_property):
     # Pass the tensors to the model
     op = model(input_ids, attention_mask)
 
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

@@ -20,6 +20,7 @@ from test.models.utils import build_module_name
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="detr", variant=variant, task="detection")
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
@@ -29,7 +30,6 @@ def test_detr_detection(record_forge_property, variant):
     input_batch = preprocess_input_data(image_url)
 
     # Compiler test
-    module_name = build_module_name(framework="pt", model="detr", variant=variant, task="detection")
     compiled_model = forge.compile(framework_model, sample_inputs=[input_batch], module_name=module_name)
 
     verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
@@ -39,6 +39,8 @@ def test_detr_detection(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="detr", variant=variant, task="segmentation")
+
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)
 
@@ -47,7 +49,6 @@ def test_detr_segmentation(record_forge_property, variant):
     input_batch = preprocess_input_data(image_url)
 
     # Compiler test
-    module_name = build_module_name(framework="pt", model="detr", variant=variant, task="segmentation")
     compiled_model = forge.compile(framework_model, sample_inputs=[input_batch], module_name=module_name)
 
     verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))

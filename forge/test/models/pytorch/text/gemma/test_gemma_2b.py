@@ -54,6 +54,8 @@ variants = [
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rotary_embedding(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rotary_embedding")
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -85,7 +87,6 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
     print(out)
 
     inputs = [x, pos_ids]
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rotary_embedding")
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -93,6 +94,8 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rms_norm(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rms_norm")
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -122,7 +125,6 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
     out = pytorch_model(x)
     print(out)
     inputs = [x]
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rms_norm")
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -130,6 +132,8 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="attention")
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -162,7 +166,6 @@ def test_gemma_2b_attention(record_forge_property, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="attention")
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -170,6 +173,8 @@ def test_gemma_2b_attention(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_mlp(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="mlp")
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -200,7 +205,6 @@ def test_gemma_2b_mlp(record_forge_property, variant):
     print(out)
 
     inputs = [x]
-    module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="mlp")
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -208,6 +212,8 @@ def test_gemma_2b_mlp(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_single_decoder(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="single_decoder")
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -240,7 +246,6 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
     print(out)
 
     inputs = [hidden_states, attn_mask, pos_ids]
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -248,6 +253,8 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant)
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -278,7 +285,6 @@ def test_gemma_2b(record_forge_property, variant):
     attn_mask = inputs["attention_mask"]
 
     inputs = [input_ids, attn_mask]
-    module_name = build_module_name(framework="pt", model="stereo", variant=variant)
     compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
 
 
@@ -286,6 +292,8 @@ def test_gemma_2b(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="gen")
+
     # Random seed for reproducibility
     torch.manual_seed(42)
 
@@ -344,6 +352,8 @@ def test_gemma_2b_gen(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="gen_1x1")
+
     # Random seed for reproducibility
     torch.manual_seed(42)
 

@@ -34,6 +34,9 @@ from test.models.utils import build_module_name
 @pytest.mark.model_analysis
 def test_fuyu8b(record_forge_property):
     variant = "adept/fuyu-8b"
+
+    module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
+
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
@@ -70,7 +73,6 @@ def test_fuyu8b(record_forge_property):
     inputs_embeds = inputs_embeds.clone().detach()
 
     inputs = [inputs_embeds]
-    module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
     os.remove("bus.png")
 
@@ -78,6 +80,10 @@ def test_fuyu8b(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_fuyu8b_past_cache(record_forge_property, test_device):
+    variant = "adept/fuyu-8b"
+
+    module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
+
     if test_device.arch == BackendDevice.Grayskull:
         pytest.skip("Still under development")
 
@@ -98,7 +104,7 @@ def test_fuyu8b_past_cache(record_forge_property, test_device):
     else:
         num_layers = 1
 
-    config = FuyuConfig.from_pretrained("adept/fuyu-8b")
+    config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
