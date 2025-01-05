@@ -10,7 +10,7 @@ from test.utils import download_model
 import forge
 from forge.verify.verify import verify
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
@@ -58,7 +58,9 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant, task="imgcls")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.IMAGE_CLASSIFICATION
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -76,7 +78,9 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant, task="masked")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.MASKED_IMAGE_MODELLING
+    )
 
     record_forge_property("module_name", module_name)
 

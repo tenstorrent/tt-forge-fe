@@ -9,7 +9,7 @@ from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite 
 import os
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")

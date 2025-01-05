@@ -16,6 +16,20 @@ class Framework(StrEnum):
     ONNX = "onnx"
 
 
+class Task(StrEnum):
+    SPEECH_TRANSLATE = "speech_translate"
+    QA = "qa"
+    MASKED_LM = "mlm"
+    CAUSAL_LM = "clm"
+    TOKEN_CLASSIFICATION = "token_cls"
+    SEQUENCE_CLASSIFICATION = "seq_cls"
+    IMAGE_CLASSIFICATION = "img_cls"
+    TEXT_GENERATION = "text_gen"
+    OBJECT_DETECTION = "obj_det"
+    SEMANTIC_SEGMENTATION = "sem_seg"
+    MASKED_IMAGE_MODELLING = "masked_img"
+
+
 def build_module_name(
     framework: Framework,
     model: str,

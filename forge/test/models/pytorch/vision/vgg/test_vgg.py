@@ -18,7 +18,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 import urllib
 from torchvision import transforms
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]

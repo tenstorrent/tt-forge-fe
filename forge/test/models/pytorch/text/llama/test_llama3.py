@@ -10,7 +10,7 @@ from test.utils import download_model
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification
 import forge
 from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 variants = [
@@ -122,7 +122,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_causal_lm(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="llama3", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM)
 
     record_forge_property("module_name", module_name)
 
@@ -165,7 +165,9 @@ def test_llama3_causal_lm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_sequence_classification(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="llama3", variant=variant, task="seq_cls")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
 
     record_forge_property("module_name", module_name)
 

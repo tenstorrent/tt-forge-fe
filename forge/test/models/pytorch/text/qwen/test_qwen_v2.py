@@ -4,7 +4,7 @@
 import pytest
 import forge
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 # Variants for testing
@@ -24,7 +24,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.nightly
 def test_qwen_clm(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM)
 
     record_forge_property("module_name", module_name)
 

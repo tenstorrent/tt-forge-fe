@@ -6,7 +6,7 @@ from transformers import AutoImageProcessor, RegNetModel, RegNetForImageClassifi
 import forge
 from forge.verify.verify import verify
 from .utils.image_utils import preprocess_input_data
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
@@ -34,7 +34,9 @@ def test_regnet(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet_img_classification(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="regnet", variant=variant, task="imgcls")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="regnet", variant=variant, task=Task.IMAGE_CLASSIFICATION
+    )
 
     record_forge_property("module_name", module_name)
 

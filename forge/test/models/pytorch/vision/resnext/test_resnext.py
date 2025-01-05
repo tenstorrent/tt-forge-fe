@@ -11,7 +11,7 @@ from test.utils import download_model
 from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
 
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly

@@ -17,7 +17,7 @@ from timm.data.transforms_factory import create_transform
 
 from test.utils import download_model
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 def generate_model_resnet_imgcls_hf_pytorch(variant):

@@ -10,7 +10,7 @@ import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
 from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, preprocess_steps, preprocess_timm_model
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(variant):

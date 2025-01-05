@@ -9,7 +9,7 @@ import forge
 from PIL import Image
 from loguru import logger
 import os
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly

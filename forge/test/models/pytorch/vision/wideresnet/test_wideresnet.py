@@ -12,7 +12,7 @@ from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 import urllib
 import os
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 def generate_model_wideresnet_imgcls_pytorch(variant):

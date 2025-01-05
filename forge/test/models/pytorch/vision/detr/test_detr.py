@@ -13,14 +13,16 @@ import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="detr", variant=variant, task="detection")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.OBJECT_DETECTION
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -41,7 +43,9 @@ def test_detr_detection(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="detr", variant=variant, task="segmentation")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.SEMANTIC_SEGMENTATION
+    )
 
     record_forge_property("module_name", module_name)
 

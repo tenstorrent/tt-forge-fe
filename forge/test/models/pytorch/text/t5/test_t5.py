@@ -11,7 +11,7 @@ import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
@@ -96,7 +96,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task="generation")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION)
 
     record_forge_property("module_name", module_name)
 

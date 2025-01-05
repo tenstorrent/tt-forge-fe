@@ -17,7 +17,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 from test.utils import download_model
 

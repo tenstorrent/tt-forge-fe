@@ -7,7 +7,7 @@ from PIL import Image
 import os
 import torch
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
@@ -36,7 +36,7 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch():
 @pytest.mark.nightly
 def test_yolov3_tiny_holli_pytorch(record_forge_property):
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="yolov_3", variant="tiny_holli_pytorch", task="imgcls"
+        framework=Framework.PYTORCH, model="yolov_3", variant="tiny_holli_pytorch", task=Task.IMAGE_CLASSIFICATION
     )
 
     record_forge_property("module_name", module_name)
@@ -68,7 +68,7 @@ def generate_model_yoloV3_imgcls_holli_pytorch():
 @pytest.mark.nightly
 def test_yolov3_holli_pytorch(record_forge_property):
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="yolo_v3", variant="holli_pytorch", task="imgcls"
+        framework=Framework.PYTORCH, model="yolo_v3", variant="holli_pytorch", task=Task.IMAGE_CLASSIFICATION
     )
 
     record_forge_property("module_name", module_name)

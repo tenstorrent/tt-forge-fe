@@ -13,7 +13,7 @@ import forge
 
 from test.utils import download_model
 from test.models.pytorch.vision.inception.utils.model_utils import get_image, preprocess_timm_model
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 

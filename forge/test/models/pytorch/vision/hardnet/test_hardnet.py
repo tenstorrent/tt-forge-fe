@@ -9,7 +9,7 @@ from PIL import Image
 from torchvision import transforms
 import os
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),

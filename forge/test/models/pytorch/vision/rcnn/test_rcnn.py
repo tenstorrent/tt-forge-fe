@@ -13,7 +13,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN

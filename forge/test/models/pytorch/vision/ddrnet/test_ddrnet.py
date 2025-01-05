@@ -8,7 +8,7 @@ import requests
 from PIL import Image
 import pytest
 import sys
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 # sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 # from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock
@@ -72,7 +72,9 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="ddrnet", variant=variant, task="semseg")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="ddrnet", variant=variant, task=Task.SEMANTIC_SEGMENTATION
+    )
 
     record_forge_property("module_name", module_name)
 

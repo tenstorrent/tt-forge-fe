@@ -8,13 +8,13 @@ import forge
 import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_gpt2_text_gen(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gpt2", task="text_gen")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gpt2", task=TEXT_GENERATION)
 
     record_forge_property("module_name", module_name)
 
@@ -68,7 +68,9 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gpt2", task="text_gen", suffix="past_cache")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gpt2", task=TEXT_GENERATION, suffix="past_cache"
+    )
 
     record_forge_property("module_name", module_name)
 

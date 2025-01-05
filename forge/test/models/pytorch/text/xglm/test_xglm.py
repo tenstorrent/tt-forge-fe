@@ -5,7 +5,7 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
@@ -15,7 +15,7 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="xglm", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM)
 
     record_forge_property("module_name", module_name)
 

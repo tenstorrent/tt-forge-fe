@@ -13,7 +13,7 @@ from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     denoising_loop,
     stable_diffusion_postprocessing,
 )
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.skip(reason="unsupported for now")

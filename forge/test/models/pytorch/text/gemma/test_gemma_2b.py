@@ -15,7 +15,7 @@ from forge import (
 )
 from test.utils import download_model
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 def cpu_sanity_run_0():
@@ -55,7 +55,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rotary_embedding(record_forge_property, variant):
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gemma", variant=variant, task="rotary_embedding"
+        framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="rotary_embedding"
     )
 
     record_forge_property("module_name", module_name)
@@ -98,7 +98,7 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rms_norm(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, task="rms_norm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="rms_norm")
 
     record_forge_property("module_name", module_name)
 
@@ -138,7 +138,7 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, task="attention")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="attention")
 
     record_forge_property("module_name", module_name)
 
@@ -181,7 +181,7 @@ def test_gemma_2b_attention(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_mlp(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, task="mlp")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="mlp")
 
     record_forge_property("module_name", module_name)
 

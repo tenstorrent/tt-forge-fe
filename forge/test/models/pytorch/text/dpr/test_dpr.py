@@ -14,7 +14,7 @@ from transformers import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
@@ -24,7 +24,7 @@ variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_context_encoder_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, task="context_encoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="context_encoder")
 
     record_forge_property("module_name", module_name)
 
@@ -64,7 +64,9 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, task="question_encoder")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="question_encoder"
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -104,7 +106,7 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, task="reader")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="reader")
 
     record_forge_property("module_name", module_name)
 

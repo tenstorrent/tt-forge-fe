@@ -15,7 +15,7 @@ from test.utils import download_model
 import forge
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 variants = ["ghostnet_100"]
 

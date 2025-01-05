@@ -23,7 +23,7 @@ import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 import time
 
 variants = [

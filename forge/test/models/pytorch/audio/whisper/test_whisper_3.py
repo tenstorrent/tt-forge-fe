@@ -11,7 +11,7 @@ import pytest
 import torch
 from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify, VerifyConfig
 
 
@@ -36,7 +36,7 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
 def test_whisper_large_v3_speech_translation(record_forge_property, variant):
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="whisper", variant=variant, task="speech_translate"
+        framework=Framework.PYTORCH, model="whisper", variant=variant, task=Task.SPEECH_TRANSLATE
     )
 
     record_forge_property("module_name", module_name)

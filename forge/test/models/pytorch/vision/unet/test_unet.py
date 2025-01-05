@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):

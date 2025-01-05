@@ -5,7 +5,7 @@ import torch
 import pytest
 from transformers import AutoTokenizer, FalconForCausalLM
 import forge
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly

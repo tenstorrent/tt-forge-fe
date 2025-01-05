@@ -6,7 +6,7 @@ import forge
 import pytest
 import torch
 from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequenceClassification
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
@@ -14,7 +14,7 @@ from test.models.utils import build_module_name, Framework
 def test_roberta_masked_lm(record_forge_property):
     variant = "xlm-roberta-base"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task="mlm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM)
 
     record_forge_property("module_name", module_name)
 
@@ -43,7 +43,9 @@ def test_roberta_masked_lm(record_forge_property):
 def test_roberta_sentiment_pytorch(record_forge_property):
     variant = "cardiffnlp/twitter-roberta-base-sentiment"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task="sentiment")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
 
     record_forge_property("module_name", module_name)
 

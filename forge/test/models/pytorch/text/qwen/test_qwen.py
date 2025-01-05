@@ -6,7 +6,7 @@ import forge
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import torch
 import re
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
@@ -14,7 +14,7 @@ from test.models.utils import build_module_name, Framework
 def test_qwen1_5_causal_lm(record_forge_property):
     variant = "Qwen/Qwen1.5-0.5B"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task="clm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM)
 
     record_forge_property("module_name", module_name)
 

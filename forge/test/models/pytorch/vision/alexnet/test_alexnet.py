@@ -11,7 +11,7 @@ import pytest
 import forge
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import os
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
