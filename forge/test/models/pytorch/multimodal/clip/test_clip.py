@@ -14,7 +14,7 @@ from test.models.pytorch.multimodal.clip.utils.clip_model import (
     CLIPPostProcessingWrapper,
 )
 import os
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly

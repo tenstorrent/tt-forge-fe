@@ -15,7 +15,7 @@ from forge import (
 )
 from test.utils import download_model
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 def cpu_sanity_run_0():

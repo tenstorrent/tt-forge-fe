@@ -20,7 +20,7 @@ from transformers import MobileNetV2ForSemanticSegmentation
 import forge
 from test.utils import download_model
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant):
@@ -158,7 +158,9 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv2_timm(record_forge_property):
     variant = "mobilenetv2_100"
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v2", variant=variant, source="timm")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilenet_v2", variant=variant, source=Source.TIMM
+    )
 
     record_forge_property("module_name", module_name)
 

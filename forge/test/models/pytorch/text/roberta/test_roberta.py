@@ -6,7 +6,7 @@ import forge
 import pytest
 import torch
 from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequenceClassification
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly

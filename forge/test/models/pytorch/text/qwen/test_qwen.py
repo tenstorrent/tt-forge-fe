@@ -6,7 +6,7 @@ import forge
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import torch
 import re
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly

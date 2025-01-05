@@ -9,7 +9,7 @@ from transformers.models.bart.modeling_bart import shift_tokens_right
 import pytest
 import forge
 
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 class BartWrapper(torch.nn.Module):

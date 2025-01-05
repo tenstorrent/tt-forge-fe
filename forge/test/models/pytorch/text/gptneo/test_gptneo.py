@@ -13,7 +13,7 @@ from transformers import (
     GPTNeoConfig,
     GPTNeoForSequenceClassification,
 )
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 variants = [

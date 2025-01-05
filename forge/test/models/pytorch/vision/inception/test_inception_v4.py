@@ -13,7 +13,7 @@ import forge
 
 from test.utils import download_model
 from test.models.pytorch.vision.inception.utils.model_utils import get_image, preprocess_timm_model
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -31,7 +31,7 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_inception_v4_osmr_pytorch(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR)
 
     record_forge_property("module_name", module_name)
 
@@ -48,7 +48,7 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_inception_v4_timm_pytorch(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source="timm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.TIMM)
 
     record_forge_property("module_name", module_name)
 

@@ -14,7 +14,7 @@ from transformers import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]

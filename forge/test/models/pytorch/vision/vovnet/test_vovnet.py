@@ -10,7 +10,7 @@ import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
 from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, preprocess_steps, preprocess_timm_model
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(variant):
@@ -28,7 +28,7 @@ varaints = ["vovnet27s", "vovnet39", "vovnet57"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_vovnet_osmr_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vovnet", variant=variant, source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR)
 
     record_forge_property("module_name", module_name)
 

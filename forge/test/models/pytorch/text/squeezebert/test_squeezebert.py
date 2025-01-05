@@ -5,7 +5,7 @@ from test.utils import download_model
 import forge
 import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly

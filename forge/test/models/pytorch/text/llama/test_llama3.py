@@ -10,7 +10,7 @@ from test.utils import download_model
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification
 import forge
 from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 variants = [

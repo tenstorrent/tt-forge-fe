@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
@@ -30,7 +30,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="cityscape", source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR)
 
     record_forge_property("module_name", module_name)
 

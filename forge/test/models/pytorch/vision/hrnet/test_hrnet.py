@@ -17,7 +17,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 from test.utils import download_model
 
@@ -83,7 +83,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_osmr_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR)
 
     record_forge_property("module_name", module_name)
 
@@ -149,7 +149,7 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source="timm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM)
 
     record_forge_property("module_name", module_name)
 

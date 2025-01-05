@@ -11,7 +11,7 @@ import shutil
 from test.models.pytorch.vision.retinanet.utils.model import Model
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 import forge
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 variants = [

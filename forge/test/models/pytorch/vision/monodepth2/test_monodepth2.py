@@ -5,7 +5,7 @@
 import pytest
 import forge
 from test.models.pytorch.vision.monodepth2.utils.utils import download_model, load_model, load_input
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 variants = [
     "mono_640x192",

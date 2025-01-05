@@ -11,7 +11,7 @@ import pytest
 import torch
 from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
 import forge
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 from forge.verify.verify import verify, VerifyConfig
 
 

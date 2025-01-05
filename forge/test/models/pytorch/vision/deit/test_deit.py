@@ -11,7 +11,7 @@ from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
 from test.utils import download_model
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):

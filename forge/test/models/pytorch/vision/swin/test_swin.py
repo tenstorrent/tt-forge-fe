@@ -10,7 +10,7 @@ from test.utils import download_model
 import forge
 from forge.verify.verify import verify
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly

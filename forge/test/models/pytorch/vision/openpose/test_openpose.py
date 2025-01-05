@@ -16,7 +16,7 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 variants = [
@@ -83,7 +83,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_openpose_osmr(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant, source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR)
 
     record_forge_property("module_name", module_name)
 

@@ -11,7 +11,7 @@ from test.utils import download_model
 from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
 
 import forge
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly
@@ -19,7 +19,9 @@ from test.models.utils import build_module_name, Framework, Task
 def test_resnext_50_torchhub_pytorch(record_forge_property):
     variant = "resnext50_32x4d"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="torchhub", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -40,7 +42,9 @@ def test_resnext_50_torchhub_pytorch(record_forge_property):
 def test_resnext_101_torchhub_pytorch(record_forge_property):
     variant = "resnext101_32x8d"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="torchhub", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -61,7 +65,9 @@ def test_resnext_101_torchhub_pytorch(record_forge_property):
 def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
     variant = "resnext101_32x8d_wsl"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="torchhub", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+    )
 
     record_forge_property("module_name", module_name)
 
@@ -83,7 +89,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
 def test_resnext_14_osmr_pytorch(record_forge_property):
     variant = "resnext14_32x4d"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="osmr", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -105,7 +111,7 @@ def test_resnext_14_osmr_pytorch(record_forge_property):
 def test_resnext_26_osmr_pytorch(record_forge_property):
     variant = "resnext14_32x4d"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="osmr", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -126,7 +132,7 @@ def test_resnext_26_osmr_pytorch(record_forge_property):
 def test_resnext_50_osmr_pytorch(record_forge_property):
     variant = "resnext50_32x4d"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="osmr", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     record_forge_property("module_name", module_name)
 
@@ -147,7 +153,7 @@ def test_resnext_50_osmr_pytorch(record_forge_property):
 def test_resnext_101_osmr_pytorch(record_forge_property):
     variant = "resnext101_64x4d"
 
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source="osmr", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     record_forge_property("module_name", module_name)
 

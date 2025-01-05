@@ -12,7 +12,7 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from test.utils import download_model
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 import forge
 
@@ -35,7 +35,7 @@ varaints = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mlp_mixer", variant=variant, source="timm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mlp_mixer", variant=variant, source=Source.TIMM)
 
     record_forge_property("module_name", module_name)
 

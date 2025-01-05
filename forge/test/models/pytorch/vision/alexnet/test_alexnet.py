@@ -11,13 +11,13 @@ import pytest
 import forge
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import os
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_torchhub(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source="torchhub")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source=Source.TORCH_HUB)
 
     record_forge_property("module_name", module_name)
 
@@ -51,7 +51,7 @@ def test_alexnet_torchhub(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_osmr(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source="osmr")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR)
 
     record_forge_property("module_name", module_name)
 

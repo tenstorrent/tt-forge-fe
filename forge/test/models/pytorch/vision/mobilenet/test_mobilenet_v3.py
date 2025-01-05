@@ -19,7 +19,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from test.utils import download_model
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 
 def generate_model_mobilenetV3_imgcls_torchhub_pytorch(variant):
@@ -95,7 +95,9 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(record_forge_property, variant):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilnetv3", source="timm", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilnetv3", source=Source.TIMM, variant=variant
+    )
 
     record_forge_property("module_name", module_name)
 

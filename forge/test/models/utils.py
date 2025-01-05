@@ -30,6 +30,14 @@ class Task(StrEnum):
     MASKED_IMAGE_MODELLING = "masked_img"
 
 
+class Source(StrEnum):
+    HUGGINGFACE = "hf"
+    TORCH_HUB = "torchhub"
+    TIMM = "timm"
+    OSMR = "osmr"
+    TORCHVISION = "torchvision"
+
+
 def build_module_name(
     framework: Framework,
     model: str,

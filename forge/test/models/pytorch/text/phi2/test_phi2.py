@@ -12,7 +12,7 @@ from transformers import (
 import pytest
 import forge
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import build_module_name, Framework, Task, Source
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
