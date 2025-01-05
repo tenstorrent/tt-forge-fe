@@ -15,10 +15,6 @@ from test.models.utils import build_module_name
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoFeatureExtractor.from_pretrained, variant)
     model = download_model(ViTForImageClassification.from_pretrained, variant)

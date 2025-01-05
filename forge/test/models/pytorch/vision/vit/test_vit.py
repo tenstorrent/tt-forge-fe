@@ -19,10 +19,6 @@ image_2 = Image.open(requests.get(url, stream=True).raw)
 
 
 def generate_model_vit_imgcls_hf_pytorch(test_device, variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(ViTForImageClassification.from_pretrained, variant)

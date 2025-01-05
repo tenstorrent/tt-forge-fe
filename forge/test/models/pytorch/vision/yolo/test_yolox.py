@@ -38,11 +38,6 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant, test_device):
-
-    # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # prepare model
     weight_name = f"{variant}.pth"
     url = f"https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/{weight_name}"
@@ -85,13 +80,6 @@ def test_yolox_pytorch(variant, test_device):
 
     module_name = build_module_name(framework="pt", model="yolox", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(*inputs)
-        co_out = [co.to("cpu") for co in co_out]
-
-        # Postprocessing outputs
-        outputs = model.head.decode_outputs(outputs, dtype=img_tensor.type())
 
     # remove downloaded weights,image
     os.remove(weight_name)

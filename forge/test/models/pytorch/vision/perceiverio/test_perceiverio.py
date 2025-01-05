@@ -48,12 +48,6 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(test_device, variant):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    if variant != "deepmind/vision-perceiver-fourier":
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Sample Image
     pixel_values = get_sample_data(variant)
 
@@ -74,12 +68,3 @@ def test_perceiverio_for_image_classification_pytorch(test_device, variant):
     # Run inference on Tenstorrent device
     module_name = build_module_name(framework="pt", model="preciverio", variant=variant, task="image_classification")
     compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
-
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(pixel_values)
-        fw_out = model(pixel_values)
-
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

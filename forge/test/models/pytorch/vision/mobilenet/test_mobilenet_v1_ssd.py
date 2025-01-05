@@ -14,11 +14,6 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"
     class_names = [name.strip() for name in open(label_path).readlines()]

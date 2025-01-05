@@ -26,10 +26,6 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
     feature_extractor = download_model(AutoFeatureExtractor.from_pretrained, model_ckpt)
     model = download_model(ResNetForImageClassification.from_pretrained, model_ckpt)
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load data sample
     try:
         url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -64,10 +60,6 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
     model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
     transform = create_transform(**config)
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     try:

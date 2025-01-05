@@ -14,12 +14,6 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_monodle_pytorch(test_device):
-    # PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
-    model_name = "monodle_pytorch"
-
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
     image = Image.open(requests.get(url, stream=True).raw)

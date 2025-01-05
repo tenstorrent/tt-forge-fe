@@ -24,10 +24,6 @@ from test.models.utils import build_module_name
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(test_device, variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     model = download_model(torch.hub.load, variant, "mobilenet_v2", pretrained=True)
 
     # Image preprocessing
@@ -53,10 +49,6 @@ def test_mobilenetv2_basic(test_device):
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
@@ -81,10 +73,6 @@ def test_mobilenetv2_96(test_device):
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
 
@@ -109,10 +97,6 @@ def test_mobilenetv2_160(test_device):
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
@@ -139,9 +123,6 @@ def test_mobilenetv2_224(test_device):
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     model = download_model(timm.create_model, variant, pretrained=True)
     # tt_model = forge.PyTorchModule("mobilenet_v2__hf_timm", model)
 
@@ -189,10 +170,6 @@ def generate_model_mobilenetV2_semseg_hf_pytorch(test_device, variant):
     # of the first op. Pad between input activations and first convolution needs
     # to be hoist to the input in order for pre-striding to work (no need for
     # manual kernel fracturing).
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load model
     framework_model = download_model(MobileNetV2ForSemanticSegmentation.from_pretrained, variant)

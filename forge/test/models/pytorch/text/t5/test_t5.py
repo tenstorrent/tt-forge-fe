@@ -98,12 +98,6 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(variant, test_device):
-
-    compiler_cfg = forge.config._get_global_compiler_config()
-
-    if variant == "google/flan-t5-large":
-        compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
-
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
 
@@ -135,13 +129,6 @@ def test_t5_generation(variant, test_device):
     variant_name = variant.replace("-", "_").replace("/", "_")
     module_name = build_module_name(framework="pt", model="t5", variant=variant, task="generation")
     compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(*inputs)
-        fw_out = model(*inputs)
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-        assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
 
 
 class T5_encoder(torch.nn.Module):

@@ -57,9 +57,6 @@ def test_gemma_2b_rotary_embedding(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     # Load model
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -99,9 +96,6 @@ def test_gemma_2b_rms_norm(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     # Load model
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -138,9 +132,6 @@ def test_gemma_2b_rms_norm(test_device, variant):
 def test_gemma_2b_attention(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -182,9 +173,6 @@ def test_gemma_2b_mlp(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     # Load model
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
@@ -222,9 +210,6 @@ def test_gemma_2b_mlp(test_device, variant):
 def test_gemma_2b_single_decoder(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
 
     # Load model
     class Wrapper(torch.nn.Module):
@@ -266,9 +251,6 @@ def test_gemma_2b(test_device, variant):
     # Random see for reproducibility
     torch.manual_seed(42)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
     config = download_model(GemmaConfig.from_pretrained, variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False

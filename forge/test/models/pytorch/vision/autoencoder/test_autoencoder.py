@@ -16,10 +16,6 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_conv_ae_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -45,9 +41,6 @@ def test_conv_ae_pytorch(test_device):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_linear_ae_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.

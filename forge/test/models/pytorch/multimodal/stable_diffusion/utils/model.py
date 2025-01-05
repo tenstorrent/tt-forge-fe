@@ -114,11 +114,6 @@ class UnetWrapper(torch.nn.Module):
         return noise_pred
 
 
-def initialize_compiler_overrides():
-
-    compiler_cfg = forge.config._get_global_compiler_config()
-
-
 def denoising_loop(
     pipeline,
     latents,

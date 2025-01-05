@@ -10,9 +10,6 @@ from test.models.utils import build_module_name
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(test_device, variant, size):
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     name = "yolov5" + size
 
     model = download_model(torch.hub.load, variant, name, pretrained=True)
@@ -41,10 +38,6 @@ def test_yolov5_320x320(test_device, size):
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(test_device, variant, size):
-    # env vars needed to support 640x640 yolov5 working
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
 
@@ -73,9 +66,6 @@ def test_yolov5_640x640(test_device, size):
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(test_device, variant, size):
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     name = "yolov5" + size
     model = download_model(torch.hub.load, variant, name, pretrained=True)
     input_shape = (1, 3, 480, 480)
@@ -102,10 +92,6 @@ def test_yolov5_480x480(test_device, size):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_yolov5_1280x1280(test_device):
-
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     model = download_model(torch.hub.load, "ultralytics/yolov5", "yolov5s", pretrained=True)
 
     input_shape = (1, 3, 1280, 1280)

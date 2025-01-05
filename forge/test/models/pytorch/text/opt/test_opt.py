@@ -18,9 +18,6 @@ def test_opt_causal_lm(variant, test_device):
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     config = OPTConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
@@ -44,7 +41,7 @@ def test_opt_causal_lm(variant, test_device):
     module_name = build_module_name(framework="pt", model="opt", variant=variant, task="causal_lm")
     compiled_model = forge.compile(
         model,
-        sample_inputs=inputs,
+        inputs,
         module_name,
     )
 
@@ -57,10 +54,6 @@ def test_opt_qa(variant, test_device):
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
-
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     model = download_model(OPTForQuestionAnswering.from_pretrained, variant, torchscript=True)
 
@@ -81,7 +74,7 @@ def test_opt_qa(variant, test_device):
     module_name = build_module_name(framework="pt", model="opt", variant=variant, task="qa")
     compiled_model = forge.compile(
         model,
-        sample_inputs=inputs,
+        inputs,
         module_name,
     )
 
@@ -90,9 +83,6 @@ def test_opt_qa(variant, test_device):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_sequence_classification(variant, test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.POST_INITIAL_GRAPH_PASS
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -118,6 +108,6 @@ def test_opt_sequence_classification(variant, test_device):
     module_name = build_module_name(framework="pt", model="opt", variant=variant, task="sequence_classification")
     compiled_model = forge.compile(
         model,
-        sample_inputs=inputs,
+        inputs,
         module_name,
     )

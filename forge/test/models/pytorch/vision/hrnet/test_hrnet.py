@@ -25,10 +25,6 @@ torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 def generate_model_hrnet_imgcls_osmr_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     """
     models = [
@@ -95,10 +91,6 @@ def test_hrnet_osmr_pytorch(test_device, variant):
 
 
 def generate_model_hrnet_imgcls_timm_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     """
     default_cfgs = {

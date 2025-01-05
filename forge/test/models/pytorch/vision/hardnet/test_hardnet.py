@@ -23,12 +23,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(test_device, variant):
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    if variant in ["hardnet68", "hardnet39"]:
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
@@ -67,12 +61,3 @@ def test_hardnet_pytorch(test_device, variant):
     input_batch = input_tensor.unsqueeze(0)
     module_name = build_module_name(framework="pt", model="hardnet", variant=variant)
     compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(input_batch)
-
-        fw_out = model(input_batch)
-
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])

@@ -22,11 +22,6 @@ text2 = "a bunch of cats laying on a [MASK]."
 
 
 def generate_model_vilt_question_answering_hf_pytorch(variant):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Set model configurations
     config = ViltConfig.from_pretrained(variant)
     config_dict = config.to_dict()

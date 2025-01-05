@@ -14,10 +14,6 @@ from test.models.utils import build_module_name
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(test_device, variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     model = download_model(ptcv_get_model, variant, pretrained=True)
     image_tensor = get_image()
@@ -41,10 +37,6 @@ def test_vovnet_osmr_pytorch(variant, test_device):
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch(test_device, variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet39)
     return model, [image_tensor], {}
@@ -64,10 +56,6 @@ def test_vovnet_v1_39_stigma_pytorch(test_device, enable_default_dram_parameters
 
 
 def generate_model_vovnet57_imgcls_stigma_pytorch(test_device, variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet57)
 
@@ -87,9 +75,6 @@ def test_vovnet_v1_57_stigma_pytorch(test_device):
 
 def generate_model_vovnet_imgcls_timm_pytorch(test_device, variant):
     model, image_tensor = download_model(preprocess_timm_model, variant)
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.CONSTEVAL_GRAPH
 
     return model, [image_tensor], {}
 

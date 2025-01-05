@@ -23,10 +23,6 @@ from test.models.utils import build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load BlazePose Detector
     pose_detector = BlazePose()
     pose_detector.load_weights("mediapipepytorch/blazepose.pth")
@@ -46,10 +42,6 @@ def test_blazepose_detector_pytorch(test_device):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
@@ -61,11 +53,6 @@ def test_blazepose_regressor_pytorch(test_device):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(test_device):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
     palm_detector.load_weights("mediapipepytorch/blazepalm.pth")
@@ -86,11 +73,6 @@ def test_blaze_palm_pytorch(test_device):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(test_device):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load BlazePalm Detector
     hand_regressor = BlazeHandLandmark()
     hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")

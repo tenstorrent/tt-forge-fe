@@ -22,8 +22,6 @@ def test_gpt2_text_gen(test_device):
     config = GPT2Config(**config_dict)
     model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-
     # Wrapper to get around past key values
     class Wrapper(torch.nn.Module):
         def __init__(self, model):

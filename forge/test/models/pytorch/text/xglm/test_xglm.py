@@ -15,10 +15,6 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(variant, test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False

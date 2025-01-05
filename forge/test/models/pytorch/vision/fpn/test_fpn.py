@@ -11,9 +11,6 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_fpn_pytorch(test_device):
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load FPN model
     model = FPNWrapper()
 

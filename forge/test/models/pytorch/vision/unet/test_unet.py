@@ -20,10 +20,6 @@ from test.models.utils import build_module_name
 def generate_model_unet_imgseg_osmr_pytorch(variant):
     # Also, golden test segfaults when pushing params to golden: tenstorrent/forge#637
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     model = download_model(ptcv_get_model, variant, pretrained=False)
 
     img_tensor = x = torch.randn(1, 3, 224, 224)
@@ -73,10 +69,6 @@ def get_imagenet_sample():
 def test_unet_holocron_pytorch(test_device):
     from holocron.models.segmentation.unet import unet_tvvgg11
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
-
     model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
@@ -85,10 +77,6 @@ def test_unet_holocron_pytorch(test_device):
 
 
 def generate_model_unet_imgseg_smp_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # encoder_name = "vgg19"
     encoder_name = "resnet101"
     # encoder_name = "vgg19_bn"
@@ -126,10 +114,6 @@ def test_unet_qubvel_pytorch(test_device):
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     model = download_model(
         torch.hub.load,
         "mateuszbuda/brain-segmentation-pytorch",

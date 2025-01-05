@@ -33,10 +33,6 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_fuyu8b(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     variant = "adept/fuyu-8b"
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()

@@ -23,11 +23,6 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_pytorch(variant, test_device):
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
 
@@ -74,11 +69,6 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_pytorch(variant, test_device):
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # prepare model
     if variant == "ddrnet23s_cityscapes":
         model = DualResNet(

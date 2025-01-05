@@ -22,11 +22,6 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 def test_monodepth2(variant):
-
-    # PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # prepare model and input
     download_model(variant)
     model, height, width = load_model(variant)

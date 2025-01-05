@@ -17,10 +17,6 @@ from test.models.utils import build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_torchhub(test_device):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
     framework_model.eval()
@@ -52,10 +48,6 @@ def test_alexnet_torchhub(test_device):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_alexnet_osmr(test_device):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
-
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
     framework_model.eval()

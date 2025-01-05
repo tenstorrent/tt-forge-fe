@@ -10,7 +10,6 @@ import forge
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     stable_diffusion_preprocessing,
-    initialize_compiler_overrides,
     denoising_loop,
     stable_diffusion_postprocessing,
 )
@@ -25,9 +24,6 @@ def test_stable_diffusion_pytorch(variant="CompVis/stable-diffusion-v1-4", batch
 
     # Load model
     pipe = StableDiffusionPipeline.from_pretrained(variant)
-
-    # Initialize Model
-    initialize_compiler_overrides()
 
     # Sample prompt
     prompt = "An image of a cat"

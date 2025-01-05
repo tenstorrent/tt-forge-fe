@@ -30,10 +30,6 @@ def test_gptneo_causal_lm(variant, test_device):
     # Set random seed for repeatability
     torch.manual_seed(42)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Load tokenizer and model
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,
     # EleutherAI/gpt-neo-2.7B
@@ -80,10 +76,6 @@ def test_gptneo_sequence_classification(variant, test_device):
     # Load tokenizer and model from HuggingFace
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,
     # EleutherAI/gpt-neo-2.7B
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token

@@ -43,10 +43,6 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(variant, test_device):
-
-    # Configuration
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -102,9 +98,6 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(variant, test_device):
-    # Configuration
-    compiler_cfg = forge.config._get_global_compiler_config()
-
     # Load model
     if variant == "efficientnet_b0":
         framework_model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1)

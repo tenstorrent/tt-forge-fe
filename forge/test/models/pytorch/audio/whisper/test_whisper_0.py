@@ -36,10 +36,6 @@ variants = [
 
 
 def generate_model_whisper_congen_hf_pytorch(variant):
-    # Configurations
-    compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.POST_INITIAL_GRAPH_PASS
-
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
             super().__init__()
@@ -92,9 +88,6 @@ def generate_model_whisper_congen_hf_pytorch(variant):
     decoder_input_ids = decoder_input_ids.to(torch.int32)
     encoder_outputs = framework_model.model.model.encoder(input_features)[0].detach()
     encoder_outputs = encoder_outputs.to(torch.float32)
-
-    # Sanity run
-    out = framework_model(decoder_input_ids, encoder_outputs)
 
     return framework_model, [decoder_input_ids, encoder_outputs]
 

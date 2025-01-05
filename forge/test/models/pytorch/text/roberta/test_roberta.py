@@ -16,9 +16,6 @@ def test_roberta_masked_lm(test_device):
     tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
     model = download_model(AutoModelForMaskedLM.from_pretrained, "xlm-roberta-base")
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # Input processing
     text = "Hello I'm a <mask> model."
     input_tokens = tokenizer.encode(
@@ -44,9 +41,6 @@ def test_roberta_sentiment_pytorch(test_device):
     model = download_model(
         AutoModelForSequenceClassification.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment"
     )
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Example from multi-nli validation set
     text = """Great road trip views! @ Shartlesville, Pennsylvania"""
