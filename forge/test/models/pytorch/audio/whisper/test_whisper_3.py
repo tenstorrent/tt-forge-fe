@@ -33,9 +33,6 @@ class Wrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(
-    reason='RuntimeError: TT_ASSERT @ /tt-forge-fe/forge/csrc/passes/commute_utils.cpp:1103: reshape->op_name() == "reshape"'
-)
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
 def test_whisper_large_v3_speech_translation(variant, record_property):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant)

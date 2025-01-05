@@ -79,18 +79,16 @@ def test_t5_loop_tiny_tile(test_device):
 
 
 variants = [
-    pytest.param("t5-small", id="t5-small", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
-    pytest.param("t5-base", id="t5-base", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
-    pytest.param("t5-large", id="t5-large", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
+    pytest.param("t5-small", id="t5-small"),
+    pytest.param("t5-base", id="t5-base"),
+    pytest.param("t5-large", id="t5-large"),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
-        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
     ),
     pytest.param(
         "google/flan-t5-base",
         id="google_flan_t5_base",
-        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
     ),
     pytest.param("google/flan-t5-large", id="google_flan_t5_large"),
 ]

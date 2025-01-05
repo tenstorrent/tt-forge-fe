@@ -165,7 +165,6 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(test_device, variant):
     return model, [image_tensor], {}
 
 
-# @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_mobilenetv2_timm(test_device):

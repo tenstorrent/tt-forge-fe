@@ -94,7 +94,6 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="pcc=0.9498278562793674")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(variant, record_property):
     module_name = build_module_name(framework="pt", model="vilt", variant=variant, task="mlm", source="hf")

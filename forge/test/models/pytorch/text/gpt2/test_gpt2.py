@@ -13,7 +13,6 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got BFloat16")
 def test_gpt2_text_gen(test_device):
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained("gpt2")

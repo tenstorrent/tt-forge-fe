@@ -25,16 +25,10 @@ variants = [
     pytest.param(
         "efficientnet_b0",
         id="efficientnet_b0",
-        marks=pytest.mark.xfail(
-            reason="Runtime Error: Statically allocated circular buffers on core range [(x=0,y=0) - (x=6,y=4)] grow to 1942080 B which is beyond max L1 size of 1499136 B"
-        ),
     ),
     pytest.param(
         "efficientnet_b4",
         id="efficientnet_b4",
-        marks=pytest.mark.xfail(
-            reason="Runtime Error: Statically allocated circular buffers in program 823 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]."
-        ),
     ),
     # pytest.param("hf_hub:timm/efficientnet_b0.ra_in1k", id="hf_hub_timm_efficientnet_b0_ra_in1k"),
     # pytest.param("hf_hub:timm/efficientnet_b4.ra2_in1k", id="hf_hub_timm_efficientnet_b4_ra2_in1k"),
@@ -107,7 +101,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail(reason="Runtime Error: Reshape Operation Fails Due to Mismatched Tensor Volume")
 def test_efficientnet_torchvision(variant, test_device):
     # Configuration
     compiler_cfg = forge.config._get_global_compiler_config()

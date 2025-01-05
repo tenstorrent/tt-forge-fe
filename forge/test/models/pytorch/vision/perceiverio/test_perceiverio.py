@@ -40,7 +40,6 @@ variants = [
     pytest.param(
         "deepmind/vision-perceiver-fourier",
         id="deepmind/vision-perceiver-fourier",
-        marks=pytest.mark.xfail(reason="Runtime error: Incompatible dimensions 288 and 261"),
     ),
 ]
 

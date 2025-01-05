@@ -22,7 +22,6 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="RuntimeError: Tensor 41 - data type mismatch: expected Float32, got BFloat16")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(variant, record_property):
     module_name = build_module_name(framework="pt", model="codegen", variant=variant)

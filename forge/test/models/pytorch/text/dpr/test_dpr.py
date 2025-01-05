@@ -22,7 +22,6 @@ variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_context_encoder_pytorch(variant, record_property):
     module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="context_encoder")
@@ -64,7 +63,6 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(variant, record_property):
     module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="question_encoder")
@@ -106,7 +104,6 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(variant, record_property):
     module_name = build_module_name(framework="pt", model="dpr", variant=variant, task="reader")

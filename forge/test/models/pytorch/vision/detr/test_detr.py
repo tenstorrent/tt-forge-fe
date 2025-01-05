@@ -18,7 +18,6 @@ from test.models.utils import build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection(variant):
 
@@ -38,7 +37,6 @@ def test_detr_detection(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="AssertionError: TVM einsum decomposition does not support bqnc,bnchw->bqnhw yet.")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(variant):
     # Load the model
@@ -47,9 +45,6 @@ def test_detr_segmentation(variant):
     # Preprocess the image for the model
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     input_batch = preprocess_input_data(image_url)
-
-    # since it hangs on error adding xfail here
-    pytest.xfail(reason="AssertionError: TVM einsum decomposition does not support bqnc,bnchw->bqnhw yet.")
 
     # Compiler test
     module_name = build_module_name(framework="pt", model="detr", variant=variant, task="segmentation")

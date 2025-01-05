@@ -14,12 +14,8 @@ from test.models.utils import build_module_name
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
     pytest.param("hardnet85", id="hardnet85"),
-    pytest.param(
-        "hardnet68ds", id="hardnet68ds", marks=pytest.mark.xfail(reason="Runtime error: Invalid arguments to reshape")
-    ),
-    pytest.param(
-        "hardnet39ds", id="hardnet39ds", marks=pytest.mark.xfail(reason="Runtime error: Invalid arguments to reshape")
-    ),
+    pytest.param("hardnet68ds", id="hardnet68ds"),
+    pytest.param("hardnet39ds", id="hardnet39ds"),
 ]
 
 

@@ -20,9 +20,6 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.model_analysis
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat interleave"
-)
 @pytest.mark.nightly
 def test_qwen_response(variant):
     """

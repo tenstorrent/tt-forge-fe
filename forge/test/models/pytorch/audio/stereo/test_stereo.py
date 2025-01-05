@@ -22,7 +22,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-# @pytest.mark.xfail(reason="[optimized_graph] Trying to access element outside of dimensions: 3")
 def test_stereo(variant, record_property):
     # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
     module_name = build_module_name(framework="pt", model="stereo", variant=variant)

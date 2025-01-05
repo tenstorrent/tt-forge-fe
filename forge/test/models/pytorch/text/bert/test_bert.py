@@ -39,7 +39,6 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_bert_masked_lm_pytorch(record_property):
     variant = "bert-base-uncased"
 
@@ -94,7 +93,6 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_bert_question_answering_pytorch(record_property):
     variant = "bert-large-cased-whole-word-masking-finetuned-squad"
 
@@ -183,7 +181,6 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 def test_bert_token_classification_pytorch(record_property):
     variant = "dbmdz/bert-large-cased-finetuned-conll03-english"
 

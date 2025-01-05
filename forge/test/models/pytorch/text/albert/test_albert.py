@@ -15,7 +15,6 @@ variants = ["v1", "v2"]
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_masked_lm_pytorch(size, variant, record_property):
@@ -61,7 +60,6 @@ variants = ["v1", "v2"]
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_token_classification_pytorch(size, variant, record_property):
