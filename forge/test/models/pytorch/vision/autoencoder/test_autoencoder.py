@@ -18,6 +18,8 @@ from test.models.utils import build_module_name
 def test_conv_ae_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="conv_autoencoder")
 
+    record_forge_property("module_name", module_name)
+
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -43,6 +45,8 @@ def test_conv_ae_pytorch(record_forge_property):
 @pytest.mark.model_analysis
 def test_linear_ae_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="linear_autoencoder")
+
+    record_forge_property("module_name", module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.

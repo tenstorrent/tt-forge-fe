@@ -17,6 +17,8 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 def test_xglm_causal_lm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="xglm", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False

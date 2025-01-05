@@ -37,6 +37,8 @@ varaints = [
 def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="mlp_mixer", variant=variant, source="timm")
 
+    record_forge_property("module_name", module_name)
+
     model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
     transform = create_transform(**config)

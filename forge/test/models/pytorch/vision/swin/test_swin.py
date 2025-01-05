@@ -19,6 +19,8 @@ from test.models.utils import build_module_name
 def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="swin", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     # model = SwinForImageClassification.from_pretrained("microsoft/swin-tiny-patch4-window7-224", torchscript=True)
@@ -40,6 +42,8 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
 def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="swin", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
 
@@ -56,6 +60,8 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
 def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="swin", variant=variant, task="imgcls")
 
+    record_forge_property("module_name", module_name)
+
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
 
@@ -71,6 +77,8 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="swin", variant=variant, task="masked")
+
+    record_forge_property("module_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)

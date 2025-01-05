@@ -44,6 +44,8 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 def test_mobilenetv3_basic(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="mobilenetv3", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
         variant,
     )
@@ -94,6 +96,8 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="mobilnetv3", source="timm", variant=variant)
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,

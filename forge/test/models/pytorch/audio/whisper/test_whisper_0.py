@@ -111,6 +111,8 @@ def test_whisper(record_forge_property, variant):
 def test_whisper_pipeline(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="pipeline")
 
+    record_forge_property("module_name", module_name)
+
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     # Configurations
@@ -170,6 +172,8 @@ def test_whisper_pipeline(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported")
 def test_whisper_encoder(record_forge_property, test_device, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="encoder")
+
+    record_forge_property("module_name", module_name)
 
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
 

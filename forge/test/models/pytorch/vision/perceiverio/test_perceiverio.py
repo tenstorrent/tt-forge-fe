@@ -50,6 +50,8 @@ variants = [
 def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="perceiverio", variant=variant, task="imgcls")
 
+    record_forge_property("module_name", module_name)
+
     # Sample Image
     pixel_values = get_sample_data(variant)
 

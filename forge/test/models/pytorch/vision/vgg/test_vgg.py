@@ -30,6 +30,8 @@ variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
 def test_vgg_osmr_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="vgg", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     model = download_model(ptcv_get_model, variant, pretrained=True)
     model.eval()
 
@@ -60,6 +62,8 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
 @pytest.mark.model_analysis
 def test_vgg_19_hf_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="vgg", variant="19", source="hf")
+
+    record_forge_property("module_name", module_name)
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -120,6 +124,8 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
 
     module_name = build_module_name(framework="pt", model="vgg", variant="vgg19_bn", source="timm")
 
+    record_forge_property("module_name", module_name)
+
     torch.multiprocessing.set_sharing_strategy("file_system")
     model, image_tensor = download_model(preprocess_timm_model, variant)
 
@@ -130,6 +136,8 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
 @pytest.mark.model_analysis
 def test_vgg_bn19_torchhub_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="vgg", variant="vgg19_bn", source="torchhub")
+
+    record_forge_property("module_name", module_name)
 
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     model.eval()

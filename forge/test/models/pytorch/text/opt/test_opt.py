@@ -17,6 +17,8 @@ variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 def test_opt_causal_lm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="opt", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
 
@@ -53,6 +55,8 @@ def test_opt_causal_lm(record_forge_property, variant):
 def test_opt_qa(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="opt", variant=variant, task="qa")
 
+    record_forge_property("module_name", module_name)
+
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
@@ -86,6 +90,8 @@ def test_opt_qa(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_sequence_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="opt", variant=variant, task="seqcls")
+
+    record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"

@@ -20,6 +20,8 @@ from test.models.utils import build_module_name
 def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="tri_basic_2", task="semseg")
 
+    record_forge_property("module_name", module_name)
+
     # Sample Input
     image_w = 800
     image_h = 800

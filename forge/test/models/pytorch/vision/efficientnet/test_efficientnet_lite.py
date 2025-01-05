@@ -17,6 +17,8 @@ from test.models.utils import build_module_name
 def test_efficientnet_lite_0_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_0")
 
+    record_forge_property("module_name", module_name)
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -40,6 +42,8 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_efficientnet_lite_1_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_1")
+
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -67,6 +71,8 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
 def test_efficientnet_lite_2_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_2")
 
+    record_forge_property("module_name", module_name)
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -92,6 +98,8 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
 def test_efficientnet_lite_3_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_3")
 
+    record_forge_property("module_name", module_name)
+
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
     model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -116,6 +124,8 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_efficientnet_lite_4_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="efficientnet", variant="lite_4")
+
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"

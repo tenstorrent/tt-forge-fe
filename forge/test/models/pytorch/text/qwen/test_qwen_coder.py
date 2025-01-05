@@ -24,6 +24,8 @@ variants = [
 def test_qwen_clm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="qwen_coder", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     # Load model and tokenizer
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
     model.config.return_dict = False

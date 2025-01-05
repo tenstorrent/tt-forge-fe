@@ -16,6 +16,8 @@ from test.models.utils import build_module_name
 def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
     module_name = build_module_name(framework="pt", model="mobilenet", variant="ssd")
 
+    record_forge_property("module_name", module_name)
+
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"
     class_names = [name.strip() for name in open(label_path).readlines()]

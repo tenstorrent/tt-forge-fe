@@ -16,6 +16,8 @@ from test.models.utils import build_module_name
 def test_monodle_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="monodle")
 
+    record_forge_property("module_name", module_name)
+
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
     image = Image.open(requests.get(url, stream=True).raw)

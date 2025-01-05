@@ -16,6 +16,8 @@ def test_qwen1_5_causal_lm(record_forge_property):
 
     module_name = build_module_name(framework="pt", model="qwen1.5", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)
     config.use_cache = False
@@ -64,6 +66,8 @@ def test_qwen1_5_chat(record_forge_property):
     variant = "Qwen/Qwen1.5-0.5B-Chat"
 
     module_name = build_module_name(framework="pt", model="qwen1.5", variant=variant)
+
+    record_forge_property("module_name", module_name)
 
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)

@@ -23,6 +23,8 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 def test_phi3_causal_lm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -63,6 +65,8 @@ def test_phi3_causal_lm(record_forge_property, variant):
 def test_phi3_token_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="token_cls")
 
+    record_forge_property("module_name", module_name)
+
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -96,6 +100,9 @@ def test_phi3_token_classification(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(record_forge_property, variant):
+    module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="seqcls")
+
+    record_forge_property("module_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -117,7 +124,6 @@ def test_phi3_sequence_classification(record_forge_property, variant):
     inputs = tokenizer(input_prompt, return_tensors="pt")
     inputs = [inputs["input_ids"]]
 
-    module_name = build_module_name(framework="pt", model="phi3", variant=variant, task="seqcls")
     compiled_model = forge.compile(model, inputs, module_name)
     co_out = compiled_model(*inputs)
 

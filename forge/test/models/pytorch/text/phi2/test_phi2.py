@@ -23,6 +23,8 @@ variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 def test_phi2_clm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -71,6 +73,8 @@ def test_phi2_clm(record_forge_property, variant):
 def test_phi2_token_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="token_cls")
 
+    record_forge_property("module_name", module_name)
+
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -109,6 +113,8 @@ def test_phi2_token_classification(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="phi2", variant=variant, task="seqcls")
+
+    record_forge_property("module_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

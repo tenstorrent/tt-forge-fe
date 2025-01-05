@@ -16,6 +16,8 @@ def test_roberta_masked_lm(record_forge_property):
 
     module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="mlm")
 
+    record_forge_property("module_name", module_name)
+
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
@@ -42,6 +44,8 @@ def test_roberta_sentiment_pytorch(record_forge_property):
     variant = "cardiffnlp/twitter-roberta-base-sentiment"
 
     module_name = build_module_name(framework="pt", model="roberta", variant=variant, task="sentiment")
+
+    record_forge_property("module_name", module_name)
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

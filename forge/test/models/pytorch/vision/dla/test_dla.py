@@ -43,6 +43,8 @@ variants = list(variants_func.keys())
 def test_dla_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="dla", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     func = variants_func[variant]
 
     # Load data sample

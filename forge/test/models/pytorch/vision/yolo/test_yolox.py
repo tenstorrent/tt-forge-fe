@@ -40,6 +40,8 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 def test_yolox_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="yolox", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # prepare model
     weight_name = f"{variant}.pth"
     url = f"https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/{weight_name}"

@@ -29,6 +29,8 @@ variants = [
 def test_gptneo_causal_lm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gptneo", variant=variant, task="clm")
 
+    record_forge_property("module_name", module_name)
+
     # Set random seed for repeatability
     torch.manual_seed(42)
 
@@ -75,6 +77,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_sequence_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gptneo", variant=variant, task="seq_cls")
+
+    record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,

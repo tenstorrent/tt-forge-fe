@@ -26,6 +26,8 @@ variants = ["ghostnet_100"]
 def test_ghostnet_timm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="ghostnet", variant=variant, source="timm")
 
+    record_forge_property("module_name", module_name)
+
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()

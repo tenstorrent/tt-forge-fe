@@ -41,6 +41,8 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 def test_xception_timm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="xception", variant=variant, source="timm")
 
+    record_forge_property("module_name", module_name)
+
     (model, inputs,) = generate_model_xception_imgcls_timm(
         variant,
     )

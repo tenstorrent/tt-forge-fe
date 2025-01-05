@@ -56,6 +56,8 @@ variants = [
 def test_gemma_2b_rotary_embedding(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rotary_embedding")
 
+    record_forge_property("module_name", module_name)
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -96,6 +98,8 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 def test_gemma_2b_rms_norm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="rms_norm")
 
+    record_forge_property("module_name", module_name)
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -133,6 +137,8 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="attention")
+
+    record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
     torch.manual_seed(42)
@@ -175,6 +181,8 @@ def test_gemma_2b_attention(record_forge_property, variant):
 def test_gemma_2b_mlp(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, task="mlp")
 
+    record_forge_property("module_name", module_name)
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -213,6 +221,8 @@ def test_gemma_2b_mlp(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_single_decoder(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="single_decoder")
+
+    record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
     torch.manual_seed(42)
@@ -255,6 +265,8 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
 def test_gemma_2b(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -293,6 +305,8 @@ def test_gemma_2b(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="gen")
+
+    record_forge_property("module_name", module_name)
 
     # Random seed for reproducibility
     torch.manual_seed(42)
@@ -353,6 +367,8 @@ def test_gemma_2b_gen(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="gemma", variant=variant, suffix="gen_1x1")
+
+    record_forge_property("module_name", module_name)
 
     # Random seed for reproducibility
     torch.manual_seed(42)

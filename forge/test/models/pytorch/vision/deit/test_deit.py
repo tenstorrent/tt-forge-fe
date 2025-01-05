@@ -44,6 +44,8 @@ variants = [
 def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="deit", variant=variant, task="imgcls")
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )

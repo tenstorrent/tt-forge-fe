@@ -37,6 +37,8 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch():
 def test_yolov3_tiny_holli_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="yolov_3", variant="tiny_holli_pytorch", task="imgcls")
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
     compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
 
@@ -64,6 +66,8 @@ def generate_model_yoloV3_imgcls_holli_pytorch():
 @pytest.mark.nightly
 def test_yolov3_holli_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="yolo_v3", variant="holli_pytorch", task="imgcls")
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch()
 

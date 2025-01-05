@@ -37,6 +37,8 @@ def test_fuyu8b(record_forge_property):
 
     module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
@@ -84,8 +86,7 @@ def test_fuyu8b_past_cache(record_forge_property, test_device):
 
     module_name = build_module_name(framework="pt", model="fuyu", variant=variant)
 
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip("Still under development")
+    record_forge_property("module_name", module_name)
 
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

@@ -20,6 +20,8 @@ from test.models.utils import build_module_name
 def test_fchardnet(record_forge_property):
     module_name = build_module_name(framework="pt", model="fchardnet")
 
+    record_forge_property("module_name", module_name)
+
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
     img = Image.open(image_path)

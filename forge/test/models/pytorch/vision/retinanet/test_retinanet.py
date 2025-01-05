@@ -29,6 +29,8 @@ variants = [
 def test_retinanet(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="retinanet", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
     local_zip_path = f"{variant}.zip"

@@ -85,6 +85,8 @@ variants = [
 def test_hrnet_osmr_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="hrnet", variant=variant, source="osmr")
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
@@ -148,6 +150,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="hrnet", variant=variant, source="timm")
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,

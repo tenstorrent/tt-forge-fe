@@ -32,6 +32,8 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="unet", variant="cityscape", source="osmr")
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
         "unet_cityscapes",
     )
@@ -69,6 +71,8 @@ def get_imagenet_sample():
 @pytest.mark.nightly
 def test_unet_holocron_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="unet", variant="holocron")
+
+    record_forge_property("module_name", module_name)
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -109,6 +113,8 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 @pytest.mark.model_analysis
 def test_unet_qubvel_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="unet", variant="qubvel")
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
         None,
@@ -155,6 +161,8 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 @pytest.mark.model_analysis
 def test_unet_torchhub_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="unet")
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",

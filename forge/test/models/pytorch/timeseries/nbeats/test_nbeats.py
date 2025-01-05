@@ -22,6 +22,8 @@ from test.models.utils import build_module_name
 def test_nbeats_with_seasonality_basis(record_forge_property):
     module_name = build_module_name(framework="pt", model="nbeats", variant="seasionality_basis")
 
+    record_forge_property("module_name", module_name)
+
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithSeasonalityBasis(
@@ -49,6 +51,8 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
 def test_nbeats_with_generic_basis(record_forge_property):
     module_name = build_module_name(framework="pt", model="nbeats", variant="generic_basis")
 
+    record_forge_property("module_name", module_name)
+
     x, x_mask = get_electricity_dataset_input()
 
     pytorch_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
@@ -69,6 +73,8 @@ def test_nbeats_with_generic_basis(record_forge_property):
 @pytest.mark.model_analysis
 def test_nbeats_with_trend_basis(record_forge_property):
     module_name = build_module_name(framework="pt", model="nbeats", variant="trend_basis")
+
+    record_forge_property("module_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 

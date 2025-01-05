@@ -25,6 +25,8 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 def test_pidnet_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="pidnet", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
     image = cv2.imread(image_path, cv2.IMREAD_COLOR)

@@ -13,6 +13,8 @@ from test.models.utils import build_module_name
 def test_fpn_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="fpn", source="torchvision")
 
+    record_forge_property("module_name", module_name)
+
     # Load FPN model
     model = FPNWrapper()
 

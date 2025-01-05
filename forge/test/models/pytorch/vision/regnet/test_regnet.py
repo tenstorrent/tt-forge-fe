@@ -15,6 +15,8 @@ from test.models.utils import build_module_name
 def test_regnet(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="regnet", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # Load RegNet model
     framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040")
 
@@ -33,6 +35,8 @@ def test_regnet(record_forge_property, variant):
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet_img_classification(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="regnet", variant=variant, task="imgcls")
+
+    record_forge_property("module_name", module_name)
 
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")

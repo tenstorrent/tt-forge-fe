@@ -20,6 +20,8 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 def test_yolo_v6_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="yolo_v6", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
     weights = f"{variant}.pt"

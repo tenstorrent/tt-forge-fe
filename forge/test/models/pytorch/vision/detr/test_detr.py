@@ -22,6 +22,8 @@ from test.models.utils import build_module_name
 def test_detr_detection(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="detr", variant=variant, task="detection")
 
+    record_forge_property("module_name", module_name)
+
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
 
@@ -40,6 +42,8 @@ def test_detr_detection(record_forge_property, variant):
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="detr", variant=variant, task="segmentation")
+
+    record_forge_property("module_name", module_name)
 
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)

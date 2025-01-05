@@ -27,6 +27,8 @@ variants = ["densenet161_bts", "densenet121_bts"]
 def test_bts_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="bts", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])

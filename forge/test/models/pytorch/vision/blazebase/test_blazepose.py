@@ -25,6 +25,8 @@ from test.models.utils import build_module_name
 def test_blazepose_detector_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="blazepose", task="detector")
 
+    record_forge_property("module_name", module_name)
+
     # Load BlazePose Detector
     pose_detector = BlazePose()
     pose_detector.load_weights("mediapipepytorch/blazepose.pth")
@@ -45,6 +47,8 @@ def test_blazepose_detector_pytorch(record_forge_property):
 def test_blazepose_regressor_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="blazepose", task="regressor")
 
+    record_forge_property("module_name", module_name)
+
     # Load BlazePose Landmark Regressor
     pose_regressor = BlazePoseLandmark()
     pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
@@ -56,6 +60,8 @@ def test_blazepose_regressor_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="blazepose", task="palm")
+
+    record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
     palm_detector = BlazePalm()
@@ -77,6 +83,8 @@ def test_blaze_palm_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="blazepose", task="hand")
+
+    record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
     hand_regressor = BlazeHandLandmark()

@@ -15,6 +15,8 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property):
 
     module_name = build_module_name(framework="pt", model="squeezebert", variant=variant, task="seqcls")
 
+    record_forge_property("module_name", module_name)
+
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
     model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")

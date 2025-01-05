@@ -16,6 +16,8 @@ from test.models.utils import build_module_name
 def test_gpt2_text_gen(record_forge_property):
     module_name = build_module_name(framework="pt", model="gpt2", task="text_gen")
 
+    record_forge_property("module_name", module_name)
+
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained("gpt2")
     config_dict = config.to_dict()
@@ -67,6 +69,8 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(record_forge_property):
     module_name = build_module_name(framework="pt", model="gpt2", task="text_gen", suffix="past_cache")
+
+    record_forge_property("module_name", module_name)
 
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_subgraphs = True

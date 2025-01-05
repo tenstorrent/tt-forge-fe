@@ -120,6 +120,7 @@ def test_distilbert_token_classification_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="distilbert", variant=model_ckpt, task="token_cls")
 
     record_forge_property("module_name", module_name)
+
     # Load DistilBERT tokenizer and model from HuggingFace
     model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)

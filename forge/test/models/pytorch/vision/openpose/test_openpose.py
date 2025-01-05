@@ -54,6 +54,8 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
 def test_openpose_basic(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="openpose", variant=variant, task="basic")
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
@@ -82,6 +84,8 @@ variants = [
 @pytest.mark.nightly
 def test_openpose_osmr(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="openpose", variant=variant, source="osmr")
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,

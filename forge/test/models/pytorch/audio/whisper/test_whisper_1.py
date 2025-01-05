@@ -47,6 +47,8 @@ variants = [
 def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="pipeline")
 
+    record_forge_property("module_name", module_name)
+
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
     model, inputs, other = generate_model_whisper_decoder_past_cache(variant)
     compile_inputs = other["compile_inputs"]
@@ -81,6 +83,8 @@ def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_enc_dec(record_forge_property, test_device, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="enc_dec")
+
+    record_forge_property("module_name", module_name)
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
@@ -312,6 +316,8 @@ def test_whisper_enc_dec(record_forge_property, test_device, variant):
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
     module_name = build_module_name(framework="pt", model="whisper", variant=variant, suffix="enc_dec_pipeline")
+
+    record_forge_property("module_name", module_name)
 
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
     compiler_cfg = _get_global_compiler_config()

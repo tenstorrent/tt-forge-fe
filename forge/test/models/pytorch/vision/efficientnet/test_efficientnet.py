@@ -45,6 +45,8 @@ variants = [
 def test_efficientnet_timm(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="efficientnet", variant=variant, source="timm")
 
+    record_forge_property("module_name", module_name)
+
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -100,6 +102,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="efficientnet", variant=variant, source="torchvision")
+
+    record_forge_property("module_name", module_name)
 
     # Load model
     if variant == "efficientnet_b0":

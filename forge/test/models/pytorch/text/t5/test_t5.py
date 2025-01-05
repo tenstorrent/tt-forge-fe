@@ -19,6 +19,8 @@ from test.models.utils import build_module_name
 def test_t5_loop_tiny_tile(record_forge_property):
     module_name = build_module_name(framework="pt", model="t5", suffix="loop_tiny_tile")
 
+    record_forge_property("module_name", module_name)
+
     import os
 
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
@@ -95,6 +97,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="t5", variant=variant, task="generation")
+
+    record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -179,6 +183,8 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
     module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="past_cache_enc_dec")
+
+    record_forge_property("module_name", module_name)
 
     import os
 
@@ -342,6 +348,8 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.skip(reason="Redundant")
 def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_device):
     module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="past_cache_forge_pipe")
+
+    record_forge_property("module_name", module_name)
 
     import os
 
@@ -680,6 +688,8 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 def test_t5_forge_pipeline(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="forge_pipe")
 
+    record_forge_property("module_name", module_name)
+
     # Too slow for post-commit ci
 
     import os
@@ -729,6 +739,8 @@ def test_t5_forge_pipeline(record_forge_property, variant):
 @pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(record_forge_property, test_device):
     module_name = build_module_name(framework="pt", model="t5", variant=variant, suffix="small_tiny_tile")
+
+    record_forge_property("module_name", module_name)
 
     import os
 

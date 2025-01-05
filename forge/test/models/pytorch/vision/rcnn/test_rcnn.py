@@ -22,6 +22,8 @@ from test.models.utils import build_module_name
 def test_rcnn_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="rcnn")
 
+    record_forge_property("module_name", module_name)
+
     # Load Alexnet Model
     model = torchvision.models.alexnet(pretrained=True)
     num_classes = 2

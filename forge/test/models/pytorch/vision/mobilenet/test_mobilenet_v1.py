@@ -32,6 +32,8 @@ def generate_model_mobilenetV1_base_custom_pytorch():
 def test_mobilenetv1_basic(record_forge_property):
     module_name = build_module_name(framework="pt", model="mobilenet_v1", variant="basic")
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
@@ -66,6 +68,8 @@ def test_mobilenetv1_192(record_forge_property):
     variant = "google/mobilenet_v1_0.75_192"
     module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
@@ -90,6 +94,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 def test_mobilenetv1_224(record_forge_property):
     variant = "google/mobilenet_v1_1.0_224"
     module_name = build_module_name(framework="pt", model="mobilnet_v1", variant=variant)
+
+    record_forge_property("module_name", module_name)
 
     model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)

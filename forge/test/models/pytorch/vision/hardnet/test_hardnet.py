@@ -25,6 +25,8 @@ variants = [
 def test_hardnet_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="hardnet", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # load only the model architecture without pre-trained weights.
     model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 

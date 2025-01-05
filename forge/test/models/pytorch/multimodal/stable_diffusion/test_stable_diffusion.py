@@ -23,6 +23,8 @@ def test_stable_diffusion_pytorch(record_forge_property):
 
     module_name = build_module_name(framework="pt", model="stable_diffusion", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     batch_size = 1
 
     # Set inference steps

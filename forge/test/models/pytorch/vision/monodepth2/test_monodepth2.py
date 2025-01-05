@@ -24,6 +24,8 @@ variants = [
 def test_monodepth2(record_forge_property, variant):
     module_name = build_module_name(framework="pt", model="monodepth2", variant=variant)
 
+    record_forge_property("module_name", module_name)
+
     # prepare model and input
     download_model(variant)
     model, height, width = load_model(variant)

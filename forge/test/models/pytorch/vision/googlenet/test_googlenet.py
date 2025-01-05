@@ -17,6 +17,8 @@ from test.models.utils import build_module_name
 def test_googlenet_pytorch(record_forge_property):
     module_name = build_module_name(framework="pt", model="googlenet")
 
+    record_forge_property("module_name", module_name)
+
     # Create Forge module from PyTorch model
     # Two ways to load the same model
     # model = torch.hub.load('pytorch/vision:v0.10.0', 'googlenet', pretrained=True)
