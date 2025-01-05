@@ -5,16 +5,10 @@ from test.utils import download_model
 import forge
 import requests
 import pytest
-import torch
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
-from test.models.pytorch.multimodal.clip.utils.clip_model import (
-    CLIPVisionWrapper,
-    CLIPTextWrapper,
-    CLIPPostProcessingWrapper,
-)
-import os
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.pytorch.multimodal.clip.utils.clip_model import CLIPTextWrapper
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly

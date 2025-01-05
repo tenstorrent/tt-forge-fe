@@ -10,7 +10,7 @@ import torch
 # from diffusers import StableDiffusionPipeline
 # from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 import forge
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 def stable_diffusion_preprocessing(

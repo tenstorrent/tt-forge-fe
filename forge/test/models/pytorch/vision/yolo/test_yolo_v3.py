@@ -4,10 +4,9 @@
 import pytest
 
 from PIL import Image
-import os
 import torch
 import forge
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))

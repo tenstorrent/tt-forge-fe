@@ -6,7 +6,6 @@ import requests
 import pytest
 import torchvision.transforms as transforms
 from PIL import Image
-import os
 from test.models.pytorch.vision.dla.utils.dla_model import (
     dla34,
     dla46_c,
@@ -19,7 +18,7 @@ from test.models.pytorch.vision.dla.utils.dla_model import (
     dla102x2,
     dla169,
 )
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 variants_func = {

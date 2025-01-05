@@ -13,9 +13,7 @@ from transformers import (
     PerceiverForImageClassificationLearned,
     PerceiverForImageClassificationFourier,
 )
-import os
-from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 def get_sample_data(model_name):

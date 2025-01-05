@@ -4,7 +4,7 @@
 import pytest
 import forge
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 # Variants for testing

@@ -8,7 +8,6 @@ import requests
 from datasets import load_dataset
 from PIL import Image
 from transformers import AutoImageProcessor, ViTForImageClassification
-import os
 from test.models.utils import build_module_name, Framework, Task, Source
 
 

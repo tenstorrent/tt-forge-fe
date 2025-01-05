@@ -2,10 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import os
 
 import torch
-from torchvision import transforms
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
@@ -16,7 +14,7 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 
 variants = [

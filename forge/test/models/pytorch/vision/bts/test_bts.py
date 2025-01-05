@@ -8,8 +8,7 @@ import forge
 
 from PIL import Image
 import pytest
-import os
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 # import sys
 

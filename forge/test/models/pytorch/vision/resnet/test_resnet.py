@@ -5,7 +5,6 @@ import pytest
 import requests
 from PIL import Image
 from loguru import logger
-import os
 
 import torch
 
@@ -17,7 +16,7 @@ from timm.data.transforms_factory import create_transform
 
 from test.utils import download_model
 import forge
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 
 def generate_model_resnet_imgcls_hf_pytorch(variant):

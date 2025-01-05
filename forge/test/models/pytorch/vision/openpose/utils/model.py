@@ -8,8 +8,6 @@ from torch import nn
 from PIL import Image
 from torchvision import transforms
 
-import os
-
 
 def get_image_tensor(sample_path):
     input_image = Image.open(sample_path)

@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # STEP 0: import Forge library
-import os
 import pytest
 import timm
 from transformers import ViTImageProcessor, Swinv2Model, Swinv2ForImageClassification, Swinv2ForMaskedImageModeling
@@ -10,7 +9,7 @@ from test.utils import download_model
 import forge
 from forge.verify.verify import verify
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly

@@ -7,9 +7,7 @@ import pytest
 import cv2
 import forge
 import torch
-import sys
-import os
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad

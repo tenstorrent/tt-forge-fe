@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 ## Inception V4
-import os
 import pytest
 
 import torch
@@ -13,7 +12,7 @@ import forge
 
 from test.utils import download_model
 from test.models.pytorch.vision.inception.utils.model_utils import get_image, preprocess_timm_model
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 

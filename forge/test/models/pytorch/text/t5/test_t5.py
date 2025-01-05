@@ -4,14 +4,12 @@
 import pytest
 from test.utils import download_model
 from forge.forgeglobal import TILE_DIM
-from forge import CompileDepth
 import os
 import forge
 import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
-from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly

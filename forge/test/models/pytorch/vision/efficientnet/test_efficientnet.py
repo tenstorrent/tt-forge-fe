@@ -7,7 +7,6 @@ import pytest
 import urllib
 import torch
 from PIL import Image
-import torchvision.models as models
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from loguru import logger
@@ -15,9 +14,8 @@ import forge
 from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4_Weights, EfficientNet_B0_Weights
 from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
-import os
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 

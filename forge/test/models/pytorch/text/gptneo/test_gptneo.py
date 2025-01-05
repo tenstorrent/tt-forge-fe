@@ -3,17 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-import torch
 import forge
 import torch
-from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import (
     AutoTokenizer,
     GPTNeoForCausalLM,
     GPTNeoConfig,
     GPTNeoForSequenceClassification,
 )
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 variants = [

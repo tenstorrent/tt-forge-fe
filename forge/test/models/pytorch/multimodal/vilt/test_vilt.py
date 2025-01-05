@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 from test.utils import download_model
-import os
 import forge
 import requests
 import torch

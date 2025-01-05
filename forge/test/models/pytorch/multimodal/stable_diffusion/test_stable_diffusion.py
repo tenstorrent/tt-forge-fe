@@ -2,18 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 
-import torch
-
-# from diffusers import StableDiffusionPipeline
-# from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
-import forge
-
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     stable_diffusion_preprocessing,
     denoising_loop,
     stable_diffusion_postprocessing,
 )
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.skip(reason="unsupported for now")

@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 from PIL import Image
 import requests
@@ -12,7 +11,7 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from test.utils import download_model
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 import forge
 

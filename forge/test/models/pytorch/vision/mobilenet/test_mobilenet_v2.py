@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 import urllib
 import requests
@@ -20,7 +19,7 @@ from transformers import MobileNetV2ForSemanticSegmentation
 import forge
 from test.utils import download_model
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant):

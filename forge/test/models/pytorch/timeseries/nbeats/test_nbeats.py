@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import forge
 import pytest
-import sys
-import os
 
 from test.models.pytorch.timeseries.nbeats.utils.dataset import get_electricity_dataset_input
 from test.models.pytorch.timeseries.nbeats.utils.model import (
@@ -14,7 +12,7 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly

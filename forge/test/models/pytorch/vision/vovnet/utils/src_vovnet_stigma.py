@@ -12,10 +12,6 @@ from collections import OrderedDict
 # from torch.hub import load_state_dict_from_url
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
-from transformers import AutoImageProcessor
-from PIL import Image
-import requests
-
 __all__ = ["VoVNet", "vovnet27_slim", "vovnet39", "vovnet57"]
 
 

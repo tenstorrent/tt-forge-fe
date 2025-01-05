@@ -10,8 +10,7 @@ from loguru import logger
 import pytest
 import forge
 from pytorchcv.model_provider import get_model as ptcv_get_model
-import os
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 
 @pytest.mark.nightly

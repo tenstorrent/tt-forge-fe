@@ -1,21 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 
 import torch
 import pytest
 from transformers import GemmaConfig
-from transformers import AutoTokenizer, GemmaForCausalLM
+from transformers import GemmaForCausalLM
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 import forge
-from forge import (
-    CompileDepth,
-)
 from test.utils import download_model
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 def cpu_sanity_run_0():

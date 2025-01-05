@@ -5,11 +5,9 @@
 # Example of ASR pipeline: https://github.com/huggingface/transformers/blob/ae54e3c3b18bac0832ad62ea9b896dfd52a09850/tests/pipelines/test_pipelines_automatic_speech_recognition.py#L695
 
 import os
-import copy
 import pytest
 
 import torch
-from transformers import pipeline
 from transformers import (
     AutoProcessor,
     WhisperConfig,
@@ -18,14 +16,12 @@ from transformers import (
     WhisperForConditionalGeneration,
     LogitsProcessorList,
 )
-from datasets import load_dataset
-from typing import Optional
 from forge.forgeglobal import TILE_DIM
 import forge
 from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 from test.models.pytorch.audio.whisper.utils.model import (
     Whisper_encoder,
     Whisper_decoder,
@@ -411,8 +407,6 @@ def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
             (decoder_no_ca_inputs),
         ),
     )
-
-    import time
 
     current_token_index = 0
 

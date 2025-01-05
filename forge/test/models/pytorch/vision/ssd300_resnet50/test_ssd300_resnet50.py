@@ -6,9 +6,8 @@ import pytest
 import numpy as np
 import torch
 import requests
-import os
 from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly

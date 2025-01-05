@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 
 import torch
@@ -14,7 +13,7 @@ import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_mobilenetV1_base_custom_pytorch():

@@ -5,10 +5,9 @@ import pytest
 from test.utils import download_model
 import torch
 import forge
-import os
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.nightly

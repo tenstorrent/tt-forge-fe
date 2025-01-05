@@ -14,7 +14,6 @@ import torch
 import torch.nn as nn
 
 from collections import OrderedDict
-from test.models.pytorch.vision.monodepth2.utils.layers import *
 
 
 class DepthDecoder(nn.Module):

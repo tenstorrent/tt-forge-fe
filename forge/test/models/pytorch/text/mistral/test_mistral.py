@@ -8,12 +8,8 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 import forge
 from forge.transformers.pipeline import NLPPipelineWrapper
-from test.models.pytorch.text.mistral.utils.model_utils import (
-    BaseModelWrapper,
-    multinomial_sample_one_no_sync,
-    logits_to_probs,
-)
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.pytorch.text.mistral.utils.model_utils import BaseModelWrapper
+from test.models.utils import build_module_name, Framework
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]

@@ -5,8 +5,7 @@ import pytest
 from test.utils import download_model
 import torch
 import forge
-import os
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):

@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # CodeGen Demo - CasualLM
 
-import torch
 import pytest
 from test.utils import download_model
 from transformers import AutoTokenizer, CodeGenForCausalLM
@@ -17,7 +16,7 @@ variants = [
 ]
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly

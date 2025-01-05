@@ -13,7 +13,7 @@ from transformers import (
 )
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Task
 
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):

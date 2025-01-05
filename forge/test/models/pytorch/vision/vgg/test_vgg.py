@@ -7,10 +7,8 @@ from test.utils import download_model
 import forge
 
 from pytorchcv.model_provider import get_model as ptcv_get_model
-import os
 import torch
 from PIL import Image
-from torchvision import transforms
 from vgg_pytorch import VGG
 from loguru import logger
 import timm
@@ -18,7 +16,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 import urllib
 from torchvision import transforms
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]

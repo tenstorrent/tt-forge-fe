@@ -6,10 +6,9 @@ import forge
 
 ## https://github.com/RangiLyu/EfficientNet-Lite/
 from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite as efflite
-import os
 import torch
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")

@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 
 import torch
@@ -11,7 +10,7 @@ from test.utils import download_model
 from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
 
 import forge
-from test.models.utils import build_module_name, Framework, Task, Source
+from test.models.utils import build_module_name, Framework, Source
 
 
 @pytest.mark.nightly
