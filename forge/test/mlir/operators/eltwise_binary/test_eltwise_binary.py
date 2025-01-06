@@ -11,6 +11,39 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
+)
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (300, 1),
+        (1, 6, 18),
+        (2, 2, 2),
+        (5, 5),
+        (745),
+        (1, 256, 6, 6),
+        (1, 512, 14, 14),
+        (1, 3, 224, 224),
+        (1, 34, 200, 224, 53),
+    ],
+)
+@pytest.mark.push
+def test_atan2(shape):
+    class Atan2(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1, x2):
+            return torch.atan2(x2, x1)
+
+    inputs = [torch.randn(shape), torch.randn(shape)]
+    framework_model = Atan2()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.parametrize(
     "shape_x, shape_y",
     [

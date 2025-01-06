@@ -1777,6 +1777,7 @@ tvm_to_forge_op_map = {
     "qnn.dequantize": "dequantize",
     "qnn.requantize": "requantize",
     "qnn.dense": "matmul",
+    "atan": "atan",
 }
 
 forge_op_to_function_name = {
@@ -1861,6 +1862,7 @@ forge_op_to_function_name = {
     "quantize": "forge.op.Quantize",
     "dequantize": "forge.op.Dequantize",
     "requantize": "forge.op.Requantize",
+    "atan": "forge.op.Atan",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
