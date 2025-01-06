@@ -24,9 +24,9 @@
       <td>pytorch</td>
       <td>97 %</td>
       <td>97 %</td>
-      <td>90 %</td>
+      <td>89 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>stereo</td>
@@ -34,9 +34,9 @@
       <td>pytorch</td>
       <td>97 %</td>
       <td>97 %</td>
-      <td>89 %</td>
+      <td>88 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>stereo</td>
@@ -44,9 +44,9 @@
       <td>pytorch</td>
       <td>97 %</td>
       <td>97 %</td>
-      <td>88 %</td>
+      <td>87 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>clip</td>
@@ -56,7 +56,7 @@
       <td>92 %</td>
       <td>88 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>bart</td>
@@ -66,7 +66,7 @@
       <td>91 %</td>
       <td>80 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -76,7 +76,7 @@
       <td>94 %</td>
       <td>86 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -86,7 +86,7 @@
       <td>94 %</td>
       <td>86 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -96,7 +96,7 @@
       <td>94 %</td>
       <td>86 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -106,7 +106,7 @@
       <td>94 %</td>
       <td>86 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -116,7 +116,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -126,7 +126,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -136,7 +136,7 @@
       <td>91 %</td>
       <td>81 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -146,7 +146,7 @@
       <td>91 %</td>
       <td>81 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -156,7 +156,7 @@
       <td>92 %</td>
       <td>81 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>xglm</td>
@@ -166,7 +166,7 @@
       <td>93 %</td>
       <td>82 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>xglm</td>
@@ -176,7 +176,7 @@
       <td>93 %</td>
       <td>82 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>distilbert</td>
@@ -184,9 +184,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>89 %</td>
-      <td>84 %</td>
+      <td>83 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>distilbert</td>
@@ -194,9 +194,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>88 %</td>
-      <td>85 %</td>
+      <td>83 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>distilbert</td>
@@ -204,9 +204,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>88 %</td>
-      <td>84 %</td>
+      <td>83 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>distilbert</td>
@@ -216,7 +216,7 @@
       <td>86 %</td>
       <td>80 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -226,7 +226,7 @@
       <td>89 %</td>
       <td>83 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -236,7 +236,7 @@
       <td>90 %</td>
       <td>83 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -244,9 +244,9 @@
       <td>pytorch</td>
       <td>91 %</td>
       <td>91 %</td>
-      <td>81 %</td>
+      <td>82 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -256,7 +256,7 @@
       <td>91 %</td>
       <td>81 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -266,7 +266,7 @@
       <td>91 %</td>
       <td>81 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>opt</td>
@@ -274,9 +274,9 @@
       <td>pytorch</td>
       <td>89 %</td>
       <td>89 %</td>
-      <td>83 %</td>
+      <td>85 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>swin</td>
@@ -286,7 +286,7 @@
       <td>97 %</td>
       <td>95 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>whisper_0</td>
@@ -296,7 +296,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>whisper_0</td>
@@ -306,7 +306,7 @@
       <td>100 %</td>
       <td>97 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>whisper_0</td>
@@ -316,7 +316,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>whisper_3</td>
@@ -326,7 +326,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>whisper_0</td>
@@ -336,7 +336,7 @@
       <td>100 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>whisper_0</td>
@@ -346,7 +346,7 @@
       <td>100 %</td>
       <td>97 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vilt</td>
@@ -356,7 +356,7 @@
       <td>100 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vilt</td>
@@ -366,7 +366,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>roberta</td>
@@ -374,9 +374,9 @@
       <td>pytorch</td>
       <td>90 %</td>
       <td>90 %</td>
-      <td>81 %</td>
+      <td>79 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>squeezebert</td>
@@ -386,7 +386,7 @@
       <td>94 %</td>
       <td>89 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -396,7 +396,7 @@
       <td>89 %</td>
       <td>83 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -406,7 +406,7 @@
       <td>90 %</td>
       <td>85 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -416,7 +416,7 @@
       <td>91 %</td>
       <td>82 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -426,7 +426,7 @@
       <td>90 %</td>
       <td>81 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -436,7 +436,7 @@
       <td>90 %</td>
       <td>84 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -446,7 +446,7 @@
       <td>91 %</td>
       <td>86 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -454,9 +454,9 @@
       <td>pytorch</td>
       <td>90 %</td>
       <td>90 %</td>
-      <td>88 %</td>
+      <td>86 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -464,9 +464,9 @@
       <td>pytorch</td>
       <td>91 %</td>
       <td>91 %</td>
-      <td>89 %</td>
+      <td>87 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -476,7 +476,7 @@
       <td>90 %</td>
       <td>81 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -486,7 +486,7 @@
       <td>90 %</td>
       <td>84 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -496,7 +496,7 @@
       <td>91 %</td>
       <td>86 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -506,7 +506,7 @@
       <td>89 %</td>
       <td>83 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -514,9 +514,9 @@
       <td>pytorch</td>
       <td>90 %</td>
       <td>90 %</td>
-      <td>88 %</td>
+      <td>86 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -526,7 +526,7 @@
       <td>90 %</td>
       <td>85 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -534,9 +534,9 @@
       <td>pytorch</td>
       <td>91 %</td>
       <td>91 %</td>
-      <td>89 %</td>
+      <td>87 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>albert</td>
@@ -546,7 +546,7 @@
       <td>91 %</td>
       <td>82 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>bert</td>
@@ -556,7 +556,7 @@
       <td>87 %</td>
       <td>83 %</td>
       <td>7 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mistral</td>
@@ -566,7 +566,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>bert</td>
@@ -574,9 +574,9 @@
       <td>pytorch</td>
       <td>88 %</td>
       <td>88 %</td>
-      <td>86 %</td>
+      <td>83 %</td>
       <td>7 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dpr</td>
@@ -584,9 +584,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>92 %</td>
-      <td>90 %</td>
+      <td>88 %</td>
       <td>7 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dpr</td>
@@ -594,9 +594,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>92 %</td>
-      <td>90 %</td>
+      <td>88 %</td>
       <td>7 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dpr</td>
@@ -604,9 +604,9 @@
       <td>pytorch</td>
       <td>88 %</td>
       <td>88 %</td>
-      <td>85 %</td>
+      <td>83 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dpr</td>
@@ -614,9 +614,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>92 %</td>
-      <td>90 %</td>
+      <td>88 %</td>
       <td>7 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dpr</td>
@@ -624,9 +624,9 @@
       <td>pytorch</td>
       <td>92 %</td>
       <td>92 %</td>
-      <td>90 %</td>
+      <td>88 %</td>
       <td>7 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dpr</td>
@@ -634,9 +634,9 @@
       <td>pytorch</td>
       <td>88 %</td>
       <td>88 %</td>
-      <td>85 %</td>
+      <td>83 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>roberta</td>
@@ -644,9 +644,9 @@
       <td>pytorch</td>
       <td>90 %</td>
       <td>90 %</td>
-      <td>85 %</td>
+      <td>83 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>codegen</td>
@@ -656,7 +656,7 @@
       <td>100 %</td>
       <td>93 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -666,7 +666,7 @@
       <td>99 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -676,7 +676,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>gptneo</td>
@@ -686,7 +686,7 @@
       <td>89 %</td>
       <td>76 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>bert</td>
@@ -696,7 +696,7 @@
       <td>85 %</td>
       <td>79 %</td>
       <td>6 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>phi2</td>
@@ -706,7 +706,7 @@
       <td>97 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>phi2</td>
@@ -716,7 +716,7 @@
       <td>97 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>falcon</td>
@@ -726,7 +726,7 @@
       <td>96 %</td>
       <td>88 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>fuyu_8b</td>
@@ -736,7 +736,7 @@
       <td>97 %</td>
       <td>89 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>gemma_2b</td>
@@ -746,7 +746,7 @@
       <td>93 %</td>
       <td>90 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>gpt2</td>
@@ -756,7 +756,7 @@
       <td>89 %</td>
       <td>80 %</td>
       <td>4 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>gptneo</td>
@@ -766,7 +766,7 @@
       <td>89 %</td>
       <td>76 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -776,7 +776,7 @@
       <td>99 %</td>
       <td>95 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -786,7 +786,7 @@
       <td>99 %</td>
       <td>95 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -796,7 +796,7 @@
       <td>99 %</td>
       <td>95 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -804,9 +804,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>95 %</td>
+      <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -814,9 +814,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>95 %</td>
+      <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -824,9 +824,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>95 %</td>
+      <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -834,9 +834,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>95 %</td>
+      <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -844,9 +844,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>95 %</td>
+      <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>segformer</td>
@@ -856,7 +856,7 @@
       <td>99 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>gptneo</td>
@@ -866,7 +866,7 @@
       <td>89 %</td>
       <td>76 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -874,9 +874,9 @@
       <td>pytorch</td>
       <td>94 %</td>
       <td>94 %</td>
-      <td>90 %</td>
+      <td>89 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -886,7 +886,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -896,7 +896,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -906,7 +906,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -914,9 +914,9 @@
       <td>pytorch</td>
       <td>94 %</td>
       <td>94 %</td>
-      <td>90 %</td>
+      <td>89 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>llama3</td>
@@ -926,7 +926,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>phi2</td>
@@ -934,9 +934,9 @@
       <td>pytorch</td>
       <td>95 %</td>
       <td>95 %</td>
-      <td>90 %</td>
+      <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>phi2</td>
@@ -944,9 +944,9 @@
       <td>pytorch</td>
       <td>95 %</td>
       <td>95 %</td>
-      <td>90 %</td>
+      <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>phi2</td>
@@ -954,9 +954,9 @@
       <td>pytorch</td>
       <td>95 %</td>
       <td>95 %</td>
-      <td>92 %</td>
+      <td>90 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>phi2</td>
@@ -964,9 +964,9 @@
       <td>pytorch</td>
       <td>95 %</td>
       <td>95 %</td>
-      <td>92 %</td>
+      <td>90 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen</td>
@@ -976,7 +976,7 @@
       <td>95 %</td>
       <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen</td>
@@ -986,7 +986,7 @@
       <td>95 %</td>
       <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -996,7 +996,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1006,7 +1006,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1016,7 +1016,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1026,7 +1026,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1036,7 +1036,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1046,7 +1046,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1056,7 +1056,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1066,7 +1066,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1076,7 +1076,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1084,9 +1084,9 @@
       <td>pytorch</td>
       <td>94 %</td>
       <td>94 %</td>
-      <td>93 %</td>
+      <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_coder</td>
@@ -1096,7 +1096,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1106,7 +1106,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1116,7 +1116,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1126,7 +1126,7 @@
       <td>94 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>qwen_v2</td>
@@ -1136,7 +1136,7 @@
       <td>94 %</td>
       <td>87 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>autoencoder</td>
@@ -1146,7 +1146,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>t5</td>
@@ -1154,9 +1154,9 @@
       <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>93 %</td>
+      <td>95 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>t5</td>
@@ -1164,9 +1164,9 @@
       <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>91 %</td>
+      <td>93 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>t5</td>
@@ -1174,9 +1174,9 @@
       <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>91 %</td>
+      <td>93 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>t5</td>
@@ -1184,9 +1184,9 @@
       <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>90 %</td>
+      <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>t5</td>
@@ -1194,9 +1194,9 @@
       <td>pytorch</td>
       <td>98 %</td>
       <td>98 %</td>
-      <td>92 %</td>
+      <td>94 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>perceiverio</td>
@@ -1206,7 +1206,7 @@
       <td>99 %</td>
       <td>91 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>perceiverio</td>
@@ -1216,7 +1216,7 @@
       <td>97 %</td>
       <td>89 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>perceiverio</td>
@@ -1226,7 +1226,7 @@
       <td>98 %</td>
       <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>nbeats</td>
@@ -1236,7 +1236,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>nbeats</td>
@@ -1246,7 +1246,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>nbeats</td>
@@ -1256,7 +1256,7 @@
       <td>87 %</td>
       <td>80 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>alexnet</td>
@@ -1266,7 +1266,7 @@
       <td>93 %</td>
       <td>83 %</td>
       <td>8 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>rcnn</td>
@@ -1276,7 +1276,7 @@
       <td>96 %</td>
       <td>86 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -1286,7 +1286,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -1296,7 +1296,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1306,7 +1306,7 @@
       <td>96 %</td>
       <td>77 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1316,7 +1316,7 @@
       <td>99 %</td>
       <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1326,7 +1326,7 @@
       <td>99 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1336,7 +1336,7 @@
       <td>96 %</td>
       <td>77 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1346,7 +1346,7 @@
       <td>99 %</td>
       <td>91 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1356,7 +1356,7 @@
       <td>96 %</td>
       <td>76 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1366,7 +1366,7 @@
       <td>96 %</td>
       <td>79 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1376,7 +1376,7 @@
       <td>96 %</td>
       <td>77 %</td>
       <td>5 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>deit</td>
@@ -1386,7 +1386,7 @@
       <td>98 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>deit</td>
@@ -1396,7 +1396,7 @@
       <td>98 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>deit</td>
@@ -1406,7 +1406,7 @@
       <td>98 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>deit</td>
@@ -1416,7 +1416,7 @@
       <td>98 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>densenet</td>
@@ -1426,7 +1426,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:31 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>densenet</td>
@@ -1436,7 +1436,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>densenet</td>
@@ -1446,7 +1446,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>densenet</td>
@@ -1456,7 +1456,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>efficientnet</td>
@@ -1466,7 +1466,7 @@
       <td>100 %</td>
       <td>97 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>efficientnet</td>
@@ -1476,7 +1476,7 @@
       <td>100 %</td>
       <td>97 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>efficientnet</td>
@@ -1486,7 +1486,7 @@
       <td>100 %</td>
       <td>97 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>efficientnet</td>
@@ -1496,7 +1496,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>ghostnet</td>
@@ -1506,7 +1506,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>googlenet</td>
@@ -1516,7 +1516,7 @@
       <td>99 %</td>
       <td>97 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1526,7 +1526,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1536,7 +1536,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1546,7 +1546,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1556,7 +1556,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1566,7 +1566,7 @@
       <td>100 %</td>
       <td>95 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1576,7 +1576,7 @@
       <td>99 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1586,7 +1586,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1596,7 +1596,7 @@
       <td>99 %</td>
       <td>97 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1606,7 +1606,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1616,7 +1616,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1626,7 +1626,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1636,7 +1636,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1646,7 +1646,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1656,7 +1656,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1666,7 +1666,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1676,7 +1676,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1686,7 +1686,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>hrnet</td>
@@ -1696,7 +1696,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>inception_v4</td>
@@ -1706,7 +1706,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>inception_v4</td>
@@ -1716,7 +1716,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1726,7 +1726,7 @@
       <td>100 %</td>
       <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1736,7 +1736,7 @@
       <td>100 %</td>
       <td>85 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1746,7 +1746,7 @@
       <td>100 %</td>
       <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1754,9 +1754,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>85 %</td>
+      <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1766,7 +1766,7 @@
       <td>100 %</td>
       <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1774,9 +1774,9 @@
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>85 %</td>
+      <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -1786,7 +1786,7 @@
       <td>100 %</td>
       <td>85 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v2</td>
@@ -1796,7 +1796,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v2</td>
@@ -1806,7 +1806,7 @@
       <td>100 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v3</td>
@@ -1816,7 +1816,7 @@
       <td>100 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v3</td>
@@ -1826,7 +1826,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v3</td>
@@ -1836,7 +1836,7 @@
       <td>100 %</td>
       <td>93 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v3</td>
@@ -1846,7 +1846,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>regnet</td>
@@ -1856,7 +1856,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnet</td>
@@ -1866,7 +1866,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnet</td>
@@ -1876,7 +1876,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1886,7 +1886,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1896,7 +1896,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1906,7 +1906,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1916,7 +1916,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1926,7 +1926,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1936,7 +1936,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>resnext</td>
@@ -1946,7 +1946,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vgg</td>
@@ -1956,7 +1956,7 @@
       <td>99 %</td>
       <td>92 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vit</td>
@@ -1966,7 +1966,7 @@
       <td>98 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vit</td>
@@ -1976,7 +1976,7 @@
       <td>98 %</td>
       <td>87 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -1986,7 +1986,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -1996,7 +1996,7 @@
       <td>100 %</td>
       <td>93 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -2006,7 +2006,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -2016,7 +2016,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -2026,7 +2026,7 @@
       <td>99 %</td>
       <td>90 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -2036,7 +2036,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -2046,7 +2046,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>vovnet</td>
@@ -2056,7 +2056,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>wideresnet</td>
@@ -2066,7 +2066,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>wideresnet</td>
@@ -2076,7 +2076,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>wideresnet</td>
@@ -2086,7 +2086,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>wideresnet</td>
@@ -2096,7 +2096,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>xception</td>
@@ -2106,7 +2106,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>xception</td>
@@ -2116,7 +2116,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>xception</td>
@@ -2126,7 +2126,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>xception</td>
@@ -2136,7 +2136,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>autoencoder</td>
@@ -2146,7 +2146,7 @@
       <td>79 %</td>
       <td>79 %</td>
       <td>11 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -2156,7 +2156,7 @@
       <td>100 %</td>
       <td>91 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -2166,7 +2166,7 @@
       <td>100 %</td>
       <td>91 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v2</td>
@@ -2176,7 +2176,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2186,7 +2186,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2196,7 +2196,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2206,7 +2206,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2216,7 +2216,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2226,7 +2226,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2236,7 +2236,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2246,7 +2246,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>2 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v1</td>
@@ -2256,7 +2256,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v1</td>
@@ -2266,7 +2266,7 @@
       <td>97 %</td>
       <td>96 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v2</td>
@@ -2276,7 +2276,7 @@
       <td>95 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>monodle</td>
@@ -2286,7 +2286,7 @@
       <td>98 %</td>
       <td>97 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>retinanet</td>
@@ -2296,7 +2296,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>retinanet</td>
@@ -2306,7 +2306,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>retinanet</td>
@@ -2316,7 +2316,7 @@
       <td>100 %</td>
       <td>96 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>retinanet</td>
@@ -2326,7 +2326,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>retinanet</td>
@@ -2336,7 +2336,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>ssd300_resnet50</td>
@@ -2346,7 +2346,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>unet</td>
@@ -2356,7 +2356,7 @@
       <td>97 %</td>
       <td>93 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>unet</td>
@@ -2366,7 +2366,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>unet</td>
@@ -2376,7 +2376,7 @@
       <td>95 %</td>
       <td>87 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -2386,7 +2386,7 @@
       <td>99 %</td>
       <td>97 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -2396,7 +2396,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -2406,7 +2406,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2416,7 +2416,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2426,7 +2426,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>dla</td>
@@ -2436,7 +2436,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v1</td>
@@ -2446,7 +2446,7 @@
       <td>90 %</td>
       <td>89 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v2</td>
@@ -2456,7 +2456,7 @@
       <td>92 %</td>
       <td>91 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mobilenet_v2</td>
@@ -2466,7 +2466,7 @@
       <td>93 %</td>
       <td>92 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -2476,7 +2476,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolox</td>
@@ -2486,7 +2486,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>fpn</td>
@@ -2496,7 +2496,7 @@
       <td>92 %</td>
       <td>87 %</td>
       <td>3 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>mlp_mixer</td>
@@ -2506,7 +2506,7 @@
       <td>100 %</td>
       <td>88 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2516,7 +2516,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2526,7 +2526,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2536,7 +2536,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2546,7 +2546,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2556,7 +2556,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2566,7 +2566,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2576,7 +2576,7 @@
       <td>100 %</td>
       <td>92 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2586,7 +2586,7 @@
       <td>100 %</td>
       <td>100 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2596,7 +2596,7 @@
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2606,7 +2606,7 @@
       <td>100 %</td>
       <td>97 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2616,7 +2616,7 @@
       <td>100 %</td>
       <td>94 %</td>
       <td>0 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2626,7 +2626,7 @@
       <td>99 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2636,7 +2636,7 @@
       <td>99 %</td>
       <td>94 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2646,7 +2646,7 @@
       <td>100 %</td>
       <td>98 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2656,7 +2656,7 @@
       <td>99 %</td>
       <td>97 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v5</td>
@@ -2666,7 +2666,7 @@
       <td>100 %</td>
       <td>99 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v6</td>
@@ -2676,7 +2676,7 @@
       <td>98 %</td>
       <td>95 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v6</td>
@@ -2686,7 +2686,7 @@
       <td>99 %</td>
       <td>96 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v6</td>
@@ -2696,7 +2696,7 @@
       <td>98 %</td>
       <td>95 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
     <tr>
       <td>yolo_v6</td>
@@ -2706,7 +2706,7 @@
       <td>99 %</td>
       <td>96 %</td>
       <td>1 %</td>
-      <td>Monday, 30 Dec 2024 01:35:32 PM</td>
+      <td>Monday, 06 Jan 2025 11:00:10 AM</td>
     </tr>
   </tbody>
 </table>
