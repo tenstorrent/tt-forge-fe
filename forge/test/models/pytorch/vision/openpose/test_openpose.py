@@ -56,8 +56,10 @@ def test_openpose_basic(record_forge_property, variant):
         variant,
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -89,6 +91,8 @@ def test_openpose_osmr(record_forge_property, variant):
     framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,
     )
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

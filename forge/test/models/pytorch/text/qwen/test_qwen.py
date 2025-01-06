@@ -44,8 +44,10 @@ def test_qwen1_5_causal_lm(record_forge_property):
 
     inputs = [input_ids, attention_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -108,6 +110,8 @@ def test_qwen1_5_chat(record_forge_property):
 
     inputs = [input_ids, attention_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -24,6 +24,7 @@ from test.utils import download_model
 from forge.config import _get_global_compiler_config
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 import time
 
 variants = [
@@ -100,10 +101,12 @@ def test_whisper(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs = generate_model_whisper_congen_hf_pytorch(variant)
+    framework_model, inputs = generate_model_whisper_congen_hf_pytorch(variant)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 

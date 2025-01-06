@@ -150,12 +150,14 @@ def test_llama3_causal_lm(record_forge_property, variant):
     attn_mask = attn_mask.to(torch.float32)
     inputs = [input_ids, attn_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
     )
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -183,10 +185,12 @@ def test_llama3_sequence_classification(record_forge_property, variant):
     input_ids = inputs["input_ids"]
     inputs = [input_ids]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
     )
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

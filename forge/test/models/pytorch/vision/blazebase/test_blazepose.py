@@ -41,8 +41,10 @@ def test_blazepose_detector_pytorch(record_forge_property):
 
     inputs = [img2]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -59,8 +61,10 @@ def test_blazepose_regressor_pytorch(record_forge_property):
 
     inputs = [torch.rand(1, 3, 256, 256)]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -87,8 +91,10 @@ def test_blaze_palm_pytorch(record_forge_property):
 
     inputs = [img2]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -105,6 +111,8 @@ def test_blaze_hand_pytorch(record_forge_property):
 
     inputs = [torch.rand(1, 3, 256, 256)]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

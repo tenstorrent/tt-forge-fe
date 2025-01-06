@@ -13,6 +13,7 @@ import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 def generate_model_mobilenetV1_base_custom_pytorch():
@@ -32,10 +33,12 @@ def test_mobilenetv1_basic(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
+    framework_model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -63,9 +66,12 @@ def test_mobilenetv1_192(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
 
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -92,7 +98,10 @@ def test_mobilenetv1_224(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
 
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

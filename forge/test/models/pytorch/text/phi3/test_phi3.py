@@ -56,8 +56,10 @@ def test_phi3_causal_lm(record_forge_property, variant):
 
     inputs = [input_ids, attn_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -92,8 +94,10 @@ def test_phi3_token_classification(record_forge_property, variant):
 
     inputs = [inputs["input_ids"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -127,6 +131,8 @@ def test_phi3_sequence_classification(record_forge_property, variant):
     inputs = tokenizer(input_prompt, return_tensors="pt")
     inputs = [inputs["input_ids"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

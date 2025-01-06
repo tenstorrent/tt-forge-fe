@@ -54,8 +54,10 @@ def test_resnet(record_forge_property):
         "microsoft/resnet-50",
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -88,9 +90,10 @@ def test_resnet_timm(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    framework_model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
-        "resnet50",
-    )
+    framework_model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch("resnet50")
+
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

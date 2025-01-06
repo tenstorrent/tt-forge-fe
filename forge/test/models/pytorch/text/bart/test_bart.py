@@ -56,6 +56,8 @@ def test_pt_bart_classifier(record_forge_property):
     # Compile & feed data
     framework_model = BartWrapper(model.model)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

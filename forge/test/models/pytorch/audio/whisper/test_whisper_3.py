@@ -58,7 +58,8 @@ def test_whisper_large_v3_speech_translation(record_forge_property, variant):
     encoder_outputs = encoder_outputs.to(torch.float32)
     inputs = [decoder_input_ids, encoder_outputs]
 
-    # Compiler test
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

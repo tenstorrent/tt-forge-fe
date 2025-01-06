@@ -35,8 +35,10 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     # STEP 3: Run inference on Tenstorrent device
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -54,8 +56,10 @@ def test_densenet_161_pytorch(record_forge_property):
     img_tensor = get_input_img()
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -73,8 +77,11 @@ def test_densenet_169_pytorch(record_forge_property):
     img_tensor = get_input_img()
 
     inputs = [img_tensor]
+
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -92,6 +99,9 @@ def test_densenet_201_pytorch(record_forge_property):
     img_tensor = get_input_img()
 
     inputs = [img_tensor]
+
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

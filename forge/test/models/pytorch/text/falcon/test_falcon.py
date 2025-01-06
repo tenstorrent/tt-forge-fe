@@ -36,7 +36,8 @@ def test_falcon(record_forge_property):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
-    # Forge inference
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

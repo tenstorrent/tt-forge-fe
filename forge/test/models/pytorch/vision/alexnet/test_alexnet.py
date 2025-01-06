@@ -45,8 +45,11 @@ def test_alexnet_torchhub(record_forge_property):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
+
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -81,6 +84,9 @@ def test_alexnet_osmr(record_forge_property):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
+
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

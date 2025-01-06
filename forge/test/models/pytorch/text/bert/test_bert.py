@@ -47,8 +47,10 @@ def test_bert_masked_lm_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch(variant)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -94,8 +96,10 @@ def test_bert_question_answering_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch()
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -133,8 +137,10 @@ def test_bert_sequence_classification_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -172,6 +178,8 @@ def test_bert_token_classification_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

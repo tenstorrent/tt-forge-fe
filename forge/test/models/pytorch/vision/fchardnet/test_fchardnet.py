@@ -40,6 +40,8 @@ def test_fchardnet(record_forge_property):
 
     inputs = [input_image]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -49,9 +49,10 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
 
     inputs = [input_batch]
 
-    # STEP 4 : Inference
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
     # STEP 5 : remove downloaded weights

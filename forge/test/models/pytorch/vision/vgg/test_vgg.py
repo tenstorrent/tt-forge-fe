@@ -56,8 +56,10 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
 
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -101,8 +103,10 @@ def test_vgg_19_hf_pytorch(record_forge_property):
 
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -139,8 +143,10 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
 
     inputs = [image_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -178,6 +184,8 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
 
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

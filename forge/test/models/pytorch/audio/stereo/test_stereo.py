@@ -33,6 +33,8 @@ def test_stereo(record_forge_property, variant):
     inputs = [input_ids, attn_mask, decoder_input_ids]
 
     # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

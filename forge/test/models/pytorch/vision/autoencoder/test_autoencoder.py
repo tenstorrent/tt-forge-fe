@@ -38,8 +38,10 @@ def test_conv_ae_pytorch(record_forge_property):
 
     inputs = [sample_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -71,7 +73,8 @@ def test_linear_ae_pytorch(record_forge_property):
 
     inputs = [sample_tensor]
 
-    # Inference
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -49,8 +49,10 @@ def test_mobilenetv3_basic(record_forge_property, variant):
         variant,
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -99,6 +101,8 @@ def test_mobilenetv3_timm(record_forge_property, variant):
         variant,
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

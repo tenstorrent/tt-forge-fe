@@ -85,8 +85,10 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 
     inputs = [x, pos_ids]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -125,8 +127,10 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 
     inputs = [x]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -167,8 +171,10 @@ def test_gemma_2b_attention(record_forge_property, variant):
 
     inputs = [hidden_states, attn_mask, pos_ids]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -206,8 +212,10 @@ def test_gemma_2b_mlp(record_forge_property, variant):
     x = torch.rand((1, 7, 2048)).to(torch.float32)
     inputs = [x]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -250,8 +258,10 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
 
     inputs = [hidden_states, attn_mask, pos_ids]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -294,8 +304,10 @@ def test_gemma_2b(record_forge_property, variant):
 
     inputs = [input_ids, attn_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 

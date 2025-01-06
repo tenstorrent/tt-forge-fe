@@ -39,8 +39,10 @@ def test_mistral_decoder_layer(record_forge_property, variant):
 
     inputs = [sample_inputs]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -73,12 +75,14 @@ def test_mistral(record_forge_property, variant):
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
     inputs = [sample_inputs]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
     )
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 

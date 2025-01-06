@@ -43,6 +43,8 @@ def test_xglm_causal_lm(record_forge_property, variant):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

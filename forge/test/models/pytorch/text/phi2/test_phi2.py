@@ -56,9 +56,10 @@ def test_phi2_clm(record_forge_property, variant):
 
     inputs = [input_ids, attn_mask]
 
-    # Inference
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -92,9 +93,10 @@ def test_phi2_token_classification(record_forge_property, variant):
 
     inputs = [inputs["input_ids"]]
 
-    # Inference
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -129,7 +131,8 @@ def test_phi2_sequence_classification(record_forge_property, variant):
 
     inputs = [inputs["input_ids"]]
 
-    # Inference
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

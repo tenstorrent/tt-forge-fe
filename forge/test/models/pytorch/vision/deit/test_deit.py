@@ -51,6 +51,8 @@ def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

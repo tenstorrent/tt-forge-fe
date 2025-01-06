@@ -46,12 +46,14 @@ def test_opt_causal_lm(record_forge_property, variant):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
     )
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -85,12 +87,14 @@ def test_opt_qa(record_forge_property, variant):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
     )
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -126,10 +130,12 @@ def test_opt_sequence_classification(record_forge_property, variant):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         module_name,
     )
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

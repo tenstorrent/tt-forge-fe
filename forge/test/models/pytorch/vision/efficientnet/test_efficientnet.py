@@ -70,8 +70,10 @@ def test_efficientnet_timm(record_forge_property, variant):
 
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -130,6 +132,8 @@ def test_efficientnet_torchvision(record_forge_property, variant):
 
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

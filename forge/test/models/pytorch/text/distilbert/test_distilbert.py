@@ -50,8 +50,10 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -91,8 +93,10 @@ def test_distilbert_question_answering_pytorch(record_forge_property):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -124,8 +128,10 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -157,6 +163,8 @@ def test_distilbert_token_classification_pytorch(record_forge_property):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

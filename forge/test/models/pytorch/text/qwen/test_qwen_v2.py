@@ -45,6 +45,8 @@ def test_qwen_clm(record_forge_property, variant):
     attention_mask = model_inputs["attention_mask"]
     inputs = [input_ids, attention_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

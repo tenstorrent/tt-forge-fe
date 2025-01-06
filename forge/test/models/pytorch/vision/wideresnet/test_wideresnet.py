@@ -51,8 +51,10 @@ def test_wideresnet_pytorch(record_forge_property, variant):
 
     (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -88,6 +90,8 @@ def test_wideresnet_timm(record_forge_property, variant):
 
     (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

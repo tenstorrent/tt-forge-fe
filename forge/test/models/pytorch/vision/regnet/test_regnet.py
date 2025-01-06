@@ -24,9 +24,10 @@ def test_regnet(record_forge_property, variant):
     image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = preprocess_input_data(image_url, variant)
 
-    # Compiler test
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -47,7 +48,8 @@ def test_regnet_img_classification(record_forge_property, variant):
     image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = preprocess_input_data(image_url, variant)
 
-    # Compiler test
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -28,8 +28,10 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
     img_tensor = efflite.get_image_tensor(wh)
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -51,8 +53,10 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
     img_tensor = efflite.get_image_tensor(wh)
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -74,8 +78,10 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
     img_tensor = efflite.get_image_tensor(wh)
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -97,8 +103,10 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
     img_tensor = efflite.get_image_tensor(wh)
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -120,6 +128,8 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     img_tensor = efflite.get_image_tensor(wh)
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -36,8 +36,10 @@ def test_unet_osmr_cityscape_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -82,8 +84,10 @@ def test_unet_holocron_pytorch(record_forge_property):
     img_tensor = get_imagenet_sample()
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -123,8 +127,10 @@ def test_unet_qubvel_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -173,6 +179,9 @@ def test_unet_torchhub_pytorch(record_forge_property):
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
+
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

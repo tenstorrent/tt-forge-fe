@@ -90,8 +90,10 @@ def test_hrnet_osmr_pytorch(record_forge_property, variant):
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -158,6 +160,8 @@ def test_hrnet_timm_pytorch(record_forge_property, variant):
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
     )
-    compiled_model = forge.compile(framework_model, sample_inputs=[inputs[0]], module_name=module_name)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

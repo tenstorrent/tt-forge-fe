@@ -23,7 +23,7 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
 
     x, x_mask = get_electricity_dataset_input()
 
-    pytorch_model = NBeatsWithSeasonalityBasis(
+    framework_model = NBeatsWithSeasonalityBasis(
         input_size=72,
         output_size=24,
         num_of_harmonics=1,
@@ -31,10 +31,14 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
         layers=4,
         layer_size=2048,
     )
-    pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
+    framework_model.eval()
+
     inputs = [x, x_mask]
 
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -47,12 +51,15 @@ def test_nbeats_with_generic_basis(record_forge_property):
 
     x, x_mask = get_electricity_dataset_input()
 
-    pytorch_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
-    pytorch_model.eval()
+    framework_model = NBeatsWithGenericBasis(input_size=72, output_size=24, stacks=30, layers=4, layer_size=512)
+    framework_model.eval()
 
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
 
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -65,7 +72,7 @@ def test_nbeats_with_trend_basis(record_forge_property):
 
     x, x_mask = get_electricity_dataset_input()
 
-    pytorch_model = NBeatsWithTrendBasis(
+    framework_model = NBeatsWithTrendBasis(
         input_size=72,
         output_size=24,
         degree_of_polynomial=3,
@@ -73,9 +80,12 @@ def test_nbeats_with_trend_basis(record_forge_property):
         layers=4,
         layer_size=256,
     )
-    pytorch_model.eval()
+    framework_model.eval()
 
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[x, x_mask], module_name=module_name)
     inputs = [x, x_mask]
 
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -32,8 +32,10 @@ def test_resnext_50_torchhub_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -55,8 +57,10 @@ def test_resnext_101_torchhub_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -79,8 +83,10 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -100,8 +106,10 @@ def test_resnext_14_osmr_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -121,8 +129,10 @@ def test_resnext_26_osmr_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -142,8 +152,10 @@ def test_resnext_50_osmr_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -163,6 +175,8 @@ def test_resnext_101_osmr_pytorch(record_forge_property):
     input_batch = get_image_tensor()
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

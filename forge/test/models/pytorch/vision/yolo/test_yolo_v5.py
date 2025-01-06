@@ -44,8 +44,10 @@ def test_yolov5_320x320(record_forge_property, size):
         size=size,
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -83,8 +85,10 @@ def test_yolov5_640x640(record_forge_property, size):
         size=size,
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -118,8 +122,10 @@ def test_yolov5_480x480(record_forge_property, size):
         size=size,
     )
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -145,6 +151,8 @@ def test_yolov5_1280x1280(record_forge_property):
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

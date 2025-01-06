@@ -64,8 +64,10 @@ def test_ddrnet_pytorch(record_forge_property, variant):
 
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=f"pt_{variant}")
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -120,6 +122,8 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
 
     inputs = [input_batch]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -77,8 +77,10 @@ def test_fuyu8b(record_forge_property):
 
     inputs = [inputs_embeds]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
     os.remove("bus.png")

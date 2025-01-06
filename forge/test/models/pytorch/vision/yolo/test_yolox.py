@@ -82,8 +82,10 @@ def test_yolox_pytorch(record_forge_property, variant):
 
     inputs = [img_tensor]
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
     # remove downloaded weights,image

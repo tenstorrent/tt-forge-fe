@@ -43,8 +43,10 @@ def test_yolov3_tiny_holli_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
 
 
@@ -78,6 +80,8 @@ def test_yolov3_holli_pytorch(record_forge_property):
 
     framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
 
+    # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    # Model Verification
     verify(inputs, framework_model, compiled_model)
