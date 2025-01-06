@@ -27,8 +27,10 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_causal_lm(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.CAUSAL_LM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Set random seed for repeatability
@@ -83,10 +85,12 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_sequence_classification(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace

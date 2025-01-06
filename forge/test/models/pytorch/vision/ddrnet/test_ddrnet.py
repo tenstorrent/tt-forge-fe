@@ -25,8 +25,10 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="ddrnet", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -80,10 +82,12 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="ddrnet", variant=variant, task=Task.SEMANTIC_SEGMENTATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # prepare model

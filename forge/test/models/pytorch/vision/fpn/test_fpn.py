@@ -14,8 +14,10 @@ from test.models.utils import Framework, Source, build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_fpn_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="fpn", source=Source.TORCHVISION)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load FPN model

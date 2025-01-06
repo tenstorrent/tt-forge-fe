@@ -49,10 +49,12 @@ variants = [
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="perceiverio", variant=variant, task=Task.IMAGE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Sample Image

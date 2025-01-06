@@ -24,8 +24,10 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_yolo_v6_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="yolo_v6", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2 :prepare model

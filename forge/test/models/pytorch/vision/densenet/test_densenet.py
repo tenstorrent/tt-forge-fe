@@ -22,8 +22,10 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet121", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -48,8 +50,10 @@ def test_densenet_121_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_161_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet161")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -69,8 +73,10 @@ def test_densenet_161_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_169_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet169")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -91,8 +97,10 @@ def test_densenet_169_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_densenet_201_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet201")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model

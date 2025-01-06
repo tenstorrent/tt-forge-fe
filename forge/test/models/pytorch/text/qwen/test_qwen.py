@@ -18,8 +18,10 @@ from test.models.utils import Framework, Task, build_module_name
 def test_qwen1_5_causal_lm(record_forge_property):
     variant = "Qwen/Qwen1.5-0.5B"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Setup model configuration
@@ -70,8 +72,10 @@ def parse_chat_completion(text: str):
 def test_qwen1_5_chat(record_forge_property):
     variant = "Qwen/Qwen1.5-0.5B-Chat"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Setup model configuration

@@ -21,8 +21,10 @@ from test.models.utils import Framework, Task, build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo and Hang observed at post_initial_graph_pass")
 @pytest.mark.nightly
 def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="tri_basic_2", task=Task.SEMANTIC_SEGMENTATION)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Sample Input

@@ -43,8 +43,10 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 def test_bert_masked_lm_pytorch(record_forge_property):
     variant = "bert-base-uncased"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch(variant)
@@ -92,8 +94,10 @@ def generate_model_bert_qa_hf_pytorch(variant):
 def test_bert_question_answering_pytorch(record_forge_property):
     variant = "bert-large-cased-whole-word-masking-finetuned-squad"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch()
@@ -131,10 +135,12 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 def test_bert_sequence_classification_pytorch(record_forge_property):
     variant = "textattack/bert-base-uncased-SST-2"
 
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
@@ -172,10 +178,12 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 def test_bert_token_classification_pytorch(record_forge_property):
     variant = "dbmdz/bert-large-cased-finetuned-conll03-english"
 
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.TOKEN_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)

@@ -42,8 +42,10 @@ def generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv2_basic(record_forge_property):
     variant = "pytorch/vision:v0.10.0"
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v2_basic", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant)
@@ -72,8 +74,10 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv2_96(record_forge_property):
     variant = "google/mobilenet_v2_0.35_96"
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenetv2", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
@@ -102,8 +106,10 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv2_160(record_forge_property):
     variant = "google/mobilenet_v2_0.75_160"
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v2", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
@@ -134,8 +140,10 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv2_224(record_forge_property):
     variant = "google/mobilenet_v2_1.0_224"
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v2", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
@@ -175,10 +183,12 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 @pytest.mark.model_analysis
 def test_mobilenetv2_timm(record_forge_property):
     variant = "mobilenetv2_100"
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilenet_v2", variant=variant, source=Source.TIMM
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
@@ -225,8 +235,10 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv2_deeplabv3(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilnet_v2", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)

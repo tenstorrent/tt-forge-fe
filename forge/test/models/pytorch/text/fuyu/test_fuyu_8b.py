@@ -36,8 +36,10 @@ from test.models.utils import Framework, build_module_name
 def test_fuyu8b(record_forge_property):
     variant = "adept/fuyu-8b"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     config = FuyuConfig.from_pretrained(variant)
@@ -91,8 +93,10 @@ def test_fuyu8b(record_forge_property):
 def test_fuyu8b_past_cache(record_forge_property, test_device):
     variant = "adept/fuyu-8b"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Set Forge configuration parameters

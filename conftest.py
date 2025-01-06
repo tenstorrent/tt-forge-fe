@@ -19,6 +19,12 @@ def record_test_timestamp(record_property):
     record_property("end_timestamp", end_timestamp)
 
 
+@pytest.fixture(scope="function", autouse=True)
+def record_forge_property(record_property):
+    record_property("frontend", "tt-forge-fe")
+    yield record_property
+
+
 @pytest.fixture(autouse=True)
 def memory_usage_tracker():
     """
@@ -85,3 +91,14 @@ def memory_usage_tracker():
     logger.info(f"    Minimum: {min_mem:.2f} MB")
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
+
+
+@pytest.mark.hookwrapper
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+
+    if item.user_properties:
+        test_properties = {prop[0]: prop[1] for prop in item.user_properties}
+
+        print(test_properties)

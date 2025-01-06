@@ -21,8 +21,10 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_pidnet_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="pidnet", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load and pre-process image

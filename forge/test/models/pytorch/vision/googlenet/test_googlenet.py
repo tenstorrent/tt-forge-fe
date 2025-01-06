@@ -17,8 +17,10 @@ from test.utils import download_model
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_googlenet_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="googlenet")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Create Forge module from PyTorch model

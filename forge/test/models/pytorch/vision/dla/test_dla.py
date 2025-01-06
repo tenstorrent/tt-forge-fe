@@ -42,8 +42,10 @@ variants = list(variants_func.keys())
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dla_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="dla", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     func = variants_func[variant]

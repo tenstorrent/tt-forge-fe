@@ -24,8 +24,10 @@ variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_context_encoder_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="context_encoder")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
@@ -62,10 +64,12 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="question_encoder"
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
@@ -102,8 +106,10 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="reader")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace

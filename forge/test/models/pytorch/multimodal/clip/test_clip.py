@@ -19,8 +19,10 @@ from test.utils import download_model
 def test_clip_pytorch(record_forge_property):
     model_ckpt = "openai/clip-vit-base-patch32"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="clip", variant=model_ckpt, suffix="text")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load processor and model from HuggingFace

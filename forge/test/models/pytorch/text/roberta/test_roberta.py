@@ -21,8 +21,10 @@ from test.utils import download_model
 def test_roberta_masked_lm(record_forge_property):
     variant = "xlm-roberta-base"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Albert tokenizer and model from HuggingFace
@@ -55,10 +57,12 @@ def test_roberta_masked_lm(record_forge_property):
 def test_roberta_sentiment_pytorch(record_forge_property):
     variant = "cardiffnlp/twitter-roberta-base-sentiment"
 
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Bart tokenizer and model from HuggingFace

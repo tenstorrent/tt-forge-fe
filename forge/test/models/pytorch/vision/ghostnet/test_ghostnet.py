@@ -22,8 +22,10 @@ variants = ["ghostnet_100"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_ghostnet_timm(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="ghostnet", variant=variant, source=Source.TIMM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model

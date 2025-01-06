@@ -24,8 +24,10 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="detector")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load BlazePose Detector
@@ -53,8 +55,10 @@ def test_blazepose_detector_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="regressor")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load BlazePose Landmark Regressor
@@ -73,8 +77,10 @@ def test_blazepose_regressor_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="palm")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
@@ -103,8 +109,10 @@ def test_blaze_palm_pytorch(record_forge_property):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="hand")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector

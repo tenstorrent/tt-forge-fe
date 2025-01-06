@@ -16,8 +16,10 @@ from test.models.utils import Framework, build_module_name
 def test_falcon(record_forge_property):
     variant = "tiiuae/falcon-7b-instruct"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="falcon", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)

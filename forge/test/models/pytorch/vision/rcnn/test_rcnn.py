@@ -19,8 +19,10 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_rcnn_pytorch(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="rcnn")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Alexnet Model
@@ -77,6 +79,7 @@ def test_rcnn_pytorch(record_forge_property):
 
         inputs = [rect_transform.unsqueeze(0)]
 
+        # Build Module Name
         module_name = build_module_name(framework=Framework.PYTORCH, model="rcnn", suffix=f"rect_{idx}")
 
         # Forge compile framework model

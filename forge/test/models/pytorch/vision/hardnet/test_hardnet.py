@@ -25,8 +25,10 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="hardnet", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # load only the model architecture without pre-trained weights.

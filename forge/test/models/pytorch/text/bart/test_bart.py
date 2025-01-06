@@ -27,10 +27,12 @@ class BartWrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_pt_bart_classifier(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bart", variant=model_name, task=Task.SEQUENCE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     model_name = f"facebook/bart-large-mnli"

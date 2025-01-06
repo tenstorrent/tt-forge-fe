@@ -18,10 +18,12 @@ from test.models.utils import Framework, Task, build_module_name
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.OBJECT_DETECTION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load the model
@@ -44,10 +46,12 @@ def test_detr_detection(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.SEMANTIC_SEGMENTATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load the model

@@ -16,8 +16,10 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_pytorch_ssd300_resnet50(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="ssd300_resnet50")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # STEP 2 : prepare model

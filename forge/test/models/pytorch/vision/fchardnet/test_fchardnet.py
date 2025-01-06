@@ -18,8 +18,10 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_fchardnet(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="fchardnet")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load and pre-process image

@@ -16,10 +16,12 @@ from test.utils import download_model
 def test_squeezebert_sequence_classification_pytorch(record_forge_property):
     variant = "squeezebert/squeezebert-mnli"
 
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="squeezebert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Bart tokenizer and model from HuggingFace

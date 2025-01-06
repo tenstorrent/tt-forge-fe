@@ -59,10 +59,12 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(variant)
@@ -105,10 +107,12 @@ variants = ["dandelin/vilt-b32-mlm"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)

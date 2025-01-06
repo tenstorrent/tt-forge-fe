@@ -98,8 +98,10 @@ def generate_model_whisper_congen_hf_pytorch(variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     framework_model, inputs = generate_model_whisper_congen_hf_pytorch(variant)
@@ -115,8 +117,10 @@ def test_whisper(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_pipeline(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="pipeline")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     pytest.skip("Already tested with past-cache and separated encoder-decoder")
@@ -177,8 +181,10 @@ def test_whisper_pipeline(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Not supported")
 def test_whisper_encoder(record_forge_property, test_device, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="encoder")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     pytest.skip("Already tested with past-cache and separated encoder-decoder")

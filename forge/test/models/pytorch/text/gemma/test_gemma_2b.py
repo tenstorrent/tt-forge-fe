@@ -55,10 +55,12 @@ variants = [
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rotary_embedding(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="rotary_embedding"
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
@@ -100,8 +102,10 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rms_norm(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="rms_norm")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
@@ -142,8 +146,10 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="attention")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
@@ -186,8 +192,10 @@ def test_gemma_2b_attention(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_mlp(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="mlp")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
@@ -227,10 +235,12 @@ def test_gemma_2b_mlp(record_forge_property, variant):
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_single_decoder(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="single_decoder"
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
@@ -273,8 +283,10 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random see for reproducibility
@@ -319,8 +331,10 @@ def test_gemma_2b(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="gen")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random seed for reproducibility
@@ -381,8 +395,10 @@ def test_gemma_2b_gen(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="gen_1x1")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Random seed for reproducibility

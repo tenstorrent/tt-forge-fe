@@ -23,8 +23,10 @@ variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_causal_lm(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.CAUSAL_LM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
@@ -68,8 +70,10 @@ def test_opt_causal_lm(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_qa(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.QA)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
@@ -109,10 +113,12 @@ def test_opt_qa(record_forge_property, variant):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_opt_sequence_classification(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace

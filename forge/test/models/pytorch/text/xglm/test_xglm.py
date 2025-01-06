@@ -17,8 +17,10 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     config = XGLMConfig.from_pretrained(variant)

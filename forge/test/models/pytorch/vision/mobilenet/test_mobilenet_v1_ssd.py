@@ -16,8 +16,10 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet", variant="ssd")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load PASCAL VOC dataset class labels

@@ -29,8 +29,10 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 def test_monodepth2(record_forge_property, variant):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="monodepth2", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # prepare model and input

@@ -15,8 +15,10 @@ from test.models.utils import Framework, build_module_name
 def test_stable_diffusion_pytorch(record_forge_property):
     variant = "CompVis/stable-diffusion-v1-4"
 
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     batch_size = 1

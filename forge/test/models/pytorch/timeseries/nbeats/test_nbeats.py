@@ -20,8 +20,10 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_seasonality_basis(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="seasionality_basis")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
@@ -48,8 +50,10 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_generic_basis(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="generic_basis")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
@@ -69,8 +73,10 @@ def test_nbeats_with_generic_basis(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_nbeats_with_trend_basis(record_forge_property):
+    # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="trend_basis")
 
+    # Record Forge Property
     record_forge_property("module_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
