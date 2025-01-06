@@ -100,5 +100,4 @@ def pytest_runtest_makereport(item, call):
 
     if item.user_properties:
         test_properties = {prop[0]: prop[1] for prop in item.user_properties}
-
         print(test_properties)
