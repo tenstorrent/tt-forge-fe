@@ -9,7 +9,6 @@ import torch
 from PIL import Image
 from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
 from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Task, Source
 from forge.verify.verify import verify
 

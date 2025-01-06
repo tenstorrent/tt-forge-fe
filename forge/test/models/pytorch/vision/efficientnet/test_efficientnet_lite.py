@@ -6,8 +6,6 @@ import forge
 
 ## https://github.com/RangiLyu/EfficientNet-Lite/
 from test.models.pytorch.vision.efficientnet.utils import src_efficientnet_lite as efflite
-import torch
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework
 from forge.verify.verify import verify
 

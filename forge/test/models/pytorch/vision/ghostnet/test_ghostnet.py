@@ -12,8 +12,6 @@ from timm.data.transforms_factory import create_transform
 from test.utils import download_model
 
 import forge
-import torch
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Source
 from forge.verify.verify import verify
 

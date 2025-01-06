@@ -11,8 +11,6 @@ from transformers import (
     BertForSequenceClassification,
     BertForQuestionAnswering,
 )
-import torch
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 

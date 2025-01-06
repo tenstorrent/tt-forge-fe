@@ -14,7 +14,6 @@ import forge
 from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4_Weights, EfficientNet_B0_Weights
 from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Source
 from forge.verify.verify import verify
 

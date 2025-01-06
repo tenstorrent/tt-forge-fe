@@ -12,7 +12,6 @@ from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
 import requests
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework
 
 

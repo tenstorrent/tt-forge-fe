@@ -5,9 +5,7 @@ import pytest
 from test.utils import download_model
 import forge
 from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
-from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Task
-import torch
 from forge.verify.verify import verify
 
 

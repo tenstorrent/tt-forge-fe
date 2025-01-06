@@ -12,7 +12,7 @@ import torch
 from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
 import forge
 from test.models.utils import build_module_name, Framework, Task
-from forge.verify.verify import verify, VerifyConfig
+from forge.verify.verify import verify
 
 
 class Wrapper(torch.nn.Module):

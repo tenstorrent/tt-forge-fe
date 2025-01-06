@@ -4,7 +4,6 @@
 import forge
 import torchvision.transforms as transforms
 from datasets import load_dataset
-from forge.verify.compare import compare_with_golden
 import pytest
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
