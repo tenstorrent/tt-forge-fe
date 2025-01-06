@@ -10,6 +10,7 @@ import forge
 from forge.transformers.pipeline import NLPPipelineWrapper
 from test.models.pytorch.text.mistral.utils.model_utils import BaseModelWrapper
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -25,7 +26,8 @@ def test_mistral_decoder_layer(record_forge_property, variant):
 
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
-    module = model.model.layers[0]
+
+    framework_model = model.model.layers[0]
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a problem with valid node placement can occur
@@ -34,8 +36,12 @@ def test_mistral_decoder_layer(record_forge_property, variant):
     seqlen = 128
 
     sample_inputs = torch.randn(batch_size, seqlen, hidden_dim)
+
     inputs = [sample_inputs]
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -54,11 +60,11 @@ def test_mistral(record_forge_property, variant):
     configuration.use_cache = False
     configuration.return_dict = False
 
-    module = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
+    framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
-    module.eval()
-    for param in module.parameters():
+    framework_model.eval()
+    for param in framework_model.parameters():
         param.requires_grad = False
 
     # test should work for batch size 1 and seqlen <= 128
@@ -68,10 +74,12 @@ def test_mistral(record_forge_property, variant):
     inputs = [sample_inputs]
 
     compiled_model = forge.compile(
-        module,
+        framework_model,
         inputs,
         module_name,
     )
+
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]

@@ -12,6 +12,7 @@ import forge
 from test.utils import download_model
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 def cpu_sanity_run_0():
@@ -75,19 +76,18 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    pytorch_model = Wrapper(pytorch_model)
+    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    framework_model = Wrapper(framework_model)
 
     # Define inputs
     x = torch.rand((1, 1, 7, 256)).to(torch.float32)
     pos_ids = torch.arange(7).unsqueeze(0).to(torch.float32)
 
-    # Sanity run
-    out = pytorch_model(x, pos_ids)
-    print(out)
-
     inputs = [x, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -117,17 +117,17 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    pytorch_model = Wrapper(pytorch_model)
+    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    framework_model = Wrapper(framework_model)
 
     # Define inputs
     x = torch.rand((1, 7, 2048)).to(torch.float32)
 
-    # Sanity run
-    out = pytorch_model(x)
-    print(out)
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -157,20 +157,19 @@ def test_gemma_2b_attention(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    pytorch_model = Wrapper(pytorch_model)
+    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    framework_model = Wrapper(framework_model)
 
     # Define inputs
     hidden_states = torch.rand((1, 7, 2048)).to(torch.float32)
     attn_mask = torch.ones((1, 1, 7, 7)).to(torch.float32)
     pos_ids = torch.arange(7).unsqueeze(0).to(torch.float32)
 
-    # Sanity run
-    out = pytorch_model(hidden_states, attn_mask, pos_ids)
-    print(out)
-
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -200,18 +199,16 @@ def test_gemma_2b_mlp(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    pytorch_model = Wrapper(pytorch_model)
+    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    framework_model = Wrapper(framework_model)
 
     # Define inputs
     x = torch.rand((1, 7, 2048)).to(torch.float32)
-
-    # Sanity run
-    out = pytorch_model(x)
-    print(out)
-
     inputs = [x]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -243,20 +240,19 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
-    pytorch_model = Wrapper(pytorch_model)
+    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    framework_model = Wrapper(framework_model)
 
     # Define inputs
     hidden_states = torch.rand((1, 7, 2048)).to(torch.float32)
     attn_mask = torch.ones((1, 1, 7, 7)).to(torch.float32)
     pos_ids = torch.arange(7).unsqueeze(0).to(torch.float32)
 
-    # Sanity run
-    out = pytorch_model(hidden_states, attn_mask, pos_ids)
-    print(out)
-
     inputs = [hidden_states, attn_mask, pos_ids]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -275,7 +271,7 @@ def test_gemma_2b(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GemmaConfig(**config_dict)
-    pytorch_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
+    framework_model = download_model(GemmaForCausalLM.from_pretrained, variant, config=config)
 
     # Load tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -286,7 +282,7 @@ def test_gemma_2b(record_forge_property, variant):
     inputs = tokenizer(prompt, return_tensors="pt")
 
     # Sanity run
-    generate_ids = pytorch_model.generate(inputs.input_ids, max_length=30)
+    generate_ids = framework_model.generate(inputs.input_ids, max_length=30)
     generated_text = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[
         0
     ]
@@ -297,7 +293,10 @@ def test_gemma_2b(record_forge_property, variant):
     attn_mask = inputs["attention_mask"]
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(pytorch_model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -422,7 +421,3 @@ def test_gemma_2b_1x1_gen(record_forge_property, variant):
     for sequence in generated_tt_text:
         tt_ans = sequence["generated_text"][len(prompt) :]
         print(f"{tt_ans}")
-
-
-if __name__ == "__main__":
-    test_gemma_2b_gen()

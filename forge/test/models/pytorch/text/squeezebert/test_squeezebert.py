@@ -6,6 +6,7 @@ import forge
 import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -21,7 +22,7 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property):
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
-    model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
 
     # Example from multi-nli validation set
     text = """Hello, my dog is cute"""
@@ -36,4 +37,7 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property):
     )
 
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

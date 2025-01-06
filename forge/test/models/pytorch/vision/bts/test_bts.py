@@ -9,6 +9,7 @@ import forge
 from PIL import Image
 import pytest
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 # import sys
 
@@ -37,7 +38,7 @@ def test_bts_pytorch(record_forge_property, variant):
     image = torch.unsqueeze(image, 0)
 
     # Get the model
-    model = get_bts_model(variant)
+    framework_model = get_bts_model(variant)
     checkpoint = torch.load(
         "third_party/confidential_customer_models/internal/bts/files/weights/nyu/"
         + str(variant)
@@ -46,8 +47,8 @@ def test_bts_pytorch(record_forge_property, variant):
         + ".pt",
         map_location=torch.device("cpu"),
     )
-    model.load_state_dict(checkpoint)
-    model.eval()
+    framework_model.load_state_dict(checkpoint)
+    framework_model.eval()
 
     class BtsModel_wrapper(torch.nn.Module):
         def __init__(self, model, focal):
@@ -58,9 +59,11 @@ def test_bts_pytorch(record_forge_property, variant):
         def forward(self, input_tensor):
             return self.model(input_tensor, self.focal)
 
-    bts_model_wrapper = BtsModel_wrapper(model, focal=518.8579)
-    bts_model_wrapper.eval()
+    framework_model = BtsModel_wrapper(framework_model, focal=518.8579)
+    framework_model.eval()
 
     inputs = [image]
 
-    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

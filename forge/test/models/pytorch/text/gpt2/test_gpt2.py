@@ -7,13 +7,14 @@ import torch
 import forge
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework
+from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_gpt2_text_gen(record_forge_property):
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gpt2", task=TEXT_GENERATION)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gpt2", task=Task.TEXT_GENERATION)
 
     record_forge_property("module_name", module_name)
 
@@ -39,15 +40,12 @@ def test_gpt2_text_gen(record_forge_property):
     ).to(torch.int64)
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model = Wrapper(model)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 class Wrapper(torch.nn.Module):
@@ -68,7 +66,7 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(record_forge_property):
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gpt2", task=TEXT_GENERATION, suffix="past_cache"
+        framework=Framework.PYTORCH, model="gpt2", task=Task.TEXT_GENERATION, suffix="past_cache"
     )
 
     record_forge_property("module_name", module_name)
@@ -114,4 +112,3 @@ def test_gpt2_past_cache(record_forge_property):
         training=False,
     )
     forge.run_forward()
-    breakpoint()

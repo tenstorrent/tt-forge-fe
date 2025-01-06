@@ -6,6 +6,7 @@ from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
@@ -24,7 +25,9 @@ def test_xglm_causal_lm(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = XGLMConfig(**config_dict)
-    model = download_model(XGLMForCausalLM.from_pretrained, variant, config=config)
+
+    framework_model = download_model(XGLMForCausalLM.from_pretrained, variant, config=config)
+
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -39,4 +42,7 @@ def test_xglm_causal_lm(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

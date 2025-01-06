@@ -7,6 +7,7 @@ from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import torch
 import re
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -24,13 +25,13 @@ def test_qwen1_5_causal_lm(record_forge_property):
     config.return_dict = False
 
     # Load model and tokenizer with config
-    model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
+    framework_model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
     tokenizer = Qwen2Tokenizer.from_pretrained(variant)
     tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Disable DynamicCache
     # See: https://github.com/tenstorrent/tt-buda/issues/42
-    model._supports_cache_class = False
+    framework_model._supports_cache_class = False
 
     # Example usage
     batch_size = 1
@@ -43,10 +44,9 @@ def test_qwen1_5_causal_lm(record_forge_property):
 
     inputs = [input_ids, attention_mask]
 
-    # Pass the tensors to the model
-    op = model(input_ids, attention_mask)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    verify(inputs, framework_model, compiled_model)
 
 
 def parse_chat_completion(text: str):
@@ -75,13 +75,13 @@ def test_qwen1_5_chat(record_forge_property):
     config.return_dict = False
 
     # Load model and tokenizer with config
-    model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
+    framework_model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
     tokenizer = Qwen2Tokenizer.from_pretrained(variant)
     tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Disable DynamicCache
     # See: https://github.com/tenstorrent/tt-buda/issues/42
-    model._supports_cache_class = False
+    framework_model._supports_cache_class = False
 
     batch_size = 1
     # Sample chat messages
@@ -108,7 +108,6 @@ def test_qwen1_5_chat(record_forge_property):
 
     inputs = [input_ids, attention_mask]
 
-    # Pass the tensors to the model
-    op = model(input_ids, attention_mask)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    verify(inputs, framework_model, compiled_model)

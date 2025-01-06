@@ -7,6 +7,7 @@ import pytest
 import numpy as np
 from PIL import Image
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -33,8 +34,12 @@ def test_fchardnet(record_forge_property):
     # Load model
     device = torch.device("cpu")
     arch = {"arch": "hardnet"}
-    model = get_model(arch, 19).to(device)
-    model = fuse_bn_recursively(model)
-    model.eval()
+    framework_model = get_model(arch, 19).to(device)
+    framework_model = fuse_bn_recursively(model)
+    framework_model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=module_name)
+    inputs = [input_image]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

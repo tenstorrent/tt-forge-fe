@@ -17,6 +17,7 @@ from timm.data.transforms_factory import create_transform
 import urllib
 from torchvision import transforms
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
@@ -30,8 +31,8 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -53,7 +54,11 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -71,8 +76,8 @@ def test_vgg_19_hf_pytorch(record_forge_property):
     vgg16, vgg16_bn
     vgg19, vgg19_bn
     """
-    model = download_model(VGG.from_pretrained, "vgg19")
-    model.eval()
+    framework_model = download_model(VGG.from_pretrained, "vgg19")
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -93,7 +98,12 @@ def test_vgg_19_hf_pytorch(record_forge_property):
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
         )
         input_batch = torch.rand(1, 3, 224, 224)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def preprocess_timm_model(model_name):
@@ -125,9 +135,13 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     torch.multiprocessing.set_sharing_strategy("file_system")
-    model, image_tensor = download_model(preprocess_timm_model, variant)
+    framework_model, image_tensor = download_model(preprocess_timm_model, variant)
 
-    compiled_model = forge.compile(model, sample_inputs=[image_tensor], module_name=module_name)
+    inputs = [image_tensor]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -139,8 +153,8 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -162,4 +176,8 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

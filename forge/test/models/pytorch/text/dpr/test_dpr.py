@@ -15,6 +15,7 @@ from transformers import (
 import torch
 from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
@@ -32,7 +33,7 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     # Variants: facebook/dpr-ctx_encoder-single-nq-base, facebook/dpr-ctx_encoder-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRContextEncoderTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
+    framework_model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
 
     # Load data sample
     sample_text = "Hello, is my dog cute?"
@@ -47,14 +48,10 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
@@ -74,7 +71,7 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRQuestionEncoderTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
+    framework_model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
 
     # Load data sample
     sample_text = "Hello, is my dog cute?"
@@ -89,14 +86,10 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
@@ -114,7 +107,7 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRReaderTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DPRReader.from_pretrained, model_ckpt)
+    framework_model = download_model(DPRReader.from_pretrained, model_ckpt)
 
     # Data preprocessing
     input_tokens = tokenizer(
@@ -128,11 +121,7 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)

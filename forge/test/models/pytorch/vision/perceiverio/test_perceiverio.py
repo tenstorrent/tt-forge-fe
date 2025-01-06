@@ -14,6 +14,7 @@ from transformers import (
     PerceiverForImageClassificationFourier,
 )
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 def get_sample_data(model_name):
@@ -57,17 +58,22 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
 
     # Load the model from HuggingFace
     if variant == "deepmind/vision-perceiver-learned":
-        model = PerceiverForImageClassificationLearned.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationLearned.from_pretrained(variant)
 
     elif variant == "deepmind/vision-perceiver-conv":
-        model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant)
 
     elif variant == "deepmind/vision-perceiver-fourier":
-        model = PerceiverForImageClassificationFourier.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationFourier.from_pretrained(variant)
 
     else:
         logger.info(f"The model {variant} is not supported")
 
-    model.eval()
+    framework_model.eval()
+
+    inputs = [pixel_values]
+
     # Run inference on Tenstorrent device
-    compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

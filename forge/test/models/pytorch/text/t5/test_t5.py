@@ -10,6 +10,7 @@ import torch
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -125,9 +126,13 @@ def test_t5_generation(record_forge_property, variant):
     elif "t5-large" in variant:
         encoder_outputs = torch.randn(1, 256, 1024)
 
+    framework_model = Wrapper(model)
+
     inputs = [decoder_input_ids, encoder_outputs]
-    variant_name = variant.replace("-", "_").replace("/", "_")
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 class T5_encoder(torch.nn.Module):

@@ -11,6 +11,7 @@ import pytest
 import forge
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -46,6 +47,8 @@ def test_alexnet_torchhub(record_forge_property):
     inputs = [img_tensor]
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
+    verify(inputs, framework_model, compiled_model)
+
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
@@ -79,3 +82,5 @@ def test_alexnet_osmr(record_forge_property):
 
     inputs = [img_tensor]
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

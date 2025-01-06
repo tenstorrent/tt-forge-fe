@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import torch
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 import forge
@@ -39,15 +40,19 @@ def test_pidnet_pytorch(record_forge_property, variant):
 
     # Load model
     cfg_model_pretrained, cfg_model_state_file = update_model_config(variant)
-    model = get_seg_model(variant, cfg_model_pretrained, imgnet_pretrained=True)
+    framework_model = get_seg_model(variant, cfg_model_pretrained, imgnet_pretrained=True)
     pretrained_dict = torch.load(cfg_model_state_file, map_location=torch.device("cpu"))
 
     if "state_dict" in pretrained_dict:
         pretrained_dict = pretrained_dict["state_dict"]
-    model_dict = model.state_dict()
+    model_dict = framework_model.state_dict()
     pretrained_dict = {k[6:]: v for k, v in pretrained_dict.items() if k[6:] in model_dict.keys()}
     model_dict.update(pretrained_dict)
-    model.load_state_dict(model_dict)
-    model.eval()
+    framework_model.load_state_dict(model_dict)
+    framework_model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name=module_name)
+    inputs = [input_image]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

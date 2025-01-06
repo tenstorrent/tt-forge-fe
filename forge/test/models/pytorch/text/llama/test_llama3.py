@@ -10,6 +10,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequen
 import forge
 from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 variants = [
@@ -144,13 +145,9 @@ def test_llama3_causal_lm(record_forge_property, variant):
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
 
-    # Sanity run
+    # Get Inputs
     input_ids = input_ids.to(torch.int32)
     attn_mask = attn_mask.to(torch.float32)
-
-    out = framework_model(input_ids, attn_mask)
-    print(out)
-
     inputs = [input_ids, attn_mask]
 
     compiled_model = forge.compile(
@@ -158,6 +155,8 @@ def test_llama3_causal_lm(record_forge_property, variant):
         inputs,
         module_name,
     )
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -182,7 +181,6 @@ def test_llama3_sequence_classification(record_forge_property, variant):
     # Tokenize input
     inputs = tokenizer(input_prompt, return_tensors="pt")
     input_ids = inputs["input_ids"]
-
     inputs = [input_ids]
 
     compiled_model = forge.compile(
@@ -190,3 +188,5 @@ def test_llama3_sequence_classification(record_forge_property, variant):
         inputs,
         module_name,
     )
+
+    verify(inputs, framework_model, compiled_model)

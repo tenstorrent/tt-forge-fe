@@ -8,6 +8,8 @@ import urllib
 from PIL import Image
 from torchvision import transforms
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
+
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
@@ -26,7 +28,7 @@ def test_hardnet_pytorch(record_forge_property, variant):
     record_forge_property("module_name", module_name)
 
     # load only the model architecture without pre-trained weights.
-    model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
+    framework_model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
     # load the weights downloaded from https://github.com/PingoLH/Pytorch-HarDNet
     checkpoint_path = f"hardnet/weights/{variant}.pth"
@@ -35,8 +37,8 @@ def test_hardnet_pytorch(record_forge_property, variant):
     state_dict = torch.load(checkpoint_path, map_location=torch.device("cpu"))
 
     # Inject weights into model
-    model.load_state_dict(state_dict)
-    model.eval()
+    framework_model.load_state_dict(state_dict)
+    framework_model.eval()
 
     # STEP 2: Prepare input
     url, filename = (
@@ -61,4 +63,9 @@ def test_hardnet_pytorch(record_forge_property, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

@@ -16,6 +16,7 @@ from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
 from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
@@ -68,14 +69,11 @@ def test_efficientnet_timm(record_forge_property, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
-    co_out = compiled_model(img_tensor)
+    inputs = [img_tensor]
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = framework_model(img_tensor)
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 def get_state_dict(self, *args, **kwargs):
@@ -131,11 +129,8 @@ def test_efficientnet_torchvision(record_forge_property, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=module_name)
-    co_out = compiled_model(img_tensor)
+    inputs = [img_tensor]
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = framework_model(img_tensor)
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)

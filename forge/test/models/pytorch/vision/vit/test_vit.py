@@ -9,6 +9,7 @@ from datasets import load_dataset
 from PIL import Image
 from transformers import AutoImageProcessor, ViTForImageClassification
 from test.models.utils import build_module_name, Framework, Task, Source
+from forge.verify.verify import verify
 
 
 dataset = load_dataset("huggingface/cats-image")
@@ -45,8 +46,8 @@ def test_vit_classify_224_hf_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(
-        variant,
-    )
+    framework_model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(variant)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

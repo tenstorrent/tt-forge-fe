@@ -8,6 +8,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -32,6 +33,11 @@ def test_monodle_pytorch(record_forge_property):
     )
     img_tensor = transform(image).unsqueeze(0)
 
-    pytorch_model = CenterNet3D(backbone="dla34")
-    pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=module_name)
+    framework_model = CenterNet3D(backbone="dla34")
+    framework_model.eval()
+
+    inputs = [img_tensor]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

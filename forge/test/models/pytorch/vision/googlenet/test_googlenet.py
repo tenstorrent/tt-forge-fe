@@ -9,6 +9,7 @@ import forge
 from PIL import Image
 from loguru import logger
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -21,8 +22,8 @@ def test_googlenet_pytorch(record_forge_property):
     # Create Forge module from PyTorch model
     # Two ways to load the same model
     # model = torch.hub.load('pytorch/vision:v0.10.0', 'googlenet', pretrained=True)
-    model = download_model(models.googlenet, pretrained=True)
-    model.eval()
+    framework_model = download_model(models.googlenet, pretrained=True)
+    framework_model.eval()
 
     # Image preprocessing
     try:
@@ -43,5 +44,9 @@ def test_googlenet_pytorch(record_forge_property):
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"
         )
         input_batch = torch.rand(1, 3, 224, 224)
-    input_batch_list = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=input_batch_list, module_name=module_name)
+
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

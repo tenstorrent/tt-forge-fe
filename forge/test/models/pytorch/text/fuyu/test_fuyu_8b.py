@@ -28,6 +28,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
     FuyuModelTxtDecoderWrapper,
 )
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -54,8 +55,8 @@ def test_fuyu8b(record_forge_property):
     # Create Forge module from PyTorch model
     fuyu_model = FuyuForCausalLM.from_pretrained(variant, config=config)
     # fuyu_model = FuyuForCausalLM(config=config)
-    model = FuyuModelWrapper(fuyu_model)
-    model.eval()
+    framework_model = FuyuModelWrapper(fuyu_model)
+    framework_model.eval()
 
     # Prepare inputs
     text_prompt = "Generate a coco-style caption.\n"
@@ -75,7 +76,11 @@ def test_fuyu8b(record_forge_property):
     inputs_embeds = inputs_embeds.clone().detach()
 
     inputs = [inputs_embeds]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
+
     os.remove("bus.png")
 
 

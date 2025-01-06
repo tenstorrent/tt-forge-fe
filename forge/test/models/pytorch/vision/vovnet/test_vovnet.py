@@ -9,6 +9,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
 from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, preprocess_steps, preprocess_timm_model
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(variant):
@@ -30,10 +31,11 @@ def test_vovnet_osmr_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch():
@@ -51,9 +53,11 @@ def test_vovnet_v1_39_stigma_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
+    framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vovnet57_imgcls_stigma_pytorch(variant):
@@ -72,8 +76,11 @@ def test_vovnet_v1_57_stigma_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vovnet_imgcls_timm_pytorch(variant):
@@ -93,7 +100,9 @@ def test_vovnet_timm_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
+    framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

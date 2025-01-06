@@ -10,6 +10,7 @@ from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_da
 
 import forge
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 variants_img_classification = [
@@ -39,13 +40,16 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
     config = SegformerConfig(**config_dict)
 
     # Load the model from HuggingFace
-    model = SegformerForImageClassification.from_pretrained(variant, config=config)
-    model.eval()
+    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
+    framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
+    inputs = [pixel_values]
 
-    compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 variants_semseg = [
@@ -68,9 +72,13 @@ def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant)
     record_forge_property("module_name", module_name)
 
     # Load the model from HuggingFace
-    model = SegformerForSemanticSegmentation.from_pretrained(variant)
-    model.eval()
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)
+    framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    compiled_model = forge.compile(model, sample_inputs=[pixel_values], module_name=module_name)
+    inputs = [pixel_values]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

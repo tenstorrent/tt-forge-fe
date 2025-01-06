@@ -104,6 +104,8 @@ def test_whisper(record_forge_property, variant):
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
+    verify(inputs, framework_model, compiled_model)
+
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)

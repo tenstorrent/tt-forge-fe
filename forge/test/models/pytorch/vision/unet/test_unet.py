@@ -14,6 +14,7 @@ import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
@@ -33,10 +34,11 @@ def test_unet_osmr_cityscape_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
-        "unet_cityscapes",
-    )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def get_imagenet_sample():
@@ -75,10 +77,14 @@ def test_unet_holocron_pytorch(record_forge_property):
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
-    model = download_model(unet_tvvgg11, pretrained=True).eval()
+    framework_model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name=module_name)
+    inputs = [img_tensor]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_unet_imgseg_smp_pytorch(variant):
@@ -115,10 +121,11 @@ def test_unet_qubvel_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
-        None,
-    )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
@@ -163,7 +170,9 @@ def test_unet_torchhub_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
+    framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

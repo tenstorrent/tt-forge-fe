@@ -8,6 +8,7 @@ import cv2
 import forge
 import torch
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -26,9 +27,9 @@ def test_blazepose_detector_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # Load BlazePose Detector
-    pose_detector = BlazePose()
-    pose_detector.load_weights("mediapipepytorch/blazepose.pth")
-    pose_detector.load_anchors("mediapipepytorch/anchors_pose.npy")
+    framework_model = BlazePose()
+    framework_model.load_weights("mediapipepytorch/blazepose.pth")
+    framework_model.load_anchors("mediapipepytorch/anchors_pose.npy")
 
     # Load data sample
     orig_image = cv2.imread("files/samples/girl.png")
@@ -37,7 +38,12 @@ def test_blazepose_detector_pytorch(record_forge_property):
     _, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name=module_name)
+
+    inputs = [img2]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -48,10 +54,14 @@ def test_blazepose_regressor_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # Load BlazePose Landmark Regressor
-    pose_regressor = BlazePoseLandmark()
-    pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
-    img2 = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name=module_name)
+    framework_model = BlazePoseLandmark()
+    framework_model.load_weights("mediapipepytorch/blazepose_landmark.pth")
+
+    inputs = [torch.rand(1, 3, 256, 256)]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -62,10 +72,10 @@ def test_blaze_palm_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
-    palm_detector = BlazePalm()
-    palm_detector.load_weights("mediapipepytorch/blazepalm.pth")
-    palm_detector.load_anchors("mediapipepytorch/anchors_palm.npy")
-    palm_detector.min_score_thresh = 0.75
+    framework_model = BlazePalm()
+    framework_model.load_weights("mediapipepytorch/blazepalm.pth")
+    framework_model.load_anchors("mediapipepytorch/anchors_palm.npy")
+    framework_model.min_score_thresh = 0.75
 
     # Load data sample
     orig_image = cv2.imread("files/samples/girl.png")
@@ -74,7 +84,12 @@ def test_blaze_palm_pytorch(record_forge_property):
     img1, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name=module_name)
+
+    inputs = [img2]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip(reason="dependent on CCM repo")
@@ -85,8 +100,11 @@ def test_blaze_hand_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
-    hand_regressor = BlazeHandLandmark()
-    hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
+    framework_model = BlazeHandLandmark()
+    framework_model.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
-    sample_tensor = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name=module_name)
+    inputs = [torch.rand(1, 3, 256, 256)]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

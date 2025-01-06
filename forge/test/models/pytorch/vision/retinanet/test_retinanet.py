@@ -11,6 +11,7 @@ from test.models.pytorch.vision.retinanet.utils.model import Model
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 import forge
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 variants = [
@@ -50,13 +51,16 @@ def test_retinanet(record_forge_property, variant):
             if file.endswith(".pth"):
                 checkpoint_path = os.path.join(root, file)
 
-    model = Model.load(checkpoint_path)
-    model.eval()
+    framework_model = Model.load(checkpoint_path)
+    framework_model.eval()
 
     # Prepare input
     input_batch = img_preprocess()
     inputs = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)

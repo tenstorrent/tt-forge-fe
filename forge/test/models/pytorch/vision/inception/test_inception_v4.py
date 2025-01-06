@@ -13,6 +13,7 @@ import forge
 from test.utils import download_model
 from test.models.pytorch.vision.inception.utils.model_utils import get_image, preprocess_timm_model
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
@@ -34,8 +35,11 @@ def test_inception_v4_osmr_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
@@ -51,6 +55,8 @@ def test_inception_v4_timm_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
+    framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

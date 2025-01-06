@@ -11,6 +11,7 @@ from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedL
 from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
 from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Task, Source
+from forge.verify.verify import verify
 
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -56,8 +57,11 @@ def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0], inputs[1]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=[inputs[0], inputs[1]], module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(variant):
@@ -97,12 +101,8 @@ def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)

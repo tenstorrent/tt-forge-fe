@@ -6,6 +6,7 @@ from test.utils import download_model
 import forge
 from transformers import AutoTokenizer, OPTForCausalLM, OPTConfig, OPTForQuestionAnswering, OPTForSequenceClassification
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
@@ -27,7 +28,9 @@ def test_opt_causal_lm(record_forge_property, variant):
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = OPTConfig(**config_dict)
-    model = download_model(OPTForCausalLM.from_pretrained, variant, config=config)
+
+    framework_model = download_model(OPTForCausalLM.from_pretrained, variant, config=config)
+
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -42,11 +45,14 @@ def test_opt_causal_lm(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+
     compiled_model = forge.compile(
-        model,
+        framework_model,
         inputs,
         module_name,
     )
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -62,7 +68,7 @@ def test_opt_qa(record_forge_property, variant):
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(OPTForQuestionAnswering.from_pretrained, variant, torchscript=True)
+    framework_model = download_model(OPTForQuestionAnswering.from_pretrained, variant, torchscript=True)
 
     # Load data sample
     question, context = "Who was Jim Henson?", "Jim Henson was a nice puppet"
@@ -78,11 +84,14 @@ def test_opt_qa(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+
     compiled_model = forge.compile(
-        model,
+        framework_model,
         inputs,
         module_name,
     )
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -101,7 +110,7 @@ def test_opt_sequence_classification(record_forge_property, variant):
     # on a downstream task. Code is for demonstration purposes only.
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(OPTForSequenceClassification.from_pretrained, variant, torchscript=True)
+    framework_model = download_model(OPTForSequenceClassification.from_pretrained, variant, torchscript=True)
 
     # Load data sample
     review = "the movie was great!"
@@ -116,8 +125,11 @@ def test_opt_sequence_classification(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+
     compiled_model = forge.compile(
-        model,
+        framework_model,
         inputs,
         module_name,
     )
+
+    verify(inputs, framework_model, compiled_model)

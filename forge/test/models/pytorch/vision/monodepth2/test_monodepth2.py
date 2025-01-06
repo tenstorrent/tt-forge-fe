@@ -6,6 +6,8 @@ import pytest
 import forge
 from test.models.pytorch.vision.monodepth2.utils.utils import download_model, load_model, load_input
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
+
 
 variants = [
     "mono_640x192",
@@ -28,8 +30,12 @@ def test_monodepth2(record_forge_property, variant):
 
     # prepare model and input
     download_model(variant)
-    model, height, width = load_model(variant)
+    framework_model, height, width = load_model(variant)
     input_tensor = load_input(height, width)
 
+    inputs = [input_tensor]
+
     # Forge inference
-    compiled_model = forge.compile(model, sample_inputs=[input_tensor], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

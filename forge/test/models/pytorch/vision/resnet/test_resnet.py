@@ -17,6 +17,7 @@ from timm.data.transforms_factory import create_transform
 from test.utils import download_model
 import forge
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 def generate_model_resnet_imgcls_hf_pytorch(variant):
@@ -49,11 +50,13 @@ def test_resnet(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
+    framework_model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
         "microsoft/resnet-50",
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_resnet_imgcls_timm_pytorch(variant):
@@ -85,7 +88,9 @@ def test_resnet_timm(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
+    framework_model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
         "resnet50",
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

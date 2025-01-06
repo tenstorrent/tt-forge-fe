@@ -19,6 +19,7 @@ from test.models.pytorch.vision.dla.utils.dla_model import (
     dla169,
 )
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 variants_func = {
@@ -61,6 +62,11 @@ def test_dla_pytorch(record_forge_property, variant):
     )
     img_tensor = transform(image).unsqueeze(0)
 
-    pytorch_model = func(pretrained="imagenet")
-    pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name=module_name)
+    framework_model = func(pretrained="imagenet")
+    framework_model.eval()
+
+    inputs = [img_tensor]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

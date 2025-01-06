@@ -10,6 +10,7 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 def generate_model_xception_imgcls_timm(variant):
@@ -42,7 +43,8 @@ def test_xception_timm(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    (model, inputs,) = generate_model_xception_imgcls_timm(
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

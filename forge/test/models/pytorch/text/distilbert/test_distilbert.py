@@ -4,7 +4,9 @@
 import pytest
 from test.utils import download_model
 import forge
-from forge.test.models.utils import build_module_name
+from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
+
 from transformers import (
     DistilBertForMaskedLM,
     DistilBertTokenizer,
@@ -32,7 +34,7 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
-    model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
+    framework_model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -47,7 +49,10 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -60,7 +65,7 @@ def test_distilbert_question_answering_pytorch(record_forge_property):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-cased-distilled-squad"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DistilBertForQuestionAnswering.from_pretrained, model_ckpt)
+    framework_model = download_model(DistilBertForQuestionAnswering.from_pretrained, model_ckpt)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -85,7 +90,10 @@ def test_distilbert_question_answering_pytorch(record_forge_property):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -100,7 +108,7 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property):
     # Load DistilBert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-uncased-finetuned-sst-2-english"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DistilBertForSequenceClassification.from_pretrained, model_ckpt)
+    framework_model = download_model(DistilBertForSequenceClassification.from_pretrained, model_ckpt)
 
     # Load data sample
     review = "the movie was great!"
@@ -115,7 +123,10 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -130,7 +141,7 @@ def test_distilbert_token_classification_pytorch(record_forge_property):
     # Load DistilBERT tokenizer and model from HuggingFace
     model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DistilBertForTokenClassification.from_pretrained, model_ckpt)
+    framework_model = download_model(DistilBertForTokenClassification.from_pretrained, model_ckpt)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -145,4 +156,7 @@ def test_distilbert_token_classification_pytorch(record_forge_property):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

@@ -13,6 +13,8 @@ import pytest
 import forge
 from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
+
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
@@ -33,8 +35,8 @@ def test_phi2_clm(record_forge_property, variant):
     config = PhiConfig(**config_dict)
 
     # Load model and tokenizer from HuggingFace
-    model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, config=config)
-    model.eval()
+    framework_model = PhiForCausalLM.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model.eval()
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 
@@ -55,16 +57,10 @@ def test_phi2_clm(record_forge_property, variant):
 
     inputs = [input_ids, attn_mask]
 
-    # Sanity
-    fw_out = model(*inputs)
-
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -86,8 +82,8 @@ def test_phi2_token_classification(record_forge_property, variant):
 
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    model = PhiForTokenClassification.from_pretrained(variant, trust_remote_code=True, config=config)
-    model.eval()
+    framework_model = PhiForTokenClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model.eval()
 
     # input_prompt
     input_prompt = "HuggingFace is a company based in Paris and New York"
@@ -97,17 +93,10 @@ def test_phi2_token_classification(record_forge_property, variant):
 
     inputs = [inputs["input_ids"]]
 
-    # Sanity
-    fw_out = model(*inputs)
-
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -130,8 +119,8 @@ def test_phi2_sequence_classification(record_forge_property, variant):
 
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    model = PhiForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
-    model.eval()
+    framework_model = PhiForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model.eval()
 
     # input_prompt
     input_prompt = "I am not satisfied with the quality of this product."
@@ -141,14 +130,7 @@ def test_phi2_sequence_classification(record_forge_property, variant):
 
     inputs = [inputs["input_ids"]]
 
-    # Sanity
-    fw_out = model(*inputs)
-
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)

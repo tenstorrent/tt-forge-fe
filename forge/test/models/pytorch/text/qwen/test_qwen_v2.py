@@ -5,6 +5,7 @@ import pytest
 import forge
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 # Variants for testing
@@ -29,8 +30,8 @@ def test_qwen_clm(record_forge_property, variant):
     record_forge_property("module_name", module_name)
 
     # Load model and tokenizer
-    model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
-    model.config.return_dict = False
+    framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
+    framework_model.config.return_dict = False
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     # Prepare input
@@ -43,4 +44,7 @@ def test_qwen_clm(record_forge_property, variant):
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
     inputs = [input_ids, attention_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

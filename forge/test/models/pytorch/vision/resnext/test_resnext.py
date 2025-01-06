@@ -11,6 +11,7 @@ from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tenso
 
 import forge
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -25,15 +26,15 @@ def test_resnext_50_torchhub_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -48,15 +49,15 @@ def test_resnext_101_torchhub_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -72,15 +73,15 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property):
 
     # STEP 2: Create Forge module from PyTorch model
     # 4 variants
-    model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -93,16 +94,15 @@ def test_resnext_14_osmr_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
-    # tt_model = forge.PyTorchModule("pt_resnext14_osmr", model)
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -115,15 +115,15 @@ def test_resnext_26_osmr_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -136,15 +136,15 @@ def test_resnext_50_osmr_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -157,12 +157,12 @@ def test_resnext_101_osmr_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

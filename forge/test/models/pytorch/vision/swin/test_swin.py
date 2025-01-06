@@ -23,16 +23,17 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     # model = SwinForImageClassification.from_pretrained("microsoft/swin-tiny-patch4-window7-224", torchscript=True)
-    model = download_model(timm.create_model, variant, pretrained=True)
-    model.eval()
+    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    framework_model.eval()
 
     # STEP 2: Prepare input samples
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
 
     # STEP 3: Run inference on Tenstorrent device
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    verify(inputs, model, compiled_model)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -50,6 +51,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
     verify(inputs, framework_model, compiled_model)
 
 
@@ -70,6 +72,7 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
     verify(inputs, framework_model, compiled_model)
 
 
@@ -90,4 +93,5 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
     verify(inputs, framework_model, compiled_model)

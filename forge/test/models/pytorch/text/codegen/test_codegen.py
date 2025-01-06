@@ -8,15 +8,17 @@ from test.utils import download_model
 from transformers import AutoTokenizer, CodeGenForCausalLM
 
 import forge
+import torch
+from forge.verify.compare import compare_with_golden
+from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
+
 
 variants = [
     "Salesforce/codegen-350M-mono",
     # "Salesforce/codegen-350M-multi", # Currently not supported
     # "Salesforce/codegen-350M-nl", # Currently not supported
 ]
-import torch
-from forge.verify.compare import compare_with_golden
-from test.models.utils import build_module_name, Framework, Task
 
 
 @pytest.mark.nightly
@@ -62,12 +64,7 @@ def test_codegen(record_forge_property, variant):
     attn_mask = attn_mask.to(torch.float32)
 
     inputs = [input_ids, attn_mask]
+
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = framework_model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)

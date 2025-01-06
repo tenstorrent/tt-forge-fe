@@ -7,6 +7,7 @@ import pytest
 import torch
 from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequenceClassification
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -20,7 +21,7 @@ def test_roberta_masked_lm(record_forge_property):
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
+    framework_model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
 
     # Input processing
     text = "Hello I'm a <mask> model."
@@ -35,7 +36,10 @@ def test_roberta_masked_lm(record_forge_property):
     attention_mask[input_tokens != 1] = 1
 
     inputs = [input_tokens, attention_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -51,7 +55,7 @@ def test_roberta_sentiment_pytorch(record_forge_property):
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
 
     # Example from multi-nli validation set
     text = """Great road trip views! @ Shartlesville, Pennsylvania"""
@@ -65,4 +69,6 @@ def test_roberta_sentiment_pytorch(record_forge_property):
         return_tensors="pt",
     )
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

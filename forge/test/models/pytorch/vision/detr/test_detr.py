@@ -14,6 +14,7 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -33,10 +34,12 @@ def test_detr_detection(record_forge_property, variant):
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     input_batch = preprocess_input_data(image_url)
 
-    # Compiler test
-    compiled_model = forge.compile(framework_model, sample_inputs=[input_batch], module_name=module_name)
+    inputs = [input_batch]
 
-    verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    # Compiler test
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -56,7 +59,9 @@ def test_detr_segmentation(record_forge_property, variant):
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     input_batch = preprocess_input_data(image_url)
 
-    # Compiler test
-    compiled_model = forge.compile(framework_model, sample_inputs=[input_batch], module_name=module_name)
+    inputs = [input_batch]
 
-    verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    # Compiler test
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

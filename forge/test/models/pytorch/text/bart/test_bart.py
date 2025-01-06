@@ -10,6 +10,7 @@ import pytest
 import forge
 
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 
 class BartWrapper(torch.nn.Module):
@@ -53,6 +54,8 @@ def test_pt_bart_classifier(record_forge_property):
     inputs = [inputs_dict["input_ids"], inputs_dict["attention_mask"], decoder_input_ids]
 
     # Compile & feed data
-    pt_mod = BartWrapper(model.model)
+    framework_model = BartWrapper(model.model)
 
-    compiled_model = forge.compile(pt_mod, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

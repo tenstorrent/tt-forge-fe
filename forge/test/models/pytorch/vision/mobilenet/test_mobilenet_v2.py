@@ -20,6 +20,7 @@ import forge
 from test.utils import download_model
 from forge.verify.compare import compare_with_golden
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant):
@@ -44,8 +45,11 @@ def test_mobilenetv2_basic(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
@@ -69,8 +73,11 @@ def test_mobilenetv2_96(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
@@ -94,10 +101,11 @@ def test_mobilenetv2_160(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
@@ -123,10 +131,11 @@ def test_mobilenetv2_224(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
@@ -163,16 +172,11 @@ def test_mobilenetv2_timm(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
@@ -214,7 +218,8 @@ def test_mobilenetv2_deeplabv3(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

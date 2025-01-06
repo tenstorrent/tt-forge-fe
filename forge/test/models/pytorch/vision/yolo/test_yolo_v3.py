@@ -7,6 +7,7 @@ from PIL import Image
 import torch
 import forge
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
@@ -40,8 +41,11 @@ def test_yolov3_tiny_holli_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_yoloV3_imgcls_holli_pytorch():
@@ -72,6 +76,8 @@ def test_yolov3_holli_pytorch(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, other = generate_model_yoloV3_imgcls_holli_pytorch()
+    framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

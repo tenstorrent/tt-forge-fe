@@ -6,6 +6,7 @@ import pytest
 from transformers import AutoTokenizer, FalconForCausalLM
 import forge
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -30,13 +31,12 @@ def test_falcon(record_forge_property):
         def forward(self, input_ids, attention_mask):
             return self.model(input_ids, None, attention_mask)
 
-    model = Wrapper(model)
+    framework_model = Wrapper(model)
     input_tokens = tokenizer("Hello, my dog is cute", return_tensors="pt")
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
-    # sanity
-    output = model(input_tokens["input_ids"], input_tokens["attention_mask"])
-
     # Forge inference
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

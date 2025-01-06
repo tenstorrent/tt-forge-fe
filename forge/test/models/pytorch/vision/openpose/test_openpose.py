@@ -15,6 +15,7 @@ from test.models.pytorch.vision.openpose.utils.model import (
     transfer,
 )
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 
 variants = [
@@ -40,9 +41,6 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
     # Load & pre-process image
     img_tensor = get_image_tensor(sample_path)
 
-    # Sanity run
-    cpu_out = framework_model(img_tensor)
-
     return framework_model, [img_tensor], {}
 
 
@@ -54,10 +52,13 @@ def test_openpose_basic(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
+    framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_openpose_posdet_osmr_pytorch(variant):
@@ -85,7 +86,9 @@ def test_openpose_osmr(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
+    framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

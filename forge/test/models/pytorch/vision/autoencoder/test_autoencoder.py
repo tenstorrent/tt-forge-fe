@@ -9,6 +9,7 @@ import pytest
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -21,7 +22,7 @@ def test_conv_ae_pytorch(record_forge_property):
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
-    model = ConvAE()
+    framework_model = ConvAE()
 
     # Define transform to normalize data
     transform = transforms.Compose(
@@ -36,7 +37,11 @@ def test_conv_ae_pytorch(record_forge_property):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).unsqueeze(0)
 
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name=module_name)
+    inputs = [sample_tensor]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -49,7 +54,7 @@ def test_linear_ae_pytorch(record_forge_property):
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
-    model = LinearAE()
+    framework_model = LinearAE()
 
     # Define transform to normalize data
     transform = transforms.Compose(
@@ -65,13 +70,9 @@ def test_linear_ae_pytorch(record_forge_property):
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).squeeze(0)
 
-    # Sanity
-    fw_out = model(sample_tensor)
+    inputs = [sample_tensor]
 
     # Inference
-    compiled_model = forge.compile(model, sample_inputs=[sample_tensor], module_name=module_name)
-    co_out = compiled_model(sample_tensor)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert co_out[0].shape == fw_out.shape
-    assert compare_with_golden(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)

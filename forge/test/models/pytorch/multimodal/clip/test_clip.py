@@ -9,6 +9,7 @@ from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
 from test.models.pytorch.multimodal.clip.utils.clip_model import CLIPTextWrapper
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 @pytest.mark.nightly
@@ -36,7 +37,9 @@ def test_clip_pytorch(record_forge_property):
     inputs = processor(text=text, images=image, return_tensors="pt")
 
     inputs = [inputs["input_ids"], inputs["pixel_values"], inputs["attention_mask"]]
-    text_model = CLIPTextWrapper(model)
+    framework_model = CLIPTextWrapper(model)
     inputs = [inputs[0], inputs[2]]
 
-    compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

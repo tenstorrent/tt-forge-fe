@@ -36,13 +36,8 @@ def test_mobilenetv1_basic(record_forge_property):
     model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
 
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = model(*inputs)
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
@@ -72,6 +67,8 @@ def test_mobilenetv1_192(record_forge_property):
     model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
 
+    verify(inputs, framework_model, compiled_model)
+
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
     # Create Forge module from PyTorch model
@@ -98,3 +95,5 @@ def test_mobilenetv1_224(record_forge_property):
 
     model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
     compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

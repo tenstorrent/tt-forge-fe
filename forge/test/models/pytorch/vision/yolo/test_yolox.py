@@ -28,6 +28,7 @@ import os
 import forge
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
@@ -54,15 +55,15 @@ def test_yolox_pytorch(record_forge_property, variant):
         model_name = variant.replace("_", "-")
 
     exp = get_exp(exp_name=model_name)
-    model = exp.get_model()
+    framework_model = exp.get_model()
     ckpt = torch.load(f"{variant}.pth", map_location="cpu")
-    model.load_state_dict(ckpt["model"])
+    framework_model.load_state_dict(ckpt["model"])
 
     # Set to false as it is part of model post-processing
     # to avoid pcc mismatch due to inplace slice and update
-    model.head.decode_in_inference = False
+    framework_model.head.decode_in_inference = False
 
-    model.eval()
+    framework_model.eval()
     model_name = f"pt_{variant}"
 
     # prepare input
@@ -81,7 +82,9 @@ def test_yolox_pytorch(record_forge_property, variant):
 
     inputs = [img_tensor]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
     # remove downloaded weights,image
     os.remove(weight_name)

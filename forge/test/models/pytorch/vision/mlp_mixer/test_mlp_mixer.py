@@ -12,6 +12,7 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from test.utils import download_model
 from test.models.utils import build_module_name, Framework, Source
+from forge.verify.verify import verify
 
 import forge
 
@@ -38,7 +39,7 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
 
     record_forge_property("module_name", module_name)
 
-    model = download_model(timm.create_model, variant, pretrained=True)
+    framework_model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
     transform = create_transform(**config)
 
@@ -51,5 +52,9 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
         )
         image = torch.rand(1, 3, 256, 256)
     pixel_values = transform(image).unsqueeze(0)
+
     inputs = [pixel_values]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

@@ -8,6 +8,7 @@ import requests
 from PIL import Image
 import pytest
 from test.models.utils import build_module_name, Framework, Task
+from forge.verify.verify import verify
 
 # sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 # from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock
@@ -29,23 +30,22 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
 
-        model = DualResNet_23(block=BasicBlock, layers=[2, 2, 2, 2], planes=32, last_planes=1024)
+        framework_model = DualResNet_23(block=BasicBlock, layers=[2, 2, 2, 2], planes=32, last_planes=1024)
 
     elif variant == "ddrnet23":
 
-        model = DualResNet_23(block=BasicBlock, layers=[2, 2, 2, 2], planes=64, last_planes=2048)
+        framework_model = DualResNet_23(block=BasicBlock, layers=[2, 2, 2, 2], planes=64, last_planes=2048)
 
     elif variant == "ddrnet39":
 
-        model = DualResNet_39(block=BasicBlock, layers=[3, 4, 6, 3], planes=64, last_planes=2048)
+        framework_model = DualResNet_39(block=BasicBlock, layers=[3, 4, 6, 3], planes=64, last_planes=2048)
 
     state_dict_path = f"third_party/confidential_customer_models/generated/files/{variant}.pth"
 
     state_dict = torch.load(state_dict_path, map_location=torch.device("cpu"))
 
-    model.load_state_dict(state_dict, strict=False)
-
-    model.eval()
+    framework_model.load_state_dict(state_dict, strict=False)
+    framework_model.eval()
 
     # STEP 3: Prepare input
     url = "https://raw.githubusercontent.com/pytorch/hub/master/images/dog.jpg"
@@ -61,7 +61,12 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
+
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=f"pt_{variant}")
+
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
@@ -79,7 +84,7 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":
-        model = DualResNet(
+        framework_model = DualResNet(
             BasicBlock_seg,
             [2, 2, 2, 2],
             num_classes=19,
@@ -90,7 +95,7 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
         )
 
     elif variant == "ddrnet23_cityscapes":
-        model = DualResNet(
+        framework_model = DualResNet(
             BasicBlock_seg,
             [2, 2, 2, 2],
             num_classes=19,
@@ -104,12 +109,17 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
         f"third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/weights/{variant}.pth"
     )
     state_dict = torch.load(state_dict_path, map_location=torch.device("cpu"))
-    model.load_state_dict(state_dict, strict=False)
-    model.eval()
+    framework_model.load_state_dict(state_dict, strict=False)
+    framework_model.eval()
 
     # prepare input
     image_path = "third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/image/road_scenes.png"
     input_image = Image.open(image_path)
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=module_name)
+
+    inputs = [input_batch]
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)

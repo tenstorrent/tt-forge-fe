@@ -6,6 +6,7 @@ from test.utils import download_model
 import torch
 import forge
 from test.models.utils import build_module_name, Framework
+from forge.verify.verify import verify
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
@@ -38,12 +39,14 @@ def test_yolov5_320x320(record_forge_property, size):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
+    framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
@@ -75,11 +78,14 @@ def test_yolov5_640x640(record_forge_property, size):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
+    framework_model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
@@ -107,11 +113,14 @@ def test_yolov5_480x480(record_forge_property, size):
 
     record_forge_property("module_name", module_name)
 
-    model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
+    framework_model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
         size=size,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -130,9 +139,12 @@ def test_yolov5_1280x1280(record_forge_property):
 
     record_forge_property("module_name", module_name)
 
-    model = download_model(torch.hub.load, "ultralytics/yolov5", variant, pretrained=True)
+    framework_model = download_model(torch.hub.load, "ultralytics/yolov5", variant, pretrained=True)
 
     input_shape = (1, 3, 1280, 1280)
     input_tensor = torch.rand(input_shape)
     inputs = [input_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=module_name)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
