@@ -3,15 +3,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-
-from transformers import SegformerForImageClassification, SegformerForSemanticSegmentation, SegformerConfig
-
-from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from transformers import (
+    SegformerConfig,
+    SegformerForImageClassification,
+    SegformerForSemanticSegmentation,
+)
 
 import forge
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from test.models.utils import Framework, Task, build_module_name
 
 variants_img_classification = [
     "nvidia/mit-b0",

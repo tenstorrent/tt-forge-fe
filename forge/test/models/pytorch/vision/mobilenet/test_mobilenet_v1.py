@@ -2,18 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-
-import torch
-
-import forge
-from test.utils import download_model
-from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
-
 import requests
+import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
-from test.models.utils import build_module_name, Framework
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
+from test.models.utils import Framework, build_module_name
+from test.utils import download_model
 
 
 def generate_model_mobilenetV1_base_custom_pytorch():

@@ -1,15 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import pytest
 import urllib
+
+import pytest
+import torch
 from PIL import Image
 from torchvision import transforms
-from test.models.utils import build_module_name, Framework
+
+import forge
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, build_module_name
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),

@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import pytest
 import numpy as np
+import pytest
+import torch
 from PIL import Image
-from test.models.utils import build_module_name, Framework
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively

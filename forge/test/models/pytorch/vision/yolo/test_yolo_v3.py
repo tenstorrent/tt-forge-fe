@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-
-from PIL import Image
 import torch
+from PIL import Image
+
 import forge
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))

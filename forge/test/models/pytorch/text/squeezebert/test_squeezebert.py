@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
-import forge
 import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from test.models.utils import build_module_name, Framework, Task
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly

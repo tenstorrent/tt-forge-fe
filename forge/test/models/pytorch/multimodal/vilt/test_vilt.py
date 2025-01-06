@@ -2,16 +2,25 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
 import requests
 import torch
 from PIL import Image
-from transformers import ViltProcessor, ViltForQuestionAnswering, ViltForMaskedLM, ViltConfig
-from test.models.pytorch.multimodal.vilt.utils.model import ViLtEmbeddingWrapper, ViltModelWrapper
-from test.models.utils import build_module_name, Framework, Task, Source
+from transformers import (
+    ViltConfig,
+    ViltForMaskedLM,
+    ViltForQuestionAnswering,
+    ViltProcessor,
+)
+
+import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.multimodal.vilt.utils.model import (
+    ViLtEmbeddingWrapper,
+    ViltModelWrapper,
+)
+from test.models.utils import Framework, Source, Task, build_module_name
+from test.utils import download_model
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image = Image.open(requests.get(url, stream=True).raw)

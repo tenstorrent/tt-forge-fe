@@ -2,11 +2,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import forge
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from test.models.utils import build_module_name, Framework, Task
+
+import forge
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
 
 # Variants for testing
 variants = [

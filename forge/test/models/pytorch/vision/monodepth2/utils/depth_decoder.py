@@ -9,11 +9,11 @@
 # which allows for non-commercial use only, the full terms of which are made
 # available in the LICENSE file.
 
+from collections import OrderedDict
+
 import numpy as np
 import torch
 import torch.nn as nn
-
-from collections import OrderedDict
 
 
 class DepthDecoder(nn.Module):

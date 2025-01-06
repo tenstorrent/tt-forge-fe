@@ -1,13 +1,16 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
-import forge
-from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
-import torch
 import re
-from test.models.utils import build_module_name, Framework, Task
+
+import pytest
+import torch
+from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 
 @pytest.mark.nightly

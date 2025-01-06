@@ -4,12 +4,19 @@
 # STEP 0: import Forge library
 import pytest
 import timm
-from transformers import ViTImageProcessor, Swinv2Model, Swinv2ForImageClassification, Swinv2ForMaskedImageModeling
-from test.utils import download_model
+from transformers import (
+    Swinv2ForImageClassification,
+    Swinv2ForMaskedImageModeling,
+    Swinv2Model,
+    ViTImageProcessor,
+)
+
 import forge
 from forge.verify.verify import verify
+
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly

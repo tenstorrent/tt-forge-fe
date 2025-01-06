@@ -3,15 +3,25 @@
 # SPDX-License-Identifier: Apache-2.0
 # Llama3 Demo - CasualLM
 
-import torch
 import pytest
-from test.utils import download_model
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification
+import torch
+from transformers import (
+    AutoModelForCausalLM,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+)
+from transformers.models.llama.modeling_llama import (
+    AttentionMaskConverter,
+    Cache,
+    LlamaModel,
+    StaticCache,
+)
+
 import forge
-from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = [
     "meta-llama/Meta-Llama-3-8B",

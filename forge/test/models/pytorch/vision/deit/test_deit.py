@@ -3,15 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import requests
-from PIL import Image
 from datasets import load_dataset
-
+from PIL import Image
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
-from test.utils import download_model
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):

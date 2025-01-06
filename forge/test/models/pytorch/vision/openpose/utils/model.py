@@ -4,8 +4,8 @@
 from collections import OrderedDict
 
 import torch
-from torch import nn
 from PIL import Image
+from torch import nn
 from torchvision import transforms
 
 

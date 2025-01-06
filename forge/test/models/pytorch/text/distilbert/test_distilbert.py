@@ -2,18 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
-from test.models.utils import build_module_name, Framework, Task
-from forge.verify.verify import verify
-
 from transformers import (
     DistilBertForMaskedLM,
-    DistilBertTokenizer,
     DistilBertForQuestionAnswering,
-    DistilBertForTokenClassification,
     DistilBertForSequenceClassification,
+    DistilBertForTokenClassification,
+    DistilBertTokenizer,
 )
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
 

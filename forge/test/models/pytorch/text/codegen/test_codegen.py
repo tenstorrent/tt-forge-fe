@@ -4,14 +4,14 @@
 # CodeGen Demo - CasualLM
 
 import pytest
-from test.utils import download_model
+import torch
 from transformers import AutoTokenizer, CodeGenForCausalLM
 
 import forge
-import torch
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = [
     "Salesforce/codegen-350M-mono",

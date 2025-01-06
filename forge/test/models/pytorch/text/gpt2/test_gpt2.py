@@ -2,12 +2,14 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
 import torch
+from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
+
 import forge
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly

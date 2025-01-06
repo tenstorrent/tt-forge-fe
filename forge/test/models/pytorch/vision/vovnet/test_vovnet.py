@@ -2,14 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
+from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
-from pytorchcv.model_provider import get_model as ptcv_get_model
-from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
-from test.models.pytorch.vision.vovnet.utils.model_utils import get_image, preprocess_steps, preprocess_timm_model
-from test.models.utils import build_module_name, Framework, Source
 from forge.verify.verify import verify
+
+from test.models.pytorch.vision.vovnet.utils.model_utils import (
+    get_image,
+    preprocess_steps,
+    preprocess_timm_model,
+)
+from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_vovnet_imgcls_osmr_pytorch(variant):

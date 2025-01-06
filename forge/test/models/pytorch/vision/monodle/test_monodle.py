@@ -1,14 +1,16 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import pytest
 import requests
 import torchvision.transforms as transforms
 from PIL import Image
-from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
-from test.models.utils import build_module_name, Framework
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.nightly

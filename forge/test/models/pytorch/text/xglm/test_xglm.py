@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
+from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
+
 import forge
-from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 

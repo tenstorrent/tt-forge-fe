@@ -7,10 +7,9 @@ import pytest
 
 import forge
 from forge.verify.verify import verify
-from test.models.utils import build_module_name, Framework
 
 from .utils import load_inputs, load_model
-
+from test.models.utils import Framework, build_module_name
 
 variants = [
     "facebook/musicgen-small",

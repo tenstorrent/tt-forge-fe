@@ -1,19 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-
 import cv2
-
+import pytest
 import torch.nn as nn
 import torch.nn.init as init
-
 import torchvision
 import torchvision.transforms as transforms
 
 import forge
-from test.models.utils import build_module_name, Framework
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 
 # Paper - https://arxiv.org/abs/1311.2524

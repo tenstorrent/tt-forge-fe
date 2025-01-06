@@ -1,20 +1,30 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import urllib
-from test.utils import download_model
-import torch
-from torchvision import transforms
-from torchvision.transforms import Compose, ConvertImageDtype, Normalize, PILToTensor, Resize, CenterCrop
-from loguru import logger
-from PIL import Image
+
 import numpy as np
 import pytest
-from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
-from test.models.utils import build_module_name, Framework, Source
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
+from torchvision import transforms
+from torchvision.transforms import (
+    CenterCrop,
+    Compose,
+    ConvertImageDtype,
+    Normalize,
+    PILToTensor,
+    Resize,
+)
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):

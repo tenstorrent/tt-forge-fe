@@ -2,11 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import RegNetModel, RegNetForImageClassification
+from transformers import RegNetForImageClassification, RegNetModel
+
 import forge
 from forge.verify.verify import verify
+
 from .utils.image_utils import preprocess_input_data
-from test.models.utils import build_module_name, Framework, Task
+from test.models.utils import Framework, Task, build_module_name
 
 
 @pytest.mark.nightly

@@ -1,21 +1,29 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
-import timm
-import pytest
 import urllib
+
+import pytest
+import timm
 import torch
+from loguru import logger
 from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from loguru import logger
-import forge
-from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4_Weights, EfficientNet_B0_Weights
-from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
-from test.models.utils import build_module_name, Framework, Source
+from torchvision.models import (
+    EfficientNet_B0_Weights,
+    EfficientNet_B4_Weights,
+    efficientnet_b0,
+    efficientnet_b4,
+)
+from torchvision.models._api import WeightsEnum
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 

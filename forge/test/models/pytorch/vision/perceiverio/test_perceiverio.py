@@ -1,20 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import requests
-from PIL import Image
 import pytest
+import requests
+import torch
 from loguru import logger
+from PIL import Image
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
-    PerceiverForImageClassificationLearned,
     PerceiverForImageClassificationFourier,
+    PerceiverForImageClassificationLearned,
 )
-from test.models.utils import build_module_name, Framework, Task
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 
 def get_sample_data(model_name):

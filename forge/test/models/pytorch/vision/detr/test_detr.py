@@ -5,14 +5,13 @@
 # https://huggingface.co/docs/transformers/en/model_doc/detr
 
 import pytest
-from transformers import (
-    DetrForObjectDetection,
-    DetrForSegmentation,
-)
+from transformers import DetrForObjectDetection, DetrForSegmentation
+
 import forge
-from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
+
+from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
+from test.models.utils import Framework, Task, build_module_name
 
 
 @pytest.mark.nightly

@@ -1,14 +1,16 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-from torchvision import transforms
-import requests
-from PIL import Image
 import pytest
-from test.models.utils import build_module_name, Framework, Task
+import requests
+import torch
+from PIL import Image
+from torchvision import transforms
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 # sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 # from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock

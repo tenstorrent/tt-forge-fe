@@ -7,16 +7,17 @@ import torch
 from transformers import (
     AutoProcessor,
     WhisperConfig,
-    WhisperTokenizer,
     WhisperFeatureExtractor,
     WhisperForConditionalGeneration,
+    WhisperTokenizer,
 )
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 import forge
-from test.utils import download_model
-from forge.forgeglobal import TILE_DIM
 from forge.config import _get_global_compiler_config
+from forge.forgeglobal import TILE_DIM
+
+from test.utils import download_model
 
 
 class Whisper_encoder(torch.nn.Module):

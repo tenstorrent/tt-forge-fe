@@ -9,10 +9,16 @@
 
 import pytest
 import torch
-from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
+from transformers import (
+    WhisperConfig,
+    WhisperForConditionalGeneration,
+    WhisperProcessor,
+)
+
 import forge
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 
 class Wrapper(torch.nn.Module):

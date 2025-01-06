@@ -1,18 +1,21 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import urllib
+
 import pytest
-import forge
-from test.utils import download_model
 import timm
 import torch
 from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torchvision import transforms
-import urllib
-from test.models.utils import build_module_name, Framework, Source
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_wideresnet_imgcls_pytorch(variant):

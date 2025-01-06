@@ -2,15 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # BART Demo Script - SQuADv1.1 QA
-from test.utils import download_model
-import torch
-from transformers import BartTokenizer, BartForSequenceClassification
-from transformers.models.bart.modeling_bart import shift_tokens_right
 import pytest
-import forge
+import torch
+from transformers import BartForSequenceClassification, BartTokenizer
+from transformers.models.bart.modeling_bart import shift_tokens_right
 
-from test.models.utils import build_module_name, Framework, Task
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 class BartWrapper(torch.nn.Module):

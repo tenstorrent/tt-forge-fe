@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
 import pytest
+import torch
 from transformers import AutoTokenizer, FalconForCausalLM
+
 import forge
-from test.models.utils import build_module_name, Framework
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.nightly

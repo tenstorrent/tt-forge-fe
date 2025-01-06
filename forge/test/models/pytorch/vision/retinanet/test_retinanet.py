@@ -2,17 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+import shutil
+import zipfile
+
 import pytest
 import requests
-import zipfile
-import shutil
 
-from test.models.pytorch.vision.retinanet.utils.model import Model
-from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 import forge
-from test.models.utils import build_module_name, Framework
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
+from test.models.pytorch.vision.retinanet.utils.model import Model
+from test.models.utils import Framework, build_module_name
 
 variants = [
     "retinanet_rn18fpn",

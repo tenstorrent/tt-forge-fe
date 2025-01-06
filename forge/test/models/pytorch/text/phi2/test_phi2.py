@@ -1,19 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import pytest
 import torch
 from transformers import (
-    PhiForCausalLM,
     AutoTokenizer,
     PhiConfig,
-    PhiForTokenClassification,
+    PhiForCausalLM,
     PhiForSequenceClassification,
+    PhiForTokenClassification,
 )
-import pytest
+
 import forge
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 

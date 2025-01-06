@@ -2,19 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
 from transformers import (
     DPRContextEncoder,
     DPRContextEncoderTokenizer,
-    DPRReader,
-    DPRReaderTokenizer,
     DPRQuestionEncoder,
     DPRQuestionEncoderTokenizer,
+    DPRReader,
+    DPRReaderTokenizer,
 )
-from test.models.utils import build_module_name, Framework
+
+import forge
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, build_module_name
+from test.utils import download_model
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
 

@@ -2,15 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
 import requests
 from datasets import load_dataset
 from PIL import Image
 from transformers import AutoImageProcessor, ViTForImageClassification
-from test.models.utils import build_module_name, Framework, Task, Source
+
+import forge
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Source, Task, build_module_name
+from test.utils import download_model
 
 dataset = load_dataset("huggingface/cats-image")
 image_1 = dataset["test"]["image"][0]

@@ -4,10 +4,11 @@
 ## Source
 ## https://github.com/stigma0617/VoVNet.pytorch/blob/039d9dcbd07de73fb5b8cc14bdde483a3807225c/models_vovnet/vovnet.py
 
+from collections import OrderedDict
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from collections import OrderedDict
 
 # from torch.hub import load_state_dict_from_url
 from torch.utils.model_zoo import load_url as load_state_dict_from_url

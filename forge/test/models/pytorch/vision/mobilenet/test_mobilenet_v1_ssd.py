@@ -3,9 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
+
 import forge
-from test.models.utils import build_module_name, Framework
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd

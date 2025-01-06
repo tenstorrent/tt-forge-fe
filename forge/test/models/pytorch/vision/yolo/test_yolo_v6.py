@@ -1,15 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import os
+
 import pytest
 import requests
 from yolov6 import YOLOV6
-from test.models.pytorch.vision.yolo.utils.yolov6_utils import check_img_size, process_image
-from test.models.utils import build_module_name, Framework
+
+import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.yolo.utils.yolov6_utils import (
+    check_img_size,
+    process_image,
+)
+from test.models.utils import Framework, build_module_name
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]

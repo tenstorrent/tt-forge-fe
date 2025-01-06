@@ -1,16 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-
 import cv2
 import numpy as np
+import pytest
 import torch
-from test.models.utils import build_module_name, Framework
-from forge.verify.verify import verify
-
 
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path.append("tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/model")
 # from model_pidnet import update_model_config, get_seg_model

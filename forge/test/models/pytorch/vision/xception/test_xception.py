@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-import forge
 import urllib
-from test.utils import download_model
-from PIL import Image
+
+import pytest
 import timm
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from test.models.utils import build_module_name, Framework, Source
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_xception_imgcls_timm(variant):

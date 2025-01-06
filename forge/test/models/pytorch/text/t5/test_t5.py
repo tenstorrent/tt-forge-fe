@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
-from forge.forgeglobal import TILE_DIM
 import os
-import forge
+
+import pytest
 import torch
+from transformers import T5Config, T5ForConditionalGeneration, T5Tokenizer
+
+import forge
+from forge.forgeglobal import TILE_DIM
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly

@@ -2,13 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # import pybuda
-import torch
-import forge
 from types import SimpleNamespace
-import pytest
+
 import cv2
-from test.models.utils import build_module_name, Framework, Task
+import pytest
+import torch
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 # import sys
 # sys.path.append("third_party/confidential_customer_models/internal/tri_basic_2/scripts")

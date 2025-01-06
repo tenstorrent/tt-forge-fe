@@ -2,12 +2,17 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
+from transformers import (
+    AlbertForMaskedLM,
+    AlbertForTokenClassification,
+    AlbertTokenizer,
+)
+
 import forge
-from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
 variants = ["v1", "v2"]

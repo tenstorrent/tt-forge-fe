@@ -1,25 +1,27 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
 import urllib
-import requests
-from PIL import Image
-from loguru import logger
 
-import torch
+import pytest
+import requests
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-
-
-from transformers import AutoImageProcessor, AutoModelForImageClassification
-from transformers import MobileNetV2ForSemanticSegmentation
+from transformers import (
+    AutoImageProcessor,
+    AutoModelForImageClassification,
+    MobileNetV2ForSemanticSegmentation,
+)
 
 import forge
-from test.utils import download_model
-from test.models.utils import build_module_name, Framework, Source
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_mobilenetV2_imgcls_torchhub_pytorch(variant):

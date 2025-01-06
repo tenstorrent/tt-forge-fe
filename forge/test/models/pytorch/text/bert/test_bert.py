@@ -1,18 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
 import pytest
-import forge
 from transformers import (
     BertForMaskedLM,
-    BertTokenizer,
-    BertForTokenClassification,
-    BertForSequenceClassification,
     BertForQuestionAnswering,
+    BertForSequenceClassification,
+    BertForTokenClassification,
+    BertTokenizer,
 )
-from test.models.utils import build_module_name, Framework, Task
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):

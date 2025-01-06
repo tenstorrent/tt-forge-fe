@@ -3,11 +3,11 @@
 import pytest
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
-    stable_diffusion_preprocessing,
     denoising_loop,
     stable_diffusion_postprocessing,
+    stable_diffusion_preprocessing,
 )
-from test.models.utils import build_module_name, Framework
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.skip(reason="unsupported for now")

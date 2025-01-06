@@ -2,20 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from PIL import Image
 import requests
-from loguru import logger
-
-import torch
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from test.utils import download_model
-from test.models.utils import build_module_name, Framework, Source
-from forge.verify.verify import verify
 
 import forge
+from forge.verify.verify import verify
 
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 varaints = [
     "mixer_b16_224",

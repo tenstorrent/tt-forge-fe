@@ -3,11 +3,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+
 import forge
-from test.models.pytorch.vision.monodepth2.utils.utils import download_model, load_model, load_input
-from test.models.utils import build_module_name, Framework
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.monodepth2.utils.utils import (
+    download_model,
+    load_input,
+    load_model,
+)
+from test.models.utils import Framework, build_module_name
 
 variants = [
     "mono_640x192",

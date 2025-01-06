@@ -2,21 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
-from test.utils import download_model
+from forge.verify.verify import verify
+
 from test.models.pytorch.vision.openpose.utils.model import (
     OpenPoseBodyModel,
     OpenPoseHandModel,
     get_image_tensor,
     transfer,
 )
-from test.models.utils import build_module_name, Framework, Source
-from forge.verify.verify import verify
-
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 variants = [
     "body_basic",

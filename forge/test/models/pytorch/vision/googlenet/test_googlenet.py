@@ -1,15 +1,17 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
 import pytest
-from torchvision import models, transforms
-from test.utils import download_model
-import forge
-from PIL import Image
+import torch
 from loguru import logger
-from test.models.utils import build_module_name, Framework
+from PIL import Image
+from torchvision import models, transforms
+
+import forge
 from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly

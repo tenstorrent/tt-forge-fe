@@ -1,18 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import pytest
 from transformers import (
+    AutoTokenizer,
     Phi3Config,
     Phi3ForCausalLM,
-    AutoTokenizer,
-    Phi3ForTokenClassification,
     Phi3ForSequenceClassification,
+    Phi3ForTokenClassification,
 )
-import pytest
+
 import forge
-from test.models.utils import build_module_name, Framework, Task
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Task, build_module_name
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
