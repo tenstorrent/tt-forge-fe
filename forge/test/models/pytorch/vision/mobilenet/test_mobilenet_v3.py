@@ -41,7 +41,9 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_basic(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenetv3", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilenetv3", variant=variant, source=Source.TORCH_HUB
+    )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

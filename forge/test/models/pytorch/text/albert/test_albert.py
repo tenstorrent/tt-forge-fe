@@ -24,7 +24,9 @@ variants = ["v1", "v2"]
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="albert", variant=variant, task=Task.MASKED_LM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.MASKED_LM
+    )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -66,7 +68,7 @@ variants = ["v1", "v2"]
 def test_albert_token_classification_pytorch(record_forge_property, size, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="albert", variant=variant, task=Task.TOKEN_CLASSIFICATION
+        framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.TOKEN_CLASSIFICATION
     )
 
     # Record Forge Property

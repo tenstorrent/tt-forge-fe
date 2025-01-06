@@ -11,7 +11,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, build_module_name
 from test.utils import download_model
 
 
@@ -64,7 +64,9 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
 def test_mobilenetv1_192(record_forge_property):
     variant = "google/mobilenet_v1_0.75_192"
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -98,7 +100,9 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 def test_mobilenetv1_224(record_forge_property):
     variant = "google/mobilenet_v1_1.0_224"
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

@@ -45,7 +45,9 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 @pytest.mark.model_analysis
 def test_resnet(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", variant="50")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnet", variant="50", source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

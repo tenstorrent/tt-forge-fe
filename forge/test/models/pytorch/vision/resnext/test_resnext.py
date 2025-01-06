@@ -123,7 +123,7 @@ def test_resnext_14_osmr_pytorch(record_forge_property):
 @pytest.mark.nightly
 @pytest.mark.model_analysis
 def test_resnext_26_osmr_pytorch(record_forge_property):
-    variant = "resnext14_32x4d"
+    variant = "resnext26_32x4d"
 
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
