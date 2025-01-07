@@ -1812,7 +1812,6 @@ def test_conv2d_with_padding(shape, padding):
 
 
 @pytest.mark.push
-@pytest.mark.xfail(reason="Tensor rank is greater than 4")
 def test_reshape_pytorch():
     class ReshapeTest(torch.nn.Module):
         def __init__(self):
@@ -1834,7 +1833,6 @@ def test_reshape_pytorch():
 
 
 @pytest.mark.push
-@pytest.mark.xfail(reason="Tensor rank is greater than 4")
 def test_broadcast_pytorch():
     class BroadcastTest(torch.nn.Module):
         def __init__(self):
