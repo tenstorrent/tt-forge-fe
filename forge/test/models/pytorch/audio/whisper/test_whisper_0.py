@@ -123,8 +123,6 @@ def test_whisper_pipeline(record_forge_property, variant):
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
-
     # Configurations
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.amp_level = 2
@@ -186,8 +184,6 @@ def test_whisper_encoder(record_forge_property, test_device, variant):
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
-
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
 
     # Configurations
     compiler_cfg = _get_global_compiler_config()

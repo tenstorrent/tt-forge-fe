@@ -49,7 +49,6 @@ def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
     model, inputs, other = generate_model_whisper_decoder_past_cache(variant)
     compile_inputs = other["compile_inputs"]
     max_length = other["max_length"]
@@ -325,7 +324,6 @@ def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
-    pytest.skip("Already tested with past-cache and separated encoder-decoder")
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
     compiler_cfg.input_queues_on_host = True
