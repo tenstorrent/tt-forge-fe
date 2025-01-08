@@ -507,6 +507,167 @@ class AdamW(Adam):
             enable_adam_w=True,
         )
 
+class Adadelta(Optimizer):
+    """
+    Adadelta Optimizer
+
+    Attributes
+    ----------
+    learning_rate : float
+        Learning rate (gamma in the algorithm)
+    rho : float  
+        Decay term (ro in the algorithm)
+    epsilon : float
+        Small constant added to denominator for numerical stability
+    weight_decay : float
+        Weight decay (L2 penalty) factor (λ in the algorithm)
+    parameter_to_opt_inputs : Dict[Parameter, Dict[str, Tensor]]
+        Maps a Parameter to its associated optimizer state
+    """
+
+    def __init__(
+        self,
+        learning_rate: float = 1.0,
+        rho: float = 0.9,
+        epsilon: float = 1e-6,
+        weight_decay: float = 0.0,
+        parameters: Optional[List[Parameter]] = None,
+    ):
+        super().__init__(parameters)
+        self.learning_rate = learning_rate
+        self.rho = rho
+        self.epsilon = epsilon
+        self.weight_decay = weight_decay
+        self.torch_optimizer = None
+        
+        self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
+        self.parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
+        
+        if parameters:
+            self.set_parameters_to_optimize(parameters)
+            
+    def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+        return {
+            "torch_square_avg": torch.zeros(shape, dtype=dtype),  # v in the algorithm
+            "torch_acc_delta": torch.zeros(shape, dtype=dtype),   # u in the algorithm
+        }
+
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+        """Return a dict of optimizer parameter names to tensor"""
+        return {
+            "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
+            "square_avg": Tensor.create_from_torch(torch.zeros(shape, dtype=dtype)),
+            "acc_delta": Tensor.create_from_torch(torch.zeros(shape, dtype=dtype)),
+        }
+
+    def get_optimizer_state_keys(self) -> List:
+        return ["square_avg", "acc_delta"]
+
+    def get_type(self) -> str:
+        return "adadelta"
+
+    def set_parameters_to_optimize(self, parameters: List[Parameter]):
+        for parameter in parameters:
+            if parameter.requires_grad:
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+
+    def generate_op_trace(self, ac, parameter, gradient):
+        from forge.op.eval.forge.sqrt import Sqrt
+        from forge.op.eval.forge.reciprocal import Reciprocal
+
+        parameter_shape = parameter.shape.as_list()
+        
+        # Get optimizer state
+        square_avg = ac.input("square_avg", parameter.shape, copy_consteval_operations=True)  # v in the algorithm
+        acc_delta = ac.input("acc_delta", parameter.shape, copy_consteval_operations=True)    # u in the algorithm
+        
+        # Apply weight decay if needed
+        if self.weight_decay > 0.0:
+            weight_decay = ac.tensor(torch.full(parameter_shape, self.weight_decay))
+            gradient = ac.op("add", (gradient, ac.op("multiply", (weight_decay, parameter))))
+        
+        # Constants
+        rho = ac.tensor(torch.full(parameter_shape, self.rho))
+        one_minus_rho = ac.tensor(torch.full(parameter_shape, 1.0 - self.rho))
+        epsilon = ac.tensor(torch.full(parameter_shape, self.epsilon))
+        lr = ac.input("lr", parameter.shape)
+        
+        # v_t = rho * v_{t-1} + (1 - rho) * g_t^2
+        gradient_squared = ac.op("multiply", (gradient, gradient))
+        rho_times_square_avg = ac.op("multiply", (rho, square_avg))
+        one_minus_rho_times_grad_squared = ac.op("multiply", (one_minus_rho, gradient_squared))
+        updated_square_avg = ac.op("add", (rho_times_square_avg, one_minus_rho_times_grad_squared))
+        
+        # Calculate delta_x_t = sqrt(u_{t-1} + epsilon) / sqrt(v_t + epsilon) * g_t
+        acc_delta_plus_eps = ac.op("add", (acc_delta, epsilon))
+        square_avg_plus_eps = ac.op("add", (updated_square_avg, epsilon))
+        
+        sqrt_acc_delta = ac.op(Sqrt.create(), (acc_delta_plus_eps,))
+        sqrt_square_avg = ac.op(Sqrt.create(), (square_avg_plus_eps,))
+        reciprocal_sqrt_square_avg = ac.op(Reciprocal.create(), (sqrt_square_avg,))
+        
+        numerator_times_grad = ac.op("multiply", (sqrt_acc_delta, gradient))
+        delta_x = ac.op("multiply", (reciprocal_sqrt_square_avg, numerator_times_grad))
+        
+        # u_t = rho * u_{t-1} + (1 - rho) * delta_x_t^2
+        delta_x_squared = ac.op("multiply", (delta_x, delta_x))
+        rho_times_acc_delta = ac.op("multiply", (rho, acc_delta))
+        one_minus_rho_times_delta_squared = ac.op("multiply", (one_minus_rho, delta_x_squared))
+        updated_acc_delta = ac.op("add", (rho_times_acc_delta, one_minus_rho_times_delta_squared))
+        
+        # Update parameter: theta_t = theta_{t-1} - gamma * delta_x_t
+        scaled_delta = ac.op("multiply", (lr, delta_x))
+        updated_parameter = ac.op("subtract", (parameter, scaled_delta))
+        
+        # Set loopbacks
+        ac.loopback(updated_square_avg, square_avg)
+        ac.loopback(updated_acc_delta, acc_delta)
+        
+        return updated_parameter
+
+    def torch_parameter_update(
+        self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
+    ) -> torch.Tensor:
+        if self.weight_decay > 0.0:
+            gradient = gradient + self.weight_decay * parameter
+            
+        # Get state
+        square_avg = self.parameter_to_opt_torch_inputs[parameter_name]["torch_square_avg"]
+        acc_delta = self.parameter_to_opt_torch_inputs[parameter_name]["torch_acc_delta"]
+        
+        # Update running average of squared gradients
+        square_avg.mul_(self.rho).addcmul_(gradient, gradient, value=1 - self.rho)
+        
+        # Compute update
+        std = (acc_delta + self.epsilon).sqrt_()
+        delta = ((square_avg + self.epsilon).sqrt_()).reciprocal_().mul_(std).mul_(gradient)
+        
+        # Update running average of squared updates
+        acc_delta.mul_(self.rho).addcmul_(delta, delta, value=1 - self.rho)
+        
+        # Update parameters
+        updated_parameter = parameter - self.learning_rate * delta
+        
+        return updated_parameter
+
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
+        """Return an equivalent pytorch optimizer, used for verification."""
+        if lr is not None:
+            self.learning_rate = lr
+        if not self.torch_optimizer:
+            self.torch_optimizer = torch.optim.Adadelta(
+                [p for p in parameters.values()],
+                lr=self.learning_rate,
+                rho=self.rho,
+                eps=self.epsilon,
+                weight_decay=self.weight_decay,
+            )
+        return self.torch_optimizer
 
 class LAMB(Optimizer):
     def __init__(
