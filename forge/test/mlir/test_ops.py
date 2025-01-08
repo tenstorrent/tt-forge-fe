@@ -122,6 +122,7 @@ def test_index(shape, dim, index):
     framework_model = Index(index)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
+    raise Exception("Error in test_index chek report")
     verify(inputs, framework_model, compiled_model)
 
 
