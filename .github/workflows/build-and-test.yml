@@ -180,3 +180,6 @@ jobs:
         report_paths: ${{ steps.strings.outputs.test_report_path }}
         check_name: TT-Forge-FE Tests
         comment: true
+        updateComment: false
+        detailed_summary: true
+        group_suite: true
