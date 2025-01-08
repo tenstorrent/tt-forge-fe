@@ -19,9 +19,10 @@ from test.models.utils import Framework, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_nbeats_with_seasonality_basis(record_forge_property):
+@pytest.mark.parametrize("variant", ["seasionality_basis"])
+def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="seasionality_basis")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -49,9 +50,10 @@ def test_nbeats_with_seasonality_basis(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_nbeats_with_generic_basis(record_forge_property):
+@pytest.mark.parametrize("variant", ["generic_basis"])
+def test_nbeats_with_generic_basis(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="generic_basis")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -72,9 +74,10 @@ def test_nbeats_with_generic_basis(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_nbeats_with_trend_basis(record_forge_property):
+@pytest.mark.parametrize("variant", ["trend_basis"])
+def test_nbeats_with_trend_basis(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant="trend_basis")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

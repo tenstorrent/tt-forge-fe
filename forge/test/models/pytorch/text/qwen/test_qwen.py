@@ -15,9 +15,8 @@ from test.models.utils import Framework, Task, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_qwen1_5_causal_lm(record_forge_property):
-    variant = "Qwen/Qwen1.5-0.5B"
-
+@pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B"])
+def test_qwen1_5_causal_lm(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM)
 
@@ -69,9 +68,8 @@ def parse_chat_completion(text: str):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_qwen1_5_chat(record_forge_property):
-    variant = "Qwen/Qwen1.5-0.5B-Chat"
-
+@pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B-Chat"])
+def test_qwen1_5_chat(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant)
 

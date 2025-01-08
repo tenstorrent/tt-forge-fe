@@ -14,20 +14,23 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_gpt2_text_gen(record_forge_property):
+@pytest.mark.parametrize("variant", ["gpt2"])
+def test_gpt2_text_gen(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gpt2", task=Task.TEXT_GENERATION)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION
+    )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
-    config = GPT2Config.from_pretrained("gpt2")
+    config = GPT2Config.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GPT2Config(**config_dict)
-    model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
+    model = download_model(GPT2LMHeadModel.from_pretrained, variant, config=config)
 
     # Wrapper to get around past key values
     class Wrapper(torch.nn.Module):
@@ -69,10 +72,11 @@ class Wrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
-def test_gpt2_past_cache(record_forge_property):
+@pytest.mark.parametrize("variant", ["gpt2"])
+def test_gpt2_past_cache(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gpt2", task=Task.TEXT_GENERATION, suffix="past_cache"
+        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, suffix="past_cache"
     )
 
     # Record Forge Property
@@ -83,14 +87,14 @@ def test_gpt2_past_cache(record_forge_property):
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.enable_auto_fusing = False
 
-    model = GPT2LMHeadModel.from_pretrained("gpt2", return_dict=False)
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    config = GPT2Config.from_pretrained("gpt2")
+    model = GPT2LMHeadModel.from_pretrained(variant, return_dict=False)
+    tokenizer = GPT2Tokenizer.from_pretrained(variant)
+    config = GPT2Config.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["n_layer"] = 2
     config_dict["return_dict"] = False
     config = GPT2Config(**config_dict)
-    model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
+    model = download_model(GPT2LMHeadModel.from_pretrained, variant, config=config)
 
     tokenizer.pad_token = tokenizer.eos_token
 

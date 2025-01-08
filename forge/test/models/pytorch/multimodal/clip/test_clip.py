@@ -16,18 +16,17 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_clip_pytorch(record_forge_property):
-    model_ckpt = "openai/clip-vit-base-patch32"
-
+@pytest.mark.parametrize("variant", ["openai/clip-vit-base-patch32"])
+def test_clip_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="clip", variant=model_ckpt, suffix="text")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="clip", variant=variant, suffix="text")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load processor and model from HuggingFace
-    model = download_model(CLIPModel.from_pretrained, model_ckpt, torchscript=True)
-    processor = download_model(CLIPProcessor.from_pretrained, model_ckpt)
+    model = download_model(CLIPModel.from_pretrained, variant, torchscript=True)
+    processor = download_model(CLIPProcessor.from_pretrained, variant)
 
     # Load image from the IAM dataset
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"

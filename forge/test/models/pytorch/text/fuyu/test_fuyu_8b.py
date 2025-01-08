@@ -33,9 +33,8 @@ from test.models.utils import Framework, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_fuyu8b(record_forge_property):
-    variant = "adept/fuyu-8b"
-
+@pytest.mark.parametrize("variant", ["adept/fuyu-8b"])
+def test_fuyu8b(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
 
@@ -90,9 +89,8 @@ def test_fuyu8b(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
-def test_fuyu8b_past_cache(record_forge_property, test_device):
-    variant = "adept/fuyu-8b"
-
+@pytest.mark.parametrize("variant", ["adept/fuyu-8b"])
+def test_fuyu8b_past_cache(record_forge_property, variant, test_device):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
 

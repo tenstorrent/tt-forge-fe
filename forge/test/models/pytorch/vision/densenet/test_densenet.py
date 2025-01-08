@@ -23,7 +23,7 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet121", variant=variant)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -49,9 +49,10 @@ def test_densenet_121_pytorch(record_forge_property, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_densenet_161_pytorch(record_forge_property):
+@pytest.mark.parametrize("variant", ["densenet161"])
+def test_densenet_161_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet161")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -72,9 +73,10 @@ def test_densenet_161_pytorch(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_densenet_169_pytorch(record_forge_property):
+@pytest.mark.parametrize("variant", ["densenet169"])
+def test_densenet_169_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet169")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -96,9 +98,10 @@ def test_densenet_169_pytorch(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_densenet_201_pytorch(record_forge_property):
+@pytest.mark.parametrize("variant", ["densenet201"])
+def test_densenet_201_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet201")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

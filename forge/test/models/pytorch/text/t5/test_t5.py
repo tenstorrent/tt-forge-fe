@@ -18,9 +18,10 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
-def test_t5_loop_tiny_tile(record_forge_property):
+@pytest.mark.parametrize("variant", ["t5-small"])
+def test_t5_loop_tiny_tile(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", suffix="loop_tiny_tile")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="loop_tiny_tile")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -39,12 +40,12 @@ def test_t5_loop_tiny_tile(record_forge_property):
     # compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_enumerate_u_kt = False
 
-    config = download_model(T5Config.from_pretrained, "t5-small")
+    config = download_model(T5Config.from_pretrained, variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = T5Config(**config_dict)
-    model = download_model(T5ForConditionalGeneration.from_pretrained, "t5-small", config=config)
+    model = download_model(T5ForConditionalGeneration.from_pretrained, variant, config=config)
 
     # Wrapper to get around attention mask
     class Wrapper(torch.nn.Module):

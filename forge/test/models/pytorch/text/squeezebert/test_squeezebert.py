@@ -13,9 +13,8 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_squeezebert_sequence_classification_pytorch(record_forge_property):
-    variant = "squeezebert/squeezebert-mnli"
-
+@pytest.mark.parametrize("variant", ["squeezebert/squeezebert-mnli"])
+def test_squeezebert_sequence_classification_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="squeezebert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
@@ -25,8 +24,8 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property):
     record_forge_property("module_name", module_name)
 
     # Load Bart tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
-    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
 
     # Example from multi-nli validation set
     text = """Hello, my dog is cute"""

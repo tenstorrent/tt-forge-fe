@@ -19,9 +19,8 @@ from test.utils import download_model
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = BertTokenizer.from_pretrained(model_ckpt)
-    model = BertForMaskedLM.from_pretrained(model_ckpt)
+    tokenizer = BertTokenizer.from_pretrained(variant)
+    model = BertForMaskedLM.from_pretrained(variant)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -40,9 +39,8 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_masked_lm_pytorch(record_forge_property):
-    variant = "bert-base-uncased"
-
+@pytest.mark.parametrize("variant", ["bert-base-uncased"])
+def test_bert_masked_lm_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM)
 
@@ -60,9 +58,8 @@ def test_bert_masked_lm_pytorch(record_forge_property):
 
 def generate_model_bert_qa_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(BertForQuestionAnswering.from_pretrained, model_ckpt)
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    model = download_model(BertForQuestionAnswering.from_pretrained, variant)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -91,9 +88,8 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_question_answering_pytorch(record_forge_property):
-    variant = "bert-large-cased-whole-word-masking-finetuned-squad"
-
+@pytest.mark.parametrize("variant", ["bert-large-cased-whole-word-masking-finetuned-squad"])
+def test_bert_question_answering_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA)
 
@@ -111,9 +107,8 @@ def test_bert_question_answering_pytorch(record_forge_property):
 
 def generate_model_bert_seqcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(BertForSequenceClassification.from_pretrained, model_ckpt)
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    model = download_model(BertForSequenceClassification.from_pretrained, variant)
 
     # Load data sample
     review = "the movie was great!"
@@ -132,9 +127,8 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_sequence_classification_pytorch(record_forge_property):
-    variant = "textattack/bert-base-uncased-SST-2"
-
+@pytest.mark.parametrize("variant", ["textattack/bert-base-uncased-SST-2"])
+def test_bert_sequence_classification_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
@@ -154,9 +148,8 @@ def test_bert_sequence_classification_pytorch(record_forge_property):
 
 def generate_model_bert_tkcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(BertForTokenClassification.from_pretrained, model_ckpt)
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    model = download_model(BertForTokenClassification.from_pretrained, variant)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -175,9 +168,8 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_bert_token_classification_pytorch(record_forge_property):
-    variant = "dbmdz/bert-large-cased-finetuned-conll03-english"
-
+@pytest.mark.parametrize("variant", ["dbmdz/bert-large-cased-finetuned-conll03-english"])
+def test_bert_token_classification_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.TOKEN_CLASSIFICATION

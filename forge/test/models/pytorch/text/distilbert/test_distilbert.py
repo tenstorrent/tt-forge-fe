@@ -62,17 +62,17 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_distilbert_question_answering_pytorch(record_forge_property):
+@pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
+def test_distilbert_question_answering_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=model_ckpt, task=Task.QA)
+    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = "distilbert-base-cased-distilled-squad"
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(DistilBertForQuestionAnswering.from_pretrained, model_ckpt)
+    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
+    framework_model = download_model(DistilBertForQuestionAnswering.from_pretrained, variant)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -107,19 +107,19 @@ def test_distilbert_question_answering_pytorch(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_distilbert_sequence_classification_pytorch(record_forge_property):
+@pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
+def test_distilbert_sequence_classification_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="distilbert", variant=model_ckpt, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
-    model_ckpt = "distilbert-base-uncased-finetuned-sst-2-english"
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(DistilBertForSequenceClassification.from_pretrained, model_ckpt)
+    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
+    framework_model = download_model(DistilBertForSequenceClassification.from_pretrained, variant)
 
     # Load data sample
     review = "the movie was great!"
@@ -144,19 +144,19 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_distilbert_token_classification_pytorch(record_forge_property):
+@pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
+def test_distilbert_token_classification_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="distilbert", variant=model_ckpt, task=Task.TOKEN_CLASSIFICATION
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.TOKEN_CLASSIFICATION
     )
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
 
     # Load DistilBERT tokenizer and model from HuggingFace
-    model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(DistilBertForTokenClassification.from_pretrained, model_ckpt)
+    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
+    framework_model = download_model(DistilBertForTokenClassification.from_pretrained, variant)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"

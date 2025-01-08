@@ -12,9 +12,8 @@ from test.models.utils import Framework, build_module_name
 
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
-def test_stable_diffusion_pytorch(record_forge_property):
-    variant = "CompVis/stable-diffusion-v1-4"
-
+@pytest.mark.parametrize("variant", ["CompVis/stable-diffusion-v1-4"])
+def test_stable_diffusion_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
 

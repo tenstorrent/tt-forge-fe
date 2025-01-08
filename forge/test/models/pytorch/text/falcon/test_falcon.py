@@ -13,9 +13,8 @@ from test.models.utils import Framework, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_falcon(record_forge_property):
-    variant = "tiiuae/falcon-7b-instruct"
-
+@pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
+def test_falcon(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="falcon", variant=variant)
 

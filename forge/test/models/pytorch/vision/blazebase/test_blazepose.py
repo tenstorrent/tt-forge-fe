@@ -25,7 +25,7 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="detector")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="detector")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -56,7 +56,7 @@ def test_blazepose_detector_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="regressor")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="regressor")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -78,7 +78,7 @@ def test_blazepose_regressor_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="palm")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="palm")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -110,7 +110,7 @@ def test_blaze_palm_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", suffix="hand")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="hand")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

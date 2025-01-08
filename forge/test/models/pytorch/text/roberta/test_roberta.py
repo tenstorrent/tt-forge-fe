@@ -18,9 +18,8 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_roberta_masked_lm(record_forge_property):
-    variant = "xlm-roberta-base"
-
+@pytest.mark.parametrize("variant", ["xlm-roberta-base"])
+def test_roberta_masked_lm(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM)
 
@@ -54,9 +53,8 @@ def test_roberta_masked_lm(record_forge_property):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_roberta_sentiment_pytorch(record_forge_property):
-    variant = "cardiffnlp/twitter-roberta-base-sentiment"
-
+@pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
+def test_roberta_sentiment_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.SEQUENCE_CLASSIFICATION

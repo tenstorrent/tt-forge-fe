@@ -48,7 +48,7 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
 @pytest.mark.nightly
 def test_openpose_basic(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant, suffix="basic")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant)
 
     # Record Forge Property
     record_forge_property("module_name", module_name)

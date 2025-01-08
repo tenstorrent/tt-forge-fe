@@ -61,8 +61,8 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv1_192(record_forge_property):
-    variant = "google/mobilenet_v1_0.75_192"
+@pytest.mark.parametrize("variant", ["google/mobilenet_v1_0.75_192"])
+def test_mobilenetv1_192(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
@@ -97,8 +97,8 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_mobilenetv1_224(record_forge_property):
-    variant = "google/mobilenet_v1_1.0_224"
+@pytest.mark.parametrize("variant", ["google/mobilenet_v1_1.0_224"])
+def test_mobilenetv1_224(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE

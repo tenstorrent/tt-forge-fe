@@ -28,13 +28,11 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_320x320(record_forge_property, size):
-    variant = "yolov5" + size
-
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
         model="yolo_v5",
-        variant=variant,
+        variant="yolov5" + size,
         task="imgcls",
         source="torchhub",
         suffix="320x320",
@@ -71,13 +69,11 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_640x640(record_forge_property, size):
-    variant = "yolov5" + size
-
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
         model="yolo_v5",
-        variant=variant,
+        variant="yolov5" + size,
         task="imgcls",
         source="torchhub",
         suffix="640x640",
@@ -110,13 +106,11 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 @pytest.mark.model_analysis
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_480x480(record_forge_property, size):
-    variant = "yolov5" + size
-
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
         model="yolo_v5",
-        variant=variant,
+        variant="yolov5" + size,
         task="imgcls",
         source="torchhub",
         suffix="480x480",
@@ -139,9 +133,8 @@ def test_yolov5_480x480(record_forge_property, size):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-def test_yolov5_1280x1280(record_forge_property):
-    variant = "yolov5s"
-
+@pytest.mark.parametrize("variant", ["yolov5s"])
+def test_yolov5_1280x1280(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,

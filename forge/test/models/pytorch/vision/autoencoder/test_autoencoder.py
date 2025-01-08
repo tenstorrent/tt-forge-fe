@@ -17,7 +17,7 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.model_analysis
 def test_conv_ae_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="conv_autoencoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="conv")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
@@ -53,7 +53,7 @@ def test_conv_ae_pytorch(record_forge_property):
 @pytest.mark.model_analysis
 def test_linear_ae_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="linear_autoencoder")
+    module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="linear")
 
     # Record Forge Property
     record_forge_property("module_name", module_name)
