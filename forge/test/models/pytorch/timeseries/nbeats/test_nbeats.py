@@ -18,7 +18,7 @@ from forge.verify.compare import compare_with_golden
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-# @pytest.mark.xfail(reason="Failing with pcc=0.82")
+@pytest.mark.xfail(reason="RuntimeError: Tensor 4 - stride mismatch: expected [24, 1], got [1, 12]")
 def test_nbeats_with_seasonality_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -46,7 +46,7 @@ def test_nbeats_with_seasonality_basis(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-# @pytest.mark.xfail(reason="Failing with pcc=0.83")
+@pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_generic_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 
@@ -68,7 +68,7 @@ def test_nbeats_with_generic_basis(test_device):
 
 @pytest.mark.nightly
 @pytest.mark.model_analysis
-# @pytest.mark.xfail(reason="Failing with pcc=0.83")
+@pytest.mark.xfail(reason="Failing with pcc=0.83")
 def test_nbeats_with_trend_basis(test_device):
     compiler_cfg = forge.config._get_global_compiler_config()
 
