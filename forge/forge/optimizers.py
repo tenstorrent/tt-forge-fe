@@ -508,6 +508,160 @@ class AdamW(Adam):
         )
 
 
+class Adagrad(Optimizer):
+    """
+    Adagrad Optimizer
+
+    Attributes
+    ----------
+    learning_rate : float
+        Initial learning rate (gamma in the algorithm)
+    lr_decay : float
+        Learning rate decay factor (eta in the algorithm)
+    epsilon : float
+        Small constant added to denominator for numerical stability
+    weight_decay : float
+        Weight decay (L2 penalty) factor (lambda in the algorithm)
+    initial_accumulator_value : float
+        Starting value for the accumulator (tau in the algorithm)
+    parameter_to_opt_inputs : Dict[Parameter, Dict[str, Tensor]]
+        Maps a Parameter to its associated optimizer state
+    """
+
+    def __init__(
+        self,
+        learning_rate: float,
+        lr_decay: float = 0.0,
+        epsilon: float = 1e-10,
+        weight_decay: float = 0.0,
+        initial_accumulator_value: float = 0.0,
+        parameters: Optional[List[Parameter]] = None,
+    ):
+        super().__init__(parameters)
+        self.learning_rate = learning_rate
+        self.lr_decay = lr_decay
+        self.epsilon = epsilon
+        self.weight_decay = weight_decay
+        self.initial_accumulator_value = initial_accumulator_value
+        self.torch_optimizer = None
+        
+        self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
+        self.parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
+        
+        if parameters:
+            self.set_parameters_to_optimize(parameters)
+            
+    def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+        return {
+            "torch_state_sum": torch.full(shape, self.initial_accumulator_value, dtype=dtype),
+            "torch_decay_factor": torch.ones(shape, dtype=dtype),
+        }
+
+    def get_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
+        """Return a dict of optimizer parameter names to tensor"""
+        return {
+            "lr": Tensor.create_from_torch(torch.full(shape, self.learning_rate, dtype=dtype)),
+            "state_sum": Tensor.create_from_torch(torch.full(shape, self.initial_accumulator_value, dtype=dtype)),
+            "decay_factor": Tensor.create_from_torch(torch.ones(shape, dtype=dtype)),
+        }
+
+    def get_optimizer_state_keys(self) -> List:
+        return ["state_sum", "decay_factor"]
+
+    def get_type(self) -> str:
+        return "adagrad"
+
+    def set_parameters_to_optimize(self, parameters: List[Parameter]):
+        for parameter in parameters:
+            if parameter.requires_grad:
+                self.parameter_to_opt_inputs[parameter.get_name()] = self.get_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+                self.parameter_to_opt_torch_inputs[parameter.get_name()] = self.get_cpu_param_dict(
+                    parameter.pt_data_format, parameter.shape.get_pytorch_shape()
+                )
+
+    def generate_op_trace(self, ac, parameter, gradient):
+        from forge.op.eval.forge.sqrt import Sqrt
+        from forge.op.eval.forge.reciprocal import Reciprocal
+
+        parameter_shape = parameter.shape.as_list()
+        
+        # Get optimizer state
+        state_sum = ac.input("state_sum", parameter.shape, copy_consteval_operations=True)
+        decay_factor = ac.input("decay_factor", parameter.shape, disable_consteval=True)
+        
+        # Apply weight decay if needed
+        if self.weight_decay > 0.0:
+            weight_decay = ac.tensor(torch.full(parameter_shape, self.weight_decay))
+            gradient = ac.op("add", (gradient, ac.op("multiply", (weight_decay, parameter))))
+        
+        lr_decay = ac.tensor(torch.full(parameter_shape, self.lr_decay))
+        updated_decay_factor = ac.op("multiply", (decay_factor, lr_decay))
+        one = ac.tensor(torch.full(parameter_shape, 1.0))
+        one_plus_lr_decay = ac.op("add", (one, updated_decay_factor))
+        
+        lr = ac.input("lr", parameter.shape)
+        reciprocal_decay = ac.op(Reciprocal.create(), (one_plus_lr_decay,))
+        adjusted_lr = ac.op("multiply", (lr, reciprocal_decay))
+        
+        gradient_squared = ac.op("multiply", (gradient, gradient))
+        updated_state_sum = ac.op("add", (state_sum, gradient_squared))
+        
+        epsilon = ac.tensor(torch.full(parameter_shape, self.epsilon))
+        state_sum_plus_epsilon = ac.op("add", (updated_state_sum, epsilon))
+        sqrt_state_sum = ac.op(Sqrt.create(), (state_sum_plus_epsilon,))
+        reciprocal_sqrt = ac.op(Reciprocal.create(), (sqrt_state_sum,))
+        scaled_gradient = ac.op("multiply", (gradient, reciprocal_sqrt))
+        parameter_delta = ac.op("multiply", (adjusted_lr, scaled_gradient))
+        
+        # Update parameter
+        updated_parameter = ac.op("subtract", (parameter, parameter_delta))
+        
+        # Set loopbacks
+        ac.loopback(updated_state_sum, state_sum)
+        ac.loopback(updated_decay_factor, decay_factor)
+        
+        return updated_parameter
+
+    def torch_parameter_update(
+        self, *, parameter_name: str, parameter: torch.Tensor, gradient: torch.Tensor
+    ) -> torch.Tensor:
+        if self.weight_decay > 0.0:
+            gradient = gradient + self.weight_decay * parameter
+            
+        # Update state sum
+        self.parameter_to_opt_torch_inputs[parameter_name]["torch_state_sum"] += gradient ** 2
+        
+        # Update decay factor
+        if self.lr_decay > 0.0:
+            self.parameter_to_opt_torch_inputs[parameter_name]["torch_decay_factor"] *= (1.0 + self.lr_decay)
+            adjusted_lr = self.learning_rate / self.parameter_to_opt_torch_inputs[parameter_name]["torch_decay_factor"]
+        else:
+            adjusted_lr = self.learning_rate
+            
+        # Update parameters
+        updated_parameter = parameter - adjusted_lr * gradient / (
+            torch.sqrt(self.parameter_to_opt_torch_inputs[parameter_name]["torch_state_sum"] + self.epsilon)
+        )
+        
+        return updated_parameter
+
+    def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor], lr=None) -> torch.optim.Optimizer:
+        """Return an equivalent pytorch optimizer, used for verification."""
+        if lr is not None:
+            self.learning_rate = lr
+        if not self.torch_optimizer:
+            self.torch_optimizer = torch.optim.Adagrad(
+                [p for p in parameters.values()],
+                lr=self.learning_rate,
+                lr_decay=self.lr_decay,
+                weight_decay=self.weight_decay,
+                initial_accumulator_value=self.initial_accumulator_value,
+                eps=self.epsilon,
+            )
+        return self.torch_optimizer
+
 class LAMB(Optimizer):
     def __init__(
         self,
