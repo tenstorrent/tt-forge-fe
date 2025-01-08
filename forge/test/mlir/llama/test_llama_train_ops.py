@@ -43,9 +43,6 @@ from forge.tensor import to_forge_tensors
     ],
 )
 @pytest.mark.push
-@pytest.mark.xfail(
-    reason="RuntimeError: Failed to run MLIR compiler pass pipeline. error: 'ttnn.reshape' op Shape attribute size must match output tensor rank. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1577"
-)
 def test_mean_bwd(input_shape, dim):
     class MeanBwd(nn.Module):
         def __init__(self, dim: int):
@@ -67,7 +64,20 @@ def test_mean_bwd(input_shape, dim):
 
 
 @pytest.mark.parametrize(
-    "in_features, out_features", [pytest.param(3200, 3200), pytest.param(3200, 8640), pytest.param(8640, 3200)]
+    "in_features, out_features",
+    [
+        pytest.param(3200, 3200),
+        pytest.param(3200, 8640),
+        pytest.param(8640, 3200),
+        pytest.param(8, 3200),
+        pytest.param(16, 3200),
+        pytest.param(32, 3200),
+        pytest.param(64, 3200),
+        pytest.param(128, 3200),
+        pytest.param(256, 3200),
+        pytest.param(512, 3200),
+        pytest.param(32000, 3200),
+    ],
 )
 @pytest.mark.push
 def test_matmul_dims(in_features, out_features):
@@ -75,7 +85,7 @@ def test_matmul_dims(in_features, out_features):
         def __init__(self, in_features, out_features, bias=True, dtype=torch.float32):
             super(MatMulDimsCheck, self).__init__()
             self.linear_relu_stack = nn.Sequential(
-                nn.Linear(784, in_features, bias=bias, dtype=dtype),
+                nn.Linear(3200, in_features, bias=bias, dtype=dtype),
                 nn.ReLU(),
                 nn.Linear(in_features, out_features, bias=bias, dtype=dtype),
                 nn.ReLU(),
@@ -86,11 +96,9 @@ def test_matmul_dims(in_features, out_features):
             logits = self.linear_relu_stack(x)
             return logits
 
-    torch.manual_seed(0)
-
     framework_model = MatMulDimsCheck(in_features=in_features, out_features=out_features, bias=False)
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=0.001)
-    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(12, 784)], training=True)
+    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(12, 3200)], training=True)
 
     loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
     loss_inputs = [torch.rand(12, 10).requires_grad_(True), torch.rand(12, 10)]
@@ -103,8 +111,9 @@ def test_matmul_dims(in_features, out_features):
     target = torch.nn.functional.one_hot(torch.randint(0, 9, (12,)), num_classes=10).float()
 
     # Forward pass (prediction) on device
-    input_ids = torch.randn((12, 784))
+    input_ids = torch.randn((12, 3200))
     pred = tt_model(input_ids)[0]
+    verify([input_ids], framework_model, tt_model)
 
     tt_loss(pred, target)
 
