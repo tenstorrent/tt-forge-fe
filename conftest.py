@@ -21,7 +21,30 @@ def record_test_timestamp(record_property):
 
 @pytest.fixture(scope="function", autouse=True)
 def record_forge_property(record_property):
+    """
+    A pytest fixture that automatically records a property named 'frontend' with the value 'tt-forge-fe'
+    for each test function. This fixture is applied to all test functions due to `autouse=True`.
+
+    Parameters:
+    ----------
+    record_property : function
+        A pytest built-in function used to record test metadata, such as custom properties or
+        additional information about the test execution.
+
+    Yields:
+    -------
+    function
+        The `record_property` function, allowing tests to add additional properties if needed.
+
+    Usage:
+    ------
+    def test_model(record_forge_property):
+        # Record Forge Property
+        record_forge_property("key", value)
+    """
+    # Record default properties for forge
     record_property("frontend", "tt-forge-fe")
+
     yield record_property
 
 
@@ -95,6 +118,34 @@ def memory_usage_tracker():
 
 @pytest.mark.hookwrapper
 def pytest_runtest_makereport(item, call):
+    """
+    A pytest hookwrapper for customizing the test report. This hook is triggered after each
+    test function executes and allows access to the test's outcome and additional user-defined properties.
+
+    Parameters:
+    ----------
+    item : pytest.Item
+        The test item object representing the test function or parameterized test case.
+    call : pytest.CallInfo
+        An object containing information about the test function's call, including its result
+        or exception details.
+
+    Yields:
+    -------
+    None
+        The hook yields control back to pytest, allowing it to finalize the test report.
+
+    Behavior:
+    ---------
+    - Retrieves the test result via `outcome.get_result()`.
+    - Checks for user-defined properties in `item.user_properties`.
+    - If properties exist, converts them into a dictionary and prints them to the console.
+
+    Notes:
+    ------
+    - User-defined properties can be set using `record_property` or added to `item.user_properties`.
+    - This hookwrapper is useful for augmenting test reports with additional metadata.
+    """
     outcome = yield
     report = outcome.get_result()
 
