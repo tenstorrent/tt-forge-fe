@@ -3,7 +3,7 @@
 
 bitarray==2.5.1
 clang-format==14.0.3
-diffusers==0.27.2
+diffusers==0.32.1
 optimum==1.23.3
 hydra-core
 IPython==8.8.0
