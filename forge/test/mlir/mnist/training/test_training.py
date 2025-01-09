@@ -419,7 +419,7 @@ def test_lora():
     # Config
     num_epochs = 3
     batch_size = 64
-    learning_rate = 0.1
+    learning_rate = 0.001
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
