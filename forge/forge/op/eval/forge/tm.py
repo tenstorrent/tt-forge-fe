@@ -1028,8 +1028,6 @@ def decompose(type, attr, dc, inputs):
             # by adding the size on that dimension
             stop = act.shape[dim] + stop
 
-        assert dim != -4, "No support for indexing on dimension -4 (w)"
-
         is_one_dim = len(act.shape) == 1
         if is_one_dim:
             # If input is a one-dimensional tensor, reshape it to a 2D tensor with one dimension equal to 1
