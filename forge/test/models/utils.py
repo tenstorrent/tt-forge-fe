@@ -41,7 +41,7 @@ class Source(StrEnum):
 def build_module_name(
     framework: Framework,
     model: str,
-    variant: str | None = None,
+    variant: str = "base",
     task: str | None = None,
     source: str | None = None,
     suffix: str | None = None,
