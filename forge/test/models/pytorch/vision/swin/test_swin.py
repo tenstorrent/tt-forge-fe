@@ -13,7 +13,6 @@ from test.models.pytorch.vision.swin.utils.image_utils import load_image
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(
     reason='RuntimeError: TT_ASSERT @ forge/csrc/passes/commute_utils.cpp:1105: reshape->op_name() == "reshape"'
 )
@@ -38,7 +37,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_4_256_hf_pytorch(variant):
@@ -56,7 +55,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification(variant):
@@ -74,7 +73,7 @@ def test_swin_v2_tiny_image_classification(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(variant):

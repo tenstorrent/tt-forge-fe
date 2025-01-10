@@ -14,6 +14,7 @@ from forge.verify.config import TestKind
 from test.utils import download_model
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.nightly
 def test_lstm_genom_onnx(test_device):

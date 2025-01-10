@@ -10,6 +10,7 @@ import forge
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_mobilenet_v1_ssd_pytorch_1x1(test_device):

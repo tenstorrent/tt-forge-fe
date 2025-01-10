@@ -20,7 +20,6 @@ variants = ["ghostnet_100"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_ghostnet_timm(variant, test_device):

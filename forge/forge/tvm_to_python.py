@@ -25,7 +25,7 @@ import sys
 import importlib
 
 from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_str_from_str
-from forge.tvm_unique_op_generation import Operation, NodeType, generate_unique_op_tests
+from forge.tvm_unique_op_generation import Operation, NodeType, extract_and_generate_unique_ops_tests
 
 
 def import_from_path(module_name, file_path):
@@ -2105,7 +2105,9 @@ def generate_forge_module(
         else:
             forge_mod = TestClass(writer.module_name)
 
-            if isinstance(framework_mod, forge.module.PyTorchModule) and compiler_cfg.tvm_generate_unique_op_tests:
+            if isinstance(framework_mod, forge.module.PyTorchModule) and (
+                compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests
+            ):
                 forge_mod.process_framework_parameters()
             else:
                 forge_mod.process_framework_parameters(framework_mod.module)
@@ -2751,7 +2753,9 @@ def compile_tvm_to_python(
             param_file_name = os.path.join(writer.module_directory, writer.module_name + "_params.pt")
             torch.save(params_from_tvm, param_file_name)
 
-        if framework == "pytorch" and compiler_cfg.tvm_generate_unique_op_tests:
+        if framework == "pytorch" and (
+            compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests
+        ):
             # Store named parameters
             named_params_file_name = os.path.join(writer.module_directory, writer.module_name + "_named_params.pt")
             named_parameters = dict(framework_mod.module.state_dict().items())
@@ -2777,8 +2781,8 @@ def compile_tvm_to_python(
 
             # Generate unique op tests based on requested model. Currently only supported
             # for PyTorch framework.
-            if compiler_cfg.tvm_generate_unique_op_tests:
-                generate_unique_op_tests(
+            if compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests:
+                extract_and_generate_unique_ops_tests(
                     ops,
                     current_module_name,
                     framework,

@@ -83,7 +83,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_osmr_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
@@ -149,7 +148,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(test_device, variant):
     model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(

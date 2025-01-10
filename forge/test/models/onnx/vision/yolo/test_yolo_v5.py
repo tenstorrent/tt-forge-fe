@@ -58,6 +58,7 @@ def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:
 variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
@@ -105,6 +106,7 @@ def test_yolo_v5_320x320_onnx(test_device, variant):
 variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
@@ -187,6 +189,7 @@ def test_yolo_v5_480x480_onnx(test_device, variant):
 variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly

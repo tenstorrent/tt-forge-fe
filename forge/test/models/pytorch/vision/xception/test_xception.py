@@ -39,7 +39,6 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xception_timm(variant, test_device):
 

@@ -40,6 +40,7 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
@@ -73,6 +74,7 @@ def test_whisper_dec_past_cache(test_device, variant):
             break
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
@@ -345,6 +347,7 @@ def test_whisper_enc_dec(test_device, variant):
         print(f"generated tokens: {tokenizer.decode(generated_tokens)}")
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")

@@ -28,7 +28,7 @@ variants = ["stable-diffusion-xl-base-1.0"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.xfail(
     reason="RuntimeError: Cannot insert a Tensor that requires grad as a constant. Consider making it a parameter or input, or detaching the gradient"

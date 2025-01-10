@@ -45,6 +45,7 @@ def preprocess(img):
 #########
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="While loop in model, not supported yet")
 @pytest.mark.nightly
 def test_yolov3_tiny_onnx(test_device):
@@ -78,6 +79,7 @@ def test_yolov3_tiny_onnx(test_device):
     )
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="While loop in model, not supported yet")
 @pytest.mark.nightly
 def test_yolov3_onnx(test_device):

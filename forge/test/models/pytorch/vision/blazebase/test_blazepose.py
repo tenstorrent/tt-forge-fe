@@ -19,6 +19,7 @@ import os
 # from mediapipepytorch.visualization import POSE_CONNECTIONS, draw_landmarks
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(test_device):
@@ -41,6 +42,7 @@ def test_blazepose_detector_pytorch(test_device):
     compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name="pt_blazepose_detector")
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(test_device):
@@ -55,6 +57,7 @@ def test_blazepose_regressor_pytorch(test_device):
     compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name="pt_blazepose_regressor")
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(test_device):
@@ -79,6 +82,7 @@ def test_blaze_palm_pytorch(test_device):
     compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name="pt_palm_detector")
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(test_device):

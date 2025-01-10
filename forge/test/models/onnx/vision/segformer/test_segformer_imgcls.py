@@ -33,6 +33,7 @@ variants_img_classification = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants_img_classification)
 @pytest.mark.nightly

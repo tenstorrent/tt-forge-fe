@@ -16,7 +16,6 @@ from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_d
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection(variant):
@@ -37,7 +36,6 @@ def test_detr_detection(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="AssertionError: TVM einsum decomposition does not support bqnc,bnchw->bqnhw yet.")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(variant):
