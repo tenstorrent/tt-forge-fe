@@ -7,6 +7,7 @@ import os
 import pytest
 import torch
 from torch import nn
+import torch.nn.functional as F
 
 import forge
 from forge.tensor import to_forge_tensors
@@ -122,7 +123,6 @@ def test_index(shape, dim, index):
     framework_model = Index(index)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    raise Exception("Error in test_index chek report")
     verify(inputs, framework_model, compiled_model)
 
 
@@ -2018,3 +2018,62 @@ def test_select(shape, dim, begin, length, stride):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - adv_index"
+)
+@pytest.mark.parametrize(
+    "img, grid",
+    [
+        ((1, 2, 4, 4), (1, 6, 2, 2)),
+        ((1, 32, 50, 50), (1, 2500, 4, 2)),
+        ((1, 3, 8, 8), (1, 3, 3, 2)),
+        ((1, 3, 16, 16), (1, 8, 8, 2)),
+        ((5, 2, 10, 10), (5, 12, 3, 2)),
+        ((3, 8, 32, 32), (3, 25, 4, 2)),
+    ],
+)
+@pytest.mark.parametrize("align_corners", [True, False])
+def test_grid_sample(img, grid, align_corners, test_device):
+    class GridSampleModule(nn.Module):
+        def __init__(self, interpolation="bilinear", align_corners=align_corners):
+            super(GridSampleModule, self).__init__()
+            self.interpolation = interpolation
+            self.align_corners = align_corners
+
+        def forward(self, img, grid):
+            output = F.grid_sample(img, grid, mode=self.interpolation, align_corners=align_corners)
+            return output
+
+    # TO-DO: Support for nearest interpolation mode is yet to be added
+    model = GridSampleModule(interpolation="bilinear", align_corners=align_corners)
+    model.eval()
+    img = torch.randn(img)
+    grid = torch.randn(grid)
+    output = model(img, grid)
+    compiled_model = forge.compile(model, sample_inputs=[img, grid], module_name="grid_sample")
+
+
+@pytest.mark.xfail(reason="RuntimeError: BinaryOpType cannot be mapped to BcastOpMath")
+@pytest.mark.parametrize(
+    "input_data",
+    [
+        torch.tensor([-0.8166, 1.5308, -0.2530, -0.2091]),
+        torch.tensor([-3.7, -1.2, 0.0, 1.5, 3.9]),
+        torch.tensor([1.0, 2.0, -1.0, -2.0]),
+        torch.tensor([-12345.678, 12345.678, -0.999, 0.999, 3.14159, -3.14159]),
+    ],
+)
+def test_floor(input_data):
+    class Floor(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a):
+            return torch.floor(a)
+
+    framework_model = Floor()
+    compiled_model = forge.compile(framework_model, sample_inputs=[input_data], module_name="floor")
+
+    verify([input_data], framework_model, compiled_model)
