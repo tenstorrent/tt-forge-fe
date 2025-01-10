@@ -13,7 +13,6 @@ from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import Line
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_conv_ae_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()
@@ -41,7 +40,6 @@ def test_conv_ae_pytorch(test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_linear_ae_pytorch(test_device):
     # Set Forge configuration parameters
     compiler_cfg = forge.config._get_global_compiler_config()

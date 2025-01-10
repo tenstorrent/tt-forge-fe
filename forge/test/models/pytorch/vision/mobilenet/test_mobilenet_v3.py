@@ -41,7 +41,6 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_basic(variant, test_device):
@@ -95,7 +94,6 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(variant, test_device):

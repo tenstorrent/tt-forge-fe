@@ -1,0 +1,155 @@
+name: Model Analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      generate_models_ops_test:
+        description: 'If set to True, it will generate models ops test by extracting the unique ops config across all the models otherwise it will run the model analysis and generate markdown files'
+        required: false
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      generate_models_ops_test:
+        description: 'If set to True, it will generate models ops test by extracting the unique ops config across all the models otherwise it will run the model analysis and generate markdown files'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+
+  docker-build:
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  model-analysis:
+    needs: docker-build
+    runs-on: runner
+    timeout-minutes: 4320 # Set job execution time to 3 days(default: 6 hours)
+
+    container:
+      image: ${{ needs.docker-build.outputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HF_HUB_DISABLE_PROGRESS_BARS: 1
+
+    steps:
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            submodules: recursive
+            fetch-depth: 0 # Fetch all history and tags
+            token: ${{ env.GITHUB_TOKEN }}
+
+      # Clean everything from submodules (needed to avoid issues
+      # with cmake generated files leftover from previous builds)
+      - name: Cleanup submodules
+        run: |
+            git submodule foreach --recursive git clean -ffdx
+            git submodule foreach --recursive git reset --hard
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          create-symlink: true
+          key: model-analysis-${{ runner.os }}
+
+      - name: Set environment variables
+        shell: bash
+        run: |
+            OUTPUT=$(bash .github/model-analysis-config.sh ${{ inputs.generate_models_ops_test }})
+            # Assign the script output to GitHub environment variables
+            echo "$OUTPUT" | while IFS= read -r line; do
+              echo "$line" >> $GITHUB_ENV
+            done
+
+      - name: Build
+        shell: bash
+        run: |
+          source env/activate
+          cmake -G Ninja \
+          -B ${{ steps.strings.outputs.build-output-dir }} \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER=clang \
+          -DCMAKE_CXX_COMPILER=clang++ \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake --build ${{ steps.strings.outputs.build-output-dir }}
+
+      - name: Run Model Analysis Script
+        if: ${{ !inputs.generate_models_ops_test }}
+        shell: bash
+        run: |
+          source env/activate
+          apt-get update
+          apt install -y libgl1 libglx-mesa0
+          set -o pipefail # Ensures that the exit code reflects the first command that fails
+          python scripts/model_analysis/run_analysis_and_generate_md_files.py \
+            --test_directory_or_file_path ${{ env.TEST_DIR_OR_FILE_PATH }} \
+            --dump_failure_logs \
+            --markdown_directory_path ${{ env.MARDOWN_DIR_PATH }} \
+            --unique_ops_output_directory_path ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }} \
+            2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
+
+      - name: Generate Models Ops test
+        if: ${{ inputs.generate_models_ops_test }}
+        shell: bash
+        run: |
+          source env/activate
+          apt-get update
+          apt install -y libgl1 libglx-mesa0
+          set -o pipefail # Ensures that the exit code reflects the first command that fails
+          python scripts/model_analysis/generate_models_ops_test.py \
+            --test_directory_or_file_path ${{ env.TEST_DIR_OR_FILE_PATH }} \
+            --unique_ops_output_directory_path ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }} \
+            --models_ops_test_output_directory_path ${{ env.MODELS_OPS_TEST_OUTPUT_DIR_PATH }} \
+            --models_ops_test_package_name ${{ env.MODELS_OPS_TEST_PACKAGE_NAME }} \
+            2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
+
+      - name: Upload Script Output Logs
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: script-outputs
+          path: ${{ env.SCRIPT_OUTPUT_LOG }}
+
+      - name: Upload Models Unique Ops test Failure Logs
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: unique-ops-logs
+          path: ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ env.BRANCH_NAME }}
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          base: main
+          commit-message: ${{ env.COMMIT_MESSAGE }}
+          title: ${{ env.TITLE }}
+          body: ${{ env.BODY }}
+          delete-branch: true
+          token: ${{ env.GITHUB_TOKEN }}
+          add-paths: |
+              ${{ env.OUTPUT_PATH }}

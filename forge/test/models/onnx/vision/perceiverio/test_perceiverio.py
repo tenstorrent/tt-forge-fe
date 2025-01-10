@@ -25,6 +25,7 @@ def get_sample_data(model_name):
     return pixel_values
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize(
     "model_name",

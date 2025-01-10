@@ -29,6 +29,7 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly

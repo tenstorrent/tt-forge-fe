@@ -20,6 +20,7 @@ import os
 variants = ["densenet161_bts", "densenet121_bts"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly

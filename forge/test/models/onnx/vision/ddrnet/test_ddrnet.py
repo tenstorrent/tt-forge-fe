@@ -15,6 +15,7 @@ from forge._C.backend_api import BackendDevice
 variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
@@ -77,6 +78,7 @@ def test_ddrnet(variant, test_device):
 variants = ["ddrnet_23_slim_1024"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly

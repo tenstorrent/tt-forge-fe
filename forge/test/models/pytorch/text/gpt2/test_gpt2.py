@@ -11,7 +11,6 @@ from forge.verify.compare import compare_with_golden
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got BFloat16")
 def test_gpt2_text_gen(test_device):
     # Load tokenizer and model from HuggingFace
@@ -63,6 +62,7 @@ class Wrapper(torch.nn.Module):
         return self.model(input_ids, past_key_values, attention_mask)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 def test_gpt2_past_cache(test_device):

@@ -9,7 +9,6 @@ from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequen
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_roberta_masked_lm(test_device):
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
@@ -35,7 +34,6 @@ def test_roberta_masked_lm(test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_roberta_sentiment_pytorch(test_device):
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment")

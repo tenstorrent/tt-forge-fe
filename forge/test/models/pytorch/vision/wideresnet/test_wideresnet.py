@@ -46,7 +46,6 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_pytorch(variant, test_device):
     (model, inputs,) = generate_model_wideresnet_imgcls_pytorch(
@@ -83,7 +82,6 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_timm(variant, test_device):
     (model, inputs,) = generate_model_wideresnet_imgcls_timm(

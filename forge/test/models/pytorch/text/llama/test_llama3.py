@@ -117,7 +117,6 @@ LlamaModel._update_causal_mask = _update_causal_mask
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_causal_lm(variant, test_device):
     # Configurations
@@ -160,7 +159,6 @@ def test_llama3_causal_lm(variant, test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_sequence_classification(variant, test_device):
 
