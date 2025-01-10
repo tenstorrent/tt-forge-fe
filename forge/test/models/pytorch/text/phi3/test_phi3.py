@@ -1,28 +1,31 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import pytest
 from transformers import (
+    AutoTokenizer,
     Phi3Config,
     Phi3ForCausalLM,
-    AutoTokenizer,
-    Phi3ForTokenClassification,
     Phi3ForSequenceClassification,
+    Phi3ForTokenClassification,
 )
-import pytest
+
 import forge
-import torch
-from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_causal_lm(variant, test_device):
+def test_phi3_causal_lm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.CAUSAL_LM)
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -35,8 +38,8 @@ def test_phi3_causal_lm(variant, test_device):
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 
-    model = Phi3ForCausalLM.from_pretrained(variant, trust_remote_code=True, config=config)
-    model.eval()
+    framework_model = Phi3ForCausalLM.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model.eval()
 
     # input_prompt
     input_prompt = "Africa is an emerging economy because"
@@ -55,18 +58,23 @@ def test_phi3_causal_lm(variant, test_device):
 
     inputs = [input_ids, attn_mask]
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm"
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="RuntimeError: Indices tensor must be in row major layout.")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_token_classification(variant, test_device):
+def test_phi3_token_classification(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.TOKEN_CLASSIFICATION
+    )
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -78,8 +86,8 @@ def test_phi3_token_classification(variant, test_device):
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
 
-    model = Phi3ForTokenClassification.from_pretrained(variant, trust_remote_code=True, config=config)
-    model.eval()
+    framework_model = Phi3ForTokenClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model.eval()
 
     # input_prompt
     input_prompt = "HuggingFace is a company based in Paris and New York"
@@ -89,24 +97,23 @@ def test_phi3_token_classification(variant, test_device):
 
     inputs = [inputs["input_ids"]]
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_token_cls"
-    )
-    co_out = compiled_model(*inputs)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="RuntimeError: Embedding Device Operation Layout Mismatch - Expected ROW_MAJOR")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_sequence_classification(variant, test_device):
+def test_phi3_sequence_classification(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -118,8 +125,8 @@ def test_phi3_sequence_classification(variant, test_device):
 
     # Load tokenizer and model from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant, return_tensors="pt", trust_remote_code=True)
-    model = Phi3ForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
-    model.eval()
+    framework_model = Phi3ForSequenceClassification.from_pretrained(variant, trust_remote_code=True, config=config)
+    framework_model.eval()
 
     # input_prompt
     input_prompt = "the movie was great!"
@@ -128,12 +135,8 @@ def test_phi3_sequence_classification(variant, test_device):
     inputs = tokenizer(input_prompt, return_tensors="pt")
     inputs = [inputs["input_ids"]]
 
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls"
-    )
-    co_out = compiled_model(*inputs)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

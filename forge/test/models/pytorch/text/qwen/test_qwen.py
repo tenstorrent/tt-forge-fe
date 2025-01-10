@@ -1,33 +1,40 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
-import forge
-from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
-import torch
 import re
+
+import pytest
+import torch
+from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 
 @pytest.mark.nightly
-def test_qwen1_5_causal_lm(test_device):
+@pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B"])
+def test_qwen1_5_causal_lm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM)
 
-    # Set PyBuda configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Setup model configuration
-    config = Qwen2Config.from_pretrained("Qwen/Qwen1.5-0.5B")
+    config = Qwen2Config.from_pretrained(variant)
     config.use_cache = False
     config.return_dict = False
 
     # Load model and tokenizer with config
-    model = Qwen2ForCausalLM.from_pretrained("Qwen/Qwen1.5-0.5B", config=config)
-    tokenizer = Qwen2Tokenizer.from_pretrained("Qwen/Qwen1.5-0.5B")
+    framework_model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
+    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
     tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Disable DynamicCache
     # See: https://github.com/tenstorrent/tt-buda/issues/42
-    model._supports_cache_class = False
+    framework_model._supports_cache_class = False
 
     # Example usage
     batch_size = 1
@@ -40,10 +47,11 @@ def test_qwen1_5_causal_lm(test_device):
 
     inputs = [input_ids, attention_mask]
 
-    # Pass the tensors to the model
-    op = model(input_ids, attention_mask)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_causal_lm")
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def parse_chat_completion(text: str):
@@ -58,25 +66,27 @@ def parse_chat_completion(text: str):
 
 
 @pytest.mark.nightly
-def test_qwen1_5_chat(test_device):
+@pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B-Chat"])
+def test_qwen1_5_chat(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant)
 
-    # Set PyBuda configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Setup model configuration
-    config = Qwen2Config.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
+    config = Qwen2Config.from_pretrained(variant)
     config.use_cache = False
     config.return_dict = False
 
     # Load model and tokenizer with config
-    model = Qwen2ForCausalLM.from_pretrained("Qwen/Qwen1.5-0.5B-Chat", config=config)
-    tokenizer = Qwen2Tokenizer.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
+    framework_model = Qwen2ForCausalLM.from_pretrained(variant, config=config)
+    tokenizer = Qwen2Tokenizer.from_pretrained(variant)
     tokenizer.pad_token, tokenizer.pad_token_id = (tokenizer.eos_token, tokenizer.eos_token_id)
 
     # Disable DynamicCache
     # See: https://github.com/tenstorrent/tt-buda/issues/42
-    model._supports_cache_class = False
+    framework_model._supports_cache_class = False
 
     batch_size = 1
     # Sample chat messages
@@ -103,7 +113,8 @@ def test_qwen1_5_chat(test_device):
 
     inputs = [input_ids, attention_mask]
 
-    # Pass the tensors to the model
-    op = model(input_ids, attention_mask)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_qwen_chat")
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

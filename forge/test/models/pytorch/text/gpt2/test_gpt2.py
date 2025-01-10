@@ -2,26 +2,34 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
 import torch
+from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
+
 import forge
-import os
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
-from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got BFloat16")
-def test_gpt2_text_gen(test_device):
+@pytest.mark.parametrize("variant", ["gpt2"])
+def test_gpt2_text_gen(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load tokenizer and model from HuggingFace
-    config = GPT2Config.from_pretrained("gpt2")
+    config = GPT2Config.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = GPT2Config(**config_dict)
-    model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    model = download_model(GPT2LMHeadModel.from_pretrained, variant, config=config)
 
     # Wrapper to get around past key values
     class Wrapper(torch.nn.Module):
@@ -37,15 +45,14 @@ def test_gpt2_text_gen(test_device):
     ).to(torch.int64)
     attn_mask = torch.ones(1, 256)
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name="pt_gpt2_generation")
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model = Wrapper(model)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 class Wrapper(torch.nn.Module):
@@ -65,22 +72,29 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
-def test_gpt2_past_cache(test_device):
-    os.environ["GOLDEN_WORMHOLE_B0"] = "1"
-    os.environ["FORGE_DEVMODE"] = "1"
+@pytest.mark.parametrize("variant", ["gpt2"])
+def test_gpt2_past_cache(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, suffix="past_cache"
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_tvm_cpu_fallback = False
     compiler_cfg.enable_auto_fusing = False
 
-    model = GPT2LMHeadModel.from_pretrained("gpt2", return_dict=False)
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    config = GPT2Config.from_pretrained("gpt2")
+    model = GPT2LMHeadModel.from_pretrained(variant, return_dict=False)
+    tokenizer = GPT2Tokenizer.from_pretrained(variant)
+    config = GPT2Config.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["n_layer"] = 2
     config_dict["return_dict"] = False
     config = GPT2Config(**config_dict)
-    model = download_model(GPT2LMHeadModel.from_pretrained, "gpt2", config=config)
+    model = download_model(GPT2LMHeadModel.from_pretrained, variant, config=config)
 
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -109,4 +123,3 @@ def test_gpt2_past_cache(test_device):
         training=False,
     )
     forge.run_forward()
-    breakpoint()

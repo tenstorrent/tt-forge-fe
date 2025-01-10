@@ -19,27 +19,31 @@ unfortunately there is no way to include --no-deps in  requirements.txt file.
 for this reason , yolox==0.3.0 is intalled through subprocess.
 """
 
-import torch
-import cv2
-import numpy as np
-from yolox.exp import get_exp
-import requests
-import pytest
 import os
-import forge
-from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
 
+import cv2
+import pytest
+import requests
+import torch
+from yolox.exp import get_exp
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
+from test.models.utils import Framework, build_module_name
 
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_yolox_pytorch(variant, test_device):
+def test_yolox_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="yolox", variant=variant)
 
-    # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # prepare model
     weight_name = f"{variant}.pth"
@@ -54,15 +58,15 @@ def test_yolox_pytorch(variant, test_device):
         model_name = variant.replace("_", "-")
 
     exp = get_exp(exp_name=model_name)
-    model = exp.get_model()
+    framework_model = exp.get_model()
     ckpt = torch.load(f"{variant}.pth", map_location="cpu")
-    model.load_state_dict(ckpt["model"])
+    framework_model.load_state_dict(ckpt["model"])
 
     # Set to false as it is part of model post-processing
     # to avoid pcc mismatch due to inplace slice and update
-    model.head.decode_in_inference = False
+    framework_model.head.decode_in_inference = False
 
-    model.eval()
+    framework_model.eval()
     model_name = f"pt_{variant}"
 
     # prepare input
@@ -81,14 +85,11 @@ def test_yolox_pytorch(variant, test_device):
 
     inputs = [img_tensor]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(*inputs)
-        co_out = [co.to("cpu") for co in co_out]
-
-        # Postprocessing outputs
-        outputs = model.head.decode_outputs(outputs, dtype=img_tensor.type())
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
     # remove downloaded weights,image
     os.remove(weight_name)

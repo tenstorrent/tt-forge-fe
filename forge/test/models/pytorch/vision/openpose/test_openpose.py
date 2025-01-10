@@ -2,21 +2,20 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import os
-
 import torch
-from torchvision import transforms
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
-from test.utils import download_model
+from forge.verify.verify import verify
+
 from test.models.pytorch.vision.openpose.utils.model import (
     OpenPoseBodyModel,
     OpenPoseHandModel,
     get_image_tensor,
     transfer,
 )
-
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 variants = [
     "body_basic",
@@ -24,11 +23,7 @@ variants = [
 ]
 
 
-def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
-    # Init config
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_openpose_posdet_custom_pytorch(variant):
     # Load model
     if variant == "body_basic":
         model_path = "weights/body_pose_model.pth"
@@ -45,9 +40,6 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     # Load & pre-process image
     img_tensor = get_image_tensor(sample_path)
 
-    # Sanity run
-    cpu_out = framework_model(img_tensor)
-
     return framework_model, [img_tensor], {}
 
 
@@ -55,29 +47,31 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_openpose_basic(variant, test_device):
-    model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
-        test_device,
+def test_openpose_basic(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
-def generate_model_openpose_posdet_osmr_pytorch(test_device, variant):
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_openpose_posdet_osmr_pytorch(variant):
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
     # Load & pre-process image
     sample_path = "samples/body.jpeg"
     img_tensor = get_image_tensor(sample_path)
-
-    # Sanity run
-    cpu_out = framework_model(img_tensor)
 
     return framework_model, [img_tensor], {}
 
@@ -92,9 +86,18 @@ variants = [
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_openpose_osmr(variant, test_device):
-    model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
-        test_device,
+def test_openpose_osmr(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_openpose_{variant}")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

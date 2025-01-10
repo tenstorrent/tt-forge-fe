@@ -3,10 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from diffusers import DiffusionPipeline
 import torch
-import forge
+from diffusers import DiffusionPipeline
 from torchvision import transforms
+
+import forge
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):

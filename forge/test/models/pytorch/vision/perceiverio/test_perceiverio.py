@@ -1,20 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import requests
-from PIL import Image
 import pytest
+import requests
+import torch
 from loguru import logger
+from PIL import Image
 from transformers import (
     AutoImageProcessor,
     PerceiverForImageClassificationConvProcessing,
-    PerceiverForImageClassificationLearned,
     PerceiverForImageClassificationFourier,
+    PerceiverForImageClassificationLearned,
 )
-import os
-from forge.verify.compare import compare_with_golden
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 
 def get_sample_data(model_name):
@@ -39,47 +41,43 @@ variants = [
     pytest.param(
         "deepmind/vision-perceiver-fourier",
         id="deepmind/vision-perceiver-fourier",
-        marks=pytest.mark.xfail(reason="Runtime error: Incompatible dimensions 288 and 261"),
     ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_perceiverio_for_image_classification_pytorch(test_device, variant):
+def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="perceiverio", variant=variant, task=Task.IMAGE_CLASSIFICATION
+    )
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    if variant != "deepmind/vision-perceiver-fourier":
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Sample Image
     pixel_values = get_sample_data(variant)
 
     # Load the model from HuggingFace
     if variant == "deepmind/vision-perceiver-learned":
-        model = PerceiverForImageClassificationLearned.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationLearned.from_pretrained(variant)
 
     elif variant == "deepmind/vision-perceiver-conv":
-        model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant)
 
     elif variant == "deepmind/vision-perceiver-fourier":
-        model = PerceiverForImageClassificationFourier.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationFourier.from_pretrained(variant)
 
     else:
         logger.info(f"The model {variant} is not supported")
 
-    model.eval()
-    # Run inference on Tenstorrent device
-    compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    framework_model.eval()
 
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(pixel_values)
-        fw_out = model(pixel_values)
+    inputs = [pixel_values]
 
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

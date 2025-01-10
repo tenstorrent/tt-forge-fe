@@ -1,142 +1,181 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
-
 import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
-from test.utils import download_model
-from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
-
 import forge
+from forge.verify.verify import verify
+
+from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly
-def test_resnext_50_torchhub_pytorch(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["resnext50_32x4d"])
+def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "resnext50_32x4d", pretrained=True)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_torchhub")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_resnext_101_torchhub_pytorch(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["resnext101_32x8d"])
+def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "resnext101_32x8d", pretrained=True)
-    model.eval()
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_torchhub")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_resnext_101_32x8d_fb_wsl_pytorch(test_device):
+@pytest.mark.parametrize("variant", ["resnext101_32x8d_wsl"])
+def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+    )
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     # 4 variants
-    model = download_model(torch.hub.load, "facebookresearch/WSL-Images", "resnext101_32x8d_wsl")
-    model.eval()
+    framework_model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_fb_wsl")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_resnext_14_osmr_pytorch(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["resnext14_32x4d"])
+def test_resnext_14_osmr_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext14_32x4d", pretrained=True)
-    model.eval()
-    # tt_model = forge.PyTorchModule("pt_resnext14_osmr", model)
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext14_osmr")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_resnext_26_osmr_pytorch(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["resnext26_32x4d"])
+def test_resnext_26_osmr_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext26_32x4d", pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext26_osmr")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_resnext_50_osmr_pytorch(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["resnext50_32x4d"])
+def test_resnext_50_osmr_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext50_32x4d", pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext50_osmr")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_resnext_101_osmr_pytorch(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["resnext101_64x4d"])
+def test_resnext_101_osmr_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
-    model = download_model(ptcv_get_model, "resnext101_64x4d", pretrained=True)
-    model.eval()
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model.eval()
 
     input_batch = get_image_tensor()
+    inputs = [input_batch]
 
-    # STEP 3: Run inference on Tenstorrent device
-    # CPU version commented out
-    # output = model(input_batch)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_resnext101_osmr")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

@@ -3,12 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # BlazePose Demo Script - PyTorch
 
-import pytest
 import cv2
-import forge
+import pytest
 import torch
-import sys
-import os
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -22,15 +24,17 @@ import os
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blazepose_detector_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_blazepose_detector_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="detector")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load BlazePose Detector
-    pose_detector = BlazePose()
-    pose_detector.load_weights("mediapipepytorch/blazepose.pth")
-    pose_detector.load_anchors("mediapipepytorch/anchors_pose.npy")
+    framework_model = BlazePose()
+    framework_model.load_weights("mediapipepytorch/blazepose.pth")
+    framework_model.load_anchors("mediapipepytorch/anchors_pose.npy")
 
     # Load data sample
     orig_image = cv2.imread("files/samples/girl.png")
@@ -39,38 +43,54 @@ def test_blazepose_detector_pytorch(test_device):
     _, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(pose_detector, sample_inputs=[img2], module_name="pt_blazepose_detector")
+
+    inputs = [img2]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blazepose_regressor_pytorch(test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_blazepose_regressor_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="regressor")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load BlazePose Landmark Regressor
-    pose_regressor = BlazePoseLandmark()
-    pose_regressor.load_weights("mediapipepytorch/blazepose_landmark.pth")
-    img2 = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(pose_regressor, sample_inputs=img2, module_name="pt_blazepose_regressor")
+    framework_model = BlazePoseLandmark()
+    framework_model.load_weights("mediapipepytorch/blazepose_landmark.pth")
+
+    inputs = [torch.rand(1, 3, 256, 256)]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blaze_palm_pytorch(test_device):
+def test_blaze_palm_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="palm")
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
-    palm_detector = BlazePalm()
-    palm_detector.load_weights("mediapipepytorch/blazepalm.pth")
-    palm_detector.load_anchors("mediapipepytorch/anchors_palm.npy")
-    palm_detector.min_score_thresh = 0.75
+    framework_model = BlazePalm()
+    framework_model.load_weights("mediapipepytorch/blazepalm.pth")
+    framework_model.load_anchors("mediapipepytorch/anchors_palm.npy")
+    framework_model.min_score_thresh = 0.75
 
     # Load data sample
     orig_image = cv2.imread("files/samples/girl.png")
@@ -79,21 +99,34 @@ def test_blaze_palm_pytorch(test_device):
     img1, img2, scale, pad = resize_pad(orig_image)
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
-    compiled_model = forge.compile(palm_detector, sample_inputs=[img2], module_name="pt_palm_detector")
+
+    inputs = [img2]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blaze_hand_pytorch(test_device):
+def test_blaze_hand_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="hand")
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load BlazePalm Detector
-    hand_regressor = BlazeHandLandmark()
-    hand_regressor.load_weights("mediapipepytorch/blazehand_landmark.pth")
+    framework_model = BlazeHandLandmark()
+    framework_model.load_weights("mediapipepytorch/blazehand_landmark.pth")
 
-    sample_tensor = [torch.rand(1, 3, 256, 256)]
-    compiled_model = forge.compile(hand_regressor, sample_inputs=sample_tensor, module_name="pt_hand_regressor")
+    inputs = [torch.rand(1, 3, 256, 256)]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

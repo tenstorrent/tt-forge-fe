@@ -1,11 +1,14 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import requests
-import math, cv2
+import math
+
+import cv2
 import numpy as np
+import requests
 import torch
 from PIL import Image
+
 
 # preprocessing steps referred form https://github.com/meituan/YOLOv6/blob/main/inference.ipynb
 def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32):

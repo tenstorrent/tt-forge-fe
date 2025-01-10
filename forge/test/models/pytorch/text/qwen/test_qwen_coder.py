@@ -2,8 +2,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import forge
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 # Variants for testing
 variants = [
@@ -18,17 +22,19 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat interleave"
-)
 @pytest.mark.nightly
-def test_qwen_response(variant):
-    """
-    Test function for generating responses and verifying model compilation.
-    """
+def test_qwen_clm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="qwen_coder", variant=variant, task=Task.CAUSAL_LM
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load model and tokenizer
-    model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
-    model.config.return_dict = False
+    framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
+    framework_model.config.return_dict = False
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     # Prepare input
@@ -45,7 +51,8 @@ def test_qwen_response(variant):
     attention_mask = model_inputs["attention_mask"]
     inputs = [input_ids, attention_mask]
 
-    # Compile the model
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name=f"pt_{variant.replace('/', '_').replace('.', '_').replace('-', '_')}"
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

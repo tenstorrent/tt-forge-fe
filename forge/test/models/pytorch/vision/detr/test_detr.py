@@ -5,20 +5,25 @@
 # https://huggingface.co/docs/transformers/en/model_doc/detr
 
 import pytest
-from transformers import (
-    DetrForObjectDetection,
-    DetrForSegmentation,
-)
+from transformers import DetrForObjectDetection, DetrForSegmentation
+
 import forge
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
+
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
+from test.models.utils import Framework, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
-def test_detr_detection(variant):
+def test_detr_detection(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.OBJECT_DETECTION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
@@ -27,18 +32,26 @@ def test_detr_detection(variant):
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     input_batch = preprocess_input_data(image_url)
 
-    # Compiler test
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=[input_batch], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    inputs = [input_batch]
 
-    verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="AssertionError: TVM einsum decomposition does not support bqnc,bnchw->bqnhw yet.")
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
-def test_detr_segmentation(variant):
+def test_detr_segmentation(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.SEMANTIC_SEGMENTATION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)
 
@@ -46,12 +59,10 @@ def test_detr_segmentation(variant):
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     input_batch = preprocess_input_data(image_url)
 
-    # since it hangs on error adding xfail here
-    pytest.xfail(reason="AssertionError: TVM einsum decomposition does not support bqnc,bnchw->bqnhw yet.")
+    inputs = [input_batch]
 
-    # Compiler test
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=[input_batch], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    verify([input_batch], framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

@@ -2,22 +2,29 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from test.utils import download_model
-import torch
-from PIL import Image
-from torchvision import transforms
-from loguru import logger
 import pytest
-import forge
+import torch
+from loguru import logger
+from PIL import Image
 from pytorchcv.model_provider import get_model as ptcv_get_model
-import os
+from torchvision import transforms
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly
-def test_alexnet_torchhub(test_device):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_alexnet_torchhub(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="alexnet", variant="alexnet", source=Source.TORCH_HUB
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
@@ -43,14 +50,21 @@ def test_alexnet_torchhub(test_device):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_torchhub")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-def test_alexnet_osmr(test_device):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
+def test_alexnet_osmr(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
@@ -76,4 +90,9 @@ def test_alexnet_osmr(test_device):
         img_tensor = torch.rand(1, 3, 224, 224)
 
     inputs = [img_tensor]
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="pt_alexnet_osmr")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

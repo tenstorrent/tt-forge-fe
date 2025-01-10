@@ -2,27 +2,34 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
-from transformers import AutoTokenizer, XGLMForCausalLM, XGLMConfig
+from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
 
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_xglm_causal_lm(variant, test_device):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_xglm_causal_lm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = XGLMConfig(**config_dict)
-    model = download_model(XGLMForCausalLM.from_pretrained, variant, config=config)
+
+    framework_model = download_model(XGLMForCausalLM.from_pretrained, variant, config=config)
+
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -37,6 +44,9 @@ def test_xglm_causal_lm(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_"))
-    )
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

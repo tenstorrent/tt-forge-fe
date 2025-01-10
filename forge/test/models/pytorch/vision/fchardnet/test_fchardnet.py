@@ -1,14 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import pytest
-import torch.nn.functional as F
 import numpy as np
+import pytest
+import torch
 from PIL import Image
-import sys
-import os
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -17,10 +18,12 @@ import os
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_fchardnet(test_device):
-    # STEP 1: Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_fchardnet(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="fchardnet")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
@@ -36,8 +39,14 @@ def test_fchardnet(test_device):
     # Load model
     device = torch.device("cpu")
     arch = {"arch": "hardnet"}
-    model = get_model(arch, 19).to(device)
-    model = fuse_bn_recursively(model)
-    model.eval()
+    framework_model = get_model(arch, 19).to(device)
+    framework_model = fuse_bn_recursively(model)
+    framework_model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=[input_image], module_name="fchardnet")
+    inputs = [input_image]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

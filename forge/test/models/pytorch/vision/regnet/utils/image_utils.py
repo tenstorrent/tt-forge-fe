@@ -5,6 +5,7 @@
 import requests
 from PIL import Image
 from transformers import AutoImageProcessor
+
 from test.utils import download_model
 
 

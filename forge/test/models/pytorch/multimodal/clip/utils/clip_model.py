@@ -2,7 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-from transformers.modeling_attn_mask_utils import _create_4d_causal_attention_mask, _prepare_4d_attention_mask
+from transformers.modeling_attn_mask_utils import (
+    _create_4d_causal_attention_mask,
+    _prepare_4d_attention_mask,
+)
 
 
 # SPDX-FileCopyrightText: Copyright (c) 2021 OpenAI

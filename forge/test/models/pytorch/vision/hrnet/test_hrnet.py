@@ -1,33 +1,28 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
-import pytest
-from loguru import logger
-from PIL import Image
 import urllib
 
-import torch
-from torchvision import transforms
-
-from pytorchcv.model_provider import get_model as ptcv_get_model
-
+import pytest
 import timm
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from torchvision import transforms
 
 import forge
+from forge.verify.verify import verify
 
+from test.models.utils import Framework, Source, build_module_name
 from test.utils import download_model
 
 torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 def generate_model_hrnet_imgcls_osmr_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     """
     models = [
@@ -84,18 +79,24 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_hrnet_osmr_pytorch(test_device, variant):
-    model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
+def test_hrnet_osmr_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_osmr_{variant}")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_hrnet_imgcls_timm_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     """
     default_cfgs = {
@@ -149,8 +150,18 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_hrnet_timm_pytorch(test_device, variant):
-    model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
+def test_hrnet_timm_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name=f"pt_hrnet_timm_{variant}")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

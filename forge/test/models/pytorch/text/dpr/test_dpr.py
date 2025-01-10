@@ -2,34 +2,38 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
 from transformers import (
     DPRContextEncoder,
     DPRContextEncoderTokenizer,
-    DPRReader,
-    DPRReaderTokenizer,
     DPRQuestionEncoder,
     DPRQuestionEncoderTokenizer,
+    DPRReader,
+    DPRReaderTokenizer,
 )
-import torch
-from forge.verify.compare import compare_with_golden
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
+from test.utils import download_model
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_context_encoder_pytorch(variant, test_device):
+def test_dpr_context_encoder_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="context_encoder")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-ctx_encoder-single-nq-base, facebook/dpr-ctx_encoder-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRContextEncoderTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    framework_model = download_model(DPRContextEncoder.from_pretrained, model_ckpt)
 
     # Load data sample
     sample_text = "Hello, is my dog cute?"
@@ -44,32 +48,33 @@ def test_dpr_context_encoder_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_question_encoder_pytorch(variant, test_device):
+def test_dpr_question_encoder_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="question_encoder"
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRQuestionEncoderTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    framework_model = download_model(DPRQuestionEncoder.from_pretrained, model_ckpt)
 
     # Load data sample
     sample_text = "Hello, is my dog cute?"
@@ -84,32 +89,31 @@ def test_dpr_question_encoder_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_reader_pytorch(variant, test_device):
+def test_dpr_reader_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="reader")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base
     model_ckpt = variant
     tokenizer = download_model(DPRReaderTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DPRReader.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    framework_model = download_model(DPRReader.from_pretrained, model_ckpt)
 
     # Data preprocessing
     input_tokens = tokenizer(
@@ -123,13 +127,9 @@ def test_dpr_reader_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
