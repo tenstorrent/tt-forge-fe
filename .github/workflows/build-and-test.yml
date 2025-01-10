@@ -17,14 +17,14 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
         required: false
         type: string
-      test_group_count:
-        description: 'Number of test groups'
-        required: false
+      test_group_cnt:
+        description: 'Test group count'
+        required: true
         default: 3
         type: number
       test_group_ids:
         description: 'Test group ids'
-        required: false
+        required: true
         default: '[1,2,3]'
         type: string
   workflow_call:
@@ -38,15 +38,13 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
         required: false
         type: string
-      test_group_count:
-        description: 'Number of test groups'
+      test_group_cnt:
+        description: 'Test group count'
         required: false
-        default: 3
         type: number
       test_group_ids:
         description: 'Test group ids'
         required: false
-        default: '[1,2,3]'
         type: string
   push:
 
@@ -56,7 +54,7 @@ permissions:
   pull-requests: write # only required if `comment: true` was enabled
 
 env:
-  test_group_count: ${{ inputs.test_group_count || 3 }}
+  test_group_cnt: ${{ inputs.test_group_cnt || 3 }}
 
 jobs:
   docker-build:
@@ -71,7 +69,7 @@ jobs:
       matrix:
         build:
           - runs-on: runner
-        test_group_id: ${{ fromJson(inputs.test_group_ids) || fromJson('[1,2,3]') }}
+        test_group_id: ${{ inputs.test_group_ids && fromJson(inputs.test_group_ids) || fromJson('[1,2,3]') }}
 
     runs-on:
       - in-service

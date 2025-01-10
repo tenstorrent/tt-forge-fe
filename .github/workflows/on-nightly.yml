@@ -11,4 +11,4 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'nightly'
-      test_grouping: '{ "group_count": 4, "group_ids": [1,2,3,4] }'
+      # test_grouping: '{ "group_count": 4, "group_ids": [1,2,3,4] }'
