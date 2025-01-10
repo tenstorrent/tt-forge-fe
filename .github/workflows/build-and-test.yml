@@ -20,7 +20,6 @@ on:
       test_grouping:
         description: 'Test grouping strategy'
         required: false
-        default: '{ "group_count": 3, "group_ids": [1,2,3] }'
         type: string
   workflow_call:
     inputs:
@@ -36,7 +35,6 @@ on:
       test_grouping:
         description: 'Test grouping strategy'
         required: false
-        default: '{ "group_count": 3, "group_ids": [1,2,3] }'
         type: string
   push:
 
@@ -46,7 +44,7 @@ permissions:
   pull-requests: write # only required if `comment: true` was enabled
 
 env:
-  test_group_count: ${{ fromJson(inputs.test_grouping || inputs.test_grouping.default).group_count }}
+  test_group_count: ${{ fromJson(inputs.test_grouping).group_count || 3 }}
 
 jobs:
   docker-build:
@@ -61,7 +59,7 @@ jobs:
       matrix:
         build:
           - runs-on: runner
-        test_group_id: ${{ fromJson(inputs.test_grouping || inputs.test_grouping.default).group_ids }}
+        test_group_id: ${{ fromJson(inputs.test_grouping).group_ids || fromJson('[1,2,3]') }}
 
     runs-on:
       - in-service
