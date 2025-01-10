@@ -14,7 +14,6 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_yolo_v6_pytorch(variant, test_device):
 

@@ -22,6 +22,7 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")

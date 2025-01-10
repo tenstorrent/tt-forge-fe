@@ -51,7 +51,6 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(variant, test_device):
     model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(
@@ -95,7 +94,6 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="pcc=0.9498278562793674")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(variant, test_device):

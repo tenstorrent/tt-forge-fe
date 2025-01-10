@@ -16,7 +16,6 @@ variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_distilbert_masked_lm_pytorch(variant, test_device):
     # Load DistilBert tokenizer and model from HuggingFace
@@ -47,7 +46,6 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_distilbert_question_answering_pytorch(test_device):
     # Load Bert tokenizer and model from HuggingFace
     model_ckpt = "distilbert-base-cased-distilled-squad"
@@ -84,7 +82,6 @@ def test_distilbert_question_answering_pytorch(test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_distilbert_sequence_classification_pytorch(test_device):
 
     # Load DistilBert tokenizer and model from HuggingFace
@@ -112,7 +109,6 @@ def test_distilbert_sequence_classification_pytorch(test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_distilbert_token_classification_pytorch(test_device):
     # Load DistilBERT tokenizer and model from HuggingFace
     model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"

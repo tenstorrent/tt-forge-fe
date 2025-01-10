@@ -17,7 +17,6 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(variant, test_device):
 
@@ -62,7 +61,6 @@ def test_phi3_causal_lm(variant, test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Indices tensor must be in row major layout.")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(variant, test_device):
@@ -103,7 +101,6 @@ def test_phi3_token_classification(variant, test_device):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.xfail(reason="RuntimeError: Embedding Device Operation Layout Mismatch - Expected ROW_MAJOR")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(variant, test_device):

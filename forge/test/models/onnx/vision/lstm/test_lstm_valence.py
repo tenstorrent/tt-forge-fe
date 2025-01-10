@@ -13,6 +13,7 @@ from forge._C.backend_api import BackendType, BackendDevice
 from forge.verify.config import TestKind
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.nightly
 def test_lstm_valence_onnx(test_device):

@@ -45,7 +45,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(variant, test_device):
 
@@ -103,7 +102,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail(reason="Runtime Error: Reshape Operation Fails Due to Mismatched Tensor Volume")
 def test_efficientnet_torchvision(variant, test_device):

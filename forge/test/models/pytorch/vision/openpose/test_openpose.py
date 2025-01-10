@@ -51,6 +51,7 @@ def generate_model_openpose_posdet_custom_pytorch(test_device, variant):
     return framework_model, [img_tensor], {}
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
@@ -87,6 +88,7 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly

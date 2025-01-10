@@ -23,7 +23,6 @@ class BartWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 def test_pt_bart_classifier(test_device):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH

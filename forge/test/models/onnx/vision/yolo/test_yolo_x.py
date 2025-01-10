@@ -38,6 +38,7 @@ def preprocess(img, input_size, swap=(2, 0, 1)):
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
