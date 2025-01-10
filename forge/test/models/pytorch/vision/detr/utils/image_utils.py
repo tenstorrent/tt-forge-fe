@@ -2,8 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from PIL import Image
 import requests
+from PIL import Image
 from torchvision import transforms
 
 

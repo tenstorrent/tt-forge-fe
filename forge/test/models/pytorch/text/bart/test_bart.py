@@ -2,14 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # BART Demo Script - SQuADv1.1 QA
-from test.utils import download_model
-import torch
-from transformers import BartTokenizer, BartForSequenceClassification
-from transformers.models.bart.modeling_bart import shift_tokens_right
 import pytest
-import forge
+import torch
+from transformers import BartForSequenceClassification, BartTokenizer
+from transformers.models.bart.modeling_bart import shift_tokens_right
 
-from forge.config import CompileDepth, _get_global_compiler_config
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 class BartWrapper(torch.nn.Module):
@@ -23,13 +25,18 @@ class BartWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-def test_pt_bart_classifier(test_device):
-    compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.compile_depth = CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["facebook/bart-large-mnli"])
+def test_pt_bart_classifier(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="bart", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
 
-    model_name = f"facebook/bart-large-mnli"
-    model = download_model(BartForSequenceClassification.from_pretrained, model_name, torchscript=True)
-    tokenizer = download_model(BartTokenizer.from_pretrained, model_name, pad_to_max_length=True)
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
+    tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)
     hypothesis = "Most of Mrinal Sen's work can be found in European collections."
     premise = "Calcutta seems to be the only other production center having any pretensions to artistic creativity at all, but ironically you're actually more likely to see the works of Satyajit Ray or Mrinal Sen shown in Europe or North America than in India itself."
 
@@ -49,6 +56,10 @@ def test_pt_bart_classifier(test_device):
     inputs = [inputs_dict["input_ids"], inputs_dict["attention_mask"], decoder_input_ids]
 
     # Compile & feed data
-    pt_mod = BartWrapper(model.model)
+    framework_model = BartWrapper(model.model)
 
-    compiled_model = forge.compile(pt_mod, sample_inputs=inputs, module_name="pt_bart")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

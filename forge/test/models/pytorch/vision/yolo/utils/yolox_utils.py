@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import torch
 import cv2
 import numpy as np
+import torch
 
 
 def preprocess(img, input_size, swap=(2, 0, 1)):

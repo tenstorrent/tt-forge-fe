@@ -1,24 +1,28 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import pytest
 import numpy as np
-import torch
+import pytest
 import requests
-import os
+import torch
+
+import forge
+from forge.verify.verify import verify
+
 from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.nightly
-def test_pytorch_ssd300_resnet50(test_device):
+def test_pytorch_ssd300_resnet50(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="ssd300_resnet50")
 
-    # STEP 1 : Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # STEP 2 : prepare model
-    model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
+    framework_model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
     url = "https://api.ngc.nvidia.com/v2/models/nvidia/ssd_pyt_ckpt_amp/versions/19.09.0/files/nvidia_ssdpyt_fp16_190826.pt"
     checkpoint_path = "nvidia_ssdpyt_fp16_190826.pt"
 
@@ -27,8 +31,8 @@ def test_pytorch_ssd300_resnet50(test_device):
         f.write(response.content)
 
     checkpoint = torch.load(checkpoint_path, map_location=torch.device("cpu"))
-    model.load_state_dict(checkpoint["model"])
-    model.eval()
+    framework_model.load_state_dict(checkpoint["model"])
+    framework_model.eval()
 
     # STEP 3 : prepare input
     img = "http://images.cocodataset.org/val2017/000000397133.jpg"
@@ -36,4 +40,10 @@ def test_pytorch_ssd300_resnet50(test_device):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name="pt_ssd300_resnet50")
+    inputs = [input_batch]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

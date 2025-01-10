@@ -1,30 +1,26 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import urllib
+
 import pytest
-from PIL import Image
 import requests
-from loguru import logger
-
-import torch
-
-from transformers import AutoImageProcessor
-
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from transformers import AutoImageProcessor
 
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
 from test.utils import download_model
-from forge.verify.compare import compare_with_golden
 
 
-def generate_model_mobilenetV3_imgcls_torchhub_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-
+def generate_model_mobilenetV3_imgcls_torchhub_pytorch(variant):
     model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
 
     # Run inference on Tenstorrent device
@@ -41,28 +37,28 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mobilenetv3_basic(variant, test_device):
-    model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
-        test_device,
+def test_mobilenetv3_basic(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilenetv3", variant=variant, source=Source.TORCH_HUB
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_torchhub_pytorch(
         variant,
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
-def generate_model_mobilenetV3_imgcls_timm_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-
+def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
     # Both options are good
     # model = timm.create_model('mobilenetv3_small_100', pretrained=True)
     if variant == "mobilenetv3_small_100":
@@ -94,20 +90,22 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="Runtime error : Invalid arguments to reshape")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mobilenetv3_timm(variant, test_device):
-    model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
-        test_device,
+def test_mobilenetv3_timm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilnetv3", source=Source.TIMM, variant=variant
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

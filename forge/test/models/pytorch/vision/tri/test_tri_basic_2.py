@@ -2,12 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # import pybuda
-import torch
-import forge
 from types import SimpleNamespace
-import pytest
+
 import cv2
-import os
+import pytest
+import torch
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 # import sys
 # sys.path.append("third_party/confidential_customer_models/internal/tri_basic_2/scripts")
@@ -17,11 +21,14 @@ import os
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo and Hang observed at post_initial_graph_pass")
 @pytest.mark.nightly
-def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
+def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="tri", variant="basic_2", task=Task.SEMANTIC_SEGMENTATION
+    )
 
-    # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Sample Input
     image_w = 800
@@ -32,14 +39,18 @@ def test_tri_basic_2_sematic_segmentation_pytorch(test_device):
 
     # Load the model and weights
     hparams = SimpleNamespace(num_classes=24)
-    model = resnet34_semseg(hparams)
+    framework_model = resnet34_semseg(hparams)
     state_dict = torch.load(
         "third_party/confidential_customer_models/internal/tri_basic_2/files/weights/basic_semseg.ckpt",
         map_location="cpu",
     )
-    model.load_state_dict(state_dict)
-    model.eval()
+    framework_model.load_state_dict(state_dict)
+    framework_model.eval()
 
-    print("type(image_tensor)", type(image_tensor))
-    inputs = image_tensor
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_tri_basic_2_semseg")
+    inputs = [image_tensor]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

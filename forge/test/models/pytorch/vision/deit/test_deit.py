@@ -1,23 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 import requests
-from PIL import Image
 from datasets import load_dataset
-
+from PIL import Image
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 from test.utils import download_model
 
 
 def generate_model_deit_imgcls_hf_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoFeatureExtractor.from_pretrained, variant)
     model = download_model(ViTForImageClassification.from_pretrained, variant)
@@ -43,10 +40,20 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_deit_imgcls_hf_pytorch(variant, test_device):
-    model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
+def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="deit", variant=variant, task=Task.IMAGE_CLASSIFICATION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
-    compiled_model = forge.compile(
-        model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

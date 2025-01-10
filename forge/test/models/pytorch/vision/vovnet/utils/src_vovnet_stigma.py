@@ -4,17 +4,14 @@
 ## Source
 ## https://github.com/stigma0617/VoVNet.pytorch/blob/039d9dcbd07de73fb5b8cc14bdde483a3807225c/models_vovnet/vovnet.py
 
+from collections import OrderedDict
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from collections import OrderedDict
 
 # from torch.hub import load_state_dict_from_url
 from torch.utils.model_zoo import load_url as load_state_dict_from_url
-
-from transformers import AutoImageProcessor
-from PIL import Image
-import requests
 
 __all__ = ["VoVNet", "vovnet27_slim", "vovnet39", "vovnet57"]
 
@@ -105,7 +102,7 @@ class _OSA_stage(nn.Sequential):
             self.add_module("Pooling", nn.MaxPool2d(kernel_size=3, stride=2, ceil_mode=True))
 
         module_name = f"OSA{stage_num}_1"
-        self.add_module(module_name, _OSA_module(in_ch, stage_ch, concat_ch, layer_per_block, module_name))
+        self.add_module(module_name, _OSA_module(in_ch, stage_ch, concat_ch, layer_per_blockmodule_name=module_name))
         for i in range(block_per_stage - 1):
             module_name = f"OSA{stage_num}_{i+2}"
             self.add_module(

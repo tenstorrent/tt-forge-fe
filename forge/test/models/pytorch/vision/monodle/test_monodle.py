@@ -1,22 +1,25 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import pytest
 import requests
 import torchvision.transforms as transforms
 from PIL import Image
+
+import forge
+from forge.verify.verify import verify
+
 from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
-import os
+from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.nightly
-def test_monodle_pytorch(test_device):
-    # PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_monodle_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="monodle")
 
-    model_name = "monodle_pytorch"
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -33,6 +36,13 @@ def test_monodle_pytorch(test_device):
     )
     img_tensor = transform(image).unsqueeze(0)
 
-    pytorch_model = CenterNet3D(backbone="dla34")
-    pytorch_model.eval()
-    compiled_model = forge.compile(pytorch_model, sample_inputs=[img_tensor], module_name="pt_monodle")
+    framework_model = CenterNet3D(backbone="dla34")
+    framework_model.eval()
+
+    inputs = [img_tensor]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

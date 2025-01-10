@@ -3,20 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import requests
-from PIL import Image
-from loguru import logger
-import os
-
-import torch
-
-from transformers import AutoFeatureExtractor, ResNetForImageClassification
-
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
+from transformers import AutoFeatureExtractor, ResNetForImageClassification
 
-from test.utils import download_model
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_resnet_imgcls_hf_pytorch(variant):
@@ -24,10 +23,6 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
     model_ckpt = variant
     feature_extractor = download_model(AutoFeatureExtractor.from_pretrained, model_ckpt)
     model = download_model(ResNetForImageClassification.from_pretrained, model_ckpt)
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     try:
@@ -47,13 +42,24 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-def test_resnet(test_device):
+def test_resnet(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnet", variant="50", source=Source.HUGGINGFACE
+    )
 
-    model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
         "microsoft/resnet-50",
     )
 
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_resnet_imgcls_timm_pytorch(variant):
@@ -61,10 +67,6 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
     model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
     transform = create_transform(**config)
-
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load data sample
     try:
@@ -83,8 +85,17 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 
 
 @pytest.mark.nightly
-def test_resnet_timm(test_device):
-    model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch(
-        "resnet50",
-    )
-    compiled_model = forge.compile(model, sample_inputs=[inputs[0]], module_name="pt_resnet50_timm")
+def test_resnet_timm(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch("resnet50")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

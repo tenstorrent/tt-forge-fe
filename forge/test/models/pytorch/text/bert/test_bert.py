@@ -1,27 +1,26 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
 import pytest
-import forge
 from transformers import (
     BertForMaskedLM,
-    BertTokenizer,
-    BertForTokenClassification,
-    BertForSequenceClassification,
     BertForQuestionAnswering,
+    BertForSequenceClassification,
+    BertForTokenClassification,
+    BertTokenizer,
 )
-import torch
-from forge.verify.compare import compare_with_golden
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 def generate_model_bert_maskedlm_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = BertTokenizer.from_pretrained(model_ckpt)
-    model = BertForMaskedLM.from_pretrained(model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    tokenizer = BertTokenizer.from_pretrained(variant)
+    model = BertForMaskedLM.from_pretrained(variant)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -39,28 +38,27 @@ def generate_model_bert_maskedlm_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-def test_bert_masked_lm_pytorch(test_device):
-    model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch("bert-base-uncased")
+@pytest.mark.parametrize("variant", ["bert-base-uncased"])
+def test_bert_masked_lm_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_masked_lm")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model, inputs, _ = generate_model_bert_maskedlm_hf_pytorch(variant)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_bert_qa_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(BertForQuestionAnswering.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    model = download_model(BertForQuestionAnswering.from_pretrained, variant)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -88,29 +86,27 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-def test_bert_question_answering_pytorch(test_device):
-    model, inputs, _ = generate_model_bert_qa_hf_pytorch("bert-large-cased-whole-word-masking-finetuned-squad")
+@pytest.mark.parametrize("variant", ["bert-large-cased-whole-word-masking-finetuned-squad"])
+def test_bert_question_answering_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_qa")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch()
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_bert_seqcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(BertForSequenceClassification.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    model = download_model(BertForSequenceClassification.from_pretrained, variant)
 
     # Load data sample
     review = "the movie was great!"
@@ -128,29 +124,29 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-def test_bert_sequence_classification_pytorch(test_device):
-    model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(
-        "textattack/bert-base-uncased-SST-2",
+@pytest.mark.parametrize("variant", ["textattack/bert-base-uncased-SST-2"])
+def test_bert_sequence_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_sequence_classification")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_bert_tkcls_hf_pytorch(variant):
     # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = variant
-    tokenizer = download_model(BertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(BertForTokenClassification.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    model = download_model(BertForTokenClassification.from_pretrained, variant)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -168,16 +164,20 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
-def test_bert_token_classification_pytorch(test_device):
-    model, inputs, _ = generate_model_bert_tkcls_hf_pytorch("dbmdz/bert-large-cased-finetuned-conll03-english")
+@pytest.mark.parametrize("variant", ["dbmdz/bert-large-cased-finetuned-conll03-english"])
+def test_bert_token_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.TOKEN_CLASSIFICATION
+    )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_bert_sequence_classification")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
