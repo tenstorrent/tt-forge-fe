@@ -264,6 +264,7 @@ class VerifyConfig:
     verify_size: bool = True  # Check output size
     verify_dtype: bool = True  # Check output dtype
     verify_shape: bool = True  # Check output shape
+    verify_values: bool = True  # Check output values
     value_checker: ValueChecker = AutomaticValueChecker()
 
     # --- Logging settings --- #
