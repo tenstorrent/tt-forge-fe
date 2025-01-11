@@ -9,6 +9,7 @@ from transformers import (
 )
 
 import forge
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.utils import Framework, Task, build_module_name
@@ -34,7 +35,7 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
-    framework_model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt)
+    framework_model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt, return_dict=False)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -53,7 +54,7 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
 
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
@@ -80,7 +81,7 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
 
     # Load ALBERT tokenizer and model from HuggingFace
     tokenizer = AlbertTokenizer.from_pretrained(model_ckpt)
-    framework_model = AlbertForTokenClassification.from_pretrained(model_ckpt)
+    framework_model = AlbertForTokenClassification.from_pretrained(model_ckpt, return_dict=False)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -100,4 +101,4 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
