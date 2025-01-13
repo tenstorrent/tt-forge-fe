@@ -11,6 +11,7 @@ import copy
 import numpy as np
 import torch
 
+from forge.compiled_graph_state import CompiledModel
 from forge.tensor import Tensor
 from forge.parameter import Parameter
 import forge.torch_optimizers
@@ -22,12 +23,19 @@ class Optimizer:
     Optimizer base class
     """
 
-    def __init__(self, device_params: bool = False):
+    dynamic_params = False
+    linked_modules: Optional[List[CompiledModel]] = None
+
+    # For each parameter that we are optimizing, we store a dictionary of optimizer parameters for that particular parameter.
+    # The derived classes will populate this dictionary with the necessary optimizer parameters.
+    parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
+
+    def __init__(self, parameters: Optional[List[Parameter]]):
         """
-        Create baseline optimizer. If device_params is set, no parameters are provided at the time of
-        optimizer creation, but will be extracted from the device on which the optimizer is placed.
+        Create baseline optimizer. If parameters are not passed at construction, they will be
+        dynamically added during compilation.
         """
-        self.device_params = device_params
+        self.dynamic_params = parameters is None
 
     def get_param_dict(self) -> Dict:
         """
@@ -35,8 +43,20 @@ class Optimizer:
         """
         raise RuntimeError("Subclasses should implement this.")
 
-    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
-        raise RuntimeError("Subclasses should implement this.")
+    # Get the list of optimizer parameters for each parameter that is being optimized.
+    # E.g. for 'l1.weight' parameter, the optimizer parameters could be:
+    # {
+    #   ('l1.weight', 'lr'): 0.01,
+    #   ('l1.weight', 'momentum'): 0.9,
+    # }
+    def get_optimizer_params(self) -> Dict[Tuple[str, str], Tensor]:
+        opt_params = {}
+
+        for parameter_name, params in self.parameter_to_opt_inputs.items():
+            for opt_param_name, opt_param in params.items():
+                opt_params[(parameter_name, opt_param_name)] = opt_param
+
+        return opt_params
 
     def generate_op_trace(self, parameter, gradient):
         """
@@ -62,6 +82,16 @@ class Optimizer:
     def get_pytorch_optimizer(self, parameters: Dict[str, torch.Tensor]) -> torch.optim.Optimizer:
         raise RuntimeError("Subclasses should implement this.")
 
+    def link_module(self, module: CompiledModel):
+        if self.linked_modules is None:
+            self.linked_modules = []
+        self.linked_modules.append(module)
+
+    def step(self):
+        assert self.linked_modules is not None, "Optimizer must be linked to a module before calling step"
+        for module in self.linked_modules:
+            module.step()
+
 
 class SGD(Optimizer):
     """
@@ -76,16 +106,12 @@ class SGD(Optimizer):
         optimizer_parameter_name -> Tensor dict.
     """
 
-    def __init__(self, learning_rate: float, parameters: Optional[List[Parameter]] = None, device_params: bool = False):
-        super().__init__(device_params)
+    def __init__(self, learning_rate: float, parameters: Optional[List[Parameter]] = None):
+        super().__init__(parameters)
         self.learning_rate: float = learning_rate
         self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
 
-        if device_params:
-            assert parameters is None
-
-        else:
-            assert parameters is not None
+        if parameters is not None:
             self.set_parameters_to_optimize(parameters)
 
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
@@ -107,19 +133,6 @@ class SGD(Optimizer):
 
     def get_optimizer_state_keys(self) -> List:
         return []
-
-    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
-        if parameter_name not in self.parameter_to_opt_inputs:
-            return None
-
-        ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_forge:
-            for k, v in ret.items():
-                # optimize params should always tile broadcast if they are scalar
-                one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
-                tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
-        return ret
 
     def get_type(self) -> str:
         return "sgd"
@@ -204,10 +217,9 @@ class Adam(Optimizer):
         weight_decay: float = 0.0,
         bias_correction: bool = True,
         parameters: Optional[List[Parameter]] = None,
-        device_params: bool = False,
         enable_adam_w: bool = False,
     ):
-        super().__init__(device_params)
+        super().__init__(parameters)
         # optimizer constants
         self.beta1 = beta1
         self.beta2 = beta2
@@ -221,10 +233,7 @@ class Adam(Optimizer):
         self.parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
         self.enable_adam_w = enable_adam_w
 
-        if device_params:
-            assert parameters is None
-        else:
-            assert parameters is not None
+        if parameters:
             self.set_parameters_to_optimize(parameters)
 
     def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
@@ -281,19 +290,6 @@ class Adam(Optimizer):
                     parameter.pt_data_format, parameter.shape.get_pytorch_shape()
                 )
 
-    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
-        if parameter_name not in self.parameter_to_opt_inputs:
-            return None
-
-        ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_forge:
-            for k, v in ret.items():
-                # optimize params should always tile broadcast if they are scalar
-                one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
-                tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
-        return ret
-
     def set_optimizer_parameters(self, learning_rate: Optional[float] = None) -> None:
         """
         Loop through every Parameter tensor with `requires_grad=True` and pushes
@@ -328,22 +324,17 @@ class Adam(Optimizer):
             weight_decay = ac.constant(self.weight_decay)
         else:
             weight_decay = None
-        ## import locally to avoid circular dependency from Dataformat, fix it later
-        from forge.op.eval.forge.buffer import Buffer
-
-        # we copy the grad accum. queue since it only accepts a single consumer/pop
-        gradient_copy = ac.op(Buffer.create(), (gradient,))
 
         if weight_decay and not self.enable_adam_w:
             weight_decay_times_param = ac.op("multiply", (weight_decay, parameter))
-            gradient_copy = ac.op("add", (gradient_copy, weight_decay_times_param))
+            gradient = ac.op("add", (gradient, weight_decay_times_param))
 
         # self.mean = self.beta1 * self.mean + one_minus_beta1 * gradient
         mean = ac.input("mean", parameter.shape, copy_consteval_operations=True)
         beta1 = ac.constant(self.beta1)
         one_minus_beta1 = ac.constant(1 - self.beta1)
         mean_times_beta1 = ac.op("multiply", (mean, beta1))
-        gradient_times_one_minus_beta1 = ac.op("multiply", (gradient_copy, one_minus_beta1))
+        gradient_times_one_minus_beta1 = ac.op("multiply", (gradient, one_minus_beta1))
         updated_mean = ac.op("add", (mean_times_beta1, gradient_times_one_minus_beta1))
 
         # self.variance = self.beta2 * self.variance + one_minus_beta2 * gradient**2
@@ -351,7 +342,7 @@ class Adam(Optimizer):
         beta2 = ac.constant(self.beta2)
         one_minus_beta2 = ac.constant(1 - self.beta2)
         variance_times_beta2 = ac.op("multiply", (variance, beta2))
-        gradient_squared = ac.op("multiply", (gradient_copy, gradient_copy))
+        gradient_squared = ac.op("multiply", (gradient, gradient))
         gradient_squared_times_one_minus_beta2 = ac.op("multiply", (gradient_squared, one_minus_beta2))
         updated_variance = ac.op("add", (variance_times_beta2, gradient_squared_times_one_minus_beta2))
         from forge.op.eval.forge.reciprocal import Reciprocal
@@ -502,7 +493,6 @@ class AdamW(Adam):
         weight_decay: float = 0.01,
         bias_correction: bool = True,
         parameters: Optional[List[Parameter]] = None,
-        device_params: bool = False,
     ):
         super().__init__(
             learning_rate,
@@ -512,7 +502,6 @@ class AdamW(Adam):
             weight_decay,
             bias_correction,
             parameters,
-            device_params,
             enable_adam_w=True,
         )
 
@@ -528,9 +517,8 @@ class LAMB(Optimizer):
         correction: bool = False,
         clip_value=(0.0, 10.0),
         parameters: Optional[List[Parameter]] = None,
-        device_params: bool = False,
     ):
-        super().__init__(device_params)
+        super().__init__(parameters)
 
         # LAMB Optimizer Constants
         assert learning_rate >= 0.0, f"Invalid learning rate value: {learning_rate}"
@@ -553,13 +541,8 @@ class LAMB(Optimizer):
         self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
         self.parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
 
-        if device_params:
-            assert parameters is None
-        else:
-            assert parameters is not None
+        if parameters:
             self.set_parameters_to_optimize(parameters)
-
-        self.device_params = device_params
 
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
         # For each Parameter, we register its associated set of optimizer parameters
@@ -620,20 +603,6 @@ class LAMB(Optimizer):
             "mean": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
             "variance": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
         }
-
-    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
-
-        if parameter_name not in self.parameter_to_opt_inputs:
-            return None
-
-        ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_forge:
-            for k, v in ret.items():
-                # optimize params should always tile broadcast if they are scalar
-                one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
-                tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
-        return ret
 
     def get_type(self) -> str:
         return "lamb"
@@ -832,9 +801,10 @@ class LARS(Optimizer):
         weight_decay: float = 0.01,
         lars_coeff: float = 0.001,
         parameters: Optional[List[Parameter]] = None,
-        device_params: bool = False,
         epsilon: float = 1e-8,
     ):
+        super().__init__(parameters)
+
         # LARS Optimizer Constants
         assert learning_rate >= 0.0, f"Invalid learning rate value: {learning_rate}"
         assert momentum >= 0.0, f"Invalid momentum value: {momentum}"
@@ -854,13 +824,8 @@ class LARS(Optimizer):
         self.parameter_to_opt_inputs: Dict[str, Dict[str, Tensor]] = {}
         self.parameter_to_opt_torch_inputs: Dict[str, Dict[str, Tensor]] = {}
 
-        if device_params:
-            assert parameters is None
-        else:
-            assert parameters is not None
+        if parameters:
             self.set_parameters_to_optimize(parameters)
-
-        self.device_params = device_params
 
     def set_parameters_to_optimize(self, parameters: List[Parameter]):
         # For each Parameter, we register its associated set of optimizer parameters
@@ -918,20 +883,6 @@ class LARS(Optimizer):
             "lr": Tensor.create_from_torch(torch_lr),
             "momentum": Tensor.create_from_torch(torch.full(shape, 0.0, dtype=dtype)),
         }
-
-    def get_optimizer_params(self, parameter_name, is_forge) -> Optional[Dict[str, Tensor]]:
-
-        if parameter_name not in self.parameter_to_opt_inputs:
-            return None
-
-        ret = copy.copy(self.parameter_to_opt_inputs[parameter_name])
-        if is_forge:
-            for k, v in ret.items():
-                # optimize params should always tile broadcast if they are scalar
-                one_d = len(ret[k].shape) == 1 and ret[k].shape[0] == 1
-                tile_broadcast_dims = [-1, -2] if one_d else []
-                ret[k] = v.to_forge_shape(tile_broadcast_dims=tile_broadcast_dims, clone=True)
-        return ret
 
     def get_type(self) -> str:
         return "lars"
