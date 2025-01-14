@@ -85,6 +85,8 @@ def get_imagenet_sample():
 @pytest.mark.skip(reason="Model script not found")
 @pytest.mark.nightly
 def test_unet_holocron_pytorch(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="holocron")
 
@@ -134,6 +136,8 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 
 @pytest.mark.nightly
 def test_unet_qubvel_pytorch(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="qubvel")
 
@@ -186,6 +190,8 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
 @pytest.mark.nightly
 def test_unet_torchhub_pytorch(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="unet")
 

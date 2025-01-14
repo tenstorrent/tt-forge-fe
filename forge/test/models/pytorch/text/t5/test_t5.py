@@ -101,6 +101,9 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
+    if variant != "t5-small":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION)
 

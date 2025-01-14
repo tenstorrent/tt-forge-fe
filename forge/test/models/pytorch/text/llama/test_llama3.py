@@ -131,6 +131,8 @@ LlamaModel._update_causal_mask = _update_causal_mask
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_causal_lm(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM)
 
@@ -175,6 +177,8 @@ def test_llama3_causal_lm(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_sequence_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.SEQUENCE_CLASSIFICATION

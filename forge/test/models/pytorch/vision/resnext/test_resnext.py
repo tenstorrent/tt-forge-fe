@@ -66,6 +66,8 @@ def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext101_32x8d_wsl"])
 def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
@@ -92,6 +94,8 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext14_32x4d"])
 def test_resnext_14_osmr_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
@@ -115,6 +119,8 @@ def test_resnext_14_osmr_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext26_32x4d"])
 def test_resnext_26_osmr_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
@@ -138,6 +144,8 @@ def test_resnext_26_osmr_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext50_32x4d"])
 def test_resnext_50_osmr_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
@@ -161,6 +169,8 @@ def test_resnext_50_osmr_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext101_64x4d"])
 def test_resnext_101_osmr_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 

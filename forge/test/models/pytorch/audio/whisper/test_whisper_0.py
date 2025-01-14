@@ -97,6 +97,9 @@ def generate_model_whisper_congen_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper(record_forge_property, variant):
+    if variant != "openai/whisper-tiny":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant)
 

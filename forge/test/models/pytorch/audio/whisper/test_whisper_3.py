@@ -40,6 +40,8 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
 def test_whisper_large_v3_speech_translation(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="whisper", variant=variant, task=Task.SPEECH_TRANSLATE

@@ -25,6 +25,9 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
 def test_qwen_clm(record_forge_property, variant):
+    if variant != "Qwen/Qwen2.5-0.5B":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM)
 

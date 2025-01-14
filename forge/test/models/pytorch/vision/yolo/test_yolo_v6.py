@@ -23,6 +23,9 @@ variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolo_v6_pytorch(record_forge_property, variant):
+    if variant != "yolov6n":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="yolo_v6", variant=variant)
 

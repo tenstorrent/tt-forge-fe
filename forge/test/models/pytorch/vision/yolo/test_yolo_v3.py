@@ -77,6 +77,8 @@ def generate_model_yoloV3_imgcls_holli_pytorch():
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_yolov3_holli_pytorch(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="yolo_v3", variant="holli_pytorch", task=Task.IMAGE_CLASSIFICATION

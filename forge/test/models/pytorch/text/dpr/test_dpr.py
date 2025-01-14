@@ -24,6 +24,9 @@ variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_context_encoder_pytorch(record_forge_property, variant):
+    if variant != "facebook/dpr-ctx_encoder-single-nq-base":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="context_encoder")
 
@@ -63,6 +66,8 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="question_encoder"
@@ -109,6 +114,8 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="reader")
 

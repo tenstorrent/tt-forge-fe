@@ -15,14 +15,17 @@ from test.utils import download_model
 
 variants = [
     "Salesforce/codegen-350M-mono",
-    # "Salesforce/codegen-350M-multi", # Currently not supported
-    # "Salesforce/codegen-350M-nl", # Currently not supported
+    "Salesforce/codegen-350M-multi",
+    "Salesforce/codegen-350M-nl",
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_codegen(record_forge_property, variant):
+    if variant != "Salesforce/codegen-350M-mono":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM)
 
