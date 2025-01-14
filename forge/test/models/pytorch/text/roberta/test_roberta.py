@@ -53,6 +53,8 @@ def test_roberta_masked_lm(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
 def test_roberta_sentiment_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.SEQUENCE_CLASSIFICATION

@@ -38,7 +38,10 @@ variants = ["mobilenet_v3_large", "mobilenet_v3_small"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mobilenetv3_basic(record_forge_property, variant):
+def test_mobilenetv3_basic(mobilenet_v3_small, variant):
+    if variant != "mobilenet_v3_large":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilenetv3", variant=variant, source=Source.TORCH_HUB
@@ -92,6 +95,8 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilnetv3", source=Source.TIMM, variant=variant

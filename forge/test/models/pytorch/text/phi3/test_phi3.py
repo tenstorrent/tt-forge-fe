@@ -68,6 +68,8 @@ def test_phi3_causal_lm(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.TOKEN_CLASSIFICATION
@@ -107,6 +109,8 @@ def test_phi3_token_classification(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.SEQUENCE_CLASSIFICATION

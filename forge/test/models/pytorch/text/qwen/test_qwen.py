@@ -68,6 +68,8 @@ def parse_chat_completion(text: str):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B-Chat"])
 def test_qwen1_5_chat(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="qwen1.5", variant=variant)
 

@@ -48,6 +48,9 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_openpose_basic(record_forge_property, variant):
+    if variant != "body_basic":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant)
 

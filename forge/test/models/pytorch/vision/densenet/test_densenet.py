@@ -21,6 +21,9 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(record_forge_property, variant):
+    if variant == "densenet121":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 

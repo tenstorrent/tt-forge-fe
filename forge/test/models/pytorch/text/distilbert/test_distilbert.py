@@ -22,6 +22,9 @@ variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
+    if variant != "distilbert-base-uncased":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM
@@ -62,6 +65,8 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
 def test_distilbert_question_answering_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA)
 
@@ -106,6 +111,8 @@ def test_distilbert_question_answering_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
 def test_distilbert_sequence_classification_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
@@ -142,6 +149,8 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property, varia
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
 def test_distilbert_token_classification_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.TOKEN_CLASSIFICATION

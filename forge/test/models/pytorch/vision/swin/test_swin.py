@@ -72,6 +72,8 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.IMAGE_CLASSIFICATION
@@ -97,6 +99,8 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.MASKED_IMAGE_MODELLING

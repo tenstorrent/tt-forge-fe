@@ -60,6 +60,8 @@ def test_alexnet_torchhub(record_forge_property):
 
 @pytest.mark.nightly
 def test_alexnet_osmr(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR)
 

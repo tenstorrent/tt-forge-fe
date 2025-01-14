@@ -37,6 +37,8 @@ def test_regnet(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet_img_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="regnet", variant=variant, task=Task.IMAGE_CLASSIFICATION

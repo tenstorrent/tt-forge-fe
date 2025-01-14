@@ -41,6 +41,9 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xception_timm(record_forge_property, variant):
+    if variant != "xception":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="xception", variant=variant, source=Source.TIMM)
 

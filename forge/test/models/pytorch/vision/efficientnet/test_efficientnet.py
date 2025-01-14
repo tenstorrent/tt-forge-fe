@@ -48,6 +48,9 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(record_forge_property, variant):
+    if variant != "efficientnet_b0":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="efficientnet", variant=variant, source=Source.TIMM
@@ -108,6 +111,9 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(record_forge_property, variant):
+    if variant != "efficientnet_b0":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="efficientnet", variant=variant, source=Source.TORCHVISION

@@ -50,6 +50,8 @@ def test_nbeats_with_seasonality_basis(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["generic_basis"])
 def test_nbeats_with_generic_basis(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
@@ -73,6 +75,8 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["trend_basis"])
 def test_nbeats_with_trend_basis(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 

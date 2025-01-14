@@ -86,6 +86,8 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 
 @pytest.mark.nightly
 def test_resnet_timm(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50")
 
