@@ -44,4 +44,6 @@ def test_clip_pytorch(test_device):
     text_model = CLIPTextWrapper(model)
     inputs = [inputs[0], inputs[2]]
 
-    compiled_model = forge.compile(text_model, sample_inputs=inputs, module_name="pt_clip_text_model")
+    compiled_model = forge.compile(
+        text_model, sample_inputs=inputs, module_name="pt_" + str(model_ckpt.split("/")[-1].replace("-", "_")) + "_text"
+    )

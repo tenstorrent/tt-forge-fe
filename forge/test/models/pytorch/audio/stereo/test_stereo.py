@@ -30,6 +30,8 @@ def test_stereo(variant):
     input_ids, attn_mask, decoder_input_ids = load_inputs(framework_model, processor)
     inputs = [input_ids, attn_mask, decoder_input_ids]
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
+    )
 
     verify(inputs, framework_model, compiled_model)

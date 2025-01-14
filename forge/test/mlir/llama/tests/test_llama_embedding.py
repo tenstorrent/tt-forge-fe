@@ -10,7 +10,6 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
 @pytest.mark.push
 def test_llama_embedding(model_path):
     # Load Llama model and tokenizer
@@ -20,8 +19,9 @@ def test_llama_embedding(model_path):
     framework_model = framework_model.model.embed_tokens
 
     # Input samples
+    # cast input_ids to int32 since int64 causes embedding op data mismatch. Tracking issue: https://github.com/tenstorrent/tt-forge-fe/issues/952
     inputs = [
-        torch.randint(0, vocab_size, (1, 12)),  # Input token IDs
+        torch.randint(0, vocab_size, (1, 12), dtype=torch.int32),  # Input token IDs
     ]
 
     # Compile the model

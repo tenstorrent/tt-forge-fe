@@ -7,6 +7,7 @@
 # Project setup
 - [Building](./build.md)
 - [Testing](./test.md)
+    - [Pytest](./pytest.md)
 - [Tools](./tools.md)
 
 # Dev Notes
