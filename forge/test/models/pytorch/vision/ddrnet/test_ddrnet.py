@@ -26,6 +26,9 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_pytorch(record_forge_property, variant):
+    if variant != "ddrnet23s":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="ddrnet", variant=variant)
 

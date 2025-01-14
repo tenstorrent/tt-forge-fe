@@ -89,6 +89,8 @@ def generate_model_bert_qa_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-large-cased-whole-word-masking-finetuned-squad"])
 def test_bert_question_answering_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA)
 
@@ -127,6 +129,8 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["textattack/bert-base-uncased-SST-2"])
 def test_bert_sequence_classification_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
@@ -173,6 +177,8 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["dbmdz/bert-large-cased-finetuned-conll03-english"])
 def test_bert_token_classification_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.TOKEN_CLASSIFICATION

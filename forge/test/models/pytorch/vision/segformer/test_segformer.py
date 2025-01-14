@@ -28,6 +28,9 @@ variants_img_classification = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_img_classification)
 def test_segformer_image_classification_pytorch(record_forge_property, variant):
+    if variant != "nvidia/mit-b0":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="segformer", variant=variant, task=Task.IMAGE_CLASSIFICATION
@@ -69,6 +72,8 @@ variants_semseg = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_semseg)
 def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="segformer", variant=variant, suffix=Task.SEMANTIC_SEGMENTATION

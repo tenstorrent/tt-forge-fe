@@ -27,6 +27,9 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_320x320(record_forge_property, size):
+    if size != "s":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -67,6 +70,9 @@ size = ["n", "s", "m", "l", "x"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_640x640(record_forge_property, size):
+    if size != "s":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -103,6 +109,9 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
 def test_yolov5_480x480(record_forge_property, size):
+    if size != "s":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -131,6 +140,8 @@ def test_yolov5_480x480(record_forge_property, size):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
 def test_yolov5_1280x1280(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,

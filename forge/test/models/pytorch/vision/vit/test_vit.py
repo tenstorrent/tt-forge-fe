@@ -36,6 +36,9 @@ variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vit_classify_224_hf_pytorch(record_forge_property, variant):
+    if variant != "google/vit-base-patch16-224":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,

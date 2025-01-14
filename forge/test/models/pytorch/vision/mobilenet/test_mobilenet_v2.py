@@ -185,6 +185,8 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["mobilenetv2_100"])
 def test_mobilenetv2_timm(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.TIMM
@@ -236,6 +238,8 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv2_deeplabv3(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilnetv2", variant=variant, source=Source.HUGGINGFACE

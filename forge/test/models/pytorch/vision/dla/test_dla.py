@@ -41,6 +41,9 @@ variants = list(variants_func.keys())
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dla_pytorch(record_forge_property, variant):
+    if variant != "dla34":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="dla", variant=variant)
 

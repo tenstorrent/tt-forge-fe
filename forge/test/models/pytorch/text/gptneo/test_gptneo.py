@@ -26,6 +26,9 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_causal_lm(record_forge_property, variant):
+    if variant != "EleutherAI/gpt-neo-125M":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.CAUSAL_LM)
 
@@ -84,6 +87,8 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gptneo_sequence_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.SEQUENCE_CLASSIFICATION

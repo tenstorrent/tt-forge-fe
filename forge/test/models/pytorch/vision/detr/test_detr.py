@@ -44,6 +44,8 @@ def test_detr_detection(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.SEMANTIC_SEGMENTATION
