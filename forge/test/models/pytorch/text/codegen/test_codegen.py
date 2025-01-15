@@ -30,7 +30,7 @@ def test_codegen(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

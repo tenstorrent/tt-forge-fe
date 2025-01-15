@@ -64,7 +64,7 @@ def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(variant)
 
@@ -113,7 +113,7 @@ def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 

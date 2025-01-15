@@ -26,7 +26,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -53,7 +53,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -80,7 +80,7 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -107,7 +107,7 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)

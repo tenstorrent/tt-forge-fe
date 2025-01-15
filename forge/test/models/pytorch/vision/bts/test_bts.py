@@ -34,7 +34,7 @@ def test_bts_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="bts", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"
