@@ -412,14 +412,12 @@ class CompiledModel:
 
         for weight_update_name in self.opt_compiled_graph_state.aliased_outputs:
             weight_name = self.opt_compiled_graph_state.aliased_outputs[weight_update_name]
-            assert self.opt_compiled_graph_state.get_parameter_tensor(
-                weight_name
-            ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
-            self.fwd_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
+            self.opt_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
 
             # Sanity check - assert that the parameter tensors in framework module are the same as the ones in our runtime.
             for torch_name, val in self.framework_module.module.named_parameters():
                 if torch_name == weight_name:
+                    assert self.opt_compiled_graph_state.get_parameter_tensor(weight_name) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
-
         self.gradient_outputs = []
+
