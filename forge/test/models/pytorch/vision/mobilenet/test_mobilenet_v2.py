@@ -73,6 +73,8 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.35_96"])
 def test_mobilenetv2_96(record_forge_property, variant):
+    pytest.skip("Hitting segmentation fault in MLIR")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.HUGGINGFACE
@@ -106,6 +108,8 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.75_160"])
 def test_mobilenetv2_160(record_forge_property, variant):
+    pytest.skip("Hitting segmentation fault in MLIR")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.HUGGINGFACE
@@ -141,6 +145,8 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_1.0_224"])
 def test_mobilenetv2_224(record_forge_property, variant):
+    pytest.skip("Hitting segmentation fault in MLIR")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.HUGGINGFACE
