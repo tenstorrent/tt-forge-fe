@@ -29,7 +29,7 @@ def test_opt_causal_lm(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.CAUSAL_LM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -77,7 +77,7 @@ def test_opt_qa(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.QA)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -123,7 +123,7 @@ def test_opt_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"

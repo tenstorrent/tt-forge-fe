@@ -33,7 +33,7 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="ddrnet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
@@ -93,7 +93,7 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":

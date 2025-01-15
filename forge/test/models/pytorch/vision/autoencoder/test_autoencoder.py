@@ -19,7 +19,7 @@ def test_conv_ae_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="conv")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -54,7 +54,7 @@ def test_linear_ae_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="linear")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.

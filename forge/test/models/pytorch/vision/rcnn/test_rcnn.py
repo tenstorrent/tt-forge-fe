@@ -22,7 +22,7 @@ def test_rcnn_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="rcnn")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load Alexnet Model
     framework_model = torchvision.models.alexnet(pretrained=True)

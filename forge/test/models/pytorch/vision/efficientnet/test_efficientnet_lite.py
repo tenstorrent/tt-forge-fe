@@ -21,7 +21,7 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_0")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
@@ -49,7 +49,7 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_1")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -77,7 +77,7 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_2")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
@@ -105,7 +105,7 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_3")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
@@ -133,7 +133,7 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_4")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
