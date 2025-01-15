@@ -10,10 +10,13 @@ import forge
 
 def train_and_compare_optimizers(num_epochs, batch_size, shape, loss_fn, tt_model, tt_optimizer, golden_model, golden_optimizer):
     for epoch in range(num_epochs):
-        # Forward pass
+        # Generate random data
         x = torch.randn(batch_size, shape[0])
         y = torch.randn(batch_size, shape[2])
         
+        golden_optimizer.zero_grad()
+
+        # Forward pass
         gold_out = golden_model(x)
         
         loss = loss_fn(gold_out, y)
@@ -33,7 +36,7 @@ def train_and_compare_optimizers(num_epochs, batch_size, shape, loss_fn, tt_mode
 
         # Compare all the parameters
         for i, (tt_param, golden_param) in enumerate(zip(tt_model.framework_module.module.parameters(), golden_model.parameters())):
-            assert compare_with_golden(tt_param, golden_param, pcc=0.95), f"Weight mismatch at epoch {epoch}\n {tt_param}, {golden_param} and param {i}"
+            assert compare_with_golden(tt_param, golden_param, pcc=0.99), f"Weight mismatch at epoch {epoch}\n {tt_param}, {golden_param} and param {i}"
 
         print(f"Epoch: {epoch}, Loss: {loss.item()}")
 
