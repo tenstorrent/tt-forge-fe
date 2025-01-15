@@ -21,6 +21,8 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 64 GB)")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.CAUSAL_LM)
 
