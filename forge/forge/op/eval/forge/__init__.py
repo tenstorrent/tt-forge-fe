@@ -58,6 +58,7 @@ op_to_module_map = {
     "cosine": Cosine,
     "abs": Abs,
     "sine": "eltwise_unary",
+    "atan": "eltwise_unary",
     "tile_broadcast": "eltwise_unary",
     "tanh": Tanh,
     "cumsum": CumulativeSum,
