@@ -14,6 +14,8 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
 def test_falcon(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="falcon", variant=variant)
 
