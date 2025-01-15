@@ -5,6 +5,7 @@
 import pytest
 import time
 
+from test.mlir.utils import *
 import torch
 from torch import nn
 from loguru import logger

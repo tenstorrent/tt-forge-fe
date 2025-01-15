@@ -1,35 +1,33 @@
 
 import pytest
 from test.mlir.mnist.utils import MNISTLinear
+from test.mlir.utils import get_param_grads, copy_params
 import torch
 import torch.nn as nn
 from forge.verify.compare import compare_with_golden
 import forge
 
 
-def copy_model_params(model1: nn.Module, model2: nn.Module):
-    for param1, param2 in zip(model1.parameters(), model2.parameters()):
-        param2.data = param1.data.clone()
-
-def get_gradients(model):
-    return [p.grad for p in model.parameters()][::-1]
-
-
 def train_and_compare_optimizers(num_epochs, batch_size, shape, loss_fn, tt_model, tt_optimizer, golden_model, golden_optimizer):
     for epoch in range(num_epochs):
         # Forward pass
         x = torch.randn(batch_size, shape[0])
-        y = torch.randn(batch_size, shape[1])
+        y = torch.randn(batch_size, shape[2])
         
-        tt_out = tt_model(x)
         gold_out = golden_model(x)
         
         loss = loss_fn(gold_out, y)
         loss.backward()
-        grads = get_gradients(golden_model)
         
-        # Copy the gradients to the tt model because only the optimizer should be tested
-        tt_model.gradient_outputs = grads
+        # Copy the gradients to the TT model since just the optimizer should be tested
+        ordered_param_names = tt_model.fwd_compiled_graph_state.ordered_parameter_node_names
+        grads = get_param_grads(golden_model.named_parameters)
+        grad_list = []
+        for name in ordered_param_names:
+            grad_list.append(grads[name])
+        tt_model.gradient_outputs = grad_list[::-1]
+
+        # Step
         tt_optimizer.step()
         golden_optimizer.step()
 
@@ -43,21 +41,22 @@ def train_and_compare_optimizers(num_epochs, batch_size, shape, loss_fn, tt_mode
 @pytest.mark.parametrize(
     "shape",
     [
-        (784, 10),
-        (33, 127),
-        (128, 20),
+        # input, hidden, output
+        (784, 784, 10),
+        (33, 27, 127),
+        (128, 10, 20),
     ],
 )
 def test_sgd(shape):
     torch.manual_seed(0)
     num_epochs = 10
-    learning_rate = 0.01
-    batch_size = 64
+    learning_rate = 1
+    batch_size = 10
 
-    framework_model = MNISTLinear(input_size=shape[0], output_size=shape[1], bias=False)
-    golden_model = MNISTLinear(input_size=shape[0], output_size=shape[1], bias=False)
+    framework_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+    golden_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
     
-    copy_model_params(framework_model, golden_model)
+    copy_params(framework_model, golden_model)
 
     tt_optimizer = forge.optimizers.SGD(learning_rate=learning_rate)
     golden_optimizer = torch.optim.SGD(golden_model.parameters(), lr=learning_rate)
@@ -86,9 +85,10 @@ def test_sgd(shape):
 @pytest.mark.parametrize(
     "shape",
     [
-        (784, 10),
-        (33, 127),
-        (128, 20),
+        # input, hidden, output
+        (784, 784, 10),
+        (33, 27, 127),
+        (128, 10, 20),
     ],
 )
 @pytest.mark.parametrize(
@@ -110,13 +110,13 @@ def test_adam(shape, betas, weight_decay):
     num_epochs = 10
     # Large learning rate to propagate possible errors faster
     learning_rate = 1
-    batch_size = 64
+    batch_size = 10
     eps = 1e-8
 
-    framework_model = MNISTLinear(input_size=shape[0], output_size=shape[1], bias=False)
-    golden_model = MNISTLinear(input_size=shape[0], output_size=shape[1], bias=False)
+    framework_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
+    golden_model = MNISTLinear(input_size=shape[0], hidden_size=shape[1], output_size=shape[2], bias=False)
     
-    copy_model_params(framework_model, golden_model)
+    copy_params(framework_model, golden_model)
 
     tt_optimizer = forge.optimizers.Adam(learning_rate=learning_rate, epsilon=eps, beta1=betas[0], beta2=betas[1], weight_decay=weight_decay, bias_correction=True)
     golden_optimizer = torch.optim.Adam(golden_model.parameters(), lr=learning_rate, eps=eps, betas=betas, weight_decay=weight_decay)
@@ -124,7 +124,8 @@ def test_adam(shape, betas, weight_decay):
     tt_model = forge.compile(
         framework_model, 
         sample_inputs=[torch.randn(batch_size, shape[0])],
-        optimizer=tt_optimizer
+        optimizer=tt_optimizer,
+        training=True
     )
 
     loss_fn = nn.MSELoss()

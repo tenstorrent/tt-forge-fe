@@ -5,6 +5,7 @@
 from datetime import datetime
 import operator
 
+from test.mlir.utils import get_param_grads
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
@@ -151,18 +152,6 @@ def load_dataset(batch_size, dtype=torch.float32):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, drop_last=True)
 
     return test_loader, train_loader
-
-
-def get_param_grads(named_params):
-    return {name: param.grad.detach().clone() for name, param in named_params() if param.grad is not None}
-
-
-def copy_params(src, dst):
-    state_dict = src.state_dict()
-    for name, param in dst.named_parameters():
-        param.data = state_dict[name].data.detach().clone()
-
-    dst.load_state_dict(state_dict)
 
 
 def write_grads(writer, named_params, step):
