@@ -83,12 +83,19 @@ def test_t5_loop_tiny_tile(record_forge_property, variant):
 
 
 variants = [
-    pytest.param("t5-small", id="t5-small"),
-    pytest.param("t5-base", id="t5-base"),
-    pytest.param("t5-large", id="t5-large"),
+    pytest.param("t5-small", id="t5-small", marks=[pytest.mark.push]),
+    pytest.param(
+        "t5-base",
+        id="t5-base",
+        marks=[pytest.mark.push, pytest.mark.xfail(reason="PCC error due to Reduce Avg data mismatch.")],
+    ),
+    pytest.param(
+        "t5-large", id="t5-large", marks=[pytest.mark.xfail(reason="PCC error due to Reduce Avg data mismatch.")]
+    ),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
+        marks=[pytest.mark.push],
     ),
     pytest.param(
         "google/flan-t5-base",
@@ -101,8 +108,8 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
-    if variant != "t5-small":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
+        pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION)
