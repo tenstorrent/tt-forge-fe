@@ -22,7 +22,7 @@ def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
@@ -47,7 +47,7 @@ def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
@@ -74,7 +74,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     # 4 variants
@@ -100,7 +100,7 @@ def test_resnext_14_osmr_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -125,7 +125,7 @@ def test_resnext_26_osmr_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -150,7 +150,7 @@ def test_resnext_50_osmr_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -175,7 +175,7 @@ def test_resnext_101_osmr_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)

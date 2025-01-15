@@ -49,7 +49,7 @@ def test_vit_classify_224_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(variant)
 

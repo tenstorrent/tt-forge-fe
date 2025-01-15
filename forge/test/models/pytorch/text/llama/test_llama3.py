@@ -137,7 +137,7 @@ def test_llama3_causal_lm(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -185,7 +185,7 @@ def test_llama3_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

@@ -24,7 +24,7 @@ def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -56,7 +56,7 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -81,7 +81,7 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 

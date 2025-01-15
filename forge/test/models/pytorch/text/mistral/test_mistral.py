@@ -27,7 +27,7 @@ def test_mistral_decoder_layer(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decoder")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
@@ -61,7 +61,7 @@ def test_mistral(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -104,7 +104,7 @@ def test_mistral_decode(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decode")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -174,7 +174,7 @@ def test_mistral_kv_cache(record_forge_property, variant, test_device):
     module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="kv_cache")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     configuration = MistralConfig()
     configuration.sliding_window = None

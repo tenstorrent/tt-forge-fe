@@ -17,7 +17,7 @@ def test_fpn_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="fpn", source=Source.TORCHVISION)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load FPN model
     framework_model = FPNWrapper()

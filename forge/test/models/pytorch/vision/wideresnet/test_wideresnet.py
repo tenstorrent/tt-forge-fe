@@ -54,7 +54,7 @@ def test_wideresnet_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="wideresnet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
 
@@ -96,7 +96,7 @@ def test_wideresnet_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
 

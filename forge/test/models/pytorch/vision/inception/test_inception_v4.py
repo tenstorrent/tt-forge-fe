@@ -35,7 +35,7 @@ def test_inception_v4_osmr_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
 
@@ -60,7 +60,7 @@ def test_inception_v4_timm_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.TIMM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
 

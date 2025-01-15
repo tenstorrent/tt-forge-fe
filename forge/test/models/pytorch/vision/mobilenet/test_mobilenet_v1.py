@@ -31,7 +31,7 @@ def test_mobilenetv1_basic(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v1", variant="basic")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
 
@@ -69,7 +69,7 @@ def test_mobilenetv1_192(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
 
@@ -106,7 +106,7 @@ def test_mobilenetv1_224(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
 
