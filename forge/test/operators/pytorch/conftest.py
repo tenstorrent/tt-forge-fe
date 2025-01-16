@@ -87,9 +87,7 @@ def log_test_vector_properties(
     item.user_properties.append(
         ("input_source", test_vector.input_source.name if test_vector.input_source is not None else None)
     )
-    item.user_properties.append(
-        ("dev_data_format", test_vector.dev_data_format.name if test_vector.dev_data_format is not None else None)
-    )
+    item.user_properties.append(("dev_data_format", TestPlanUtils.dev_data_format_to_str(test_vector.dev_data_format)))
     item.user_properties.append(
         ("math_fidelity", test_vector.math_fidelity.name if test_vector.math_fidelity is not None else None)
     )
