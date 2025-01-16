@@ -26,7 +26,7 @@ def test_pidnet_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="pidnet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"

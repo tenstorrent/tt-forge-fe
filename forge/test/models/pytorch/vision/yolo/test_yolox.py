@@ -39,11 +39,14 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(record_forge_property, variant):
+    if variant != "yolox_nano":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="yolox", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # prepare model
     weight_name = f"{variant}.pth"

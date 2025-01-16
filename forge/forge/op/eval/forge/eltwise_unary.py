@@ -135,6 +135,7 @@ def eval(type, attr, ops):
         "abs": lambda i: torch.abs(i[0]),
         "cosine": lambda i: torch.cos(i[0]),
         "sine": lambda i: torch.sin(i[0]),
+        "atan": lambda i: torch.atan(i[0]),
         "tile_broadcast": lambda i: tile_broadcast(attr, i[0]),
         "argmax": lambda i: torch.argmax(i[0], dim=attr[0] if len(attr) > 0 else None, keepdims=True),
         "tanh": lambda i: torch.tanh(i[0]),

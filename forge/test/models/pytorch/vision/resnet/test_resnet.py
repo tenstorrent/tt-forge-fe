@@ -49,7 +49,7 @@ def test_resnet(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_resnet_imgcls_hf_pytorch(
         "microsoft/resnet-50",
@@ -86,11 +86,13 @@ def generate_model_resnet_imgcls_timm_pytorch(variant):
 
 @pytest.mark.nightly
 def test_resnet_timm(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_resnet_imgcls_timm_pytorch("resnet50")
 

@@ -20,7 +20,7 @@ def test_googlenet_pytorch(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="googlenet")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Create Forge module from PyTorch model
     # Two ways to load the same model

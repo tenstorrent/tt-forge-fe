@@ -17,6 +17,16 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
         required: false
         type: string
+      test_group_cnt:
+        description: 'Test group count'
+        required: true
+        default: 2
+        type: number
+      test_group_ids:
+        description: 'Test group ids'
+        required: true
+        default: '[1,2]'
+        type: string
   workflow_call:
     inputs:
       test_mark:
@@ -28,6 +38,16 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
         required: false
         type: string
+      test_group_cnt:
+        description: 'Test group count'
+        required: false
+        default: 2
+        type: number
+      test_group_ids:
+        description: 'Test group ids'
+        required: false
+        default: '[1,2]'
+        type: string
 
 permissions:
   packages: write
@@ -35,7 +55,6 @@ permissions:
   pull-requests: write # only required if `comment: true` was enabled
 
 jobs:
-
   docker-build:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
@@ -48,7 +67,7 @@ jobs:
       matrix:
         build:
           - runs-on: runner
-        test_group_id: [1,2]
+        test_group_id: ${{ fromJson(inputs.test_group_ids) }}
 
     runs-on:
       - in-service
@@ -152,7 +171,7 @@ jobs:
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        pytest -m push --splits 2 \
+        pytest -m push --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \

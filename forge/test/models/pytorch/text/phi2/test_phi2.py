@@ -22,11 +22,14 @@ variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_phi2_clm(record_forge_property, variant):
+    if variant != "microsoft/phi-2":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -68,13 +71,15 @@ def test_phi2_clm(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.TOKEN_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -106,13 +111,15 @@ def test_phi2_token_classification(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

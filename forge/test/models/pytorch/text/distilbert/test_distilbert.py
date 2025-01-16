@@ -22,13 +22,16 @@ variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
+    if variant != "distilbert-base-uncased":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
@@ -62,11 +65,13 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
 def test_distilbert_question_answering_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -106,13 +111,15 @@ def test_distilbert_question_answering_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
 def test_distilbert_sequence_classification_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -142,13 +149,15 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property, varia
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
 def test_distilbert_token_classification_pytorch(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.TOKEN_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load DistilBERT tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)

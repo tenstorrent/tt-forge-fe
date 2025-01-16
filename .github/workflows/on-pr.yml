@@ -21,6 +21,8 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'push'
+      test_group_cnt: 2
+      test_group_ids: '[1,2]'
   perf-benchmark:
     needs: docker-build
     uses: ./.github/workflows/perf-benchmark.yml

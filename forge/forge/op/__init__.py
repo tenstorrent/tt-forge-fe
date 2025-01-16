@@ -38,6 +38,7 @@ from .eltwise_unary import (
     Argmax,
     Abs,
     Clip,
+    Atan,
     Sine,
     Cosine,
     Tanh,

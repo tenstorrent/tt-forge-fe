@@ -26,7 +26,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -53,7 +53,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -72,13 +72,15 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_image_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -97,13 +99,15 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.MASKED_IMAGE_MODELLING
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)

@@ -21,11 +21,13 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 64 GB)")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.CAUSAL_LM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -68,13 +70,15 @@ def test_phi3_causal_lm(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.TOKEN_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -107,13 +111,15 @@ def test_phi3_token_classification(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)

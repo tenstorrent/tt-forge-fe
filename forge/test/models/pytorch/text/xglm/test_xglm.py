@@ -16,11 +16,14 @@ variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_xglm_causal_lm(record_forge_property, variant):
+    if variant != "facebook/xglm-564M":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()

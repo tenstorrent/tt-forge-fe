@@ -48,13 +48,16 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
+    if variant != "deepmind/vision-perceiver-conv":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="perceiverio", variant=variant, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Sample Image
     pixel_values = get_sample_data(variant)

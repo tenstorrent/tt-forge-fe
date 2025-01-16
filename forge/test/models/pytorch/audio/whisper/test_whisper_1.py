@@ -48,7 +48,7 @@ def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="pipeline")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     model, inputs, other = generate_model_whisper_decoder_past_cache(variant)
     compile_inputs = other["compile_inputs"]
@@ -87,7 +87,7 @@ def test_whisper_enc_dec(record_forge_property, test_device, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="enc_dec")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
@@ -325,7 +325,7 @@ def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
