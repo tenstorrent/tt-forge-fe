@@ -1,6 +1,10 @@
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
+# SPDX-License-Identifier: Apache-2.0
 from typing import Dict, Callable, Any
 import torch
 from torch import nn
+
 
 def get_param_grads(named_params: Callable[[], Dict[str, nn.Parameter]]) -> Dict[str, torch.Tensor]:
     grads = {}
