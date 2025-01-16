@@ -124,6 +124,7 @@ class VerifyUtils:
         pcc: Optional[float] = None,
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
+        convert_to_forge: bool = True,  # explicit conversion to forge data format
         math_fidelity: forge.MathFidelity = None,
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
@@ -167,6 +168,7 @@ class VerifyUtils:
                 inputs=inputs,
                 pcc=pcc,
                 dev_data_format=dev_data_format,
+                convert_to_forge=convert_to_forge,
             )
         else:
             cls.verify_module_for_inputs(
@@ -174,6 +176,7 @@ class VerifyUtils:
                 inputs=inputs,
                 verify_config=verify_config,
                 dev_data_format=dev_data_format,
+                convert_to_forge=convert_to_forge,
             )
 
     @classmethod
@@ -220,6 +223,7 @@ class VerifyUtils:
         inputs: List[torch.Tensor],
         pcc: Optional[float] = None,
         dev_data_format: forge.DataFormat = None,
+        convert_to_forge: bool = True,  # explicit conversion to forge data format
     ):
 
         verify_module_for_inputs_deprecated(
@@ -227,6 +231,7 @@ class VerifyUtils:
             inputs=inputs,
             pcc=pcc,
             dev_data_format=dev_data_format,
+            convert_to_forge=convert_to_forge,
         )
 
     @classmethod
@@ -236,6 +241,7 @@ class VerifyUtils:
         inputs: List[torch.Tensor],
         verify_config: Optional[VerifyConfig] = VerifyConfig(),
         dev_data_format: forge.DataFormat = None,
+        convert_to_forge: bool = True,  # explicit conversion to forge data format
     ):
 
         verify_module_for_inputs(
@@ -243,6 +249,7 @@ class VerifyUtils:
             inputs=inputs,
             verify_config=verify_config,
             dev_data_format=dev_data_format,
+            convert_to_forge=convert_to_forge,
         )
 
 
