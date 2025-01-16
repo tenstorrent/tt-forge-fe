@@ -292,6 +292,7 @@ class TestQuery:
         test_vectors = self.test_vectors
         for test_vector in test_vectors:
             yield test_vector.to_param()
+        logger.trace("To params done")
 
     @classmethod
     def all(cls, test_plan: Union["TestPlan", "TestSuite"]) -> "TestQuery":
@@ -480,6 +481,7 @@ class TestSuite:
         return test_vectors
 
     def query_all(self) -> TestQuery:
+        logger.trace("Query all test vectors")
         return TestQuery.all(self)
 
     def query_from_id_file(self, test_ids_file: str) -> TestQuery:
@@ -819,6 +821,8 @@ class TestPlanScanner:
     @classmethod
     def build_test_suite(cls, scan_file: str, scan_package: str) -> TestSuite:
         """Build test suite from scaned test plans."""
+        logger.trace(f"Building test suite from file: {scan_file} and package: {scan_package}")
         test_plans = cls.get_all_test_plans(scan_file, scan_package)
         test_plans = list(test_plans)
+        logger.trace(f"Found test plans: {len(test_plans)}")
         return TestSuite(test_plans=test_plans)
