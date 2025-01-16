@@ -59,6 +59,7 @@ def train_and_compare_optimizers(
         (128, 10, 20),
     ],
 )
+@pytest.mark.push
 def test_sgd(shape):
     torch.manual_seed(0)
     num_epochs = 10
@@ -114,6 +115,7 @@ def test_sgd(shape):
         0.1,
     ],
 )
+@pytest.mark.push
 def test_adam(shape, betas, weight_decay):
     torch.manual_seed(0)
     num_epochs = 10
