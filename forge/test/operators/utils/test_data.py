@@ -6,6 +6,7 @@
 
 import pytest
 import forge
+import torch
 
 from forge import MathFidelity, DataFormat
 
@@ -308,4 +309,45 @@ class TestCollectionCommon:
             (1, 1, 10, 1000),  # 4.4 Extreme ratios between height/width
             (14, 13, 89, 3),  # 4.2 Prime numbers
         ]
+    )
+
+
+class TestCollectionTorch:
+    """
+    Shared test collection for torch data types.
+    """
+
+    __test__ = False  # Avoid collecting TestCollectionTorch as a pytest test
+
+    float = TestCollection(
+        dev_data_formats=[
+            torch.float16,
+            torch.float32,
+            # torch.float64,
+            torch.bfloat16,
+        ],
+    )
+
+    int = TestCollection(
+        dev_data_formats=[
+            torch.int8,
+            # torch.int16,
+            torch.int32,
+            torch.int64,
+            # torch.uint8,
+        ],
+    )
+
+    bool = TestCollection(
+        dev_data_formats=[
+            torch.bool,
+        ],
+    )
+
+    all = TestCollection(dev_data_formats=float.dev_data_formats + int.dev_data_formats)
+
+    single = TestCollection(
+        dev_data_formats=[
+            torch.float16,
+        ],
     )
