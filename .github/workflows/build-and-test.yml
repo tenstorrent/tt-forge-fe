@@ -164,6 +164,7 @@ jobs:
       env:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
         HF_HUB_DISABLE_PROGRESS_BARS: 1
+        FORGE_DISABLE_REPORTIFY_DUMP: 1
       shell: bash
       run: |
         source env/activate
