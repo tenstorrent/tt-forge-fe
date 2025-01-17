@@ -237,6 +237,8 @@ def verify_module(
         f"Verifying model class: {model.__class__.__name__}({model.__class__.__base__.__module__}.{model.__class__.__base__.__name__}) input_shapes: {input_shapes}"
     )
 
+    # logger.debug(f"dev_data_format = {dev_data_format}")
+
     inputs = create_torch_inputs(input_shapes, dev_data_format, value_range, random_seed)
 
     verify_module_for_inputs(model, inputs, pcc, dev_data_format)
@@ -256,6 +258,8 @@ def create_torch_inputs(
     generator = torch.Generator().manual_seed(random_seed)
 
     dtype = TestTensorsUtils.get_dtype_for_df(dev_data_format)
+
+    # logger.debug(f"dev_data_format = {dev_data_format} dtype = {dtype}")
 
     # if dtype is not None:
     #     torch.set_default_dtype(dtype)
@@ -280,9 +284,13 @@ def verify_module_for_inputs_deprecated(
     dev_data_format: forge.DataFormat = None,
 ):
 
-    fw_out = model(*inputs)
+    if isinstance(model, torch.nn.Module):
+        fw_out = model(*inputs)
 
     forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+
+    if isinstance(model, ForgeModule):
+        fw_out = model(*forge_inputs)
 
     compiled_model = forge.compile(model, sample_inputs=forge_inputs)
     co_out = compiled_model(*forge_inputs)
@@ -290,7 +298,12 @@ def verify_module_for_inputs_deprecated(
     # TODO check output data format type
 
     co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    if isinstance(model, torch.nn.Module):
+        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    if isinstance(model, ForgeModule):
+        fw_out = [fw_out] if isinstance(fw_out, forge.tensor.TensorFromTrace) else fw_out
+        fw_out = [fw_out.to_framework("pytorch") for fw_out in fw_out]
+
     # It would be good that compare_with_golden_pcc can take pcc as None
 
     # TODO print pcc value
