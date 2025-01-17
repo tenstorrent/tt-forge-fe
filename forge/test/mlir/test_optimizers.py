@@ -3,12 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from test.mlir.mnist.utils import MNISTLinear
-from test.mlir.utils import get_param_grads, copy_params
+
 import torch
 import torch.nn as nn
-from forge.verify.compare import compare_with_golden
+
 import forge
+from test.mlir.utils import get_param_grads, copy_params
+from test.mlir.mnist.utils import MNISTLinear
+from forge.verify.compare import compare_with_golden
 
 
 def train_and_compare_optimizers(
@@ -63,6 +65,7 @@ def train_and_compare_optimizers(
 def test_sgd(shape):
     torch.manual_seed(0)
     num_epochs = 10
+    # Large learning rate to propagate possible errors faster
     learning_rate = 1
     batch_size = 10
 

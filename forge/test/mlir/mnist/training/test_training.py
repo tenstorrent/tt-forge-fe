@@ -5,16 +5,16 @@
 import pytest
 import time
 
-from test.mlir.utils import *
 import torch
 from torch import nn
 from loguru import logger
 
 import forge
 from forge.op.loss import CrossEntropyLoss, L1Loss
-from ..utils import *
-from forge.verify.compare import compare_with_golden
 from forge.tensor import to_forge_tensors
+from forge.verify.compare import compare_with_golden
+from ..utils import *
+from test.mlir.utils import *
 
 
 @pytest.mark.push
