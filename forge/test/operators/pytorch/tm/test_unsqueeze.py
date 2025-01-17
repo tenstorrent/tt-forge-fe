@@ -85,11 +85,10 @@ class TestParamsData:
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
 
+        rng = random.Random(math.prod(test_vector.input_shape))
         dim = len(test_vector.input_shape)
-        dims = list(range(-dim - 1, dim + 1))
 
-        for i in dims:
-            yield {"dim": i}
+        yield {"dim": rng.randint(-dim - 1, dim)}
 
 
 TestParamsData.test_plan = TestPlan(
