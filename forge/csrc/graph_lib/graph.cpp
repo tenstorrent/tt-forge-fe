@@ -1086,6 +1086,7 @@ std::vector<Node *> Graph::get_constant_nodes(bool recurse) const
     }
     return constants;
 }
+
 std::vector<std::string> Graph::get_constant_names() const
 {
     std::vector<std::string> constant_names;
@@ -1094,6 +1095,16 @@ std::vector<std::string> Graph::get_constant_names() const
         constant_names.push_back(constant_node->name());
     }
     return constant_names;
+}
+
+std::vector<std::string> Graph::get_parameter_names() const
+{
+    std::vector<std::string> parameter_names;
+    for (Node *parameter_node : this->get_parameter_nodes())
+    {
+        parameter_names.push_back(parameter_node->name());
+    }
+    return parameter_names;
 }
 
 std::vector<Node *> Graph::get_optimizer_parameter_nodes() const
