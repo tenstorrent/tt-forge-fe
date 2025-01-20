@@ -266,9 +266,13 @@ std::vector<torch::Tensor> run_binary(
     verify_input_tensors(inputs, input_descs);
 
     std::vector<runtime::Tensor> rt_inputs;
+    size_t input_idx = 0;
     for (auto const& input : inputs)
     {
-        rt_inputs.emplace_back(create_tensor(input));
+        auto tensor = create_tensor(input);
+        auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
+        tt::runtime::toLayout(tensor, device, layout);
+        rt_inputs.emplace_back(tensor);
     }
 
     std::vector<torch::Tensor> outputs;
