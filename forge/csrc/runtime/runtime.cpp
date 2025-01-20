@@ -222,7 +222,12 @@ std::vector<torch::Tensor> run_binary(
     for (auto const& desc : output_descs)
     {
         std::vector<std::int64_t> shape = as_vec_int64(desc.shape);
-        std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
+        // std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
+        std::vector<std::int64_t> stride(shape.size(), 1);
+        for (size_t i = shape.size() - 2; i >= 0; --i)
+        {
+            stride[i] = shape[i + 1] * stride[i + 1];
+        }
 
         torch::Tensor output = at::empty_strided(shape, stride, dt_to_torch_scalar_type(desc.dataType));
         outputs.emplace_back(std::move(output));
@@ -279,13 +284,16 @@ std::vector<torch::Tensor> run_binary(
     std::vector<runtime::Tensor> rt_outputs;
     std::vector<runtime::TensorDesc> output_descs = binary.getProgramOutputs(program_idx);
     outputs.reserve(output_descs.size());
-    size_t idx = 0;
     for (auto const& desc : output_descs)
     {
         std::vector<std::int64_t> shape = as_vec_int64(desc.shape);
-        std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
-        log_info(LogTTDevice, "Output {} shape: {}", idx, shape);
-        log_info(LogTTDevice, "Output {} stride: {}", idx++, stride);
+        // std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
+        std::vector<std::int64_t> stride(shape.size());
+        stride[shape.size() - 1] = 1;
+        for (size_t i = shape.size() - 2; i >= 0 && i < shape.size(); --i)
+        {
+            stride[i] = shape[i + 1] * stride[i + 1];
+        }
 
         torch::Tensor output = at::empty_strided(shape, stride, dt_to_torch_scalar_type(desc.dataType));
         outputs.emplace_back(std::move(output));
