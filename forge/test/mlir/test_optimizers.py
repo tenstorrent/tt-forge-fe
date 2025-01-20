@@ -8,6 +8,7 @@ import torch
 import torch.nn as nn
 
 import forge
+from forge._C.runtime import Tensor as CTensor
 from test.mlir.utils import get_param_grads, copy_params
 from test.mlir.mnist.utils import MNISTLinear
 from forge.verify.compare import compare_with_golden
@@ -35,10 +36,13 @@ def train_and_compare_optimizers(
         grad_list = []
         for name in ordered_param_names:
             grad_list.append(grads[name])
-        tt_model.gradient_outputs = grad_list[::-1]
+        gradient_outputs = grad_list[::-1]
+        tt_model.gradient_outputs = [CTensor(grad) for grad in gradient_outputs]
 
         # Step
         tt_optimizer.step()
+        tt_model.update_host_weights()
+
         golden_optimizer.step()
 
         # Compare all the parameters

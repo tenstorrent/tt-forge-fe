@@ -411,6 +411,7 @@ def verify(
     # 0th step: Check if inputs are of the correct type
     if not inputs:
         raise ValueError("Input tensors must be provided")
+
     for input_tensor in inputs:
         if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
             raise TypeError(
