@@ -3,15 +3,34 @@
 # SPDX-License-Identifier: Apache-2.0
 # Llama3 Demo - CasualLM
 
-import os
-import torch
 import pytest
-from test.utils import download_model
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification
-import forge
-from transformers.models.llama.modeling_llama import LlamaModel, Cache, StaticCache, AttentionMaskConverter
+import torch
+from transformers import (
+    AutoModelForCausalLM,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+)
+from transformers.models.llama.modeling_llama import (
+    AttentionMaskConverter,
+    Cache,
+    LlamaModel,
+    StaticCache,
+)
 
-variants = ["meta-llama/Meta-Llama-3-8B", "meta-llama/Meta-Llama-3-8B-Instruct"]
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
+
+variants = [
+    "meta-llama/Meta-Llama-3-8B",
+    "meta-llama/Meta-Llama-3-8B-Instruct",
+    "meta-llama/Llama-3.1-8B",
+    "meta-llama/Llama-3.1-8B-Instruct",
+    "meta-llama/Llama-3.2-1B",
+    "meta-llama/Llama-3.2-1B-Instruct",
+]
 
 
 # Monkey Patching Casual Mask Update
@@ -110,12 +129,13 @@ LlamaModel._update_causal_mask = _update_causal_mask
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llama3_causal_lm(variant, test_device):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+def test_llama3_causal_lm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -136,30 +156,32 @@ def test_llama3_causal_lm(variant, test_device):
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
 
-    # Sanity run
+    # Get Inputs
     input_ids = input_ids.to(torch.int32)
     attn_mask = attn_mask.to(torch.float32)
-
-    out = framework_model(input_ids, attn_mask)
-    print(out)
-
     inputs = [input_ids, attn_mask]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_causal_lm",
+        inputs,
+        module_name,
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llama3_sequence_classification(variant, test_device):
+def test_llama3_sequence_classification(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
 
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -173,11 +195,14 @@ def test_llama3_sequence_classification(variant, test_device):
     # Tokenize input
     inputs = tokenizer(input_prompt, return_tensors="pt")
     input_ids = inputs["input_ids"]
-
     inputs = [input_ids]
 
+    # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_")) + "_seq_cls",
+        inputs,
+        module_name,
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

@@ -278,14 +278,8 @@ def test_reciprocal(shapes):
         ((1, 32, 11, 64), (32, 11, 64)),
         ((1, 32, 11, 64), (1, 32, 11, 64)),
         ((11, 512), (1, 11, 8, 64)),
-        pytest.param(
-            ((1, 8, 4, 11, 64), (32, 11, 64)),
-            marks=pytest.mark.xfail(reason="Only 2D, 3D, and 4D tensors are supported"),
-        ),
-        pytest.param(
-            ((1, 8, 4, 11, 64), (1, 32, 11, 64)),
-            marks=pytest.mark.xfail(reason="Only 2D, 3D, and 4D tensors are supported"),
-        ),
+        ((1, 8, 4, 11, 64), (32, 11, 64)),
+        ((1, 8, 4, 11, 64), (1, 32, 11, 64)),
         ((32, 11, 11), (1, 32, 11, 11)),
         ((32, 11, 11), (32, 11, 11)),
         ((1, 32, 64, 11), (32, 64, 11)),

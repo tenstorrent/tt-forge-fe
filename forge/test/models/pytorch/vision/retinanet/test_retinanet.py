@@ -2,16 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-import pytest
-from PIL import Image
-import requests
-import zipfile
 import shutil
+import zipfile
 
-from test.models.pytorch.vision.retinanet.utils.model import Model
-from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
+import pytest
+import requests
+
 import forge
+from forge.verify.verify import verify
 
+from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
+from test.models.pytorch.vision.retinanet.utils.model import Model
+from test.models.utils import Framework, build_module_name
 
 variants = [
     "retinanet_rn18fpn",
@@ -23,13 +25,13 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_retinanet(variant, test_device):
+def test_retinanet(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="retinanet", variant=variant)
 
-    # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
@@ -51,13 +53,18 @@ def test_retinanet(variant, test_device):
             if file.endswith(".pth"):
                 checkpoint_path = os.path.join(root, file)
 
-    model = Model.load(checkpoint_path)
-    model.eval()
+    framework_model = Model.load(checkpoint_path)
+    framework_model.eval()
 
     # Prepare input
     input_batch = img_preprocess()
     inputs = [input_batch]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)

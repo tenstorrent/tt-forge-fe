@@ -102,6 +102,7 @@ class FailingReasonsValidation:
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Data mismatch"),
+            lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Data mismatch"),
         ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
@@ -152,6 +153,17 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/reduction/generic/generic_reductions.cpp"
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:106: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::FLOAT32"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=0,y=0)] grow to 2663200 B which is beyond max L1 size of 1499136 B"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Index is out of bounds for the rank, should be between 0 and 0 however is 1" in f"{ex}",
         ],
     }
 

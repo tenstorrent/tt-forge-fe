@@ -10,6 +10,7 @@ from forge.verify.backend import verify_module
 from forge import DepricatedVerifyConfig
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.nightly
 def test_fpn_onnx(test_device, test_kind):

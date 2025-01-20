@@ -1,14 +1,16 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import torch
-from torchvision import transforms
 import numpy as np
-import forge
-
-from PIL import Image
 import pytest
-import os
+import torch
+from PIL import Image
+from torchvision import transforms
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # import sys
 
@@ -20,14 +22,16 @@ import os
 variants = ["densenet161_bts", "densenet121_bts"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
-def test_bts_pytorch(test_device, variant):
+def test_bts_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="bts", variant=variant)
 
-    # Set PyBuda configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"
@@ -38,7 +42,7 @@ def test_bts_pytorch(test_device, variant):
     image = torch.unsqueeze(image, 0)
 
     # Get the model
-    model = get_bts_model(variant)
+    framework_model = get_bts_model(variant)
     checkpoint = torch.load(
         "third_party/confidential_customer_models/internal/bts/files/weights/nyu/"
         + str(variant)
@@ -47,8 +51,8 @@ def test_bts_pytorch(test_device, variant):
         + ".pt",
         map_location=torch.device("cpu"),
     )
-    model.load_state_dict(checkpoint)
-    model.eval()
+    framework_model.load_state_dict(checkpoint)
+    framework_model.eval()
 
     class BtsModel_wrapper(torch.nn.Module):
         def __init__(self, model, focal):
@@ -59,9 +63,13 @@ def test_bts_pytorch(test_device, variant):
         def forward(self, input_tensor):
             return self.model(input_tensor, self.focal)
 
-    bts_model_wrapper = BtsModel_wrapper(model, focal=518.8579)
-    bts_model_wrapper.eval()
+    framework_model = BtsModel_wrapper(framework_model, focal=518.8579)
+    framework_model.eval()
 
     inputs = [image]
 
-    compiled_model = forge.compile(bts_model_wrapper, sample_inputs=inputs, module_name="pt_" + str(variant))
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

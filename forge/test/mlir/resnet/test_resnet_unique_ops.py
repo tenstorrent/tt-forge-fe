@@ -105,7 +105,7 @@ def test_matmul_resnet(outer_dim_x, outer_dim_y, inner_dim):
     framework_model = Matmul()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_allclose=False))
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -138,9 +138,6 @@ def test_matmul_resnet(outer_dim_x, outer_dim_y, inner_dim):
     ],
 )
 @pytest.mark.push
-@pytest.mark.xfail(
-    reason="RuntimeError: Failed to run MLIR compiler pass pipeline. error: 'ttnn.reshape' op Shape attribute size must match output tensor rank. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1577"
-)
 def test_unsqueeze_resnet(input_shape, dim):
     class Unsqueeze(nn.Module):
         def __init__(self):

@@ -49,7 +49,6 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.xfail()
 @pytest.mark.nightly
 def test_llama_prefil_on_device_decode_on_cpu(model_path):
     """
@@ -57,15 +56,14 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     - The first part is the prefilling of the model on the device.
     - The second part is the decoding of the model on the CPU without KV cache.
     """
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
-
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, return_dict=True)
 
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
+    # cast input_ids to int32 since int64 causes embedding op data mismatch. Tracking issue: https://github.com/tenstorrent/tt-forge-fe/issues/952
+    input_ids = input_ids.to(torch.int32)
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()
@@ -74,7 +72,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     # Prefill Phase - Process the initial prompt on device
     transformer_outputs = compiled_decoder(input_ids)
     # Get hidden states for all tokens from the last "transformer layer".
-    hidden_states_compiled = transformer_outputs.last_hidden_state
+    hidden_states_compiled = transformer_outputs[0]
     hidden_states_compiled = hidden_states_compiled.to("cpu")
 
     # Get hidden states for all tokens from the last "transformer layer" calculated on CPU.

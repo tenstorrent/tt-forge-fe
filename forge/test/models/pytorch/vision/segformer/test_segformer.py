@@ -3,13 +3,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-
-from transformers import SegformerForImageClassification, SegformerForSemanticSegmentation, SegformerConfig
-
-from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from transformers import (
+    SegformerConfig,
+    SegformerForImageClassification,
+    SegformerForSemanticSegmentation,
+)
 
 import forge
+from forge.verify.verify import verify
 
+from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from test.models.utils import Framework, Task, build_module_name
 
 variants_img_classification = [
     "nvidia/mit-b0",
@@ -22,13 +26,15 @@ variants_img_classification = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_img_classification)
-def test_segformer_image_classification_pytorch(test_device, variant):
+def test_segformer_image_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="segformer", variant=variant, task=Task.IMAGE_CLASSIFICATION
+    )
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -37,15 +43,18 @@ def test_segformer_image_classification_pytorch(test_device, variant):
     config = SegformerConfig(**config_dict)
 
     # Load the model from HuggingFace
-    model = SegformerForImageClassification.from_pretrained(variant, config=config)
-    model.eval()
+    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
+    framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
+    inputs = [pixel_values]
 
-    compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 variants_semseg = [
@@ -58,20 +67,26 @@ variants_semseg = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants_semseg)
-def test_segformer_semantic_segmentation_pytorch(test_device, variant):
+def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="segformer", variant=variant, suffix=Task.SEMANTIC_SEGMENTATION
+    )
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load the model from HuggingFace
-    model = SegformerForSemanticSegmentation.from_pretrained(variant)
-    model.eval()
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)
+    framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    compiled_model = forge.compile(
-        model, sample_inputs=[pixel_values], module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    inputs = [pixel_values]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

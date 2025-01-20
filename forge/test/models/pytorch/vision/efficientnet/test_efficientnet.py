@@ -1,22 +1,29 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
-import timm
-import pytest
 import urllib
+
+import pytest
+import timm
 import torch
+from loguru import logger
 from PIL import Image
-import torchvision.models as models
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from loguru import logger
-import forge
-from torchvision.models import efficientnet_b4, efficientnet_b0, EfficientNet_B4_Weights, EfficientNet_B0_Weights
-from torchvision.models._api import WeightsEnum
 from torch.hub import load_state_dict_from_url
-import os
-from forge.verify.compare import compare_with_golden
+from torchvision.models import (
+    EfficientNet_B0_Weights,
+    EfficientNet_B4_Weights,
+    efficientnet_b0,
+    efficientnet_b4,
+)
+from torchvision.models._api import WeightsEnum
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
 
@@ -24,16 +31,10 @@ variants = [
     pytest.param(
         "efficientnet_b0",
         id="efficientnet_b0",
-        marks=pytest.mark.xfail(
-            reason="Runtime Error: Statically allocated circular buffers on core range [(x=0,y=0) - (x=6,y=4)] grow to 1942080 B which is beyond max L1 size of 1499136 B"
-        ),
     ),
     pytest.param(
         "efficientnet_b4",
         id="efficientnet_b4",
-        marks=pytest.mark.xfail(
-            reason="Runtime Error: Statically allocated circular buffers in program 823 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]."
-        ),
     ),
     # pytest.param("hf_hub:timm/efficientnet_b0.ra_in1k", id="hf_hub_timm_efficientnet_b0_ra_in1k"),
     # pytest.param("hf_hub:timm/efficientnet_b4.ra2_in1k", id="hf_hub_timm_efficientnet_b4_ra2_in1k"),
@@ -45,12 +46,15 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_timm(variant, test_device):
+def test_efficientnet_timm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="efficientnet", variant=variant, source=Source.TIMM
+    )
 
-    # Configuration
-    compiler_cfg = forge.config._get_global_compiler_config()
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -73,14 +77,13 @@ def test_efficientnet_timm(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_timm")
-    co_out = compiled_model(img_tensor)
+    inputs = [img_tensor]
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = framework_model(img_tensor)
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def get_state_dict(self, *args, **kwargs):
@@ -103,12 +106,15 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail(reason="Runtime Error: Reshape Operation Fails Due to Mismatched Tensor Volume")
-def test_efficientnet_torchvision(variant, test_device):
-    # Configuration
-    compiler_cfg = forge.config._get_global_compiler_config()
+def test_efficientnet_torchvision(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="efficientnet", variant=variant, source=Source.TORCHVISION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model
     if variant == "efficientnet_b0":
@@ -134,11 +140,10 @@ def test_efficientnet_torchvision(variant, test_device):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=[img_tensor], module_name=f"pt_{variant}_torchvision")
-    co_out = compiled_model(img_tensor)
+    inputs = [img_tensor]
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = framework_model(img_tensor)
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

@@ -1,22 +1,33 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
-import forge
 import pytest
 import torch
-from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoModelForSequenceClassification
+from transformers import (
+    AutoModelForMaskedLM,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+)
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_roberta_masked_lm(test_device):
-    # Load Albert tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, "xlm-roberta-base")
-    model = download_model(AutoModelForMaskedLM.from_pretrained, "xlm-roberta-base")
+@pytest.mark.parametrize("variant", ["xlm-roberta-base"])
+def test_roberta_masked_lm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    # Load Albert tokenizer and model from HuggingFace
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
 
     # Input processing
     text = "Hello I'm a <mask> model."
@@ -31,20 +42,28 @@ def test_roberta_masked_lm(test_device):
     attention_mask[input_tokens != 1] = 1
 
     inputs = [input_tokens, attention_mask]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_masked_lm")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_roberta_sentiment_pytorch(test_device):
-    # Load Bart tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment")
-    model = download_model(
-        AutoModelForSequenceClassification.from_pretrained, "cardiffnlp/twitter-roberta-base-sentiment"
+@pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
+def test_roberta_sentiment_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
     )
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    # Load Bart tokenizer and model from HuggingFace
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
 
     # Example from multi-nli validation set
     text = """Great road trip views! @ Shartlesville, Pennsylvania"""
@@ -58,4 +77,9 @@ def test_roberta_sentiment_pytorch(test_device):
         return_tensors="pt",
     )
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_roberta_sentiment")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

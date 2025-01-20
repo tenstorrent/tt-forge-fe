@@ -1,22 +1,27 @@
 # SPDX-FileCopyrightText: (c) 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
 import torch
+
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
+def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet", variant="ssd")
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"
@@ -25,10 +30,15 @@ def test_mobilenet_v1_ssd_pytorch_1x1(test_device):
 
     # STEP 2: Create Forge module from PyTorch model
     model_path = "mobilenetv1_ssd/models/mobilenet-v1-ssd-mp-0_675.pth"
-    net = create_mobilenetv1_ssd(number_of_classes)
-    net.load(model_path)
-    net.eval()
+    framework_model = create_mobilenetv1_ssd(number_of_classes)
+    framework_model.load(model_path)
+    framework_model.eval()
 
     input_shape = (1, 3, 300, 300)
     inputs = [torch.rand(input_shape)]
-    compiled_model = forge.compile(net, sample_inputs=inputs, module_name="pt_mobilenet_v1_ssd")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

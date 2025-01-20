@@ -1,30 +1,35 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-from test.utils import download_model
-from forge.forgeglobal import TILE_DIM
-from forge import CompileDepth
 import os
-import forge
+
+import pytest
 import torch
+from transformers import T5Config, T5ForConditionalGeneration, T5Tokenizer
+
+import forge
+from forge.forgeglobal import TILE_DIM
 from forge.transformers.pipeline import pipeline as forge_pipeline
-from transformers import T5ForConditionalGeneration, T5Tokenizer, T5Config
-from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Not supported")
-def test_t5_loop_tiny_tile(test_device):
+@pytest.mark.parametrize("variant", ["t5-small"])
+def test_t5_loop_tiny_tile(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="loop_tiny_tile")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     import os
 
-    os.environ["FORGE_ENABLE_TINY_TILE"] = "1"
-    # Add Forge configurations
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-    os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-    # os.environ["TT_BACKEND_PROFILER"] = "1"
 
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -36,12 +41,12 @@ def test_t5_loop_tiny_tile(test_device):
     # compiler_cfg.compile_subgraphs = True
     compiler_cfg.enable_enumerate_u_kt = False
 
-    config = download_model(T5Config.from_pretrained, "t5-small")
+    config = download_model(T5Config.from_pretrained, variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False
     config_dict["use_cache"] = False
     config = T5Config(**config_dict)
-    model = download_model(T5ForConditionalGeneration.from_pretrained, "t5-small", config=config)
+    model = download_model(T5ForConditionalGeneration.from_pretrained, variant, config=config)
 
     # Wrapper to get around attention mask
     class Wrapper(torch.nn.Module):
@@ -78,32 +83,29 @@ def test_t5_loop_tiny_tile(test_device):
 
 
 variants = [
-    pytest.param("t5-small", id="t5-small", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
-    pytest.param("t5-base", id="t5-base", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
-    pytest.param("t5-large", id="t5-large", marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error")),
+    pytest.param("t5-small", id="t5-small"),
+    pytest.param("t5-base", id="t5-base"),
+    pytest.param("t5-large", id="t5-large"),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
-        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
     ),
     pytest.param(
         "google/flan-t5-base",
         id="google_flan_t5_base",
-        marks=pytest.mark.xfail(reason="Duplicate output tensor Fatal error"),
     ),
     pytest.param("google/flan-t5-large", id="google_flan_t5_large"),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_t5_generation(variant, test_device):
+def test_t5_generation(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
-
-    if variant == "google/flan-t5-large":
-        compiler_cfg.compile_depth = CompileDepth.INIT_COMPILE
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -132,16 +134,15 @@ def test_t5_generation(variant, test_device):
     elif "t5-large" in variant:
         encoder_outputs = torch.randn(1, 256, 1024)
 
-    inputs = [decoder_input_ids, encoder_outputs]
-    variant_name = variant.replace("-", "_").replace("/", "_")
-    compiled_model = forge.compile(Wrapper(model), sample_inputs=inputs, module_name=f"pt_{variant_name}")
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(*inputs)
-        fw_out = model(*inputs)
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    framework_model = Wrapper(model)
 
-        assert all([compare_with_golden(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)])
+    inputs = [decoder_input_ids, encoder_outputs]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 class T5_encoder(torch.nn.Module):
@@ -190,24 +191,22 @@ class T5_decoder(torch.nn.Module):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="not supported yet")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_t5_past_cache_enc_dec(variant, test_device):
+def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="past_cache_enc_dec"
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     import os
 
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-    os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
-    os.environ["FORGE_EXTRA_L1_MARGIN"] = "120000"
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    if "flan" in variant:
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "35000"
-    else:
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "26000"
-
-    os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-    os.environ["TT_BACKEND_EPOCH_BIN_NUM_SLOTS"] = "64"
     os.environ["FORGE_ROTATE_PAST_CACHE_PARAMS"] = "1"
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -219,14 +218,6 @@ def test_t5_past_cache_enc_dec(variant, test_device):
     compiler_cfg.compile_subgraphs = True
     # compiler_cfg.enable_enumerate_u_kt = False
     compiler_cfg.enable_link_past_cache_ios = True
-
-    if test_device.arch == BackendDevice.Grayskull:
-        os.environ["FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY"] = "1"
-        compiler_cfg.balancer_op_override("matmul_5865", "t_stream_shape", (1, 1))
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        if variant == "google/flan-t5-large":
-            os.environ["FORGE_TEMP_ELT_UNARY_ESTIMATES_LEGACY"] = "1"
 
     # forge.set_configuration_options(performance_trace=forge.PerfTraceLevel.VERBOSE)
     model_name = variant
@@ -245,11 +236,6 @@ def test_t5_past_cache_enc_dec(variant, test_device):
     num_blocks = len(model.decoder.block)
     if "n_layers" in locals():
         num_blocks = n_layers
-    for i in range(num_blocks):
-        forge.config.override_op_size(f"t5.decoder.block.{i}.layer.0.SelfAttention.k.weight_cache_nop", [1, 1])
-        forge.config.override_op_size(f"t5.decoder.block.{i}.layer.0.SelfAttention.v.weight_cache_nop", [1, 1])
-        forge.config.override_t_stream_shape(f"t5.decoder.block.{i}.layer.0.SelfAttention.k.weight_cache_nop", [15, 1])
-        forge.config.override_t_stream_shape(f"t5.decoder.block.{i}.layer.0.SelfAttention.v.weight_cache_nop", [15, 1])
 
     input_length = 64
     input_text = "translate English to German: The house is wonderful. We have really enjoyed living here for the past eight years. The only problem that I have with it is that it is too small and the parks are not very close."
@@ -375,10 +361,19 @@ def test_t5_past_cache_enc_dec(variant, test_device):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
-def test_t5_past_cache_forge_pipeline(variant, test_device):
+def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_device):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="past_cache_forge_pipe"
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     import os
 
     os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
@@ -710,10 +705,17 @@ def test_t5_past_cache_forge_pipeline(variant, test_device):
 variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/flan-t5-base", "google/flan-t5-large"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Redundant")
-def test_t5_forge_pipeline(variant, test_device):
+def test_t5_forge_pipeline(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="forge_pipe")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Too slow for post-commit ci
 
     import os
@@ -759,13 +761,15 @@ def test_t5_forge_pipeline(variant, test_device):
     print(answer)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Redundant")
-def test_t5_small_tiny_tile(test_device):
-    if test_device.arch == BackendDevice.Grayskull:
-        pytest.skip(
-            "Grayskull test failing with TM ERROR (producer = matmul_49, consumer = matmul_53): input using kernel_broadcast but post-TM input canonical form is not periodic"
-        )
+def test_t5_small_tiny_tile(record_forge_property, test_device):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="small_tiny_tile")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     import os
 
@@ -778,10 +782,6 @@ def test_t5_small_tiny_tile(test_device):
     compiler_cfg.amp_level = 1
     compiler_cfg.enable_enumerate_u_kt = False
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-
-    # tenstorrent/forge#1353
-    if test_device.devtype == BackendType.Golden:
-        compiler_cfg.compile_depth = CompileDepth.BACKEND_GOLDEN_VERIFY
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large

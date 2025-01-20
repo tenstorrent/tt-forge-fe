@@ -101,10 +101,16 @@ def clear_forge():
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--generate-unique-op-tests",
+        "--generate-unique-ops-tests",
         action="store_true",
         default=False,
-        help="Generate unique op tests for the given model",
+        help="Generate unique ops tests for the given model",
+    )
+    parser.addoption(
+        "--extract-tvm-unique-ops-config",
+        action="store_true",
+        default=False,
+        help="Extract the tvm unique op configuration for the given model",
     )
     parser.addoption(
         "--silicon-only", action="store_true", default=False, help="run silicon tests only, skip golden/model"
@@ -182,9 +188,11 @@ def initialize_global_compiler_configuration_based_on_pytest_args(pytestconfig):
     """
     compiler_cfg = _get_global_compiler_config()
 
-    compiler_cfg.tvm_generate_unique_op_tests = pytestconfig.getoption("--generate-unique-op-tests")
+    compiler_cfg.tvm_generate_unique_ops_tests = pytestconfig.getoption("--generate-unique-ops-tests")
 
-    if compiler_cfg.tvm_generate_unique_op_tests:
+    compiler_cfg.extract_tvm_unique_ops_config = pytestconfig.getoption("--extract-tvm-unique-ops-config")
+
+    if compiler_cfg.tvm_generate_unique_ops_tests or compiler_cfg.extract_tvm_unique_ops_config:
         # For running standalone tests, we need to retain the generated python files
         # together with stored model parameters
         compiler_cfg.retain_tvm_python_files = True
@@ -449,11 +457,11 @@ def pytest_collection_modifyitems(config, items):
 
     marker = config.getoption("-m")  # Get the marker from the -m option
 
-    if marker and marker == "model_analysis":  # If a marker is specified
+    if marker and marker == "not skip_model_analysis":  # If a marker is specified
         print("Automatic Model Analysis Collected tests: ")
         test_count = 0
         for item in items:
-            if marker in item.keywords:
+            if "skip_model_analysis" not in item.keywords:
                 test_file_path = item.location[0]
                 test_name = item.location[2]
                 print(f"{test_file_path}::{test_name}")

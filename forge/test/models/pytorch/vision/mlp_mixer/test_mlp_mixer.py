@@ -1,20 +1,20 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
-from PIL import Image
 import requests
-from loguru import logger
-
-import torch
 import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from test.utils import download_model
 
 import forge
+from forge.verify.verify import verify
 
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 varaints = [
     "mixer_b16_224",
@@ -31,17 +31,17 @@ varaints = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
-def test_mlp_mixer_timm_pytorch(variant, test_device):
+def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mlp_mixer", variant=variant, source=Source.TIMM)
 
-    model = download_model(timm.create_model, variant, pretrained=True)
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)
     transform = create_transform(**config)
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     try:
         url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -52,5 +52,11 @@ def test_mlp_mixer_timm_pytorch(variant, test_device):
         )
         image = torch.rand(1, 3, 256, 256)
     pixel_values = transform(image).unsqueeze(0)
+
     inputs = [pixel_values]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_" + variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

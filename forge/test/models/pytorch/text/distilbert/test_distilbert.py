@@ -2,33 +2,41 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
-import forge
 from transformers import (
     DistilBertForMaskedLM,
-    DistilBertTokenizer,
     DistilBertForQuestionAnswering,
-    DistilBertForTokenClassification,
     DistilBertForSequenceClassification,
+    DistilBertForTokenClassification,
+    DistilBertTokenizer,
 )
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_distilbert_masked_lm_pytorch(variant, test_device):
+def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
     # distilbert-base-multilingual-cased
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
-    model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    framework_model = download_model(DistilBertForMaskedLM.from_pretrained, variant)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -43,19 +51,26 @@ def test_distilbert_masked_lm_pytorch(variant, test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_masked_lm")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_distilbert_question_answering_pytorch(test_device):
-    # Load Bert tokenizer and model from HuggingFace
-    model_ckpt = "distilbert-base-cased-distilled-squad"
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DistilBertForQuestionAnswering.from_pretrained, model_ckpt)
+@pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
+def test_distilbert_question_answering_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA)
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    # Load Bert tokenizer and model from HuggingFace
+    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
+    framework_model = download_model(DistilBertForQuestionAnswering.from_pretrained, variant)
 
     # Load data sample from SQuADv1.1
     context = """Super Bowl 50 was an American football game to determine the champion of the National Football League
@@ -80,20 +95,28 @@ def test_distilbert_question_answering_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_question_answering")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_distilbert_sequence_classification_pytorch(test_device):
+@pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
+def test_distilbert_sequence_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
-    model_ckpt = "distilbert-base-uncased-finetuned-sst-2-english"
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DistilBertForSequenceClassification.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
+    framework_model = download_model(DistilBertForSequenceClassification.from_pretrained, variant)
 
     # Load data sample
     review = "the movie was great!"
@@ -108,19 +131,28 @@ def test_distilbert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_sequence_classification")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_distilbert_token_classification_pytorch(test_device):
-    # Load DistilBERT tokenizer and model from HuggingFace
-    model_ckpt = "Davlan/distilbert-base-multilingual-cased-ner-hrl"
-    tokenizer = download_model(DistilBertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(DistilBertForTokenClassification.from_pretrained, model_ckpt)
+@pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
+def test_distilbert_token_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.TOKEN_CLASSIFICATION
+    )
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    # Load DistilBERT tokenizer and model from HuggingFace
+    tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
+    framework_model = download_model(DistilBertForTokenClassification.from_pretrained, variant)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -135,4 +167,9 @@ def test_distilbert_token_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_distilbert_token_classification")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

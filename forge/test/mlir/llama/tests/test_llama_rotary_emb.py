@@ -32,9 +32,6 @@ def test_llama_rotary_emb(model_path):
             query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin)
             return query_states, key_states
 
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
-
     # Load Llama Model
     llama_model, _ = load_model(model_path)
 

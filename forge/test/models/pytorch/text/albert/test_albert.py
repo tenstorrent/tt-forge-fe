@@ -2,29 +2,40 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
+from transformers import (
+    AlbertForMaskedLM,
+    AlbertForTokenClassification,
+    AlbertTokenizer,
+)
+
 import forge
-from transformers import AlbertForMaskedLM, AlbertTokenizer, AlbertForTokenClassification
-from forge.verify.compare import compare_with_golden
-import torch
+from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
 variants = ["v1", "v2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
-def test_albert_masked_lm_pytorch(size, variant, test_device):
+def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.MASKED_LM
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     model_ckpt = f"albert-{size}-{variant}"
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, model_ckpt)
-    model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt)
-
-    compiler_cfg = forge.config._get_global_compiler_config()
+    framework_model = download_model(AlbertForMaskedLM.from_pretrained, model_ckpt, return_dict=False)
 
     # Load data sample
     sample_text = "The capital of France is [MASK]."
@@ -37,19 +48,13 @@ def test_albert_masked_lm_pytorch(size, variant, test_device):
         truncation=True,
         return_tensors="pt",
     )
-    model(**input_tokens)
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    varaint_name = model_ckpt.replace("-", "_")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_masked_lm")
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
-
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
 
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
@@ -57,13 +62,16 @@ variants = ["v1", "v2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-@pytest.mark.xfail(reason="TT_FATAL(weights.get_dtype() == DataType::BFLOAT16) in embedding op")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
-def test_albert_token_classification_pytorch(size, variant, test_device):
+def test_albert_token_classification_pytorch(record_forge_property, size, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.TOKEN_CLASSIFICATION
+    )
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
@@ -73,7 +81,7 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
 
     # Load ALBERT tokenizer and model from HuggingFace
     tokenizer = AlbertTokenizer.from_pretrained(model_ckpt)
-    model = AlbertForTokenClassification.from_pretrained(model_ckpt)
+    framework_model = AlbertForTokenClassification.from_pretrained(model_ckpt, return_dict=False)
 
     # Load data sample
     sample_text = "HuggingFace is a company based in Paris and New York"
@@ -86,16 +94,11 @@ def test_albert_token_classification_pytorch(size, variant, test_device):
         truncation=True,
         return_tensors="pt",
     )
-    model(**input_tokens)
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
-    varaint_name = model_ckpt.replace("-", "_")
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{varaint_name}_token_cls")
 
-    co_out = compiled_model(*inputs)
-    fw_out = model(*inputs)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))

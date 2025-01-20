@@ -1,14 +1,15 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import torch
-from PIL import Image
-from torchvision import transforms
-import timm
 import urllib
+
+import timm
+import torch
+from loguru import logger
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from loguru import logger
+from torchvision import transforms
 
 
 def get_image():

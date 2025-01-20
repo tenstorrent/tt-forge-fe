@@ -19,6 +19,35 @@ def record_test_timestamp(record_property):
     record_property("end_timestamp", end_timestamp)
 
 
+@pytest.fixture(scope="function", autouse=True)
+def record_forge_property(record_property):
+    """
+    A pytest fixture that automatically records a property named 'frontend' with the value 'tt-forge-fe'
+    for each test function. This fixture is applied to all test functions due to `autouse=True`.
+
+    Parameters:
+    ----------
+    record_property : function
+        A pytest built-in function used to record test metadata, such as custom properties or
+        additional information about the test execution.
+
+    Yields:
+    -------
+    function
+        The `record_property` function, allowing tests to add additional properties if needed.
+
+    Usage:
+    ------
+    def test_model(record_forge_property):
+        # Record Forge Property
+        record_forge_property("key", value)
+    """
+    # Record default properties for forge
+    record_property("frontend", "tt-forge-fe")
+
+    yield record_property
+
+
 @pytest.fixture(autouse=True)
 def memory_usage_tracker():
     """

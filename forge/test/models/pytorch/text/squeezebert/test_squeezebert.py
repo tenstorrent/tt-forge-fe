@@ -1,21 +1,30 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from test.utils import download_model
-import forge
 import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
+
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_squeezebert_sequence_classification_pytorch(test_device):
-    # Load Bart tokenizer and model from HuggingFace
-    tokenizer = download_model(AutoTokenizer.from_pretrained, "squeezebert/squeezebert-mnli")
-    model = download_model(AutoModelForSequenceClassification.from_pretrained, "squeezebert/squeezebert-mnli")
+@pytest.mark.parametrize("variant", ["squeezebert/squeezebert-mnli"])
+def test_squeezebert_sequence_classification_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="squeezebert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    # Load Bart tokenizer and model from HuggingFace
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
 
     # Example from multi-nli validation set
     text = """Hello, my dog is cute"""
@@ -30,4 +39,9 @@ def test_squeezebert_sequence_classification_pytorch(test_device):
     )
 
     inputs = [input_tokens]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_squeezebert")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

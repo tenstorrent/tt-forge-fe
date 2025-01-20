@@ -1,22 +1,22 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import pytest
-import forge
 import urllib
-from test.utils import download_model
-from PIL import Image
+
+import pytest
 import timm
+from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-import os
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
-def generate_model_xception_imgcls_timm(test_device, variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_xception_imgcls_timm(variant):
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -39,12 +39,18 @@ variants = ["xception", "xception41", "xception65", "xception71"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_xception_timm(variant, test_device):
+def test_xception_timm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="xception", variant=variant, source=Source.TIMM)
 
-    (model, inputs,) = generate_model_xception_imgcls_timm(
-        test_device,
-        variant,
-    )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

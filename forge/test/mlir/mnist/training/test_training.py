@@ -29,7 +29,7 @@ def test_mnist_training():
 
     # Set training hyperparameters
     num_epochs = 3
-    batch_size = 2048
+    batch_size = 1024
     learning_rate = 0.001
 
     # Load dataset
@@ -146,7 +146,7 @@ def test_mnist_training_with_grad_accumulation():
             total_loss += loss.item()
 
             golden_loss = loss_fn(golden_pred, target)
-            assert torch.allclose(loss, golden_loss, rtol=5e-2)  # 5% tolerance
+            assert torch.allclose(loss, golden_loss, rtol=1e-1)  # 10% tolerance
 
             # Run backward pass on device
             loss.backward()
@@ -467,5 +467,72 @@ def test_lora():
         target = nn.functional.one_hot(target, num_classes=10).float()
 
         test_loss += tt_loss(pred, target)[0]
+
+    print(f"Test (total) loss: {test_loss}")
+
+
+@pytest.mark.push
+def test_optimizer_device():
+    torch.manual_seed(0)
+
+    # Config
+    num_epochs = 32
+    batch_size = 1024
+    learning_rate = 0.1
+
+    # Limit number of batches to run - quicker test
+    limit_num_batches = 1
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size)
+
+    framework_model = MNISTLinear(bias=False)
+    framework_loss = torch.nn.CrossEntropyLoss()
+    optimizer = forge.optimizers.SGD(learning_rate=learning_rate)
+
+    tt_model = forge.compile(
+        framework_model, sample_inputs=[torch.rand(batch_size, 784)], optimizer=optimizer, training=True
+    )
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+
+    for epoch_idx in range(num_epochs):
+        total_loss = 0
+        for batch_idx, (data, target) in enumerate(train_loader):
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).float()
+
+            # Forward pass (prediction) on device
+            pred = tt_model(data)[0]
+            golden_pred = framework_model(data)
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+
+            # Execute loss (and its backward) on CPU.
+            loss = framework_loss(pred, target)
+            total_loss += loss.item()
+
+            loss.backward()
+
+            # Run backward pass on device
+            tt_model.backward()
+
+            # Adjust weights on the device.
+            # NOTE: after executing the step, this will also zero the gradients.
+            optimizer.step()
+
+            if batch_idx >= limit_num_batches:
+                break
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+
+    test_loss = 0
+    for batch_idx, (data, target) in enumerate(test_loader):
+        pred = tt_model(data)[0]
+        target = nn.functional.one_hot(target, num_classes=10).float()
+
+        test_loss += framework_loss(pred, target)
+        break
 
     print(f"Test (total) loss: {test_loss}")

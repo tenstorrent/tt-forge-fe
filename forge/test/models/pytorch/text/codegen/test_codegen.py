@@ -3,29 +3,31 @@
 # SPDX-License-Identifier: Apache-2.0
 # CodeGen Demo - CasualLM
 
-import torch
 import pytest
-from test.utils import download_model
+import torch
 from transformers import AutoTokenizer, CodeGenForCausalLM
 
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = [
     "Salesforce/codegen-350M-mono",
     # "Salesforce/codegen-350M-multi", # Currently not supported
     # "Salesforce/codegen-350M-nl", # Currently not supported
 ]
-import torch
-from forge.verify.compare import compare_with_golden
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-@pytest.mark.xfail(reason="RuntimeError: Tensor 41 - data type mismatch: expected Float32, got BFloat16")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_codegen(test_device, variant):
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
+def test_codegen(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -60,17 +62,11 @@ def test_codegen(test_device, variant):
     # Sanity run
     input_ids = input_ids.to(torch.int32)
     attn_mask = attn_mask.to(torch.float32)
-    out = framework_model(input_ids, attn_mask)
 
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
 
-    co_out = compiled_model(*inputs)
-    fw_out = framework_model(*inputs)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
-
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

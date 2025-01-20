@@ -2,18 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from test.utils import download_model
 import torch
-import forge
-import torch
-from forge.transformers.pipeline import pipeline as forge_pipeline
 from transformers import (
     AutoTokenizer,
-    GPTNeoForCausalLM,
     GPTNeoConfig,
+    GPTNeoForCausalLM,
     GPTNeoForSequenceClassification,
 )
 
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
+from test.utils import download_model
 
 variants = [
     "EleutherAI/gpt-neo-125M",
@@ -23,15 +24,16 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gptneo_causal_lm(variant, test_device):
+def test_gptneo_causal_lm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.CAUSAL_LM)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Set random seed for repeatability
     torch.manual_seed(42)
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     # Load tokenizer and model
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,
@@ -61,12 +63,15 @@ def test_gptneo_causal_lm(variant, test_device):
         def forward(self, input_ids, attention_mask):
             return self.model(input_ids, None, attention_mask)
 
+    framework_model = Wrapper(model)
+
     inputs = [inputs["input_ids"], inputs["attention_mask"]]
-    compiled_model = forge.compile(
-        Wrapper(model),
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_causal_lm",
-    )
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = [
@@ -78,14 +83,18 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gptneo_sequence_classification(variant, test_device):
+def test_gptneo_sequence_classification(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     # Load tokenizer and model from HuggingFace
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,
     # EleutherAI/gpt-neo-2.7B
-
-    # Configurations
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
@@ -111,10 +120,12 @@ def test_gptneo_sequence_classification(variant, test_device):
         def forward(self, input_ids, attention_mask):
             return self.model(input_ids, None, attention_mask)
 
+    framework_model = Wrapper(model)
+
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
-    compiled_model = forge.compile(
-        Wrapper(model),
-        sample_inputs=inputs,
-        module_name="pt_" + str(variant.split("/")[-1].replace("-", "_").replace(".", "_")) + "_seq_cls",
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

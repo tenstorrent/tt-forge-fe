@@ -1,25 +1,21 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import os
 import pytest
-
-import torch
-
-import forge
-from test.utils import download_model
-from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
-
 import requests
+import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
-from forge.verify.compare import compare_with_golden
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
-def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-
+def generate_model_mobilenetV1_base_custom_pytorch():
     # Create Forge module from PyTorch model
     model = MobileNetV1(9)
 
@@ -30,29 +26,23 @@ def generate_model_mobilenetV1_base_custom_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-@pytest.mark.xfail(reason="RuntimeError: Invalid arguments to reshape")
-def test_mobilenetv1_basic(test_device):
-    model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch(
-        test_device,
-        None,
-    )
+def test_mobilenetv1_basic(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v1", variant="basic")
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_basic")
-    co_out = compiled_model(*inputs)
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = model(*inputs)
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    framework_model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
 
-    assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
-def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
@@ -69,20 +59,26 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_mobilenetv1_192(test_device):
-    model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v1_0.75_192",
+@pytest.mark.parametrize("variant", ["google/mobilenet_v1_0.75_192"])
+def test_mobilenetv1_192(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_192")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
-def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
     # Create Forge module from PyTorch model
     preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
     model = download_model(AutoModelForImageClassification.from_pretrained, variant)
@@ -98,10 +94,20 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(test_device, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_mobilenetv1_224(test_device):
-    model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(
-        test_device,
-        "google/mobilenet_v1_1.0_224",
+@pytest.mark.parametrize("variant", ["google/mobilenet_v1_1.0_224"])
+def test_mobilenetv1_224(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_mobilenet_v1_224")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

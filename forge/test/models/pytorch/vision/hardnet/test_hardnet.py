@@ -1,39 +1,39 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
-import torch
-import pytest
 import urllib
+
+import pytest
+import torch
 from PIL import Image
 from torchvision import transforms
-import os
-from forge.verify.compare import compare_with_golden
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, build_module_name
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
     pytest.param("hardnet85", id="hardnet85"),
-    pytest.param(
-        "hardnet68ds", id="hardnet68ds", marks=pytest.mark.xfail(reason="Runtime error: Invalid arguments to reshape")
-    ),
-    pytest.param(
-        "hardnet39ds", id="hardnet39ds", marks=pytest.mark.xfail(reason="Runtime error: Invalid arguments to reshape")
-    ),
+    pytest.param("hardnet68ds", id="hardnet68ds"),
+    pytest.param("hardnet39ds", id="hardnet39ds"),
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
-def test_hardnet_pytorch(test_device, variant):
+def test_hardnet_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="hardnet", variant=variant)
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    if variant in ["hardnet68", "hardnet39"]:
-        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     # load only the model architecture without pre-trained weights.
-    model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
+    framework_model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 
     # load the weights downloaded from https://github.com/PingoLH/Pytorch-HarDNet
     checkpoint_path = f"hardnet/weights/{variant}.pth"
@@ -42,8 +42,8 @@ def test_hardnet_pytorch(test_device, variant):
     state_dict = torch.load(checkpoint_path, map_location=torch.device("cpu"))
 
     # Inject weights into model
-    model.load_state_dict(state_dict)
-    model.eval()
+    framework_model.load_state_dict(state_dict)
+    framework_model.eval()
 
     # STEP 2: Prepare input
     url, filename = (
@@ -68,13 +68,11 @@ def test_hardnet_pytorch(test_device, variant):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
-    compiled_model = forge.compile(model, sample_inputs=[input_batch], module_name=f"pt_{variant}")
-    if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        co_out = compiled_model(input_batch)
 
-        fw_out = model(input_batch)
+    inputs = [input_batch]
 
-        co_out = [co.to("cpu") for co in co_out]
-        fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-        assert all([compare_with_golden(golden=fo, calculated=co, pcc=0.99) for fo, co in zip(fw_out, co_out)])
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

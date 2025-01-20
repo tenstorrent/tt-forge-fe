@@ -11,12 +11,14 @@ from test.mlir.llama.utils.utils import load_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.parametrize(
+    "model_path",
+    [
+        "openlm-research/open_llama_3b",
+        pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail(reason="Unsupported Op: repeat_interleave")),
+    ],
+)
 def test_llama_inference(model_path):
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
-
     # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path)
 
@@ -42,9 +44,6 @@ def test_llama_inference_no_cache_cpu(model_path):
     and tokenizer, prepare an input prompt, and generate a sequence of tokens until a specified
     maximum number of new tokens is reached or an end-of-sequence token is encountered.
     """
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
-
     # Load Llama model and tokenizer
     framework_model, tokenizer = load_model(model_path)
 
@@ -89,9 +88,6 @@ def test_llama_inference_cache_cpu(model_path):
     5. Generate tokens iteratively, updating the past key-values and input IDs.
     6. Decode the generated tokens into text and print the result.
     """
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
-
     # Load Llama model and tokenizer
     framework_model, tokenizer = load_model(model_path)
 

@@ -2,37 +2,117 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # STEP 0: import Forge library
-import forge
 import pytest
-import os
-from transformers import ViTImageProcessor
 import timm
+from transformers import (
+    Swinv2ForImageClassification,
+    Swinv2ForMaskedImageModeling,
+    Swinv2Model,
+    ViTImageProcessor,
+)
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.pytorch.vision.swin.utils.image_utils import load_image
+from test.models.utils import Framework, Task, build_module_name
 from test.utils import download_model
-from PIL import Image
-import requests
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_swin_v1_tiny_4_224_hf_pytorch(test_device):
-    # pytest.skip() # Working on it
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+@pytest.mark.parametrize("variant", ["microsoft/swin-tiny-patch4-window7-224"])
+def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant)
 
-    # STEP 2: Create Forge module from PyTorch model
-    feature_extractor = ViTImageProcessor.from_pretrained("microsoft/swin-tiny-patch4-window7-224")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    # STEP 1: Create Forge module from PyTorch model
+    feature_extractor = ViTImageProcessor.from_pretrained(variant)
     # model = SwinForImageClassification.from_pretrained("microsoft/swin-tiny-patch4-window7-224", torchscript=True)
-    model = download_model(timm.create_model, "swin_tiny_patch4_window7_224", pretrained=True)
-    model.eval()
+    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    framework_model.eval()
 
-    # STEP 3: Prepare input samples
+    # STEP 2: Prepare input samples
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
+    inputs = load_image(url, feature_extractor)
 
-    # STEP 4: Run inference on Tenstorrent device
-    img_tensor = feature_extractor(images=image, return_tensors="pt").pixel_values
-    print(img_tensor.shape)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    inputs = [img_tensor]
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_swin_tiny_patch4_window7_224")
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
+def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="swin", variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    feature_extractor = ViTImageProcessor.from_pretrained(variant)
+    framework_model = Swinv2Model.from_pretrained(variant)
+
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    inputs = load_image(url, feature_extractor)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
+def test_swin_v2_tiny_image_classification(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.IMAGE_CLASSIFICATION
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    feature_extractor = ViTImageProcessor.from_pretrained(variant)
+    framework_model = Swinv2ForImageClassification.from_pretrained(variant)
+
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    inputs = load_image(url, feature_extractor)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.skip_model_analysis
+@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
+def test_swin_v2_tiny_masked(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="swin", variant=variant, task=Task.MASKED_IMAGE_MODELLING
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    feature_extractor = ViTImageProcessor.from_pretrained(variant)
+    framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
+
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    inputs = load_image(url, feature_extractor)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

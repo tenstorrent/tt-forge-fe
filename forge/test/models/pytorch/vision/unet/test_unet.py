@@ -1,27 +1,34 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import urllib
-from test.utils import download_model
-import torch
-from torchvision import transforms
-from torchvision.transforms import Compose, ConvertImageDtype, Normalize, PILToTensor, Resize, CenterCrop
-from loguru import logger
-import os
-from PIL import Image
+
 import numpy as np
 import pytest
-from pytorchcv.model_provider import get_model as ptcv_get_model
 import segmentation_models_pytorch as smp
+import torch
+from loguru import logger
+from PIL import Image
+from pytorchcv.model_provider import get_model as ptcv_get_model
+from torchvision import transforms
+from torchvision.transforms import (
+    CenterCrop,
+    Compose,
+    ConvertImageDtype,
+    Normalize,
+    PILToTensor,
+    Resize,
+)
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
 def generate_model_unet_imgseg_osmr_pytorch(variant):
     # Also, golden test segfaults when pushing params to golden: tenstorrent/forge#637
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
     model = download_model(ptcv_get_model, variant, pretrained=False)
 
@@ -31,12 +38,20 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_unet_osmr_cityscape_pytorch(test_device):
-    model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch(
-        "unet_cityscapes",
-    )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_cityscapes_osmr")
+def test_unet_osmr_cityscape_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def get_imagenet_sample():
@@ -66,26 +81,31 @@ def get_imagenet_sample():
     return img_tensor
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Model script not found")
 @pytest.mark.nightly
-def test_unet_holocron_pytorch(test_device):
+def test_unet_holocron_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="holocron")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     from holocron.models.segmentation.unet import unet_tvvgg11
 
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.INIT_COMPILE
-
-    model = download_model(unet_tvvgg11, pretrained=True).eval()
+    framework_model = download_model(unet_tvvgg11, pretrained=True).eval()
 
     img_tensor = get_imagenet_sample()
-    compiled_model = forge.compile(model, sample_inputs=[img_tensor], module_name="pt_unet_holocron")
+    inputs = [img_tensor]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_unet_imgseg_smp_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     # encoder_name = "vgg19"
     encoder_name = "resnet101"
     # encoder_name = "vgg19_bn"
@@ -113,19 +133,23 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_unet_qubvel_pytorch(test_device):
-    model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(
-        None,
-    )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_qubvel_pt")
+def test_unet_qubvel_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="qubvel")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
     model = download_model(
         torch.hub.load,
         "mateuszbuda/brain-segmentation-pytorch",
@@ -161,9 +185,19 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-def test_unet_torchhub_pytorch(test_device):
-    model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
+def test_unet_torchhub_pytorch(record_forge_property):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="unet")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name="pt_unet_torchhub")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

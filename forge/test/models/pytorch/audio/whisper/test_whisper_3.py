@@ -9,8 +9,16 @@
 
 import pytest
 import torch
-from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
+from transformers import (
+    WhisperConfig,
+    WhisperForConditionalGeneration,
+    WhisperProcessor,
+)
+
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Task, build_module_name
 
 
 class Wrapper(torch.nn.Module):
@@ -30,32 +38,35 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
-@pytest.mark.xfail(
-    reason='RuntimeError: TT_ASSERT @ /tt-forge-fe/forge/csrc/passes/commute_utils.cpp:1103: reshape->op_name() == "reshape"'
-)
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
-def test_whisper_large_v3_speech_translation(variant):
+def test_whisper_large_v3_speech_translation(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="whisper", variant=variant, task=Task.SPEECH_TRANSLATE
+    )
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
     processor = WhisperProcessor.from_pretrained(variant)
     framework_model = WhisperForConditionalGeneration.from_pretrained(variant)
     model_config = WhisperConfig.from_pretrained(variant)
-    model = Wrapper(framework_model)
+    framework_model = Wrapper(framework_model)
 
     sample = torch.load("forge/test/models/files/samples/audio/1272-128104-0000.pt")
     sample_audio = sample["audio"]["array"]
-    inputs = processor(sample_audio, return_tensors="pt", sampling_rate=16000)
-    input_features = inputs.input_features
+    processed_inputs = processor(sample_audio, return_tensors="pt", sampling_rate=16000)
+    input_features = processed_inputs.input_features
 
     # Get decoder inputs
     decoder_input_ids = torch.tensor([[1, 1]]) * model_config.decoder_start_token_id
     decoder_input_ids = decoder_input_ids.to(torch.int32)
-    encoder_outputs = model.model.model.encoder(input_features)[0].detach()
+    encoder_outputs = framework_model.model.model.encoder(input_features)[0].detach()
     encoder_outputs = encoder_outputs.to(torch.float32)
-    data_input = [decoder_input_ids, encoder_outputs]
+    inputs = [decoder_input_ids, encoder_outputs]
 
-    # Compiler test
-    compiled_model = forge.compile(
-        model, sample_inputs=data_input, module_name="pt_" + str(variant.split("/")[-1].replace("-", "_"))
-    )
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    verify(data_input, model, compiled_model, VerifyConfig(verify_allclose=False))
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

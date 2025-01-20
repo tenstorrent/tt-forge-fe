@@ -3,30 +3,36 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import time
+
 import pytest
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
+
 import forge
 from forge.transformers.pipeline import NLPPipelineWrapper
-from test.models.pytorch.text.mistral.utils.model_utils import (
-    BaseModelWrapper,
-    multinomial_sample_one_no_sync,
-    logits_to_probs,
-)
+from forge.verify.verify import verify
 
+from test.models.pytorch.text.mistral.utils.model_utils import BaseModelWrapper
+from test.models.utils import Framework, build_module_name
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Tested as part of full model test run")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
-def test_mistral_decoder_layer(variant, test_device):
+def test_mistral_decoder_layer(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decoder")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto")
     model.eval()
-    module = model.model.layers[0]
-    compiler_cfg = forge.config._get_global_compiler_config()
+
+    framework_model = model.model.layers[0]
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a problem with valid node placement can occur
@@ -35,31 +41,38 @@ def test_mistral_decoder_layer(variant, test_device):
     seqlen = 128
 
     sample_inputs = torch.randn(batch_size, seqlen, hidden_dim)
+
     inputs = [sample_inputs]
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral_decoder")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral(variant, test_device):
+def test_mistral(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant)
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     configuration = MistralConfig()
-
     configuration.sliding_window = None
     configuration.use_cache = False
     configuration.return_dict = False
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
 
-    module = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
+    framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
-    module.eval()
-    for param in module.parameters():
+    framework_model.eval()
+    for param in framework_model.parameters():
         param.requires_grad = False
 
     # test should work for batch size 1 and seqlen <= 128
@@ -68,23 +81,35 @@ def test_mistral(variant, test_device):
     sample_inputs = tokenizer(prompt, return_tensors="pt")["input_ids"]
     inputs = [sample_inputs]
 
-    compiled_model = forge.compile(module, sample_inputs=inputs, module_name="pt_mistral")
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        framework_model,
+        inputs,
+        module_name,
+    )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
-def test_mistral_decode(variant, test_device):
+def test_mistral_decode(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decode")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     configuration = MistralConfig()
     configuration.sliding_window = None
     configuration.use_cache = False
     configuration.return_dict = False
-
-    compiler_cfg = forge.config._get_global_compiler_config()
 
     pytorch_model = AutoModelForCausalLM.from_pretrained(variant, device_map="auto", config=configuration)
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -140,12 +165,16 @@ def test_mistral_decode(variant, test_device):
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.nightly
 @pytest.mark.skip(reason="under development")
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral_kv_cache(variant, test_device):
-    if test_device.arch != BackendDevice.Wormhole_B0:
-        pytest.skip("Currently only supported on Wormhole B0 N150 device")
+def test_mistral_kv_cache(record_forge_property, variant, test_device):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="kv_cache")
+
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -153,7 +182,6 @@ def test_mistral_kv_cache(variant, test_device):
     configuration.return_dict = False
 
     max_new_tokens = 10
-    forge.set_configuration_options(default_df_override=forge.DataFormat.Float16_b, balancer_policy="Ribbon")
 
     # configuration for all ops that are not matmul
     forge.config.configure_mixed_precision(

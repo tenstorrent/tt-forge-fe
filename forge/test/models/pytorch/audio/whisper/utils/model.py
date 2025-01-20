@@ -7,16 +7,17 @@ import torch
 from transformers import (
     AutoProcessor,
     WhisperConfig,
-    WhisperTokenizer,
     WhisperFeatureExtractor,
     WhisperForConditionalGeneration,
+    WhisperTokenizer,
 )
 from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 import forge
-from test.utils import download_model
-from forge.forgeglobal import TILE_DIM
 from forge.config import _get_global_compiler_config
+from forge.forgeglobal import TILE_DIM
+
+from test.utils import download_model
 
 
 class Whisper_encoder(torch.nn.Module):
@@ -69,7 +70,7 @@ class Whisper_decoder(torch.nn.Module):
         return lm_logits, *presents
 
 
-def generate_model_whisper_decoder_past_cache(test_device, variant):
+def generate_model_whisper_decoder_past_cache(variant):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
     compiler_cfg.input_queues_on_host = True
@@ -77,21 +78,6 @@ def generate_model_whisper_decoder_past_cache(test_device, variant):
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        compiler_cfg.amp_level = 1
-        os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-        os.environ["TT_BACKEND_MULTI_THREADED_PUSH"] = "1"
-        os.environ["TT_BACKEND_DRAM_POLLING_FREQUENCY"] = "64"
-
-        os.environ["FORGE_NOP_ON_DIRECT_SHORT_PATH"] = "1"
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "23000"
-        os.environ["FORGE_SKIP_SMALL_UKT"] = "1"
-    elif test_device.arch == BackendDevice.Grayskull:
-        compiler_cfg.enable_auto_fusing = False
-        os.environ["FORGE_NLP_MANUAL_TARGET"] = "2000000"
-        if variant in ["openai/whisper-base", "openai/whisper-medium", "openai/whisper-large"]:
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = "65536"
 
     # forge.set_configuration_options(performance_trace=forge.PerfTraceLevel.VERBOSE)
     processor = download_model(AutoProcessor.from_pretrained, variant)
@@ -149,7 +135,7 @@ def generate_model_whisper_decoder_past_cache(test_device, variant):
 
 
 # check the name later # enc-dec
-def generate_model_whisper_enc_dec(test_device, variant):
+def generate_model_whisper_enc_dec(variant):
     compiler_cfg = _get_global_compiler_config()
     compiler_cfg.amp_level = 1
     compiler_cfg.enable_tvm_cpu_fallback = False  # Run full model on silicon
@@ -158,12 +144,6 @@ def generate_model_whisper_enc_dec(test_device, variant):
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
 
     os.environ["FORGE_FORCE_SEQUENTIAL"] = "1"
-    os.environ["FORGE_PAD_OUTPUT_BUFFER"] = "1"
-    os.environ["FORGE_PAD_OUTPUT_BUFFER_THRESHOLD_TILES"] = "1536"
-
-    if variant == "openai/whisper-base":
-        os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "None"
-        compiler_cfg.enable_auto_fusing = False
 
     run_encoder_on_tt = ("tiny" in variant) or ("base" in variant) or ("small" in variant)
 

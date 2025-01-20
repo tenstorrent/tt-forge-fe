@@ -10,12 +10,15 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.parametrize(
+    "model_path",
+    [
+        "openlm-research/open_llama_3b",
+        pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail(reason="Unsupported Op: repeat_interleave")),
+    ],
+)
 @pytest.mark.push
 def test_llama_self_attn(model_path):
-    if model_path == "meta-llama/Llama-3.2-1B":
-        pytest.skip("Skipping test for Llama-3.2-1B model, waiting for new transformers version.")
-
     # Define wrapper function
     class SelfAttention(torch.nn.Module):
         def __init__(self, model):

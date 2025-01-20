@@ -1,25 +1,24 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import urllib
+
 import pytest
-import forge
-from test.utils import download_model
 import timm
 import torch
 from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torchvision import transforms
-import urllib
-import os
+
+import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, build_module_name
+from test.utils import download_model
 
 
-def generate_model_wideresnet_imgcls_pytorch(test_device, variant):
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_wideresnet_imgcls_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
     framework_model.eval()
@@ -46,23 +45,24 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_wideresnet_pytorch(variant, test_device):
-    (model, inputs,) = generate_model_wideresnet_imgcls_pytorch(
-        test_device,
-        variant,
-    )
+def test_wideresnet_pytorch(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(framework=Framework.PYTORCH, model="wideresnet", variant=variant)
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_hub")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
 
 
-def generate_model_wideresnet_imgcls_timm(test_device, variant):
-
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
-
+def generate_model_wideresnet_imgcls_timm(variant):
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     framework_model.eval()
@@ -83,12 +83,20 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_wideresnet_timm(variant, test_device):
-    (model, inputs,) = generate_model_wideresnet_imgcls_timm(
-        test_device,
-        variant,
+def test_wideresnet_timm(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="wideresnet", source=Source.TIMM, variant=variant
     )
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, module_name=f"pt_{variant}_timm")
+    # Record Forge Property
+    record_forge_property("module_name", module_name)
+
+    (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
