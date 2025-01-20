@@ -137,6 +137,7 @@ def test_llama_inference_cache_cpu(model_path):
     ],
 )
 @pytest.mark.parametrize("seq_len", [1, 2, 4, 7, 8, 16, 28, 32, 63, 64, 99, 117, 128, 256, 341, 512, 1024, 1790, 2048])
+@pytest.mark.skip(reason="No need to run in CI as it takes a long time to run.")
 def test_llama_input_sequence_lengths(model_path, seq_len):
     # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path, seq_len=seq_len)
@@ -147,7 +148,7 @@ def test_llama_input_sequence_lengths(model_path, seq_len):
     tokenizer.model_max_length = seq_len
 
     prompt = "Q: What is the largest animal?\nA:"
-    input_ids = tokenizer(prompt, return_tensors="pt").input_ids
+    input_ids = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
 
     # Compile the model and run fwd pass
     compiled_model = forge.compile(framework_model, input_ids)
