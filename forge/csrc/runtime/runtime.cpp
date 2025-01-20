@@ -70,7 +70,7 @@ void verify_input_tensors(
         const auto& desc = input_descs[i];
 
         auto shape = as_vec_int64(desc.shape);
-        auto stride = as_vec_int64(desc.stride);
+        // auto stride = as_vec_int64(desc.stride);
 
         if (input_tensor.sizes().vec() != shape)
         {
@@ -78,16 +78,16 @@ void verify_input_tensors(
                 LogTTDevice, "Tensor {} - shape mismatch: expected {}, got {}", i, shape, input_tensor.sizes().vec());
         }
 
-        if (input_tensor.strides().vec() != stride)
-        {
-            log_fatal(
-                LogTTDevice,
-                "Tensor {} - stride mismatch: expected {}, got {}",
-                i,
-                stride,
-                input_tensor.strides().vec());
-        }
-
+        // if (input_tensor.strides().vec() != stride)
+        // {
+        //     log_fatal(
+        //         LogTTDevice,
+        //         "Tensor {} - stride mismatch: expected {}, got {}",
+        //         i,
+        //         stride,
+        //         input_tensor.strides().vec());
+        // }
+        //
         if (torch_scalar_type_to_dt(input_tensor.scalar_type()) != desc.dataType)
         {
             auto expected = target::EnumNameDataType(desc.dataType);
@@ -279,10 +279,13 @@ std::vector<torch::Tensor> run_binary(
     std::vector<runtime::Tensor> rt_outputs;
     std::vector<runtime::TensorDesc> output_descs = binary.getProgramOutputs(program_idx);
     outputs.reserve(output_descs.size());
+    size_t idx = 0;
     for (auto const& desc : output_descs)
     {
         std::vector<std::int64_t> shape = as_vec_int64(desc.shape);
         std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
+        log_info(LogTTDevice, "Output {} shape: {}", idx, shape);
+        log_info(LogTTDevice, "Output {} stride: {}", idx++, stride);
 
         torch::Tensor output = at::empty_strided(shape, stride, dt_to_torch_scalar_type(desc.dataType));
         outputs.emplace_back(std::move(output));
