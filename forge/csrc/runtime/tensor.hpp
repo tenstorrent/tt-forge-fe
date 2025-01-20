@@ -77,21 +77,6 @@ class TensorPool
    public:
     TensorPool() = default;
 
-    void insert(std::string name, Tensor& tensor)
-    {
-        if (tensor_name_to_idx.find(name) != tensor_name_to_idx.end())
-        {
-            TT_ASSERT(
-                tensor.storage() == tensors[tensor_name_to_idx[name]].storage(),
-                "Different tensor with the same name ({}) already exists",
-                name);
-            return;
-        }
-
-        tensor_name_to_idx[name] = tensors.size();
-        tensors.push_back(tensor);
-    }
-
     void insert(std::string name, torch::Tensor& tensor)
     {
         auto t = Tensor(tensor);
@@ -108,6 +93,21 @@ class TensorPool
    private:
     std::vector<Tensor> tensors;
     std::unordered_map<std::string, size_t> tensor_name_to_idx;
+
+    void insert(std::string name, Tensor& tensor)
+    {
+        if (tensor_name_to_idx.find(name) != tensor_name_to_idx.end())
+        {
+            TT_ASSERT(
+                tensor.storage() == tensors[tensor_name_to_idx[name]].storage(),
+                "Different tensor with the same name ({}) already exists",
+                name);
+            return;
+        }
+
+        tensor_name_to_idx[name] = tensors.size();
+        tensors.push_back(tensor);
+    }
 };
 
 inline target::DataType torch_scalar_type_to_dt(torch::ScalarType st)
