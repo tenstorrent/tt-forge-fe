@@ -127,3 +127,28 @@ def test_llama_inference_cache_cpu(model_path):
     # Generated text
     generated_text = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
     print(generated_text)
+
+
+@pytest.mark.parametrize(
+    "model_path",
+    [
+        "openlm-research/open_llama_3b",
+        pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail(reason="Unsupported Op: repeat_interleave")),
+    ],
+)
+@pytest.mark.parametrize("seq_len", [1, 2, 4, 7, 8, 16, 28, 32, 63, 64, 99, 117, 128, 256, 341, 512, 1024, 1790, 2048])
+def test_llama_input_sequence_lengths(model_path, seq_len):
+    # Load Model and Tokenizer
+    framework_model, tokenizer = load_model(model_path, seq_len=seq_len)
+
+    # Adjust tokenizer for max sequence length padding
+    tokenizer.pad_token = "<pad>"
+    tokenizer.padding_side = "right"
+    tokenizer.model_max_length = seq_len
+
+    prompt = "Q: What is the largest animal?\nA:"
+    input_ids = tokenizer(prompt, return_tensors="pt").input_ids
+
+    # Compile the model and run fwd pass
+    compiled_model = forge.compile(framework_model, input_ids)
+    logits = compiled_model(input_ids)
