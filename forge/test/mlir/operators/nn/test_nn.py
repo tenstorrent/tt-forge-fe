@@ -86,9 +86,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 64, 55, 54),
@@ -96,9 +94,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 128, 26, 26),
@@ -106,9 +102,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 256, 26, 26),
@@ -116,9 +110,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 96, 54, 54),
@@ -126,7 +118,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
         ),
         pytest.param(
             (1, 64, 55, 54),
@@ -134,9 +125,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
-            ),
         ),
         pytest.param(
             (1, 128, 26, 26),
@@ -144,7 +132,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
         ),
         pytest.param(
             (1, 256, 26, 26),
@@ -152,7 +139,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
         ),
         pytest.param(
             (1, 3, 32, 32),
@@ -161,7 +147,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             (1, 1, 1, 1),
             False,
             marks=pytest.mark.xfail(
-                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
             ),
         ),
         pytest.param(
@@ -171,7 +157,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             (1, 1, 2, 2),
             False,
             marks=pytest.mark.xfail(
-                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
             ),
         ),
     ],
