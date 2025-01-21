@@ -29,6 +29,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
+from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
 
 
@@ -59,6 +60,16 @@ class TestParamsData:
         """Provide a list of test ids to run for test_single method"""
         test_id_single = os.getenv("TEST_ID", None)
         return [test_id_single] if test_id_single else []
+
+    @classmethod
+    def get_ids_from_file(cls) -> list[str]:
+        """Provide a list of test ids from a file to run for test_ids method"""
+        id_file = os.getenv("ID_FILE", None)
+        if id_file is not None:
+            test_ids = TestPlanUtils.load_test_ids_from_file(id_file)
+        else:
+            test_ids = []
+        return test_ids
 
     @classmethod
     def build_filtered_collection(cls) -> TestCollection:
@@ -365,6 +376,13 @@ def test_single(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
+@pytest.mark.parametrize(
+    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_ids_from_file()).to_params()
+)
+def test_ids(test_vector: TestVector, test_device):
+    test_vector.verify(test_device)
+
+
 @pytest.mark.nightly_sweeps
 @pytest.mark.parametrize(
     "test_vector", TestSuiteData.filtered.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params()
@@ -449,6 +467,7 @@ class InfoUtils:
             {"name": "SAMPLE", "description": "Percentage of results to sample"},
             {"name": "RANGE", "description": "Limit number of results"},
             {"name": "TEST_ID", "description": "Id of a test containing test parameters"},
+            {"name": "ID_FILE", "description": "Path to a file containing test ids"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Supported values"])
@@ -476,6 +495,7 @@ class InfoUtils:
             {"name": "SAMPLE", "description": "export SAMPLE=20"},
             {"name": "RANGE", "description": "export RANGE=10,20"},
             {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
+            {"name": "ID_FILE", "description": "export ID_FILE='/path/to/test_ids.log'"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])
