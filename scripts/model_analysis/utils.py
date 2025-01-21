@@ -5,8 +5,9 @@ import os
 from loguru import logger
 import subprocess
 from enum import IntEnum
-from typing import Union, Dict, List, Tuple
+from typing import Union, Dict, List, Tuple, Optional, Callable
 import shutil
+from git import Repo
 
 import torch
 
@@ -25,11 +26,23 @@ class MatchingExceptionRule:
     Attributes:
         rule_name (str): Name of the rule.
         rule_tokens (List[str]): List of tokens to match in an exception message.
+        extract_additional_info_func (Optional[Callable[[List[str], str], str]]):
+            A callable function to extract additional information for the matched exception.
+            This function takes two arguments:
+                - rule_tokens (List[str]): List of matched tokens in an exception message.
+                - exception (str): The original exception message.
+            It returns a string with the additional extracted information.
     """
 
-    def __init__(self, rule_name: str, rule_tokens: List[str]):
+    def __init__(
+        self,
+        rule_name: str,
+        rule_tokens: List[str],
+        extract_additional_info_func: Optional[Callable[[List[str], str], str]] = None,
+    ):
         self.rule_name = rule_name
         self.rule_tokens = rule_tokens
+        self.extract_additional_info_func = extract_additional_info_func
 
     def match_rule(self, exception: str):
         """
@@ -42,7 +55,12 @@ class MatchingExceptionRule:
         # return the rule_token if matches otherwise return None
         matched_token = all([True if token in exception else False for token in self.rule_tokens])
         if matched_token:
-            return " ".join(self.rule_tokens)
+            matched_expection = ""
+            if self.extract_additional_info_func is not None:
+                matched_expection = self.extract_additional_info_func(self.rule_tokens, exception)
+            if len(matched_expection) == 0:
+                matched_expection = " ".join(self.rule_tokens)
+            return matched_expection
         else:
             return None
 
@@ -80,6 +98,56 @@ class MatchingCompilerComponentException:
                 return self.compiler_component, match_err_msg
 
         return None, None
+
+
+class CompilerComponentFailureAnalysis:
+    """
+    Analyzes and maintains failure details for different compiler components.
+
+    Attributes:
+        compiler_component_and_failure_details (Dict[CompilerComponent, Dict[str, List[str]]]):
+            A dictionary mapping each compiler component to its associated failure reasons and the corresponding model variant names.
+    """
+
+    def __init__(self):
+        self.compiler_component_and_failure_details = {}
+
+    def update(self, compiler_component: CompilerComponent, failure_reason: str, model_variant_names: List[str]):
+        """
+        Updates the failure details for a given compiler component.
+
+        Args:
+            compiler_component (CompilerComponent): The compiler component to update.
+            failure_reason (str): The reason for the failure.
+            model_variant_names (List[str]): A list of model variant names associated with the failure.
+        """
+        if compiler_component in self.compiler_component_and_failure_details.keys():
+            if failure_reason in self.compiler_component_and_failure_details[compiler_component].keys():
+                self.compiler_component_and_failure_details[compiler_component][failure_reason].extend(
+                    model_variant_names
+                )
+                self.compiler_component_and_failure_details[compiler_component][failure_reason] = list(
+                    set(self.compiler_component_and_failure_details[compiler_component][failure_reason])
+                )
+            else:
+                self.compiler_component_and_failure_details[compiler_component][failure_reason] = model_variant_names
+        else:
+            self.compiler_component_and_failure_details[compiler_component] = {failure_reason: model_variant_names}
+
+    def sort_by_model_variant_names_length(self, reverse: bool = False):
+        """
+        Sorts the failure reasons for each compiler component based on the number of associated model variant names.
+
+        Args:
+            reverse (bool): If True, sorts in descending order; otherwise, in ascending order. Default is False.
+        """
+        self.compiler_component_and_failure_details = {
+            compiler_component: dict(sorted(failure_details.items(), key=lambda item: len(item[1]), reverse=reverse))
+            for compiler_component, failure_details in self.compiler_component_and_failure_details.items()
+        }
+
+    def get_compiler_component_and_failure_details(self):
+        return self.compiler_component_and_failure_details
 
 
 def check_path(directory_or_file_path: str):
@@ -201,3 +269,55 @@ def remove_directory(directory_path: str):
             print(f"The directory path '{directory_path}' and its contents have been removed.")
         except Exception as e:
             print(f"An error occurred while removing the directory path {directory_path}: {e}")
+
+
+def sort_model_variant_info_list(model_variant_info_list):
+    """
+    Sorts a list of ModelVariantInfo objects first by model_name and then by variant_name.
+
+    Args:
+        model_variant_info_list (List[ModelVariantInfo]): The list of ModelVariantInfo objects to be sorted.
+
+    Returns:
+        List[ModelVariantInfo]: The sorted list of ModelVariantInfo objects.
+    """
+    # Sort the list by model_name and then by variant_name
+    return sorted(
+        model_variant_info_list,
+        key=lambda model_variant_info: (model_variant_info.model_name, model_variant_info.variant_name),
+    )
+
+
+def get_commit_id(repo_path="."):
+    """
+    Retrieves the latest commit ID (SHA-1 hash) and commit ID URL from the specified Git repository.
+
+    Args:
+        repo_path (str): Path to the Git repository. Defaults to the current directory.
+
+    Returns:
+        tuple[str, ...]: Returns commit ID and URL if successful; otherwise, None.
+    """
+    try:
+        repo = Repo(repo_path)
+        commit_id = repo.head.commit.hexsha
+
+        # Get the repository's remote URL
+        remote_url = next(repo.remote().urls)
+
+        # Convert SSH URL to HTTPS
+        if remote_url.startswith("git@"):
+            remote_url = remote_url.replace(":", "/").replace("git@", "https://")
+
+        if remote_url.endswith(".git"):
+            remote_url = remote_url[:-4]
+
+        # Construct the commit URL
+        commit_url = f"{remote_url}/commit/{commit_id}"
+        return commit_id, commit_url
+
+    except Exception as e:
+
+        logger.warning(f"Error while fetching commit id: {e}")
+
+        return None, None
