@@ -46,6 +46,8 @@ function print_params {
     echo "  KWARGS=\"$KWARGS\""
     echo "  FAILING_REASONS=$FAILING_REASONS"
     echo "  SKIP_REASONS=$SKIP_REASONS"
+    echo "  RANDOM_SEED=$RANDOM_SEED"
+    echo "  SAMPLE=$SAMPLE"
     echo "  RANGE=$RANGE"
     echo "  TEST_ID=$TEST_ID"
     echo "Pytest options:"
@@ -77,6 +79,8 @@ function reset_query_params {
     unset KWARGS
     unset FAILING_REASONS
     unset SKIP_REASONS
+    unset RANDOM_SEED
+    unset SAMPLE
     unset RANGE
     unset TEST_ID
     print_params
