@@ -112,6 +112,47 @@ class MaxPool2d(PyOp):
 
         return out_shape, []
 
+    def decompose(self, dc, inputs):
+        # TTNN can only perform a channel last pooling with its maxpool2d op.
+        # The TTNN  maxpool2d requires the input to be in the shape: (N, H, W, C).
+        # If the forge maxpool2d op is not channel last, we must permute the input (N, C, H, W) tensor to (N, H, W, C)
+        # and then transpose it back to (N, C_out, H_out, W_out) afterward.
+        #     - This is done with two transposes
+        #     - (N, C, H, W) --> transpose(-3, -2): (N, H, C, W) --> transpose(-2, -1): (N, H, W, C)
+        # Afterward:
+        #     - (N, H_out, W_out, C_out) --> transpose(-2, -1): (N, H_out, C_out, W_out) --> transpose(-3, -2): (N, C_out, H_out, W_out)
+        activations = inputs[0]
+
+        is_channel_last = self.channel_last
+
+        if not is_channel_last:
+            activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
+            activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
+
+            new_inputs = [activations]
+            result = dc.op(
+                MaxPool2d.create(
+                    self.kernel_height,
+                    self.kernel_width,
+                    self.stride_height,
+                    self.stride_width,
+                    self.dilation_height,
+                    self.dilation_width,
+                    self.ceil_mode,
+                    self.padding_left,
+                    self.padding_right,
+                    self.padding_top,
+                    self.padding_bottom,
+                    True,  # channel_last
+                ),
+                new_inputs,
+            )
+            # Since decompose should result in new set of ops that is equivalent to the decomposed one, we need to transpose result back to channel first if it was channel first on input
+            result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
+            result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
+
+            dc.fuse(result)
+
     def backward(self, ac, operand, inputs, output, grad):
         pass
 
@@ -715,285 +756,6 @@ def decompose(type, attr, dc, inputs):
                 "unsqueeze", [depth_avg_pooled], {"dim": 2}, (0, len(depth_avg_pooled.shape))
             )
             result = dc.op_with_named_attrs("concatenate", [result, depth_avg_pooled], {"dim": (2)}, (2,))
-
-        dc.fuse(result)
-
-    elif type == "max_pool2d":
-        assert len(attr) == 13
-        kernel_size = [
-            attr[0],
-            attr[1],
-        ]
-        stride = [
-            attr[2],
-            attr[3],
-        ]
-        dilation = attr[4]
-        ceil_mode = attr[5]
-        padding = [
-            attr[6],
-            attr[7],
-            attr[8],
-            attr[9],
-        ]
-        channel_last = attr[-1]
-
-        max_pool_add_sub_surround = attr[10]
-        max_pool_add_sub_surround_value = attr[11]
-
-        activations = inputs[0]
-
-        if kernel_size == 1:
-            dc.fuse(dc.op(Nop.create(), [activations]))
-            return
-
-        if max_pool_add_sub_surround:
-            add_sub_val = dc.tensor(torch.zeros((1,)) + max_pool_add_sub_surround_value)
-            activations = dc.op("add", [activations, add_sub_val])
-
-        if channel_last:
-            w, y, x, cin = (activations.shape.w, activations.shape.z, activations.shape.r, activations.shape.c)
-        else:
-            w, cin, y, x = (activations.shape.w, activations.shape.z, activations.shape.r, activations.shape.c)
-
-        # If ceil_mode = True, kernel windows are allowed to go off-bounds if they start within the left/top padding or
-        # the activations. Kernel windows that would start in the right/bottom padded region are ignored.
-        # We can enable this by adding padding to the right/bottom
-        if ceil_mode:
-            ceil_pad_right, ceil_pad_bottom = calculate_pad_for_ceil_mode(
-                original_y=y, original_x=x, kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation
-            )
-
-            # If both ceil pads are 0, that is equivalent to ceil_mode=False
-            if ceil_pad_right == 0 and ceil_pad_bottom == 0:
-                ceil_mode = False
-            else:
-                padding[1] += ceil_pad_right
-                padding[3] += ceil_pad_bottom
-
-            # TODO: Does padding added by ceil_mode affect math, in the same way as in avg pooling?
-
-        if channel_last:
-            # result = dc.op("vstack", [activations], (y,))
-            _, yout, xout, _ = shape("max_pool2d", attr, [activations.shape])[0]
-            result = dc.op("reshape", [activations], (w, 1, y * x, cin))
-        else:
-            result = dc.op("reshape", [activations], (w, 1, cin, y * x))
-            result = dc.op(TransposeTM.create(2, 3), [result])
-            _, _, yout, xout = shape("max_pool2d", attr, [activations.shape])[0]
-        result = dc.op("pad_tile", [result], (3, cin))
-        result = dc.op("pad_tile", [result], (2, y * x))
-
-        pickers = []
-        sparse_r = align_up_tile(yout * xout) // 32
-        padded_r = 0
-        sparse_r_padding = ast.literal_eval(os.environ.get("FORGE_PAD_SPARSE_MM", "{}"))
-        pad_for_factorization = False
-        if sparse_r in sparse_r_padding:
-            pad_for_factorization = True
-            padded_r = sparse_r_padding[sparse_r] - sparse_r
-
-        kH, kW = kernel_size
-        for kY in range(kH):
-            for kX in range(kW):
-                y_shift = ((kH - 1) // 2) - kY
-                x_shift = ((kW - 1) // 2) - kX
-                picker = create_conv2d_sparse_picker_matrix(
-                    y, x, y_shift, x_shift, kH, kW, stride, padding, dilation, tile_align=True, sparse_r_pad=padded_r
-                )
-                pickers.append(picker)
-        picker = torch.stack(pickers).unsqueeze(0)
-        picker_tensor = dc.tensor(picker)
-
-        result_c_padding = ast.literal_eval(os.environ.get("FORGE_PAD_SPARSE_MM_WEIGHT_CONCAT", "{}"))
-        result_c = align_up_tile(result.shape[-1]) // TILE_DIM
-        if result_c in result_c_padding:
-            pad_for_factorization = True
-            pad_shape = result.shape.as_list()
-            pad_shape[-1] = (result_c_padding[result_c] - result_c) * TILE_DIM
-            zeros_tensor = dc.tensor(torch.zeros(pad_shape))
-            result = dc.op("concatenate", [result, zeros_tensor], (-1,))
-
-        result = dc.op("sparse_matmul", [picker_tensor, result])
-        result = dc.op("reduce_max", [result], (1,))  # z dim
-
-        if pad_for_factorization:
-            if sparse_r in sparse_r_padding:
-                # temporarily add decompotion that manually insert vslice/vstack around splice op
-                manual_splice_decomp_th = os.environ.get("FORGE_MANUAL_SPLICE_DECOMP_TH")
-                if manual_splice_decomp_th is not None:
-                    if sparse_r >= int(manual_splice_decomp_th):
-                        result = dc.op("vslice", [result], (sparse_r_padding[sparse_r],))
-                        result = dc.op("select", [result], (-3, 0, sparse_r, sparse_r_padding[sparse_r]))
-                        result = dc.op("vstack", [result], (sparse_r,))
-                    else:
-                        result = dc.op("select", [result], (-2, 0, sparse_r * 32, picker.shape[-2]))
-                else:
-                    result = dc.op("select", [result], (-2, 0, sparse_r * 32, picker.shape[-2]))
-            if result_c in result_c_padding:
-                result = dc.op("select", [result], (-1, 0, result_c * TILE_DIM, result.shape[-1]))
-        result = dc.op("narrow", [result], (2, 0, yout * xout, result.shape[2]))
-        result = dc.op("narrow", [result], (3, 0, cin, result.shape[3]))
-        if channel_last:
-            result = dc.op("reshape", [result], (w, yout, xout, cin))
-        else:
-            result = dc.op(TransposeTM.create(2, 3), [result])
-            result = dc.op("reshape", [result], (w, cin, yout, xout))
-
-        if max_pool_add_sub_surround:
-            add_sub_val = dc.tensor(torch.zeros((1,)) + max_pool_add_sub_surround_value)
-            result = dc.op("subtract", [result, add_sub_val])
-
-        dc.fuse(result)
-    elif type == "max_pool3d":
-        assert len(attr) == 17, f"maxpool3d attr-len = {len(attr)}"
-        kD, kH, kW = [attr[0], attr[1], attr[2]]
-        stride = [attr[3], attr[4], attr[5]]
-        dilation = attr[6]
-        ceil_mode = attr[7]
-        padding = [attr[8], attr[9], attr[10], attr[11], attr[12], attr[13]]
-        channel_last = attr[-1]
-        if channel_last:
-            activations = activations.permute((0, 4, 1, 2, 3))
-
-        # max_pool_add_sub_surround = attr[10]
-        # max_pool_add_sub_surround_value = attr[11]
-
-        activations = inputs[0]
-
-        if kD == 1 and kH == 1 and kW == 1:
-            dc.fuse(dc.op(Nop.create(), [activations]))
-            return
-
-        # if max_pool_add_sub_surround:
-        #    add_sub_val = dc.tensor(torch.zeros((1,)) + max_pool_add_sub_surround_value)
-        #    activations = dc.op("add", [activations, add_sub_val])
-
-        # if channel_last:
-        #    w, y, x, cin = (activations.shape.w, activations.shape.z, activations.shape.r, activations.shape.c)
-        # else:
-        w, cin, din, y, x = (
-            activations.shape.v,
-            activations.shape.w,
-            activations.shape.z,
-            activations.shape.r,
-            activations.shape.c,
-        )
-
-        # If ceil_mode = True, kernel windows are allowed to go off-bounds if they start within the left/top padding or
-        # the activations. Kernel windows that would start in the right/bottom padded region are ignored.
-        # We can enable this by adding padding to the right/bottom
-        # if ceil_mode:
-        #    ceil_pad_right, ceil_pad_bottom = calculate_pad_for_ceil_mode(
-        #        original_y=y,
-        #        original_x=x,
-        #        kernel_size=kernel_size,
-        #        stride=stride,
-        #        padding=padding,
-        #        dilation=dilation
-        #    )
-
-        #    # If both ceil pads are 0, that is equivalent to ceil_mode=False
-        #    if ceil_pad_right == 0 and ceil_pad_bottom == 0:
-        #        ceil_mode = False
-        #    else:
-        #        padding[1] += ceil_pad_right
-        #         padding[3] += ceil_pad_bottom
-
-        #     # TODO: Does padding added by ceil_mode affect math, in the same way as in avg pooling?
-
-        # if channel_last:
-        #     # result = dc.op("vstack", [activations], (y,))
-        #     _, yout, xout, _ = shape('max_pool2d', attr, [activations.shape])[0]
-        #     result = dc.op("reshape", [activations], (w, 1, y * x, cin))
-        # else:
-        result = dc.op("reshape", [activations], (w, 1, cin * din, y * x))
-        result = dc.op(TransposeTM.create(-2, -1), [result])
-        _, cout, dout, yout, xout = shape("max_pool3d", attr, [activations.shape])[0]
-        result = dc.op("pad_tile", [result], (-1, cin * din))
-        result = dc.op("pad_tile", [result], (-2, y * x))  # (1, 1, y*x, cin*din)
-
-        # TODO: move it to eval/sparse_matmul.py and update conv3d decomp as well
-        def create_conv2d_sparse_matrix(
-            y,
-            x,
-            kH,
-            kW,
-            stride,
-            padding,
-            dilation,
-            tile_align=True,
-        ):
-            pickers = []
-            for kY in range(kH):
-                for kX in range(kW):
-                    # pickers are created row-major, starting from top-left kernel pixel
-                    y_shift = ((kH - 1) // 2) - kY
-                    x_shift = ((kW - 1) // 2) - kX
-                    picker = create_conv2d_sparse_picker_matrix(
-                        y,
-                        x,
-                        y_shift,
-                        x_shift,
-                        kH,
-                        kW,
-                        stride,
-                        padding,
-                        dilation,
-                        tile_align=tile_align,
-                        sparse_r_pad=0,
-                        sparse_c_pad=0,
-                    )
-                    pickers.append(picker)
-            return torch.stack(pickers)
-
-        picker = create_conv2d_sparse_matrix(
-            y,
-            x,
-            kH,
-            kW,
-            stride[1:],
-            padding[2:],
-            dilation=dilation,
-        )
-        picker_tensor = dc.tensor(picker.unsqueeze(0))  # (1, kH*kW, yout*xout, yin*xin)
-        result = dc.op("sparse_matmul", [picker_tensor, result])  # (1, kH*kW, yout*xout, cin*din)
-        result = dc.op("reduce_max", [result], (-3,))  # z dim  # (1, 1, yout*xout, cin*din)
-
-        # Run max pool on the depth dimension in a separate step
-        if kD > 1:
-            depth_picker = create_conv2d_sparse_matrix(
-                cin,
-                din,
-                1,
-                kD,
-                (1, stride[0]),
-                [0, 0] + padding[0:2],
-                dilation=dilation,
-            )
-            depth_picker = dc.tensor(depth_picker.unsqueeze(0))  # (1, kD, cout*dout, cin*din)
-
-            # Transpose the activations to allow sparse mm to work on the depth dim
-            result = dc.op(TransposeTM.create(-2, -1), [result])
-            result = dc.op("sparse_matmul", [depth_picker, result])  # (1, kD, cout*dout, yout*xout)
-            result = dc.op("reduce_max", [result], (-3,))  # z dim  # (1, 1, cout*dout, yout*xout)
-
-            # Transpose back
-            result = dc.op(TransposeTM.create(-2, -1), [result])
-
-        # Undo forge conv shape for golden check
-        result = dc.op(TransposeTM.create(-2, -1), [result])
-        result = dc.op("narrow", [result], (-2, 0, cin * dout, result.shape[-2]))
-        result = dc.op("narrow", [result], (-1, 0, yout * xout, result.shape[-1]))
-
-        # if channel_last:
-        #    result = dc.op("reshape", [result], (w, yout, xout, cin))
-        # else:
-        result = dc.op("reshape", [result], (w, cin, dout, yout, xout))
-
-        # if max_pool_add_sub_surround:
-        #    add_sub_val = dc.tensor(torch.zeros((1,)) + max_pool_add_sub_surround_value)
-        #    result = dc.op("subtract", [result, add_sub_val])
 
         dc.fuse(result)
 

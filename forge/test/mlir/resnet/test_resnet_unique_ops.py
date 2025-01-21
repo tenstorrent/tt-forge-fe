@@ -24,9 +24,6 @@ from forge.verify.config import VerifyConfig
             2,  # stride size
             (1, 1, 1, 1),  # padding
             False,  # ceil mode
-            marks=pytest.mark.xfail(
-                reason="Tensor mismatch. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1575"
-            ),
         ),
     ],
 )
