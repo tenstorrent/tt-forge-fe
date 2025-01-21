@@ -71,6 +71,7 @@ Available commands
 | `test_query`          | Run subset of test plan based on a query parameters.                  |
 | `test_unique`         | Run representative examples of all available tests.                   |
 | `test_single`         | Run single test based on TEST_ID parameter.                           |
+| `test_ids`            | Run tests for multile ids from a test id file.                        |
 
 Full list of supported query parameters
 
@@ -89,6 +90,7 @@ Full list of supported query parameters
 | RANDOM_SEED           | Seed for random number generator                                                              | test_query                            |
 | SAMPLE                | Percentage of results to sample                                                               | test_query                            |
 | TEST_ID               | Id of a test containing test parameters                                                       | test_single                           |
+| ID_FILE               | Path to a file containing test ids                                                            | test_ids                              |
 
 
 To check supported values and options for each query parameter please run command `print_query_docs`.
