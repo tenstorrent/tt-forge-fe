@@ -155,6 +155,20 @@ class TestParamsData:
         return lambdas
 
     @classmethod
+    def get_random_seed(cls) -> int:
+        """Provide a random seed based on environment variables"""
+        random_seed = os.getenv("RANDOM_SEED", None)
+        return int(random_seed) if random_seed else 0
+
+    @classmethod
+    def get_filter_sample(cls) -> float:
+        """Provide a sample of test vectors to run based on environment variables"""
+
+        sample = os.getenv("SAMPLE", None)
+
+        return float(sample) if sample else 100
+
+    @classmethod
     def get_filter_range(cls) -> tuple[int, int]:
         """Provide a range of test vectors to run based on environment variables"""
 
@@ -320,6 +334,7 @@ def test_custom(test_vector: TestVector, test_device):
     TestSuiteData.filtered.query_all()
     .filter(VectorLambdas.FILTERED)
     .filter(*TestParamsData.build_filter_lambdas())
+    .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
     .range(*TestParamsData.get_filter_range())
     .to_params(),
 )
@@ -430,6 +445,8 @@ class InfoUtils:
             },
             {"name": "FAILING_REASONS", "description": f"List of failing reasons. Supported values: {failing_reasons}"},
             {"name": "SKIP_REASONS", "description": "Same as FAILING_REASONS"},
+            {"name": "RANDOM_SEED", "description": "Seed for random number generator"},
+            {"name": "SAMPLE", "description": "Percentage of results to sample"},
             {"name": "RANGE", "description": "Limit number of results"},
             {"name": "TEST_ID", "description": "Id of a test containing test parameters"},
         ]
@@ -455,6 +472,8 @@ class InfoUtils:
             {"name": "FAILING_REASONS", "description": "export FAILING_REASONS=NOT_IMPLEMENTED"},
             {"name": "SKIP_REASONS", "description": "export SKIP_REASONS=FATAL_ERROR"},
             {"name": "RANGE", "description": "export RANGE=5"},
+            {"name": "RANDOM_SEED", "description": "export RANDOM_SEED=42"},
+            {"name": "SAMPLE", "description": "export SAMPLE=20"},
             {"name": "RANGE", "description": "export RANGE=10,20"},
             {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
         ]

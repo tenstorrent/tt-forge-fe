@@ -86,6 +86,8 @@ Full list of supported query parameters
 | FAILING_REASONS       | List of failing reasons                                                                       | test_query                            |
 | SKIP_REASONS          | List of skip reasons                                                                          | test_query                            |
 | RANGE                 | Limit number of results                                                                       | test_query                            |
+| RANDOM_SEED           | Seed for random number generator                                                              | test_query                            |
+| SAMPLE                | Percentage of results to sample                                                               | test_query                            |
 | TEST_ID               | Id of a test containing test parameters                                                       | test_single                           |
 
 
