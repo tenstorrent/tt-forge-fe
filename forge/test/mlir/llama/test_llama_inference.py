@@ -7,6 +7,7 @@ import pytest
 from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
 
 import forge
+from forge.verify.verify import verify
 from test.mlir.llama.utils.utils import load_model
 
 
@@ -150,4 +151,5 @@ def test_llama_input_sequence_lengths(model_path, seq_len):
 
     # Compile the model and run fwd pass
     compiled_model = forge.compile(framework_model, input_ids)
-    logits = compiled_model(input_ids)
+
+    verify([input_ids], framework_model, compiled_model)
