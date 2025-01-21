@@ -122,6 +122,12 @@ class TestTensorsUtils:
     ) -> OperatorParameterTypes.RangeValue:
         """Returns a range for the given data format and dtype"""
 
+        # When dev_data_format is None, the range should be the same as Float32/float32
+        if dev_data_format is None:
+            dev_data_format = forge.DataFormat.Float32
+        if dtype is None:
+            dtype = torch.float32
+
         if dev_data_format in cls.data_format_ranges:
             data_format_ranges = cls.data_format_ranges[dev_data_format]
         else:
@@ -196,7 +202,13 @@ class TestTensorsUtils:
     ) -> List[torch.Tensor]:
 
         if dtype is None:
-            return torch.rand(input_shape, generator=generator)
+            input = torch.rand(input_shape, generator=generator)
+            range = cls.get_value_range(dev_data_format=dev_data_format, dtype=dtype, value_range=value_range)
+            min, max = range
+            if min == 0 and max == 1:
+                # No need to scale the input, just return it
+                return input
+            return cls.move_from_small_to_big_value_range(input, min, max)
         elif dtype in cls.DTypes.floats:
             input = torch.rand(input_shape, dtype=dtype, generator=generator)
             range = cls.get_value_range(dev_data_format=dev_data_format, dtype=dtype, value_range=value_range)
