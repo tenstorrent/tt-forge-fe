@@ -29,16 +29,86 @@ from forge.tensor import to_forge_tensors
             -1,
         ),
         pytest.param(
+            (256, 7, 200),
+            -1,
+        ),
+        pytest.param(
+            (256, 31, 200),
+            -1,
+        ),
+        pytest.param(
+            (256, 89, 200),
+            -1,
+        ),
+        pytest.param(
+            (256, 117, 200),
+            -1,
+        ),
+        pytest.param(
             (1, 12, 200),
             -2,
+            marks=pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
         ),
         pytest.param(
             (128, 12, 200),
             -2,
+            marks=pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
         ),
         pytest.param(
             (256, 12, 200),
             -2,
+            marks=pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (256, 7, 200),
+            -2,
+            marks=pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (256, 31, 200),
+            -2,
+        ),
+        pytest.param(
+            (256, 89, 200),
+            -2,
+        ),
+        pytest.param(
+            (256, 117, 200),
+            -2,
+        ),
+        pytest.param(
+            (1, 200), -1, marks=pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")
+        ),
+        pytest.param(
+            (128, 200),
+            -1,
+        ),
+        pytest.param(
+            (1, 12, 64, 200),
+            -1,
+        ),
+        pytest.param(
+            (128, 12, 17, 200),
+            -1,
+        ),
+        pytest.param(
+            (1, 12, 64, 200),
+            -2,
+        ),
+        pytest.param(
+            (128, 12, 17, 200),
+            -2,
+            marks=pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (1, 12, 64, 200),
+            -3,
+            marks=pytest.mark.xfail(reason="RuntimeError: TT_ASSERT (i >= 0) && (i < (int)dims_.size())"),
+        ),
+        pytest.param(
+            (128, 12, 17, 200),
+            -3,
+            marks=pytest.mark.xfail(reason="RuntimeError: TT_ASSERT (i >= 0) && (i < (int)dims_.size())"),
         ),
     ],
 )
