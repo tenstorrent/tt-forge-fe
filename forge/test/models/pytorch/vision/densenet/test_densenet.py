@@ -99,6 +99,8 @@ def test_densenet_169_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
 def test_densenet_201_pytorch(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
