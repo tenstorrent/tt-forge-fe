@@ -16,18 +16,6 @@
 namespace tt
 {
 
-template <typename T>
-std::vector<int64_t> as_vec_int64(std::vector<T> const& vec)
-{
-    std::vector<int64_t> result;
-    result.reserve(vec.size());
-    for (auto const& v : vec)
-    {
-        result.push_back(v);
-    }
-    return result;
-}
-
 static runtime::Tensor create_tensor(const torch::Tensor& tensor)
 {
     auto data = std::shared_ptr<void>(
@@ -173,11 +161,11 @@ std::vector<tt::Tensor> create_runtime_tensors(std::vector<torch::Tensor> tensor
     return rt_tensors;
 }
 
-std::vector<torch::Tensor> run_binary(
+std::vector<torch::Tensor> run_binary_v2(
     runtime::Binary& binary,
     int program_idx,
     std::vector<torch::Tensor> const& act_inputs,
-    std::vector<tt::Tensor> persistent_inputs)
+    std::vector<tt::Tensor>& persistent_inputs)
 {
     auto& system = TTSystem::get_system();
 
@@ -203,14 +191,21 @@ std::vector<torch::Tensor> run_binary(
     std::vector<runtime::Tensor> inputs;
     inputs.reserve(act_inputs.size() + persistent_inputs.size());
 
+    size_t input_idx = 0;
     for (auto& tensor : act_inputs)
     {
-        inputs.push_back(create_tensor(tensor));
+        auto rt_tensor = create_tensor(tensor);
+        auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
+        rt_tensor = tt::runtime::toLayout(rt_tensor, device, layout);
+        inputs.emplace_back(rt_tensor);
     }
 
-    for (auto& tensor : persistent_inputs)
+    for (Tensor& tensor : persistent_inputs)
     {
-        inputs.push_back(tensor.get_runtime_tensor());
+        runtime::Tensor& rt_tensor = tensor.get_runtime_tensor();
+        auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
+        rt_tensor = tt::runtime::toLayout(rt_tensor, device, layout);
+        inputs.emplace_back(rt_tensor);
     }
 
     // verify_input_tensors(inputs, input_descs);
@@ -223,8 +218,9 @@ std::vector<torch::Tensor> run_binary(
     {
         std::vector<std::int64_t> shape = as_vec_int64(desc.shape);
         // std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
-        std::vector<std::int64_t> stride(shape.size(), 1);
-        for (size_t i = shape.size() - 2; i >= 0; --i)
+        std::vector<std::int64_t> stride(shape.size());
+        stride[shape.size() - 1] = 1;
+        for (size_t i = shape.size() - 2; i >= 0 && i < shape.size(); --i)
         {
             stride[i] = shape[i + 1] * stride[i + 1];
         }
@@ -238,7 +234,9 @@ std::vector<torch::Tensor> run_binary(
     TT_ASSERT(submit_outputs.size() == rt_outputs.size(), "Output count mismatch");
     for (size_t i = 0; i < submit_outputs.size(); ++i)
     {
-        runtime::memcpy(rt_outputs[i], submit_outputs[i]);
+        // Workaround to untilize before memcpy
+        auto host = tt::runtime::toHost(submit_outputs[i], true);
+        runtime::memcpy(rt_outputs[i], host);
         runtime::deallocateTensor(submit_outputs[i], true);
     }
 
@@ -276,7 +274,7 @@ std::vector<torch::Tensor> run_binary(
     {
         auto tensor = create_tensor(input);
         auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
-        tt::runtime::toLayout(tensor, device, layout);
+        tensor = tt::runtime::toLayout(tensor, device, layout);
         rt_inputs.emplace_back(tensor);
     }
 
