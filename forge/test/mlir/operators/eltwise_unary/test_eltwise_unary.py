@@ -476,7 +476,9 @@ def test_log(shape):
         ((1, 32, 32, 32), (1,)),
     ],
 )
-@pytest.mark.xfail(reason="TTNN maximum op: unsupported broadcast")
+@pytest.mark.xfail(
+    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
+)
 @pytest.mark.push
 def test_maximum(shape_x, shape_y):
     class Maximum(nn.Module):
