@@ -4,35 +4,24 @@
 
 # Usage:
 # source forge/test/operators/pytorch/test_commands.sh
-# print_help
-# collect_only_on
-# test_plan
-# test_query
-# test_unique
 
 
 function print_help {
     echo "Help:"
-    echo "  print_help          - Print commands and current query parameters."
-    echo "  print_query_docs    - Print docs for all available query parameters."
+    echo "  print_help              - Print commands and current query parameters."
+    echo "  print_query_docs        - Print docs for all available query parameters."
+    echo "  print_pytest_commands   - Print pytest helper commands."
     echo "Query parameters:"
-    echo "  print_params        - Print current query parameters values."
-    echo "  reset_params        - Reset all query parameters and pytest options."
-    echo "  reset_query_params  - Reset all query parameters."
-    echo "Setup pytest options:"
-    echo "  run_xfail_on        - Enable running xfail tests by including --runxfail."
-    echo "  run_xfail_off       - Remove run xfail setup."
-    echo "  no_skips_on         - Enable running tests without skips by including --no-skips."
-    echo "  no_skips_off        - Remove no skips setup."
-    echo "  collect_only_on     - Enable only collecting tests by including --collect-only."
-    echo "  collect_only_off    - Remove collect only setup."
-    echo "  reset_pytest_opts   - Reset pytest options."
+    echo "  print_params            - Print current query parameters values."
+    echo "  reset_params            - Reset all query and test configuration parameters."
+    echo "Setup commands:"
+    echo "  select_test_query       - Select test_query pytest."
+    echo "  select_test_push        - Select test_push pytest."
+    echo "Example commands:"
+    echo "  OPERATORS=add with-params pytest"
     echo "Run commands:"
-    echo "  test_plan           - Run all tests from test plan. Support OPERATORS query parameter."
-    echo "  test_query          - Run subset of test plan based on a query parameters."
-    echo "  test_unique         - Run representative examples of all available tests."
-    echo "  test_single         - Run single test based on TEST_ID parameter."
-    echo "  test_ids            - Run tests for multile ids from a test id file defined via ID_FILE parameter."
+    echo "  pytest                  - Run all tests or subset of test plan based on a query parameters."
+    echo "  with-params pytest      - Print params before and after test run."
     print_params
 }
 
@@ -51,22 +40,45 @@ function print_params {
     echo "  SAMPLE=$SAMPLE"
     echo "  RANGE=$RANGE"
     echo "  TEST_ID=$TEST_ID"
-    echo "  ID_FILE=$ID_FILE"
-    echo "Pytest options:"
-    echo "  PYTEST_ADDOPTS = $PYTEST_ADDOPTS"
+    echo "  ID_FILES=$ID_FILES"
+    echo "  ID_FILES_IGNORE=$ID_FILES_IGNORE"
+    print_test_config_params
+    print_pytest_params
 }
 
 function reset_params {
     reset_query_params
-    reset_pytest_opts
+    reset_test_config_params
+    # reset_pytest_opts
 }
 
 function print_query_docs {
     max_width=$(tput cols)
     max_width=$((max_width * 80 / 100))
 
-    pushd ${SCRIPT_DIR}/../../../
+    pushd ${SWEEPS_SCRIPT_DIR}/../../../
     python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.print_query_params(max_width=${max_width})"
+    popd
+}
+
+function export_tests {
+    local file_name=$1
+    local logs_dir=${LOGS_DIR}
+
+    if [ "${logs_dir}" == "" ]; then
+        logs_dir=$(pwd)
+    fi
+
+    if [ "${file_name}" == "" ]; then
+        file_name="test_vectors_$(filters_to_string).json"
+    fi
+
+    if [[ ! "${file_name}" == */* ]]; then
+        file_name="${logs_dir}/${file_name}"
+    fi
+
+    pushd ${SWEEPS_SCRIPT_DIR}/../../../
+    python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.export(file_name=\"${file_name}\")"
     popd
 }
 
@@ -85,104 +97,87 @@ function reset_query_params {
     unset SAMPLE
     unset RANGE
     unset TEST_ID
-    unset ID_FILE
+    unset ID_FILES
+    unset ID_FILES_IGNORE
     print_params
 }
 
 
-function run_xfail_on {
-    _PYTEST_RUN_XFAIL=true
-    _set_pytest_opts
-    print_params
-}
-
-function run_xfail_off {
-    unset _PYTEST_RUN_XFAIL
-    _set_pytest_opts
-    print_params
-}
-
-function no_skips_on {
-    _PYTEST_NO_SKIPS=true
-    _set_pytest_opts
-    print_params
-}
-
-function no_skips_off {
-    unset _PYTEST_NO_SKIPS
-    _set_pytest_opts
-    print_params
-}
-
-function collect_only_on {
-    _PYTEST_COLLECT_ONLY=true
-    _set_pytest_opts
-    print_params
-}
-
-function collect_only_off {
-    unset _PYTEST_COLLECT_ONLY
-    _set_pytest_opts
-    print_params
-}
-
-function _set_pytest_opts {
-    local PYTEST_PARAMS=""
-    # PYTEST_PARAMS="${PYTEST_PARAMS} -svv"
-    PYTEST_PARAMS="${PYTEST_PARAMS} -rap"
-    if [ "${_PYTEST_NO_SKIPS}" = "true" ]; then
-        PYTEST_PARAMS="${PYTEST_PARAMS} --no-skips"
+function filters_to_string {
+    filters=""
+    if [ "${TEST_NAME}" != "" ]; then
+        filters="${filters}_TEST_${TEST_NAME}"
     fi
-    if [ "${_PYTEST_RUN_XFAIL}" = "true" ]; then
-        PYTEST_PARAMS="${PYTEST_PARAMS} --runxfail"  # run xfail tests
+    if [ "${OPERATORS}" != "" ]; then
+        filters="${filters}_OPERATORS_${OPERATORS}"
     fi
-    if [ "${_PYTEST_COLLECT_ONLY}" = "true" ]; then
-        PYTEST_PARAMS="${PYTEST_PARAMS} --collect-only"  # collect only
+    if [ "${FILTERS}" != "" ]; then
+        filters="${filters}_FILTERS_${FILTERS}"
     fi
-    export PYTEST_ADDOPTS="${PYTEST_PARAMS}"
+    if [ "${INPUT_SOURCES}" != "" ]; then
+        filters="${filters}_INPUT_SOURCES_${INPUT_SOURCES}"
+    fi
+    if [ "${INPUT_SHAPES}" != "" ]; then
+        filters="${filters}_INPUT_SHAPES_${INPUT_SHAPES}"
+    fi
+    if [ "${DEV_DATA_FORMATS}" != "" ]; then
+        filters="${filters}_DEV_DATA_FORMATS_${DEV_DATA_FORMATS}"
+    fi
+    if [ "${MATH_FIDELITIES}" != "" ]; then
+        filters="${filters}_MATH_FIDELITIES_${MATH_FIDELITIES}"
+    fi
+    if [ "${KWARGS}" != "" ]; then
+        filters="${filters}_KWARGS_${KWARGS}"
+    fi
+    if [ "${FAILING_REASONS}" != "" ]; then
+        filters="${filters}_FAILING_REASONS_${FAILING_REASONS}"
+    fi
+    if [ "${SKIP_REASONS}" != "" ]; then
+        filters="${filters}_SKIP_REASONS_${SKIP_REASONS}"
+    fi
+    if [ "${RANDOM_SEED}" != "" ]; then
+        filters="${filters}_RANDOM_SEED_${RANDOM_SEED}"
+    fi
+    if [ "${SAMPLE}" != "" ]; then
+        filters="${filters}_SAMPLE_${SAMPLE}"
+    fi
+    if [ "${RANGE}" != "" ]; then
+        filters="${filters}_RANGE_${RANGE}"
+    fi
+    if [ "${TEST_ID}" != "" ]; then
+        filters="${filters}_TEST_ID_${TEST_ID}"
+    fi
+    if [ "${ID_FILES}" != "" ]; then
+        filters="${filters}_ID_FILES_${ID_FILES}"
+    fi
+    if [ "${ID_FILES_IGNORE}" != "" ]; then
+        filters="${filters}_ID_FILES_IGNORE_${ID_FILES_IGNORE}"
+    fi
+    filters=$(
+        echo "${filters}" \
+        | sed 's/[ {}'"'"']//g' \
+        | sed 's/[ ,:\(\)\/]/_/g' \
+    )
+    echo "${filters}"
 }
 
-function reset_pytest_opts {
-    unset _PYTEST_RUN_XFAIL
-    unset _PYTEST_NO_SKIPS
-    unset _PYTEST_COLLECT_ONLY
-    _set_pytest_opts
-    print_params
+
+function select_test_query {
+    set_pytest_function "${SWEEPS_SCRIPT_DIR}/test_query.py::test_query"
+    # set_pytest_function "forge/test/operators/pytorch/test_query.py::test_query"
+}
+
+function select_test_push {
+    set_pytest_function "${SWEEPS_SCRIPT_DIR}/test_push.py::test_push"
 }
 
 
-function _run_test_all {
-    function_name=$1
-    print_params
-    pytest ${SCRIPT_DIR}/test_all.py::${function_name}
-    print_params
-}
+SWEEPS_SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 
-function test_plan {
-    _run_test_all test_plan
-}
+. ${SWEEPS_SCRIPT_DIR}/test_common.sh
 
-function test_query {
-    _run_test_all test_query
-}
-
-function test_unique {
-    _run_test_all test_unique
-}
-
-function test_single {
-    _run_test_all test_single
-}
-
-function test_ids {
-    _run_test_all test_ids
-}
-
-
-SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
-# echo "SCRIPT_DIR = ${SCRIPT_DIR}"
-
-_set_pytest_opts
+set_default_pytest_opts
+select_test_query
+# _set_pytest_opts
 
 print_help
-# print_query_docs
