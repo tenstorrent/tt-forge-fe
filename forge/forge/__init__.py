@@ -61,7 +61,6 @@ from ._C import k_dim
 import forge.op as op
 import forge.transformers
 
-import forge.typing
 from .compile import forge_compile_torch, compile_main as compile
 
 # Torch backend registration

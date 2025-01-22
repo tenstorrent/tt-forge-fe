@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Union, Tuple, List, Optional, Dict
+from typing import Union, Tuple, List, Optional, Dict, TypeAlias
 from forge.tvm_utils import map_tf_dtype_to_pt
 
 import torch
@@ -507,17 +507,12 @@ class TensorFromTrace(Tensor):
 
         return self  # nothing to detach
 
-    def create_pt_zeros(self) -> torch.Tensor:
-        # Return pt tensor of the right format, shape, and requires grad, if no value has been set
-        assert not self.has_value()
-
-        # generate zeros
-        pt = torch.zeros(size=self.shape.get_pytorch_shape(), dtype=forge_dataformat_to_pytorch_dtype(self.data_format))
-        pt.requires_grad = self.requires_grad
-        return pt
-
     def to_framework(self, framework: str) -> "Tensor":
         return super().to_framework(framework)
+
+
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor
+AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
 # class TensorFromDescriptor(Tensor):
@@ -1054,7 +1049,7 @@ def to_tf_variables(
                 )
             )
         elif isinstance(t, Tensor):
-            pt_value = t.value() if t.has_value() else t.create_pt_zeros()
+            pt_value = t.value() if t.has_value() else create_pt_zeros(t)
             # TODO: Generalize
             if pt_value.dtype == torch.bfloat16:
                 pt_value = copy.deepcopy(pt_value.detach()).float()
@@ -1117,7 +1112,7 @@ def to_tf_tensors(
             if t.has_value():
                 tf_tensors.append(t.value())
             else:
-                tf_tensors.append(t.create_pt_zeros())
+                tf_tensors.append(create_pt_zeros(t))
         elif t is None:
             tf_tensors.append(None)
         elif isinstance(t, (list, tuple)):
@@ -1133,59 +1128,41 @@ def to_tf_tensors(
     return ret
 
 
-def to_pt_tensors(
-    tensors: Union[
-        Tuple[Union[torch.Tensor, Tensor, tf.Tensor], ...], Dict[str, Union[torch.Tensor, Tensor, tf.Tensor]]
-    ],
-    convert_format: bool = False,
-) -> Tuple[torch.Tensor, ...]:
-    """
-    Take a tuple of either pytorch or forge tensors, and return pytorch tensors. Generate zero-tensors
-    if no value exists.
-    """
-    pytorch_tensors = []
+def create_pt_zeros(tensor: Tensor) -> torch.Tensor:
+    # generate zeros
+    pt = torch.zeros(size=tensor.shape.get_pytorch_shape(), dtype=forge_dataformat_to_pytorch_dtype(tensor.data_format))
+    pt.requires_grad = tensor.requires_grad if isinstance(tensor, TensorFromPytorch) else False
+    return pt
+
+
+def to_pt_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]) -> Tuple[torch.Tensor, ...]:
+    pytorch_tensors: List[torch.Tensor] = []
 
     if not isinstance(tensors, (list, tuple)):
         tensors = (tensors,)
+
     for t in tensors:
-        if isinstance(t, torch.Tensor):
-            assert (
-                not convert_format
-            ), "Can't convert format of raw pytorch tensor - don't know what the target format is"
-            pytorch_tensors.append(t)
-        elif isinstance(t, (tf.Tensor, tf.Variable)):
-            pt = torch.Tensor(t.numpy() if t.dtype != tf.bfloat16 else tf.cast(t, tf.float32).numpy()).type(
-                map_tf_dtype_to_pt(t.dtype)
-            )
-            pt.requires_grad = (
-                t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
-            )
-            pytorch_tensors.append(pt)
-        elif isinstance(t, Tensor):
-            if convert_format:
-                t = t.to_format(t.data_format)
-            if t.has_value():
-                pytorch_tensors.append(t.value())
-            else:
-                pytorch_tensors.append(t.create_pt_zeros())
-        elif t is None:
-            pytorch_tensors.append(None)
-        elif isinstance(t, (list, tuple)):
-            pytorch_tensors.append(to_pt_tensors(t))
-        elif isinstance(t, dict):
-            pt_tensor_list = to_pt_tensors(list(t.values()))
-            pt_dict = {k: v for (k, _), v, in zip(t.items(), pt_tensor_list)}
-            pytorch_tensors.append(pt_dict)
+        pytorch_tensors.append(to_pt_tensor(t))
 
-        elif isinstance(t, np.ndarray):
-            pytorch_tensors.append(torch.Tensor(t))
-        elif isinstance(t, jaxlib.xla_extension.DeviceArray):
-            pytorch_tensors.append(torch.Tensor(np.array(t)))
-        else:
-            raise RuntimeError(f"Unknown type of tensor: {type(t)}")
+    return tuple(pytorch_tensors)
 
-    ret = tuple(pytorch_tensors) if isinstance(tensors, (tuple, list)) else (pytorch_tensors,)
-    return ret
+
+def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
+    if isinstance(t, torch.Tensor):
+        return t
+    elif isinstance(t, (tf.Tensor, tf.Variable)):
+        pt = torch.Tensor(t.numpy() if t.dtype != tf.bfloat16 else tf.cast(t, tf.float32).numpy()).type(
+            map_tf_dtype_to_pt(t.dtype)
+        )
+        pt.requires_grad = (
+            t.trainable if isinstance(t, tf.Variable) else torch.is_complex(pt) or torch.is_floating_point(pt)
+        )
+        return pt
+    elif isinstance(t, Tensor):
+        assert t.has_value(), "Expected Forge tensor to have a value"
+        return t.value()
+    else:
+        raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
 
 def to_jax_tensors(
@@ -1217,7 +1194,7 @@ def to_jax_tensors(
             if t.has_value():
                 jax_tensors.append(t.value().detach().numpy())
             else:
-                jax_tensors.append(t.create_pt_zeros().detach().numpy())
+                jax_tensors.append(create_pt_zeros(t).detach().numpy())
         elif t is None:
             jax_tensors.append(None)
         elif isinstance(t, (list, tuple)):

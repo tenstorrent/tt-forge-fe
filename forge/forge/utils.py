@@ -219,43 +219,6 @@ def get_forge_git_hash() -> Optional[str]:
         return None
 
 
-def get_forgebackend_git_hash() -> Optional[str]:
-    try:
-        git_hash = (
-            subprocess.check_output(
-                ["git", "rev-parse", "--short", "HEAD:third_party/forgebackend"], stderr=subprocess.STDOUT
-            )
-            .decode("utf-8")
-            .strip()
-        )
-        if git_hash.isalnum():
-            return git_hash
-        else:
-            return None
-    except:
-        return None
-
-
-def forgebackend_path() -> str:
-    if "FORGE_HOME" in os.environ:
-        return os.environ["FORGE_HOME"]
-
-    if os.path.exists(os.getcwd() + "/third_party/forgebackend"):
-        # must be in forge root
-        return "third_party/forgebackend/"
-    else:
-        return ""
-
-
-def resolve_device_descriptor_path(device_yaml_override: str) -> str:
-    if os.path.isfile(device_yaml_override):
-        return device_yaml_override
-    elif os.path.isfile(forgebackend_path() + f"device/{device_yaml_override}"):
-        return forgebackend_path() + f"device/{device_yaml_override}"
-    else:
-        raise FileNotFoundError(f"Device descriptor file not found: {device_yaml_override}")
-
-
 def get_forge_compile_and_runtime_configs() -> Dict[str, str]:
     """
     Capture compile-time and runtime environment variables used to compile and run on the device.

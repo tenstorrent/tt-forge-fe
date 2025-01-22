@@ -65,12 +65,6 @@ def register_device(d: "Device"):
     set_state_changed()
 
 
-def register_module(m: "Module"):
-    global modules
-    modules.append(m)
-    set_state_changed()
-
-
 def get_devices():
     return devices
 

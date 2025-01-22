@@ -18,7 +18,6 @@ from forge.utils import (
     list_as_json,
     optional_as_json,
     resolve_output_build_directory,
-    resolve_device_descriptor_path,
 )
 from loguru import logger
 
@@ -122,10 +121,6 @@ class CompilerConfig:
     balancer_policy: str = "default"
     # scheduler policy to determine ordering of the ops submitted to be placed by placer
     scheduler_policy: str = "ModuleInputsBFS"
-    # enable flattening r/c dims into t for minimal buffering
-    enable_t_streaming: bool = True
-    # only respect overrides, by default no streaming
-    manual_t_streaming: bool = False
     # enable promotion of nodes to be constant evaluated where possible
     enable_consteval: bool = True
     # enable automatic fusing of ops
@@ -357,11 +352,6 @@ class CompilerConfig:
         if "FORGE_SCHEDULER_POLICY" in os.environ:
             self.scheduler_policy = os.environ["FORGE_SCHEDULER_POLICY"]
 
-        if "FORGE_OVERRIDE_DEVICE_YAML" in os.environ and os.environ["FORGE_OVERRIDE_DEVICE_YAML"] != "":
-            self.backend_device_descriptor_path = resolve_device_descriptor_path(
-                os.environ["FORGE_OVERRIDE_DEVICE_YAML"]
-            )
-
         if "FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS" in os.environ:
             self.export_tvm_unique_ops_config_details = bool(
                 int(os.environ["FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS"])
@@ -480,9 +470,6 @@ g_compiler_config: CompilerConfig = CompilerConfig()
 def set_configuration_options(
     enable_recompute: Optional[bool] = None,
     balancer_policy: Optional[str] = None,
-    place_on_one_row: Optional[bool] = None,
-    enable_t_streaming: Optional[bool] = None,
-    manual_t_streaming: Optional[bool] = None,
     enable_consteval: Optional[bool] = None,
     default_df_override: Optional[DataFormat] = None,
     accumulate_df: Optional[DataFormat] = None,
@@ -490,7 +477,6 @@ def set_configuration_options(
     performance_trace: Optional[PerfTraceLevel] = None,
     backend_opt_level: Optional[int] = None,
     backend_output_dir: Optional[str] = None,
-    backend_device_descriptor_path: Optional[str] = None,
     backend_cluster_descriptor_path: Optional[str] = None,
     backend_runtime_params_path: Optional[str] = None,
     backend_runtime_args: Optional[str] = None,
@@ -532,16 +518,6 @@ def set_configuration_options(
 
         [DEPRECATED]
         "CNN"
-
-    place_on_one_row: Optional[bool]
-        For place & route to place every op on one row of cores only.
-
-    enable_t_streaming: Optional[bool]
-        Enable buffering optimization which reduces memory usage and latency.
-
-    manual_t_streaming: Optional[bool]
-        Only respect override_t_stream_dir op overrides, otherwise no streaming.
-        enable_t_streaming must also be true to take effect.
 
     enable_consteval: Optional[bool]
         Use constant propagation to simplify the model.
@@ -616,10 +592,6 @@ def set_configuration_options(
         g_compiler_config.enable_recompute = enable_recompute
     if balancer_policy is not None:
         g_compiler_config.balancer_policy = balancer_policy
-    if enable_t_streaming is not None:
-        g_compiler_config.enable_t_streaming = enable_t_streaming
-    if manual_t_streaming is not None:
-        g_compiler_config.manual_t_streaming = manual_t_streaming
     if enable_consteval is not None:
         g_compiler_config.enable_consteval = enable_consteval
     if default_df_override is not None:
@@ -635,10 +607,6 @@ def set_configuration_options(
         g_compiler_config.backend_opt_level = backend_opt_level
     if backend_output_dir is not None:
         g_compiler_config.backend_output_dir = backend_output_dir
-    if backend_device_descriptor_path is not None:
-        g_compiler_config.backend_device_descriptor_path = resolve_device_descriptor_path(
-            backend_device_descriptor_path
-        )
     if backend_cluster_descriptor_path is not None:
         g_compiler_config.backend_cluster_descriptor_path = backend_cluster_descriptor_path
     if backend_runtime_params_path is not None:
