@@ -560,3 +560,23 @@ def Tilize(name: str, operandA: Tensor) -> Tensor:
     """
 
     return op("tilizer", name, operandA).get_tensor()
+
+
+def Argwhere(name: str, condition: Tensor) -> Tensor:
+    """
+    Find the indices of elements of a tensor that are non-zero.
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    condition: Tensor
+        The input condition tensor (serving as a mask)
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    return op("argwhere", name, condition).get_tensor()

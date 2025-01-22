@@ -68,6 +68,7 @@ op_to_module_map = {
     "pow": "eltwise_unary",
     "tilizer": Tilizer,
     "erf": "eltwise_unary",
+    "argwhere": "eltwise_unary",
     "conv_sum": "eltwise_nary",
     "concatenate": "eltwise_nary",
     "where": "eltwise_nary",
