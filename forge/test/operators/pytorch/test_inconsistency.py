@@ -21,15 +21,10 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestCollection
 from test.operators.utils import TestPlanScanner
 
-
-class TestParamsData:
-
-    __test__ = False  # Avoid collecting TestParamsData as a pytest test
-
-    test_suite = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
+from .test_all import TestSuiteData
 
 
-test_suite = TestParamsData.test_suite
+test_suite = TestSuiteData.all
 
 
 class TestInconsistency:
