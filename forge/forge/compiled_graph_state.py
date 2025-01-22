@@ -12,7 +12,7 @@ from dataclasses_json import dataclass_json, config
 from forge._C import DataFormat, ForgeGraphModule, GraphType
 from forge._C.graph import Graph, RuntimeTensorTransform
 import forge._C.graph as pygraph
-from forge._C.runtime import run_binary, Binary
+from forge._C.runtime import run_binary, Binary, TensorPool, Tensor as CTensor, run_binary_v2
 from forge.utils import list_as_json
 from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors
 from forge.module import Module, PyTorchModule
@@ -196,7 +196,9 @@ class CompiledModel:
     """
 
     fwd_compiled_graph_state: CompiledGraphState
+    tensor_pool: TensorPool
     bwd_compiled_graph_state: Optional[CompiledGraphState]
+    opt_compiled_graph_state: Optional[CompiledGraphState]
 
     # Compiled flatbuffer binary composed of programs which execute compiled graphs (e.g., forward, backward, etc.)
     compiled_binary: Binary
@@ -225,8 +227,38 @@ class CompiledModel:
         attached_module: Optional["CompiledModel"] = None,
     ):
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
+        self.tensor_pool = TensorPool()
+        self.create_persistent_inputs(self.tensor_pool, fwd_compiled_graph_state)
+        self.fwd_persistent_tensors = [
+            self.tensor_pool.get_tensor(name)
+            for name in [
+                *self.fwd_compiled_graph_state.ordered_constant_node_names,
+                *self.fwd_compiled_graph_state.ordered_parameter_node_names,
+            ]
+        ]
+
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
+        if self.bwd_compiled_graph_state is not None:
+            self.create_persistent_inputs(self.tensor_pool, self.bwd_compiled_graph_state)
+            self.bwd_persistent_tensors = [
+                self.tensor_pool.get_tensor(name)
+                for name in [
+                    *self.bwd_compiled_graph_state.ordered_constant_node_names,
+                    *self.bwd_compiled_graph_state.ordered_parameter_node_names,
+                ]
+            ]
+
         self.opt_compiled_graph_state = opt_compiled_graph_state
+        if self.opt_compiled_graph_state is not None:
+            self.create_persistent_inputs(self.tensor_pool, self.opt_compiled_graph_state)
+            self.opt_persistent_tensors = [
+                self.tensor_pool.get_tensor(name)
+                for name in [
+                    *self.opt_compiled_graph_state.ordered_constant_node_names,
+                    *self.opt_compiled_graph_state.ordered_parameter_node_names,
+                ]
+            ]
+
         self.compiled_binary = compiled_binary
         self.inputs = []
         self.framework_module = framework_module
@@ -237,6 +269,21 @@ class CompiledModel:
         self.outputs = {}
         self.attached_module = attached_module
         self.gradient_outputs = []
+
+    def create_persistent_inputs(self, tensor_pool: TensorPool, compiled_graph_state: CompiledGraphState):
+        persistent_inputs = []
+        for name, value in zip(
+            compiled_graph_state.ordered_constant_node_names, compiled_graph_state.get_ordered_constant_tensors()
+        ):
+            persistent_inputs.append((name, value))
+
+        for name, value in zip(
+            compiled_graph_state.ordered_parameter_node_names, compiled_graph_state.get_ordered_parameter_tensors()
+        ):
+            persistent_inputs.append((name, value))
+
+        for name, tensor in persistent_inputs:
+            tensor_pool.insert(name, tensor)
 
     def tie_grad_fn(self, grad_id: int, grad: torch.Tensor):
         """
@@ -263,15 +310,10 @@ class CompiledModel:
             Output tensors
         """
         self.inputs = [*inputs]
-        inputs_and_parameters = [
-            *inputs,
-            *self.fwd_compiled_graph_state.get_ordered_constant_tensors(),
-            *self.fwd_compiled_graph_state.get_ordered_parameter_tensors(),
-        ]
 
-        if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
+        if any([not isinstance(t, torch.Tensor) for t in self.inputs]):
             logger.info("Converting inputs and parameters to PyTorch tensors...")
-            inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
+            self.inputs = [*to_pt_tensors(self.inputs)]
 
         if self.training() and isinstance(self.framework_module, PyTorchModule):
             for name, param in self.framework_module.module.named_parameters():
@@ -288,7 +330,9 @@ class CompiledModel:
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
-        all_outputs = run_binary(self.compiled_binary, int(ProgramId.FORWARD), inputs_and_parameters)
+        all_outputs = run_binary_v2(
+            self.compiled_binary, int(ProgramId.FORWARD), self.inputs, self.fwd_persistent_tensors
+        )
 
         self.intermediates = []
 
@@ -318,10 +362,7 @@ class CompiledModel:
     def backward(self) -> List[torch.Tensor]:
         assert self.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
-        consts_and_params = [
-            *self.bwd_compiled_graph_state.get_ordered_constant_tensors(),
-            *self.bwd_compiled_graph_state.get_ordered_parameter_tensors(),
-        ]
+        assert self.bwd_persistent_tensors is not None, "Persistent tensors should be present for backward pass."
 
         for grad in self.gradient_inputs:
             assert grad is not None, "Gradients not provided for backward pass."
@@ -339,10 +380,11 @@ class CompiledModel:
         logger.info(
             f"Running backward pass on model {self.framework_module.get_name()} {self.bwd_compiled_graph_state.graph.get_name()} on device..."
         )
-        grads = run_binary(
+        grads = run_binary_v2(
             self.compiled_binary,
             int(ProgramId.BACKWARD),
-            [*self.gradient_inputs, *self.intermediates, *inputs, *consts_and_params],
+            [*self.gradient_inputs, *self.intermediates, *inputs],
+            self.bwd_persistent_tensors,
         )
 
         if self.optimizer_on_device():
@@ -394,17 +436,15 @@ class CompiledModel:
         assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
         assert self.opt_compiled_graph_state is not None, "Optimizer graph should be present for training."
 
-        inputs_and_parameters = [
+        inputs = [
             *self.gradient_outputs,
-            *self.opt_compiled_graph_state.get_ordered_constant_tensors(),
-            *self.opt_compiled_graph_state.get_ordered_parameter_tensors(),
         ]
 
         logger.info(
             f"Running optimizer step on model {self.framework_module.get_name()} {self.opt_compiled_graph_state.graph.get_name()} on device..."
         )
 
-        out_params = run_binary(self.compiled_binary, int(ProgramId.OPTIMIZER), inputs_and_parameters)
+        out_params = run_binary_v2(self.compiled_binary, int(ProgramId.OPTIMIZER), inputs, self.opt_persistent_tensors)
 
         update_param: Dict[str, torch.Tensor] = {}
         for idx, param in enumerate(self.opt_compiled_graph_state.ordered_output_names):
@@ -412,14 +452,38 @@ class CompiledModel:
 
         for weight_update_name in self.opt_compiled_graph_state.aliased_outputs:
             weight_name = self.opt_compiled_graph_state.aliased_outputs[weight_update_name]
-            assert self.opt_compiled_graph_state.get_parameter_tensor(
-                weight_name
-            ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
-            self.fwd_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
+            # assert self.opt_compiled_graph_state.get_parameter_tensor(
+            #     weight_name
+            # ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
+            self.tensor_pool.update_tensor(
+                weight_name, update_param[weight_update_name]
+            )  # get_tensor(weight_name).set_tensor_data(update_param[weight_update_name])
 
             # Sanity check - assert that the parameter tensors in framework module are the same as the ones in our runtime.
             for torch_name, val in self.framework_module.module.named_parameters():
                 if torch_name == weight_name:
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
+
+        self.fwd_persistent_tensors = [
+            self.tensor_pool.get_tensor(name)
+            for name in [
+                *self.fwd_compiled_graph_state.ordered_constant_node_names,
+                *self.fwd_compiled_graph_state.ordered_parameter_node_names,
+            ]
+        ]
+        self.bwd_persistent_tensors = [
+            self.tensor_pool.get_tensor(name)
+            for name in [
+                *self.bwd_compiled_graph_state.ordered_constant_node_names,
+                *self.bwd_compiled_graph_state.ordered_parameter_node_names,
+            ]
+        ]
+        self.opt_persistent_tensors = [
+            self.tensor_pool.get_tensor(name)
+            for name in [
+                *self.opt_compiled_graph_state.ordered_constant_node_names,
+                *self.opt_compiled_graph_state.ordered_parameter_node_names,
+            ]
+        ]
 
         self.gradient_outputs = []
