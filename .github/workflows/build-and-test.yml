@@ -178,7 +178,6 @@ jobs:
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
-               -n 1 \ # Force pytest-xdist process isolation
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                2>&1 | tee pytest.log
 
