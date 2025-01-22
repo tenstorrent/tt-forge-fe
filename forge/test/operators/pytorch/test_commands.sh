@@ -28,11 +28,8 @@ function print_help {
     echo "  collect_only_off    - Remove collect only setup."
     echo "  reset_pytest_opts   - Reset pytest options."
     echo "Run commands:"
-    echo "  test_plan           - Run all tests from test plan. Support OPERATORS query parameter."
-    echo "  test_query          - Run subset of test plan based on a query parameters."
+    echo "  test_query          - Run all tests or subset of test plan based on a query parameters."
     echo "  test_unique         - Run representative examples of all available tests."
-    echo "  test_single         - Run single test based on TEST_ID parameter."
-    echo "  test_ids            - Run tests for multile ids from a test id file defined via ID_FILE parameter."
     print_params
 }
 
@@ -52,6 +49,7 @@ function print_params {
     echo "  RANGE=$RANGE"
     echo "  TEST_ID=$TEST_ID"
     echo "  ID_FILE=$ID_FILE"
+    echo "  ID_FILES_IGNORE=$ID_FILES_IGNORE"
     echo "Pytest options:"
     echo "  PYTEST_ADDOPTS = $PYTEST_ADDOPTS"
 }
@@ -86,6 +84,7 @@ function reset_query_params {
     unset RANGE
     unset TEST_ID
     unset ID_FILE
+    unset ID_FILES_IGNORE
     print_params
 }
 
@@ -158,24 +157,12 @@ function _run_test_all {
     print_params
 }
 
-function test_plan {
-    _run_test_all test_plan
-}
-
 function test_query {
     _run_test_all test_query
 }
 
 function test_unique {
     _run_test_all test_unique
-}
-
-function test_single {
-    _run_test_all test_single
-}
-
-function test_ids {
-    _run_test_all test_ids
 }
 
 
