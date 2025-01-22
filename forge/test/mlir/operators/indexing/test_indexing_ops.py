@@ -678,7 +678,7 @@ def test_where(input_tensor1, input_tensor2):
         ),
     ],
 )
-@pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::argwhere']")
+# @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::argwhere']")
 def test_argwhere(input_tensor):
     class ArgwhereModule(nn.Module):
         def forward(self, x):
