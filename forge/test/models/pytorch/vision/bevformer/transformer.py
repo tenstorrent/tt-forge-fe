@@ -224,6 +224,42 @@ def multi_scale_deformable_attn_pytorch(value, value_spatial_shapes, sampling_lo
     return output.transpose(1, 2).contiguous()
 
 
+def multi_scale_deformable_attn_pytorch_sca(value, value_spatial_shapes, sampling_locations, attention_weights):
+    bs, _, num_heads, embed_dims = value.shape
+    sampling_locations = sampling_locations.unsqueeze(-3)
+    _, num_queries, num_heads, num_levels, num_points, _ = sampling_locations.shape
+    value_list = value.split([H_ * W_ for H_, W_ in value_spatial_shapes], dim=1)
+    sampling_grids = 2 * sampling_locations - 1
+    sampling_value_list = []
+    for level, (H_, W_) in enumerate(value_spatial_shapes):
+        # bs, H_*W_, num_heads, embed_dims ->
+        # bs, H_*W_, num_heads*embed_dims ->
+        # bs, num_heads*embed_dims, H_*W_ ->
+        # bs*num_heads, embed_dims, H_, W_
+        value_l_ = value_list[level].flatten(2).transpose(1, 2).reshape(bs * num_heads, embed_dims, H_, W_)
+        # bs, num_queries, num_heads, num_points, 2 ->
+        # bs, num_heads, num_queries, num_points, 2 ->
+        # bs*num_heads, num_queries, num_points, 2
+        sampling_grid_l_ = sampling_grids[:, :, :, level].transpose(1, 2).flatten(0, 1)
+        # bs*num_heads, embed_dims, num_queries, num_points
+        sampling_value_l_ = F.grid_sample(
+            value_l_, sampling_grid_l_, mode="bilinear", padding_mode="zeros", align_corners=False
+        )
+        sampling_value_list.append(sampling_value_l_)
+    # (bs, num_queries, num_heads, num_levels, num_points) ->
+    # (bs, num_heads, num_queries, num_levels, num_points) ->
+    # (bs, num_heads, 1, num_queries, num_levels*num_points)
+    attention_weights = attention_weights.transpose(1, 2).reshape(
+        bs * num_heads, 1, num_queries, num_levels * num_points
+    )
+    output = (
+        (torch.stack(sampling_value_list, dim=-2).flatten(-2) * attention_weights)
+        .sum(-1)
+        .view(bs, num_heads * embed_dims, num_queries)
+    )
+    return output.transpose(1, 2).contiguous()
+
+
 @ATTENTION.register_module()
 class CustomMSDeformableAttention(BaseModule):
     def __init__(
@@ -329,8 +365,10 @@ class CustomMSDeformableAttention(BaseModule):
             value = value.masked_fill(key_padding_mask[..., None], 0.0)
         value = value.view(bs, num_value, self.num_heads, -1)
 
+        # sampling_offsets = self.sampling_offsets(query).view(
+        #     bs, num_query, self.num_heads, self.num_levels, self.num_points, 2)
         sampling_offsets = self.sampling_offsets(query).view(
-            bs, num_query, self.num_heads, self.num_levels, self.num_points, 2
+            bs, num_query, self.num_heads, self.num_levels * self.num_points, 2
         )
         attention_weights = self.attention_weights(query).view(
             bs, num_query, self.num_heads, self.num_levels * self.num_points
@@ -340,10 +378,13 @@ class CustomMSDeformableAttention(BaseModule):
         attention_weights = attention_weights.view(bs, num_query, self.num_heads, self.num_levels, self.num_points)
         if reference_points.shape[-1] == 2:
             offset_normalizer = torch.stack([spatial_shapes[..., 1], spatial_shapes[..., 0]], -1)
+            # sampling_locations = reference_points[:, :, None, :, None, :] \
+            #     + sampling_offsets \
+            #     / offset_normalizer[None, None, None, :, None, :]
             sampling_locations = (
-                reference_points[:, :, None, :, None, :]
-                + sampling_offsets / offset_normalizer[None, None, None, :, None, :]
+                reference_points[:, None, :, None, :] + sampling_offsets / offset_normalizer[None, None, :, None, :]
             )
+            sampling_locations = sampling_locations.squeeze(1)
         elif reference_points.shape[-1] == 4:
             sampling_locations = (
                 reference_points[:, :, None, :, None, :2]
@@ -353,7 +394,6 @@ class CustomMSDeformableAttention(BaseModule):
             raise ValueError(
                 f"Last dim of reference_points must be" f" 2 or 4, but get {reference_points.shape[-1]} instead."
             )
-        # return (value, spatial_shapes, sampling_locations, attention_weights)
         if torch.cuda.is_available() and value.is_cuda:
 
             # using fp16 deformable attention is unstable because it performs many sum operations
@@ -365,7 +405,11 @@ class CustomMSDeformableAttention(BaseModule):
                 value, spatial_shapes, level_start_index, sampling_locations, attention_weights, self.im2col_step
             )
         else:
-            output = multi_scale_deformable_attn_pytorch(value, spatial_shapes, sampling_locations, attention_weights)
+            # output = multi_scale_deformable_attn_pytorch(
+            #     value, spatial_shapes, sampling_locations, attention_weights)
+            output = multi_scale_deformable_attn_pytorch_sca(
+                value, spatial_shapes, sampling_locations, attention_weights
+            )
 
         output = self.output_proj(output)
 
@@ -566,8 +610,8 @@ class SpatialCrossAttention(BaseModule):
         #     for i, reference_points_per_img in enumerate(reference_points_cam):
         #         index_query_per_img = indexes[i]
         #         queries_rebatch[j, i, :len(index_query_per_img)] = query[j, index_query_per_img]
-        #         reference_points_rebatch[j, i, :len(index_query_per_img)] = reference_points_per_img[j, index_query_per_img]   ## original commented
-        ######## Workaround for aten_copy tracing issue(in-plce indexing replaced with stack and conact) ###########
+        #         reference_points_rebatch[j, i, :len(index_query_per_img)] = reference_points_per_img[j, index_query_per_img]
+
         queries_rebatch_list = []
         reference_points_rebatch_list = []
 
@@ -608,7 +652,6 @@ class SpatialCrossAttention(BaseModule):
         # Stack the lists into tensors
         queries_rebatch = torch.stack(queries_rebatch_list).view(bs, self.num_cams, max_len, self.embed_dims)
         reference_points_rebatch = torch.stack(reference_points_rebatch_list).view(bs, self.num_cams, max_len, D, 2)
-        #################################################
         num_cams, l, bs, embed_dims = key.shape
 
         key = key.permute(2, 0, 1, 3).reshape(bs * self.num_cams, l, self.embed_dims)
@@ -622,19 +665,35 @@ class SpatialCrossAttention(BaseModule):
             level_start_index=level_start_index,
         ).view(bs, self.num_cams, max_len, self.embed_dims)
 
+        # for j in range(bs):
+        #     for i, index_query_per_img in enumerate(indexes):
+        #         slots[j, index_query_per_img] += queries[j, i, :len(index_query_per_img)]
         for j in range(bs):
             for i, index_query_per_img in enumerate(indexes):
-                slots[j, index_query_per_img] += queries[j, i, : len(index_query_per_img)]
 
+                mask = torch.zeros_like(slots, dtype=torch.bool)
+                mask[j, index_query_per_img] = True
+
+                updates = slots[j, index_query_per_img] + queries[j, i, : len(index_query_per_img)]
+                slots.masked_scatter_(mask, updates)
+        # count = bev_mask.sum(-1) > 0
+        # count = count.permute(1, 2, 0).sum(-1)
+        # # count = torch.clamp(count, min=1.0)
+        # count = torch.where(count < 1.0, torch.tensor(1.0, dtype=torch.float32), count)  ## pcc drop
+        # # count = np.clip(count.numpy(), a_min=1.0, a_max=None).astype(np.float32)   ## pcc drop
+        # # count = torch.tensor(count,dtype=torch.float32)
+        # slots = slots / count[..., None]
+        # slots = self.output_proj(slots)
+        # return self.dropout(slots) + inp_residual
         count = bev_mask.sum(-1) > 0
         count = count.permute(1, 2, 0).sum(-1)
         # count = torch.clamp(count, min=1.0)
-        count = np.clip(count.detach().numpy(), a_min=1.0, a_max=None).astype(
-            np.float32
-        )  ## changed to numpy equivalent
+        count = np.clip(count.detach().numpy(), a_min=1.0, a_max=None).astype(np.float32)
         count = torch.tensor(count, dtype=torch.float32)
+        # return (query, key, value, bev_mask, queries_rebatch, reference_points_rebatch, queries, slots, count)
         slots = slots / count[..., None]
         slots = self.output_proj(slots)
+        # return (self.dropout(slots) + inp_residual, query, key, value)
         return self.dropout(slots) + inp_residual
 
 
@@ -797,8 +856,10 @@ class MSDeformableAttention3D(BaseModule):
             value = value.masked_fill(key_padding_mask[..., None], 0.0)
         value = value.view(bs, num_value, self.num_heads, -1)
 
+        # sampling_offsets = self.sampling_offsets(query).view(
+        #     bs, num_query, self.num_heads, self.num_levels, self.num_points, 2)
         sampling_offsets = self.sampling_offsets(query).view(
-            bs, num_query, self.num_heads, self.num_levels, self.num_points, 2
+            bs, num_query, self.num_heads, self.num_levels * self.num_points, 2
         )
         attention_weights = self.attention_weights(query).view(
             bs, num_query, self.num_heads, self.num_levels * self.num_points
@@ -806,6 +867,9 @@ class MSDeformableAttention3D(BaseModule):
         attention_weights = attention_weights.softmax(-1)
 
         attention_weights = attention_weights.view(bs, num_query, self.num_heads, self.num_levels, self.num_points)
+        # logger.info("Returning attention_weights, sampling_offsets, key, value")
+        # return (attention_weights, sampling_offsets, key, value)  ## no data_mismatch
+        # return sampling_offsets
 
         if reference_points.shape[-1] == 2:
             """
@@ -816,18 +880,25 @@ class MSDeformableAttention3D(BaseModule):
             """
             offset_normalizer = torch.stack([spatial_shapes[..., 1], spatial_shapes[..., 0]], -1)
             bs, num_query, num_Z_anchors, xy = reference_points.shape
-            reference_points = reference_points[:, :, None, None, None, :, :]
-            sampling_offsets = sampling_offsets / offset_normalizer[None, None, None, :, None, :]
-            bs, num_query, num_heads, num_levels, num_all_points, xy = sampling_offsets.shape
+            # reference_points = reference_points[:, :, None, None, None, :, :]
+            # sampling_offsets = sampling_offsets / \
+            #     offset_normalizer[None, None, None, :, None, :]
+            reference_points = reference_points[:, :, None, :, :]
+            sampling_offsets = sampling_offsets / offset_normalizer[None, None, None, :, :]
+            # bs, num_query, num_heads, num_levels, num_all_points, xy = sampling_offsets.shape
+            bs, num_query, num_heads, num_levels_num_all_points, xy = sampling_offsets.shape
+            # sampling_offsets = sampling_offsets.view(
+            #     bs, num_query, num_heads, num_levels, num_all_points // num_Z_anchors, num_Z_anchors, xy)
             sampling_offsets = sampling_offsets.view(
-                bs, num_query, num_heads, num_levels, num_all_points // num_Z_anchors, num_Z_anchors, xy
+                bs, num_query, (num_heads * self.num_levels) * (self.num_points // num_Z_anchors), num_Z_anchors, xy
             )
-
             sampling_locations = reference_points + sampling_offsets
-            bs, num_query, num_heads, num_levels, num_points, num_Z_anchors, xy = sampling_locations.shape
-            assert num_all_points == num_points * num_Z_anchors
+            # bs, num_query, num_heads, num_levels, num_points, num_Z_anchors, xy = sampling_locations.shape
+            # assert num_all_points == num_points * num_Z_anchors
 
-            sampling_locations = sampling_locations.view(bs, num_query, num_heads, num_levels, num_all_points, xy)
+            # sampling_locations = sampling_locations.view(
+            #     bs, num_query, num_heads, num_levels, num_all_points, xy)
+            sampling_locations = sampling_locations.view(bs, num_query, self.num_points, self.num_points, xy)
 
         elif reference_points.shape[-1] == 4:
             assert False
@@ -838,6 +909,10 @@ class MSDeformableAttention3D(BaseModule):
 
         #  sampling_locations.shape: bs, num_query, num_heads, num_levels, num_all_points, 2
         #  attention_weights.shape: bs, num_query, num_heads, num_levels, num_all_points
+        #
+        # logger.info("Returning sampling_locations")
+        # return sampling_locations
+        # return (value, sampling_locations, attention_weights)  ## data mismatch
         if torch.cuda.is_available() and value.is_cuda:
             if value.dtype == torch.float16:
                 MultiScaleDeformableAttnFunction = MultiScaleDeformableAttnFunction_fp32
@@ -847,7 +922,11 @@ class MSDeformableAttention3D(BaseModule):
                 value, spatial_shapes, level_start_index, sampling_locations, attention_weights, self.im2col_step
             )
         else:
-            output = multi_scale_deformable_attn_pytorch(value, spatial_shapes, sampling_locations, attention_weights)
+            # output = multi_scale_deformable_attn_pytorch(
+            #     value, spatial_shapes, sampling_locations, attention_weights)
+            output = multi_scale_deformable_attn_pytorch_sca(
+                value, spatial_shapes, sampling_locations, attention_weights
+            )
         if not self.batch_first:
             output = output.permute(1, 0, 2)
 
@@ -1010,7 +1089,7 @@ class TemporalSelfAttention(BaseModule):
 
         sampling_offsets = self.sampling_offsets(query)
         # sampling_offsets = sampling_offsets.view(
-        #     bs, num_query, self.num_heads,  self.num_bev_queue, self.num_levels, self.num_points, 2)   ## original commented
+        #     bs, num_query, self.num_heads,  self.num_bev_queue, self.num_levels, self.num_points, 2)
         attention_weights = self.attention_weights(query).view(
             bs, num_query, self.num_heads, self.num_bev_queue, self.num_levels * self.num_points
         )
@@ -1025,17 +1104,17 @@ class TemporalSelfAttention(BaseModule):
             .contiguous()
         )
         # sampling_offsets = sampling_offsets.permute(0, 3, 1, 2, 4, 5, 6)\
-        # .reshape(bs*self.num_bev_queue, num_query, self.num_heads, self.num_levels, self.num_points, 2)   ## original commented
-        ##### Limiting within 5d ########
+        # .reshape(bs*self.num_bev_queue, num_query, self.num_heads, self.num_levels, self.num_points, 2)
         sampling_offsets = sampling_offsets.view(
             bs, num_query, self.num_heads, self.num_bev_queue * self.num_levels, self.num_points * 2
         )
         sampling_offsets = sampling_offsets.permute(0, 3, 1, 2, 4).reshape(
             bs * self.num_bev_queue, num_query, self.num_heads, self.num_points, 2
         )
-        #################################
+        # .reshape(bs*self.num_bev_queue, num_query, self.num_heads, self.num_levels, self.num_points, 2)
+
         if reference_points.shape[-1] == 2:
-            sampling_offsets = sampling_offsets.unsqueeze(-3)  ## added
+            sampling_offsets = sampling_offsets.unsqueeze(-3)
             offset_normalizer = torch.stack([spatial_shapes[..., 1], spatial_shapes[..., 0]], -1)
             sampling_locations = (
                 reference_points[:, :, None, :, None, :]
@@ -1545,10 +1624,18 @@ class DetectionTransformerDecoder(TransformerLayerSequence):
                 tmp = reg_branches[lid](output)
 
                 assert reference_points.shape[-1] == 3
-
                 new_reference_points = torch.zeros_like(reference_points)
-                new_reference_points[..., :2] = tmp[..., :2] + inverse_sigmoid(reference_points[..., :2])
-                new_reference_points[..., 2:3] = tmp[..., 4:5] + inverse_sigmoid(reference_points[..., 2:3])
+                # new_reference_points[..., :2] = tmp[
+                #     ..., :2] + inverse_sigmoid(reference_points[..., :2])
+                # new_reference_points[..., 2:3] = tmp[
+                #     ..., 4:5] + inverse_sigmoid(reference_points[..., 2:3])
+                new_reference_points = torch.cat(
+                    [
+                        tmp[..., :2] + inverse_sigmoid(reference_points[..., :2]),
+                        tmp[..., 4:5] + inverse_sigmoid(reference_points[..., 2:3]),
+                    ],
+                    dim=-1,
+                )
 
                 new_reference_points = new_reference_points.sigmoid()
 
@@ -1642,7 +1729,8 @@ class BEVFormerEncoder(TransformerLayerSequence):
     # This function must use fp32!!!
     @force_fp32(apply_to=("reference_points", "img_metas"))
     def point_sampling(self, reference_points, key, pc_range, img_metas):
-        # NOTE: close tf32 here.
+
+        # NOTE: close tf32 here.p
         # allow_tf32 = torch.backends.cuda.matmul.allow_tf32
         # torch.backends.cuda.matmul.allow_tf32 = False
         # torch.backends.cudnn.allow_tf32 = False
@@ -1651,11 +1739,23 @@ class BEVFormerEncoder(TransformerLayerSequence):
             lidar2img.append(img_meta["lidar2img"])
         lidar2img = np.asarray(lidar2img)
         lidar2img = reference_points.new_tensor(lidar2img)  # (B, N, 4, 4)
+        # return (reference_points, lidar2img, key)
         reference_points = reference_points.clone()
 
-        reference_points[..., 0:1] = reference_points[..., 0:1] * (pc_range[3] - pc_range[0]) + pc_range[0]
-        reference_points[..., 1:2] = reference_points[..., 1:2] * (pc_range[4] - pc_range[1]) + pc_range[1]
-        reference_points[..., 2:3] = reference_points[..., 2:3] * (pc_range[5] - pc_range[2]) + pc_range[2]
+        # reference_points[..., 0:1] = reference_points[..., 0:1] * \
+        #     (pc_range[3] - pc_range[0]) + pc_range[0]
+        # reference_points[..., 1:2] = reference_points[..., 1:2] * \
+        #     (pc_range[4] - pc_range[1]) + pc_range[1]
+        # reference_points[..., 2:3] = reference_points[..., 2:3] * \
+        #     (pc_range[5] - pc_range[2]) + pc_range[2]
+        reference_points = torch.cat(
+            (
+                reference_points[..., 0:1] * (pc_range[3] - pc_range[0]) + pc_range[0],
+                reference_points[..., 1:2] * (pc_range[4] - pc_range[1]) + pc_range[1],
+                reference_points[..., 2:3] * (pc_range[5] - pc_range[2]) + pc_range[2],
+            ),
+            dim=-1,
+        )
 
         reference_points = torch.cat((reference_points, torch.ones_like(reference_points[..., :1])), -1)
 
@@ -1673,8 +1773,16 @@ class BEVFormerEncoder(TransformerLayerSequence):
             reference_points_cam[..., 2:3], torch.ones_like(reference_points_cam[..., 2:3]) * eps
         )
 
-        reference_points_cam[..., 0] /= img_metas[0]["img_shape"][0][1]
-        reference_points_cam[..., 1] /= img_metas[0]["img_shape"][0][0]
+        # reference_points_cam[..., 0] /= img_metas[0]['img_shape'][0][1]
+        # reference_points_cam[..., 1] /= img_metas[0]['img_shape'][0][0]
+        reference_points_cam = torch.cat(
+            [
+                reference_points_cam[..., :1] / img_metas[0]["img_shape"][0][1],
+                reference_points_cam[..., 1:2] / img_metas[0]["img_shape"][0][0],
+                reference_points_cam[..., 2:],
+            ],
+            dim=-1,
+        )
 
         bev_mask = (
             bev_mask
@@ -1688,7 +1796,7 @@ class BEVFormerEncoder(TransformerLayerSequence):
         # else:
         #     bev_mask = bev_mask.new_tensor(
         #         np.nan_to_num(bev_mask.cpu().numpy()))
-        bev_mask = bev_mask.new_tensor(np.nan_to_num(bev_mask.cpu().numpy()))  ## changed to numpy equivalent
+        bev_mask = bev_mask.new_tensor(np.nan_to_num(bev_mask.cpu().numpy()))
 
         reference_points_cam = reference_points_cam.permute(2, 1, 3, 0, 4)
         bev_mask = bev_mask.permute(2, 1, 3, 0, 4).squeeze(-1)
@@ -1749,11 +1857,14 @@ class BEVFormerEncoder(TransformerLayerSequence):
         ref_2d = self.get_reference_points(
             bev_h, bev_w, dim="2d", bs=bev_query.size(1), device=bev_query.device, dtype=bev_query.dtype
         )
+        # return (ref_3d, ref_2d, bev_query, key, value) #, spatial_shapes, level_start_index)
         reference_points_cam, bev_mask = self.point_sampling(ref_3d, key, self.pc_range, kwargs["img_metas"])
+        # return (reference_points_cam, bev_mask, ref_3d, ref_2d, bev_query, key, value, spatial_shapes, level_start_index)
         # bug: this code should be 'shift_ref_2d = ref_2d.clone()', we keep this bug for reproducing our results in paper.
         shift_ref_2d = ref_2d.clone()
         shift_ref_2d += shift[:, None, None, :]
 
+        # (num_query, bs, embed_dims) -> (bs, num_query, embed_dims)
         bev_query = bev_query.permute(1, 0, 2)
         # return key
         bev_pos = bev_pos.permute(1, 0, 2)
@@ -1766,6 +1877,7 @@ class BEVFormerEncoder(TransformerLayerSequence):
             hybird_ref_2d = torch.stack([ref_2d, ref_2d], 1).reshape(bs * 2, len_bev, num_bev_level, 2)
         for lid, layer in enumerate(self.layers):
             output = layer(
+                # output, m1, m2 ,m3 = layer(
                 bev_query,
                 key,
                 value,
@@ -1791,6 +1903,7 @@ class BEVFormerEncoder(TransformerLayerSequence):
         if self.return_intermediate:
             return torch.stack(intermediate)
 
+        # return output, m1, m2 ,m3
         return output
 
 
@@ -2168,6 +2281,7 @@ class BEVFormerLayer(MyCustomBaseTransformerLayer):
             # spaital cross attention
             if layer == "cross_attn":
                 query = self.attentions[attn_index](
+                    # query, m1, m2 ,m3= self.attentions[attn_index](
                     query,
                     key,
                     value,
@@ -2190,6 +2304,7 @@ class BEVFormerLayer(MyCustomBaseTransformerLayer):
                 query = self.ffns[ffn_index](query, identity if self.pre_norm else None)
                 ffn_index += 1
 
+        # return (query, m1, m2 ,m3)
         return query
 
 
@@ -2300,6 +2415,7 @@ class PerceptionTransformer(BaseModule):
         shift_y = shift_y * self.use_shift
         shift_x = shift_x * self.use_shift
         shift = bev_queries.new_tensor([shift_x, shift_y]).permute(1, 0)  # xy, bs -> bs, xy
+        # return shift
 
         if prev_bev is not None:
             if prev_bev.shape[1] == bev_h * bev_w:
@@ -2406,6 +2522,7 @@ class PerceptionTransformer(BaseModule):
         bev_embed = self.get_bev_features(
             mlvl_feats, bev_queries, bev_h, bev_w, grid_length=grid_length, bev_pos=bev_pos, prev_bev=prev_bev, **kwargs
         )  # bev_embed shape: bs, bev_h*bev_w, embed_dims
+
         bs = mlvl_feats[0].size(0)
         query_pos, query = torch.split(object_query_embed, self.embed_dims, dim=1)
         query_pos = query_pos.unsqueeze(0).expand(bs, -1, -1)
