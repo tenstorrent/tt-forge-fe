@@ -128,6 +128,9 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:143"
             in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145"
+            in f"{ex}",
         ],
         FailingReasons.ATTRIBUTE_ERROR: [
             lambda ex: isinstance(ex, AttributeError),
@@ -164,6 +167,21 @@ class FailingReasonsValidation:
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and "Index is out of bounds for the rank, should be between 0 and 0 however is 1" in f"{ex}",
+            # lambda ex: isinstance(ex, RuntimeError)
+            # and "input_tensor_arg.get_layout() == ttnn::ROW_MAJOR_LAYOUT" in f"{ex}",
+            # lambda ex: isinstance(ex, RuntimeError) and "weights.get_dtype() == DataType::BFLOAT16" in f"{ex}",
+            # lambda ex: isinstance(ex, RuntimeError)
+            # and "Tensor 1 - data type mismatch: expected BFloat16, got Float32" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/repeat/repeat.cpp:41: repeat_dims.rank() == input_rank"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/binary.cpp:124: second_shape[-3] == 1"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/types.cpp:192: normalized_index >= 0 and normalized_index < rank"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Fatal error" in f"{ex}",
         ],
     }
 
