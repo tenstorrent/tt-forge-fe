@@ -242,6 +242,15 @@ class TestCollectionData:
     )
 
 
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    __skip_list_file = f"{os.path.dirname(__file__)}/_ids/skip_list.txt"
+
+    skip_list = TestPlanUtils.load_test_ids_from_file(__skip_list_file) if os.path.exists(__skip_list_file) else []
+
+
 class TestSuiteData:
 
     __test__ = False  # Avoid collecting TestSuiteData as a pytest test
@@ -259,6 +268,8 @@ class VectorLambdas:
 
     QUICK = lambda test_vector: test_vector in TestCollectionData.quick
     FILTERED = lambda test_vector: test_vector in TestCollectionData.filtered
+
+    SKIP_LIST = lambda test_vector: test_vector.get_id() not in TestIdsData.skip_list
 
     SINGLE_SHAPE = lambda test_vector: test_vector.input_shape in TestCollectionCommon.single.input_shapes
 
@@ -348,6 +359,7 @@ def test_custom(test_vector: TestVector, test_device):
     .filter(VectorLambdas.FILTERED)
     .filter(*TestParamsData.build_filter_lambdas())
     .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
+    .filter(VectorLambdas.SKIP_LIST)
     .range(*TestParamsData.get_filter_range())
     .to_params(),
 )
