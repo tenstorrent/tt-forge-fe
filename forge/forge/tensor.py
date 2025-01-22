@@ -1474,12 +1474,14 @@ def get_post_const_eval_tensors(
             constant_nodes, device_constant_and_parameters, consteval_trace, input_name, is_forge
         )
 
-        post_const_eval_constants[input_name] = const_eval_tensor(
+        value = const_eval_tensor(
             inputs,
             consteval_trace,
             input_name,
             is_forge,
         )
+
+        post_const_eval_constants[input_name] = value
 
     return post_const_eval_constants
 
