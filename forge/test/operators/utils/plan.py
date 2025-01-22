@@ -316,12 +316,6 @@ class TestQuery:
         return query.calculate_failing_result()
 
     @classmethod
-    def query_from_id_file(cls, test_plan: Union["TestPlan", "TestSuite"], test_ids_file: str) -> "TestQuery":
-        test_vectors = test_plan.load_test_vectors_from_id_file(test_ids_file)
-        query = TestQuery(test_vectors)
-        return query.calculate_failing_result()
-
-    @classmethod
     def query_from_id_list(cls, test_plan: Union["TestPlan", "TestSuite"], test_ids: List[str]) -> "TestQuery":
         test_vectors = test_plan.load_test_vectors_from_id_list(test_ids)
         query = TestQuery(test_vectors)
@@ -438,11 +432,6 @@ class TestPlan:
 
                                             yield test_vector
 
-    def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
-        test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
-
-        return self.load_test_vectors_from_id_list(test_ids)
-
     def load_test_vectors_from_id_list(self, test_ids: List[str]) -> List[TestVector]:
         test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
 
@@ -454,10 +443,8 @@ class TestPlan:
         return test_vectors
 
     def query_all(self) -> TestQuery:
+        logger.trace("Query all test vectors")
         return TestQuery.all(self)
-
-    def query_from_id_file(self, test_ids_file: str) -> TestQuery:
-        return TestQuery.query_from_id_file(self, test_ids_file)
 
     def query_from_id_list(self, test_ids: List[str]) -> TestQuery:
         return TestQuery.query_from_id_list(self, test_ids)
@@ -486,11 +473,6 @@ class TestSuite:
         generators = [test_plan.generate() for test_plan in self.test_plans]
         return chain(*generators)
 
-    def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
-        test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
-
-        return self.load_test_vectors_from_id_list(test_ids)
-
     def load_test_vectors_from_id_list(self, test_ids: List[str]) -> List[TestVector]:
         test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
 
@@ -504,9 +486,6 @@ class TestSuite:
     def query_all(self) -> TestQuery:
         logger.trace("Query all test vectors")
         return TestQuery.all(self)
-
-    def query_from_id_file(self, test_ids_file: str) -> TestQuery:
-        return TestQuery.query_from_id_file(self, test_ids_file)
 
     def query_from_id_list(self, test_ids: List[str]) -> TestQuery:
         return TestQuery.query_from_id_list(self, test_ids)
@@ -645,19 +624,41 @@ class TestPlanUtils:
     @classmethod
     def load_test_ids_from_file(cls, test_ids_file: str) -> List[str]:
         """Load test ids from a file to a list of strings"""
+        return list(cls.load_test_ids_from_file_gen(test_ids_file))
+
+    @classmethod
+    def load_test_ids_from_file_gen(cls, test_ids_file: str) -> Generator[str, None, None]:
+        """Load test ids from a file as a generator of strings"""
         logger.trace(f"Loading test ids from file: {test_ids_file}")
         with open(test_ids_file, "r") as file:
             test_ids = file.readlines()
 
-            test_ids = [line.strip() for line in test_ids]
+            for test_id in test_ids:
+                test_id = test_id.strip()
+                # Remove empty lines
+                if not test_id:
+                    continue
+                # Remove lines starting with # as comments
+                if test_id.startswith("#"):
+                    continue
+                # Remove no_device prefix from test id
+                test_id = test_id.replace("no_device-", "")
+                yield test_id
 
-            # Remove empty lines
-            test_ids = [line for line in test_ids if line]
+    @classmethod
+    def load_test_ids_from_files(cls, base_dir: str, test_ids_files: List[str]) -> Generator[str, None, None]:
+        """Load test ids from multiple files to a list of strings"""
+        if len(test_ids_files) == 0:
+            return
+        for test_ids_file in test_ids_files:
+            test_ids_file = f"{base_dir}/{test_ids_file}"
 
-            # Remove lines starting with # as comments
-            test_ids = [line for line in test_ids if not line.startswith("#")]
+            if not os.path.exists(test_ids_file):
+                raise FileNotFoundError(f"Test ids file not found: {test_ids_file}")
 
-            return test_ids
+            test_ids = TestPlanUtils.load_test_ids_from_file_gen(test_ids_file)
+            for test_id in test_ids:
+                yield test_id
 
     @classmethod
     def test_id_to_test_vector(cls, test_id: str) -> TestVector:
