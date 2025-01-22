@@ -72,6 +72,33 @@ class TestParamsData:
         return test_ids
 
     @classmethod
+    def load_test_ids_from_files(cls, test_ids_files: List[str]) -> list[str]:
+        all_test_ids = []
+        for test_ids_file in test_ids_files:
+            test_ids_file = f"{os.path.dirname(__file__)}/{test_ids_file}"
+
+            if not os.path.exists(test_ids_file):
+                raise FileNotFoundError(f"Test ids file not found: {test_ids_file}")
+
+            test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
+            all_test_ids.extend(test_ids)
+        if len(all_test_ids) == 0:
+            all_test_ids = None
+        return all_test_ids
+
+    @classmethod
+    def get_ignore_test_ids_filenames(cls) -> list[str]:
+
+        """Provide a list of files with test ids to ignore"""
+        id_files_ignore = os.getenv("ID_FILES_IGNORE", None)
+        if id_files_ignore is not None:
+            id_files_ignore = id_files_ignore.split(",")
+            id_files_ignore = [id_file for id_file in id_files_ignore if id_file]
+        else:
+            id_files_ignore = None
+        return id_files_ignore
+
+    @classmethod
     def build_filtered_collection(cls) -> TestCollection:
         """
         Builds a filtering test collection based on environment variables
@@ -242,6 +269,19 @@ class TestCollectionData:
     )
 
 
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    ignore_list = TestParamsData.load_test_ids_from_files(
+        TestParamsData.get_ignore_test_ids_filenames()
+        if TestParamsData.get_ignore_test_ids_filenames() is not None
+        else ["ids/blacklist.txt"]
+    )
+
+    black_list = TestParamsData.load_test_ids_from_files(["ids/blacklist.txt"])
+
+
 class TestSuiteData:
 
     __test__ = False  # Avoid collecting TestSuiteData as a pytest test
@@ -255,10 +295,19 @@ class VectorLambdas:
     """Helper lambdas for filtering test vectors"""
 
     ALL_OPERATORS = lambda test_vector: test_vector in TestCollectionData.all
+    ALL = lambda test_vector: True
     NONE = lambda test_vector: False
 
     QUICK = lambda test_vector: test_vector in TestCollectionData.quick
     FILTERED = lambda test_vector: test_vector in TestCollectionData.filtered
+
+    SKIP_IGNORE_LIST = (
+        lambda test_vector: TestIdsData.ignore_list is None or test_vector.get_id() not in TestIdsData.ignore_list
+    )
+
+    SKIP_BLACK_LIST = (
+        lambda test_vector: TestIdsData.black_list is None or test_vector.get_id() not in TestIdsData.black_list
+    )
 
     SINGLE_SHAPE = lambda test_vector: test_vector.input_shape in TestCollectionCommon.single.input_shapes
 
@@ -305,6 +354,38 @@ class VectorLambdas:
     )
 
 
+class TestQueries:
+
+    __test__ = False  # Avoid collecting TestQueries as a pytest test
+
+    def query_new():
+        if os.getenv("TEST_ID", None) and os.getenv("ID_FILE", None):
+            raise ValueError("TEST_ID and ID_FILE cannot be used together")
+
+        test_suite = TestSuiteData.filtered
+
+        if os.getenv("ID_FILE", None):
+            logger.info("Using test ids from file")
+            query_source = test_suite.query_from_id_list(TestParamsData.get_ids_from_file())
+        elif os.getenv("TEST_ID", None):
+            logger.info("Using single test id")
+            query_source = test_suite.query_from_id_list(TestParamsData.get_single_list())
+        else:
+            logger.info("Using all test vectors")
+            query_source = test_suite.query_all()
+
+        query = (
+            query_source.filter(VectorLambdas.FILTERED)
+            .filter(*TestParamsData.build_filter_lambdas())
+            .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
+            .filter(VectorLambdas.SKIP_IGNORE_LIST if not os.getenv("TEST_ID", None) else VectorLambdas.ALL)
+            .range(*TestParamsData.get_filter_range())
+        )
+        # query = query.log()
+
+        return query
+
+
 @pytest.mark.parametrize(
     "test_vector",
     TestSuiteData.filtered.query_all().filter(
@@ -338,19 +419,12 @@ class VectorLambdas:
     # .filter(VectorLambdas.NONE)
     .to_params(),
 )
-def test_custom(test_vector: TestVector, test_device):
+def example_test_custom(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
-@pytest.mark.parametrize(
-    "test_vector",
-    TestSuiteData.filtered.query_all()
-    .filter(VectorLambdas.FILTERED)
-    .filter(*TestParamsData.build_filter_lambdas())
-    .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
-    .range(*TestParamsData.get_filter_range())
-    .to_params(),
-)
+@pytest.mark.nightly_sweeps
+@pytest.mark.parametrize("test_vector", TestQueries.query_new().to_params())
 def test_query(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
@@ -369,45 +443,6 @@ def test_query(test_vector: TestVector, test_device):
 )
 def test_unique(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_single_list()).to_params()
-)
-def test_single(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_ids_from_file()).to_params()
-)
-def test_ids(test_vector: TestVector, test_device):
-    test_vector.verify(test_device)
-
-
-@pytest.mark.nightly_sweeps
-@pytest.mark.parametrize(
-    "test_vector", TestSuiteData.filtered.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params()
-)
-def test_plan(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-# 1480 passed, 20 xfailed, 2 warnings in 529.46s (0:08:49)
-# 4 failed, 1352 passed, 212 xfailed, 115 xpassed, 2 warnings in 590.56s (0:09:50)
-# 1 failed, 4041 passed, 20 skipped, 321 xfailed, 2 warnings in 1510.10s (0:25:10)
-# 3894 passed, 108 skipped, 444 xfailed, 252 xpassed, 2 warnings in 1719.04s (0:28:39)
-# 3834 passed, 60 skipped, 372 xfailed, 252 xpassed, 2 warnings in 1511.94s (0:25:11)
-# 10 failed, 3442 passed, 59 skipped, 1030 xfailed, 1 xpassed, 2 warnings in 1787.61s (0:29:47)
-# 12 failed, 3443 passed, 59 skipped, 1028 xfailed, 2 warnings in 1716.62s (0:28:36
-# 10 failed, 3443 passed, 59 skipped, 1027 xfailed, 2 warnings in 1819.59s (0:30:19)
-# 5 failed, 3443 passed, 59 skipped, 1032 xfailed, 2 warnings in 1715.26s (0:28:35)
-# 3443 passed, 59 skipped, 1037 xfailed, 2 warnings in 1726.30s (0:28:46)
-# 8 failed, 3432 passed, 59 skipped, 1028 xfailed, 8 xpassed in 1591.84s (0:26:31)
-# 3440 passed, 59 skipped, 1035 xfailed in 1587.97s (0:26:27)
-# 3500 passed, 1056 xfailed in 1668.66s (0:27:48)
-# 4401 passed, 1423 xfailed in 2185.56s (0:36:25)
-# 4395 passed, 1429 xfailed in 2577.15s (0:42:57)
 
 
 # Below are examples of custom test functions that utilize filtering lambdas to run specific tests
@@ -474,6 +509,7 @@ class InfoUtils:
             {"name": "RANGE", "description": "Limit number of results"},
             {"name": "TEST_ID", "description": "Id of a test containing test parameters"},
             {"name": "ID_FILE", "description": "Path to a file containing test ids"},
+            {"name": "ID_FILES_IGNORE", "description": "Paths to files containing test ids to be ignored"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Supported values"])
@@ -502,6 +538,7 @@ class InfoUtils:
             {"name": "RANGE", "description": "export RANGE=10,20"},
             {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
             {"name": "ID_FILE", "description": "export ID_FILE='/path/to/test_ids.log'"},
+            {"name": "ID_FILES_IGNORE", "description": "export ID_FILES_IGNORE='ids/blacklist.txt,ids/ignore.txt'"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])
