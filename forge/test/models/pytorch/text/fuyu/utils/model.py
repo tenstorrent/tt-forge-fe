@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 import torch.nn as nn
-from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask
 
 
 def generate_fuyu_embedding(model, input_ids, image_patches, image_patches_indices):
@@ -56,66 +55,3 @@ class FuyuModelWrapper(nn.Module):
         )
 
         return outputs
-
-
-class FuyuModelImgDecoderWrapper(nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.fuyu_model = model
-        self.fuyu_config = model.config
-
-    def forward(self, inputs_embeds, attention_mask):
-        batch_size, seq_length, hidden_dim = inputs_embeds.shape
-        position_ids = torch.arange(seq_length, dtype=torch.long)
-        position_ids = position_ids.unsqueeze(0).view(-1, seq_length)
-        hidden_states = inputs_embeds
-
-        presents = []
-        for idx, decoder_layer in enumerate(self.fuyu_model.language_model.model.layers):
-            layer_outputs = decoder_layer(
-                hidden_states,
-                attention_mask=attention_mask,
-                position_ids=position_ids,
-                output_attentions=False,
-                use_cache=True,
-            )
-
-            hidden_states = layer_outputs[0]
-            presents.append(layer_outputs[1])
-
-        hidden_states = self.fuyu_model.language_model.model.final_layernorm(hidden_states)
-        return hidden_states, *presents
-
-
-class FuyuModelTxtDecoderWrapper(nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.fuyu_model = model
-        self.fuyu_config = model.config
-
-    def forward(self, inputs_embeds, attention_mask, position_ids, *past_key_values):
-        batch_size, seq_length, _ = inputs_embeds.shape
-        attention_mask = _prepare_4d_causal_attention_mask(
-            attention_mask, (batch_size, seq_length), inputs_embeds, past_key_values[0].shape[-2]
-        )
-        position_ids = position_ids.unsqueeze(0).view(-1, seq_length)
-        hidden_states = inputs_embeds
-
-        presents = []
-        for idx, decoder_layer in enumerate(self.fuyu_model.language_model.model.layers):
-            pkv = tuple([past_key_values[(idx * 2) + j] for j in range(2)])
-
-            layer_outputs = decoder_layer(
-                hidden_states,
-                attention_mask=attention_mask,
-                position_ids=position_ids,
-                past_key_value=pkv,
-                output_attentions=False,
-                use_cache=True,
-            )
-
-            hidden_states = layer_outputs[0]
-            presents.append(layer_outputs[1])
-
-        hidden_states = self.fuyu_model.language_model.model.final_layernorm(hidden_states)
-        return hidden_states, *presents
