@@ -162,8 +162,20 @@ class MLIRGenerator
     }
 
     // Convert a TTForge attribute to an MLIR attribute.
-    mlir::Attribute convert_to_mlir_attribute(const tt::ForgeOpAttr &value)
+    mlir::Attribute convert_to_mlir_attribute(const tt::ForgeOpAttr &value, const std::string &attr_type = "")
     {
+        if (!attr_type.empty())
+        {
+            const std::unordered_map<std::string, std::function<mlir::Attribute()>> attr_converters = {
+                {"unit_32t",
+                 [&]() { return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value))); }}};
+
+            auto it = attr_converters.find(attr_type);
+            if (it != attr_converters.end())
+            {
+                return it->second();
+            }
+        }
         return std::visit(
             [this](auto &&arg) -> mlir::Attribute
             {
@@ -375,9 +387,18 @@ class MLIRGenerator
 
         for (const auto &attribute : op_node->op_type().named_attrs)
         {
+            mlir::Attribute mlir_attribute;
             // convert atribute to mlir atribute
-            auto mlir_atribute = convert_to_mlir_attribute(attribute.second);
-            mlir::NamedAttribute named_attribute = builder_.getNamedAttr(attribute.first, mlir_atribute);
+            if (op_node->op_name() == "repeat_interleave" && attribute.first == "repeats")
+            {
+                std::cout << "repeats val " << attribute.second << std::endl;
+                mlir_attribute = convert_to_mlir_attribute(attribute.second, "unit_32t");
+            }
+            else
+            {
+                mlir_attribute = convert_to_mlir_attribute(attribute.second);
+            }
+            mlir::NamedAttribute named_attribute = builder_.getNamedAttr(attribute.first, mlir_attribute);
             attributes.push_back(named_attribute);
         }
 
