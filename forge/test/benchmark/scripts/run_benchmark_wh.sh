@@ -8,4 +8,4 @@
 
 
 # MNIST Linear
-python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -o forge-benchmark-e2e-mnist.json
+python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o forge-benchmark-e2e-mnist.json
