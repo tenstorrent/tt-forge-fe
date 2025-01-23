@@ -44,14 +44,39 @@ class MarkDownWriter:
     def write_line(self, data: str):
         self.write(data + "\n")
 
-    def write_table_heading(self, table_heading: str, heading_rank: int = 1):
-        table_heading = str("#" * heading_rank) + " " + table_heading
-        self.write_line(table_heading)
+    def write_html_heading(self, heading: str, heading_rank: int = 1):
+        heading = f"<h{heading_rank}>{heading}</h{heading_rank}>"
+        self.write_line(heading)
 
-    def write_table(self, headers, rows):
-        # Create a Markdown table using the tabulate library with GitHub-flavored table formatting.
-        markdown_table = tabulate(rows, headers, tablefmt="github", colalign=("center",) * len(headers))
-        self.write_line(markdown_table)
+    def write_html_paragraph(self, content: str):
+        self.write_line(f"<p>{content}</p>")
+
+    @classmethod
+    def create_html_bold_text(cls, text: str):
+        return f"<b>{text}</b>"
+
+    @classmethod
+    def create_html_paragraph(cls, text: str):
+        return f"<p>{text}</p>"
+
+    @classmethod
+    def create_html_link(cls, link_text: str, url_or_path: str):
+        return f'<a href="{url_or_path}">{link_text}</a>'
+
+    @classmethod
+    def create_html_list(cls, items: List[str]):
+        """
+        Generates an HTML unordered list from a list of strings.
+
+        Args:
+            items (List[str]): A list of strings to include as list items in the HTML.
+
+        Returns:
+            str: The generated HTML unordered list as a string.
+        """
+        list_items = [f"<li>{item}</li>" for item in items]
+        html_list = "<ul>" + "".join(list_items) + "</ul>"
+        return html_list
 
     @classmethod
     def get_component_names_for_header(cls, compiler_component: CompilerComponent):
@@ -66,9 +91,27 @@ class MarkDownWriter:
         else:
             logger.error(f"There is no compilercomponent {compiler_component.name}")
 
-    def write_html_table_heading(self, table_heading: str, heading_rank: int = 1):
-        table_heading = f"<h{heading_rank}>{table_heading}</h{heading_rank}>"
-        self.write_line(table_heading)
+    def write_html_table_description(self, table_description: str):
+        self.write_html_paragraph(content=table_description)
+
+    def write_html_table_column_description(self, table_column_description: Dict[str, str]):
+        """
+        Write an HTML-formatted description of table columns to the markdown file.
+
+        This method takes a dictionary of column descriptions, formats each column name
+        as bold text followed by its description, and writes the content as an HTML list.
+
+        Args:
+            table_column_description (Dict[str, str]): A dictionary where the keys are column names
+                and the values are their respective descriptions.
+        """
+        html_table_column_description = []
+        for column_name, column_description in table_column_description.items():
+            html_table_column_description.append(
+                MarkDownWriter.create_html_bold_text(column_name + ": ") + column_description
+            )
+        html_table_column_description = MarkDownWriter.create_html_list(html_table_column_description)
+        self.write_line(html_table_column_description)
 
     def create_html_table_and_write(self, headers: Dict[str, List[str]], rows: List[List[str]]):
         sub_headers = []
@@ -228,14 +271,6 @@ class MarkDownWriter:
         html_table += html_table_body
         html_table += "</table>"
         self.write_line(html_table)
-
-    @classmethod
-    def create_md_link(cls, link_text: str, url_or_path: str):
-        return f"[{link_text}]({url_or_path})"
-
-    @classmethod
-    def create_html_link(cls, link_text: str, url_or_path: str):
-        return f'<a href="{url_or_path}">{link_text}</a>'
 
     def close_file(self):
         self.file.close()
