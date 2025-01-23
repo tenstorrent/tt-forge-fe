@@ -349,9 +349,6 @@ def test_convtranspose2d(
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Invalid arguments to reshape. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1574"
-)
 @pytest.mark.push
 def test_avg_pool2d():
     class AvgPool2d(nn.Module):
