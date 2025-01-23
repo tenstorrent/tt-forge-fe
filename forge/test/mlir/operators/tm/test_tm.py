@@ -276,6 +276,62 @@ def test_squeeze(input_shape_and_dim):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.xfail(
+    reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
+)
+@pytest.mark.push
+@pytest.mark.parametrize(
+    "attn_weights_shape, attention_mask_shape, module_name",
+    [
+        pytest.param((16, 256, 256), (1, 1, 256, 256), "squeeze", id="squeeze"),
+        pytest.param((1, 16, 256, 256), (1, 256, 256), "unsqueeze", id="unsqueeze"),
+    ],
+)
+def test_operand_commute_clone(attn_weights_shape, attention_mask_shape, module_name):
+    """
+    Tests commuting broadcast through squeeze and unsqueeze operations
+    """
+
+    class SqueezeOperandCommuteClone(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, attn_weights, attention_mask):
+            bsz = 1
+            tgt_len = 256
+            src_len = 256
+            num_heads = 16
+
+            if module_name == "squeeze":
+                attn_weights = attn_weights.view(bsz, num_heads, tgt_len, src_len) + attention_mask
+                attn_weights = torch.max(
+                    attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min, device=attn_weights.device)
+                )
+                attn_weights = attn_weights.view(bsz * num_heads, tgt_len, src_len)
+            elif module_name == "unsqueeze":
+                attn_weights = attn_weights.view(bsz * num_heads, tgt_len, src_len) + attention_mask
+                attn_weights = torch.max(
+                    attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min, device=attn_weights.device)
+                )
+                attn_weights = attn_weights.view(bsz, num_heads, tgt_len, src_len)
+
+            return attn_weights
+
+    attn_weights = torch.randn(*attn_weights_shape)
+    attention_mask = torch.zeros(*attention_mask_shape, dtype=torch.int64)
+
+    if module_name == "squeeze":
+        attention_mask[:, :, :8, :8] = 1
+    elif module_name == "unsqueeze":
+        attention_mask[:, :8, :8] = 1
+
+    inputs = [attn_weights, attention_mask]
+    framework_model = SqueezeOperandCommuteClone()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.parametrize(
     "input_shape_and_dim",
     [
