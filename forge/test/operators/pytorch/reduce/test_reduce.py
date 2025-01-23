@@ -75,6 +75,7 @@ from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import ValueRanges
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -183,6 +184,8 @@ class TestVerification:
             input_source_flag=input_source_flag,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
+            # Old behavior when dev_data_format was not set
+            value_range=None if test_vector.dev_data_format is not None else ValueRanges.SMALL_POSITIVE,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
         )
