@@ -571,7 +571,7 @@ struct UpdateReduceSumAttrsTest : testing::Test
             },
             {input_node});
         auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["dim"] = reduce_dim;
+        named_attrs["dim_arg"] = reduce_dim;
         named_attrs["keep_dim"] = keep_dim;
         reduce_node->overwrite_named_attrs(named_attrs);
         create_output(*graph, "out", reduce_node);
@@ -594,8 +594,8 @@ TEST_F(UpdateReduceSumAttrsTest, ReduceSumDim)
 
     auto updated_attrs = reduce_node->named_attrs();
 
-    ASSERT_TRUE(updated_attrs.count("dim"));
-    EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+    ASSERT_TRUE(updated_attrs.count("dim_arg"));
+    EXPECT_EQ(std::get<int>(updated_attrs["dim_arg"]), reduce_dim);
 
     ASSERT_TRUE(updated_attrs.count("keep_dim"));
     EXPECT_EQ(std::get<bool>(updated_attrs["keep_dim"]), keep_dim);
@@ -628,7 +628,7 @@ struct UpdateReduceMaxAttrsTest : testing::Test
             },
             {input_node});
         auto &named_attrs = reduce_node->named_attrs();
-        named_attrs["dim"] = reduce_dim;
+        named_attrs["dim_arg"] = reduce_dim;
         named_attrs["stride"] = stride;
         named_attrs["keep_dim"] = keep_dim;
         reduce_node->overwrite_named_attrs(named_attrs);
@@ -653,8 +653,8 @@ TEST_F(UpdateReduceMaxAttrsTest, ReduceMaxDim)
 
     auto updated_attrs = reduce_node->named_attrs();
 
-    ASSERT_TRUE(updated_attrs.count("dim"));
-    EXPECT_EQ(std::get<int>(updated_attrs["dim"]), reduce_dim);
+    ASSERT_TRUE(updated_attrs.count("dim_arg"));
+    EXPECT_EQ(std::get<int>(updated_attrs["dim_arg"]), reduce_dim);
 
     ASSERT_TRUE(updated_attrs.count("stride"));
     EXPECT_EQ(std::get<int>(updated_attrs["stride"]), stride);

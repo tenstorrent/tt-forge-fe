@@ -50,9 +50,6 @@ def test_maxpool2d_resnet(input_shape, kernel_size, stride_size, padding, ceil_m
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Invalid arguments to reshape. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1574"
-)
 @pytest.mark.push
 def test_avg_pool2d_resnet():
     class AvgPool2d(nn.Module):
