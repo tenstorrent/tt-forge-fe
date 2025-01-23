@@ -739,6 +739,9 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
     channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
+    output_padding = [int(opad) for opad in node["attrs"]["output_padding"][0]]
+    args.append(("output_padding", f"{output_padding}"))
+
     return args
 
 
