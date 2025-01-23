@@ -142,6 +142,7 @@ def eval(type, attr, ops):
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "logical_not": lambda i: torch.logical_not(i[0]),
         "pow": lambda i: torch.pow(i[0], attr[0]),
+        "argwhere": lambda i: torch.argwhere(i[0]),
     }
 
     assert type in f, f"{type} not defined in eval map for eltwise unary ops."

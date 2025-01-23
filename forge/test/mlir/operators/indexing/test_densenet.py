@@ -12,7 +12,7 @@ from forge.verify.verify import verify
     "input_tensor",
     [
         pytest.param(
-            torch.randn(1, 18, dtype=torch.float32),
+            torch.ones(1, 18, dtype=torch.float32),
             id="simplified_case",
         ),
     ],
@@ -24,14 +24,17 @@ def test_minimal_bool_indexing(input_tensor): # decomposes multiple ops one of w
             self.threshold = nn.Parameter(torch.tensor(0.5), requires_grad=False)
 
         def forward(self, x):
-            # Create simple mask - just one comparison
-            mask = x < self.threshold
+            # Create simple mask
+            mask = x > self.threshold # there is a bug fwith x > self.threshold where it recognizes it as a less than operation :(
             
             # Perform basic boolean indexing
-            result = x.clone()
-            result[mask] = 0.0  # Simple assignment instead of division
+            x[mask] = 0.0  # Simple assignment instead of division
             
-            return result
+            return x
+
+    input_tensor[0, 1] = 0.0
+    input_tensor[0, 2] = 0.0
+    input_tensor[0, 3] = 0.0
 
     inputs = [input_tensor]
     framework_model = MinimalBooleanIndexModule()
