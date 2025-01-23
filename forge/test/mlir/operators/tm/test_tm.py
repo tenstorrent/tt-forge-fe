@@ -525,9 +525,7 @@ def test_expand():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat_interleave"
-)
+
 @pytest.mark.push
 def test_repeat_interleave():
     class RepeatInterleave(nn.Module):
