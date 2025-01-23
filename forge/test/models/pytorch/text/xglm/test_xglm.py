@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import os
+
 import pytest
 from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
 
@@ -24,6 +26,9 @@ def test_xglm_causal_lm(record_forge_property, variant):
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
+
+    # Skip erase inverse ops in forge passess
+    os.environ["FORGE_DISABLE_ERASE_INVERSE_OPS_PASS"] = "1"
 
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
