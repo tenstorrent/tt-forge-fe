@@ -29,7 +29,3 @@ jobs:
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       mlir_override: ${{ inputs.mlir_override }}
-  perf-benchmark:
-    needs: docker-build
-    uses: ./.github/workflows/perf-benchmark.yml
-    secrets: inherit
