@@ -34,6 +34,19 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
             if xfail_reason is not None:  # an xfail reason is defined for the test
                 valid_reason = FailingReasonsValidation.validate_exception(exception_value, xfail_reason)
 
-                # if reason is not valid, mark the test as failed
+                # if reason is not valid, mark the test as failed and keep the original exception
                 if valid_reason == False:
-                    report.outcome = "failed"
+                    # Replace test report with a new one with outcome set to 'failed' and exception details
+                    new_report = _pytest.reports.TestReport(
+                        item=item,
+                        when=call.when,
+                        outcome="failed",
+                        longrepr=call.excinfo.getrepr(style="long"),
+                        sections=report.sections,
+                        nodeid=report.nodeid,
+                        location=report.location,
+                        keywords=report.keywords,
+                    )
+                    outcome.force_result(new_report)
+            else:
+                logger.debug(f"Test '{item.name}' failed with exception: {type(exception_value)} '{exception_value}'")
