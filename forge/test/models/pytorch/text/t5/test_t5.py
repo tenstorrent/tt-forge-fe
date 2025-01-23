@@ -5,7 +5,12 @@ import os
 
 import pytest
 import torch
-from transformers import T5Config, T5ForConditionalGeneration, T5Tokenizer
+from transformers import (
+    AutoTokenizer,
+    T5Config,
+    T5ForConditionalGeneration,
+    T5Tokenizer,
+)
 
 import forge
 from forge.forgeglobal import TILE_DIM
@@ -83,19 +88,18 @@ def test_t5_loop_tiny_tile(record_forge_property, variant):
 
 
 variants = [
-    pytest.param("t5-small", id="t5-small", marks=[pytest.mark.push]),
+    pytest.param(
+        "t5-small",
+        id="t5-small",
+    ),
     pytest.param(
         "t5-base",
         id="t5-base",
-        marks=[pytest.mark.push, pytest.mark.xfail(reason="PCC error due to Reduce Avg data mismatch.")],
     ),
-    pytest.param(
-        "t5-large", id="t5-large", marks=[pytest.mark.xfail(reason="PCC error due to Reduce Avg data mismatch.")]
-    ),
+    pytest.param("t5-large", id="t5-large"),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
-        marks=[pytest.mark.push],
     ),
     pytest.param(
         "google/flan-t5-base",
@@ -126,33 +130,69 @@ def test_t5_generation(record_forge_property, variant):
     config_dict["use_cache"] = False
     config = T5Config(**config_dict)
     model = download_model(T5ForConditionalGeneration.from_pretrained, variant, config=config)
+    tokenizer = AutoTokenizer.from_pretrained(variant)
 
-    # Wrapper to get around attention mask
+    inputs = tokenizer(
+        "summarize: Researchers have extensively studied the benefits of having pets, "
+        "particularly dogs, on human health and well-being. Findings suggest that pet ownership "
+        "can lead to improved mental health, reduced stress levels, and even physical health benefits "
+        "such as lower blood pressure and increased physical activity levels due to regular walks.",
+        return_tensors="pt",
+    )
+
+    input_ids = inputs.input_ids
+    decoder_start_token_tensor = torch.tensor(model.generation_config.decoder_start_token_id, dtype=torch.long)
+    decoder_input_ids = torch.ones((1, 1), dtype=torch.long) * decoder_start_token_tensor
+    inputs = [input_ids, decoder_input_ids]
+
     class Wrapper(torch.nn.Module):
         def __init__(self, model):
             super().__init__()
             self.model = model
 
-        def forward(self, decoder_input_ids, encoder_outputs):
-            return self.model(None, None, decoder_input_ids, None, None, None, None, (encoder_outputs,))
-
-    decoder_input_ids = torch.randint(0, model.config.vocab_size, (1, 1), dtype=torch.int32)
-    if "t5-small" in variant:
-        encoder_outputs = torch.randn(1, 1, 512)
-    elif "t5-base" in variant:
-        encoder_outputs = torch.randn(1, 256, 768)
-    elif "t5-large" in variant:
-        encoder_outputs = torch.randn(1, 256, 1024)
+        def forward(self, input_ids, decoder_input_ids):
+            inputs = {"input_ids": input_ids, "decoder_input_ids": decoder_input_ids}
+            output = self.model(**inputs)
+            return output
 
     framework_model = Wrapper(model)
 
-    inputs = [decoder_input_ids, encoder_outputs]
-
-    # Forge compile framework model
+    # Forge compile
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    current_decoder_input_ids = decoder_input_ids
+    all_decoded_ids = decoder_input_ids
+
+    # The iteration count in for _ in range(1) is deliberately limited to 1 to prevent shape mismatches.
+    # The model has been compiled specifically for the first decoding step, where decoder_input_ids
+    # has a fixed length of (1,1) (the initial token). However, in generative models like T5, the length of
+    # decoder_input_ids increases with each decoding step as tokens are appended to the sequence.
+    # This dynamic increase in shape is incompatible with the static shape expected by the compiled model,
+    # leading to a runtime error if subsequent iterations are attempted.
+
+    for _ in range(1):
+
+        # Inference
+        outputs = compiled_model(input_ids, current_decoder_input_ids)
+        logits = outputs[0]
+
+        # Get the next token ID (greedy decoding)
+        next_token = torch.argmax(logits[:, -1, :], dim=-1).unsqueeze(-1)
+
+        # Break if EOS token is generated
+        if next_token.item() == model.generation_config.eos_token_id:
+            break
+
+        # Append next token to sequence
+        all_decoded_ids = torch.cat([all_decoded_ids, next_token], dim=-1)
+
+        # Update decoder inputs for the next iteration
+        current_decoder_input_ids = all_decoded_ids
+
+    print("summary : ", tokenizer.decode(all_decoded_ids[0], skip_special_tokens=True))
 
 
 class T5_encoder(torch.nn.Module):
