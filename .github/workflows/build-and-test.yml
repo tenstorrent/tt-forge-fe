@@ -82,6 +82,7 @@ jobs:
         - /etc/udev/rules.d:/etc/udev/rules.d
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
     steps:
 
     - name: Set reusable strings
@@ -163,6 +164,7 @@ jobs:
     - name: Run Test
       env:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_HOME: /mnt/dockercache/huggingface
         HF_HUB_DISABLE_PROGRESS_BARS: 1
         FORGE_DISABLE_REPORTIFY_DUMP: 1
       shell: bash
