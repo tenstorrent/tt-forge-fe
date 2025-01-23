@@ -13,3 +13,7 @@ jobs:
       test_mark: 'nightly'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
+  perf-benchmark:
+    needs: docker-build
+    uses: ./.github/workflows/perf-benchmark.yml
+    secrets: inherit
