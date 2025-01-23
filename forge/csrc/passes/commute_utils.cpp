@@ -1241,7 +1241,8 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
     if (not op)
         return false;
 
-    if (not(op->op_name() == "transpose" or op->op_name() == "reshape"))
+    if (not(op->op_name() == "transpose" or op->op_name() == "reshape" or op->op_name() == "squeeze" or
+            op->op_name() == "unsqueeze"))
         return false;
 
     auto operand_edge = graph->operand_data_edges(node)[0];
@@ -1523,6 +1524,41 @@ bool try_commute_bcast_through_clone(graphlib::Graph *graph, graphlib::OpNode *n
         // Erase tms in reverse order so indices remain ordered
         for (auto iter = erase_tms.rbegin(); iter != erase_tms.rend(); ++iter) tms.erase(tms.begin() + *iter);
         return true;
+    }
+    else if (op->op_name() == "squeeze" or op->op_name() == "unsqueeze")
+    {
+        // reshape that is equivalent to the unsqeeze (e.g. (16,256,256) -> (1,16,256,256)) is decomposed into unsqueeze
+        // op in decompose pass. In this case we still want to erase inverse unsqueeze ops and commute broadcasts
+        // through squeeze clones. Same goes for reshape that decomposes to squeeze (e.g. (1,16,256,256) ->
+        // (16,256,256))
+        TT_ASSERT(
+            are_different_ranked_shapes_equivalent(op->shape(), operand_shape),
+            "Input and output shapes of squeeze op are not equivalent");
+        // Remove the broadcasts from operand
+        graph->get_edge_attributes(operand_edge)->clear_broadcast_dims();
+        auto new_shape = original_operand_shape.as_vector();
+
+        while (new_shape.size() > op->shape().size())
+        {
+            TT_ASSERT(new_shape[0] == 1);
+            new_shape.erase(new_shape.begin());
+        }
+
+        op->set_shape(graphlib::Shape::create(new_shape));
+
+        for (auto &t : tms)
+        {
+            if (t.op == "broadcast")
+            {
+                int dim = std::get<int>(t.attr[0]);
+                if (dim >= 0)
+                {
+                    dim -= operand_shape.size();
+                }
+                int volume = std::get<int>(t.attr[1]);
+                add_or_compound_bcast(graph, user_edge, dim, volume);
+            }
+        }
     }
     return false;
 }
