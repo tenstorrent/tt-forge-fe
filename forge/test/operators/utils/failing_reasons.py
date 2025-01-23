@@ -165,6 +165,9 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError)
             and "Index is out of bounds for the rank, should be between 0 and 0 however is 1" in f"{ex}",
         ],
+        FailingReasons.MICROBATCHING_UNSUPPORTED: [
+            lambda ex: isinstance(ex, RuntimeError) and "The expanded size of the tensor" in f"{ex}",
+        ],
     }
 
     @classmethod
