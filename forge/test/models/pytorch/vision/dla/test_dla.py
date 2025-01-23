@@ -21,7 +21,7 @@ from test.models.pytorch.vision.dla.utils.dla_model import (
     dla102x2,
     dla169,
 )
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, build_module_name
 
 variants_func = {
     "dla34": dla34,
@@ -45,7 +45,9 @@ def test_dla_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dla", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="dla", variant=variant, source=Source.TORCHVISION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

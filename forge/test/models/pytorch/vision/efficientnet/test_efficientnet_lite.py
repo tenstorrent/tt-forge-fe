@@ -10,7 +10,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.efficientnet.utils import (
     src_efficientnet_lite as efflite,
 )
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.skip_model_analysis
@@ -18,7 +18,13 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 def test_efficientnet_lite_0_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_0")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant="lite_0",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -46,7 +52,13 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_efficientnet_lite_1_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_1")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant="lite_1",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -74,7 +86,13 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_efficientnet_lite_2_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_2")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant="lite_2",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -102,7 +120,13 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_efficientnet_lite_3_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_3")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant="lite_3",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -130,7 +154,13 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_efficientnet_lite_4_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="efficientnet", variant="lite_4")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant="lite_4",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

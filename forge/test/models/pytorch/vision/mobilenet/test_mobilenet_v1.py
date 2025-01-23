@@ -11,7 +11,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -28,7 +28,13 @@ def generate_model_mobilenetV1_base_custom_pytorch():
 @pytest.mark.nightly
 def test_mobilenetv1_basic(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v1", variant="basic")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mobilenet_v1",
+        variant="basic",
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -65,7 +71,11 @@ def test_mobilenetv1_192(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilnet_v1",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -102,7 +112,11 @@ def test_mobilenetv1_224(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilnet_v1",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property

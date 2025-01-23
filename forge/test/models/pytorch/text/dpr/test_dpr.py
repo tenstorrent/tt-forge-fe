@@ -15,7 +15,7 @@ import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
@@ -28,7 +28,14 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="context_encoder")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="dpr",
+        variant=variant,
+        suffix="context_encoder",
+        source=Source.HUGGINGFACE,
+        task=Task.QA,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -70,7 +77,12 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="question_encoder"
+        framework=Framework.PYTORCH,
+        model="dpr",
+        variant=variant,
+        suffix="question_encoder",
+        source=Source.HUGGINGFACE,
+        task=Task.QA,
     )
 
     # Record Forge Property
@@ -117,7 +129,14 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="reader")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="dpr",
+        variant=variant,
+        suffix="reader",
+        source=Source.HUGGINGFACE,
+        task=Task.QA,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

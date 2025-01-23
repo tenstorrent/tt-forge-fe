@@ -14,7 +14,7 @@ from transformers import AutoFeatureExtractor, ResNetForImageClassification
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -45,7 +45,11 @@ def generate_model_resnet_imgcls_hf_pytorch(variant):
 def test_resnet(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="resnet", variant="50", source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="resnet",
+        variant="50",
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -89,7 +93,9 @@ def test_resnet_timm(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

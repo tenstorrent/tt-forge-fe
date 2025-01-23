@@ -17,7 +17,7 @@ from vgg_pytorch import VGG
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
@@ -30,7 +30,9 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -72,7 +74,9 @@ def test_vgg_19_hf_pytorch(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -143,7 +147,9 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
     variant = "vgg19_bn"
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -166,7 +172,11 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TORCH_HUB
+        framework=Framework.PYTORCH,
+        model="vgg",
+        variant="vgg19_bn",
+        source=Source.TORCH_HUB,
+        task=Task.OBJECT_DETECTION,
     )
 
     # Record Forge Property

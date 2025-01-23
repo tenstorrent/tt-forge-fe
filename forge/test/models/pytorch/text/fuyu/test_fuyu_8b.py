@@ -28,14 +28,16 @@ from test.models.pytorch.text.fuyu.utils.model import (
     FuyuModelWrapper,
     generate_fuyu_embedding,
 )
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["adept/fuyu-8b"])
 def test_fuyu8b(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -92,7 +94,9 @@ def test_fuyu8b(record_forge_property, variant):
 @pytest.mark.parametrize("variant", ["adept/fuyu-8b"])
 def test_fuyu8b_past_cache(record_forge_property, variant, test_device):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="fuyu", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
