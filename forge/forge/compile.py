@@ -34,12 +34,11 @@ import forge._C.graph as pygraph
 from forge._C.graph import Graph
 from forge._C.runtime import Binary
 import forge.ci as ci
-from forge.module import Module, ForgeModule, wrap_module
+from forge.module import Module, ForgeModule, wrap_module, AnyModule
 from forge.parameter import Parameter
 from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
-from forge.tensor import Tensor, to_pt_tensors
-from forge.typing import *
+from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 
 
