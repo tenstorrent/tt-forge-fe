@@ -8,14 +8,20 @@ import forge
 from forge.verify.verify import verify
 
 from .utils.image_utils import preprocess_input_data
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="regnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="regnet",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -41,7 +47,11 @@ def test_regnet_img_classification(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="regnet", variant=variant, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="regnet",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

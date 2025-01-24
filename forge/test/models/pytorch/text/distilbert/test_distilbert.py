@@ -13,7 +13,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
@@ -27,7 +27,7 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
@@ -68,7 +68,9 @@ def test_distilbert_question_answering_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -115,7 +117,11 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property, varia
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="distilbert",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -153,7 +159,11 @@ def test_distilbert_token_classification_pytorch(record_forge_property, variant)
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.TOKEN_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="distilbert",
+        variant=variant,
+        task=Task.TOKEN_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

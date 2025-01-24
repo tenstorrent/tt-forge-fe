@@ -13,7 +13,7 @@ from forge.verify.verify import verify
 
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 from test.models.pytorch.vision.retinanet.utils.model import Model
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     "retinanet_rn18fpn",
@@ -30,7 +30,13 @@ def test_retinanet(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="retinanet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="retinanet",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.OBJECT_DETECTION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

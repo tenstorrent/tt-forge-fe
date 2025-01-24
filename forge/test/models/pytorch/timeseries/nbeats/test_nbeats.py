@@ -14,14 +14,16 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
     NBeatsWithSeasonalityBasis,
     NBeatsWithTrendBasis,
 )
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["seasionality_basis"])
 def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -53,7 +55,9 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -78,7 +82,9 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="nbeats", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

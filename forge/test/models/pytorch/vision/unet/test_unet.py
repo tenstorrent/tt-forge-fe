@@ -23,7 +23,7 @@ from torchvision.transforms import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -40,7 +40,9 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 @pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR, task=Task.IMAGE_SEGMENTATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -88,7 +90,13 @@ def test_unet_holocron_pytorch(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="holocron")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="unet",
+        variant="holocron",
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_SEGMENTATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -139,7 +147,13 @@ def test_unet_qubvel_pytorch(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="unet", variant="qubvel")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="unet",
+        variant="qubvel",
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_SEGMENTATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -193,7 +207,9 @@ def test_unet_torchhub_pytorch(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="unet")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

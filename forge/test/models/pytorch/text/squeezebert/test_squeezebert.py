@@ -7,7 +7,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -16,7 +16,11 @@ from test.utils import download_model
 def test_squeezebert_sequence_classification_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="squeezebert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="squeezebert",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

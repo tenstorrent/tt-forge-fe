@@ -31,7 +31,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
 
@@ -43,7 +43,9 @@ def test_yolox_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="yolox", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="yolox", variant=variant, source=Source.TORCH_HUB, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

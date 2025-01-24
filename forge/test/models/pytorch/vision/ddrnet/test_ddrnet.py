@@ -10,7 +10,7 @@ from torchvision import transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 # from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock
@@ -30,7 +30,13 @@ def test_ddrnet_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="ddrnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="ddrnet",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -89,7 +95,11 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="ddrnet", variant=variant, task=Task.SEMANTIC_SEGMENTATION
+        framework=Framework.PYTORCH,
+        model="ddrnet",
+        variant=variant,
+        task=Task.SEMANTIC_SEGMENTATION,
+        source=Source.TORCHVISION,
     )
 
     # Record Forge Property

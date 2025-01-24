@@ -18,12 +18,17 @@ class Framework(StrEnum):
 
 class Task(StrEnum):
     SPEECH_TRANSLATE = "speech_translate"
+    MUSIC_GENERATION = "music_generation"
+    SPEECH_RECOGNITION = "speech recognition"
     QA = "qa"
     MASKED_LM = "mlm"
     CAUSAL_LM = "clm"
     TOKEN_CLASSIFICATION = "token_cls"
     SEQUENCE_CLASSIFICATION = "seq_cls"
     IMAGE_CLASSIFICATION = "img_cls"
+    IMAGE_SEGMENTATION = "img_seg"
+    POSE_ESTIMATION = "pose_estimation"
+    DEPTH_PREDICTION = "depth_prediction"
     TEXT_GENERATION = "text_gen"
     OBJECT_DETECTION = "obj_det"
     SEMANTIC_SEGMENTATION = "sem_seg"

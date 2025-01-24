@@ -20,7 +20,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -42,7 +42,11 @@ def generate_model_mobilenetV2_imgcls_torchhub_pytorch():
 def test_mobilenetv2_basic(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilenetv2", variant="basic", source=Source.TORCH_HUB
+        framework=Framework.PYTORCH,
+        model="mobilenetv2",
+        variant="basic",
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -77,7 +81,11 @@ def test_mobilenetv2_96(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilenetv2",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -112,7 +120,11 @@ def test_mobilenetv2_160(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilenetv2",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -149,7 +161,11 @@ def test_mobilenetv2_224(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilenetv2",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -195,7 +211,11 @@ def test_mobilenetv2_timm(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilenetv2", variant=variant, source=Source.TIMM
+        framework=Framework.PYTORCH,
+        model="mobilenetv2",
+        variant=variant,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -248,7 +268,11 @@ def test_mobilenetv2_deeplabv3(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilnetv2", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilnetv2",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property

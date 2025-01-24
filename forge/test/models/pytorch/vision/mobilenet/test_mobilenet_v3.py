@@ -16,7 +16,7 @@ from transformers import AutoImageProcessor
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -44,7 +44,11 @@ def test_mobilenetv3_basic(mobilenet_v3_small, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilenetv3", variant=variant, source=Source.TORCH_HUB
+        framework=Framework.PYTORCH,
+        model="mobilenetv3",
+        variant=variant,
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -99,7 +103,11 @@ def test_mobilenetv3_timm(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilnetv3", source=Source.TIMM, variant=variant
+        framework=Framework.PYTORCH,
+        model="mobilnetv3",
+        source=Source.TIMM,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property

@@ -10,7 +10,7 @@ from transformers.models.bart.modeling_bart import shift_tokens_right
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -29,7 +29,11 @@ class BartWrapper(torch.nn.Module):
 def test_pt_bart_classifier(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="bart", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="bart",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

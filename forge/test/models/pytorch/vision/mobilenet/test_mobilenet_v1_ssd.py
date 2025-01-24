@@ -7,7 +7,7 @@ import torch
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
@@ -18,7 +18,13 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet", variant="ssd")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mobilenet",
+        variant="ssd",
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

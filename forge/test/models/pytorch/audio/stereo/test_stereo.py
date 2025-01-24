@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 
 from .utils import load_inputs, load_model
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     "facebook/musicgen-small",
@@ -25,7 +25,13 @@ def test_stereo(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="stereo", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="stereo",
+        variant=variant,
+        task=Task.MUSIC_GENERATION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

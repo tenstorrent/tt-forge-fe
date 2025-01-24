@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
 
@@ -26,7 +26,9 @@ def test_phi2_clm(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -75,7 +77,11 @@ def test_phi2_token_classification(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.TOKEN_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="phi2",
+        variant=variant,
+        task=Task.TOKEN_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -115,7 +121,11 @@ def test_phi2_sequence_classification(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="phi2",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

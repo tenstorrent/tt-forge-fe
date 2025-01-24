@@ -14,7 +14,7 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -52,7 +52,13 @@ def test_openpose_basic(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="openpose",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.POSE_ESTIMATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -91,7 +97,9 @@ variants = [
 @pytest.mark.nightly
 def test_openpose_osmr(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

@@ -12,7 +12,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["ghostnet_100"]
@@ -22,7 +22,13 @@ variants = ["ghostnet_100"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_ghostnet_timm(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="ghostnet", variant=variant, source=Source.TIMM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="ghostnet",
+        variant=variant,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

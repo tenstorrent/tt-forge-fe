@@ -10,7 +10,7 @@ import torch
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Task, build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -26,7 +26,9 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 def test_blazepose_detector_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="detector")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="blazepose", variant="detector", task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -58,7 +60,9 @@ def test_blazepose_detector_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blazepose_regressor_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="regressor")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="blazepose", variant="regressor", task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -81,7 +85,9 @@ def test_blazepose_regressor_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blaze_palm_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="palm")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="blazepose", variant="palm", task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -114,7 +120,9 @@ def test_blaze_palm_pytorch(record_forge_property):
 @pytest.mark.nightly
 def test_blaze_hand_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="blazepose", variant="hand")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="blazepose", variant="hand", task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

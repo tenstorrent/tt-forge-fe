@@ -14,7 +14,7 @@ from torchvision import transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -51,7 +51,13 @@ def test_wideresnet_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="wideresnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="wideresnet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -92,7 +98,11 @@ def test_wideresnet_timm(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="wideresnet", source=Source.TIMM, variant=variant
+        framework=Framework.PYTORCH,
+        model="wideresnet",
+        source=Source.TIMM,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property

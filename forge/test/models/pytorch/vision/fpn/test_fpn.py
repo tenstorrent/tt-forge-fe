@@ -8,13 +8,15 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 def test_fpn_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="fpn", source=Source.TORCHVISION)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="fpn", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

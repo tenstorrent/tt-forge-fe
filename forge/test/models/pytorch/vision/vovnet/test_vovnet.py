@@ -13,7 +13,7 @@ from test.models.pytorch.vision.vovnet.utils.model_utils import (
     preprocess_timm_model,
 )
 from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -35,7 +35,9 @@ def test_vovnet_osmr_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -62,7 +64,13 @@ def test_vovnet_v1_39_stigma_pytorch(record_forge_property):
     variant = "vovnet39"
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vovnet_v1", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="vovnet_v1",
+        variant=variant,
+        source=Source.TORCH_HUB,
+        task=Task.OBJECT_DETECTION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -90,7 +98,13 @@ def test_vovnet_v1_57_stigma_pytorch(record_forge_property):
     variant = "vovnet_v1_57"
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vovnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="vovnet",
+        variant=variant,
+        source=Source.TORCH_HUB,
+        task=Task.OBJECT_DETECTION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -119,7 +133,13 @@ def test_vovnet_timm_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="vovnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="vovnet",
+        variant=variant,
+        source=Source.TORCH_HUB,
+        task=Task.OBJECT_DETECTION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

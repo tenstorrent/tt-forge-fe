@@ -22,7 +22,7 @@ from torchvision.models._api import WeightsEnum
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
@@ -53,7 +53,11 @@ def test_efficientnet_timm(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="efficientnet", variant=variant, source=Source.TIMM
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant=variant,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -116,7 +120,11 @@ def test_efficientnet_torchvision(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="efficientnet", variant=variant, source=Source.TORCHVISION
+        framework=Framework.PYTORCH,
+        model="efficientnet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property

@@ -27,7 +27,7 @@ from test.models.pytorch.audio.whisper.utils.model import (
     Whisper_encoder,
     generate_model_whisper_decoder_past_cache,
 )
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -45,7 +45,14 @@ variants = [
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="pipeline")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        suffix="pipeline",
+        task=Task.SPEECH_RECOGNITION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -84,7 +91,14 @@ def test_whisper_dec_past_cache(record_forge_property, test_device, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_enc_dec(record_forge_property, test_device, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="enc_dec")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        suffix="enc_dec",
+        task=Task.SPEECH_RECOGNITION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -321,7 +335,12 @@ def test_whisper_enc_dec(record_forge_property, test_device, variant):
 def test_whisper_enc_dec_pipeline(record_forge_property, test_device, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="enc_dec_pipeline"
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        suffix="enc_dec_pipeline",
+        task=Task.SPEECH_RECOGNITION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

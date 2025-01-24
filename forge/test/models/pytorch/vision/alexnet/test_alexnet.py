@@ -12,7 +12,7 @@ from torchvision import transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -20,7 +20,11 @@ from test.utils import download_model
 def test_alexnet_torchhub(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="alexnet", variant="alexnet", source=Source.TORCH_HUB
+        framework=Framework.PYTORCH,
+        model="alexnet",
+        variant="alexnet",
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -63,7 +67,9 @@ def test_alexnet_osmr(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

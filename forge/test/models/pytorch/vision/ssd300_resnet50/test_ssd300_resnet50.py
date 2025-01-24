@@ -10,13 +10,15 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 def test_pytorch_ssd300_resnet50(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="ssd300_resnet50")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="ssd300_resnet50", source=Source.TORCH_HUB, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

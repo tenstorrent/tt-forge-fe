@@ -10,14 +10,16 @@ from torchvision import models, transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
 @pytest.mark.nightly
 def test_googlenet_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="googlenet")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

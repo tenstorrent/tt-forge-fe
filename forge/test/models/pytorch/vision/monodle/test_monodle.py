@@ -10,13 +10,15 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 def test_monodle_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="monodle")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="monodle", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
