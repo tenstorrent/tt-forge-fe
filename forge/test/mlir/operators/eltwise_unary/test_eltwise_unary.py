@@ -67,7 +67,30 @@ def test_nan_to_num(shape, dtype):
     if dtype == torch.float32:
         verify(inputs, framework_model, compiled_model)
 
-
+@pytest.mark.parametrize(
+   "query, bev_mask",  
+   [
+       ((1, 2500, 256), (6, 1, 2500, 4)),  
+   ],
+)
+def test_zeros_like(query, bev_mask):
+   class Zeros_like(nn.Module):
+       def __init__(self):
+           super(Zeros_like, self).__init__()
+       def forward(self,
+                   query,
+                   bev_mask):
+           slots = torch.zeros_like(query)
+           count = bev_mask.sum(-1) > 0
+           slots = slots / count[..., None]
+           return slots 
+   query = torch.randn(query)
+   bev_mask = torch.randn(bev_mask)  
+   inputs = [query, bev_mask]
+   framework_model = Zeros_like()
+   compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="test_zeros_like")
+   verify(inputs, framework_model, compiled_model)
+   
 @pytest.mark.parametrize(
     "shape, dtype",
     [
