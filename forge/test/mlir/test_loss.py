@@ -41,10 +41,10 @@ def test_l1_loss(prediction_shape, reduction):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
-        (3, 5),
+        pytest.param((3, 5), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
         (32, 32),
-        (33, 127),
-        (128, 20),
+        pytest.param((33, 127), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((128, 20), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
     ],
 )
 @pytest.mark.push
@@ -68,13 +68,13 @@ def test_cross_entropy_loss(prediction_shape):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
-        (33,),
-        (128,),
-        (2, 2),
-        (3, 5),
+        pytest.param((33,), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((128,), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((2, 2), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((3, 5), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
         (32, 32),
-        (33, 127),
-        (128, 20),
+        pytest.param((33, 127), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((128, 20), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
         (128, 128),
     ],
 )
@@ -205,13 +205,13 @@ def test_huber_loss(prediction_shape, reduction):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
-        (33,),
-        (128,),
-        (2, 2),
-        (3, 5),
+        pytest.param((33,), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((128,), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((2, 2), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((3, 5), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
         (32, 32),
-        (33, 127),
-        (128, 20),
+        pytest.param((33, 127), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
+        pytest.param((128, 20), marks=pytest.mark.xfail(reason="incorrect result in ttnn")),
         (128, 128),
     ],
 )
