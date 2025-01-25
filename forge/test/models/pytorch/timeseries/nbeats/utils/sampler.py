@@ -84,18 +84,3 @@ class TimeseriesSampler:
                 outsample[i, : len(outsample_window)] = outsample_window
                 outsample_mask[i, : len(outsample_window)] = 1.0
             yield insample, insample_mask, outsample, outsample_mask
-
-    def last_insample_window(self):
-        """
-        The last window of insample size of all timeseries.
-        This function does not support batching and does not reshuffle timeseries.
-
-        :return: Last insample window of all timeseries. Shape "timeseries, insample size"
-        """
-        insample = np.zeros((len(self.timeseries), self.insample_size))
-        insample_mask = np.zeros((len(self.timeseries), self.insample_size))
-        for i, ts in enumerate(self.timeseries):
-            ts_last_window = ts[-self.insample_size :]
-            insample[i, -len(ts) :] = ts_last_window
-            insample_mask[i, -len(ts) :] = 1.0
-        return insample, insample_mask

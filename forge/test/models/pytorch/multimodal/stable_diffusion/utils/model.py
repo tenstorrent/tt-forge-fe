@@ -7,8 +7,6 @@ from typing import List, Optional, Union
 
 import torch
 
-# from diffusers import StableDiffusionPipeline
-# from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 import forge
 
 from test.models.utils import Framework, build_module_name
@@ -103,16 +101,6 @@ def stable_diffusion_preprocessing(
         prompt_embeds,
         extra_step_kwargs,
     )
-
-
-class UnetWrapper(torch.nn.Module):
-    def __init__(self, unet):
-        super().__init__()
-        self.unet = unet
-
-    def forward(self, latent_model_input, timestep, text_embeddings):
-        noise_pred = self.unet(latent_model_input, timestep, encoder_hidden_states=text_embeddings)["sample"]
-        return noise_pred
 
 
 def denoising_loop(
