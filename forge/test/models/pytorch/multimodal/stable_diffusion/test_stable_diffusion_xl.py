@@ -31,9 +31,6 @@ variants = ["stable-diffusion-xl-base-1.0"]
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.xfail(
-    reason="RuntimeError: Cannot insert a Tensor that requires grad as a constant. Consider making it a parameter or input, or detaching the gradient"
-)
 def test_stable_diffusion_generation(variant):
     # Load the pipeline and set it to use the CPU
     pipe = DiffusionPipeline.from_pretrained(f"stabilityai/{variant}", torch_dtype=torch.float32)  # Use float32 for CPU

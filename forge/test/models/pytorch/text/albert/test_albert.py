@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from transformers import (
     AlbertForMaskedLM,
     AlbertForTokenClassification,
@@ -19,9 +20,20 @@ sizes = ["base", "large", "xlarge", "xxlarge"]
 variants = ["v1", "v2"]
 
 
+params = [
+    pytest.param("base", "v1", marks=[pytest.mark.push]),
+    pytest.param("large", "v1"),
+    pytest.param("xlarge", "v1"),
+    pytest.param("xxlarge", "v1"),
+    pytest.param("base", "v2"),
+    pytest.param("large", "v2"),
+    pytest.param("xlarge", "v2"),
+    pytest.param("xxlarge", "v2"),
+]
+
+
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.parametrize("size", sizes, ids=sizes)
+@pytest.mark.parametrize("size,variant", params)
 def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     if size != "base" and variant != "v1":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -59,14 +71,37 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
 
+    # Inference
+    output = compiled_model(*inputs)
+
+    # post processing
+    logits = output[0]
+    mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
+    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
+    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
+
+
+# Task-specific models like AlbertForTokenClassification are pre-trained on general datasets.
+# To make them suitable for specific tasks, they need to be fine-tuned on a labeled dataset for that task.
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
 variants = ["v1", "v2"]
 
 
+params = [
+    pytest.param("base", "v1", marks=[pytest.mark.push]),
+    pytest.param("large", "v1"),
+    pytest.param("xlarge", "v1"),
+    pytest.param("xxlarge", "v1"),
+    pytest.param("base", "v2"),
+    pytest.param("large", "v2"),
+    pytest.param("xlarge", "v2"),
+    pytest.param("xxlarge", "v2"),
+]
+
+
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.parametrize("size", sizes, ids=sizes)
+@pytest.mark.parametrize("size,variant", params)
 def test_albert_token_classification_pytorch(record_forge_property, size, variant):
     if size != "base" and variant != "v1":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -108,3 +143,14 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+
+    # Inference
+    co_out = compiled_model(*inputs)
+
+    # post processing
+    predicted_token_class_ids = co_out[0].argmax(-1)
+    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
+    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+
+    print(f"Context: {sample_text}")
+    print(f"Answer: {predicted_tokens_classes}")
