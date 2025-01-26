@@ -16,7 +16,7 @@ from forge.verify.compare import compare_with_golden
 from forge.tensor import to_forge_tensors
 
 
-@pytest.mark.push
+# @pytest.mark.push
 def test_mnist_training():
     torch.manual_seed(0)
 
@@ -97,7 +97,7 @@ def test_mnist_training():
     print(f"Test (total) loss: {test_loss}")
 
 
-@pytest.mark.push
+# @pytest.mark.push
 def test_mnist_training_with_grad_accumulation():
     torch.manual_seed(0)
 

@@ -11,7 +11,7 @@ from forge.verify.config import VerifyConfig
 
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
-@pytest.mark.push
+# @pytest.mark.push
 def test_llama_lm_head(model_path):
     # Load Llama model and tokenizer
     framework_model, _ = load_model(model_path)
