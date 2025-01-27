@@ -208,6 +208,11 @@ def compare_tensor_to_golden(
     if golden.dtype != calculated.dtype:
         calculated = calculated.type(golden.dtype)
 
+    logger.info("golden={}", golden)
+    logger.info("calculated={}", calculated)
+    logger.info("rtol={}", rtol)
+    logger.info("atol={}", atol)
+
     ok = torch.allclose(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
     callback_ok = (
         True

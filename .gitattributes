@@ -1,0 +1,2 @@
+calculated_k_jan27.pt filter=lfs diff=lfs merge=lfs -text
+golden_k_jan27.pt filter=lfs diff=lfs merge=lfs -text
