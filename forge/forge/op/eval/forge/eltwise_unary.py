@@ -151,6 +151,10 @@ def eval(type, attr, ops):
     if ret.dtype != original_types[0]:
         ret = ret.type(original_types[0])
 
+    print("######################")
+    print(f'eval for {type} with {attr} and {ops} returned:\n {ret}')
+    print("######################")
+
     return ret
 
 
@@ -187,6 +191,12 @@ def shape(type, attr, ops):
         shape = len(ops[0].shape)
         shape[dim] = size
         return shape, []
+    
+    if type == "argwhere":
+        print("######################")
+        print("Eltwise unary argwhere -> shape")
+        print(f'argwhere for {type} with {attr} and {ops} returned:\n {ops[0]}')
+        print("######################")
 
     return ops[0], []
 
