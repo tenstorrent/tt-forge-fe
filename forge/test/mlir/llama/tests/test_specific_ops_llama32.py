@@ -165,6 +165,36 @@ def test_matmul(shapes):
 
 
 @pytest.mark.parametrize(
+    "shape, dim, repeats",
+    [
+        ((1, 8, 1, 12, 64), 0, 1),
+        ((1, 8, 1, 12, 64), 2, 4),
+    ],
+)
+@pytest.mark.xfail(reason="repeats' failed to satisfy constraint: 32-bit unsigned integer attribute")
+@pytest.mark.push
+def test_repeat_interleave(shape, dim, repeats):
+    class RepeatInterleave(nn.Module):
+        def __init__(self, dim, repeats):
+            super().__init__()
+            self.repeats = repeats
+            self.dim = dim
+
+        def forward(
+            self,
+            x,
+        ):
+            return torch.repeat_interleave(x, repeats=repeats, dim=dim)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = RepeatInterleave(dim=dim, repeats=repeats)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "shapes",
     [
         ((1, 11, 2048), (1, 11, 2048)),
