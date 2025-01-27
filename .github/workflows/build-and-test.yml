@@ -238,7 +238,6 @@ jobs:
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        export TT_METAL_HOME=$(pwd)/venv/lib/python3.10/site-packages/forge/lib
         pytest -m push --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
