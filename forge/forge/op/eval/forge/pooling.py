@@ -568,14 +568,14 @@ def decompose(type, attr, dc, inputs):
                 result = dc.op_with_named_attrs(
                     "reshape", [activations], {"shape": (w, 1, y * x, cin)}, (w, 1, y * x, cin)
                 )
-                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": -2, "keep_dim": True}, (-2, True))
+                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim_arg": [-2], "keep_dim": True}, (-2, True))
                 result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, 1, 1, cin)}, (w, 1, 1, cin))
             else:
                 result = dc.op_with_named_attrs(
                     "reshape", [activations], {"shape": (w, 1, cin, y * x)}, (w, 1, cin, y * x)
                 )
                 result = dc.op(TransposeTM.create(2, 3), [result])
-                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim": -2, "keep_dim": True}, (-2, True))
+                result = dc.op_with_named_attrs("reduce_avg", [result], {"dim_arg": [-2], "keep_dim": True}, (-2, True))
                 result = dc.op(TransposeTM.create(2, 3), [result])
                 result = dc.op_with_named_attrs("reshape", [result], {"shape": (w, cin, 1, 1)}, (w, cin, 1, 1))
             dc.fuse(result)
@@ -718,7 +718,9 @@ def decompose(type, attr, dc, inputs):
             d_start = i * sD
 
             depth_slice = dc.op("index", [activations], (2, d_start, d_start + kD, activations.shape[2]))
-            depth_avg = dc.op_with_named_attrs("reduce_avg", [depth_slice], {"dim": 2, "keep_dim": True}, (2, True))
+            depth_avg = dc.op_with_named_attrs(
+                "reduce_avg", [depth_slice], {"dim_arg": [2], "keep_dim": True}, (2, True)
+            )
 
             named_attrs = {
                 "kernel_height": kernel_size[1],
