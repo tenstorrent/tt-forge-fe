@@ -8,7 +8,7 @@ from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -17,7 +17,7 @@ from test.utils import download_model
 def test_gpt2_text_gen(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION
+        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
@@ -76,7 +76,12 @@ class Wrapper(torch.nn.Module):
 def test_gpt2_past_cache(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, suffix="past_cache"
+        framework=Framework.PYTORCH,
+        model="gpt2",
+        variant=variant,
+        task=Task.TEXT_GENERATION,
+        suffix="past_cache",
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

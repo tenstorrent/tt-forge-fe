@@ -14,7 +14,7 @@ import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -23,7 +23,9 @@ from test.utils import download_model
 @pytest.mark.push
 def test_bert_masked_lm_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -98,7 +100,9 @@ def test_bert_question_answering_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -139,7 +143,11 @@ def test_bert_sequence_classification_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="bert",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -187,7 +195,11 @@ def test_bert_token_classification_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.TOKEN_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="bert",
+        variant=variant,
+        task=Task.TOKEN_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

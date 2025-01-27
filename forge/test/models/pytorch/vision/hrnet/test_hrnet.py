@@ -16,7 +16,7 @@ from torchvision import transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 torch.multiprocessing.set_sharing_strategy("file_system")
@@ -84,7 +84,9 @@ def test_hrnet_osmr_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -158,7 +160,9 @@ def test_hrnet_timm_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM, task=Task.POSE_ESTIMATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

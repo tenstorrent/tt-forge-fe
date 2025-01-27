@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.resnext.utils.image_utils import get_image_tensor
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -18,7 +18,11 @@ from test.utils import download_model
 def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.TORCH_HUB,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -43,7 +47,11 @@ def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
 def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.TORCH_HUB,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -70,7 +78,11 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="resnext", source=Source.TORCH_HUB, variant=variant
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.TORCH_HUB,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -97,7 +109,13 @@ def test_resnext_14_osmr_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.OSMR,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -122,7 +140,13 @@ def test_resnext_26_osmr_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.OSMR,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -147,7 +171,13 @@ def test_resnext_50_osmr_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.OSMR,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -172,7 +202,13 @@ def test_resnext_101_osmr_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="resnext", source=Source.OSMR, variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="resnext",
+        source=Source.OSMR,
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

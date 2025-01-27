@@ -9,7 +9,7 @@ import torch
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path.append("tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/model")
 # from model_pidnet import update_model_config, get_seg_model
@@ -23,7 +23,13 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 @pytest.mark.nightly
 def test_pidnet_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="pidnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="pidnet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.SEMANTIC_SEGMENTATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

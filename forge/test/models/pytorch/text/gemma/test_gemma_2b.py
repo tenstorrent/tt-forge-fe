@@ -15,7 +15,7 @@ import forge
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -58,7 +58,12 @@ variants = [
 def test_gemma_2b_rotary_embedding(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="rotary_embedding"
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="rotary_embedding",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
     )
 
     # Record Forge Property
@@ -105,7 +110,14 @@ def test_gemma_2b_rotary_embedding(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_rms_norm(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="rms_norm")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="rms_norm",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -150,7 +162,14 @@ def test_gemma_2b_rms_norm(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_attention(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="attention")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="attention",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -197,7 +216,14 @@ def test_gemma_2b_attention(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_mlp(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="mlp")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="mlp",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -242,7 +268,12 @@ def test_gemma_2b_mlp(record_forge_property, variant):
 def test_gemma_2b_single_decoder(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="single_decoder"
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="single_decoder",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
     )
 
     # Record Forge Property
@@ -288,7 +319,13 @@ def test_gemma_2b_single_decoder(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -337,7 +374,14 @@ def test_gemma_2b(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_gen(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="gen")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="gen",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -402,7 +446,14 @@ def test_gemma_2b_gen(record_forge_property, variant):
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b_1x1_gen(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="gemma", variant=variant, suffix="gen_1x1")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        suffix="gen_1x1",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

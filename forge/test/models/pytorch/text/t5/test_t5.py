@@ -17,7 +17,7 @@ from forge.forgeglobal import TILE_DIM
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -27,7 +27,9 @@ from test.utils import download_model
 @pytest.mark.parametrize("variant", ["t5-small"])
 def test_t5_loop_tiny_tile(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="loop_tiny_tile")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="loop_tiny_tile", source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -116,7 +118,9 @@ def test_t5_generation(record_forge_property, variant):
         pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -248,7 +252,12 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="past_cache_enc_dec"
+        framework=Framework.PYTORCH,
+        model="t5",
+        variant=variant,
+        suffix="past_cache_enc_dec",
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -418,7 +427,12 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_device):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="t5", variant=variant, suffix="past_cache_forge_pipe"
+        framework=Framework.PYTORCH,
+        model="t5",
+        variant=variant,
+        suffix="past_cache_forge_pipe",
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -761,7 +775,14 @@ variants = ["t5-small", "t5-base", "t5-large", "google/flan-t5-small", "google/f
 @pytest.mark.skip(reason="Redundant")
 def test_t5_forge_pipeline(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="forge_pipe")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="t5",
+        variant=variant,
+        suffix="forge_pipe",
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -816,7 +837,14 @@ def test_t5_forge_pipeline(record_forge_property, variant):
 @pytest.mark.skip(reason="Redundant")
 def test_t5_small_tiny_tile(record_forge_property, test_device):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="small_tiny_tile")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="t5",
+        variant=variant,
+        suffix="small_tiny_tile",
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

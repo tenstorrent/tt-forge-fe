@@ -13,7 +13,7 @@ import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 sizes = ["base", "large", "xlarge", "xxlarge"]
@@ -40,7 +40,11 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.MASKED_LM
+        framework=Framework.PYTORCH,
+        model="albert",
+        variant=f"{size}_{variant}",
+        task=Task.MASKED_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -108,7 +112,11 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.TOKEN_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="albert",
+        variant=f"{size}_{variant}",
+        task=Task.TOKEN_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
