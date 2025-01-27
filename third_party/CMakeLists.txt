@@ -4,7 +4,7 @@ include(ExternalProject)
 set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
 
 set(TTMLIR_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tt-mlir")
-set(TTMLIR_INSTALL_PREFIX "${TTMLIR_SOURCE_DIR}/install")
+set(TTMLIR_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
 ExternalProject_Add(
     tt-mlir
@@ -27,26 +27,10 @@ ExternalProject_Add(
     WORKING_DIRECTORY ${TTMLIR_SOURCE_DIR}
 )
 
-ExternalProject_Add_StepTargets(tt-mlir configure)
-set_target_properties(tt-mlir-configure PROPERTIES EXCLUDE_FROM_ALL TRUE)
-
-set(TTMLIR_OUTPUT_LIB_DIR ${CMAKE_INSTALL_PREFIX}/forge)
-message(STATUS "TTMLIR_OUTPUT_LIB_DIR: ${TTMLIR_OUTPUT_LIB_DIR}")
-message(STATUS "TTMLIR_INSTALL_PREFIX: ${TTMLIR_INSTALL_PREFIX}")
-install(DIRECTORY ${TTMLIR_INSTALL_PREFIX}/lib DESTINATION ${TTMLIR_OUTPUT_LIB_DIR})
-
-install(CODE
-  "
-    file(INSTALL
-      DESTINATION \"${CMAKE_INSTALL_PREFIX}/forge/lib\"
-      TYPE SHARED_LIBRARY
-      FILES
-          \"${TTMLIR_TOOLCHAIN_DIR}/lib/libLLVM.so\"
-          \"${TTMLIR_TOOLCHAIN_DIR}/lib/libMLIR.so\"
-      FOLLOW_SYMLINK_CHAIN
-    )
-  "
-)
+# set(TTMLIR_OUTPUT_LIB_DIR ${CMAKE_INSTALL_PREFIX}/forge)
+# message(STATUS "TTMLIR_OUTPUT_LIB_DIR: ${TTMLIR_OUTPUT_LIB_DIR}")
+# message(STATUS "TTMLIR_INSTALL_PREFIX: ${TTMLIR_INSTALL_PREFIX}")
+# install(DIRECTORY ${TTMLIR_INSTALL_PREFIX}/lib DESTINATION ${TTMLIR_OUTPUT_LIB_DIR})
 
 ### end build tt-mlir ###
 

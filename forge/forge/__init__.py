@@ -25,6 +25,9 @@ def set_home_paths():
         sys.stdout = open(os.environ["LOGGER_FILE"], "w")
         logger.remove()
         logger.add(sys.stdout)
+    if "TT_METAL_HOME" not in os.environ:
+        # TT_METAL_HOME should be this file path + ../tt-mlir/tt-metal"
+        os.environ["TT_METAL_HOME"] = str(base_path) + "tt-mlir/tt-metal"
 
 
 set_home_paths()

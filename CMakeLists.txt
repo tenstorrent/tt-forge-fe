@@ -56,7 +56,10 @@ add_subdirectory(docs)
 
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN")
-install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/forge)
+### Install _C.so directly into the install directory (not ${CMAKE_INSTALL_PREFIX}/lib/)
+### so that the python can find it. When we package this in the wheel, and it is installed
+### the ${CMAKE_INSTALL_PREFIX} directory will end up in `venv/lib/python3.10/site-packages/forge`.
+install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 ### Generate stubs for ttforge
 ### Run `cmake --build build -- make_stubs` to generate stubs
