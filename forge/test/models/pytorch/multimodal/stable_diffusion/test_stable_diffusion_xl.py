@@ -8,6 +8,9 @@ from diffusers import DiffusionPipeline
 from torchvision import transforms
 
 import forge
+from forge.verify.verify import verify
+
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):
@@ -23,37 +26,42 @@ class StableDiffusionXLWrapper(torch.nn.Module):
         prompt = tokenizer.decode(input_tensor[0].tolist())
         # Generate images using the pipeline
         images = self.pipeline(prompt=prompt).images
-
-
-variants = ["stable-diffusion-xl-base-1.0"]
+        # return images
+        return images
 
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_stable_diffusion_generation(variant):
+@pytest.mark.parametrize("variant", ["stable-diffusion-xl-base-1.0"])
+def test_stable_diffusion_generation(record_forge_property, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="stereo",
+        variant=variant,
+        task=Task.MUSIC_GENERATION,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    record_forge_property("model_name", module_name)
+
     # Load the pipeline and set it to use the CPU
     pipe = DiffusionPipeline.from_pretrained(f"stabilityai/{variant}", torch_dtype=torch.float32)  # Use float32 for CPU
     pipe.to("cpu")  # Move the model to CPU
 
     # Wrap the pipeline in the wrapper
-    model = StableDiffusionXLWrapper(pipe)
+    framework_model = StableDiffusionXLWrapper(pipe)
 
     # Tokenize the prompt to a tensor
     tokenizer = pipe.tokenizer
     prompt = "An astronaut riding a green horse"
     input_tensor = tokenizer(prompt, return_tensors="pt").input_ids
 
-    # Generate the image using the wrapper
-    images = model(input_tensor)
+    inputs = [input_tensor]
 
-    # Assert that the image tensor is generated
-    assert images is not None, "Image generation failed"
-    assert images.shape[0] > 0, "No images were generated"
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Compile the model with tensor input using the variant name for module_name
-    compiled_model = forge.compile(
-        model,
-        sample_inputs=(input_tensor,),  # Pass tensor inputs as tuple
-        module_name=f"pt_{variant.replace('/', '_').replace('.', '_').replace('-', '_')}",
-    )
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

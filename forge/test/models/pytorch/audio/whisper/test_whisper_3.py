@@ -18,7 +18,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class Wrapper(torch.nn.Module):
@@ -44,7 +44,11 @@ def test_whisper_large_v3_speech_translation(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="whisper", variant=variant, task=Task.SPEECH_TRANSLATE
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        task=Task.SPEECH_TRANSLATE,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

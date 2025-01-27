@@ -11,7 +11,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -19,7 +19,11 @@ from test.models.utils import Framework, Task, build_module_name
 def test_detr_detection(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.OBJECT_DETECTION
+        framework=Framework.PYTORCH,
+        model="detr",
+        variant=variant,
+        task=Task.OBJECT_DETECTION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -48,7 +52,11 @@ def test_detr_segmentation(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="detr", variant=variant, task=Task.SEMANTIC_SEGMENTATION
+        framework=Framework.PYTORCH,
+        model="detr",
+        variant=variant,
+        task=Task.SEMANTIC_SEGMENTATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

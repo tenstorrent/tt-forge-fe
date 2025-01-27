@@ -13,7 +13,7 @@ from forge.transformers.pipeline import NLPPipelineWrapper
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.mistral.utils.model_utils import BaseModelWrapper
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 
@@ -24,7 +24,14 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.nightly
 def test_mistral_decoder_layer(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decoder")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mistral",
+        variant=variant,
+        suffix="decoder",
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -58,7 +65,9 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -101,7 +110,14 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.skip(reason="This test currently serves the same purpose as test_mistral")
 def test_mistral_decode(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="decode")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mistral",
+        variant=variant,
+        suffix="decode",
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -171,7 +187,14 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mistral_kv_cache(record_forge_property, variant, test_device):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mistral", variant=variant, suffix="kv_cache")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mistral",
+        variant=variant,
+        suffix="kv_cache",
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

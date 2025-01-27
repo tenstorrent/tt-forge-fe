@@ -12,7 +12,7 @@ from test.models.pytorch.vision.densenet.utils.densenet_utils import (
     get_input_img,
     get_input_img_hf_xray,
 )
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["densenet121", "densenet121_hf_xray"]
@@ -25,7 +25,13 @@ def test_densenet_121_pytorch(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="densenet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -53,7 +59,13 @@ def test_densenet_121_pytorch(record_forge_property, variant):
 @pytest.mark.parametrize("variant", ["densenet161"])
 def test_densenet_161_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="densenet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -76,7 +88,13 @@ def test_densenet_161_pytorch(record_forge_property, variant):
 @pytest.mark.parametrize("variant", ["densenet169"])
 def test_densenet_169_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="densenet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

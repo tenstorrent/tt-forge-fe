@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, FalconForCausalLM
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -17,7 +17,9 @@ def test_falcon(record_forge_property, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="falcon", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="falcon", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

@@ -25,7 +25,7 @@ from forge.forgeglobal import TILE_DIM
 from forge.transformers.pipeline import pipeline as forge_pipeline
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -44,7 +44,13 @@ def test_whisper(record_forge_property, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        task=Task.SPEECH_RECOGNITION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -128,7 +134,14 @@ def test_whisper(record_forge_property, variant):
 @pytest.mark.skip(reason="Redundant")
 def test_whisper_pipeline(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="pipeline")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        suffix="pipeline",
+        task=Task.SPEECH_RECOGNITION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -191,7 +204,14 @@ def test_whisper_pipeline(record_forge_property, variant):
 @pytest.mark.skip(reason="Not supported")
 def test_whisper_encoder(record_forge_property, test_device, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="whisper", variant=variant, suffix="encoder")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="whisper",
+        variant=variant,
+        suffix="encoder",
+        task=Task.SPEECH_RECOGNITION,
+        source=Source.HUGGINGFACE,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
