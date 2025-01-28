@@ -124,18 +124,12 @@ def eval(type, attr, ops):
         return ret
 
     if type == "broadcast":
-        assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
-        explicit_bcast = len(attr) == 3 and bool(attr[2])
-
         tensor = t_ops[0]
-        dim = attr[0]
-        size = attr[1]
-        while len(tensor.shape) <= ((-dim - 1) if dim < 0 else dim):
-            tensor = tensor.unsqueeze(0)
-        target_shape = list(tensor.shape)
-        assert dim < len(target_shape), f"Trying to broadcast on dim that doesn't exist: {dim} on {target_shape}"
-        target_shape[dim] = size
-        return torch.broadcast_to(tensor, target_shape)
+        broadcast_dimensions = attr
+        tr = torch.ones(tensor.size())
+        br = torch.ones(broadcast_dimensions)
+        target = tr * br
+        return torch.broadcast_to(tensor, tuple(target.size()))
 
     if type == "repeat":
         sizes = attr
@@ -469,20 +463,14 @@ def shape(type, attr, ops):
         return tuple(shape), []
 
     if type == "broadcast":
-        assert len(attr) <= 3, "Broadcast should have two attributes - dim and size"
-        dim = attr[0]
-        size = attr[1]
+
         target_shape = list(ops[0])
+        tar = torch.ones(target_shape)
+        br = torch.ones(attr)
+        target = tar * br
+        target = list(target.size())
 
-        if dim < 0:
-            while abs(dim) > len(target_shape):
-                target_shape = [1] + target_shape
-        else:
-            while dim >= len(target_shape):
-                target_shape = [1] + target_shape
-
-        target_shape[dim] = size
-        return tuple(target_shape), []
+        return tuple(target), []
 
     if type == "repeat":
         sizes = attr
@@ -725,21 +713,6 @@ def lower(type, attr, lc, ops, outputs):
             lc.tm("transpose", ops[0], attr, named_attrs={"dim0": attr[0], "dim1": attr[1]})
         else:
             lc.op("transpose", ops, attr, {"dim0": attr[0], "dim1": attr[1]})
-
-    elif type == "broadcast":
-        if attr[0] < 0:
-            attr[0] += ops[0].shape.len()
-        # Adjust the broadcast dim if we're moving to more/less dimensions
-        delta = 4 - ops[0].shape.len()
-        attr[0] += delta
-        assert attr[0] >= 0 and attr[0] <= 3, f"Invalid broadcast dim after lowering: {attr[0]}"
-
-        if attr[0] == 2 or attr[0] == 3:
-            # Adjust broadcast size if not divisible by tile dim
-            attr[1] = int(math.ceil(attr[1] / TILE_DIM)) * TILE_DIM
-            attr[1] //= TILE_DIM
-
-        return lc.tm("broadcast", ops[0], attr)
 
     elif type == "repeat":
         assert False, "repeat should have been decomposed into repeat_interleave"
@@ -1303,10 +1276,6 @@ def decompose(type, attr, dc, inputs):
 
                 dc.fuse(result)
                 return
-
-    if type == "broadcast":
-        if attr[1] == 1:
-            dc.fuse(dc.op(Nop.create(), [inputs[0]]))
 
     if type == "transpose":
         # canonicalize dims to use negative indexing

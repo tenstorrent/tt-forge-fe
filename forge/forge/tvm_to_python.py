@@ -1197,34 +1197,25 @@ def populate_index_args(graph, nid, compiler_cfg):
 
 
 def populate_broadcast_args(graph, nid, compiler_cfg):
+
     node = graph["nodes"][nid]
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
     output_shape = node["attrs"]["shape"][0][0]
 
-    dim = 0
-    shape = output_shape[dim]
-    for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
-        if inp_dim == out_dim:
-            continue
+    shape = [1] * len(output_shape)
+    range_s = len(output_shape)
 
-        dim = i
-        shape = out_dim
-        input_shape[i] = out_dim
-        assert input_shape == output_shape, "Forge broadcast only supports 1 dim"
-
-    dim = dim - len(input_shape)
+    for i in range(range_s):
+        if input_shape[i] == output_shape[i]:
+            shape[i] = 1
+        else:
+            shape[i] = output_shape[i]
     args = []
     args.append(
         (
-            "dim",
-            f"{dim}",
-        )
-    )
-    args.append(
-        (
-            "shape",
-            f"{shape}",
+            "broadcast_dimensions",
+            f"{tuple(shape)}",
         )
     )
     return args

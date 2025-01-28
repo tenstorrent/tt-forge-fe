@@ -309,7 +309,7 @@ def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tens
     return op("pad_tile", name, operandA, attrs=(dim, original_length)).get_tensor()
 
 
-def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
+def Broadcast(name: str, operandA: Tensor, broadcast_dimensions: Tuple[int, ...]) -> Tensor:
     """
     TM
 
@@ -321,11 +321,9 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     operandA: Tensor
         Input operand A
 
-    dim: int
-        Dimension to broadcast
+    broadcast_dimensions: Tuple of int
+        Dimensions to broadcast
 
-    shape: int
-        Output length of dim
 
     Returns
     -------
@@ -333,7 +331,9 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
         Forge tensor
     """
 
-    return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
+    return op(
+        "broadcast", name, operandA, attrs=broadcast_dimensions, broadcast_dimensions=broadcast_dimensions
+    ).get_tensor()
 
 
 def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
