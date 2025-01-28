@@ -2,40 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict, List, Any, Tuple, Optional
 from enum import IntEnum
-from loguru import logger
-
 from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses_json import dataclass_json
+from loguru import logger
+import torch
+from typing import Dict, List, Any, Optional
 
-from forge._C import DataFormat, ForgeGraphModule, GraphType
-from forge._C.graph import Graph, RuntimeTensorTransform
+
+from forge._C.graph import Graph
 import forge._C.graph as pygraph
 from forge._C.runtime import run_binary, Binary
-from forge.utils import list_as_json
-from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors
-from forge.module import Module, PyTorchModule
-from forge.typing import AnyTensor, AnyModule
-
-
-import torch
-
-
-def no_encoding(obj):
-    return obj  # perform json-encoding later
-
-
-def no_decoding(obj):
-    return obj  # perform json-encoding later
-
-
-def optional_no_encoding(obj):
-    return None if obj is None else obj
-
-
-def optional_no_decoding(obj):
-    return None if obj is None else obj
+from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, AnyTensor
+from forge.module import Module, PyTorchModule, AnyModule
 
 
 class CompileResults:
@@ -69,18 +48,13 @@ class CompiledGraphState:
     ordered_intermediate_names: List[str]
     aliased_outputs: Dict[str, str]
 
-    consteval_trace: Dict[str, Dict[str, Any]]
-    post_const_eval_constants: Dict[str, torch.Tensor] = field(
-        metadata=config(encoder=no_encoding, decoder=no_decoding)  # For serialization of CompiledGraphState cls
-    )
-    post_const_eval_parameters: Dict[str, torch.Tensor] = field(
-        metadata=config(encoder=no_encoding, decoder=no_decoding)  # For serialization of CompiledGraphState cls
-    )
+    # JSON trace for each node in the graph which can be consteval'd
+    consteval_trace: Dict[str, Any]
+    post_const_eval_constants: Dict[str, torch.Tensor]
+    post_const_eval_parameters: Dict[str, torch.Tensor]
 
     # Hold cpu-evaluated outputs loaded from TTI
-    cpueval_outputs: Optional[List[torch.Tensor]] = field(
-        metadata=config(encoder=optional_no_encoding, decoder=optional_no_decoding), default=None
-    )
+    cpueval_outputs: Optional[List[torch.Tensor]] = field(default=None)
 
     has_cache_buffers: bool = False
 
@@ -93,10 +67,10 @@ class CompiledGraphState:
         ordered_external_output_names = graph.get_ordered_external_output_names()
         ordered_target_names = graph.get_ordered_target_names()
         ordered_intermediate_names = graph.get_ordered_intermediate_names()
-        ordered_output_requires_grad = graph.get_ordered_output_requires_grad()
         ordered_output_nodes = graph.get_ordered_output_nodes()
         aliased_outputs: Dict[str, str] = {}
-        for i, node in enumerate(ordered_output_nodes):
+        for node in ordered_output_nodes:
+            assert isinstance(node, pygraph.OutputNode)
             if node.is_aliased:
                 aliased_outputs[node.name] = node.alias
 
@@ -110,29 +84,25 @@ class CompiledGraphState:
         ordered_input_gradient_names = graph.get_ordered_input_gradient_names()
 
         consteval_trace = pygraph.record_consteval_operations(graph)
+
         has_cache_buffers = False
 
-        constant_to_tensor = {}
+        constant_to_tensor: Dict[str, torch.Tensor] = {}
         if isinstance(module, Module):
             for p in module.get_parameters():
                 value = p.value(is_forge=False)
                 if value == None:
                     raise ValueError(f"Parameter {p.get_name()} has no value")
                 constant_to_tensor[p.get_name()] = p.value(is_forge=False)
-        elif isinstance(module, torch.fx.GraphModule):
-            for name, value in module.named_parameters():
-                constant_to_tensor[name] = value
 
         if optimizer_params is not None:
-            for name, value in optimizer_params.items():
-                constant_to_tensor[name] = value.value()
+            for name, opt_param in optimizer_params.items():
+                constant_to_tensor[name] = opt_param.value()
 
-        post_const_eval_constants = {}
         post_const_eval_constants: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
             graph, constant_to_tensor, consteval_trace, ordered_constant_node_names, is_forge=False
         )
 
-        post_const_eval_parameters = {}
         post_const_eval_parameters: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
             graph, constant_to_tensor, consteval_trace, ordered_parameter_node_names, is_forge=False
         )
@@ -154,29 +124,20 @@ class CompiledGraphState:
             has_cache_buffers=has_cache_buffers,
         )
 
-    def get_tensor(self, name_to_tensor, name):
+    def get_tensor(self, name_to_tensor: dict[str, torch.Tensor], name: str) -> torch.Tensor:
         assert name in name_to_tensor
-        value = name_to_tensor[name]
+        return name_to_tensor[name]
 
-        # If mapped value is callable, we call it to get the tensor.
-        # This is useful for the case where we want to lazily evaluate
-        if callable(value):
-            tensor = value()
-            name_to_tensor[name] = tensor
-        else:
-            tensor = value
-        return tensor
-
-    def get_constant_tensor(self, name):
+    def get_constant_tensor(self, name: str) -> torch.Tensor:
         return self.get_tensor(self.post_const_eval_constants, name)
 
-    def get_ordered_constant_tensors(self):
+    def get_ordered_constant_tensors(self) -> List[torch.Tensor]:
         return [self.get_constant_tensor(name) for name in self.ordered_constant_node_names]
 
-    def get_parameter_tensor(self, name):
+    def get_parameter_tensor(self, name: str) -> torch.Tensor:
         return self.get_tensor(self.post_const_eval_parameters, name)
 
-    def get_ordered_parameter_tensors(self):
+    def get_ordered_parameter_tensors(self) -> List[torch.Tensor]:
         return [self.get_parameter_tensor(name) for name in self.ordered_parameter_node_names]
 
 
@@ -210,7 +171,7 @@ class CompiledModel:
 
     # Gradients to be passed into the backward pass.
     # Used when CompiledModel.backward() is part of a chain of backward passes.
-    gradient_inputs: List[torch.Tensor]
+    gradient_inputs: List[Optional[torch.Tensor]]
     gradient_outputs: List[torch.Tensor]
 
     attached_module: Optional["CompiledModel"]
@@ -232,13 +193,12 @@ class CompiledModel:
         self.framework_module = framework_module
         self.intermediates = []
         if self.bwd_compiled_graph_state is not None:
-            assert self.bwd_compiled_graph_state is not None
             self.gradient_inputs = [None] * len(self.bwd_compiled_graph_state.ordered_input_gradient_names)
         self.outputs = {}
         self.attached_module = attached_module
         self.gradient_outputs = []
 
-    def tie_grad_fn(self, grad_id: int, grad: torch.Tensor):
+    def tie_grad_fn(self, grad_id: int, grad: torch.Tensor) -> None:
         """
         Hook function to tie the gradients produced by torch as inputs to the backward pass which will be ran on the
         TT device.
@@ -262,25 +222,27 @@ class CompiledModel:
         List[Tensor]
             Output tensors
         """
-        self.inputs = [*inputs]
+        self.inputs = [*to_pt_tensors(inputs)]
+
         inputs_and_parameters = [
-            *inputs,
+            *self.inputs,
             *self.fwd_compiled_graph_state.get_ordered_constant_tensors(),
             *self.fwd_compiled_graph_state.get_ordered_parameter_tensors(),
         ]
 
-        if any([not isinstance(t, torch.Tensor) for t in inputs_and_parameters]):
-            logger.info("Converting inputs and parameters to PyTorch tensors...")
-            inputs_and_parameters = to_pt_tensors(inputs_and_parameters)
+        assert all(
+            [isinstance(t, torch.Tensor) for t in inputs_and_parameters]
+        ), "All inputs should be torch tensors by now."
 
         if self.training() and isinstance(self.framework_module, PyTorchModule):
             for name, param in self.framework_module.module.named_parameters():
                 if param.requires_grad:
                     our_tensor = self.fwd_compiled_graph_state.get_parameter_tensor(name)
 
-                    # NOTE: for parameters that require gradients, we want to share the same tensor with the PyTorch module.
-                    # This is because we want to be able to optimize the parameters both on the device (through our runtime)
-                    # and via the torch optimizers. So this ensures that whichever side updates the parameter value, the other side can see the change.
+                    # NOTE: for parameters that require gradients, we want to share the same tensor with the PyTorch
+                    # module. This is because we want to be able to optimize the parameters both on the device
+                    # (through our runtime) and via the torch optimizers. So this ensures that whichever side updates
+                    # the parameter value, the other side can see the change.
                     #
                     # This could change in the future, but for now ensure that our premise is correct.
                     assert param is our_tensor
@@ -313,7 +275,7 @@ class CompiledModel:
         return model_outputs
 
     def forward(self, *inputs: AnyTensor) -> List[torch.Tensor]:
-        return self(inputs)
+        return self(*inputs)
 
     def backward(self) -> List[torch.Tensor]:
         assert self.training(), "Model not compiled for training."
@@ -357,8 +319,8 @@ class CompiledModel:
             # Accumulate gradients in the PyTorch module
             if isinstance(self.framework_module, PyTorchModule):
                 for name, param in self.framework_module.module.named_parameters():
-                    for idx, grad in enumerate(self.bwd_compiled_graph_state.ordered_output_names):
-                        if name in grad:
+                    for idx, grad_output_name in enumerate(self.bwd_compiled_graph_state.ordered_output_names):
+                        if name in grad_output_name:
                             grad_tensor = grads[idx]
                             if param.shape != grad_tensor.shape:
                                 # Our gradients for bias are 2D (of [1, N] shape) but PyTorch expects 1D - [N].
@@ -390,7 +352,7 @@ class CompiledModel:
     def optimizer_on_device(self) -> bool:
         return self.opt_compiled_graph_state is not None
 
-    def step(self):
+    def step(self) -> None:
         assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
         assert self.opt_compiled_graph_state is not None, "Optimizer graph should be present for training."
 
@@ -418,6 +380,9 @@ class CompiledModel:
             self.fwd_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
 
             # Sanity check - assert that the parameter tensors in framework module are the same as the ones in our runtime.
+            assert isinstance(
+                self.framework_module, PyTorchModule
+            ), "For now only PyTorchModule is supported in training"
             for torch_name, val in self.framework_module.module.named_parameters():
                 if torch_name == weight_name:
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
