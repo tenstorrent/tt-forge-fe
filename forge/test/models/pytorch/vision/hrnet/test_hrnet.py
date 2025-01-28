@@ -19,8 +19,6 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
-torch.multiprocessing.set_sharing_strategy("file_system")
-
 
 def generate_model_hrnet_imgcls_osmr_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model

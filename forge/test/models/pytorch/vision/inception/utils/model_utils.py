@@ -13,8 +13,6 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 
-torch.multiprocessing.set_sharing_strategy("file_system")
-
 
 def preprocess_timm_model(model_name):
     model = timm.create_model(model_name, pretrained=True)

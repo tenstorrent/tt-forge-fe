@@ -7,20 +7,10 @@ from transformers.modeling_attn_mask_utils import (
     _prepare_4d_attention_mask,
 )
 
-
 # SPDX-FileCopyrightText: Copyright (c) 2021 OpenAI
 #
 # SPDX-License-Identifier: MIT
 # https://github.com/openai/CLIP
-class CLIPVisionWrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.clip_model = model
-
-    def forward(self, pixel_values):
-
-        vision_outputs = self.clip_model.vision_model(pixel_values, return_dict=False)
-        return vision_outputs
 
 
 class CLIPTextWrapper(torch.nn.Module):
@@ -59,38 +49,3 @@ class CLIPTextWrapper(torch.nn.Module):
         last_hidden_state = self.clip_model.text_model.final_layer_norm(last_hidden_state)
 
         return (last_hidden_state, *encoder_outputs)
-
-
-class CLIPPostProcessingWrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.clip_model = model
-
-    def forward(self, input_ids, vision_outputs, last_hidden_state, *encoder_outputs):
-        # text_embeds.shape = [batch_size, sequence_length, transformer.width]
-        # take features from the eot embedding (eot_token is the highest number in each sequence)
-        # casting to torch.int for onnx compatibility: argmax doesn't support int64 inputs with opset 14
-        pooled_output = last_hidden_state[
-            torch.arange(last_hidden_state.shape[0], device=last_hidden_state.device),
-            input_ids.to(dtype=torch.int, device=last_hidden_state.device).argmax(dim=-1),
-        ]
-
-        text_outputs = (last_hidden_state, pooled_output) + encoder_outputs[1:]
-
-        image_embeds = vision_outputs[1]
-        image_embeds = self.clip_model.visual_projection(image_embeds)
-
-        text_embeds = text_outputs[1]
-        text_embeds = self.clip_model.text_projection(text_embeds)
-
-        # normalized features
-        image_embeds = image_embeds / image_embeds.norm(p=2, dim=-1, keepdim=True)
-        text_embeds = text_embeds / text_embeds.norm(p=2, dim=-1, keepdim=True)
-
-        # cosine similarity as logits
-        logit_scale = self.clip_model.logit_scale.exp()
-        logits_per_text = torch.matmul(text_embeds, image_embeds.t()) * logit_scale
-        logits_per_image = logits_per_text.t()
-
-        output = (logits_per_image, logits_per_text, text_embeds, image_embeds, *text_outputs, *vision_outputs)
-        return output

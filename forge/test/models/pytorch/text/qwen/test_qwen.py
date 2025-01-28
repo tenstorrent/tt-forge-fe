@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
-import re
-
 import pytest
 import torch
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
@@ -54,17 +52,6 @@ def test_qwen1_5_causal_lm(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
-
-
-def parse_chat_completion(text: str):
-    pattern = r"<\|im_start\|>\s*(\w+)\s*([\s\S]*?)\s*(?:<\|im_end\|>|$)"
-    matches = re.findall(pattern, text, re.DOTALL)
-
-    messages = []
-    for role, content in matches:
-        messages.append({"role": role, "content": content.strip()})
-
-    return messages
 
 
 @pytest.mark.nightly
