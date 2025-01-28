@@ -163,6 +163,9 @@ class FailingReasonsValidation:
             and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=0,y=0)] grow to 2663200 B which is beyond max L1 size of 1499136 B"
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
+            and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 28100144 B which is beyond max L1 size of 1499136 B"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
             and "Index is out of bounds for the rank, should be between 0 and 0 however is 1" in f"{ex}",
         ],
     }
