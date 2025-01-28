@@ -20,25 +20,16 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.mobilenet.utils.utils import (
+    load_mobilenet_model,
+    post_processing,
+)
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
-def generate_model_mobilenetV2_imgcls_torchhub_pytorch():
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "mobilenet_v2", pretrained=True)
-
-    # Image preprocessing
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
-    # TODO : Choose image preprocessor from torchvision,
-    # to make a compatible postprocessing of the predicted class
-    preprocessor = download_model(AutoImageProcessor.from_pretrained, "google/mobilenet_v2_1.0_224")
-    image_tensor = preprocessor(images=image, return_tensors="pt").pixel_values
-
-    return model, [image_tensor], {}
-
-
 @pytest.mark.nightly
+@pytest.mark.push
 def test_mobilenetv2_basic(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
@@ -52,13 +43,20 @@ def test_mobilenetv2_basic(record_forge_property):
     # Record Forge Property
     record_forge_property("model_name", module_name)
 
-    framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_torchhub_pytorch()
+    # Load the model and prepare input data
+    framework_model, inputs = load_mobilenet_model("mobilenet_v2")
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    # Inference
+    output = compiled_model(*inputs)
+
+    # Post processing
+    post_processing(output)
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
