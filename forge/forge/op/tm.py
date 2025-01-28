@@ -309,7 +309,33 @@ def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tens
     return op("pad_tile", name, operandA, attrs=(dim, original_length)).get_tensor()
 
 
-def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
+# def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
+#     """
+#     TM
+
+#     Parameters
+#     ----------
+#     name: str
+#         Op name, unique to the module, or leave blank to autoset
+
+#     operandA: Tensor
+#         Input operand A
+
+#     dim: int
+#         Dimension to broadcast
+
+#     shape: int
+#         Output length of dim
+
+#     Returns
+#     -------
+#     Tensor
+#         Forge tensor
+#     """
+
+#     return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
+
+def Broadcast(name: str, operandA: Tensor, broadcast_dimensions: Tuple[int, ...]) -> Tensor:
     """
     TM
 
@@ -332,9 +358,31 @@ def Broadcast(name: str, operandA: Tensor, dim: int, shape: int) -> Tensor:
     Tensor
         Forge tensor
     """
+    # breakpoint()
+    # tensorin = torch.ones(operandA.size())
+    # broadcast_tensor = torch.ones(broadcast_dimensions)
+    # target_tensor = tensorin * broadcast_tensor
+    # breakpoint()
+   
+    
+    # shape  = [1] * len(broadcast_dimensions)
+    # range_s = len(broadcast_dimensions)
+    # operandA_shape = operandA.shape
 
-    return op("broadcast", name, operandA, attrs=(dim, shape, True)).get_tensor()
 
+    # for i in range(range_s):
+    #     if operandA_shape[i] == broadcast_dimensions[i]:
+    #         shape[i] = 1
+    #     else:
+    #         shape[i] = broadcast_dimensions[i]
+    breakpoint()
+    named_attrs={"broadcast_dimensions":broadcast_dimensions}
+    broadcast_dimensions = tuple(broadcast_dimensions)
+    
+    # print("TM-Broadcast",broadcast_dimensions)
+    # print("TM-Repeat",shape)
+    # breakpoint()
+    return op("broadcast", name, operandA, attrs=broadcast_dimensions,broadcast_dimensions=broadcast_dimensions).get_tensor()
 
 def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     """

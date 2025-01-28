@@ -569,6 +569,8 @@ class MLIRGenerator
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatInterleaveOp>;
         lowering_handler_map["conv2d_transpose"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
+        lowering_handler_map["broadcast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::BroadcastOp>;
+        
     }
 };
 }  // namespace

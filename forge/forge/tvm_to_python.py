@@ -1196,38 +1196,81 @@ def populate_index_args(graph, nid, compiler_cfg):
     return args
 
 
+
+
 def populate_broadcast_args(graph, nid, compiler_cfg):
+  
     node = graph["nodes"][nid]
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
     output_shape = node["attrs"]["shape"][0][0]
+   
+    oshape  = [1] * len(output_shape)
+    range_s = len(output_shape)
+   
 
-    dim = 0
-    shape = output_shape[dim]
-    for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
-        if inp_dim == out_dim:
-            continue
 
-        dim = i
-        shape = out_dim
-        input_shape[i] = out_dim
-        assert input_shape == output_shape, "Forge broadcast only supports 1 dim"
+    for i in range(range_s):
+        if input_shape[i] == output_shape[i]:
+            oshape[i] = 1
+        else:
+            oshape[i] = output_shape[i]
+    breakpoint()
+    # tensor = t_ops[0]
+    # broadcast_dimensions = attr
+    # shape  = [1] * len(broadcast_dimensions)
+    # range_s = len(broadcast_dimensions)
+    # operandA_shape = tensor.shape
 
-    dim = dim - len(input_shape)
+
+    # for i in range(range_s):
+    #     if operandA_shape[i] == broadcast_dimensions[i]:
+    #         shape[i] = 1
+    #     else:
+    #         shape[i] = broadcast_dimensions[i]
+    # breakpoint()
     args = []
     args.append(
         (
-            "dim",
-            f"{dim}",
+            "broadcast_dimensions",
+            f"{tuple(oshape)}",
         )
     )
-    args.append(
-        (
-            "shape",
-            f"{shape}",
-        )
-    )
+    # breakpoint()
     return args
+
+# def populate_broadcast_args(graph, nid, compiler_cfg):
+#     node = graph["nodes"][nid]
+#     input_nid = node["inputs"][0][0]
+#     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+#     output_shape = node["attrs"]["shape"][0][0]
+
+#     dim = 0
+#     shape = output_shape[dim]
+#     for i, (inp_dim, out_dim) in enumerate(zip(input_shape, output_shape)):
+#         if inp_dim == out_dim:
+#             continue
+
+#         dim = i
+#         shape = out_dim
+#         input_shape[i] = out_dim
+#         assert input_shape == output_shape, "Forge broadcast only supports 1 dim"
+
+#     dim = dim - len(input_shape)
+#     args = []
+#     args.append(
+#         (
+#             "dim",
+#             f"{dim}",
+#         )
+#     )
+#     args.append(
+#         (
+#             "shape",
+#             f"{shape}",
+#         )
+#     )
+#     return args
 
 
 def populate_reduce_args(graph, nid, compiler_cfg):
