@@ -63,6 +63,38 @@ py::object eval_input_bw(Node *node, py::object inputs, bool is_forge);
 
 void GraphModule(py::module &m_graph)
 {
+    py::enum_<tt::graphlib::NodeType>(m_graph, "NodeType")
+        .value("kInput", tt::graphlib::NodeType::kInput)
+        .value("kOutput", tt::graphlib::NodeType::kOutput)
+        .value("kPyOp", tt::graphlib::NodeType::kPyOp)
+        .value("kForgeOp", tt::graphlib::NodeType::kForgeOp)
+        .value("kForgeNaryTM", tt::graphlib::NodeType::kForgeNaryTM)
+        .value("kQueue", tt::graphlib::NodeType::kQueue)
+        .export_values();
+
+    py::class_<tt::graphlib::InputNode, tt::raw_ptr<tt::graphlib::InputNode>>(m_graph, "InputNode")
+        .def_property_readonly("id", &Node::id)
+        .def_property_readonly("name", &Node::name)
+        .def_property_readonly("node_type", &Node::node_type)
+        .def_property_readonly("shape", &Node::shape)
+        .def_property_readonly("output_df", &Node::output_df);
+
+    py::class_<tt::graphlib::OutputNode, tt::raw_ptr<tt::graphlib::OutputNode>>(m_graph, "OutputNode")
+        .def_property_readonly("id", &Node::id)
+        .def_property_readonly("name", &Node::name)
+        .def_property_readonly("node_type", &Node::node_type)
+        .def_property_readonly("shape", &Node::shape)
+        .def_property_readonly("output_df", &Node::output_df)
+        .def_property_readonly("is_aliased", &graphlib::OutputNode::is_aliased_tensor)
+        .def_property_readonly("alias", &graphlib::OutputNode::alias);
+
+    py::class_<tt::Node, tt::raw_ptr<tt::Node>>(m_graph, "Node")
+        .def_property_readonly("id", &Node::id)
+        .def_property_readonly("name", &Node::name)
+        .def_property_readonly("node_type", &Node::node_type)
+        .def_property_readonly("shape", &Node::shape)
+        .def_property_readonly("output_df", &Node::output_df);
+
     py::class_<Graph>(m_graph, "Graph")
         .def(py::init([](std::string name) { return std::make_unique<Graph>(graphlib::IRLevel::IR_TT_FORGE, name); }))
         .def("clone", [](Graph &self) { return self.clone(); })
@@ -239,29 +271,6 @@ void GraphModule(py::module &m_graph)
         .value("FORGE", Shape::Type::FORGE)
         .export_values();
 
-    py::class_<tt::Node, tt::raw_ptr<tt::Node>>(m_graph, "Node")
-        .def_property_readonly("id", &Node::id)
-        .def_property_readonly("name", &Node::name)
-        .def_property_readonly("node_type", &Node::node_type)
-        .def_property_readonly("shape", &Node::shape)
-        .def_property_readonly("output_df", &Node::output_df);
-
-    py::class_<tt::graphlib::InputNode, tt::raw_ptr<tt::graphlib::InputNode>>(m_graph, "InputNode")
-        .def_property_readonly("id", &Node::id)
-        .def_property_readonly("name", &Node::name)
-        .def_property_readonly("node_type", &Node::node_type)
-        .def_property_readonly("shape", &Node::shape)
-        .def_property_readonly("output_df", &Node::output_df);
-
-    py::class_<tt::graphlib::OutputNode, tt::raw_ptr<tt::graphlib::OutputNode>>(m_graph, "OutputNode")
-        .def_property_readonly("id", &Node::id)
-        .def_property_readonly("name", &Node::name)
-        .def_property_readonly("node_type", &Node::node_type)
-        .def_property_readonly("shape", &Node::shape)
-        .def_property_readonly("output_df", &Node::output_df)
-        .def_property_readonly("is_aliased", &graphlib::OutputNode::is_aliased_tensor)
-        .def_property_readonly("alias", &graphlib::OutputNode::alias);
-
     py::class_<graphlib::NodeContext>(m_graph, "NodeContext")
         .def_readonly("id", &graphlib::NodeContext::id)
         .def_readonly("name", &graphlib::NodeContext::name)
@@ -295,15 +304,6 @@ void GraphModule(py::module &m_graph)
             [](tt::graphlib::OpType &op_type, std::string const &name, tt::graphlib::OpType::Attr value)
             { return op_type.set_attr(name, value); })
         .def("__repr__", [](tt::graphlib::OpType const &op_type) { return op_type.as_string(); });
-
-    py::enum_<tt::graphlib::NodeType>(m_graph, "NodeType")
-        .value("kInput", tt::graphlib::NodeType::kInput)
-        .value("kOutput", tt::graphlib::NodeType::kOutput)
-        .value("kPyOp", tt::graphlib::NodeType::kPyOp)
-        .value("kForgeOp", tt::graphlib::NodeType::kForgeOp)
-        .value("kForgeNaryTM", tt::graphlib::NodeType::kForgeNaryTM)
-        .value("kQueue", tt::graphlib::NodeType::kQueue)
-        .export_values();
 
     py::enum_<tt::graphlib::UBlockOrder>(m_graph, "UBlockOrder")
         .value("R", tt::graphlib::UBlockOrder::R)
