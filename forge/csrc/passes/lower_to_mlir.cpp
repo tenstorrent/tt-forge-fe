@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <utils/assert.hpp>
 
 // TTForge headers
 #include "forge_graph_module.hpp"
@@ -50,20 +51,18 @@ using namespace tt;
  * @brief Implementation of TT-MLIR emission from the Forge module (set of graphs).
  */
 
-// Type-safe conversion enum
 enum class TargetType
 {
-    NoConversion,
-    AsUInt32,  // Will be stored as int but treated as uint32 in MLIR
+    SourceType,
+    UInt32,
 };
 
 struct AttributeRemap
 {
-    std::string new_name;          // New name for the attribute (empty string means keep original)
-    TargetType target_type_value;  // Target type conversion
+    std::optional<std::string> new_name;  // New name for the attribute
+    TargetType target_type_value;         // Target type conversion
 
-    // Constructor for easier initialization
-    AttributeRemap(const std::string &name = "", TargetType type = TargetType::NoConversion) :
+    AttributeRemap(const std::optional<std::string> &name = std::nullopt, TargetType type = TargetType::SourceType) :
         new_name(name), target_type_value(type)
     {
     }
@@ -91,10 +90,10 @@ class AttributeMapper
             if (attr_it != op_it->second.end())
             {
                 const auto &remap = attr_it->second;
-                return {remap.new_name.empty() ? attr_name : remap.new_name, remap.target_type_value};
+                return {remap.new_name.value_or(attr_name), remap.target_type_value};
             }
         }
-        return {attr_name, TargetType::NoConversion};
+        return {attr_name, TargetType::SourceType};
     }
 
    private:
@@ -104,7 +103,7 @@ class AttributeMapper
     void initialize_default_mappings()
     {
         // repeat_interleave configuration
-        add_op_mapping("repeat_interleave", "repeats", AttributeRemap("", TargetType::AsUInt32));
+        add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UInt32));
 
         // Add more default mappings here
     }
@@ -208,7 +207,7 @@ class MLIRGenerator
     std::map<std::string, HandlerType> lowering_handler_map;
 
     /// Attribute mapper for handling attribute conversions
-    AttributeMapper attr_mapper_;
+    static AttributeMapper attr_mapper_;
 
     /// Declares a variable in the current (only) scope.
     /// The declaration corresponds to exactly one operation node in the TTForge graph.
@@ -227,15 +226,16 @@ class MLIRGenerator
     // Convert a TTForge attribute to an MLIR attribute.
     mlir::Attribute convert_to_mlir_attribute(const tt::ForgeOpAttr &value, TargetType target_type)
     {
-        if (target_type != TargetType::NoConversion)
+        if (target_type != TargetType::SourceType)
         {
             // Convert the attribute to the target type
             switch (target_type)
             {
-                case TargetType::AsUInt32:
-                    return builder_.getUI32IntegerAttr(static_cast<int32_t>(std::get<int>(value)));
+                case TargetType::UInt32:
+                    TT_ASSERT(std::get<int>(value) >= 0, "Value must be an >= 0 for conversion to uint32");
+                    return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
                 default:
-                    // If type not handled, throw an exception or handle it appropriately
+                    // If type not handled, throw an exception
                     throw std::runtime_error("Unhandled target type conversion");
             }
         }
@@ -432,7 +432,7 @@ class MLIRGenerator
         // Evaluate operation operands: inputs and outputs per DPS
         llvm::SmallVector<mlir::Value> operands = get_mlir_operands(graph, op_node);
 
-        // Process attributes using the mapper
+        // Map forge to MLIR attributes for this operation.
         llvm::SmallVector<mlir::NamedAttribute> mlir_attributes;
         for (const auto &[name, value] : op_node->op_type().named_attrs)
         {
@@ -643,6 +643,8 @@ class MLIRGenerator
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
     }
 };
+
+AttributeMapper MLIRGenerator::attr_mapper_;
 }  // namespace
 namespace tt::passes
 {
