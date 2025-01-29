@@ -140,6 +140,7 @@ class FailingReasonsValidation:
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:60: tt::exception"
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "Generated MLIR module failed verification" in f"{ex}",
+            lambda ex: f"InternalError: Check failed: *axis_ptr == X (Y vs. X) : cannot squeeze axis with dimension not equal to X in {ex}",
         ],
         FailingReasons.INFERENCE_FAILED: [
             lambda ex: isinstance(ex, AttributeError)
@@ -164,6 +165,9 @@ class FailingReasonsValidation:
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and "Index is out of bounds for the rank, should be between 0 and 0 however is 1" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Generated MLIR module failed verification." in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Please look up dimensions by name, got: name = None" in f"{ex}",
         ],
     }
 

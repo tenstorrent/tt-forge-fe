@@ -14,8 +14,7 @@ from loguru import logger
 
 from forge.verify.config import VerifyConfig
 
-from forge.verify.value_checkers import AllCloseValueChecker
-from forge.verify.verify import verify as forge_verify
+from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import InputSource
@@ -67,6 +66,11 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # We use AllCloseValueChecker in all cases except for integer data formats:
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
+        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -78,7 +82,7 @@ class TestVerification:
             warm_reset=warm_reset,
             value_range=ValueRanges.SMALL,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker()),
+            verify_config=verify_config,
         )
 
 
@@ -149,7 +153,42 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
         ),
     ],
-    failing_rules=[],
+    failing_rules=[
+        TestCollection(
+            criteria=lambda test_vector: test_vector.get_id()
+            in TestPlanUtils.load_test_ids_from_file(
+                f"{os.path.dirname(__file__)}/test_squeeze_ids_failed_allclose_value_checker.txt"
+            ),
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            operators=TestParamsData.operators,
+            input_shapes=[(1, 1)],
+            failing_reason=FailingReasons.INFERENCE_FAILED,
+        ),
+        TestCollection(
+            operators=TestParamsData.operators,
+            input_shapes=[
+                (2, 1, 2, 1, 2),
+                (100, 1, 100, 1),
+                (84, 25, 100, 1, 41),
+                (5, 5, 5, 5, 5),
+            ],
+            kwargs=[{"dim": None}],
+            failing_reason=FailingReasons.INFERENCE_FAILED,
+        ),
+        # tvm.error.InternalError: ...
+        TestCollection(
+            operators=TestParamsData.operators,
+            # fmt: off
+            criteria=lambda test_vector: test_vector.input_shape == (2, 1, 2, 1, 2)  and test_vector.kwargs == {"dim": 0} or
+                                         test_vector.input_shape == (100, 1, 100, 1) and test_vector.kwargs == {"dim": 2} or
+                                         test_vector.input_shape == (84, 25, 100, 1, 41) and test_vector.kwargs in [{"dim": 1}, {"dim": 2}] or
+                                         test_vector.input_shape == (5, 5, 5, 5, 5)  and test_vector.kwargs == {"dim": 0},
+            # fmt: on
+            failing_reason=FailingReasons.COMPILATION_FAILED,
+        ),
+    ],
 )
 
 
