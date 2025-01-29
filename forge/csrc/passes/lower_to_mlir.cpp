@@ -104,6 +104,7 @@ class AttributeMapper
     {
         // repeat_interleave configuration
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UInt32));
+        add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
 
         // Add more default mappings here
     }
