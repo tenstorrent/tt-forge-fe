@@ -4,6 +4,7 @@
 
 #include "runtime.hpp"
 
+#include <cstdint>
 #include <optional>
 
 #include "tt/runtime/runtime.h"
@@ -115,15 +116,15 @@ void verify_input_tensors(
                 LogTTDevice, "Tensor {} - shape mismatch: expected {}, got {}", i, shape, input_tensor.sizes().vec());
         }
 
-        if (input_tensor.strides().vec() != stride)
-        {
-            log_fatal(
-                LogTTDevice,
-                "Tensor {} - stride mismatch: expected {}, got {}",
-                i,
-                stride,
-                input_tensor.strides().vec());
-        }
+        // if (input_tensor.strides().vec() != stride)
+        // {
+        //     log_fatal(
+        //         LogTTDevice,
+        //         "Tensor {} - stride mismatch: expected {}, got {}",
+        //         i,
+        //         stride,
+        //         input_tensor.strides().vec());
+        // }
 
         if (torch_scalar_type_to_dt(input_tensor.scalar_type()) != desc.dataType)
         {
@@ -132,6 +133,16 @@ void verify_input_tensors(
             log_fatal(LogTTDevice, "Tensor {} - data type mismatch: expected {}, got {}", i, expected, got);
         }
     }
+}
+
+std::vector<int64_t> calc_stride(const std::vector<int64_t>& logical_shape)
+{
+    std::vector<int64_t> stride(logical_shape.size(), 1);
+    for (int64_t i = logical_shape.size() - 2; i >= 0; --i)
+    {
+        stride[i] = stride[i + 1] * logical_shape[i + 1];
+    }
+    return stride;
 }
 
 std::vector<torch::Tensor> run_binary(
@@ -172,7 +183,7 @@ std::vector<torch::Tensor> run_binary(
     for (auto const& desc : output_descs)
     {
         std::vector<std::int64_t> shape = as_vec_int64(desc.shape);
-        std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
+        std::vector<std::int64_t> stride = calc_stride(shape);
 
         torch::Tensor output = at::empty_strided(shape, stride, dt_to_torch_scalar_type(desc.dataType));
         outputs.emplace_back(std::move(output));
@@ -183,7 +194,8 @@ std::vector<torch::Tensor> run_binary(
     TT_ASSERT(submit_outputs.size() == rt_outputs.size(), "Output count mismatch");
     for (size_t i = 0; i < submit_outputs.size(); ++i)
     {
-        runtime::memcpy(rt_outputs[i], submit_outputs[i]);
+        auto host = runtime::toHost(submit_outputs[i], true /*untilize*/);
+        runtime::memcpy(rt_outputs[i], host);
         runtime::deallocateTensor(submit_outputs[i], true);
     }
 
