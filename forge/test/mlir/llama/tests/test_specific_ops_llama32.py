@@ -171,7 +171,6 @@ def test_matmul(shapes):
         ((1, 8, 1, 12, 64), 2, 4),
     ],
 )
-@pytest.mark.xfail(reason="repeats' failed to satisfy constraint: 32-bit unsigned integer attribute")
 @pytest.mark.push
 def test_repeat_interleave(shape, dim, repeats):
     class RepeatInterleave(nn.Module):
