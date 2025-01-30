@@ -594,6 +594,7 @@ class OpNode : public TaggedNode
     bool should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const;
     bool is_tm() const;
     void set_output_df_from_operands(const Graph *graph);
+    void set_output_df_from_op_type(const Graph *graph);
     void add_golden_transform(OpType const &op_type) { golden_transforms.insert(golden_transforms.begin(), op_type); }
     void set_golden_transforms(std::vector<OpType> const &other) { golden_transforms = other; }
     std::vector<OpType> const &get_golden_transforms() const { return golden_transforms; }
