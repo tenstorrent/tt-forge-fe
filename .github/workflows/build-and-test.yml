@@ -85,26 +85,22 @@ jobs:
         - /mnt/dockercache:/mnt/dockercache
     steps:
 
+    - name: Fetch job id
+      id: fetch-job-id
+      uses: tenstorrent/tt-github-actions/.github/actions/job_id
+      with:
+        job_name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+
     - name: Set reusable strings
       id: strings
       shell: bash
       env:
-        job-name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-
-        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
-        echo "Expected job name: ${{ env.job-name }}"
-        JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" | \
-          jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
-        echo "Current job id: $JOB_ID"
-
-        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
         echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
         echo "perf_report_path=reports/forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
-
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
