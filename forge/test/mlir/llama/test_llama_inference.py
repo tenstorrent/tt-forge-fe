@@ -4,7 +4,6 @@
 
 import torch
 import pytest
-from transformers import LlamaConfig, LlamaForCausalLM, LlamaTokenizer
 
 import forge
 from test.mlir.llama.utils.utils import load_model
@@ -15,7 +14,7 @@ from test.mlir.llama.utils.utils import load_model
     "model_path",
     [
         "openlm-research/open_llama_3b",
-        pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail(reason="Unsupported Op: repeat_interleave")),
+        "meta-llama/Llama-3.2-1B",
     ],
 )
 def test_llama_inference(model_path):
