@@ -44,14 +44,39 @@ class MarkDownWriter:
     def write_line(self, data: str):
         self.write(data + "\n")
 
-    def write_table_heading(self, table_heading: str, heading_rank: int = 1):
-        table_heading = str("#" * heading_rank) + " " + table_heading
-        self.write_line(table_heading)
+    def write_html_heading(self, heading: str, heading_rank: int = 1):
+        heading = f"<h{heading_rank}>{heading}</h{heading_rank}>"
+        self.write_line(heading)
 
-    def write_table(self, headers, rows):
-        # Create a Markdown table using the tabulate library with GitHub-flavored table formatting.
-        markdown_table = tabulate(rows, headers, tablefmt="github", colalign=("center",) * len(headers))
-        self.write_line(markdown_table)
+    def write_html_paragraph(self, content: str):
+        self.write_line(f"<p>{content}</p>")
+
+    @classmethod
+    def create_html_bold_text(cls, text: str):
+        return f"<b>{text}</b>"
+
+    @classmethod
+    def create_html_paragraph(cls, text: str):
+        return f"<p>{text}</p>"
+
+    @classmethod
+    def create_html_link(cls, link_text: str, url_or_path: str):
+        return f'<a href="{url_or_path}">{link_text}</a>'
+
+    @classmethod
+    def create_html_list(cls, items: List[str]):
+        """
+        Generates an HTML unordered list from a list of strings.
+
+        Args:
+            items (List[str]): A list of strings to include as list items in the HTML.
+
+        Returns:
+            str: The generated HTML unordered list as a string.
+        """
+        list_items = [f"<li>{item}</li>" for item in items]
+        html_list = "<ul>" + "".join(list_items) + "</ul>"
+        return html_list
 
     @classmethod
     def get_component_names_for_header(cls, compiler_component: CompilerComponent):
@@ -66,9 +91,27 @@ class MarkDownWriter:
         else:
             logger.error(f"There is no compilercomponent {compiler_component.name}")
 
-    def write_html_table_heading(self, table_heading: str, heading_rank: int = 1):
-        table_heading = f"<h{heading_rank}>{table_heading}</h{heading_rank}>"
-        self.write_line(table_heading)
+    def write_html_table_description(self, table_description: str):
+        self.write_html_paragraph(content=table_description)
+
+    def write_html_table_column_description(self, table_column_description: Dict[str, str]):
+        """
+        Write an HTML-formatted description of table columns to the markdown file.
+
+        This method takes a dictionary of column descriptions, formats each column name
+        as bold text followed by its description, and writes the content as an HTML list.
+
+        Args:
+            table_column_description (Dict[str, str]): A dictionary where the keys are column names
+                and the values are their respective descriptions.
+        """
+        html_table_column_description = []
+        for column_name, column_description in table_column_description.items():
+            html_table_column_description.append(
+                MarkDownWriter.create_html_bold_text(column_name + ": ") + column_description
+            )
+        html_table_column_description = MarkDownWriter.create_html_list(html_table_column_description)
+        self.write_line(html_table_column_description)
 
     def create_html_table_and_write(self, headers: Dict[str, List[str]], rows: List[List[str]]):
         sub_headers = []
@@ -166,41 +209,52 @@ class MarkDownWriter:
         """
 
         def calculate_rowspans(rows, rowspan_columns):
-            """Calculate rowspan for each cell in the specified columns."""
+            """Calculate rowspan for each cell, requiring all previous columns to match."""
             rowspan_info = defaultdict(lambda: defaultdict(int))
+
             for col in rowspan_columns:
-                prev_value = None
+                prev_row = None
                 prev_index = None
+                count = 0
+
                 for i, row in enumerate(rows):
-                    if row[col] == prev_value:
-                        rowspan_info[prev_index][col] += 1
-                        rowspan_info[i][col] = 0  # Current row shouldn't render this cell
+                    # Ensure the row has enough columns
+                    if col >= len(row):
+                        continue
+
+                    # Check if all columns up to `col` match with the previous row
+                    if prev_row is not None and all(row[k] == prev_row[k] for k in range(col + 1)):
+                        count += 1
+                        rowspan_info[prev_index][col] = count
+                        rowspan_info[i][col] = 0  # Hide this cell
                     else:
+                        count = 1
                         rowspan_info[i][col] = 1
-                        prev_value = row[col]
+                        prev_row = row
                         prev_index = i
+
             return rowspan_info
 
-        # If no rowspan columns are provided, default to an empty list
+        # Default to an empty list if rowspan_columns is not provided
         if rowspan_columns is None:
             rowspan_columns = []
 
         # Calculate rowspans
         rowspan_info = calculate_rowspans(rows, rowspan_columns)
 
-        # # Build the HTML table
+        # Build the HTML table body
         html = f"{self.tab}<tbody>\n"
 
         for i, row in enumerate(rows):
-            html += f"{self.tab*2}<tr>\n"
+            html += f"{self.tab * 2}<tr>\n"
             for j, cell in enumerate(row):
                 if j in rowspan_columns and rowspan_info[i][j] > 0:
-                    html += f'{self.tab*3}<td rowspan="{rowspan_info[i][j]}">{cell}</td>\n'
+                    html += f'{self.tab * 3}<td rowspan="{rowspan_info[i][j]}">{cell}</td>\n'
                 elif j not in rowspan_columns or rowspan_info[i][j] == 1:
-                    html += f"{self.tab*3}<td>{cell}</td>\n"
-            html += f"{self.tab*2}</tr>\n"
+                    html += f"{self.tab * 3}<td>{cell}</td>\n"
+            html += f"{self.tab * 2}</tr>\n"
 
-        html += f"{self.tab}<tbody>\n"
+        html += f"{self.tab}</tbody>\n"
         return html
 
     def write_html_table(
@@ -228,14 +282,6 @@ class MarkDownWriter:
         html_table += html_table_body
         html_table += "</table>"
         self.write_line(html_table)
-
-    @classmethod
-    def create_md_link(cls, link_text: str, url_or_path: str):
-        return f"[{link_text}]({url_or_path})"
-
-    @classmethod
-    def create_html_link(cls, link_text: str, url_or_path: str):
-        return f'<a href="{url_or_path}">{link_text}</a>'
 
     def close_file(self):
         self.file.close()
