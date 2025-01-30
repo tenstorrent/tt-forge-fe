@@ -11,6 +11,8 @@ on:
     types:
       - completed
 
+run-name: "Collect data for workflow_run.id ${{ github.event.workflow_run.id }} run_attempt ${{ github.event.workflow_run.run_attempt }}"
+
 jobs:
   produce-cicd-data:
     runs-on: ubuntu-latest
