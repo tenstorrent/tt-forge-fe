@@ -87,7 +87,7 @@ jobs:
 
     - name: Fetch job id
       id: fetch-job-id
-      uses: tenstorrent/tt-github-actions/.github/actions/job_id
+      uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
         job_name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
 
