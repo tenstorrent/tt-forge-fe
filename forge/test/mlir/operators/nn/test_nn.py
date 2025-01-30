@@ -305,7 +305,6 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
