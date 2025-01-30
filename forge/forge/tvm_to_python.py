@@ -2071,7 +2071,8 @@ def generate_forge_module(
             reload = False
 
     if verify_cfg is not None and verify_cfg.verify_forge_codegen_vs_framework:
-        framework_outputs = framework_mod.cpu_eval_forward(*pytorch_inputs)
+        eval_inputs = [eval_input.detach().clone() for eval_input in pytorch_inputs]
+        framework_outputs = framework_mod.cpu_eval_forward(*eval_inputs)
 
     if not reload:
         module_name = graph_name if counter == 0 else f"{graph_name}_{counter}"
