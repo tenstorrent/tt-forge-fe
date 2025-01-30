@@ -13,6 +13,7 @@ from .utils import VerifyUtils
 from .utils import LoggerUtils
 from .utils import RateLimiter
 from .utils import FrameworkModelType
+from .features import TestFeaturesConfiguration
 from .plan import InputSource
 from .plan import TestVector
 from .plan import TestCollection
@@ -41,6 +42,7 @@ __all__ = [
     "VerifyUtils",
     "LoggerUtils",
     "RateLimiter",
+    "TestFeaturesConfiguration",
     "FrameworkModelType",
     "InputSource",
     "TestVector",

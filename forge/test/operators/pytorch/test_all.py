@@ -418,6 +418,10 @@ class InfoUtils:
         cls.print_query_values(max_width)
         print("Query examples:")
         cls.print_query_examples(max_width)
+        print("Configuration parameters:")
+        cls.print_configuration_params(max_width)
+        print("Configuration examples:")
+        cls.print_configuration_examples(max_width)
 
     @classmethod
     def print_query_values(cls, max_width=80):
@@ -496,6 +500,28 @@ class InfoUtils:
             {"name": "RANGE", "description": "export RANGE=10,20"},
             {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
             {"name": "ID_FILE", "description": "export ID_FILE='/path/to/test_ids.log'"},
+        ]
+
+        cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])
+
+    @classmethod
+    def print_configuration_params(cls, max_width=80):
+
+        parameters = [
+            {
+                "name": "SKIP_FORGE_VERIFICATION",
+                "description": f"Skip Forge model verification including model compiling and inference",
+                "default": "false",
+            },
+        ]
+
+        cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Description", "Default"])
+
+    @classmethod
+    def print_configuration_examples(cls, max_width=80):
+
+        parameters = [
+            {"name": "SKIP_FORGE_VERIFICATION", "description": "export SKIP_FORGE_VERIFICATION=true"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])
