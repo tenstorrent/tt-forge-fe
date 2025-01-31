@@ -34,7 +34,7 @@ jobs:
       id: fetch-job-id
       uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
-        job_name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        job_name: "${{ github.job }}"
 
     - name: Set reusable strings
       id: strings
