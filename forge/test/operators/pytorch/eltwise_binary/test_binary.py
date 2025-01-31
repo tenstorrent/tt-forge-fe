@@ -68,6 +68,7 @@ from test.operators.utils import TestSuite
 from test.operators.utils import TestResultFailing
 from test.operators.utils import FailingRulesConverter
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestCollectionTorch
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 
@@ -128,7 +129,7 @@ class TestVerification:
         # else:
         #     dev_data_format = TestCollectionCommon.single.dev_data_formats[0]
 
-        if dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        if dev_data_format in TestCollectionTorch.int.dev_data_formats:
             value_range = ValueRanges.LARGE
 
         if value_range is None:
@@ -162,6 +163,7 @@ class TestVerification:
             value_range=value_range,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
+            convert_to_forge=False,
         )
 
 
@@ -199,7 +201,7 @@ class TestParamsData:
 
     @classmethod
     def generate_kwargs_alpha(cls, test_vector: TestVector):
-        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
             return cls.kwargs_alpha_int
         else:
             return cls.kwargs_alpha_float
@@ -309,14 +311,14 @@ class TestCollectionData:
         operators=implemented.operators,
         input_sources=TestCollectionCommon.all.input_sources,
         input_shapes=TestCollectionCommon.all.input_shapes,
-        dev_data_formats=TestCollectionCommon.all.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.all.dev_data_formats,
         math_fidelities=TestCollectionCommon.all.math_fidelities,
     )
 
     single = TestCollection(
         input_sources=TestCollectionCommon.single.input_sources,
         input_shapes=TestCollectionCommon.single.input_shapes,
-        dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.single.dev_data_formats,
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
