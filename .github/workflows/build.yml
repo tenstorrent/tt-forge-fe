@@ -1,0 +1,121 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
+        required: false
+        type: string
+      docker-image:
+        description: 'Docker image to use for build'
+        required: true
+        type: string
+
+permissions:
+  packages: write
+  checks: write
+  pull-requests: write # only required if `comment: true` was enabled
+
+jobs:
+
+  forge-build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          - runs-on: [runner]
+
+    runs-on:
+      - in-service
+      - ${{ matrix.build.runs-on }}
+
+    container:
+      image: ${{ inputs.docker-image }}
+
+    steps:
+
+    - name: Fetch job id
+      id: fetch-job-id
+      uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
+      with:
+        job_name: "${{ github.job }} (${{ matrix.build.runs-on }})"
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      env:
+        JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
+      run: |
+        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+    - name: Git safe dir
+      run: |
+        git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
+        chown -R root:root ${{ steps.strings.outputs.work-dir }}
+
+    - uses: actions/checkout@v4
+      with:
+          submodules: recursive
+          clean: true
+          fetch-depth: 0 # Fetch all history and tags
+
+    # Clean everything from submodules (needed to avoid issues
+    # with cmake generated files leftover from previous builds)
+    - name: Cleanup submodules
+      run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
+
+    - name: Update submodule if mlir_override is set
+      if: ${{ inputs.mlir_override }}
+      run: |
+        cd third_party/tt-mlir
+        git fetch
+        git checkout ${{ inputs.mlir_override }}
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
+        commit_sha=$(git rev-parse HEAD)
+        commit_title=$(git log -1 --pretty=%s)
+        echo "Branch name: $branch_name"
+        echo "Commit SHA: $commit_sha"
+        echo "Commit title: $commit_title"
+        echo "::notice::Using tt-mlir branch: $branch_name, commit: $commit_sha, title: $commit_title"
+        cd ../..
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        create-symlink: true
+        key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}
+
+    - name: Build (creates tvm and tt-forge-fe wheels)
+      shell: bash
+      run: |
+        source env/activate
+        python3 setup.py bdist_wheel
+        cd third_party/tvm/python
+        python3 setup.py bdist_wheel
+        cd ../../..
+        cp third_party/tvm/python/dist/*.whl dist/
+
+    - name: Run Unit Tests
+      shell: bash
+      run: |
+        source env/activate
+        pip install dist/forge*.whl --force-reinstall
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+
+    - name: Upload Build
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: forge-wheel
+        path: dist/*.whl
