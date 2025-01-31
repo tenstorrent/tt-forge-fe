@@ -176,7 +176,10 @@ void AutogradModule(py::module &m_autograd)
         .def(
             "set_output_df",
             [](tt::autograd::autograd_context &self, tt::autograd::NodeContext &node, DataFormat df)
-            { self.autograd->get_graph()->node_by_id(node.id)->set_output_df(df); node.output_df = df; });
+            {
+                self.autograd->get_graph()->node_by_id(node.id)->set_output_df(df);
+                node.output_df = df;
+            });
 }
 
 }  // namespace tt
