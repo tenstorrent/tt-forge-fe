@@ -27,7 +27,8 @@ ExternalProject_Add(
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
-    WORKING_DIRECTORY ${TTMLIR_SOURCE_DIR}
+    LOG_OUTPUT_ON_FAILURE ON
+
 )
 
 # AFAIK there is no in-built way to explicitly install the ExternalProject, so we use this workaround
