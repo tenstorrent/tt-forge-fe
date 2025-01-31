@@ -132,9 +132,6 @@ class ElectricityDataset:
             dates=self.dates[cut_point:],
         )
 
-    def time_points(self):
-        return self.dates.shape[0]
-
     @staticmethod
     def download():
         """
