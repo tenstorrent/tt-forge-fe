@@ -303,23 +303,6 @@ void OpNode::set_output_df_from_operands(const Graph *graph)
     set_output_df(operands[0]->output_df());
 }
 
-// Figure out output data format based on the op type.
-void OpNode::set_output_df_from_op_type(const Graph *graph)
-{
-    auto operands = graph->data_operands(this);
-    // Check the op type for the output data format
-    if (this->is_embedding())
-    {
-        // For the embedding op, output data format should match embedding weights data format
-        set_output_df(operands[1]->output_df());
-    }
-    else
-    {
-        // Default to the first operand
-        set_output_df(operands[0]->output_df());
-    }
-}
-
 bool OpNode::should_pair_with_sparse(const OpNode *sparse_op_node, const Graph *graph) const
 {
     TT_ASSERT(sparse_op_node->is_sparse_matmul());

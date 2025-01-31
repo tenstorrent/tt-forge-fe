@@ -522,7 +522,7 @@ NodeContext autograd_engine::create_op(
 
     graphlib::calculate_and_set_node_shape(graph, node);
     node->set_backward();
-    node->set_output_df_from_op_type(graph);
+    node->set_output_df_from_operands(graph);
 
     // For certain ops we may want to not copy transforms as they may be invalid. I.e reduce_sums
     // inserted as the derivative for broadcast. In this case we wan't to disable verification on the op too
