@@ -7,8 +7,6 @@ import subprocess
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 
-forge_files = {"test": {"path": "forge/test", "files": ["conftest.py", "__init__.py", "utils.py", "test_user.py"]}}
-
 
 class TTExtension(Extension):
     def __init__(self, name):
