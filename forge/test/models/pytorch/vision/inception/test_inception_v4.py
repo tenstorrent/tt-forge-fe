@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 ## Inception V4
 import pytest
-import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
@@ -15,8 +14,6 @@ from test.models.pytorch.vision.inception.utils.model_utils import (
 )
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
-
-torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
