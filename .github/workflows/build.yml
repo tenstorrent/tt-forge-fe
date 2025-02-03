@@ -62,12 +62,9 @@ jobs:
         git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
         chown -R root:root ${{ steps.strings.outputs.work-dir }}
 
-    # Clean everything from submodules (needed to avoid issues
-    # with cmake generated files leftover from previous builds)
     - name: Cleanup submodules pre-checkout
       run: |
-          rm /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock
-          git status && git submodule foreach --recursive git clean -ffdx && git submodule foreach --recursive git reset --hard
+          cat /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock && rm /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock || true
 
     - uses: actions/checkout@v4
       with:
