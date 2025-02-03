@@ -11,7 +11,7 @@ from torchvision import transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
@@ -27,7 +27,13 @@ variants = [
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="hardnet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="hardnet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

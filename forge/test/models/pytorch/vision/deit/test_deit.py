@@ -2,15 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import requests
 from datasets import load_dataset
-from PIL import Image
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -22,8 +20,6 @@ def generate_model_deit_imgcls_hf_pytorch(variant):
     # STEP 3: Run inference on Tenstorrent device
     dataset = load_dataset("huggingface/cats-image")
     image_1 = dataset["test"]["image"][0]
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image_2 = Image.open(requests.get(url, stream=True).raw)
     img_tensor = image_processor(image_1, return_tensors="pt").pixel_values
     # output = model(img_tensor).logits
 
@@ -46,7 +42,11 @@ def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="deit", variant=variant, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="deit",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

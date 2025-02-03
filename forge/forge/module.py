@@ -2,7 +2,8 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-from typing import Optional, Tuple, List, Dict
+from abc import ABC, abstractmethod
+from typing import Optional, Tuple, List, Dict, TypeAlias
 from collections import deque, OrderedDict
 import itertools
 
@@ -11,7 +12,7 @@ import tensorflow as tf
 from loguru import logger
 
 import forge
-from .forgeglobal import register_module, lazy_trace_data
+from .forgeglobal import lazy_trace_data
 from .tensor import (
     SomeTensor,
     Tensor,
@@ -30,50 +31,20 @@ import numpy as np
 from forge.tvm_utils import map_pt_dtype_to_tf, flatten_structured_output
 
 
-class Module:
+class Module(ABC):
     """
-    Module class contains a workload that can be assigned to a single device. The workload can be implemented in PyTorch or in Forge.
+    Module class is used to abstract different types of modules (PyTorch, TF, etc.) and provide a common interface for them.
 
     """
 
     def __init__(self, name: str):
-        if "FORGE_GRAPH_NAME_SUFFIX" in os.environ and os.environ["FORGE_GRAPH_NAME_SUFFIX"] != "":
-            self.name = os.environ["FORGE_GRAPH_NAME_SUFFIX"] + "_" + name
-        else:
-            self.name: str = name
-        self.device: Optional["Device"] = None
+        self.name: str = name
         self.input_names = []
         self.is_loss = False
-        register_module(self)
 
     def __repr__(self):
         ret = "Module " + self.name
-        if self.device:
-            ret += " on " + str(self.device)
         return ret
-
-    def _set_device(self, device: "Device"):
-        """
-        Sets the device that this module will run on. This is called by the device when module is placed on it, and should be not called by the user.
-
-
-        Parameters
-        ----------
-        device: Device
-            Parent device
-        """
-        self.device = device
-
-    def get_device(self) -> Optional["Device"]:
-        """
-        Returns the device that this op is placed onto.
-
-        Returns
-        -------
-        Optional[Device]
-            Device, or None if op has not been placed yet
-        """
-        return self.device
 
     def get_name(self) -> str:
         """
@@ -86,28 +57,20 @@ class Module:
         """
         return self.name
 
-    def run(self, *args) -> Tuple:
-        """
-        Run inference on this module on a TT device. There should be no other modules manually placed on any devices.
+    def __getstate__(self):
+        return self.__dict__.copy()
 
-        Parameters
-        ----------
-        *args: tensor
-            Inference inputs
+    @abstractmethod
+    def get_parameters(self) -> List[Parameter]:
+        """
+        Return the list of parameters defined in this module
 
         Returns
         -------
-        Tuple[tensor,....]
-            Outputs of inference
+        List[Parameter]
+            List of all parameters in this module
         """
-        output_q = forge.run_inference(self, inputs=[args])
-        return output_q.get()
-
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        # Remove the unpicklable entries.
-        state["device"] = None
-        return state
+        pass
 
 
 class PyTorchModule(Module):
@@ -141,7 +104,6 @@ class PyTorchModule(Module):
             module.forward = self.forward
 
         self.module = module
-        self.compilation = False
 
     def forward(self, *args, **kwargs) -> Tuple[torch.tensor]:
         """
@@ -170,8 +132,6 @@ class PyTorchModule(Module):
         else:
             outputs = self.module(*args, **kwargs)
 
-        if self.compilation == True:
-            self._reset_module()
         return outputs
 
     def cpu_eval_forward(self, *args, **kwargs):
@@ -180,18 +140,6 @@ class PyTorchModule(Module):
 
         outputs = self.forward(*args, **kwargs)
         outputs = flatten_structured_output([outputs])
-        return outputs
-
-    def backward(self, *args) -> Tuple[torch.tensor]:
-        """
-        Run PyTorch module backward, with pre-loaded inputs in input queues
-
-        Parameters
-        ----------
-        *args: List[Tuple[torch.tensor, torch.tensor]]
-            List of tuples of output tensors and incoming loss tensors
-        """
-        outputs = tuple(a[0].backward(a[1]) for a in args)
         return outputs
 
     def add_parameter(self, name: str, parameter: Parameter):
@@ -262,11 +210,6 @@ class PyTorchModule(Module):
             recorded_names.append(name)
 
         return params
-
-    def _reset_module(self):
-        reset_func = getattr(self.module, "reset", None)
-        if callable(reset_func):
-            reset_func()
 
 
 class TFModule(Module):
@@ -1018,3 +961,7 @@ def wrap_module(module, name: str) -> Module:
         return module
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
+
+
+FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model
+AnyModule: TypeAlias = FrameworkModule | ForgeModule

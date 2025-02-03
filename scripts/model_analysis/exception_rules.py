@@ -100,6 +100,15 @@ common_failure_matching_rules_list = [
             MatchingExceptionRule(
                 "MLIR runtime ttnn ", ["tt::exception", "tt-mlir/runtime/lib/ttnn/runtime.cpp", "Unsupported data type"]
             ),
+            MatchingExceptionRule(
+                "mlir::AffineMap collapsedLinearAffineMap",
+                [
+                    "tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp",
+                    "mlir::AffineMap collapsedLinearAffineMap",
+                    "Dim does not participate in AffineMap RHS",
+                ],
+                collect_error_msg_from_line,
+            ),
         ],
     ),
     MatchingCompilerComponentException(
@@ -290,6 +299,32 @@ common_failure_matching_rules_list = [
                     "tt-metal/tt_metal/impl/program/program.cpp",
                     "Failed to generate binaries for reader_conv_activations_padded_with_halo_3x3_weights_v2",
                     "ncrisc build failed",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn shared operation",
+                [
+                    "RuntimeError",
+                    "ttnn/cpp/ttnn/operations/data_movement/sharded/interleaved_to_sharded/device/interleaved_to_sharded_op.cpp",
+                    "(*this->output_mem_config.shard_spec).shape[1] * input_tensor.element_size() % hal.get_alignment(HalMemType::L1) == 0",
+                    "Shard page size must currently have L1 aligned page size",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn pool",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_multi_core_program_factory.cpp",
+                    "in_ntiles_c % MAX_TILES_PER_REDUCTION == 0",
+                    "input channels should be multiple of 8 tiles. General case TODO.",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn pool",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_multi_core_program_factory.cpp",
+                    "input_shape[3] == 16",
                 ],
             ),
         ],

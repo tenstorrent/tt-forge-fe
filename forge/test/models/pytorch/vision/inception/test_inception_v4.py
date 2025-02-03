@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 ## Inception V4
 import pytest
-import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
@@ -13,10 +12,8 @@ from test.models.pytorch.vision.inception.utils.model_utils import (
     get_image,
     preprocess_timm_model,
 )
-from test.models.utils import Framework, Source, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
-
-torch.multiprocessing.set_sharing_strategy("file_system")
 
 
 def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
@@ -32,7 +29,9 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 @pytest.mark.nightly
 def test_inception_v4_osmr_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -57,7 +56,9 @@ def test_inception_v4_timm_pytorch(record_forge_property):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.TIMM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.TIMM, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

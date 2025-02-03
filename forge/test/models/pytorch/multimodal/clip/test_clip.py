@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.clip.utils.clip_model import CLIPTextWrapper
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -18,7 +18,14 @@ from test.utils import download_model
 @pytest.mark.parametrize("variant", ["openai/clip-vit-base-patch32"])
 def test_clip_pytorch(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="clip", variant=variant, suffix="text")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="clip",
+        variant=variant,
+        suffix="text",
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

@@ -22,10 +22,23 @@ jobs:
     uses: ./.github/workflows/pre-commit.yml
     secrets: inherit
   docker-build:
-    uses: ./.github/workflows/build-and-test.yml
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  build:
+    needs: docker-build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      mlir_override: ${{ inputs.mlir_override }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'push'
       test_group_cnt: 2
       test_group_ids: '[1,2]'
-      mlir_override: ${{ inputs.mlir_override }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}

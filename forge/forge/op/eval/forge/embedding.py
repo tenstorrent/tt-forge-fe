@@ -47,4 +47,7 @@ def decompose(type, attr, dc, inputs):
 
 def backward(type, attr, ac, operand, inputs, output, grad):
     assert type == "embedding"
-    return ac.op("embedding_bw", [inputs[0], inputs[1], grad])
+    embedding_bw_context = ac.op("embedding_bw", [inputs[0], inputs[1], grad])
+    # Output data format should match second operand data format (embedding weights)
+    ac.set_output_df(embedding_bw_context, inputs[1].output_df)
+    return embedding_bw_context

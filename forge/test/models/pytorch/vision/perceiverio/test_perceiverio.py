@@ -16,7 +16,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 def get_sample_data(model_name):
@@ -53,7 +53,11 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="perceiverio", variant=variant, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="perceiverio",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
