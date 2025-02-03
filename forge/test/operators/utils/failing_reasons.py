@@ -137,6 +137,21 @@ class ComponentChecker(Enum):
         ],
     )
 
+    MLIR = FailingReason(
+        description="MLIR",
+        checks=[
+            ExceptionCheck(
+                error_log=[
+                    M.neg(M.contains("tt-mlir/build/install/lib/libtt_metal.so")),
+                    M.neg(M.contains("tt-mlir/build/install/lib/_ttnn.so")),
+                    M.contains("tt-mlir/build/install/lib/libTTMLIRRuntime.so"),
+                    M.contains("forge/forge/_C.so"),
+                    M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:310")),
+                ],
+            ),
+        ],
+    )
+
     FORGE = FailingReason(
         description="Forge",
         checks=[
@@ -190,6 +205,9 @@ class ComponentChecker(Enum):
                         M.last_line(M.starts_with("third_party/tvm/python/tvm/_ffi/base.py:479: InternalError")),
                         M.last_line(M.starts_with("forge/forge/tvm_calls/relay/op/forge_passes.py:197")),
                         M.last_line(M.starts_with("forge/forge/tvm_to_python.py:567: AssertionError")),
+                        M.last_line(M.starts_with("forge/forge/tvm_to_python.py:652")),
+                        M.last_line(M.starts_with("forge/forge/tvm_to_python.py:697")),
+                        M.last_line(M.starts_with("forge/forge/tvm_to_python.py:679")),
                     ),
                 ],
             ),
@@ -1148,6 +1166,37 @@ class FailingReasons(Enum):
                     M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:310")),
                 ],
             ),
+            # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+            # E       RuntimeError: TT_FATAL @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:52: new_volume == old_volume
+            # E       info:
+            # E       Invalid arguments to reshape
+            # E       backtrace:
+            # E        --- /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x18d488) [0x7f297aefa488]
+            # E        --- tt::tt_metal::infer_dims_for_reshape(tt::tt_metal::Tensor const&, tt::stl::Span<int const, 18446744073709551615ul>)
+            # E        --- ttnn::operations::data_movement::ReshapeViewOperation::invoke(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::Tensor const&, tt::stl::Span<int const, 18446744073709551615ul>, std::optional<tt::tt_metal::MemoryConfig> const&, std::optional<std::variant<unsigned int, float> > const&)
+            # E        --- /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x1c1f7b) [0x7f297af2ef7b]
+            # E        --- tt::runtime::ttnn::operations::data_movement::run(tt::target::ttnn::ReshapeOp const*, tt::runtime::ttnn::ProgramContext&)
+            # E        --- tt::runtime::ttnn::ProgramExecutor::execute()
+            # E        --- tt::runtime::ttnn::runProgram(tt::tt_metal::distributed::MeshDevice&, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+            # E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+            # E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+            # E        --- tt::run_program(tt::runtime::Binary&, int, std::vector<tt::Tensor, std::allocator<tt::Tensor> >&)
+            # E        --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
+            # forge/forge/compiled_graph_state.py:310: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.MLIR.value,
+                message=[
+                    M.starts_with("TT_FATAL"),
+                    M.contains("tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:52: new_volume == old_volume"),
+                ],
+                error_log=[
+                    M.contains(">       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)"),
+                    M.contains("Invalid arguments to reshape"),
+                    M.contains("tt::tt_metal::infer_dims_for_reshape"),
+                    M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:310")),
+                ],
+            ),
         ],
     )
 
@@ -1225,6 +1274,49 @@ class FailingReasons(Enum):
                     M.contains("third_party/tvm/src/relay/op/tensor/transform.cc"),
                     M.contains(">       raise py_err"),
                     M.last_line(M.starts_with("third_party/tvm/python/tvm/_ffi/base.py:479")),
+                ],
+            ),
+            # >       assert all([stride == strides[0] for stride in strides])
+            # E       AssertionError
+            # forge/forge/tvm_to_python.py:652: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.TVM.value,
+                message=[
+                    # M.starts_with(">       assert all([stride == strides[0] for stride in strides])"),
+                ],
+                error_log=[
+                    M.contains('>       assert all([stride == strides[0] for stride in strides])'),
+                    M.last_line(M.starts_with("forge/forge/tvm_to_python.py:652")),
+                ],
+            ),
+            # >       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel"
+            # E       AssertionError: Only supports group of 1 or in_channel
+
+            # forge/forge/tvm_to_python.py:697: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.TVM.value,
+                message=[
+                    # M.starts_with(">       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel""),
+                ],
+                error_log=[
+                    M.contains('>       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel"'),
+                    M.last_line(M.starts_with("forge/forge/tvm_to_python.py:697")),
+                ],
+            ),
+            # >       assert all([dim == dilation[0] for dim in dilation])
+            # E       AssertionError
+            # forge/forge/tvm_to_python.py:679: AssertionError
+            ExceptionCheck(
+                class_name="AssertionError",
+                component=ComponentChecker.TVM.value,
+                message=[
+                    # M.starts_with(">       assert all([dim == dilation[0] for dim in dilation])"),
+                ],
+                error_log=[
+                    M.contains('>       assert all([dim == dilation[0] for dim in dilation])'),
+                    M.last_line(M.starts_with("forge/forge/tvm_to_python.py:679")),
                 ],
             ),
         ],
