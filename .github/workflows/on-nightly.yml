@@ -7,12 +7,30 @@ on:
 
 jobs:
   docker-build:
-    uses: ./.github/workflows/build-and-test.yml
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  build:
+    needs: docker-build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'nightly'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
   perf-benchmark:
+    needs:
+      - docker-build
+      - build
     uses: ./.github/workflows/perf-benchmark.yml
     secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
