@@ -94,6 +94,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         create-symlink: true
+        verbosity: 2
 
     - name: Build (creates tvm and tt-forge-fe wheels)
       shell: bash
