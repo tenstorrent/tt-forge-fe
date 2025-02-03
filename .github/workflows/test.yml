@@ -1,32 +1,6 @@
-name: Build and Test
+name: Test
 
 on:
-  workflow_dispatch:
-    inputs:
-      test_mark:
-        description: 'Test mark to run'
-        required: true
-        default: 'push'
-        type: choice
-        options:
-          - push
-          - nightly
-          - nightly_sweeps
-          - push or nightly
-      mlir_override:
-        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
-        required: false
-        type: string
-      test_group_cnt:
-        description: 'Test group count'
-        required: true
-        default: 2
-        type: number
-      test_group_ids:
-        description: 'Test group ids'
-        required: true
-        default: '[1,2]'
-        type: string
   workflow_call:
     inputs:
       test_mark:
@@ -34,10 +8,6 @@ on:
         required: false
         default: 'push'
         type: string
-      mlir_override:
-        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
-        required: false
-        type: string
       test_group_cnt:
         description: 'Test group count'
         required: false
@@ -47,6 +17,10 @@ on:
         description: 'Test group ids'
         required: false
         default: '[1,2]'
+        type: string
+      docker-image:
+        description: 'Docker image to use for build'
+        required: true
         type: string
 
 permissions:
@@ -55,18 +29,17 @@ permissions:
   pull-requests: write # only required if `comment: true` was enabled
 
 jobs:
-  docker-build:
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
 
-  build-and-test:
+  run-tests:
 
-    needs: docker-build
     strategy:
       fail-fast: false
       matrix:
         build:
-          - runs-on: runner
+          [
+            {runs-on: n150 },
+            {runs-on: n300 },
+          ]
         test_group_id: ${{ fromJson(inputs.test_group_ids) }}
 
     runs-on:
@@ -74,7 +47,7 @@ jobs:
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: ${{ needs.docker-build.outputs.docker-image }}
+      image: ${{ inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -82,7 +55,6 @@ jobs:
         - /etc/udev/rules.d:/etc/udev/rules.d
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-        - /mnt/dockercache:/mnt/dockercache
     steps:
 
     - name: Fetch job id
@@ -100,14 +72,18 @@ jobs:
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
         echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=reports/forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
     - uses: actions/checkout@v4
       with:
-          submodules: recursive
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+            .test_durations
           fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
@@ -117,45 +93,17 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
-    - name: Update submodule if mlir_override is set
-      if: ${{ inputs.mlir_override }}
-      run: |
-        cd third_party/tt-mlir
-        git fetch
-        git checkout ${{ inputs.mlir_override }}
-        branch_name=$(git rev-parse --abbrev-ref HEAD)
-        commit_sha=$(git rev-parse HEAD)
-        commit_title=$(git log -1 --pretty=%s)
-        echo "Branch name: $branch_name"
-        echo "Commit SHA: $commit_sha"
-        echo "Commit title: $commit_title"
-        echo "::notice::Using tt-mlir branch: $branch_name, commit: $commit_sha, title: $commit_title"
-        cd ../..
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
       with:
-        create-symlink: true
-        key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
+        name: forge-wheel
 
-    - name: Build
+    - name: Install wheel
       shell: bash
       run: |
         source env/activate
-        cmake -G Ninja \
-        -B ${{ steps.strings.outputs.build-output-dir }} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build ${{ steps.strings.outputs.build-output-dir }}
-
-    - name: Run Unit Tests
-      shell: bash
-      run: |
-        source env/activate
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+        pip install tvm*.whl --force-reinstall
+        pip install forge*.whl --force-reinstall
 
     - name: Run Test
       env:
