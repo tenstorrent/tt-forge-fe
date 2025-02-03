@@ -40,6 +40,12 @@ _OPERATORS = [
             OperatorParamNumber("padding", int, 1, 1),
         ],
     ),
+    OperatorDefinition(
+        "conv_transpose_2d",
+        "torch.nn.ConvTranspose2d",
+        1,
+        instantiate=True,
+    ),
     # Unary operators (implemented)
     OperatorDefinition("relu", "torch.relu", 1),
     OperatorDefinition("sqrt", "torch.sqrt", 1),
