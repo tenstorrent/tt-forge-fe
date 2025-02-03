@@ -469,5 +469,3 @@ def pytest_collection_modifyitems(config, items):
         print(f"Automatic Model Analysis Collected test count: {test_count}")
         if test_count == 0:  # Warn if no tests match the marker
             print(f"Warning: No tests found with marker '{marker}'.")
-    else:
-        print(items)
