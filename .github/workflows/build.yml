@@ -66,6 +66,7 @@ jobs:
     # with cmake generated files leftover from previous builds)
     - name: Cleanup submodules pre-checkout
       run: |
+          rm /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock
           git status && git submodule foreach --recursive git clean -ffdx && git submodule foreach --recursive git reset --hard
 
     - uses: actions/checkout@v4
