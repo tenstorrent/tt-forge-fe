@@ -62,6 +62,12 @@ jobs:
         git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
         chown -R root:root ${{ steps.strings.outputs.work-dir }}
 
+    # Clean everything from submodules (needed to avoid issues
+    # with cmake generated files leftover from previous builds)
+    - name: Cleanup submodules pre-checkout
+      run: |
+          git status && git submodule foreach --recursive git clean -ffdx && git submodule foreach --recursive git reset --hard
+
     - uses: actions/checkout@v4
       with:
           submodules: recursive
