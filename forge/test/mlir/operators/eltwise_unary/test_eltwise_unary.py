@@ -348,10 +348,27 @@ def test_clip(shape, min_val, max_val):
 @pytest.mark.parametrize(
     "shape, dim",
     [
+        ((56), 0),
         ((1, 128), 1),
+        pytest.param(
+            (1, 64, 76),
+            2,
+            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (1, 64, 76, 96),
+            3,
+            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (1, 64, 86, 100, 120),
+            4,
+            marks=pytest.mark.xfail(
+                reason=" RuntimeError: (dim >= 0 && dim <= 3),info: dim should be 0 - 3, but got: 4"
+            ),
+        ),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_cumsum(shape, dim):
     class CumSum(nn.Module):
