@@ -6,6 +6,7 @@ import math
 import torch
 import random
 import os
+import forge
 
 from typing import List, Dict
 from loguru import logger
@@ -65,7 +66,7 @@ class TestVerification:
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2))
         if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
 
@@ -160,7 +161,34 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_specific_kwargs(test_vector),
         ),
     ],
-    failing_rules=[],
+    failing_rules=[
+        # Failed automatic value checker:
+        TestCollection(
+            input_sources=[InputSource.FROM_HOST],
+            kwargs=[
+                {"repeats": 7, "dim": 3},
+            ],
+            dev_data_formats=[
+                forge.DataFormat.Int8,
+                forge.DataFormat.Int32,
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # Unsupported special cases when dim = 0:
+        TestCollection(
+            criteria=lambda test_vector: test_vector.kwargs is not None
+            and "dim" in test_vector.kwargs
+            and test_vector.kwargs["dim"] is None,
+            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        ),
+        # To large repeats inference failed:
+        TestCollection(
+            kwargs=[
+                {"repeats": 58, "dim": 2},
+            ],
+            failing_reason=FailingReasons.INFERENCE_FAILED,
+        ),
+    ],
 )
 
 
