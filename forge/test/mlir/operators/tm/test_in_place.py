@@ -38,6 +38,8 @@ def test_in_place_torch(shape):
     tty = compiled_model(*tt_inputs)[0]
 
     compare_with_golden(golden=y, calculated=tty)
+    print(framework_input)
+    print(tt_inputs[0])
 
 
 @pytest.mark.parametrize(
@@ -71,6 +73,9 @@ def test_in_place_tf(shape):
     y = torch.tensor(y.numpy())
 
     compare_with_golden(golden=y, calculated=tty)
+
+    print(framework_input)
+    print(tt_inputs[0])
 
 
 @pytest.mark.parametrize(
