@@ -31,8 +31,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          - runs-on: runner
-          - config: Release
+          {
+            runs-on: runner,
+            config: Release
+          }
         ]
     runs-on:
       - in-service
