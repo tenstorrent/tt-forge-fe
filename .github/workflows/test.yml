@@ -76,10 +76,6 @@ jobs:
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
 
-    - name: Cleanup submodules pre-checkout
-      run: |
-          cat /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock && rm /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock || true
-
     - uses: actions/checkout@v4
       with:
           sparse-checkout: |
@@ -127,6 +123,7 @@ jobs:
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               --durations=50 \
                2>&1 | tee pytest.log
 
     - name: Upload Test Log

@@ -31,7 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - runs-on: [runner]
+          - runs-on: runner
+          - config: Release
 
     runs-on:
       - in-service
@@ -61,10 +62,6 @@ jobs:
       run: |
         git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
         chown -R root:root ${{ steps.strings.outputs.work-dir }}
-
-    - name: Cleanup submodules pre-checkout
-      run: |
-          cat /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock && rm /__w/tt-forge-fe/tt-forge-fe/.git/modules/third_party/tvm/modules/3rdparty/libflash_attn/modules/cutlass/index.lock || true
 
     - uses: actions/checkout@v4
       with:
@@ -99,6 +96,7 @@ jobs:
       with:
         create-symlink: true
         verbose: 2
+        key: config-${{ matrix.build.config }}
 
     - name: Build (creates tvm and tt-forge-fe wheels)
       shell: bash
