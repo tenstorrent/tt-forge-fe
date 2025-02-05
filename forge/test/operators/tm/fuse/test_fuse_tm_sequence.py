@@ -121,10 +121,8 @@ def test_fuse_tm_sequence_multi_user(test_device):
 
     """
 
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
 
     tt_model = PtFuseTMMultiUser("fuse_tm_sequence_multi_user")
 

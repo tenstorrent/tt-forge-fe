@@ -26,10 +26,9 @@ if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
     sys.setdlopenflags(original_flags)
 
 import forge
+from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
-
-from forge.config import _get_global_compiler_config
 
 collect_ignore = ["legacy_tests"]
 
@@ -186,7 +185,7 @@ def initialize_global_compiler_configuration_based_on_pytest_args(pytestconfig):
     Set the global compiler config options for the test session
     which will generate op tests for the given model.
     """
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = CompilerConfig()
 
     compiler_cfg.tvm_generate_unique_ops_tests = pytestconfig.getoption("--generate-unique-ops-tests")
 
@@ -382,10 +381,6 @@ def pytest_runtest_logreport(report):
     if report.when == "setup":
         global environ_before_test
         environ_before_test = os.environ.copy()
-
-        global device_cfg_global
-        if device_cfg_global:
-            forge.set_configuration_options(device_config=device_cfg_global)
 
         if "FORGE_OVERRIDES_VETO" in os.environ:
             from forge.config import _set_forge_override_veto

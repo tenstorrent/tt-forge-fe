@@ -49,11 +49,7 @@ def preprocess(img):
 @pytest.mark.skip(reason="While loop in model, not supported yet")
 @pytest.mark.nightly
 def test_yolov3_tiny_onnx(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "CNN"
-
-    # STEP 2: Create Forge module from PyTorch model
+    # STEP 1: Create Forge module from PyTorch model
     load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/tiny-yolov3-11.onnx"
     model = onnx.load(load_path)
     tt_model = forge.OnnxModule("onnx_yolov3_tiny", model, load_path)
@@ -83,11 +79,7 @@ def test_yolov3_tiny_onnx(test_device):
 @pytest.mark.skip(reason="While loop in model, not supported yet")
 @pytest.mark.nightly
 def test_yolov3_onnx(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "CNN"
-
-    # STEP 2: Create Forge module from PyTorch model
+    # STEP 1: Create Forge module from PyTorch model
     load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/yolov3-10.onnx"
     model = onnx.load(load_path)
     tt_model = forge.OnnxModule("onnx_yolov3_tiny", model, load_path)

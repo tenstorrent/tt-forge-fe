@@ -39,44 +39,9 @@ def get_sample_data(model_name):
 def test_perceiver_for_image_classification_onnx(test_device, model_name):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    compiler_cfg.enable_auto_fusing = False
-    os.environ["FORGE_RIBBON2"] = "1"
     verify_enabled = True
-
-    if test_device.arch == forge.BackendDevice.Wormhole_B0:
-
-        if model_name == "deepmind/vision-perceiver-learned":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{105*1024}"
-
-        elif model_name == "deepmind/vision-perceiver-conv":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{10*1024}"
-            compiler_cfg.balancer_op_override("multiply_19", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("multiply_142", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("multiply_3103", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("multiply_3123", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("multiply_2745", "t_stream_shape", (1, 1))
-            compiler_cfg.balancer_op_override("multiply_2934", "t_stream_shape", (1, 1))
-
-        elif model_name == "deepmind/vision-perceiver-fourier":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{101*1024}"
-
-    elif test_device.arch == forge.BackendDevice.Grayskull:
-
-        if test_device.devtype == forge.BackendType.Silicon:
-            verify_enabled = False
-
-        if model_name == "deepmind/vision-perceiver-learned":
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{101*1024}"
-
-        elif model_name == "deepmind/vision-perceiver-fourier":
-            os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
-            compiler_cfg.place_on_new_epoch("hslice_50.dc.sparse_matmul.2.lc2")
-            compiler_cfg.place_on_new_epoch("matmul_47")
-            os.environ["TT_BACKEND_OVERLAY_MAX_EXTRA_BLOB_SIZE"] = f"{101*1024}"
-            compiler_cfg.balancer_op_override("hslice_50.dc.sparse_matmul.2.lc2", "t_stream_shape", (1, 7))
 
     onnx_model_path = (
         "third_party/confidential_customer_models/generated/files/"

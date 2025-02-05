@@ -22,10 +22,8 @@ def test_lstm_valence_onnx(test_device):
     model = onnx.load(load_path)
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge._C.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
 
     # Required to patch data-mismatch. Here is followup issue
     # to check this out in more details:

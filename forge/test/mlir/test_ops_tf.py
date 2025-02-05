@@ -6,9 +6,9 @@ import pytest
 import tensorflow as tf
 
 import forge
+from forge.config import CompilerConfig
 from forge.tensor import to_pt_tensors
 from forge.verify.compare import compare_with_golden
-from forge.config import _get_global_compiler_config
 from forge.verify.verify import verify
 from forge._C import DataFormat
 
@@ -180,10 +180,10 @@ def test_maxpool2d(
             x = self.conv(x)
             return x
 
-    _get_global_compiler_config().default_df_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
     inputs = [tf.random.uniform(act_shape, dtype=tf.bfloat16)]
 
     framework_model = MaxPool()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(inputs, framework_model, compiled_model)

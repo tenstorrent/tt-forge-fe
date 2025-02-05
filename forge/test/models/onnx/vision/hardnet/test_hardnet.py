@@ -23,16 +23,8 @@ variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 def test_hardnet_onnx(variant, test_device):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
-
-    if variant == "hardnet68ds":
-        os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
-
-    if variant == "hardnet85" and test_device.arch == BackendDevice.Grayskull:
-        os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
 
     # Download an example image
     url, filename = (

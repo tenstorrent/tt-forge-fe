@@ -65,16 +65,6 @@ from .compiled_graph_state import CompiledGraphState
 from .config import (
     CompilerConfig,
     CompileDepth,
-    set_configuration_options,
-    set_epoch_break,
-    set_chip_break,
-    override_op_size,
-    PerfTraceLevel,
-    insert_buffering_nop,
-    insert_nop,
-    _internal_insert_fj_buffering_nop,
-    override_dram_queue_placement,
-    configure_mixed_precision,
 )
 from .verify import DepricatedVerifyConfig
 from .forgeglobal import forge_reset, set_device_pipeline, is_silicon, get_tenstorrent_device

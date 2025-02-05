@@ -12,6 +12,7 @@ import copy
 import torch
 from loguru import logger
 
+from forge.config import CompilerConfig
 from forge._C.graph import (
     create_op_node,
     create_data_edge,
@@ -23,7 +24,6 @@ from forge._C.graph import (
 )
 from forge.tensor import pytorch_dtype_to_forge_dataformat
 from forge.fx.nodes import get_forge_node, torch_constant_ops, is_supported_op, get_unsupported_nodes
-from forge.config import _get_global_compiler_config
 from forge.fx.mixed_graph import MixedGraph
 from forge.fx.schedule import TensorSource, Schedule
 from forge.fx.graph_utils import reduce_graph, graph_lint
@@ -63,6 +63,7 @@ class CaptureFX:
         aten_module: torch.nn.Module,
         sample_inputs: List[torch.Tensor],
         subgraph_id: int,
+        compiler_cfg: CompilerConfig,
     ):
 
         if self.graph is None:
@@ -279,7 +280,7 @@ class CaptureFX:
             # Record the intermed value
             # self.id_to_intermed[self.node_to_id[node]] = self.eval_node(node)
 
-    def _append_to_graph(self, module, aten_module, activations, subgraph_idx):
+    def _append_to_graph(self, module, aten_module, activations, subgraph_idx, compiler_cfg):
 
         param_name_map = self.map_node_name_to_org_name(module, aten_module)
 
@@ -309,7 +310,7 @@ class CaptureFX:
         reduce_graph(device_graph)
 
         # Find unsupported nodes
-        fallback_ops, fallback_outputs = get_unsupported_nodes(device_graph, _get_global_compiler_config())
+        fallback_ops, fallback_outputs = get_unsupported_nodes(device_graph, compiler_cfg)
 
         # Filter out unsupported nodes into separate FX graphs
         device_graphs = self.graph.filter_unsupported_nodes(device_graph, fallback_ops, fallback_outputs, subgraph_idx)
@@ -344,7 +345,8 @@ class CaptureFX:
                     input_id = None
                     if input_source.src == TensorSource.INPUT:
                         uid = self.graph.get_subgraph_input(subgraph_idx, input_source.index)
-                        if uid != -1 and _get_global_compiler_config().enable_pt2_fx_graph_link:
+                        config = CompilerConfig()
+                        if uid != -1 and config.enable_pt2_fx_graph_link:
                             # this input is on device, don't create input node, add edge to corresponding output
                             input_id = self.add_input(node, graph_idx)
 
