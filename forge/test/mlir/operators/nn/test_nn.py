@@ -305,6 +305,37 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     verify(inputs, framework_model, compiled_model)
 
 
+# @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
+# @pytest.mark.parametrize("token_num", [1, 7, 32])
+# @pytest.mark.parametrize("embedding_dim", [128, 512, 3200])
+@pytest.mark.parametrize("vocab_size", [32000])
+@pytest.mark.parametrize("token_num", [12])
+@pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
+def test_embedding_constant_input(vocab_size, token_num, embedding_dim):
+    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.enable_tvm_cpu_fallback = False
+
+    class EmbeddingConstantInput(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embedding = nn.Embedding(vocab_size, embedding_dim)
+            self.embedding_indices = torch.randint(0, vocab_size, (1, token_num)).to(torch.int32)
+
+        def forward(self, x):
+            embedding_output = self.embedding(self.embedding_indices)
+            return x + embedding_output
+
+    inputs = [
+        torch.randn((token_num, embedding_dim)).to(torch.bfloat16),
+    ]
+
+    framework_model = EmbeddingConstantInput()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
