@@ -38,11 +38,6 @@ def generate_and_export_unique_ops_tests(
         else:
             model_name_to_tests[model_name].append(test)
 
-    if extract_tvm_unique_ops_config:
-        pytest_argument = "--extract-tvm-unique-ops-config"
-    else:
-        pytest_argument = "--generate-unique-ops-tests"
-
     # Generate unique op test for the all collected test and save the models unique ops test information in the unique_ops_output_directory_path
     model_output_dir_paths = []
     for model_name, tests in model_name_to_tests.items():
@@ -53,12 +48,14 @@ def generate_and_export_unique_ops_tests(
             logger.info(f"Running the tests : {test}")
             try:
                 result = subprocess.run(
-                    ["pytest", test, "-vss", pytest_argument, "--no-skips"],
+                    ["pytest", test, "-vss", "--no-skips"],
                     capture_output=True,
                     text=True,
                     check=True,
                     env=dict(
                         os.environ,
+                        FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS="1" if not extract_tvm_unique_ops_config else "0",
+                        FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG="1" if extract_tvm_unique_ops_config else "0",
                         FORGE_DISABLE_REPORTIFY_DUMP="1",
                         FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS="1",
                         FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS_DIR_PATH=model_output_dir_path,
