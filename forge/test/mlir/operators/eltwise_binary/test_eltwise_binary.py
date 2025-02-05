@@ -201,7 +201,7 @@ def test_add():
         def forward(self, a, b):
             return a + b
 
-    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
+    inputs = [torch.rand(2, 32, 32, dtype=torch.bfloat16), torch.rand(2, 32, 32, dtype=torch.float32)]
 
     framework_model = Add()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
