@@ -51,3 +51,4 @@ pytorch_forecasting==1.0.0
 patool
 openpyxl==3.1.5
 GitPython==3.1.44
+easydict==1.13
