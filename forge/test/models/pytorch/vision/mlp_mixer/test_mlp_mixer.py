@@ -49,7 +49,7 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     record_forge_property("model_name", module_name)
 
     framework_model = download_model(timm.create_model, variant, pretrained=True)
-    config = resolve_data_config({}, model=model)
+    config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
     try:
