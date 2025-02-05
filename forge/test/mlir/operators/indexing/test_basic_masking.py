@@ -26,6 +26,7 @@ from forge.verify.verify import verify
         ),
     ],
 )
+@pytest.mark.push
 def test_masking_greater_than(input_tensor, param):
     class GreaterThanMaskingModule(torch.nn.Module):
         def __init__(self, param):
@@ -65,6 +66,7 @@ def test_masking_greater_than(input_tensor, param):
         ),
     ],
 )
+@pytest.mark.push
 def test_masking_modulus(input_tensor, mod_value):
     class ModulusMaskingModule(torch.nn.Module):
         def __init__(self, mod_value):
@@ -103,6 +105,7 @@ def test_masking_modulus(input_tensor, mod_value):
         ),
     ],
 )
+@pytest.mark.push
 def test_masking_combined_conditions(input_tensor, greater_param, mod_param):
     class CombinedMaskingModule(torch.nn.Module):
         def __init__(self, greater_param, mod_param):
