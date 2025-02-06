@@ -609,6 +609,7 @@ class TestPlanUtils:
     @classmethod
     def load_test_ids_from_file(cls, test_ids_file: str) -> List[str]:
         """Load test ids from a file to a list of strings"""
+        logger.trace(f"Loading test ids from file: {test_ids_file}")
         with open(test_ids_file, "r") as file:
             test_ids = file.readlines()
 
