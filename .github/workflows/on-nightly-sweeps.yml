@@ -3,13 +3,26 @@ name: On nightly_sweeps
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 4 * * *'  # Runs at 04:00 UTC every day
 
 jobs:
   docker-build:
-    uses: ./.github/workflows/build-and-test.yml
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  build:
+    needs: docker-build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'nightly_sweeps'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
