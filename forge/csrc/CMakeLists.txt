@@ -87,7 +87,8 @@ target_link_libraries(ttforge_csrc PRIVATE
     LLVM
     MLIR
 
-    TTMLIR
+    TTMLIRCompiler
+    TTMLIRRuntime
 
     xml2
     curses
