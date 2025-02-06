@@ -11,7 +11,7 @@ from loguru import logger
 
 from forge.verify.config import VerifyConfig
 
-from forge.verify.value_checkers import AllCloseValueChecker
+from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import InputSource
@@ -61,6 +61,11 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # We use AllCloseValueChecker in all cases except for integer data formats:
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2))
+        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -72,7 +77,7 @@ class TestVerification:
             warm_reset=warm_reset,
             value_range=ValueRanges.SMALL,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker()),
+            verify_config=verify_config,
         )
 
 
