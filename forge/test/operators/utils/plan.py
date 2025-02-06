@@ -28,6 +28,7 @@ from forge import MathFidelity, DataFormat
 from forge.op_repo import TensorShape
 
 from .datatypes import OperatorParameterTypes
+from .datatypes import FrameworkDataFormat
 from .pytest import PytestParamsUtils
 from .compat import TestDevice
 from .utils import RateLimiter
@@ -86,7 +87,7 @@ class TestVector:
     input_source: InputSource
     input_shape: TensorShape  # TODO - Support multiple input shapes
     number_of_operands: Optional[int] = None
-    dev_data_format: Optional[DataFormat] = None
+    dev_data_format: Optional[FrameworkDataFormat] = None
     math_fidelity: Optional[MathFidelity] = None
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
     pcc: Optional[float] = None
@@ -96,7 +97,7 @@ class TestVector:
     def get_id(self, fields: Optional[List[str]] = None) -> str:
         """Get test vector id"""
         if fields is None:
-            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}{'-' + str(self.number_of_operands) + '-' if self.number_of_operands else '-'}{self.dev_data_format.name if self.dev_data_format else None}-{self.math_fidelity.name if self.math_fidelity else None}"
+            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}{'-' + str(self.number_of_operands) + '-' if self.number_of_operands else '-'}{TestPlanUtils.dev_data_format_to_str(self.dev_data_format)}-{self.math_fidelity.name if self.math_fidelity else None}"
         else:
             attr = [
                 (getattr(self, field).name if getattr(self, field) is not None else None)
@@ -144,7 +145,7 @@ class TestCollection:
     input_sources: Optional[List[InputSource]] = None
     input_shapes: Optional[List[TensorShape]] = None  # TODO - Support multiple input shapes
     numbers_of_operands: Optional[List[int]] = None
-    dev_data_formats: Optional[List[DataFormat]] = None
+    dev_data_formats: Optional[List[FrameworkDataFormat]] = None
     math_fidelities: Optional[List[MathFidelity]] = None
     kwargs: Optional[
         Union[List[OperatorParameterTypes.Kwargs], Callable[["TestVector"], List[OperatorParameterTypes.Kwargs]]]
@@ -510,6 +511,34 @@ class TestPlanUtils:
     """
 
     @classmethod
+    def dev_data_format_to_str(cls, dev_data_format: FrameworkDataFormat) -> Optional[str]:
+        """Convert data format to string"""
+        if dev_data_format is None:
+            return None
+        if isinstance(dev_data_format, DataFormat):
+            return f"forge.{dev_data_format.name}"
+        if isinstance(dev_data_format, torch.dtype):
+            # Keep torch. prefix
+            return str(dev_data_format)
+        else:
+            raise ValueError(f"Unsupported data format: {dev_data_format}")
+
+    @classmethod
+    def dev_data_format_from_str(cls, dev_data_format_str: str) -> FrameworkDataFormat:
+        """Convert string to data format"""
+        if dev_data_format_str is None:
+            return None
+        dev_data_format_str = dev_data_format_str.replace("forge.", "")
+        dev_data_format_str = dev_data_format_str.replace("torch.", "")
+        if hasattr(forge.DataFormat, dev_data_format_str):
+            dev_data_format = getattr(forge.DataFormat, dev_data_format_str)
+        elif hasattr(torch, dev_data_format_str):
+            dev_data_format = getattr(torch, dev_data_format_str)
+        else:
+            raise ValueError(f"Unsupported data format: {dev_data_format_str} in Forge and PyTorch")
+        return dev_data_format
+
+    @classmethod
     def _match(cls, rule_collection: Optional[List], vector_value):
         """
         Check if the vector value is in the rule collection
@@ -654,7 +683,7 @@ class TestPlanUtils:
         dev_data_format_part = parts[dev_data_format_index]
         if dev_data_format_part == "None":
             dev_data_format_part = None
-        dev_data_format = eval(f"forge._C.{dev_data_format_part}") if dev_data_format_part is not None else None
+        dev_data_format = cls.dev_data_format_from_str(dev_data_format_part)
 
         math_fidelity_part = parts[math_fidelity_index]
         if math_fidelity_part == "None":
@@ -690,7 +719,7 @@ class FailingRulesConverter:
                     Union[Optional[InputSource], List[InputSource]],
                     Union[Optional[TensorShape], List[TensorShape]],
                     Union[Optional[OperatorParameterTypes.Kwargs], List[OperatorParameterTypes.Kwargs]],
-                    Union[Optional[forge.DataFormat], List[forge.DataFormat]],
+                    Union[Optional[FrameworkDataFormat], List[FrameworkDataFormat]],
                     Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
                     Optional[TestResultFailing],
                 ],
@@ -735,7 +764,7 @@ class FailingRulesConverter:
         input_source: Optional[Union[InputSource, List[InputSource]]],
         input_shape: Optional[Union[TensorShape, List[TensorShape]]],
         kwargs: Optional[Union[OperatorParameterTypes.Kwargs, List[OperatorParameterTypes.Kwargs]]],
-        dev_data_format: Optional[Union[forge.DataFormat, List[forge.DataFormat]]],
+        dev_data_format: Optional[Union[FrameworkDataFormat, List[FrameworkDataFormat]]],
         math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
         result_failing: Optional[TestResultFailing],
     ) -> TestCollection:

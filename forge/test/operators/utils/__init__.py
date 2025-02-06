@@ -5,6 +5,7 @@
 from .datatypes import OperatorParameterTypes
 from .datatypes import ValueRange
 from .datatypes import ValueRanges
+from .datatypes import FrameworkDataFormat
 from .utils import ShapeUtils
 from .utils import InputSourceFlag, InputSourceFlags
 from .utils import CompilerUtils
@@ -25,6 +26,7 @@ from .plan import TestPlanUtils
 from .plan import FailingRulesConverter
 from .plan import TestPlanScanner
 from .test_data import TestCollectionCommon
+from .test_data import TestCollectionTorch
 from .failing_reasons import FailingReasons
 from .failing_reasons import FailingReasonsValidation
 from .pytest import PyTestUtils
@@ -34,6 +36,7 @@ __all__ = [
     "OperatorParameterTypes",
     "ValueRange",
     "ValueRanges",
+    "FrameworkDataFormat",
     "ShapeUtils",
     "InputSourceFlag",
     "InputSourceFlags",
@@ -55,6 +58,7 @@ __all__ = [
     "FailingRulesConverter",
     "TestPlanScanner",
     "TestCollectionCommon",
+    "TestCollectionTorch",
     "FailingReasons",
     "FailingReasonsValidation",
     "PyTestUtils",
