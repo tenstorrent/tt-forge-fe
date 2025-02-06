@@ -22,6 +22,7 @@ from forge.verify.verify import verify
         ),
     ],
 )
+@pytest.mark.push
 def test_take(tensor_and_indices):
     tensor, indices = tensor_and_indices
 
@@ -68,6 +69,7 @@ def test_take(tensor_and_indices):
         ),
     ],
 )
+@pytest.mark.push
 def test_index_add(input_dim_index_source):
     input_tensor, dim, index, source = input_dim_index_source
 
@@ -109,6 +111,7 @@ def test_index_add(input_dim_index_source):
         ),
     ],
 )
+@pytest.mark.push
 def test_index_fill(input_dim_index_value):
     input_tensor, dim, index, value = input_dim_index_value
 
@@ -159,6 +162,7 @@ def test_index_fill(input_dim_index_value):
         ),
     ],
 )
+@pytest.mark.push
 def test_index_copy(input_dim_index_source):
     input_tensor, dim, index, source = input_dim_index_source
 
@@ -195,6 +199,7 @@ def test_index_copy(input_dim_index_source):
         (torch.arange(24, dtype=torch.float32).reshape(4, 3, 2), 2, torch.tensor([0, 1])),  # 3D tensor case
     ],
 )
+@pytest.mark.push
 def test_index_select(input_dim_index):
     input_tensor, dim, index = input_dim_index
 
@@ -243,6 +248,7 @@ def test_index_select(input_dim_index):
         ),
     ],
 )
+@pytest.mark.push
 def test_index_put(input_indices_values_accumulate):
     input_tensor, indices, values, accumulate = input_indices_values_accumulate
 

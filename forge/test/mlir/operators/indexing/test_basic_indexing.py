@@ -23,6 +23,7 @@ from forge.verify.verify import verify
         (-1, (10,)),
     ],
 )
+@pytest.mark.push
 def test_python_indexing(index_shape: Literal[0] | Literal[2] | Literal[-1]):
 
     index, shape = index_shape
@@ -68,6 +69,7 @@ def test_python_indexing(index_shape: Literal[0] | Literal[2] | Literal[-1]):
         ),
     ],
 )
+@pytest.mark.push
 def test_python_indexing_with_lists(index_shape: list[int] | list[list[int]]):
     indices, shape = index_shape
 
@@ -111,6 +113,7 @@ def test_python_indexing_with_lists(index_shape: list[int] | list[list[int]]):
         ),
     ],
 )
+@pytest.mark.push
 def test_python_indexing_with_tensors(index_shape):
     indices, shape = index_shape
 

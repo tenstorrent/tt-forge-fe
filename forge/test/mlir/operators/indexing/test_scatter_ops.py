@@ -34,6 +34,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::masked_scatter']")
+@pytest.mark.push
 def test_masked_scatter(input_tensor, mask, source):
     class MaskedScatterModule(torch.nn.Module):
         def __init__(self, mask, source):
@@ -105,6 +106,7 @@ def test_masked_scatter(input_tensor, mask, source):
     ],
 )
 @pytest.mark.xfail(reason="AssertionError: Encountered unsupported op types. Check error logs for more details.")
+@pytest.mark.push
 def test_scatter(input_tensor, dim, index, source):
     class ScatterModule(torch.nn.Module):
         def __init__(self, dim, index, source):
@@ -196,6 +198,7 @@ def test_scatter(input_tensor, dim, index, source):
     ],
 )
 @pytest.mark.xfail(reason="Encountered unsupported op node type: scatter_elements, on device: tt")
+@pytest.mark.push
 def test_scatter_reduce(input_tensor, dim, index, source, reduce_mode):
     class ScatterReduceModule(torch.nn.Module):
         def __init__(self, dim, index, source, reduce_mode):
@@ -262,6 +265,7 @@ def test_scatter_reduce(input_tensor, dim, index, source, reduce_mode):
     ],
 )
 @pytest.mark.xfail(reason="Encountered unsupported op node type: scatter_elements, on device: tt")
+@pytest.mark.push
 def test_scatter_add(input_tensor, dim, index, source):
     class ScatterAddModule(torch.nn.Module):
         def __init__(self, dim, index, source):
@@ -316,6 +320,7 @@ def test_scatter_add(input_tensor, dim, index, source):
 @pytest.mark.xfail(
     reason="NotImplementedError: The following operators are not implemented: ['aten::diagonal_scatter']"
 )
+@pytest.mark.push
 def test_diagonal_scatter(input_tensor, source, offset, dim1, dim2):
     class DiagonalScatterModule(torch.nn.Module):
         def __init__(self, source, offset, dim1, dim2):
@@ -359,6 +364,7 @@ def test_diagonal_scatter(input_tensor, source, offset, dim1, dim2):
     ],
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::select_scatter']")
+@pytest.mark.push
 def test_select_scatter(input_tensor, source, dim, index):
     class SelectScatterModule(torch.nn.Module):
         def __init__(self, source, dim, index):
@@ -412,6 +418,7 @@ def test_select_scatter(input_tensor, source, dim, index):
     ],
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::slice_scatter']")
+@pytest.mark.push
 def test_slice_scatter(input_tensor, src, dim, start, end, step):
     class SliceScatterModule(torch.nn.Module):
         def __init__(self, source, dim, start, end, step):

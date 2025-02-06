@@ -27,6 +27,7 @@ from forge.verify.verify import verify
     + "loc(\"index_1.dc.unsqueeze.0\"(\"forward\":4294967295:29)): error: 'ttir.unsqueeze' op requires attribute 'dim'"
     + 'loc("SlicingModule":0:0): error: module verification failed'
 )
+@pytest.mark.push
 def test_slicing(input_tensor_slice):
     input_tensor, slicing = input_tensor_slice
 
@@ -92,6 +93,7 @@ def test_slicing(input_tensor_slice):
         ),
     ],
 )
+@pytest.mark.push
 def test_multidimensional_slicing(input_tensor_slicing):
     input_tensor, slicing = input_tensor_slicing
 
