@@ -26,8 +26,14 @@ from forge._C import MathFidelity
 from forge.verify.config import VerifyConfig
 
 from .compat import TestDevice
-from .compat import create_torch_inputs, verify_module_for_inputs, verify_module_for_inputs_deprecated
+from .compat import (
+    create_torch_inputs,
+    verify_module_for_inputs,
+    verify_module_for_inputs_deprecated,
+    verify_module_for_inputs_torch,
+)
 from .datatypes import ValueRanges
+from .features import TestFeaturesConfiguration
 
 
 # All supported framework model types
@@ -130,6 +136,7 @@ class VerifyUtils:
         warm_reset: bool = False,
         deprecated_verification: bool = True,
         verify_config: Optional[VerifyConfig] = VerifyConfig(),
+        skip_forge_verification: bool = TestFeaturesConfiguration.SKIP_FORGE_VERIFICATION,
     ):
         """Perform Forge verification on the model
 
@@ -146,6 +153,8 @@ class VerifyUtils:
             random_seed: Random seed
             warm_reset: Warm reset the device before verification
             deprecated_verification: Use deprecated verification method
+            verify_config: Verification configuration
+            skip_forge_verification: Skip verification with Forge module
         """
 
         cls.setup(
@@ -167,6 +176,12 @@ class VerifyUtils:
                 inputs=inputs,
                 pcc=pcc,
                 dev_data_format=dev_data_format,
+            )
+        elif skip_forge_verification:
+            verify_module_for_inputs_torch(
+                model=model,
+                inputs=inputs,
+                verify_config=verify_config,
             )
         else:
             cls.verify_module_for_inputs(
