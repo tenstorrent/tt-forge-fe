@@ -101,7 +101,9 @@ class TestParamsData:
         dev_data_formats = os.getenv("DEV_DATA_FORMATS", None)
         if dev_data_formats:
             dev_data_formats = dev_data_formats.split(",")
-            dev_data_formats = [getattr(forge.DataFormat, dev_data_format) for dev_data_format in dev_data_formats]
+            dev_data_formats = [
+                TestPlanUtils.dev_data_format_from_str(dev_data_format) for dev_data_format in dev_data_formats
+            ]
 
         math_fidelities = os.getenv("MATH_FIDELITIES", None)
         if math_fidelities:

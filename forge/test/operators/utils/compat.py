@@ -18,6 +18,7 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 from .datatypes import OperatorParameterTypes, ValueRanges, ValueRange
+from .datatypes import FrameworkDataFormat
 
 
 # TODO - Remove this class once TestDevice is available in Forge
@@ -92,10 +93,12 @@ class TestTensorsUtils:
         torch.bfloat16: (-10000, 10000),
         torch.float16: (-10000, 10000),
         torch.float32: (-10000, 10000),
+        torch.float64: (-10000, 10000),
         torch.uint8: (0, 2**8 - 1),
         torch.int8: (-(2**7), 2**7 - 1),
         torch.int16: (-(2**15), 2**15 - 1),
         torch.int32: (-(2**31), 2**31 - 1),
+        torch.int64: (-(2**63), 2**63 - 1),
     }
 
     class DTypes:
@@ -105,12 +108,14 @@ class TestTensorsUtils:
             torch.float16,
             torch.bfloat16,
             torch.float32,
+            torch.float64,
         )
         integers = (
             torch.uint8,
             torch.int8,
             torch.int16,
             torch.int32,
+            torch.int64,
         )
         booleans = (torch.bool,)
 
@@ -129,8 +134,13 @@ class TestTensorsUtils:
         if dtype is None:
             dtype = torch.float32
 
-        if dev_data_format in cls.data_format_ranges:
-            data_format_ranges = cls.data_format_ranges[dev_data_format]
+        if isinstance(dev_data_format, forge.DataFormat):
+            forge_data_format_ranges = cls.data_format_ranges
+        elif isinstance(dev_data_format, torch.dtype):
+            forge_data_format_ranges = cls.dtype_ranges
+
+        if dev_data_format in forge_data_format_ranges:
+            data_format_ranges = forge_data_format_ranges[dev_data_format]
         else:
             raise ValueError(f"Unsupported range for dev data format: {dev_data_format}")
         if dtype in cls.dtype_ranges:
@@ -179,6 +189,8 @@ class TestTensorsUtils:
 
         if dev_data_format is None:
             dtype = None
+        elif isinstance(dev_data_format, torch.dtype):
+            dtype = dev_data_format
         else:
             # dtype = torch.float32
             if dev_data_format in cls.dev_data_format_to_dtype:
@@ -236,14 +248,16 @@ class TestTensorsUtils:
         return value_range
 
 
+# TODO remove this method, used only in RGG
 # Compatibility method for verifying models
-def verify_module(
+def verify_module_old(
     model: Module,
     input_shapes: List[TensorShape],
     pcc: Optional[float] = None,
-    dev_data_format: forge.DataFormat = None,
+    dev_data_format: FrameworkDataFormat = None,
     value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
     random_seed: int = 42,
+    convert_to_forge: bool = True,  # explicit conversion to forge data format
 ):
 
     logger.debug(
@@ -252,13 +266,13 @@ def verify_module(
 
     inputs = create_torch_inputs(input_shapes, dev_data_format, value_range, random_seed)
 
-    verify_module_for_inputs(model, inputs, pcc, dev_data_format)
+    verify_module_for_inputs(model, inputs, pcc, dev_data_format, convert_to_forge)
 
 
 # TODO move to class TestTensorsUtils
 def create_torch_inputs(
     input_shapes: List[TensorShape],
-    dev_data_format: forge.DataFormat = None,
+    dev_data_format: FrameworkDataFormat = None,
     value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
     random_seed: Optional[int] = None,
 ) -> List[torch.Tensor]:
@@ -291,11 +305,15 @@ def verify_module_for_inputs_deprecated(
     inputs: List[torch.Tensor],
     pcc: Optional[float] = None,
     dev_data_format: forge.DataFormat = None,
+    convert_to_forge: bool = True,  # explicit conversion to forge data format
 ):
 
     fw_out = model(*inputs)
 
-    forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+    if convert_to_forge:
+        forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+    else:
+        forge_inputs = inputs
 
     compiled_model = forge.compile(model, sample_inputs=forge_inputs)
     co_out = compiled_model(*forge_inputs)
@@ -322,9 +340,14 @@ def verify_module_for_inputs(
     inputs: List[torch.Tensor],
     verify_config: Optional[VerifyConfig] = VerifyConfig(),
     dev_data_format: forge.DataFormat = None,
+    convert_to_forge: bool = True,  # explicit conversion to forge data format
 ):
 
-    forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+    if convert_to_forge:
+        forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+    else:
+        forge_inputs = inputs
+
     compiled_model = forge.compile(model, sample_inputs=forge_inputs)
     verify(inputs, model, compiled_model, verify_config)
 
