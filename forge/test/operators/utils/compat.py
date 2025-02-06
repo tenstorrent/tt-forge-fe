@@ -11,6 +11,7 @@ from loguru import logger
 from typing import Optional, List, Union
 
 from forge import ForgeModule, Module, DepricatedVerifyConfig
+from forge.tensor import to_pt_tensors
 from forge.op_repo import TensorShape
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
@@ -326,3 +327,52 @@ def verify_module_for_inputs(
     forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
     compiled_model = forge.compile(model, sample_inputs=forge_inputs)
     verify(inputs, model, compiled_model, verify_config)
+
+
+def verify_module_for_inputs_torch(
+    model: Module,
+    inputs: List[torch.Tensor],
+    verify_config: Optional[VerifyConfig] = VerifyConfig(),
+):
+
+    verify_torch(inputs, model, verify_config)
+
+
+def verify_torch(
+    inputs: List[torch.Tensor],
+    framework_model: torch.nn.Module,
+    verify_cfg: VerifyConfig = VerifyConfig(),
+):
+    """
+    Verify the pytorch model with the given inputs
+    """
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return
+
+    # 0th step: input checks
+
+    # Check if inputs are of the correct type
+    if not inputs:
+        raise ValueError("Input tensors must be provided")
+    for input_tensor in inputs:
+        if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
+            raise TypeError(
+                f"Input tensor must be of type {verify_cfg.supported_tensor_types}, but got {type(input_tensor)}"
+            )
+
+    if not isinstance(framework_model, verify_cfg.framework_model_types):
+        raise TypeError(
+            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
+        )
+
+    # 1st step: run forward pass for the networks
+    fw_out = framework_model(*inputs)
+
+    # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
+    #  cast from tensorflow tensors to pytorch tensors if needed)
+    if not isinstance(fw_out, torch.Tensor):
+        fw_out = to_pt_tensors(fw_out)
+
+    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    return fw_out
