@@ -139,13 +139,14 @@ def extract_unique_op_tests_from_models(
             with open(model_variant_tvm_generated_unique_op_metadata_file_path, "r") as json_file:
                 model_variant_metadata = json.load(json_file)
 
-            # Load model variants parameters and buffers as tensors from specified files
-            named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
-            if model_variant_metadata["param_file_name"] is not None:
-                serialized_params = torch.load(model_variant_metadata["param_file_name"])
-                named_parameters.update(serialized_params)
-            named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
-            named_parameters.update(named_buffers)
+            if use_constant_value:
+                # Load model variants parameters and buffers as tensors from specified files
+                named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
+                if model_variant_metadata["param_file_name"] is not None:
+                    serialized_params = torch.load(model_variant_metadata["param_file_name"])
+                    named_parameters.update(serialized_params)
+                named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
+                named_parameters.update(named_buffers)
 
             # Process each row in the `.xlsx` file to extract operation configurations
             for index, row in model_variant_df.iterrows():
@@ -165,19 +166,6 @@ def extract_unique_op_tests_from_models(
                 metadata["model_variant_info"]["framework"] = model_variant_metadata["framework"]
                 if not pd.isna(row["Testfile"]):
                     metadata["model_variant_info"]["Testfile"] = row["Testfile"]
-
-                # Replace the contant node operand name with operand shape which can be extracted from the model parameters and buffers
-                if not use_constant_value:
-                    new_operand_shapes = []
-                    for operand_type, operand_shape in zip(operand_types, operand_shapes):
-                        if operand_type == NodeType.Constant:
-                            if len(named_parameters[operand_shape].shape) == 0:
-                                new_operand_shapes.append((torch.numel(named_parameters[operand_shape]),))
-                            else:
-                                new_operand_shapes.append(tuple(named_parameters[operand_shape].shape))
-                        else:
-                            new_operand_shapes.append(operand_shape)
-                    operand_shapes = list(new_operand_shapes)
 
                 # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
                 models_operations[unique_op_count] = Operation(
