@@ -183,7 +183,8 @@ std::vector<torch::Tensor> run_binary(
     TT_ASSERT(submit_outputs.size() == rt_outputs.size(), "Output count mismatch");
     for (size_t i = 0; i < submit_outputs.size(); ++i)
     {
-        runtime::memcpy(rt_outputs[i], submit_outputs[i]);
+        auto host = runtime::toHost(submit_outputs[i], true /*untilize*/);
+        runtime::memcpy(rt_outputs[i], host);
         runtime::deallocateTensor(submit_outputs[i], true);
     }
 
