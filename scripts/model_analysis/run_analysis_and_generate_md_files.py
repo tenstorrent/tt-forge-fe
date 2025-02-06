@@ -784,7 +784,7 @@ def create_statistics_report_markdown_file(
         compiler_component_failure_analysis.get_compiler_component_and_failure_details()
     )
     table_rows = []
-    for compiler_component in CompilerComponent:
+    for compiler_component in compiler_component_failure_analysis.keys():
         if compiler_component != CompilerComponent.UNKNOWN:
             component_name = MarkDownWriter.get_component_names_for_header(compiler_component)
             for failure, model_variant_names in compiler_component_failure_analysis[compiler_component].items():

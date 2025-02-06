@@ -508,7 +508,6 @@ def extract_and_generate_unique_ops_tests(
     current_module_name,
     framework,
     contains_incompatible_np_floats,
-    delete_inputs,
     node_name_to_node_type,
     params,
     constants,
@@ -563,7 +562,7 @@ def extract_and_generate_unique_ops_tests(
                 framework,
                 module_directory=f"generated_modules/unique_ops/{current_module_name}",
                 contains_incompatible_np_floats=contains_incompatible_np_floats,
-                delete_inputs=delete_inputs,
+                delete_inputs=False,
             )
             writer.write_header(include_pytest_imports=True)
 

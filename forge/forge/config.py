@@ -352,6 +352,12 @@ class CompilerConfig:
         if "FORGE_SCHEDULER_POLICY" in os.environ:
             self.scheduler_policy = os.environ["FORGE_SCHEDULER_POLICY"]
 
+        if "FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS" in os.environ:
+            self.tvm_generate_unique_ops_tests = bool(int(os.environ["FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS"]))
+
+        if "FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG" in os.environ:
+            self.extract_tvm_unique_ops_config = bool(int(os.environ["FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG"]))
+
         if "FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS" in os.environ:
             self.export_tvm_unique_ops_config_details = bool(
                 int(os.environ["FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS"])
