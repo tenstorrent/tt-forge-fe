@@ -33,7 +33,7 @@ from forge.verify.verify import verify
         ),
     ],
 )
-@pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::masked_scatter']")
+
 def test_masked_scatter(input_tensor, mask, source):
     class MaskedScatterModule(torch.nn.Module):
         def __init__(self, mask, source):

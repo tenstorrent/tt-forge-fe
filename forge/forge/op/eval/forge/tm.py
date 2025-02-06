@@ -1081,28 +1081,6 @@ def decompose(type, attr, dc, inputs):
         dc.fuse(result)
         return
 
-    if type == "adv_index":
-        dim = attr[0]
-        in0_shape = inputs[0].shape
-        in1_shape = inputs[1].shape
-        if len(in0_shape) == 1 or in0_shape[dim] == 1:
-            result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)
-            return
-        if dim == 0 and len(in1_shape) <= 2:
-            # Consider the case adv_index(X,Y) where
-            #    X: (A, B), Y: (1, C) or (C,) and A != 1
-            if len(in0_shape) == 2:
-                # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
-                # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
-                # so swaping the operands.
-                result = dc.op(
-                    "embedding",
-                    (inputs[1], inputs[0]),
-                )
-                dc.fuse(result)
-                return
-
     if type == "pad":
         if all([x == 0 for x in attr[0:-2]]):
             # Pad size is 0
