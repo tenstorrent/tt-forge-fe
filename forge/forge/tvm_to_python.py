@@ -2789,7 +2789,6 @@ def compile_tvm_to_python(
                     current_module_name,
                     framework,
                     contains_incompatible_np_floats,
-                    delete_inputs,
                     node_name_to_node_type,
                     params,
                     constants,
