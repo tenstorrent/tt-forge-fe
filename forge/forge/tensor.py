@@ -279,13 +279,17 @@ class Tensor(TensorBase):
         cls,
         shape: Union[List[int], Tuple[int, ...], torch.Size],
         dtype: Optional[torch.dtype] = None,
-        integer_tensor_high_value: int = 1000,
+        min_int: int = 0,
+        max_int: int = 1000,
     ) -> torch.Tensor:
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
             torch_tensor = torch.rand(shape, dtype=dtype)
         elif dtype in [torch.int8, torch.int16, torch.int32, torch.int64]:
-            torch_tensor = torch.randint(high=integer_tensor_high_value, size=shape, dtype=dtype)
+            if min_int == max_int:
+                torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
+            else:
+                torch_tensor = torch.randint(low=min_int, high=max_int, size=shape, dtype=dtype)
         else:
             torch_tensor = torch.rand(shape, dtype=torch.float32)
 
@@ -296,12 +300,13 @@ class Tensor(TensorBase):
         cls,
         tensor_shape: Union[List[int], Tuple[int, ...], torch.Size],
         torch_dtype: Optional[torch.dtype] = None,
-        integer_tensor_high_value: int = 1000,
+        min_int: int = 0,
+        max_int: int = 1000,
         constant: bool = False,
     ) -> "TensorFromPytorch":
 
         torch_tensor = Tensor.create_torch_tensor(
-            shape=tensor_shape, dtype=torch_dtype, integer_tensor_high_value=integer_tensor_high_value
+            shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
         )
 
         return TensorFromPytorch(
