@@ -691,6 +691,8 @@ class TestPlanUtils:
         # As last parameter in test id is math fidelity, in case of duplicated tests numeric suffix should be ignored
         if math_fidelity_part is not None and math_fidelity_part.startswith("HiFi4"):
             math_fidelity_part = "HiFi4"
+        if math_fidelity_part is not None and math_fidelity_part.startswith("None"):
+            math_fidelity_part = None
         math_fidelity = eval(f"forge._C.{math_fidelity_part}") if math_fidelity_part is not None else None
 
         return TestVector(
