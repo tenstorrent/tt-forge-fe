@@ -100,13 +100,6 @@ def test_concat_two_kinds_pad(test_device):
             x = forge.op.Matmul("mm0", x, self.get_parameter("w"))
             return x
 
-    compiler_cfg = forge.config._get_global_compiler_config()  # load global compiler config object
-    compiler_cfg.balancer_policy = "CNN"
-    # compiler_cfg.place_on_new_epoch("m6_transpose_nop_0")
-    os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
-    os.environ["FORGE_PAD_SPARSE_MM"] = "{11:12}"
-    os.environ["FORGE_GRAPHSOLVER_SELF_CUT_TYPE"] = "ConsumerOperandDataEdgesFirst"
-
     # input shape
     common_len = 3136
     input_shapes = (
