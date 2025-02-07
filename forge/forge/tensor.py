@@ -859,85 +859,86 @@ def is_forge_shape(tensor: torch.Tensor, min_dim=-1) -> bool:
     return tensor.shape[-1] % TILE_DIM == 0 and tensor.shape[-2] % TILE_DIM == 0
 
 
-def pad_pytorch_tensor_to_forge(
-    tensor: torch.Tensor,
-    tile_broadcast_dims: List[int],
-    squeeze: bool = False,
-    microbatch=1,
-    tile_r=TILE_DIM,
-    tile_c=TILE_DIM,
-) -> torch.Tensor:
-    """
-    Pad pytorch tensor to 4D tile-snapped dimensions. Broadcast given dims to tile size.
-    """
-    # Skip padding if not needed
-    min_dim = 2 if squeeze and tensor.shape[0] != microbatch and len(tensor.shape) > 2 else 4
-    if is_forge_shape(tensor, min_dim):
-        return tensor
+# This function was used to pad pytorch tensor to BUDA format. It is not used anymore.
+# def pad_pytorch_tensor_to_forge(
+#     tensor: torch.Tensor,
+#     tile_broadcast_dims: List[int],
+#     squeeze: bool = False,
+#     microbatch=1,
+#     tile_r=TILE_DIM,
+#     tile_c=TILE_DIM,
+# ) -> torch.Tensor:
+#     """
+#     Pad pytorch tensor to 4D tile-snapped dimensions. Broadcast given dims to tile size.
+#     """
+#     # Skip padding if not needed
+#     min_dim = 2 if squeeze and tensor.shape[0] != microbatch and len(tensor.shape) > 2 else 4
+#     if is_forge_shape(tensor, min_dim):
+#         return tensor
 
-    new_tensor = tensor
+#     new_tensor = tensor
 
-    while len(new_tensor.shape) < min_dim:
-        if new_tensor.shape[0] == microbatch:
-            new_tensor = new_tensor.unsqueeze(1)
-        else:
-            new_tensor = new_tensor.unsqueeze(0)
+#     while len(new_tensor.shape) < min_dim:
+#         if new_tensor.shape[0] == microbatch:
+#             new_tensor = new_tensor.unsqueeze(1)
+#         else:
+#             new_tensor = new_tensor.unsqueeze(0)
 
-    while len(new_tensor.shape) > 5:
-        assert new_tensor.shape[0] == 1, "Invalid dimension size above dim 5"
-        new_tensor = new_tensor.squeeze(0)
+#     while len(new_tensor.shape) > 5:
+#         assert new_tensor.shape[0] == 1, "Invalid dimension size above dim 5"
+#         new_tensor = new_tensor.squeeze(0)
 
-    if new_tensor.shape[0] < microbatch:
-        new_tensor = new_tensor.broadcast_to([microbatch, *new_tensor.shape[1:]]).contiguous()
+#     if new_tensor.shape[0] < microbatch:
+#         new_tensor = new_tensor.broadcast_to([microbatch, *new_tensor.shape[1:]]).contiguous()
 
-    if is_forge_shape(new_tensor):
-        new_tensor = new_tensor.detach().contiguous()
-        return new_tensor  # done after adjusting number of dims
+#     if is_forge_shape(new_tensor):
+#         new_tensor = new_tensor.detach().contiguous()
+#         return new_tensor  # done after adjusting number of dims
 
-    if new_tensor.is_sparse:
-        return pad_sparse_pytorch_tensor_to_forge(new_tensor)
+#     if new_tensor.is_sparse:
+#         return pad_sparse_pytorch_tensor_to_forge(new_tensor)
 
-    def get_pad(dim, tile_dim):
-        if dim % tile_dim > 0:
-            return tile_dim - (dim % tile_dim)
-        return 0
+#     def get_pad(dim, tile_dim):
+#         if dim % tile_dim > 0:
+#             return tile_dim - (dim % tile_dim)
+#         return 0
 
-    dim_c = new_tensor.shape[-1]
-    dim_r = new_tensor.shape[-2]
+#     dim_c = new_tensor.shape[-1]
+#     dim_r = new_tensor.shape[-2]
 
-    pad_right = get_pad(dim_c, tile_c)
-    pad_bottom = get_pad(dim_r, tile_r)
+#     pad_right = get_pad(dim_c, tile_c)
+#     pad_bottom = get_pad(dim_r, tile_r)
 
-    # broadcast to tile dim if told to do so
-    mode_right = "replicate" if (-1 in tile_broadcast_dims or 3 in tile_broadcast_dims) else "constant"
-    mode_bottom = "replicate" if (-2 in tile_broadcast_dims or 2 in tile_broadcast_dims) else "constant"
+#     # broadcast to tile dim if told to do so
+#     mode_right = "replicate" if (-1 in tile_broadcast_dims or 3 in tile_broadcast_dims) else "constant"
+#     mode_bottom = "replicate" if (-2 in tile_broadcast_dims or 2 in tile_broadcast_dims) else "constant"
 
-    if mode_right == "replicate":
-        assert dim_c == 1, "Trying to broadcast to tile dim a dimension that's not 1"
+#     if mode_right == "replicate":
+#         assert dim_c == 1, "Trying to broadcast to tile dim a dimension that's not 1"
 
-    if mode_bottom == "replicate":
-        assert dim_r == 1, "Trying to broadcast to tile dim a dimension that's not 1"
+#     if mode_bottom == "replicate":
+#         assert dim_r == 1, "Trying to broadcast to tile dim a dimension that's not 1"
 
-    # Torch pad needs at least 3d, and float32
-    original_type = new_tensor.dtype
-    if original_type != torch.float32:
-        new_tensor = new_tensor.type(torch.float32)
-    original_dim = len(new_tensor.shape)
-    while len(new_tensor.shape) < 3:
-        new_tensor = new_tensor.unsqueeze(0)
-    ret = torch.nn.functional.pad(new_tensor, (0, pad_right, 0, 0), mode=mode_right)
-    ret = torch.nn.functional.pad(ret, (0, 0, 0, pad_bottom), mode=mode_bottom)
-    while len(ret.shape) > original_dim:
-        ret = ret.squeeze(0)
+#     # Torch pad needs at least 3d, and float32
+#     original_type = new_tensor.dtype
+#     if original_type != torch.float32:
+#         new_tensor = new_tensor.type(torch.float32)
+#     original_dim = len(new_tensor.shape)
+#     while len(new_tensor.shape) < 3:
+#         new_tensor = new_tensor.unsqueeze(0)
+#     ret = torch.nn.functional.pad(new_tensor, (0, pad_right, 0, 0), mode=mode_right)
+#     ret = torch.nn.functional.pad(ret, (0, 0, 0, pad_bottom), mode=mode_bottom)
+#     while len(ret.shape) > original_dim:
+#         ret = ret.squeeze(0)
 
-    if ret.dtype != original_type:
-        ret = ret.type(original_type)
+#     if ret.dtype != original_type:
+#         ret = ret.type(original_type)
 
-    ret = ret.detach()
-    ret.requires_grad = tensor.requires_grad
-    return ret
+#     ret = ret.detach()
+#     ret.requires_grad = tensor.requires_grad
+#     return ret
 
-
+# This function was used to pad pytorch tensor to BUDA format. It is not used anymore.
 def narrow_forge_tensor_to_pytorch(
     tensor: torch.Tensor, shape: List[int], has_microbatch_dim: bool = False
 ) -> torch.Tensor:

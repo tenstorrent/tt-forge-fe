@@ -43,7 +43,7 @@ eval_graph(
     Graph *graph,
     const std::vector<py::object> &inputs,
     const std::unordered_map<std::string, py::object> &parameters,
-    py::object tt_device,
+    // py::object tt_device,
     const std::unordered_map<int, py::object> &intermediate_golden_tensors,
     const std::vector<py::object> &losses,
     const std::vector<py::object> &targets,
@@ -596,7 +596,7 @@ void GraphModule(py::module &m_graph)
                     graph,
                     inputs,
                     parameters,
-                    tt_device,
+                    // tt_device,
                     intermediate_golden_tensors,
                     losses,
                     targets,
@@ -624,7 +624,7 @@ void GraphModule(py::module &m_graph)
         [](Graph *graph,
            const std::vector<py::object> &inputs,
            const std::unordered_map<std::string, py::object> &parameters,
-           py::object tt_device,
+           //    py::object tt_device,
            float relative_atol,
            float pcc,
            const std::unordered_map<int, py::object> &intermediate_golden_tensors,
@@ -637,7 +637,7 @@ void GraphModule(py::module &m_graph)
                 graph,
                 inputs,
                 parameters,
-                tt_device,
+                // tt_device,
                 intermediate_golden_tensors,
                 losses,
                 targets,
@@ -848,7 +848,6 @@ bool compare_tensor_to_golden(
     bool warning_only = false)
 {
     py::object eval_module = py::module_::import("forge.verify.compare");
-    bool is_forge = ir_level == graphlib::IRLevel::IR_FORGE;
 
     if (pcc == 0.0)
         return eval_module
@@ -856,7 +855,6 @@ bool compare_tensor_to_golden(
                 name,
                 golden,
                 calculated,
-                is_forge,
                 py::none(), /* rtol */
                 py::none(), /* atol */
                 py::none(), /* pcc */
@@ -870,7 +868,6 @@ bool compare_tensor_to_golden(
             name,
             golden,
             calculated,
-            is_forge,
             py::none(), /* rtol */
             py::none(), /* atol */
             pcc,
@@ -1434,7 +1431,7 @@ eval_graph(
     Graph *graph,
     const std::vector<py::object> &inputs,
     const std::unordered_map<std::string, py::object> &parameters,
-    py::object tt_device,
+    // py::object tt_device,
     const std::unordered_map<int, py::object> &intermediate_golden_tensors,
     const std::vector<py::object> &losses,
     const std::vector<py::object> &targets,
@@ -1454,8 +1451,8 @@ eval_graph(
 
     const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
 
-    auto optimizer = tt_device.attr("get_optimizer")();
-    std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, parameters, optimizer);
+    // auto optimizer = tt_device.attr("get_optimizer")();
+    // std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, parameters, optimizer);
 
     // Populate parameters and constant tensor mapping automatically that were created during compile
     for (Node *node : tt::graphlib::topological_sort(*graph))
@@ -1782,7 +1779,7 @@ eval_graph(
             output_tensor = eval_golden_transforms(operands[0], output_tensor, /* eval_for_output */ true);
             golden_transforms_outputs.push_back(output_tensor);
         }
-        log_debug(tt::LogTest, "Populating module output: {}", output_node->name());
+        log_debug(tt::LogTest, "*********** Populating module output: {}", output_node->name());
     }
     std::vector<py::object> ret = eval_runtime_tensor_transform(graph, module_outputs, golden_transforms_outputs);
 

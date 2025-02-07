@@ -168,7 +168,7 @@ def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Di
     if not losses or run_backward:
 
         if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_forge)
+            losses = _generate_random_losses(outputs)
 
         if run_backward:
             _run_pytorch_backward(outputs, device, losses)
@@ -315,11 +315,10 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 context.graph,
                 context.inputs,
                 context.parameter_dict,
-                context.input_grads,
+                context.input_grads,  # golden input gradients?
                 context.outputs,
-                dev,
-                context.intermediate_tensors,
-                verify_cfg,
+                context.intermediate_tensors,  # intermediate golden tensors
+                verify_cfg,  # DepricatedVerifyConfig
                 False,
                 losses=context.losses,
                 targets=context.targets,
