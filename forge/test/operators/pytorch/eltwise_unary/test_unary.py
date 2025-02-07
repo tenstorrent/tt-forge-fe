@@ -49,7 +49,7 @@
 #    (/) Reuse inputs for selected operators
 
 
-import torch
+import importlib
 
 from typing import List, Dict
 from loguru import logger
@@ -64,6 +64,7 @@ from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
+from forge.op_repo.pytorch_operators import pytorch_operator_repository
 
 from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -90,7 +91,11 @@ class TestVerification:
         if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
             input_source_flag = InputSourceFlags.FROM_DRAM
 
-        operator = getattr(torch, test_vector.operator)
+        # Retrieving the operator from the appropriate module to which it belongs:
+        repo_operator = pytorch_operator_repository.get_by_name(test_vector.operator).full_name
+        module_name = repo_operator.rsplit(".", 1)[0]
+        module = importlib.import_module(module_name)
+        operator = getattr(module, test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -144,12 +149,25 @@ class TestParamsData:
         {"exponent": 10.0},
     ]
 
+    kwargs_gelu = [
+        {"approximate": "tanh"},
+    ]
+
+    kwargs_leaky_relu = [
+        {"negative_slope": 0.01, "inplace": True},
+        {"negative_slope": 0.1, "inplace": False},
+    ]
+
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
         if test_vector.operator in ("clamp",):
             return cls.kwargs_clamp
         if test_vector.operator in ("pow",):
             return cls.kwargs_pow
+        if test_vector.operator in ("gelu",):
+            return cls.kwargs_gelu
+        if test_vector.operator in ("leaky_relu",):
+            return cls.kwargs_leaky_relu
         return cls.no_kwargs
 
 
@@ -177,6 +195,8 @@ class TestCollectionData:
             # "clip",         # alias for clamp
             "log",
             "log1p",
+            "gelu",
+            "leaky_relu",
         ],
     )
     not_implemented = TestCollection(
@@ -281,6 +301,14 @@ TestParamsData.test_plan_implemented = TestPlan(
             ],
             dev_data_formats=TestCollectionCommon.all.dev_data_formats,
             math_fidelities=TestCollectionCommon.single.math_fidelities,
+        ),
+        # Test gelu and leaky_relu operators with default kwargs (no kwargs)
+        # gelu: approximate='none'
+        # leaky_relu: negative_slope=0.01, inplace=False
+        TestCollection(
+            operators=["gelu", "leaky_relu"],
+            input_sources=TestCollectionCommon.all.input_sources,
+            input_shapes=TestCollectionCommon.all.input_shapes,
         ),
     ],
     failing_rules=[
@@ -686,6 +714,19 @@ TestParamsData.test_plan_implemented = TestPlan(
                 DataFormat.UInt16,
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        # gelu, leaky_relu: not implemented for Int types as shouldn't be implemented:
+        TestCollection(
+            operators=["gelu", "leaky_relu"],
+            dev_data_formats=[
+                DataFormat.RawUInt8,
+                DataFormat.RawUInt16,
+                DataFormat.RawUInt32,
+                DataFormat.Int8,
+                DataFormat.UInt16,
+                DataFormat.Int32,
+            ],
+            skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
     ],
 )
