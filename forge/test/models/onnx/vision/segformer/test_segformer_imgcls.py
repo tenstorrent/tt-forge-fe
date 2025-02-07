@@ -40,11 +40,8 @@ variants_img_classification = [
 def test_segformer_image_classification_onnx(test_device, variant):
 
     # Set Forge configuration parameters
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    os.environ["FORGE_RIBBON2"] = "1"
-    os.environ["FORGE_DISABLE_PADDING_PASS"] = "1"
     pcc_value = 0.99
 
     if test_device.arch == forge.BackendDevice.Wormhole_B0:
