@@ -33,6 +33,7 @@ class Task(StrEnum):
     OBJECT_DETECTION = "obj_det"
     SEMANTIC_SEGMENTATION = "sem_seg"
     MASKED_IMAGE_MODELLING = "masked_img"
+    CONDITIONAL_GENERATION = "cond_gen"
     IMAGE_ENCODING = "img_enc"
     VISUAL_BACKBONE = "visual_bb"
 
