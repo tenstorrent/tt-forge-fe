@@ -55,6 +55,7 @@ enum class TargetType
 {
     SourceType,
     UInt32,
+    Int64,
 };
 
 struct AttributeRemap
@@ -104,6 +105,7 @@ class AttributeMapper
     {
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UInt32));
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
+        add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::Int64));
 
         // Add more default mappings here
     }
@@ -234,6 +236,7 @@ class MLIRGenerator
                 case TargetType::UInt32:
                     TT_ASSERT(std::get<int>(value) >= 0, "Value must be an >= 0 for conversion to uint32");
                     return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
+                case TargetType::Int64: return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
                 default:
                     // If type not handled, throw an exception
                     throw std::runtime_error("Unhandled target type conversion");
@@ -608,6 +611,7 @@ class MLIRGenerator
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
         lowering_handler_map["conv2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Conv2dOp>;
         lowering_handler_map["cosine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CosOp>;
+        lowering_handler_map["cumsum"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CumSumOp>;
         lowering_handler_map["embedding_bw"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::EmbeddingBackwardOp>;
         lowering_handler_map["embedding"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::EmbeddingOp>;
