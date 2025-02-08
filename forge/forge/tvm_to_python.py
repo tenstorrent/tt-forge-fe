@@ -661,19 +661,10 @@ def populate_cumsum_args(graph, nid, compiler_cfg):
     axis = node["attrs"]["axis"][0][0]
     args.append(
         (
-            "axis",
+            "dim",
             f"{axis}",
         )
     )
-
-    exclusive = node["attrs"]["exclusive"][0][0]
-    args.append(
-        (
-            "exclusive",
-            f"{exclusive}",
-        )
-    )
-
     return args
 
 
