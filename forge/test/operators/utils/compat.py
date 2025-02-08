@@ -13,6 +13,7 @@ from typing import Optional, List, Union
 from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.tensor import to_pt_tensors
 from forge.op_repo import TensorShape
+from forge.config import CompilerConfig
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
@@ -303,6 +304,7 @@ def create_torch_inputs(
 def verify_module_for_inputs_deprecated(
     model: Module,
     inputs: List[torch.Tensor],
+    compiler_cfg: CompilerConfig,
     pcc: Optional[float] = None,
     dev_data_format: forge.DataFormat = None,
     convert_to_forge: bool = True,  # explicit conversion to forge data format
@@ -315,7 +317,7 @@ def verify_module_for_inputs_deprecated(
     else:
         forge_inputs = inputs
 
-    compiled_model = forge.compile(model, sample_inputs=forge_inputs)
+    compiled_model = forge.compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
     co_out = compiled_model(*forge_inputs)
 
     # TODO check output data format type
@@ -338,6 +340,7 @@ def verify_module_for_inputs_deprecated(
 def verify_module_for_inputs(
     model: Module,
     inputs: List[torch.Tensor],
+    compiler_cfg: CompilerConfig,
     verify_config: Optional[VerifyConfig] = VerifyConfig(),
     dev_data_format: forge.DataFormat = None,
     convert_to_forge: bool = True,  # explicit conversion to forge data format
@@ -348,7 +351,7 @@ def verify_module_for_inputs(
     else:
         forge_inputs = inputs
 
-    compiled_model = forge.compile(model, sample_inputs=forge_inputs)
+    compiled_model = forge.compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
     verify(inputs, model, compiled_model, verify_config)
 
 

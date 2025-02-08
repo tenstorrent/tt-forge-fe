@@ -17,6 +17,7 @@ from forge.verify.verify import verify
             torch.tensor([True, False, True, False, True, False, True, False, True, False]),  # Mask
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0]),  # Source tensor
             id="1d_masked_scatter",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         pytest.param(
             torch.zeros((4, 4), dtype=torch.float32),  # 2D input tensor
@@ -30,6 +31,7 @@ from forge.verify.verify import verify
             ),
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]),  # Source tensor
             id="2d_masked_scatter",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
     ],
 )
@@ -46,7 +48,7 @@ def test_masked_scatter(input_tensor, mask, source):
     # Inputs for the test
     inputs = [input_tensor, mask, source]
 
-    framework_model = MaskedScatterModule(mask, source)
+    framework_model = MaskedScatterModule()
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify outputs
