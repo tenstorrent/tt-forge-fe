@@ -5,13 +5,13 @@ set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/
 
 set(TTMLIR_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tt-mlir")
 set(TTMLIR_BUILD_DIR "${TTMLIR_SOURCE_DIR}/build")
-set(TTMLIR_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+set(TTMLIR_INSTALL_PREFIX "${TTMLIR_BUILD_DIR}/install")
 
 ExternalProject_Add(
     tt-mlir
     SOURCE_DIR ${TTMLIR_SOURCE_DIR}
     BINARY_DIR ${TTMLIR_BUILD_DIR} # for some reason BUILD_DIR for ExternalProject_Add doesn't exist, but they use BINARY_DIR instead
-    INSTALL_COMMAND "" # CMake will install external project on main project build by default, so we disable it here
+    INSTALL_COMMAND "${CMAKE_COMMAND} --install ${TTMLIR_BUILD_DIR} --component SharedLib"
     CMAKE_GENERATOR Ninja
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
@@ -27,7 +27,7 @@ ExternalProject_Add(
 )
 
 # AFAIK there is no in-built way to explicitly install the ExternalProject, so we use this workaround
-install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} --install ${TTMLIR_BUILD_DIR} --component SharedLib)")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} --install ${TTMLIR_BUILD_DIR} --component SharedLib --prefix ${CMAKE_INSTALL_PREFIX})")
 
 ### end build tt-mlir ###
 
