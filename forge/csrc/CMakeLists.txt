@@ -60,9 +60,7 @@ add_dependencies(ttforge_csrc_objs tt-mlir)
 
 ######## ttforge_csrc ########
 
-set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/lib")
-set(TTRUNTIME_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/runtime/lib")
-set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
+set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/install/lib")
 set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
 
 add_library(ttforge_csrc SHARED)
@@ -109,8 +107,6 @@ target_compile_options(ttforge_csrc PRIVATE
 target_link_directories(ttforge_csrc PRIVATE
     ${TTMLIR_TOOLCHAIN_DIR}/lib
     ${TTMLIR_LIB_DIR}
-    ${TTRUNTIME_LIB_DIR}
-    ${METAL_LIB_DIR}
     ${TORCH_LIB_DIR})
 
 # Change the output name (the part after 'lib' and before '.so')
