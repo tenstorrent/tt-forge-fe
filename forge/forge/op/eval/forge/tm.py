@@ -1080,7 +1080,6 @@ def decompose(type, attr, dc, inputs):
 
         dc.fuse(result)
         return
-
     if type == "adv_index":
         dim = attr[0]
         in0_shape = inputs[0].shape
@@ -1102,7 +1101,6 @@ def decompose(type, attr, dc, inputs):
                 )
                 dc.fuse(result)
                 return
-
     if type == "pad":
         if all([x == 0 for x in attr[0:-2]]):
             # Pad size is 0
