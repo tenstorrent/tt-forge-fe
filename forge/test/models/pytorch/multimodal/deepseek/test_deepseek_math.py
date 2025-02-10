@@ -21,7 +21,7 @@ def test_deepseek_inference_no_cache_cpu(variant):
     framework_model = DeepSeekWrapper(model)
 
     generated_text = generation(
-        max_new_tokens=100, compiled_model=framework_model, input_ids=input_ids, tokenizer=tokenizer
+        max_new_tokens=200, compiled_model=framework_model, input_ids=input_ids, tokenizer=tokenizer
     )
     print(generated_text)
 
