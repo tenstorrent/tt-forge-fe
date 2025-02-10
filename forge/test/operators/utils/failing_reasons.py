@@ -123,6 +123,7 @@ class FailingReasonsValidation:
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and "info:\nBinaryOpType cannot be mapped to BcastOpMath" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "not implemented for 'Int'" in f"{ex}",
         ],
         FailingReasons.ALLOCATION_FAILED: [
             lambda ex: isinstance(ex, RuntimeError)
