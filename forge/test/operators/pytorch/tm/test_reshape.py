@@ -17,6 +17,7 @@ from loguru import logger
 from forge.verify.config import VerifyConfig
 
 from forge.verify.value_checkers import AllCloseValueChecker
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify as forge_verify
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
@@ -28,6 +29,7 @@ from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestCollectionTorch
 from test.operators.utils import ValueRanges
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
@@ -129,6 +131,11 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # We use AllCloseValueChecker in all cases except for integer data formats:
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -140,7 +147,7 @@ class TestVerification:
             warm_reset=warm_reset,
             value_range=ValueRanges.SMALL,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker()),
+            verify_config=verify_config,
         )
 
 
@@ -265,8 +272,8 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionCommon.all.dev_data_formats
-                if item not in TestCollectionCommon.single.dev_data_formats
+                for item in TestCollectionTorch.all.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -276,7 +283,7 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
         # Test specific classes of reshape operations collection:
@@ -293,39 +300,7 @@ TestParamsData.test_plan = TestPlan(
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
         TestCollection(
-            input_shapes=[(1, 10000)],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[
-                (100, 100),
-                (1000, 100),
-                (89, 3),
-                (1, 64, 1),
-                (1, 100, 100),
-                (11, 17, 41),
-                (1, 2, 3, 4),
-                (1, 11, 45, 17),
-                (1, 11, 17, 41),
-                (1, 13, 89, 3),
-                (8, 1, 10, 1000),
-                (11, 32, 32, 64),
-                (8, 8, 8),
-            ],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[(1, 2, 2, 2)],
-            criteria=lambda test_vector: test_vector.kwargs is not None
-            and "shape" in test_vector.kwargs
-            and test_vector.kwargs["shape"] == (8,),
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[(1, 49, 2304)],
-            criteria=lambda test_vector: test_vector.kwargs is not None
-            and "shape" in test_vector.kwargs
-            and test_vector.kwargs["shape"] == (-1,),
+            input_shapes=[(1, 10000), (7, 10, 1000, 100)],
             failing_reason=FailingReasons.INFERENCE_FAILED,
         ),
         TestCollection(
