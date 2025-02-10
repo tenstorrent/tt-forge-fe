@@ -14,7 +14,6 @@ import pytest
 
 # import forge._C.pattern_matcher as pypattern_matcher
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
-from forge.config import _get_global_compiler_config
 from forge.verify.config import _get_global_verify_config
 import forge
 from forge.tensor import to_pt_tensors
@@ -662,19 +661,10 @@ def populate_cumsum_args(graph, nid, compiler_cfg):
     axis = node["attrs"]["axis"][0][0]
     args.append(
         (
-            "axis",
+            "dim",
             f"{axis}",
         )
     )
-
-    exclusive = node["attrs"]["exclusive"][0][0]
-    args.append(
-        (
-            "exclusive",
-            f"{exclusive}",
-        )
-    )
-
     return args
 
 
@@ -1015,9 +1005,6 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    args.append(("max_pool_add_sub_surround", f"{compiler_cfg.max_pool_add_sub_surround}"))
-    args.append(("max_pool_add_sub_surround_value", f"{compiler_cfg.max_pool_add_sub_surround_value}"))
-
     channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
@@ -1074,9 +1061,6 @@ def populate_maxpool3d_args(graph, nid, compiler_cfg):
             f"{ceil_mode}",
         )
     )
-
-    args.append(("max_pool_add_sub_surround", f"{compiler_cfg.max_pool_add_sub_surround}"))
-    args.append(("max_pool_add_sub_surround_value", f"{compiler_cfg.max_pool_add_sub_surround_value}"))
 
     channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
@@ -2054,7 +2038,7 @@ def generate_forge_module(
     global counter
 
     if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
+        compiler_cfg = CompilerConfig()
 
     if verify_cfg is None:
         verify_cfg = _get_global_verify_config()
@@ -2146,7 +2130,7 @@ def compile_tvm_to_python(
     framework_mod, graph_name, inputs, module_name=None, compiler_cfg=None, verify_cfg=None, input_names=[]
 ):
     if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
+        compiler_cfg = CompilerConfig()
 
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 

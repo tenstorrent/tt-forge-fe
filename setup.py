@@ -52,10 +52,6 @@ class CMakeBuild(build_ext):
         self.spawn(["cmake", "--build", str(build_dir)])
         self.spawn(["cmake", "--install", str(build_dir)])
 
-        # NOTE: Workaround for regression in tt-mlir,
-        # Remove once tt-mlir#2129 is merged.
-        self.copy_tree(cwd / "lib", str(install_dir / "lib"))
-
 
 with open("README.md", "r") as f:
     long_description = f.read()

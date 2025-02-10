@@ -453,7 +453,7 @@ def Tanh(name: str, operandA: Tensor) -> Tensor:
     return op("tanh", name, operandA).get_tensor()
 
 
-def CumSum(name: str, operandA: Tensor, axis: int, exclusive: bool = False) -> Tensor:
+def CumSum(name: str, operandA: Tensor, dim: int) -> Tensor:
 
     """
     Cumulative sum operation.
@@ -483,9 +483,7 @@ def CumSum(name: str, operandA: Tensor, axis: int, exclusive: bool = False) -> T
         Forge tensor
     """
 
-    assert not exclusive, "Currently not supported"
-
-    return op("cumsum", name, operandA, axis=axis, exclusive=exclusive).get_tensor()
+    return op("cumsum", name, operandA, dim=dim).get_tensor()
 
 
 def LogicalNot(name: str, operandA: Tensor) -> Tensor:

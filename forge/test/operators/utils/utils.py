@@ -20,9 +20,9 @@ from typing import Optional, List, Dict, Type, Union
 from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.op_repo import TensorShape
 from forge.verify import TestKind  # , verify_module
-from forge.config import _get_global_compiler_config
 from forge._C import MathFidelity
 
+from forge.config import CompilerConfig
 from forge.verify.config import VerifyConfig
 
 from .compat import TestDevice
@@ -94,17 +94,20 @@ class CompilerUtils:
     """Utility functions for Forge compiler configuration"""
 
     @staticmethod
-    def set_input_source(input_source_flag: InputSourceFlag):
+    def set_input_source(input_source_flag: InputSourceFlag, compiler_cfg: CompilerConfig):
         """Set compiler configuration for input source"""
-        compiler_cfg = _get_global_compiler_config()
-        compiler_cfg.input_queues_on_host = input_source_flag.input_queues_on_host
-        if input_source_flag.set_default_dram_parameters:
-            compiler_cfg.default_dram_parameters = input_source_flag.default_dram_parameters
+        # Not existing in the compiler, after global config removal
+        # compiler_cfg.input_queues_on_host = input_source_flag.input_queues_on_host
+        # if input_source_flag.set_default_dram_parameters:
+        #     compiler_cfg.default_dram_parameters = input_source_flag.default_dram_parameters
+
+        # NOP since we don't use this flag in the compiler, currently.
+        pass
 
     @staticmethod
-    def set_math_fidelity(math_fidelity: MathFidelity):
+    def set_math_fidelity(math_fidelity: MathFidelity, compiler_cfg: CompilerConfig):
         """Set compiler configuration for math fidelity"""
-        compiler_cfg = _get_global_compiler_config()
+        # Currently not respected/supported in the compiler
         compiler_cfg.default_math_fidelity = math_fidelity
 
 
@@ -158,7 +161,10 @@ class VerifyUtils:
             skip_forge_verification: Skip verification with Forge module
         """
 
+        compiler_cfg = CompilerConfig()
+
         cls.setup(
+            compiler_cfg=compiler_cfg,
             input_source_flag=input_source_flag,
             math_fidelity=math_fidelity,
             warm_reset=warm_reset,
@@ -175,6 +181,7 @@ class VerifyUtils:
             cls.verify_module_for_inputs_deprecated(
                 model=model,
                 inputs=inputs,
+                compiler_cfg=compiler_cfg,
                 pcc=pcc,
                 dev_data_format=dev_data_format,
                 convert_to_forge=convert_to_forge,
@@ -189,6 +196,7 @@ class VerifyUtils:
             cls.verify_module_for_inputs(
                 model=model,
                 inputs=inputs,
+                compiler_cfg=compiler_cfg,
                 verify_config=verify_config,
                 dev_data_format=dev_data_format,
                 convert_to_forge=convert_to_forge,
@@ -197,6 +205,7 @@ class VerifyUtils:
     @classmethod
     def setup(
         cls,
+        compiler_cfg: CompilerConfig,
         input_source_flag: InputSourceFlags = None,
         math_fidelity: forge.MathFidelity = None,
         warm_reset: bool = False,
@@ -205,10 +214,10 @@ class VerifyUtils:
             DeviceUtils.warm_reset()
 
         if input_source_flag:
-            CompilerUtils.set_input_source(input_source_flag.value)
+            CompilerUtils.set_input_source(input_source_flag.value, compiler_cfg)
 
         if math_fidelity:
-            CompilerUtils.set_math_fidelity(math_fidelity)
+            CompilerUtils.set_math_fidelity(math_fidelity, compiler_cfg)
 
         # if dev_data_format:
         #     input_params.append({"dev_data_format": dev_data_format})
@@ -236,6 +245,7 @@ class VerifyUtils:
         cls,
         model: Module,
         inputs: List[torch.Tensor],
+        compiler_cfg: CompilerConfig,
         pcc: Optional[float] = None,
         dev_data_format: forge.DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
@@ -244,6 +254,7 @@ class VerifyUtils:
         verify_module_for_inputs_deprecated(
             model=model,
             inputs=inputs,
+            compiler_cfg=compiler_cfg,
             pcc=pcc,
             dev_data_format=dev_data_format,
             convert_to_forge=convert_to_forge,
@@ -254,6 +265,7 @@ class VerifyUtils:
         cls,
         model: Module,
         inputs: List[torch.Tensor],
+        compiler_cfg: CompilerConfig,
         verify_config: Optional[VerifyConfig] = VerifyConfig(),
         dev_data_format: forge.DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
@@ -262,6 +274,7 @@ class VerifyUtils:
         verify_module_for_inputs(
             model=model,
             inputs=inputs,
+            compiler_cfg=compiler_cfg,
             verify_config=verify_config,
             dev_data_format=dev_data_format,
             convert_to_forge=convert_to_forge,
