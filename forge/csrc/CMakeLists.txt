@@ -60,7 +60,7 @@ add_dependencies(ttforge_csrc_objs tt-mlir)
 
 ######## ttforge_csrc ########
 
-set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/install/lib")
+set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/lib")
 set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
 
 add_library(ttforge_csrc SHARED)
@@ -80,10 +80,6 @@ target_link_libraries(ttforge_csrc PRIVATE
     tt_torch_device
     runtime
     ttforge_csrc_objs
-
-    # NOTE: ordering of the libraries will affect the linking
-    LLVM
-    MLIR
 
     TTMLIRCompiler
     TTMLIRRuntime
