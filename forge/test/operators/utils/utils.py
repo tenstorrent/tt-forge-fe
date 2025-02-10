@@ -178,30 +178,17 @@ class VerifyUtils:
             random_seed=random_seed,
         )
 
-        if deprecated_verification:
-            cls.verify_module_for_inputs_deprecated(
-                model=model,
-                inputs=inputs,
-                compiler_cfg=compiler_cfg,
-                pcc=pcc,
-                dev_data_format=dev_data_format,
-                convert_to_forge=convert_to_forge,
-            )
-        elif skip_forge_verification:
-            verify_module_for_inputs_torch(
-                model=model,
-                inputs=inputs,
-                verify_config=verify_config,
-            )
-        else:
-            cls.verify_module_for_inputs(
-                model=model,
-                inputs=inputs,
-                compiler_cfg=compiler_cfg,
-                verify_config=verify_config,
-                dev_data_format=dev_data_format,
-                convert_to_forge=convert_to_forge,
-            )
+        cls.verify_module_for_inputs(
+            model=model,
+            inputs=inputs,
+            compiler_cfg=compiler_cfg,
+            pcc=pcc,
+            verify_config=verify_config,
+            dev_data_format=dev_data_format,
+            convert_to_forge=convert_to_forge,
+            deprecated_verification=deprecated_verification,
+            skip_forge_verification=skip_forge_verification,
+        )
 
     @classmethod
     def setup(
@@ -242,44 +229,43 @@ class VerifyUtils:
         return inputs
 
     @classmethod
-    def verify_module_for_inputs_deprecated(
-        cls,
-        model: Module,
-        inputs: List[torch.Tensor],
-        compiler_cfg: CompilerConfig,
-        pcc: Optional[float] = None,
-        dev_data_format: forge.DataFormat = None,
-        convert_to_forge: bool = True,  # explicit conversion to forge data format
-    ):
-
-        verify_module_for_inputs_deprecated(
-            model=model,
-            inputs=inputs,
-            compiler_cfg=compiler_cfg,
-            pcc=pcc,
-            dev_data_format=dev_data_format,
-            convert_to_forge=convert_to_forge,
-        )
-
-    @classmethod
     def verify_module_for_inputs(
         cls,
         model: Module,
         inputs: List[torch.Tensor],
         compiler_cfg: CompilerConfig,
-        verify_config: Optional[VerifyConfig] = VerifyConfig(),
+        pcc: Optional[float] = None,
+        verify_config: Optional[VerifyConfig] = None,
         dev_data_format: forge.DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
+        deprecated_verification: bool = True,
+        skip_forge_verification: bool = TestFeaturesConfiguration.SKIP_FORGE_VERIFICATION,
     ):
 
-        verify_module_for_inputs(
-            model=model,
-            inputs=inputs,
-            compiler_cfg=compiler_cfg,
-            verify_config=verify_config,
-            dev_data_format=dev_data_format,
-            convert_to_forge=convert_to_forge,
-        )
+        if deprecated_verification:
+            verify_module_for_inputs_deprecated(
+                model=model,
+                inputs=inputs,
+                compiler_cfg=compiler_cfg,
+                pcc=pcc,
+                dev_data_format=dev_data_format,
+                convert_to_forge=convert_to_forge,
+            )
+        elif skip_forge_verification:
+            verify_module_for_inputs_torch(
+                model=model,
+                inputs=inputs,
+                verify_config=verify_config,
+            )
+        else:
+            verify_module_for_inputs(
+                model=model,
+                inputs=inputs,
+                compiler_cfg=compiler_cfg,
+                verify_config=verify_config,
+                dev_data_format=dev_data_format,
+                convert_to_forge=convert_to_forge,
+            )
 
 
 class LoggerUtils:
