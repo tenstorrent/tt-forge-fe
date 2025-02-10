@@ -64,14 +64,14 @@ def test_avgpool3d(shape, kernel_size, stride):
         def forward(self, x):
             return nn.functional.avg_pool3d(x, kernel_size=kernel_size, stride=stride)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.compile_depth = (
         forge.CompileDepth.SPLIT_GRAPH
     )  # Due to #https://github.com/tenstorrent/tt-mlir/issues/1343
     inputs = [torch.rand(shape)]
 
     framework_model = AvgPool3D()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         verify(inputs, framework_model, compiled_model)
@@ -284,7 +284,7 @@ def test_softmax():
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
 def test_embedding(vocab_size, token_num, embedding_dim):
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.enable_tvm_cpu_fallback = False
 
     class Embedding(nn.Module):
@@ -300,7 +300,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     ]
 
     framework_model = Embedding()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(inputs, framework_model, compiled_model)
 
