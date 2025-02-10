@@ -3,12 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #include <pybind11/pybind11.h>
 
-#include "graph_lib/node_types.hpp"
 #include "graph_lib/utils.hpp"
-#include "passes/commute_utils.hpp"
-#include "passes/erase_consecutive_reshape.hpp"
 #include "passes/passes_utils.hpp"
-#include "utils/logger.hpp"
 
 namespace tt::passes
 {
@@ -19,125 +15,6 @@ static bool is_reshape(graphlib::Node const *node)
 {
     graphlib::OpNode const *op = dynamic_cast<graphlib::OpNode const *>(node);
     return op and op->op_name() == "reshape";
-}
-
-void limit_to_5d_reshape(graphlib::Graph *graph)
-{
-    // Limiting reshape operation till 5D.
-    // More than 5D, If it is a singleton dimension
-    // we still support by removing the redundant singleton dimension.
-    // For example,
-    //      if new shape is (1, 1, 1, 2, 3, 4, 4), it is supported and new shape changed to (1, 2, 3, 4, 4).
-    //      if new shape is (1, 2, 1, 2, 3, 4, 4), it is not supported, as 6th dimension is non singleton.
-    // If this new shape change affects the graph output shape,
-    // new reshape node will be added before output node to handle this shape change.
-
-    std::vector<std::vector<std::uint32_t>> nd_graph_output_shapes = graph->get_ordered_output_shapes();
-    for (auto node : graph->nodes())
-    {
-        if (not is_reshape(node))
-            continue;
-
-        auto op_node = dynamic_cast<graphlib::OpNode *>(node);
-        auto attrs = op_node->op_attrs();
-        if (attrs.size() <= 5)
-            continue;
-
-        auto users = graph->users(node);
-        bool feeds_graph_output = false;
-        for (auto const &user : users)
-        {
-            if (user->node_type() == graphlib::NodeType::kOutput)
-            {
-                feeds_graph_output = true;
-                break;
-            }
-        }
-
-        // Don't change target shape if it feeds a graph output
-        if (feeds_graph_output)
-            continue;
-
-        bool dims_before_last_5d_are_singleton = true;
-        for (long unsigned int i = 0; i < attrs.size() - 5; ++i)
-        {
-            if (std::get<int>(attrs[i]) != 1)
-            {
-                dims_before_last_5d_are_singleton = false;
-                break;
-            }
-        }
-
-        if (dims_before_last_5d_are_singleton)
-        {
-            auto new_shape = attrs;
-            new_shape.erase(new_shape.begin(), new_shape.begin() + attrs.size() - 5);
-            std::vector<int> shape_vector;
-            for (auto attr : new_shape)
-            {
-                shape_vector.push_back(std::get<int>(attr));
-            }
-            std::vector<std::uint32_t> shape_vector_uint32(shape_vector.size());
-            std::transform(
-                shape_vector.begin(),
-                shape_vector.end(),
-                shape_vector_uint32.begin(),
-                [](int val) { return static_cast<std::uint32_t>(val); });
-
-            graphlib::Shape converted_shape = graphlib::Shape::create(shape_vector_uint32);
-            update_reshape_attr(op_node, converted_shape);
-        }
-        else
-        {
-            TT_ASSERT(false, "Don't support reshape with more than 5 non-singleton dimensions");
-        }
-    }
-
-    // Update node shapes in graph
-    recalculate_shapes(graph);
-
-    std::vector<std::vector<std::uint32_t>> _graph_output_shapes = graph->get_ordered_output_shapes();
-    TT_ASSERT(nd_graph_output_shapes.size() == _graph_output_shapes.size());
-
-    for (long unsigned int i = 0; i < nd_graph_output_shapes.size(); ++i)
-    {
-        if (nd_graph_output_shapes[i] == _graph_output_shapes[i])
-            continue;
-
-        // Found output shape change, insert reshape before graph output
-        auto node = graph->ordered_module_outputs()[i];
-        auto operand_edges = graph->operand_edges(node);
-        TT_ASSERT(operand_edges.size() == 1);
-        auto target_edge = operand_edges[0];
-        auto tags = node->as<graphlib::TaggedNode>()->get_tags();
-
-        // Get producer edge TMs
-        auto attrs = graph->get_edge_attributes(target_edge);
-        std::vector<graphlib::OpType> tms = attrs->get_tms();
-
-        std::string name = node->name() + "_reshape";
-        graphlib::OpType op_type("reshape");
-
-        // Create reshape node
-        auto target_shape = nd_graph_output_shapes[i];
-        std::vector<graphlib::OpType::Attr> target_attr;
-        for (auto dim : target_shape) target_attr.push_back((int)dim);
-        op_type.attr = target_attr;
-        auto _reshape = graph->add_node(
-            std::make_unique<graphlib::PyOpNode>(name, op_type), graph->get_subgraph_id_for_node(node->id()));
-
-        // Set reshape node properties
-        _reshape->set_shape(graphlib::Shape::create(nd_graph_output_shapes[i]));
-        _reshape->set_output_df(node->output_df());
-        _reshape->as<graphlib::TaggedNode>()->add_tags(tags);
-        auto [new_in_edge, new_out_edge] = graphlib::insert_node_on_edge(graph, target_edge, _reshape);
-
-        // All TMs should always go to input edge
-        graph->get_edge_attributes(new_in_edge)->set_tms(tms);
-
-        // Set output shape
-        node->set_shape(graphlib::Shape::create(nd_graph_output_shapes[i]));
-    }
 }
 
 template <typename T>

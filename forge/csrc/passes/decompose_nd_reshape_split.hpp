@@ -10,6 +10,5 @@ class Graph;
 
 namespace tt::passes
 {
-void limit_to_5d_reshape(graphlib::Graph *graph);
 void decompose_nd_reshape_split(graphlib::Graph *graph);
 }  // namespace tt::passes
