@@ -131,6 +131,7 @@ class VerifyUtils:
         test_device: TestDevice,
         input_shapes: List[TensorShape],
         input_params: List[Dict] = [],
+        compiler_cfg: CompilerConfig = CompilerConfig(),
         pcc: Optional[float] = None,
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
@@ -150,6 +151,7 @@ class VerifyUtils:
             test_device: TestDevice
             input_shapes: List of input shapes
             input_params: List of input parameters
+            compiler_cfg: Compiler configuration
             pcc: PCC value for verification
             input_source_flag: Input source flag
             dev_data_format: Data format
@@ -161,8 +163,6 @@ class VerifyUtils:
             verify_config: Verification configuration
             skip_forge_verification: Skip verification with Forge module
         """
-
-        compiler_cfg = CompilerConfig()
 
         cls.setup(
             compiler_cfg=compiler_cfg,
