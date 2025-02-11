@@ -381,7 +381,7 @@ class UniqueOperations(dict):
             ops (dict): Dictionary of operation.
             named_parameters (dict): Mapping of node name to model parameters and buffers.
             node_name_to_node_type (dict): Mapping of node names to types.
-            use_constant_value (Bool): If set to true, replace constant node operand shape with contant tensor value from the named_parameter
+            use_constant_value (Bool): If set to true, replace constant node operand shape with constant tensor value from the named_parameter
 
         Returns:
             UniqueOperations: Populated UniqueOperations dictionary.
@@ -441,14 +441,17 @@ class UniqueOperations(dict):
                     operation_info = {}
                     operation_info["Op"] = forge_op_function_name
                     operation_info["Operand_Names"] = str(operand_names)
-                    operation_info["Operand_Shapes"] = str(
-                        [
-                            operand_name if operand_type == NodeType.Constant else operand_shape
-                            for operand_type, operand_shape, operand_name in zip(
-                                operand_types, operand_shapes, operand_names
-                            )
-                        ]
-                    )
+                    #  Replace the constant node operand shape which contains tensor with shape of the tensor
+                    new_operand_shapes = []
+                    for operand_type, operand_shape in zip(operand_types, operand_shapes):
+                        if operand_type == NodeType.Constant:
+                            if len(operand_shape.shape) == 0:
+                                new_operand_shapes.append((torch.numel(operand_shape),))
+                            else:
+                                new_operand_shapes.append(tuple(operand_shape.shape))
+                        else:
+                            new_operand_shapes.append(operand_shape)
+                    operation_info["Operand_Shapes"] = str(new_operand_shapes)
                     operation_info["Operand_Types"] = str(
                         [NodeType.to_json(operand_type) for operand_type in operand_types]
                     )
@@ -504,6 +507,7 @@ def export_unique_op_configuration_info(module_name, unique_operation_data, uniq
 
 
 def extract_and_generate_unique_ops_tests(
+    framework_mod,
     ops,
     current_module_name,
     framework,
@@ -513,9 +517,8 @@ def extract_and_generate_unique_ops_tests(
     constants,
     param_names,
     param_file_name,
-    named_params_file_name,
-    named_buffers_file_name,
     compiler_cfg,
+    module_directory,
 ):
     """
     Generates test modules for unique operation configurations.
@@ -525,13 +528,50 @@ def extract_and_generate_unique_ops_tests(
     file is created, which includes a Forge module for different configurations and associated test cases.
     """
 
-    # Load the named parameters, constants, and buffers from files
-    named_parameters = torch.load(named_params_file_name)
+    named_parameters = dict(framework_mod.module.state_dict().items())
+    named_buffers = dict(framework_mod.module.named_buffers())
     if param_file_name is not None:
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)
-    named_buffers = torch.load(named_buffers_file_name)
     named_parameters.update(named_buffers)
+
+    # The model's named parameters and named buffers are stored for the following key reasons:
+    #
+    #     1) In the generated unique ops test, the actual parameters and constants are utilized within the forge module subclass,
+    #        which is subsequently loaded by the `process_framework_parameter` method.
+    #
+    #     2) When generating unique ops tests, if all the operands of an operation (op) are parameters or constants,
+    #        rather than generating random tensor shapes and dtypes, actual parameter and constant values
+    #        are loaded to ensure accuracy.
+    #
+    #     3) In the model analysis markdown generation pipeline, when extracting the unique ops configuration from all models,
+    #        the shape of constant node operands is replaced with the actual constant tensor values.
+    #        This is because while many constant node operands share the same shape, their values may differ, and
+    #        retaining these actual values yields more meaningful insights for analysis.
+    #
+    # However, storing the model's parameters and buffers as `.pt` files can lead to disk space issues. To reduce space usage,
+    # the following actions need to be implemented:
+    #
+    #     1) In the generated unique ops tests, if all operands of an operation (op) are parameters or constants,
+    #        generate random tensors based on the shapes and dtypes instead of using the actual parameters/constants.
+    #
+    #     2) Rather than storing all model parameters and buffers, store only the tensors that are required for the generated
+    #        unique ops test forge module(i.e remove unused parameters and constants from the `.pt` files).
+
+    named_params_file_name = None
+    named_buffers_file_name = None
+    if compiler_cfg.tvm_generate_unique_ops_tests:
+        # Store named parameters
+        named_params_file_name = os.path.join(module_directory, str(current_module_name) + "_named_params.pt")
+        torch.save(named_parameters, named_params_file_name)
+
+        # Store named buffers
+        named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
+        torch.save(named_buffers, named_buffers_file_name)
+    else:
+        if os.path.exists(param_file_name):
+            os.remove(param_file_name)
+            param_file_name = None
 
     # Extract unique operations by comparing operands types, shapes and dtypes and arguments if any
     unique_operations = UniqueOperations.create_unique_operations(ops, named_parameters, node_name_to_node_type)
@@ -576,6 +616,7 @@ def extract_and_generate_unique_ops_tests(
             module_idx = 0
             forge_module_list = []
             test_count = 0
+            pytest_metadata_list = []
             for operands_idx, (operands, opargs_opmetadata) in enumerate(unique_operands_and_opargs_opmetadata):
 
                 for args_idx, (args, operation_metadata) in enumerate(opargs_opmetadata.get_op_args_and_metadata()):
@@ -771,6 +812,14 @@ def extract_and_generate_unique_ops_tests(
                             pytest_input_shapes_dtypes.append((operand_shape, operand_dtype))
                     pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
 
+                    pytest_metadata = {}
+                    if op_name == "embedding":
+                        # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
+                        pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
+
+                    if len(pytest_metadata) != 0:
+                        pytest_metadata_list.append(pytest_metadata)
+
                     if compiler_cfg.export_tvm_unique_ops_config_details:
                         operation_info["Testfile"] = (
                             writer.module_directory
@@ -794,11 +843,18 @@ def extract_and_generate_unique_ops_tests(
             if need_model_parameter_function:
                 writer.write_model_parameter_function(param_file_name, named_params_file_name, named_buffers_file_name)
 
+            # To avoid recording pcc in record_property pytest fixture and add the pcc to the exclude metadata property list
+            exclude_record_property = []
+            if op_name == "embedding":
+                exclude_record_property.append("max_int")
+
             # Generate pytest function for the operation with pytest parameter containing list of tuple
             # and each tuple constaints module name, tuple of operand shape/name and dtype
             writer.write_pytest_function(
                 forge_module_names=forge_module_names,
                 pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
+                pytest_metadata_list=pytest_metadata_list,
+                exclude_record_property=exclude_record_property,
             )
 
             writer.close_file()
@@ -825,6 +881,8 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
     # Iterate over the unique operations dictonary after sorting it by operation name.
     for forge_op_function_name in sorted(unique_operations):
 
+        module_metadata = {"op_name": forge_op_function_name.split(".")[-1]}
+
         # Extract operation name from forge op function name
         op_name = forge_op_function_name.split(".")[-1].lower()
 
@@ -847,6 +905,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
         forge_module_names = []
         module_idx = 0
         forge_module_list = []
+        pytest_metadata_list = []
         for operands_idx, (operands, opargs_opmetadata) in enumerate(unique_operands_and_opargs_opmetadata):
 
             for args_idx, (args, operation_metadata) in enumerate(opargs_opmetadata.get_op_args_and_metadata()):
@@ -854,6 +913,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                 operand_shapes = operands.get_operand_shapes()
                 operand_types = operands.get_operand_types()
                 operand_dtypes = operands.get_operand_dtypes()
+                model_variant_info_list = operation_metadata["model_variant_info"]
 
                 # Check if all operands types are parameters or constants and change the operand type from
                 # parameters or constants to activation and pass it as activation to forge module forward function
@@ -1010,8 +1070,30 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                         pytest_input_shapes_dtypes.append((operand_shape, operand_dtype))
                 pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
 
+                # A dictonary contain metadata info for the specific operation configuration which will be recorded in record_property fixture
+                pytest_metadata = {
+                    "model_name": [
+                        model_variant_info["variant_name"] for model_variant_info in model_variant_info_list
+                    ],
+                    "pcc": 0.99,
+                }
+
+                if len(args) != 0:
+                    pytest_metadata["op_params"] = dict(args)
+
+                if op_name == "embedding":
+                    # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
+                    pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
+
+                pytest_metadata_list.append(pytest_metadata)
+
         # List of marker that will added at the top of the test function
         markers = ["push"]
+
+        # To avoid recording pcc in record_property pytest fixture and add the pcc to the exclude metadata property list
+        exclude_record_property = ["pcc"]
+        if op_name == "embedding":
+            exclude_record_property.append("max_int")
 
         # Generate pytest function for the operation with pytest parameter containing list of tuple
         # and each tuple constaints module name, tuple of operand shape/name and dtype
@@ -1019,8 +1101,11 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             forge_module_names=forge_module_names,
             pytest_input_shapes_and_dtypes_list=pytest_input_shapes_and_dtypes_list,
             markers=markers,
+            module_metadata=module_metadata,
+            pytest_metadata_list=pytest_metadata_list,
             use_ids_function=True,
             include_random_parameter_constant_gen=True,
+            exclude_record_property=exclude_record_property,
         )
 
         writer.close_file()
