@@ -249,27 +249,6 @@ class TestTensorsUtils:
         return value_range
 
 
-# TODO remove this method, used only in RGG
-# Compatibility method for verifying models
-def verify_module_old(
-    model: Module,
-    input_shapes: List[TensorShape],
-    pcc: Optional[float] = None,
-    dev_data_format: FrameworkDataFormat = None,
-    value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
-    random_seed: int = 42,
-    convert_to_forge: bool = True,  # explicit conversion to forge data format
-):
-
-    logger.debug(
-        f"Verifying model class: {model.__class__.__name__}({model.__class__.__base__.__module__}.{model.__class__.__base__.__name__}) input_shapes: {input_shapes}"
-    )
-
-    inputs = create_torch_inputs(input_shapes, dev_data_format, value_range, random_seed)
-
-    verify_module_for_inputs(model, inputs, pcc, dev_data_format, convert_to_forge)
-
-
 # TODO move to class TestTensorsUtils
 def create_torch_inputs(
     input_shapes: List[TensorShape],
