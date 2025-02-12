@@ -204,7 +204,7 @@ class TestParamsData:
             test_plans = [
                 test_plan
                 for test_plan in test_suite.test_plans
-                if len(list(set(test_plan.collections[0].operators) & set(operators))) > 0
+                if len(list(set(test_plan.operators) & set(operators))) > 0
             ]
             return TestSuite(test_plans)
 
