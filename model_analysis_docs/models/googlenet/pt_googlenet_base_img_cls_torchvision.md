@@ -2224,7 +2224,7 @@
       <th>201</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 64, 112, 112), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
@@ -2235,7 +2235,7 @@
       <th>202</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 28, 28), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2246,7 +2246,7 @@
       <th>203</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 512, 14, 14), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2257,7 +2257,7 @@
       <th>204</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
@@ -2268,7 +2268,7 @@
       <th>205</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2279,7 +2279,7 @@
       <th>206</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
@@ -2290,7 +2290,7 @@
       <th>207</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2301,7 +2301,7 @@
       <th>208</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td></td>
       <td></td>
       <td></td>
@@ -2312,7 +2312,7 @@
       <th>209</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 832, 14, 14), dtype=float32)</td>
-      <td>kernel_size : 2<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 2<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2323,7 +2323,7 @@
       <th>210</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 832, 7, 7), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 1<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

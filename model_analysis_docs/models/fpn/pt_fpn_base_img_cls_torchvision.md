@@ -222,7 +222,7 @@
       <th>19</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 8, 8), dtype=float32)</td>
-      <td>kernel_size : 1<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 1<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : False<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

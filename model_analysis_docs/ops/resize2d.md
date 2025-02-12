@@ -22,49 +22,49 @@
 			<td rowspan="103">[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
 			<td rowspan="103">196</td>
 			<td>5</td>
-			<td><ul><li>pt_retinanet_retinanet_rn101fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn34fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn50fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn18fpn_obj_det_hf</li></ul></td>
+			<td><ul><li>pt_retinanet_retinanet_rn34fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn101fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn50fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn18fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 15, 20), dtype=float32)</td>
 			<td>sizes : [30, 40]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_retinanet_retinanet_rn101fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn34fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn50fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn18fpn_obj_det_hf</li></ul></td>
+			<td><ul><li>pt_retinanet_retinanet_rn34fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn101fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn50fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn18fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 30, 40), dtype=float32)</td>
 			<td>sizes : [60, 80]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 18, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 18, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 36, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 18, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 36, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr</li><li>pt_hrnet_hrnetv2_w18_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 72, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
@@ -100,13 +100,13 @@
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_yolo_v5_yolov5l_imgcls_torchhub_640x640</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280</li><li>pt_yolox_yolox_l_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_yolox_yolox_l_obj_det_torchhub</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280</li><li>pt_yolo_v5_yolov5l_imgcls_torchhub_640x640</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 40, 40), dtype=float32)</td>
 			<td>sizes : [80, 80]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_yolox_yolox_s_obj_det_torchhub</li><li>pt_yolox_yolox_darknet_obj_det_torchhub</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_640x640</li></ul></td>
+			<td><ul><li>pt_yolox_yolox_s_obj_det_torchhub</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_640x640</li><li>pt_yolox_yolox_darknet_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
 			<td>sizes : [80, 80]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
@@ -118,217 +118,217 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 30, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 30, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 60, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 30, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 60, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w30_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 120, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 44, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 44, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 88, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 44, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 88, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w44_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 176, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 40, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 40, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 80, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 40, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 80, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w40_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 7, 7), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnetv2_w32_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 7, 7), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 28, 28), dtype=float32)</td>
 			<td>sizes : [56, 56]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 14, 14), dtype=float32)</td>
 			<td>sizes : [28, 28]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_hrnet_hrnetv2_w64_pose_estimation_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 7, 7), dtype=float32)</td>
 			<td>sizes : [14, 14]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
@@ -394,19 +394,19 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_yolo_v5_yolov5l_imgcls_torchhub_640x640</li><li>pt_yolox_yolox_l_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_yolox_yolox_l_obj_det_torchhub</li><li>pt_yolo_v5_yolov5l_imgcls_torchhub_640x640</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)</td>
 			<td>sizes : [40, 40]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_yolox_yolox_m_obj_det_torchhub</li><li>pt_yolo_v5_yolov5m_imgcls_torchhub_640x640</li></ul></td>
+			<td><ul><li>pt_yolo_v5_yolov5m_imgcls_torchhub_640x640</li><li>pt_yolox_yolox_m_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 384, 20, 20), dtype=float32)</td>
 			<td>sizes : [40, 40]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_yolox_yolox_m_obj_det_torchhub</li><li>pt_yolo_v5_yolov5m_imgcls_torchhub_640x640</li></ul></td>
+			<td><ul><li>pt_yolo_v5_yolov5m_imgcls_torchhub_640x640</li><li>pt_yolox_yolox_m_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 192, 40, 40), dtype=float32)</td>
 			<td>sizes : [80, 80]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>

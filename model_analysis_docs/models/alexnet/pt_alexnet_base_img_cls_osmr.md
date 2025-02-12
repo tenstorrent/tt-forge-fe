@@ -117,7 +117,7 @@
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:445: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
+      <td>[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:460: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
     </tr>
     <tr>
       <th>10</th>
@@ -128,7 +128,7 @@
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:445: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
+      <td>[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:460: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
     </tr>
     <tr>
       <th>11</th>
@@ -233,7 +233,7 @@
       <th>20</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 96, 54, 54), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
@@ -244,7 +244,7 @@
       <th>21</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 27, 27), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -255,7 +255,7 @@
       <th>22</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 13, 13), dtype=float32)</td>
-      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
