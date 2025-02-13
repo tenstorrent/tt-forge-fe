@@ -20,51 +20,51 @@
 		<tr>
 			<td rowspan="26">1</td>
 			<td rowspan="26">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td rowspan="26">52</td>
+			<td rowspan="26">51</td>
 			<td>8</td>
-			<td><ul><li>pt_vgg_vgg19_obj_det_osmr</li><li>pt_vgg_vgg19_bn_obj_det_torchhub</li><li>pt_vgg_bn_vgg19_obj_det_osmr</li><li>pt_vgg_vgg13_obj_det_osmr</li><li>pt_vgg_19_obj_det_hf</li><li>pt_vgg_vgg16_obj_det_osmr</li><li>pt_vgg_vgg11_obj_det_osmr</li><li>pt_vgg_bn_vgg19b_obj_det_osmr</li></ul></td>
+			<td><ul><li>pt_vgg_bn_vgg19b_obj_det_osmr</li><li>pt_vgg_vgg13_obj_det_osmr</li><li>pt_vgg_vgg19_obj_det_osmr</li><li>pt_vgg_19_obj_det_hf</li><li>pt_vgg_bn_vgg19_obj_det_osmr</li><li>pt_vgg_vgg19_bn_obj_det_torchhub</li><li>pt_vgg_vgg16_obj_det_osmr</li><li>pt_vgg_vgg11_obj_det_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 25088), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(25088, 4096), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li></ul></td>
+			<td><ul><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 16384), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16384, 4096), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 4, 14336), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(14336, 4096), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li></ul></td>
+			<td><ul><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 14336), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(14336, 4096), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li></ul></td>
+			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 10240), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(10240, 2560), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
+			<td><ul><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 9216), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(9216, 4096), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li></ul></td>
+			<td><ul><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li></ul></td>
+			<td><ul><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 12, 10240), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(10240, 2560), dtype=float32)</td>
 			<td></td>
 		</tr>
@@ -76,26 +76,26 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li></ul></td>
+			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 35, 18944), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(18944, 3584), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li></ul></td>
+			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 35, 11008), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(11008, 2048), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td>2</td>
-			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 35, 8960), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(8960, 1536), dtype=float32)</td>
+			<td>1</td>
+			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2, 8192), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(8192, 2048), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2, 6144), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(6144, 1536), dtype=float32)</td>
+			<td><ul><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 39, 11008), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(11008, 4096), dtype=bfloat16)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -204,6 +204,15 @@
 			<td>1</td>
 			<td><ul><li>pt_nbeats_seasionality_basis_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1024, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=model.blocks.0.basis_function.backcast_cos_template, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td rowspan="1">4</td>
+			<td rowspan="1">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="1">1</td>
+			<td>1</td>
+			<td><ul><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 39, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4096, 102400), dtype=bfloat16)</td>
 			<td></td>
 		</tr>
 	</tbody>
