@@ -51,6 +51,7 @@ _OPERATORS = [
     OperatorDefinition("log1p", "torch.log1p", 1),
     OperatorDefinition("gelu", "torch.nn.functional.gelu", 1),
     OperatorDefinition("leaky_relu", "torch.nn.functional.leaky_relu", 1),
+    OperatorDefinition("cumsum", "torch.cumsum", 1),
     OperatorDefinition("tanh", "torch.tanh", 1),
     # OperatorDefinition("add", "torch.add", 1),
     OperatorDefinition("add", "torch.add", 2),
