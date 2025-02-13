@@ -54,8 +54,7 @@ def test_deepseek_prefill_on_cpu_decode_on_tt_no_cache(run_on_tt_device):
     logits = framework_model(input_ids=input_ids)
 
     # Take the last non-padding token index in logits for the next token
-    logits = logits[0]
-    next_token_logits = logits[:, non_padding_seq_len - 1, :]
+    next_token_logits = logits[0][:, non_padding_seq_len - 1, :]
     next_token = torch.argmax(next_token_logits, dim=-1)
 
     # Update the input_ids with predicted token from prefill in the first padding token index
