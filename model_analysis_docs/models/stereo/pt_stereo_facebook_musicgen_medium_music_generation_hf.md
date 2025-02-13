@@ -133,72 +133,6 @@
     <tr>
       <th>11</th>
       <td>Cast</td>
-      <td>Operand(type=Parameter, shape=(2049, 1536), dtype=float32)</td>
-      <td>dtype : torch.bfloat16</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Cast</td>
-      <td>Operand(type=Activation, shape=(2, 1, 1536), dtype=bfloat16)</td>
-      <td>dtype : torch.float32</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Cast</td>
-      <td>Operand(type=Parameter, shape=(32128, 768), dtype=float32)</td>
-      <td>dtype : torch.bfloat16</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Cast</td>
-      <td>Operand(type=Activation, shape=(2, 13, 768), dtype=bfloat16)</td>
-      <td>dtype : torch.float32</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>Cast</td>
-      <td>Operand(type=Parameter, shape=(32, 12), dtype=float32)</td>
-      <td>dtype : torch.bfloat16</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>Cast</td>
-      <td>Operand(type=Activation, shape=(13, 13, 12), dtype=bfloat16)</td>
-      <td>dtype : torch.float32</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>Cast</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
       <td>dtype : torch.float32</td>
       <td>&#x2705;</td>
@@ -208,7 +142,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>18</th>
+      <th>12</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(2, 13, 1), dtype=int64)</td>
       <td>dtype : torch.float32</td>
@@ -219,7 +153,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>19</th>
+      <th>13</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=uint1)</td>
       <td>dtype : torch.float32</td>
@@ -230,7 +164,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>20</th>
+      <th>14</th>
       <td>Clip</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)</td>
       <td>min : 0.0<br>max : 1.0</td>
@@ -241,40 +175,40 @@
       <td></td>
     </tr>
     <tr>
-      <th>21</th>
+      <th>15</th>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(2, 1), dtype=int64)<br><div align='center'>X</div>Operand(type=Activation, shape=(2049, 1536), dtype=bfloat16)</td>
+      <td>Operand(type=Activation, shape=(2, 1), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2049, 1536), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.bfloat16</td>
+      <td></td>
     </tr>
     <tr>
-      <th>22</th>
+      <th>16</th>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(2, 13), dtype=int64)<br><div align='center'>X</div>Operand(type=Activation, shape=(32128, 768), dtype=bfloat16)</td>
+      <td>Operand(type=Activation, shape=(2, 13), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32128, 768), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.bfloat16</td>
+      <td></td>
     </tr>
     <tr>
-      <th>23</th>
+      <th>17</th>
       <td>Embedding</td>
-      <td>Operand(type=Constant, name=const_3153, dtype=int32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 12), dtype=bfloat16)</td>
+      <td>Operand(type=Constant, name=const_3153, dtype=int32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32, 12), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.bfloat16</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>24</th>
+      <th>18</th>
       <td>Gelu</td>
       <td>Operand(type=Activation, shape=(2, 1, 6144), dtype=float32)</td>
       <td>approximate : "none"</td>
@@ -285,7 +219,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>25</th>
+      <th>19</th>
       <td>Greater</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32153, dtype=float32)</td>
       <td></td>
@@ -296,7 +230,7 @@
       <td>[TT_METAL][ttnn elementwise binary] RuntimeError BinaryOpType cannot be mapped to BcastOpMath</td>
     </tr>
     <tr>
-      <th>26</th>
+      <th>20</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)</td>
       <td></td>
@@ -307,7 +241,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>27</th>
+      <th>21</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
       <td></td>
@@ -318,7 +252,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>28</th>
+      <th>22</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)</td>
       <td></td>
@@ -329,7 +263,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>29</th>
+      <th>23</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 13), dtype=float32)</td>
       <td></td>
@@ -340,7 +274,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>30</th>
+      <th>24</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(2, 13, 3072), dtype=float32)</td>
       <td></td>
@@ -351,7 +285,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>31</th>
+      <th>25</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(48, 1, 13), dtype=float32)</td>
       <td></td>
@@ -362,7 +296,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>32</th>
+      <th>26</th>
       <td>Identity</td>
       <td>Operand(type=Activation, shape=(2, 1, 6144), dtype=float32)</td>
       <td></td>
@@ -373,7 +307,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>33</th>
+      <th>27</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 0<br>stop : 1<br>stride : 1</td>
@@ -384,7 +318,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>34</th>
+      <th>28</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 1<br>stop : 2<br>stride : 1</td>
@@ -395,7 +329,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>35</th>
+      <th>29</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 2<br>stop : 3<br>stride : 1</td>
@@ -406,7 +340,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>36</th>
+      <th>30</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 3<br>stop : 4<br>stride : 1</td>
@@ -417,7 +351,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>37</th>
+      <th>31</th>
       <td>Index</td>
       <td>Operand(type=Parameter, shape=(2048, 1536), dtype=float32)</td>
       <td>dim : -2<br>start : 0<br>stop : 1<br>stride : 1</td>
@@ -428,7 +362,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>38</th>
+      <th>32</th>
       <td>Layernorm</td>
       <td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
       <td>dim : -1<br>epsilon : 1e-05</td>
@@ -439,7 +373,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>39</th>
+      <th>33</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(2, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1536), dtype=float32)</td>
       <td></td>
@@ -450,7 +384,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>40</th>
+      <th>34</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(48, 1, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 64, 1), dtype=float32)</td>
       <td></td>
@@ -461,7 +395,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>41</th>
+      <th>35</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 64), dtype=float32)</td>
       <td></td>
@@ -472,7 +406,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>42</th>
+      <th>36</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 768), dtype=float32)</td>
       <td></td>
@@ -483,7 +417,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>43</th>
+      <th>37</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(24, 13, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 64, 13), dtype=float32)</td>
       <td></td>
@@ -494,7 +428,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>44</th>
+      <th>38</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(24, 13, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 13, 64), dtype=float32)</td>
       <td></td>
@@ -505,7 +439,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>45</th>
+      <th>39</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 3072), dtype=float32)</td>
       <td></td>
@@ -516,7 +450,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>46</th>
+      <th>40</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(26, 3072), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(3072, 768), dtype=float32)</td>
       <td></td>
@@ -527,7 +461,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>47</th>
+      <th>41</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1536), dtype=float32)</td>
       <td></td>
@@ -538,7 +472,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>48</th>
+      <th>42</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(26, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1536), dtype=float32)</td>
       <td></td>
@@ -549,7 +483,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>49</th>
+      <th>43</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(48, 1, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 64, 13), dtype=float32)</td>
       <td></td>
@@ -560,7 +494,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>50</th>
+      <th>44</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(48, 1, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 13, 64), dtype=float32)</td>
       <td></td>
@@ -571,7 +505,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>51</th>
+      <th>45</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(2, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 6144), dtype=float32)</td>
       <td></td>
@@ -582,18 +516,18 @@
       <td></td>
     </tr>
     <tr>
-      <th>52</th>
+      <th>46</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(2, 6144), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(6144, 1536), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
-      <th>53</th>
+      <th>47</th>
       <td>Matmul</td>
       <td>Operand(type=Activation, shape=(2, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 2048), dtype=float32)</td>
       <td></td>
@@ -604,7 +538,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>54</th>
+      <th>48</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_0153, dtype=float32)</td>
       <td></td>
@@ -615,7 +549,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>55</th>
+      <th>49</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)</td>
       <td></td>
@@ -626,7 +560,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>56</th>
+      <th>50</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 13, 1), dtype=float32)</td>
       <td></td>
@@ -637,7 +571,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>57</th>
+      <th>51</th>
       <td>Multiply</td>
       <td>Operand(type=Parameter, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)</td>
       <td></td>
@@ -648,7 +582,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>58</th>
+      <th>52</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5153, dtype=float32)</td>
       <td></td>
@@ -659,7 +593,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>59</th>
+      <th>53</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(2, 13, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 13, 1), dtype=float32)</td>
       <td></td>
@@ -670,7 +604,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>60</th>
+      <th>54</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)</td>
       <td></td>
@@ -681,7 +615,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>61</th>
+      <th>55</th>
       <td>Multiply</td>
       <td>Operand(type=Constant, name=const_33153, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)</td>
       <td></td>
@@ -692,7 +626,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>62</th>
+      <th>56</th>
       <td>Reciprocal</td>
       <td>Operand(type=Activation, shape=(2, 13, 1), dtype=float32)</td>
       <td></td>
@@ -703,7 +637,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>63</th>
+      <th>57</th>
       <td>ReduceAvg</td>
       <td>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)</td>
       <td>dim : -1<br>keep_dim : True</td>
@@ -714,7 +648,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>64</th>
+      <th>58</th>
       <td>Relu</td>
       <td>Operand(type=Activation, shape=(2, 13, 3072), dtype=float32)</td>
       <td></td>
@@ -725,7 +659,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>65</th>
+      <th>59</th>
       <td>RepeatInterleave</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
       <td>repeats : 1<br>dim : 1</td>
@@ -736,7 +670,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>66</th>
+      <th>60</th>
       <td>RepeatInterleave</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
       <td>repeats : 1<br>dim : 2</td>
@@ -747,7 +681,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>67</th>
+      <th>61</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(8, 1), dtype=int64)</td>
       <td>shape : (2, 4, 1)</td>
@@ -758,7 +692,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>68</th>
+      <th>62</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1, 1), dtype=int64)</td>
       <td>shape : (2, 1)</td>
@@ -769,7 +703,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>69</th>
+      <th>63</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 1536), dtype=float32)</td>
       <td>shape : (1, 1536)</td>
@@ -780,7 +714,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>70</th>
+      <th>64</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)</td>
       <td>shape : (2, 1536)</td>
@@ -791,7 +725,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>71</th>
+      <th>65</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)</td>
       <td>shape : (2, 1, 24, 64)</td>
@@ -802,7 +736,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>72</th>
+      <th>66</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1536), dtype=float32)</td>
       <td>shape : (2, 1, 1536)</td>
@@ -813,7 +747,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>73</th>
+      <th>67</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1536), dtype=float32)</td>
       <td>shape : (2, 1, 24, 64)</td>
@@ -824,7 +758,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>74</th>
+      <th>68</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 24, 1, 64), dtype=float32)</td>
       <td>shape : (48, 1, 64)</td>
@@ -835,7 +769,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>75</th>
+      <th>69</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(48, 1, 64), dtype=float32)</td>
       <td>shape : (2, 24, 1, 64)</td>
@@ -846,7 +780,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>76</th>
+      <th>70</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1, 24, 64), dtype=float32)</td>
       <td>shape : (2, 1536)</td>
@@ -857,7 +791,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>77</th>
+      <th>71</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
       <td>shape : (2, 13)</td>
@@ -868,7 +802,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>78</th>
+      <th>72</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)</td>
       <td>shape : (26, 768)</td>
@@ -879,7 +813,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>79</th>
+      <th>73</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)</td>
       <td>shape : (2, 13, 12, 64)</td>
@@ -890,7 +824,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>80</th>
+      <th>74</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)</td>
       <td>shape : (2, 13, 768)</td>
@@ -901,7 +835,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>81</th>
+      <th>75</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 64), dtype=float32)</td>
       <td>shape : (24, 13, 64)</td>
@@ -912,7 +846,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>82</th>
+      <th>76</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(24, 13, 13), dtype=float32)</td>
       <td>shape : (2, 12, 13, 13)</td>
@@ -923,7 +857,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>83</th>
+      <th>77</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 13), dtype=float32)</td>
       <td>shape : (24, 13, 13)</td>
@@ -934,7 +868,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>84</th>
+      <th>78</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 12, 64, 13), dtype=float32)</td>
       <td>shape : (24, 64, 13)</td>
@@ -945,7 +879,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>85</th>
+      <th>79</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(24, 13, 64), dtype=float32)</td>
       <td>shape : (2, 12, 13, 64)</td>
@@ -956,7 +890,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>86</th>
+      <th>80</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 12, 64), dtype=float32)</td>
       <td>shape : (26, 768)</td>
@@ -967,7 +901,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>87</th>
+      <th>81</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 3072), dtype=float32)</td>
       <td>shape : (2, 13, 3072)</td>
@@ -978,7 +912,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>88</th>
+      <th>82</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 3072), dtype=float32)</td>
       <td>shape : (26, 3072)</td>
@@ -989,7 +923,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>89</th>
+      <th>83</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 1536), dtype=float32)</td>
       <td>shape : (2, 13, 1536)</td>
@@ -1000,7 +934,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>90</th>
+      <th>84</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 1536), dtype=float32)</td>
       <td>shape : (2, 13, 24, 64)</td>
@@ -1011,7 +945,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>91</th>
+      <th>85</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 1536), dtype=float32)</td>
       <td>shape : (26, 1536)</td>
@@ -1022,7 +956,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>92</th>
+      <th>86</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 24, 13, 64), dtype=float32)</td>
       <td>shape : (48, 13, 64)</td>
@@ -1033,7 +967,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>93</th>
+      <th>87</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(48, 1, 13), dtype=float32)</td>
       <td>shape : (2, 24, 1, 13)</td>
@@ -1044,7 +978,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>94</th>
+      <th>88</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 24, 1, 13), dtype=float32)</td>
       <td>shape : (48, 1, 13)</td>
@@ -1055,29 +989,29 @@
       <td></td>
     </tr>
     <tr>
-      <th>95</th>
+      <th>89</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 6144), dtype=float32)</td>
       <td>shape : (2, 1, 6144)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+      <td></td>
     </tr>
     <tr>
-      <th>96</th>
+      <th>90</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1, 6144), dtype=float32)</td>
       <td>shape : (2, 6144)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+      <td></td>
     </tr>
     <tr>
-      <th>97</th>
+      <th>91</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 2048), dtype=float32)</td>
       <td>shape : (2, 1, 2048)</td>
@@ -1088,7 +1022,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>98</th>
+      <th>92</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 4, 1, 2048), dtype=float32)</td>
       <td>shape : (8, 1, 2048)</td>
@@ -1099,7 +1033,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>99</th>
+      <th>93</th>
       <td>Softmax</td>
       <td>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
       <td>dim : -1</td>
@@ -1110,7 +1044,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>100</th>
+      <th>94</th>
       <td>Softmax</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 13), dtype=float32)</td>
       <td>dim : -1</td>
@@ -1121,7 +1055,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>101</th>
+      <th>95</th>
       <td>Softmax</td>
       <td>Operand(type=Activation, shape=(48, 1, 13), dtype=float32)</td>
       <td>dim : -1</td>
@@ -1132,7 +1066,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>102</th>
+      <th>96</th>
       <td>Sqrt</td>
       <td>Operand(type=Activation, shape=(2, 13, 1), dtype=float32)</td>
       <td></td>
@@ -1143,7 +1077,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>103</th>
+      <th>97</th>
       <td>Stack</td>
       <td>Operand(type=Activation, shape=(2, 1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 2048), dtype=float32)</td>
       <td>axis : -3</td>
@@ -1154,7 +1088,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>104</th>
+      <th>98</th>
       <td>Subtract</td>
       <td>Operand(type=Constant, name=const_4153, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)</td>
       <td></td>
@@ -1165,7 +1099,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>105</th>
+      <th>99</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(1536, 1536), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1176,7 +1110,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>106</th>
+      <th>100</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(2, 1, 24, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -1187,7 +1121,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>107</th>
+      <th>101</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(48, 1, 64), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1198,7 +1132,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>108</th>
+      <th>102</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(48, 64, 1), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1209,7 +1143,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>109</th>
+      <th>103</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(2, 24, 1, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -1220,7 +1154,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>110</th>
+      <th>104</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(768, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1231,7 +1165,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>111</th>
+      <th>105</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(2, 13, 12, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -1242,7 +1176,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>112</th>
+      <th>106</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(24, 13, 64), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1253,7 +1187,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>113</th>
+      <th>107</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(13, 13, 12), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -1</td>
@@ -1264,7 +1198,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>114</th>
+      <th>108</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(12, 13, 13), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1275,7 +1209,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>115</th>
+      <th>109</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 64), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1286,7 +1220,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>116</th>
+      <th>110</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -1297,7 +1231,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>117</th>
+      <th>111</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(24, 64, 13), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1308,7 +1242,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>118</th>
+      <th>112</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(3072, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1319,7 +1253,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>119</th>
+      <th>113</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(768, 3072), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1330,7 +1264,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>120</th>
+      <th>114</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(1536, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1341,7 +1275,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>121</th>
+      <th>115</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(2, 13, 24, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -1352,7 +1286,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>122</th>
+      <th>116</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(48, 13, 64), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1363,7 +1297,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>123</th>
+      <th>117</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(48, 64, 13), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1374,7 +1308,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>124</th>
+      <th>118</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(6144, 1536), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1385,7 +1319,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>125</th>
+      <th>119</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(1536, 6144), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1396,7 +1330,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>126</th>
+      <th>120</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(2048, 1536), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -1407,7 +1341,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>127</th>
+      <th>121</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(12, 13, 13), dtype=float32)</td>
       <td>dim : 0</td>
@@ -1418,7 +1352,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>128</th>
+      <th>122</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
       <td>dim : 1</td>
@@ -1429,7 +1363,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>129</th>
+      <th>123</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
       <td>dim : 2</td>
@@ -1440,7 +1374,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>130</th>
+      <th>124</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 1, 13), dtype=int64)</td>
       <td>dim : 2</td>

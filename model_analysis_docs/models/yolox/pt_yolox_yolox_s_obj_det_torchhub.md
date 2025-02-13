@@ -1729,7 +1729,7 @@
       <th>156</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
-      <td>kernel_size : 5<br>stride : 1<br>padding : [2, 2, 2, 2]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 5<br>stride : 1<br>padding : [2, 2, 2, 2]<br>dilation : 1<br>ceil_mode : False<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1740,7 +1740,7 @@
       <th>157</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
-      <td>kernel_size : 9<br>stride : 1<br>padding : [4, 4, 4, 4]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 9<br>stride : 1<br>padding : [4, 4, 4, 4]<br>dilation : 1<br>ceil_mode : False<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1751,7 +1751,7 @@
       <th>158</th>
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
-      <td>kernel_size : 13<br>stride : 1<br>padding : [6, 6, 6, 6]<br>dilation : 1<br>ceil_mode : False<br>max_pool_add_sub_surround : False<br>max_pool_add_sub_surround_value : 1.0<br>channel_last : 0</td>
+      <td>kernel_size : 13<br>stride : 1<br>padding : [6, 6, 6, 6]<br>dilation : 1<br>ceil_mode : False<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
