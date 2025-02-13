@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 

@@ -15,6 +15,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+from test.models.pytorch.vision.monodepth2.utils.layers import (
+    Conv3x3,
+    ConvBlock,
+    upsample,
+)
+
 
 class DepthDecoder(nn.Module):
     def __init__(self, num_ch_enc, scales=range(4), num_output_channels=1, use_skips=True):

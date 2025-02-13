@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import T5Config, T5ForConditionalGeneration
+from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
 from forge.verify.verify import verify
