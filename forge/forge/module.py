@@ -7,6 +7,7 @@ from typing import Optional, Tuple, List, Dict, TypeAlias
 from collections import deque, OrderedDict
 import itertools
 
+import paddle
 import torch
 import tensorflow as tf
 from loguru import logger
@@ -71,6 +72,8 @@ class Module(ABC):
             List of all parameters in this module
         """
         pass
+
+
 
 
 class PyTorchModule(Module):
@@ -209,6 +212,43 @@ class PyTorchModule(Module):
             params.append(forge_param)
             recorded_names.append(name)
 
+        return params
+
+class PaddleModule(Module):
+    """
+    A wrapper around a Paddle module.
+    """
+
+    def __init__(self, name: str, module: paddle.nn.Layer):
+        super().__init__(name)
+        self.module = module
+
+    def forward(self, *args, **kwargs):
+        return self.module(*args, **kwargs)
+
+    def call(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def backward(self, *args):
+        raise NotImplementedError
+
+    def set_parameters(self, **kwargs):
+        raise NotImplementedError
+
+    def cpu_eval_forward(self, *args, **kwargs):
+        #self.module.cpu()
+        
+        self.module.eval()
+
+        outputs = self.forward(*args, **kwargs)
+        outputs = flatten_structured_output([outputs])
+        return outputs
+
+    def get_parameters(self) -> List[Parameter]:
+        params = []
+        for name, param in self.module.named_parameters():
+            forge_param = Parameter(param.numpy(), requires_grad=param.stop_gradient, name=name)
+            params.append(forge_param)
         return params
 
 
@@ -588,6 +628,8 @@ class JaxModule(Module):
         return []  # TODO
 
 
+
+
 class ForgeModule(Module):
     """
     A base class for all Forge modules. User should extend this class and implement `forward` function with workload implementation.
@@ -959,9 +1001,11 @@ def wrap_module(module, name: str) -> Module:
         return TFModule(name, module)
     elif isinstance(module, ForgeModule):
         return module
+    elif isinstance(module, paddle.nn.Layer):
+        return PaddleModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model
+FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer
 AnyModule: TypeAlias = FrameworkModule | ForgeModule

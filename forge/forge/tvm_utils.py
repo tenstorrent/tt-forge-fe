@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import paddle
 import tensorflow as tf
 import torch
 import numpy as np
@@ -124,7 +125,7 @@ def flatten_structured_output(outputs):
             )
             new_outputs += sub_output
 
-        elif isinstance(out, (torch.Tensor, tf.Tensor, Tensor, np.ndarray)):
+        elif isinstance(out, (torch.Tensor, tf.Tensor, Tensor, np.ndarray, paddle.Tensor)):
             new_outputs.append(out)
 
         elif out is None:

@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import paddle
 import pytest
 import torch
 from torch import nn
@@ -207,6 +208,23 @@ def test_add():
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+@pytest.mark.push
+def test_add_pp():
+    class Add_pp(paddle.nn.Layer):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return a + b
+
+    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
+
+    framework_model = Add_pp()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    #verify(inputs, framework_model, compiled_model)
+
 
 
 @pytest.mark.parametrize("dims", [(1, 32, 64), (6, 33), (4, 16, 17)])

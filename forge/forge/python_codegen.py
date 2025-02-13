@@ -297,7 +297,7 @@ class ForgeWriter(PythonWriter):
     ):
         self.indent = 1
 
-        if self.framework == "pytorch":
+        if self.framework == "pytorch" or self.framework == "paddle":
             # Case 1: No parameter or buffer files provided. Extract parameters and buffers
             # directly from the model.
             if not named_params_file_name and not named_buffers_file_name:
