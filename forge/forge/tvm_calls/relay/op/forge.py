@@ -76,20 +76,6 @@ def reshape_to_vslice():
     return is_op("reshape")(act)
 
 
-def stack_reshape_reshape_to_binary_stack():
-    act = is_tuple([wildcard(), wildcard()])
-    stack = is_op("stack")(act)
-    return is_op("reshape")(stack)
-
-
-def concat_reshape_reshape_to_binary_stack():
-    x1 = is_op("reshape")(wildcard())
-    x2 = is_op("reshape")(wildcard())
-    act = is_tuple([x1, x2])
-    concat = is_op("concatenate")(act)
-    return is_op("reshape")(concat)
-
-
 def decompose_adv_index_input_tuple():
     act = wildcard()
     indices = wildcard()
@@ -148,10 +134,6 @@ def channel_last_resize():
 @register_pattern_table("forge")
 def pattern_table():
     matmul = ("forge.matmul", dense_to_matmul())
-    binary_stack = [
-        ("forge.binary_stack", stack_reshape_reshape_to_binary_stack(), is_stack_reshape_reshape_to_binary_stack),
-        ("forge.binary_stack", concat_reshape_reshape_to_binary_stack(), is_concat_reshape_reshape_to_binary_stack),
-    ]
     adv_index = ("forge.adv_index", decompose_adv_index_input_tuple())
     forge_conv2d_with_bias = ("forge.forge_conv2d_with_bias", merge_conv2d_with_bias())
     forge_conv2d_transpose_with_bias = ("forge.forge_conv2d_transpose_with_bias", merge_conv2d_transpose_with_bias())
@@ -161,7 +143,6 @@ def pattern_table():
     # channel_last_maxpool2d = ("forge.channel_last_maxpool", channel_last_maxpool())
     channel_last_resize2d = ("forge.channel_last_resize2d", channel_last_resize())
     forge_patterns = [
-        *binary_stack,
         adv_index,
         matmul,
         forge_conv2d_with_bias,
@@ -214,7 +195,6 @@ tm_cpu_fallback_ops_of_interest = [
     "where",
     # Forge
     "forge.adv_index",
-    "forge.binary_stack",
 ]
 
 # TM CPU Fallback ops which should not be included in fallback
@@ -366,35 +346,6 @@ class UnwrapForgeOpsForCPUFallback(ExprMutator):
 
                 logger.trace("CPU fallback on linear")
                 return super().visit(tvm.relay.nn.dense(arg0, arg1))
-            if (
-                "Composite" in call.op.attrs
-                and call.op.attrs["Composite"] == "forge_cpudevice.binary_stack"
-                and "PartitionedFromPattern" in call.op.attrs
-                and call.op.attrs["PartitionedFromPattern"] == "Tuple_stack_reshape_"
-            ):
-                # Get binary_stack input
-                arg0 = call.args[0] if len(call.args) > 0 else None
-                arg1 = call.args[1] if len(call.args) > 1 else None
-
-                # First argument is a variable or call expression
-                if not (arg0 and isinstance(arg0, tvm.relay.Var) or isinstance(arg0, tvm.relay.Call)):
-                    return super().visit_call(call)
-
-                # Second argument isn't provided (fix for invalid binary_stack)
-                if not arg1:
-                    stack_attr = int(call.op.body.args[0].attrs.axis)
-                    reshape_attr = [int(i) for i in call.op.body.attrs.newshape]
-                    ops = tvm.relay.stack(
-                        [
-                            arg0,
-                        ],
-                        axis=stack_attr,
-                    )
-                    ops = tvm.relay.reshape(ops, newshape=reshape_attr)
-
-                    logger.info("Fixed invalid binary_stack (single input)")
-
-                    return ops
 
         return super().visit_call(call)
 

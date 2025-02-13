@@ -34,7 +34,6 @@ op_to_module_map = {
     "maximum": "eltwise_binary",
     "minimum": "eltwise_binary",
     "heaviside": "eltwise_binary",
-    "binary_stack": "eltwise_binary",
     "power": "eltwise_binary",
     "greater": "eltwise_binary",
     "greater_equal": "eltwise_binary",
