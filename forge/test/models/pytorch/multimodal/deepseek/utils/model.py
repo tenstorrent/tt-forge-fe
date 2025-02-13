@@ -22,7 +22,7 @@ def generation(max_new_tokens, compiled_model, input_ids, tokenizer):
 
 def download_model_and_tokenizer(model_name, **kwargs):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="cpu")
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu")
 
     model.generation_config = GenerationConfig.from_pretrained(model_name)
     model.generation_config.pad_token_id = model.generation_config.eos_token_id
@@ -44,9 +44,21 @@ def download_model_and_tokenizer(model_name, **kwargs):
 
 
 class DeepSeekWrapper(torch.nn.Module):
-    def __init__(self, model):
+    def __init__(self, model, max_new_tokens=200):
         super().__init__()
         self.model = model
+        self.max_new_tokens = max_new_tokens
 
     def forward(self, input_tensor):
-        return self.model(input_tensor, max_new_tokens=100).logits
+        return self.model(input_tensor, max_new_tokens=self.max_new_tokens).logits
+
+
+class DeepSeekWrapper_decoder(torch.nn.Module):
+    def __init__(self, model, max_new_tokens=200):
+        super().__init__()
+        self.model = model
+        self.max_new_tokens = max_new_tokens
+
+    def forward(self, input_tensor):
+        output = self.model(input_tensor, max_new_tokens=self.max_new_tokens)
+        return output.last_hidden_state
