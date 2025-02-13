@@ -48,6 +48,7 @@
 #    (/) Few representative values
 #    (/) Reuse inputs for selected operators
 
+import os
 
 from typing import List, Dict
 from loguru import logger
@@ -58,6 +59,7 @@ from test.operators.utils import InputSource
 from test.operators.utils import PytorchUtils
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
+from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
@@ -166,6 +168,9 @@ class TestParamsData:
             return cls.kwargs_gelu
         if test_vector.operator in ("leaky_relu",):
             return cls.kwargs_leaky_relu
+        if test_vector.operator in ("cumsum",):
+            for d in range(0, len(test_vector.input_shape)):
+                yield {"dim": d}
         return cls.no_kwargs
 
 
@@ -193,6 +198,7 @@ class TestCollectionData:
             # "clip",         # alias for clamp
             "log",
             "log1p",
+            "cumsum",
         ],
     )
     implemented_float = TestCollection(
@@ -249,6 +255,15 @@ class TestCollectionData:
             "tanh",
             "trunc",
         ],
+    )
+
+
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    failed_cumsum_automatic_value_checker = TestPlanUtils.load_test_ids_from_file(
+        f"{os.path.dirname(__file__)}/test_cumsum_ids_failed_automatic_value_checker.txt"
     )
 
 
@@ -707,6 +722,10 @@ TestParamsData.test_plan_implemented = TestPlan(
                 DataFormat.RawUInt32,
                 DataFormat.UInt16,
             ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_cumsum_automatic_value_checker,
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
     ],
