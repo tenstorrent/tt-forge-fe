@@ -135,7 +135,7 @@ class VerifyUtils:
         pcc: Optional[float] = None,
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
-        convert_to_forge: bool = True,  # explicit conversion to forge data format
+        convert_to_forge: Optional[bool] = None,
         math_fidelity: forge.MathFidelity = None,
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
@@ -155,6 +155,7 @@ class VerifyUtils:
             pcc: PCC value for verification
             input_source_flag: Input source flag
             dev_data_format: Data format
+            convert_to_forge: Convert input tensors to Forge data format
             math_fidelity: Math fidelity
             value_range: Value range of input tensors
             random_seed: Random seed
@@ -163,6 +164,14 @@ class VerifyUtils:
             verify_config: Verification configuration
             skip_forge_verification: Skip verification with Forge module
         """
+
+        # Conclude if we should convert to forge data format
+        if convert_to_forge is None:
+            if deprecated_verification:
+                convert_to_forge = True
+            else:
+                if isinstance(model, ForgeModule):
+                    convert_to_forge = True
 
         cls.setup(
             compiler_cfg=compiler_cfg,
