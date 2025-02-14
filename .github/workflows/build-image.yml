@@ -29,7 +29,7 @@ jobs:
         if: ${{ inputs.mlir_override }}
         run: |
           cd third_party/tt-mlir
-          git fetch
+          git fetch origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
           git checkout ${{ inputs.mlir_override }}
           branch_name=$(git rev-parse --abbrev-ref HEAD)
           commit_sha=$(git rev-parse HEAD)
