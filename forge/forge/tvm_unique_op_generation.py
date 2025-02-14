@@ -569,7 +569,7 @@ def extract_and_generate_unique_ops_tests(
         named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
         torch.save(named_buffers, named_buffers_file_name)
     else:
-        if os.path.exists(param_file_name):
+        if param_file_name is not None and os.path.exists(param_file_name):
             os.remove(param_file_name)
             param_file_name = None
 

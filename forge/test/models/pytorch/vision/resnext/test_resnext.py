@@ -10,7 +10,8 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.resnext.utils.utils import (
-    load_resnext_model,
+    get_image_tensor,
+    get_resnext_model_and_input,
     post_processing,
 )
 from test.models.utils import Framework, Source, Task, build_module_name
@@ -34,7 +35,7 @@ def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
     record_forge_property("model_name", module_name)
 
     # Load the model and prepare input data
-    framework_model, inputs = load_resnext_model(variant)
+    framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -65,12 +66,8 @@ def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
     # Record Forge Property
     record_forge_property("model_name", module_name)
 
-    # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", variant, pretrained=True)
-    framework_model.eval()
-
     # Load the model and prepare input data
-    framework_model, inputs = load_resnext_model(variant)
+    framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -102,8 +99,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
     # Record Forge Property
     record_forge_property("model_name", module_name)
 
-    # STEP 2: Create Forge module from PyTorch model
-    # 4 variants
+    # Load the model and prepare input data
     framework_model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
     framework_model.eval()
 
@@ -134,7 +130,7 @@ def test_resnext_14_osmr_pytorch(record_forge_property, variant):
     # Record Forge Property
     record_forge_property("model_name", module_name)
 
-    # STEP 2: Create Forge module from PyTorch model
+    # Load the model and prepare input data
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
 
