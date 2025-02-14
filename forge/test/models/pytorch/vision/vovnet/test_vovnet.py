@@ -84,7 +84,7 @@ def test_vovnet_v1_39_stigma_pytorch(record_forge_property):
     verify(inputs, framework_model, compiled_model)
 
 
-def generate_model_vovnet57_imgcls_stigma_pytorch(variant):
+def generate_model_vovnet57_imgcls_stigma_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet57)
 

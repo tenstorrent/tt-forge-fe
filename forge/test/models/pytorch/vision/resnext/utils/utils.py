@@ -11,12 +11,7 @@ from torchvision import transforms
 from test.utils import download_model
 
 
-def load_resnext_model(model_name):
-
-    # Create model
-    model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", model_name, pretrained=True)
-    model.eval()
-
+def get_image_tensor():
     # Load data sample
     url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
     urllib.request.urlretrieve(url, filename)
@@ -33,6 +28,16 @@ def load_resnext_model(model_name):
     )
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
+    return input_batch
+
+
+def get_resnext_model_and_input(repo_or_dir, model_name):
+
+    # Create model
+    model = download_model(torch.hub.load, repo_or_dir, model_name, pretrained=True)
+    model.eval()
+
+    input_batch = get_image_tensor()
 
     return model, [input_batch]
 

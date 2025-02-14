@@ -120,7 +120,13 @@ def test_densenet_201_pytorch(record_forge_property, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="densenet",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

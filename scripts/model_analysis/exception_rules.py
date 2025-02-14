@@ -123,6 +123,33 @@ common_failure_matching_rules_list = [
                 ],
             ),
             MatchingExceptionRule(
+                "tt-metal multi-paged buffer",
+                [
+                    "RuntimeError",
+                    "tt_metal/impl/buffers/dispatch.cpp",
+                    "num_pages == 1",
+                    "TODO: add support for multi-paged buffer with page size > 64KB",
+                ],
+            ),
+            MatchingExceptionRule(
+                "tt-metal buffer allocation",
+                [
+                    "RuntimeError",
+                    "tt_metal/impl/allocator/bank_manager.cpp",
+                    "Out of Memory: Not enough space to allocate",
+                    "DRAM buffer",
+                ],
+            ),
+            MatchingExceptionRule(
+                "tt-metal kernel",
+                [
+                    "RuntimeError",
+                    "tt-metal/tt_metal/impl/kernels/kernel.cpp",
+                    "unique+common runtime args targeting kernel",
+                    "are too large",
+                ],
+            ),
+            MatchingExceptionRule(
                 "ttnn.tilize validation",
                 [
                     "RuntimeError",
@@ -325,6 +352,14 @@ common_failure_matching_rules_list = [
                     "RuntimeError",
                     "tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_multi_core_program_factory.cpp",
                     "input_shape[3] == 16",
+                ],
+            ),
+            MatchingExceptionRule(
+                "ttnn conv2d",
+                [
+                    "RuntimeError",
+                    "tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/device/conv2d_op_sharded_program_factory.cpp",
+                    "act_block_w_datums == round_up(conv_act_size_c * filter_w, TILE_WIDTH)",
                 ],
             ),
         ],
