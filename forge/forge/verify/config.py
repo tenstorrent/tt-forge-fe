@@ -7,6 +7,7 @@ from enum import Enum
 import os
 
 
+import paddle
 import torch
 import tensorflow as tf
 import forge
@@ -288,4 +289,4 @@ class VerifyConfig:
 
     @property
     def framework_model_types(self) -> Tuple:
-        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule)
+        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule, paddle.nn.Layer)

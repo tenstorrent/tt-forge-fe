@@ -20,6 +20,7 @@ from .tensor import (
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
+    pt_to_paddle_tensors,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
@@ -224,7 +225,9 @@ class PaddleModule(Module):
         self.module = module
 
     def forward(self, *args, **kwargs):
-        return self.module(*args, **kwargs)
+        paddle_args = pt_to_paddle_tensors(args)
+        outputs = self.module(*paddle_args, **kwargs)
+        return to_pt_tensors(outputs)
 
     def call(self, *args, **kwargs):
         raise NotImplementedError

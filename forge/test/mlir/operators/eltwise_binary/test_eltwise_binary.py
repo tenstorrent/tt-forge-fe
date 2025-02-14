@@ -203,7 +203,7 @@ def test_add():
             return a + b
 
     inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
-
+    
     framework_model = Add()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
@@ -223,7 +223,27 @@ def test_add_pp():
     framework_model = Add_pp()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    #verify(inputs, framework_model, compiled_model)
+    # after setting input_spec in compile function, the model can no longer have torch tensor inputs
+    framework_model_clean = Add_pp()
+
+    verify(inputs, framework_model_clean, compiled_model)
+    
+
+@pytest.mark.push
+def test_arithmetic_pp():
+    class Arithmetic_pp(paddle.nn.Layer):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return paddle.sqrt(a) + paddle.exp(b)
+
+    inputs = [paddle.rand([2, 32, 32]), paddle.rand([2, 32, 32])]
+
+    framework_model = Arithmetic_pp()
+    forge.compile(framework_model, sample_inputs=inputs)
+
+    # verification is done in the compile function
 
 
 
