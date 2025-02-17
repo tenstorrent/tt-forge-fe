@@ -20,6 +20,8 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 48 GB)")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
