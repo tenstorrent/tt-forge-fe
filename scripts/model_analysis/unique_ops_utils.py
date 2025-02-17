@@ -16,7 +16,10 @@ from utils import dump_logs, collect_all_model_analysis_test
 
 
 def generate_and_export_unique_ops_tests(
-    test_directory_or_file_path: str, unique_ops_output_directory_path: str, extract_tvm_unique_ops_config: bool = False
+    test_directory_or_file_path: str,
+    unique_ops_output_directory_path: str,
+    extract_tvm_unique_ops_config: bool = False,
+    timeout: int = 1200,
 ):
     """
     Collect all the tests that doesn't contain skip_model_analysis marker in the test_directory_or_file_path specified by the user
@@ -52,6 +55,7 @@ def generate_and_export_unique_ops_tests(
                     capture_output=True,
                     text=True,
                     check=True,
+                    timeout=timeout,
                     env=dict(
                         os.environ,
                         FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS="1" if not extract_tvm_unique_ops_config else "0",
@@ -68,6 +72,12 @@ def generate_and_export_unique_ops_tests(
 
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error while running the pytest:\n {e.output}")
+
+            except subprocess.TimeoutExpired as e:
+                logger.error(f"Test timed out after {timeout} seconds")
+
+            except Exception as e:
+                logger.error(f"An unexpected error occurred while running {test}: {e}")
 
     return model_output_dir_paths
 
