@@ -48,11 +48,6 @@ def test_select(input_dim_index):
     [
         pytest.param(
             (torch.arange(10.0), [3, 3, 4], 0),  # 1D tensor  # Sizes to split  # Dimension to split along
-            marks=pytest.mark.xfail(
-                reason="- Emmiting mlir for function forward"
-                + "loc(\"index_0.dc.unsqueeze.0\"(\"forward\":4294967295:28)): error: 'ttir.unsqueeze' op requires attribute 'dim'"
-                + 'loc("SplitModule":0:0): error: module verification failed.'
-            ),
         ),
         pytest.param(
             (torch.arange(20.0).reshape(4, 5), 2, 0),  # 2D tensor  # Number of parts  # Dimension to split along

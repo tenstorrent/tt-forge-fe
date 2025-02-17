@@ -274,12 +274,20 @@ def decompose(type, attr, dc, inputs):
         if len(scale_shape) == 1:
             # Match ndim with actiavtion
             for i in range(0, left_ndim):
-                scale = dc.op("unsqueeze", [scale], attrs=(0, len(scale_shape)), output_df=scale.output_df)
+                scale = dc.op_with_named_attrs(
+                    "unsqueeze", [scale], {"dim": 0}, attrs=(0, len(scale_shape)), output_df=scale.output_df
+                )
+
                 scale_shape = [1] + scale_shape
             for i in range(0, right_ndim):
-                scale = dc.op(
-                    "unsqueeze", [scale], attrs=(len(scale_shape), len(scale_shape)), output_df=scale.output_df
+                scale = dc.op_with_named_attrs(
+                    "unsqueeze",
+                    [scale],
+                    {"dim": len(scale_shape)},
+                    attrs=(len(scale_shape), len(scale_shape)),
+                    output_df=scale.output_df,
                 )
+
                 scale_shape = scale_shape + [1]
 
         out = dc.op(
