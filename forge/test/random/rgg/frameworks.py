@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-# In depth testing of PyBuda models with one randomly selected operation
+
+# In depth testing of Forge models with one randomly selected operation
 
 
 from enum import Enum
@@ -13,10 +14,10 @@ from copy import copy
 from .datatypes import Framework, ModelBuilder
 from .shapes import OperatorShapes
 
-from .pybuda.model import PyBudaModelBuilder
+from .forge.model import ForgeModelBuilder
 from .pytorch.model import PyTorchModelBuilder
 
-from forge.op_repo import pybuda_operator_repository
+from forge.op_repo import forge_operator_repository
 from forge.op_repo import pytorch_operator_repository
 from forge.op_repo import OperatorDefinition
 from forge.op_repo import OperatorRepository
@@ -114,11 +115,11 @@ class Frameworks(Enum):
 
         return framework
 
-    PYBUDA = build_framework(
-        template_name="PyBuda",
-        framework_name="PyBuda",
-        ModelBuilderType=PyBudaModelBuilder,
-        operator_repository=pybuda_operator_repository,
+    FORGE = build_framework(
+        template_name="Forge",
+        framework_name="Forge",
+        ModelBuilderType=ForgeModelBuilder,
+        operator_repository=forge_operator_repository,
     )
     PYTORCH = build_framework(
         template_name="PyTorch",
