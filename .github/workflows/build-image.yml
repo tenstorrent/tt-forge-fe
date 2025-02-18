@@ -2,7 +2,17 @@ name: Build Docker Image
 
 on:
   workflow_dispatch:
+    inputs:
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
+        required: false
+        type: string
   workflow_call:
+    inputs:
+      mlir_override:
+        description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
+        required: false
+        type: string
     outputs:
       docker-image:
         description: "Built docker image name"
