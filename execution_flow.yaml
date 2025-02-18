@@ -1,0 +1,34 @@
+execution:
+  compile:
+    compile_main:
+      forge_compile_from_context:
+        init_compile: COMPILE::INIT_COMPILE
+        generate_initial_graph:
+          convert_to_forge_module:
+            generate_forge_module:
+              compile_tvm_to_python:
+                load_tvm_graph:
+                  compile_tvm_graph:
+                    compile_pytorch_for_forge:
+                      extract_flatten_inputs: COMPILE_TVM::EXTRACT_FLATTEN_INPUTS
+                      from_pytorch: COMPILE_TVM::FROM_PYTORCH
+                      construct_tvm_ir: COMPILE_TVM::CONSTRUCT_TVM_IR
+                      compile_tvm_for_forge:
+                        compile_for_forge:
+                          run_relay_compile_passes: COMPILE_TVM::RELAY_COMPILE_PASSES
+                          run_forge_compile_passes: COMPILE_TVM::FORGE_COMPILE_PASSES
+                        partition_for_forge: COMPILE_TVM::PARTITION_FOR_FORGE
+                      extract_graphs: COMPILE_TVM::EXTRACT_GRAPHS
+          generate_graph: COMPILE::GENERATE_GRAPH
+        run_post_initial_graph_pass: COMPILE::POST_INITIAL_GRAPH_PASS
+        run_consteval_pass: COMPILE::CONSTEVAL_PASS
+        run_post_pattern_matcher: COMPILE::POST_PATTERN_MATCHER
+        run_optimization_pass:
+          run_optimization_graph_passes: COMPILE::OPTIMIZATION_GRAPH_PASS
+          run_post_optimize_decompose_graph_passes: COMPILE::POST_OPTIMIZE_DECOMPOSE_GRAPH_PASS
+        run_autograd_pass: COMPILE::AUTOGRAD_PASS
+        run_post_autograd_pass: COMPILE::AUTOGRAD_PASS
+        run_pre_lowering_pass: COMPILE::PRE_LOWERING_PASS
+        split_graph: COMPILE::SPLIT_GRAPH
+        run_mlir_compiler: COMPILE::MLIR_COMPILER
+        finish_compile: COMPILE::SPLIT_GRAPH
