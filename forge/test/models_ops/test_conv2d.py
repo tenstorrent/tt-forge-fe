@@ -28954,24 +28954,31 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D256,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_name": [
-                "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D256,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_name": [
+                    "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D257,
@@ -29097,23 +29104,30 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D263,
-        [((1, 96, 112, 112), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_name": [
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D263,
+            [((1, 96, 112, 112), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_name": [
+                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D264,
@@ -29232,23 +29246,30 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D268,
-        [((1, 144, 56, 56), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_name": [
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D268,
+            [((1, 144, 56, 56), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_name": [
+                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D269,
@@ -35900,20 +35921,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D549,
-        [((1, 3, 192, 192), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D549,
+            [((1, 3, 192, 192), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D205,
@@ -35945,20 +35973,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D551,
-        [((1, 48, 96, 96), torch.float32), ((48, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D551,
+            [((1, 48, 96, 96), torch.float32), ((48, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "48",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D552,
@@ -35990,20 +36025,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D263,
-        [((1, 96, 48, 48), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D263,
+            [((1, 96, 48, 48), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D554,
@@ -36050,20 +36092,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D555,
-        [((1, 192, 24, 24), torch.float32), ((192, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D555,
+            [((1, 192, 24, 24), torch.float32), ((192, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "192",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D22,
@@ -36110,20 +36159,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D558,
-        [((1, 384, 12, 12), torch.float32), ((384, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "384",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D558,
+            [((1, 384, 12, 12), torch.float32), ((384, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "384",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D559,
@@ -36185,20 +36241,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D563,
-        [((1, 64, 112, 112), torch.float32), ((64, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "64",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D563,
+            [((1, 64, 112, 112), torch.float32), ((64, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "64",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D564,
@@ -36254,20 +36317,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D567,
-        [((1, 128, 56, 56), torch.float32), ((128, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "128",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D567,
+            [((1, 128, 56, 56), torch.float32), ((128, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "128",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D568,
@@ -36302,20 +36372,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 256, 28, 28), torch.float32), ((256, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "256",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 256, 28, 28), torch.float32), ((256, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "256",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D571,
@@ -36350,20 +36427,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D573,
-        [((1, 512, 14, 14), torch.float32), ((512, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "512",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D573,
+            [((1, 512, 14, 14), torch.float32), ((512, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "512",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D574,
@@ -36398,20 +36482,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D576,
-        [((1, 3, 96, 96), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D576,
+            [((1, 3, 96, 96), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D302,
@@ -36458,20 +36549,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D551,
-        [((1, 48, 48, 48), torch.float32), ((48, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D551,
+            [((1, 48, 48, 48), torch.float32), ((48, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "48",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D578,
@@ -36518,20 +36616,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D551,
-        [((1, 48, 24, 24), torch.float32), ((48, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D551,
+            [((1, 48, 24, 24), torch.float32), ((48, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "48",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D579,
@@ -36578,20 +36683,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D263,
-        [((1, 96, 12, 12), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D263,
+            [((1, 96, 12, 12), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D580,
@@ -36713,20 +36825,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D555,
-        [((1, 192, 6, 6), torch.float32), ((192, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D555,
+            [((1, 192, 6, 6), torch.float32), ((192, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "192",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D218,
@@ -36908,20 +37027,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D555,
-        [((1, 192, 28, 28), torch.float32), ((192, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D555,
+            [((1, 192, 28, 28), torch.float32), ((192, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "192",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D583,
@@ -37071,20 +37197,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D589,
-        [((1, 576, 14, 14), torch.float32), ((576, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "576",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D589,
+            [((1, 576, 14, 14), torch.float32), ((576, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "576",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D590,
@@ -37183,20 +37316,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D549,
-        [((1, 3, 160, 160), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D549,
+            [((1, 3, 160, 160), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D205,
@@ -37243,20 +37383,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D263,
-        [((1, 96, 80, 80), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D263,
+            [((1, 96, 80, 80), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D266,
@@ -37303,20 +37450,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D268,
-        [((1, 144, 40, 40), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D268,
+            [((1, 144, 40, 40), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D269,
@@ -37378,20 +37532,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D268,
-        [((1, 144, 20, 20), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D268,
+            [((1, 144, 20, 20), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D595,
@@ -37498,20 +37659,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D602,
-        [((1, 432, 10, 10), torch.float32), ((432, 1, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[2, 2]",
-                "padding": "[0, 1, 0, 1]",
-                "dilation": "1",
-                "groups": "432",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D602,
+            [((1, 432, 10, 10), torch.float32), ((432, 1, 3, 3), torch.float32)],
+            {
+                "model_name": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 1, 0, 1]",
+                    "dilation": "1",
+                    "groups": "432",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected."
+            )
+        ],
     ),
     (
         Conv2D603,
