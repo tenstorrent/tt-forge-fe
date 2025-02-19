@@ -61,7 +61,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_falcon_3(record_forge_property, variant):
 
-    if variant == "tiiuae/Falcon3-Mamba-7B-Base":
+    if variant == "tiiuae/Falcon3-Mamba-7B-Base" or variant == "tiiuae/Falcon3-7B-Base":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 36 GB)")
     # Build Module Name
     module_name = build_module_name(
