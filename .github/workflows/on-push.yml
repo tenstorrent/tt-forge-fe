@@ -7,8 +7,10 @@ on:
 
 jobs:
   docker-build:
-      uses: ./.github/workflows/build-image.yml
-      secrets: inherit
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+    with:
+      mlir_override: ${{ inputs.mlir_override }}
   build:
     needs: docker-build
     uses: ./.github/workflows/build.yml
