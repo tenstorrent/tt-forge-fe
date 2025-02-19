@@ -38,6 +38,8 @@ variants = ["llava-hf/llava-1.5-7b-hf"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llava(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
