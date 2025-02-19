@@ -815,7 +815,13 @@ def extract_and_generate_unique_ops_tests(
                     pytest_metadata = {}
                     if op_name == "embedding":
                         # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
-                        pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
+                        if all_params_const and isinstance(operand_shapes[1], str):
+                            # If both operands of the embedding op are parameter/constant,
+                            # take the num_embeddings from the  params(i.e Dict[nid, Tuple(name, shape, require_grad, dtype)])
+                            _, param_tuple = get_param_const(operand_shapes[1])
+                            pytest_metadata["max_int"] = int(param_tuple[1][0]) - 1
+                        else:
+                            pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
 
                     if len(pytest_metadata) != 0:
                         pytest_metadata_list.append(pytest_metadata)
