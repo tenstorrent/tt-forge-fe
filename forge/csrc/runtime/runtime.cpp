@@ -161,7 +161,7 @@ std::vector<tt::Tensor> create_runtime_tensors(std::vector<torch::Tensor> tensor
     return rt_tensors;
 }
 
-std::vector<torch::Tensor> run_binary_v2(
+std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     runtime::Binary& binary,
     int program_idx,
     std::vector<torch::Tensor> const& act_inputs,
@@ -200,12 +200,14 @@ std::vector<torch::Tensor> run_binary_v2(
         inputs.emplace_back(rt_tensor);
     }
 
-    for (Tensor& tensor : persistent_inputs)
+    for (size_t i = 0; i < persistent_inputs.size(); ++i)
     {
-        runtime::Tensor& rt_tensor = tensor.get_runtime_tensor();
-        auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
-        rt_tensor = tt::runtime::toLayout(rt_tensor, device, layout);
-        inputs.emplace_back(rt_tensor);
+        size_t curr_input_id = input_idx++;
+        runtime::Tensor& rt_tensor = persistent_inputs[i].get_runtime_tensor();
+        auto layout = tt::runtime::getLayout(binary, program_idx, curr_input_id);
+        auto device_tensor = tt::runtime::toLayout(rt_tensor, device, layout);
+        persistent_inputs[i].set_runtime_tensor(device_tensor);
+        inputs.emplace_back(persistent_inputs[i].get_runtime_tensor());
     }
 
     // verify_input_tensors(inputs, input_descs);
@@ -240,7 +242,7 @@ std::vector<torch::Tensor> run_binary_v2(
         runtime::deallocateTensor(submit_outputs[i], true);
     }
 
-    return outputs;
+    return std::make_pair(persistent_inputs, outputs);
 }
 
 std::vector<torch::Tensor> run_binary(

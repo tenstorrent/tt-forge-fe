@@ -16,7 +16,7 @@ namespace tt
 std::vector<torch::Tensor> run_binary(
     runtime::Binary& binary, int program_idx, std::vector<torch::Tensor> const& inputs);
 
-std::vector<torch::Tensor> run_binary_v2(
+std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     runtime::Binary& binary,
     int program_idx,
     std::vector<torch::Tensor> const& act_inputs,

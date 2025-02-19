@@ -86,6 +86,8 @@ class Tensor
         return *rt_tensor;
     }
 
+    void set_runtime_tensor(runtime::Tensor tensor) { rt_tensor.value() = tensor; }
+
     torch::Tensor to_host() const
     {
         TT_ASSERT(rt_tensor.has_value());
