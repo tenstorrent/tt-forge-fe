@@ -13,6 +13,7 @@ from loguru import logger
 from scipy.spatial import distance
 
 from forge.tensor import narrow_forge_tensor_to_pytorch
+from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
@@ -24,9 +25,9 @@ def compare_with_golden(
     dissimilarity_threshold: float = 1e-03,
 ):
     if golden.dtype == torch.bool:
-        return compare_with_golden_bool(golden, calculated, dissimilarity_threshold)
+        result = compare_with_golden_bool(golden, calculated, dissimilarity_threshold)
     if golden.flatten().size() != (1,):  # PCC for single values doesn't work
-        return compare_with_golden_pcc(golden, calculated, pcc)
+        result = compare_with_golden_pcc(golden, calculated, pcc)
     else:
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
@@ -42,7 +43,16 @@ def compare_with_golden(
             logger.error("Calculated: (shape = {}", calculated.shape)
             logger.error(calculated)
 
-        return all_close
+        result = all_close
+
+    # The verify function (in forge/forge/verify/verify.py) calls compare_with_golden for each output.
+    # If any call returns False, it signals a tensor mismatch, so we revert to the previous execution phase (EXECUTED_TTNN)
+    if result:
+        record_execution_phase_and_stage(ExecutionStage.COMPARE_WITH_GOLDEN)
+    else:
+        record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
+
+    return result
 
 
 # Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True

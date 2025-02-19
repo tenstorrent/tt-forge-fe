@@ -21,6 +21,7 @@ import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden
+from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -330,3 +331,5 @@ def verify(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
+
+    record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
