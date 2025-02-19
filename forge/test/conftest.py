@@ -29,6 +29,7 @@ import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
+from forge.execution_tracker import fetch_execution_phase_and_stage
 
 collect_ignore = ["legacy_tests"]
 
@@ -67,6 +68,24 @@ def pytest_sessionstart(session):
         print(f"####### TT_BACKEND specific enviroment variables - Count: {len(tt_backend_specific_vars)} #######")
         for key, value in tt_backend_specific_vars.items():
             print(f"{key}={value}")
+
+    if "PYTEST_REPORT_FILE_PATH" not in os.environ:
+        os.environ["PYTEST_REPORT_FILE_PATH"] = "test_report.json"
+
+
+@pytest.fixture(autouse=True)
+def set_environment_variable(request):
+
+    # Get the test file path (relative)
+    test_file_path = os.path.relpath(request.node.fspath)
+
+    # Get the test function
+    test_func = request.node.name
+
+    # Construct in pytest collect format
+    current_test = f"{test_file_path}::{test_func}"
+
+    os.environ["CURRENT_TEST"] = current_test
 
 
 @pytest.fixture(autouse=True)
@@ -413,6 +432,21 @@ def pytest_runtest_logreport(report):
         for key, default_value in environ_before_test.items():
             if os.environ.get(key, "") != default_value:
                 os.environ[key] = default_value
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """Hook to record extra properties after the test execution."""
+    outcome = yield
+    report = outcome.get_result()
+
+    if call.when == "call":  # Only execute after the test has run
+        # Store additional properties(i.e execution_phase and execution_stage) same as `record_property`
+        execution_phase, execution_stage = fetch_execution_phase_and_stage()
+        if execution_phase is not None:
+            item.user_properties.append(("execution_phase", execution_phase))
+        if execution_stage is not None:
+            item.user_properties.append(("execution_stage", execution_stage))
 
 
 def pytest_collection_modifyitems(config, items):
