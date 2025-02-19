@@ -8,6 +8,8 @@ import psutil
 import threading
 from loguru import logger
 from datetime import datetime
+import traceback
+from parse_execution_flow import get_execution_depth
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -46,6 +48,28 @@ def record_forge_property(record_property):
     record_property("frontend", "tt-forge-fe")
 
     yield record_property
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    Hook to log test failures, including full traceback, and record them in pytest metadata.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.failed:
+        # error_msg = f"Test {item.name} failed:\n{call.excinfo.value}"
+        # tb_str = "".join(traceback.format_exception(call.excinfo.type, call.excinfo.value, call.excinfo.tb))
+
+        exec_depth = get_execution_depth(traceback.extract_tb(call.excinfo.tb))
+        exec_phase, exec_stage = exec_depth.split("::")
+
+        # Store failure reason and traceback as test properties
+        if "record_property" in item.funcargs:
+            item.funcargs["record_property"]("exec_phase", exec_phase)
+            item.funcargs["record_property"]("exec_stage", exec_stage)
+            item.funcargs["record_property"]("error", str(call.excinfo.value))
 
 
 @pytest.fixture(autouse=True)
