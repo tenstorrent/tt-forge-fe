@@ -644,6 +644,12 @@ class TestPlanUtils:
 
             test_ids = [line.strip() for line in test_ids]
 
+            # Remove empty lines
+            test_ids = [line for line in test_ids if line]
+
+            # Remove lines starting with # as comments
+            test_ids = [line for line in test_ids if not line.startswith("#")]
+
             return test_ids
 
     @classmethod
