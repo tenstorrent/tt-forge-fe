@@ -282,15 +282,7 @@ class CompiledModel:
         # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
         self.inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in self.inputs]
 
-        inputs_and_parameters = [
-            *self.inputs,
-            *self.fwd_compiled_graph_state.get_ordered_constant_tensors(),
-            *self.fwd_compiled_graph_state.get_ordered_parameter_tensors(),
-        ]
-
-        assert all(
-            [isinstance(t, torch.Tensor) for t in inputs_and_parameters]
-        ), "All inputs should be torch tensors by now."
+        assert all([isinstance(t, torch.Tensor) for t in self.inputs]), "All inputs should be torch tensors by now."
 
         if self.training() and isinstance(self.framework_module, PyTorchModule):
             for name, param in self.framework_module.module.named_parameters():
@@ -308,7 +300,7 @@ class CompiledModel:
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
-        all_outputs = run_binary_v2(
+        self.fwd_persistent_tensors, all_outputs = run_binary_v2(
             self.compiled_binary, int(ProgramId.FORWARD), self.inputs, self.fwd_persistent_tensors
         )
 
