@@ -48,8 +48,7 @@
 #    (/) Few representative values
 #    (/) Reuse inputs for selected operators
 
-
-import torch
+import os
 
 from typing import List, Dict
 from loguru import logger
@@ -57,8 +56,10 @@ from forge import MathFidelity, DataFormat
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import InputSource
+from test.operators.utils import PytorchUtils
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
+from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
@@ -90,7 +91,8 @@ class TestVerification:
         if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
             input_source_flag = InputSourceFlags.FROM_DRAM
 
-        operator = getattr(torch, test_vector.operator)
+        module = PytorchUtils.get_pytorch_module(test_vector.operator)
+        operator = getattr(module, test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -125,6 +127,7 @@ class TestParamsData:
     __test__ = False
 
     test_plan_implemented: TestPlan = None
+    test_plan_implemented_float: TestPlan = None
     test_plan_not_implemented: TestPlan = None
 
     no_kwargs = [
@@ -144,12 +147,30 @@ class TestParamsData:
         {"exponent": 10.0},
     ]
 
+    kwargs_gelu = [
+        {"approximate": "tanh"},
+        {},
+    ]
+
+    kwargs_leaky_relu = [
+        {"negative_slope": 0.01, "inplace": True},
+        {"negative_slope": 0.1, "inplace": False},
+        {},
+    ]
+
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
         if test_vector.operator in ("clamp",):
             return cls.kwargs_clamp
         if test_vector.operator in ("pow",):
             return cls.kwargs_pow
+        if test_vector.operator in ("gelu",):
+            return cls.kwargs_gelu
+        if test_vector.operator in ("leaky_relu",):
+            return cls.kwargs_leaky_relu
+        if test_vector.operator in ("cumsum",):
+            for d in range(0, len(test_vector.input_shape)):
+                yield {"dim": d}
         return cls.no_kwargs
 
 
@@ -177,6 +198,13 @@ class TestCollectionData:
             # "clip",         # alias for clamp
             "log",
             "log1p",
+            "cumsum",
+        ],
+    )
+    implemented_float = TestCollection(
+        operators=[
+            "gelu",
+            "leaky_relu",
         ],
     )
     not_implemented = TestCollection(
@@ -227,6 +255,15 @@ class TestCollectionData:
             "tanh",
             "trunc",
         ],
+    )
+
+
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    failed_cumsum_automatic_value_checker = TestPlanUtils.load_test_ids_from_file(
+        f"{os.path.dirname(__file__)}/test_cumsum_ids_failed_automatic_value_checker.txt"
     )
 
 
@@ -687,6 +724,67 @@ TestParamsData.test_plan_implemented = TestPlan(
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        TestCollection(
+            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_cumsum_automatic_value_checker,
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+    ],
+)
+
+
+TestParamsData.test_plan_implemented_float = TestPlan(
+    verify=lambda test_device, test_vector: TestVerification.verify(
+        test_device,
+        test_vector,
+    ),
+    collections=[
+        # Test gelu, leaky_relu operators collection:
+        TestCollection(
+            operators=TestCollectionData.implemented_float.operators,
+            input_sources=TestCollectionCommon.all.input_sources,
+            input_shapes=TestCollectionCommon.all.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+        ),
+        # Test gelu, leaky_relu data formats collection:
+        TestCollection(
+            operators=TestCollectionData.implemented_float.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+            dev_data_formats=[
+                item
+                for item in TestCollectionCommon.float.dev_data_formats
+                if item not in TestCollectionCommon.single.dev_data_formats
+            ],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+        ),
+        # Test gelu, leaky_relu math fidelities collection:
+        TestCollection(
+            operators=TestCollectionData.implemented_float.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            math_fidelities=TestCollectionCommon.all.math_fidelities,
+        ),
+    ],
+    failing_rules=[
+        TestCollection(
+            operators=["gelu"],
+            input_shapes=[(1, 1)],
+            kwargs=[
+                {"approximate": "tanh"},
+                {},
+            ],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            operators=["leaky_relu"],
+            input_sources=[InputSource.CONST_EVAL_PASS],
+            input_shapes=[(1, 1)],
+            kwargs=[{"negative_slope": 0.01, "inplace": True}],
+            failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
     ],
 )
 
@@ -718,5 +816,6 @@ TestParamsData.test_plan_not_implemented = TestPlan(
 def get_test_plans() -> List[TestPlan]:
     return [
         TestParamsData.test_plan_implemented,
+        TestParamsData.test_plan_implemented_float,
         TestParamsData.test_plan_not_implemented,
     ]
