@@ -3,7 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
+import torch.nn as nn
 import torchxrayvision as xrv
+from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
 from forge.verify.verify import verify
@@ -16,6 +18,19 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["densenet121", "densenet121_hf_xray"]
+
+
+class densenet_xray_wrapper(nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, x):
+        x = fix_resolution(x, 224, self.model)
+        features = self.model.features2(x)
+        out = self.model.classifier(features)
+        out = torch.sigmoid(out)
+        return out
 
 
 @pytest.mark.nightly
@@ -42,7 +57,8 @@ def test_densenet_121_pytorch(record_forge_property, variant):
         img_tensor = get_input_img()
     else:
         model_name = "densenet121-res224-all"
-        framework_model = download_model(xrv.models.get_model, model_name)
+        model = download_model(xrv.models.get_model, model_name)
+        framework_model = densenet_xray_wrapper(model)
         img_tensor = get_input_img_hf_xray()
 
     # STEP 3: Run inference on Tenstorrent device
@@ -53,6 +69,12 @@ def test_densenet_121_pytorch(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    if variant == "densenet121_hf_xray":
+        # Inference
+        output = compiled_model(*inputs)
+        # post processing
+        outputs = op_norm(output[0], model.op_threshs)
 
 
 @pytest.mark.nightly
