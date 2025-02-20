@@ -144,6 +144,11 @@ class OperatorRepository:
 
     def __init__(self, operators: List[OperatorDefinition]):
         self.operators = operators
+        # Check if operator names which are unique
+        names = [op.name for op in operators]
+        duplicates = set([name for name in names if names.count(name) > 1])
+        if duplicates:
+            raise ValueError(f"Detected duplicate operator names: {duplicates}")
 
     def get_by_name(self, name: str):
         return [op for op in self.operators if op.name == name][0]

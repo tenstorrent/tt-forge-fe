@@ -650,6 +650,12 @@ class TestPlanUtils:
 
             test_ids = [line.strip() for line in test_ids]
 
+            # Remove empty lines
+            test_ids = [line for line in test_ids if line]
+
+            # Remove lines starting with # as comments
+            test_ids = [line for line in test_ids if not line.startswith("#")]
+
             return test_ids
 
     @classmethod
@@ -845,6 +851,9 @@ class TestPlanScanner:
         logger.trace(f"Scan directory: {directory} for base package: {scan_package}")
 
         modules = cls.find_modules_in_directory(directory)
+
+        # sort modules to ensure consistent order of test plans
+        modules.sort()
 
         for module_name in modules:
             try:
