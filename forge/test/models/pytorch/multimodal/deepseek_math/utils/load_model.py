@@ -5,7 +5,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 
 
-def generation(max_new_tokens, compiled_model, input_ids, tokenizer):
+def generate(max_new_tokens, compiled_model, input_ids, tokenizer):
     for i in range(max_new_tokens):
         logits = compiled_model(input_ids)
         next_token_logits = logits[:, -1, :]
