@@ -17,6 +17,7 @@ from forge.verify.verify import verify
             torch.tensor([True, False, True, False, True, False, True, False, True, False]),  # Mask
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0]),  # Source tensor
             id="1d_masked_scatter",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         pytest.param(
             torch.zeros((4, 4), dtype=torch.float32),  # 2D input tensor
@@ -30,26 +31,24 @@ from forge.verify.verify import verify
             ),
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]),  # Source tensor
             id="2d_masked_scatter",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
     ],
 )
-@pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::masked_scatter']")
 @pytest.mark.push
 def test_masked_scatter(input_tensor, mask, source):
     class MaskedScatterModule(torch.nn.Module):
-        def __init__(self, mask, source):
+        def __init__(self):
             super().__init__()
-            self.mask = mask
-            self.source = source
 
-        def forward(self, x):
+        def forward(self, x, mask, source):
             # Apply masked_scatter
-            return x.masked_scatter(self.mask, self.source)
+            return x.masked_scatter(mask, source)
 
     # Inputs for the test
-    inputs = [input_tensor]
+    inputs = [input_tensor, mask, source]
 
-    framework_model = MaskedScatterModule(mask, source)
+    framework_model = MaskedScatterModule()
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify outputs
