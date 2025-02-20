@@ -22,7 +22,7 @@ from _pytest.mark import ParameterSet
 from dataclasses import dataclass, field
 from enum import Enum
 from loguru import logger
-from typing import Callable, Generator, Optional, List, Dict, Union, Tuple, TypeAlias
+from typing import Callable, Generator, Optional, List, Set, Dict, Union, Tuple
 
 from forge import MathFidelity, DataFormat
 from forge.op_repo import TensorShape
@@ -343,6 +343,15 @@ class TestPlan:
     failing_rules: Optional[List[TestCollection]] = None
     verify: Optional[Callable[[TestVector, TestDevice], None]] = None
 
+    operators: Optional[Set[str]] = field(default_factory=set, init=False)
+
+    def __post_init__(self):
+        for collection in self.collections:
+            for operator in collection.operators:
+                if operator not in self.operators:
+                    self.operators.add(operator)
+        logger.trace(f"Test plan operators: {self.operators}")
+
     def check_test_failing(
         self,
         test_vector: TestVector,
@@ -437,7 +446,7 @@ class TestPlan:
         test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
 
         for test_vector in test_vectors:
-            if test_vector.operator not in self.collections[0].operators:
+            if test_vector.operator not in self.operators:
                 raise ValueError(f"Operator {test_vector.operator} not found in test plan")
             test_vector.test_plan = self
 
@@ -459,19 +468,16 @@ class TestSuite:
     __test__ = False  # Avoid collecting TestSuite as a pytest test
 
     test_plans: List[TestPlan] = None
-    indices: Optional[Dict[str, TestPlan]] = None  # TODO remove optional
 
-    @staticmethod
-    def get_test_plan_index(test_plans: List[TestPlan]) -> Dict[str, TestPlan]:
-        indices = {}
-        for test_plan in test_plans:
-            for operator in test_plan.collections[0].operators:
-                if operator not in indices:
-                    indices[operator] = test_plan
-        return indices
+    indices: Dict[str, TestPlan] = field(default_factory=dict, init=False)
 
     def __post_init__(self):
-        self.indices = self.get_test_plan_index(self.test_plans)
+        for test_plan in self.test_plans:
+            for operator in test_plan.operators:
+                if operator not in self.indices:
+                    self.indices[operator] = test_plan
+                else:
+                    logger.warning(f"Operator {operator} is already defined in another test plan")
         logger.trace(f"Test suite indices: {self.indices.keys()} test_plans: {len(self.test_plans)}")
 
     def generate(self) -> Generator[TestVector, None, None]:
