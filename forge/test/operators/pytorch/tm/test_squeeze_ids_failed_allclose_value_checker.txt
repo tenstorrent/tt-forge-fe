@@ -1,0 +1,76 @@
+squeeze-FROM_ANOTHER_OP-None-(64, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(9920, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(10000, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 64, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 9920, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 10000, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(11, 1, 23)-None-None
+squeeze-FROM_ANOTHER_OP-None-(11, 64, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(10, 10000, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 11, 1, 23)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 11, 64, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 1, 9920, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(1, 10, 10000, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(4, 11, 1, 23)-None-None
+squeeze-FROM_ANOTHER_OP-None-(5, 11, 64, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(9, 1, 9920, 1)-None-None
+squeeze-FROM_ANOTHER_OP-None-(10, 10, 10000, 1)-None-None
+squeeze-FROM_HOST-None-(64, 1)-None-None
+squeeze-FROM_HOST-None-(9920, 1)-None-None
+squeeze-FROM_HOST-None-(10000, 1)-None-None
+squeeze-FROM_HOST-None-(1, 64, 1)-None-None
+squeeze-FROM_HOST-None-(1, 9920, 1)-None-None
+squeeze-FROM_HOST-None-(1, 10000, 1)-None-None
+squeeze-FROM_HOST-None-(11, 1, 23)-None-None
+squeeze-FROM_HOST-None-(11, 64, 1)-None-None
+squeeze-FROM_HOST-None-(10, 10000, 1)-None-None
+squeeze-FROM_HOST-None-(1, 11, 1, 23)-None-None
+squeeze-FROM_HOST-None-(1, 11, 64, 1)-None-None
+squeeze-FROM_HOST-None-(1, 1, 9920, 1)-None-None
+squeeze-FROM_HOST-None-(1, 10, 10000, 1)-None-None
+squeeze-FROM_HOST-None-(4, 11, 1, 23)-None-None
+squeeze-FROM_HOST-None-(5, 11, 64, 1)-None-None
+squeeze-FROM_HOST-None-(9, 1, 9920, 1)-None-None
+squeeze-FROM_HOST-None-(10, 10, 10000, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(64, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(9920, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(10000, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 64, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 9920, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 10000, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(11, 1, 23)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(11, 64, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(10, 10000, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 11, 1, 23)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 11, 64, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 1, 9920, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(1, 10, 10000, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(4, 11, 1, 23)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(5, 11, 64, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(9, 1, 9920, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-None-(10, 10, 10000, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(64, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(9920, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(10000, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 64, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 9920, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 10000, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(11, 1, 23)-None-None
+squeeze-CONST_EVAL_PASS-None-(11, 64, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(10, 10000, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 11, 1, 23)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 11, 64, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 1, 9920, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(1, 10, 10000, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(4, 11, 1, 23)-None-None
+squeeze-CONST_EVAL_PASS-None-(5, 11, 64, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(9, 1, 9920, 1)-None-None
+squeeze-CONST_EVAL_PASS-None-(10, 10, 10000, 1)-None-None
+squeeze-FROM_ANOTHER_OP-{'dim': 3}-(100, 1, 100, 1)-None-None
+squeeze-FROM_ANOTHER_OP-{'dim': 3}-(84, 25, 100, 1, 41)-None-None
+squeeze-FROM_HOST-{'dim': 3}-(100, 1, 100, 1)-None-None
+squeeze-FROM_HOST-{'dim': 3}-(84, 25, 100, 1, 41)-None-None
+squeeze-FROM_DRAM_QUEUE-{'dim': 3}-(100, 1, 100, 1)-None-None
+squeeze-FROM_DRAM_QUEUE-{'dim': 3}-(84, 25, 100, 1, 41)-None-None
+squeeze-CONST_EVAL_PASS-{'dim': 3}-(100, 1, 100, 1)-None-None
+squeeze-CONST_EVAL_PASS-{'dim': 3}-(84, 25, 100, 1, 41)-None-None
