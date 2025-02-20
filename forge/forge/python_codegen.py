@@ -64,32 +64,37 @@ def forge_df_from_str(df: str, name: str, return_as_str: bool = True):
     return dev_data_format
 
 
-def pytorch_df_str_from_str(df: str, name):
+def pytorch_df_from_str(df: str, name: str, return_as_str: bool = True):
     df = df.lower()
 
     if df == "float16":
-        return "torch.float16"
+        torch_dtype = torch.float16
     elif df in ["float16_b", "bfloat16"]:
-        return "torch.bfloat16"
+        torch_dtype = torch.bfloat16
     elif df == "float32":
-        return "torch.float32"
+        torch_dtype = torch.float32
     elif df == "float64":
-        return "torch.float64"
+        torch_dtype = torch.float64
     elif df == "uint8":
-        return "torch.uint8"
+        torch_dtype = torch.uint8
     elif df == "int8":
-        return "torch.int8"
+        torch_dtype = torch.int8
     elif df == "int32":
-        return "torch.int32"
+        torch_dtype = torch.int32
     elif df == "int16":
-        return "torch.int16"
+        torch_dtype = torch.int16
     elif df == "int64":
-        return "torch.int64"
+        torch_dtype = torch.int64
     elif df == "uint1":
-        return "torch.bool"
+        torch_dtype = torch.bool
     else:
         logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
-        return "torch.float32"
+        torch_dtype = torch.float32
+
+    if return_as_str:
+        return str(torch_dtype)
+
+    return torch_dtype
 
 
 class PythonWriter:
@@ -208,7 +213,7 @@ class ForgeWriter(PythonWriter):
         for const in constants.values():
             name = const[0]
             shape = tuple(const[1])
-            dtype = pytorch_df_str_from_str(const[2], name)
+            dtype = pytorch_df_from_str(const[2], name)
             self.const_names.append(name)
             if is_submodel:
                 self.wl(f'self.add_constant("{name}", prepend_name=True, shape={shape}, dtype={dtype})')
@@ -1032,6 +1037,7 @@ class ForgeWriter(PythonWriter):
         pytest_metadata_list: Optional[List[Dict[str, Any]]] = None,
         use_ids_function: bool = False,
         include_random_parameter_constant_gen: bool = False,
+        exclude_record_property: Optional[List[str]] = None,
     ):
         """
         Generates a pytest function that tests modules with input shapes and data types.
@@ -1054,6 +1060,7 @@ class ForgeWriter(PythonWriter):
             pytest_metadata_list (Optional[List[Dict[str, Any]]]): A list of dictionaries containing metadata for each pytest parameter.
             use_ids_function(bool): If set, the forge module name and shapes and dtyes will used as id for the pytest parameter.
             include_random_parameter_constant_gen(bool): If set, it will include the code for generating and assigning of random tensor for forge module parameters and constants
+            exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in record_forge_property fixtures(i.e pcc)
         """
         self.wl("")
         self.wl("")
@@ -1068,14 +1075,14 @@ class ForgeWriter(PythonWriter):
         self.wl("forge_modules_and_shapes_dtypes_list = [")
         self.indent += 1
         is_pytest_metadata_list_empty = False
-        if pytest_metadata_list is None:
+        if pytest_metadata_list is None or len(pytest_metadata_list) == 0:
             pytest_metadata_list = [None] * len(pytest_input_shapes_and_dtypes_list)
             is_pytest_metadata_list_empty = True
         for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata in zip(
             forge_module_names, pytest_input_shapes_and_dtypes_list, pytest_metadata_list
         ):
             pytest_input_shapes_and_dtypes = [
-                (shape, forge_dataformat_to_pytorch_dtype(forge_df_from_str(dtype, "", False)))
+                (shape, pytorch_df_from_str(dtype, "", return_as_str=False))
                 for shape, dtype in pytest_input_shapes_and_dtypes
             ]
             if pytest_metadata is None:
@@ -1094,28 +1101,43 @@ class ForgeWriter(PythonWriter):
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
         if module_metadata is not None or not is_pytest_metadata_list_empty:
-            self.wl("def test_module(forge_module_and_shapes_dtypes, record_property):")
+            self.wl("def test_module(forge_module_and_shapes_dtypes, record_forge_property):")
         else:
             self.wl("def test_module(forge_module_and_shapes_dtypes):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
                 if isinstance(metadata_value, str):
-                    self.wl(f'record_property("{metadata_name}", "{metadata_value}")')
+                    self.wl(f'record_forge_property("{metadata_name}", "{metadata_value}")')
                 else:
-                    self.wl(f'record_property("{metadata_name}", {metadata_value})')
+                    self.wl(f'record_forge_property("{metadata_name}", {metadata_value})')
         self.wl("")
         if is_pytest_metadata_list_empty:
             self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
         else:
             self.wl("forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes")
-            self.wl('pcc = metadata.pop("pcc")')
+            if exclude_record_property is not None or len(exclude_record_property) != 0:
+                self.wl("")
+                for exclude_metadata in exclude_record_property:
+                    self.wl(f'{exclude_metadata} = metadata.pop("{exclude_metadata}")')
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl(f"record_property(metadata_name, metadata_value)")
+            self.wl(f"record_forge_property(metadata_name, metadata_value)")
             self.indent -= 1
         self.wl("")
+        if is_pytest_metadata_list_empty or (
+            exclude_record_property is not None
+            and len(exclude_record_property) != 0
+            and "pcc" not in exclude_record_property
+        ):
+            self.wl("pcc = 0.99")
+        if is_pytest_metadata_list_empty or (
+            exclude_record_property is not None
+            and len(exclude_record_property) != 0
+            and "max_int" not in exclude_record_property
+        ):
+            self.wl("max_int = 1000")
         need_model_parameter_function = any(
             [
                 True if isinstance(shape, str) else False
@@ -1125,11 +1147,11 @@ class ForgeWriter(PythonWriter):
         )
         if need_model_parameter_function:
             self.wl(
-                "inputs = [Tensor.create_from_torch(named_parameters[operand_shape]) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+                "inputs = [Tensor.create_from_torch(named_parameters[operand_shape]) if isinstance(operand_shape, str) else Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
             )
         else:
             self.wl(
-                "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype) for operand_shape, operand_dtype in operand_shapes_dtypes]"
+                "inputs = [Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int) for operand_shape, operand_dtype in operand_shapes_dtypes]"
             )
         self.wl("")
         self.wl(f"framework_model = forge_module(forge_module.__name__)")
@@ -1139,7 +1161,7 @@ class ForgeWriter(PythonWriter):
             self.wl("for name, parameter in framework_model._parameters.items():")
             self.indent += 1
             self.wl(
-                "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format)"
+                "parameter_tensor = Tensor.create_torch_tensor(shape=parameter.shape.get_pytorch_shape(), dtype=parameter.pt_data_format, max_int=max_int)"
             )
             self.wl("framework_model.set_parameter(name, parameter_tensor)")
             self.indent -= 1
@@ -1147,19 +1169,16 @@ class ForgeWriter(PythonWriter):
             self.wl("for name, constant in framework_model._constants.items():")
             self.indent += 1
             self.wl(
-                "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format)"
+                "constant_tensor = Tensor.create_torch_tensor(shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int)"
             )
             self.wl("framework_model.set_constant(name, constant_tensor)")
             self.indent -= 1
         self.wl("")
         self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
         self.wl("")
-        if is_pytest_metadata_list_empty:
-            self.wl("verify(inputs, framework_model, compiled_model)")
-        else:
-            self.wl(
-                "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
-            )
+        self.wl(
+            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+        )
         self.wl("")
         self.wl("")
         self.indent -= 1
@@ -1224,7 +1243,7 @@ class PyTorchWriter(PythonWriter):
 
             mod = self.clean_name(full_name).rpartition(name)[0]
             self.wl(
-                f'self.{mod}register_parameter("{name}", nn.Parameter(torch.zeros(*{shape}, dtype={pytorch_df_str_from_str(dtype, name)}), requires_grad={requires_grad}))'
+                f'self.{mod}register_parameter("{name}", nn.Parameter(torch.zeros(*{shape}, dtype={pytorch_df_from_str(dtype, name)}), requires_grad={requires_grad}))'
             )
 
         for const in constants.values():
@@ -1245,7 +1264,7 @@ class PyTorchWriter(PythonWriter):
 
             mod = self.clean_name(full_name).rpartition(name)[0]
             self.wl(
-                f'self.{mod}register_buffer("{name}", torch.zeros(*{shape}, dtype={pytorch_df_str_from_str(dtype, name)}))'
+                f'self.{mod}register_buffer("{name}", torch.zeros(*{shape}, dtype={pytorch_df_from_str(dtype, name)}))'
             )
 
         self.indent = 0

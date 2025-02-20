@@ -92,6 +92,11 @@ Full list of supported query parameters
 | TEST_ID               | Id of a test containing test parameters                                                       | test_single                           |
 | ID_FILE               | Path to a file containing test ids                                                            | test_ids                              |
 
+Test configuration parameters
+
+| Parameter                 | Description                                                                                   | Supported by commands                 |
+| ------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------- |
+| SKIP_FORGE_VERIFICATION   | Skip Forge model verification including model compiling and inference                         | all                                   |
 
 To check supported values and options for each query parameter please run command `print_query_docs`.
 

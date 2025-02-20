@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # STEP 0: import Forge library
 import pytest
-import timm
 from transformers import (
+    SwinForImageClassification,
     Swinv2ForImageClassification,
     Swinv2ForMaskedImageModeling,
     Swinv2Model,
@@ -16,7 +16,6 @@ from forge.verify.verify import verify
 
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
 from test.models.utils import Framework, Source, Task, build_module_name
-from test.utils import download_model
 
 
 @pytest.mark.nightly
@@ -36,8 +35,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
-    # model = SwinForImageClassification.from_pretrained("microsoft/swin-tiny-patch4-window7-224", torchscript=True)
-    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    framework_model = SwinForImageClassification.from_pretrained(variant)
     framework_model.eval()
 
     # STEP 2: Prepare input samples

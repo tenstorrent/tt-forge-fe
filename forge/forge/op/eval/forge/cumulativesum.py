@@ -19,17 +19,16 @@ from .nop import Nop
 
 class CumulativeSum(PyEltwiseUnaryOp):
     @classmethod
-    def create(cls, axis, exclusive=False):
+    def create(cls, dim):
         self = cls("cumsum")
-        self.axis = axis
-        self.exclusive = exclusive
+        self.dim = dim[0]
         return self
 
     def eval(self, tensors):
         assert len(tensors) == 1, "Cumulative Sum should have one input"
         shape = tensors[0].shape
         original_types = [o.dtype for o in tensors]
-        ret = torch.cumsum(tensors[0], dim=self.axis)
+        ret = torch.cumsum(tensors[0], dim=self.dim)
 
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])
@@ -44,7 +43,7 @@ class CumulativeSum(PyEltwiseUnaryOp):
     def backward(self, ac, operand, inputs, output, grad):
         assert len(inputs) == 1, "Cumulative Sum should have one input"
         assert operand == 0, "Invalid operand index"
-        dim = self.axis
+        dim = self.dim
         assert dim == 0, "Unsupported dim different then 0 for cumulative sum backward pass"
         if dim == 0:
             return ac.op(Nop.create(), (grad,))

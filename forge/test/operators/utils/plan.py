@@ -22,12 +22,13 @@ from _pytest.mark import ParameterSet
 from dataclasses import dataclass, field
 from enum import Enum
 from loguru import logger
-from typing import Callable, Generator, Optional, List, Dict, Union, Tuple, TypeAlias
+from typing import Callable, Generator, Optional, List, Set, Dict, Union, Tuple
 
 from forge import MathFidelity, DataFormat
 from forge.op_repo import TensorShape
 
 from .datatypes import OperatorParameterTypes
+from .datatypes import FrameworkDataFormat
 from .pytest import PytestParamsUtils
 from .compat import TestDevice
 from .utils import RateLimiter
@@ -86,7 +87,7 @@ class TestVector:
     input_source: InputSource
     input_shape: TensorShape  # TODO - Support multiple input shapes
     number_of_operands: Optional[int] = None
-    dev_data_format: Optional[DataFormat] = None
+    dev_data_format: Optional[FrameworkDataFormat] = None
     math_fidelity: Optional[MathFidelity] = None
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
     pcc: Optional[float] = None
@@ -96,7 +97,7 @@ class TestVector:
     def get_id(self, fields: Optional[List[str]] = None) -> str:
         """Get test vector id"""
         if fields is None:
-            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}{'-' + str(self.number_of_operands) + '-' if self.number_of_operands else '-'}{self.dev_data_format.name if self.dev_data_format else None}-{self.math_fidelity.name if self.math_fidelity else None}"
+            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}{'-' + str(self.number_of_operands) + '-' if self.number_of_operands else '-'}{TestPlanUtils.dev_data_format_to_str(self.dev_data_format)}-{self.math_fidelity.name if self.math_fidelity else None}"
         else:
             attr = [
                 (getattr(self, field).name if getattr(self, field) is not None else None)
@@ -144,7 +145,7 @@ class TestCollection:
     input_sources: Optional[List[InputSource]] = None
     input_shapes: Optional[List[TensorShape]] = None  # TODO - Support multiple input shapes
     numbers_of_operands: Optional[List[int]] = None
-    dev_data_formats: Optional[List[DataFormat]] = None
+    dev_data_formats: Optional[List[FrameworkDataFormat]] = None
     math_fidelities: Optional[List[MathFidelity]] = None
     kwargs: Optional[
         Union[List[OperatorParameterTypes.Kwargs], Callable[["TestVector"], List[OperatorParameterTypes.Kwargs]]]
@@ -342,6 +343,15 @@ class TestPlan:
     failing_rules: Optional[List[TestCollection]] = None
     verify: Optional[Callable[[TestVector, TestDevice], None]] = None
 
+    operators: Optional[Set[str]] = field(default_factory=set, init=False)
+
+    def __post_init__(self):
+        for collection in self.collections:
+            for operator in collection.operators:
+                if operator not in self.operators:
+                    self.operators.add(operator)
+        logger.trace(f"Test plan operators: {self.operators}")
+
     def check_test_failing(
         self,
         test_vector: TestVector,
@@ -436,7 +446,7 @@ class TestPlan:
         test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
 
         for test_vector in test_vectors:
-            if test_vector.operator not in self.collections[0].operators:
+            if test_vector.operator not in self.operators:
                 raise ValueError(f"Operator {test_vector.operator} not found in test plan")
             test_vector.test_plan = self
 
@@ -458,19 +468,16 @@ class TestSuite:
     __test__ = False  # Avoid collecting TestSuite as a pytest test
 
     test_plans: List[TestPlan] = None
-    indices: Optional[Dict[str, TestPlan]] = None  # TODO remove optional
 
-    @staticmethod
-    def get_test_plan_index(test_plans: List[TestPlan]) -> Dict[str, TestPlan]:
-        indices = {}
-        for test_plan in test_plans:
-            for operator in test_plan.collections[0].operators:
-                if operator not in indices:
-                    indices[operator] = test_plan
-        return indices
+    indices: Dict[str, TestPlan] = field(default_factory=dict, init=False)
 
     def __post_init__(self):
-        self.indices = self.get_test_plan_index(self.test_plans)
+        for test_plan in self.test_plans:
+            for operator in test_plan.operators:
+                if operator not in self.indices:
+                    self.indices[operator] = test_plan
+                else:
+                    logger.warning(f"Operator {operator} is already defined in another test plan")
         logger.trace(f"Test suite indices: {self.indices.keys()} test_plans: {len(self.test_plans)}")
 
     def generate(self) -> Generator[TestVector, None, None]:
@@ -508,6 +515,34 @@ class TestPlanUtils:
     """
     Utility functions for test vectors
     """
+
+    @classmethod
+    def dev_data_format_to_str(cls, dev_data_format: FrameworkDataFormat) -> Optional[str]:
+        """Convert data format to string"""
+        if dev_data_format is None:
+            return None
+        if isinstance(dev_data_format, DataFormat):
+            return f"forge.{dev_data_format.name}"
+        if isinstance(dev_data_format, torch.dtype):
+            # Keep torch. prefix
+            return str(dev_data_format)
+        else:
+            raise ValueError(f"Unsupported data format: {dev_data_format}")
+
+    @classmethod
+    def dev_data_format_from_str(cls, dev_data_format_str: str) -> FrameworkDataFormat:
+        """Convert string to data format"""
+        if dev_data_format_str is None:
+            return None
+        dev_data_format_str = dev_data_format_str.replace("forge.", "")
+        dev_data_format_str = dev_data_format_str.replace("torch.", "")
+        if hasattr(forge.DataFormat, dev_data_format_str):
+            dev_data_format = getattr(forge.DataFormat, dev_data_format_str)
+        elif hasattr(torch, dev_data_format_str):
+            dev_data_format = getattr(torch, dev_data_format_str)
+        else:
+            raise ValueError(f"Unsupported data format: {dev_data_format_str} in Forge and PyTorch")
+        return dev_data_format
 
     @classmethod
     def _match(cls, rule_collection: Optional[List], vector_value):
@@ -609,6 +644,7 @@ class TestPlanUtils:
     @classmethod
     def load_test_ids_from_file(cls, test_ids_file: str) -> List[str]:
         """Load test ids from a file to a list of strings"""
+        logger.trace(f"Loading test ids from file: {test_ids_file}")
         with open(test_ids_file, "r") as file:
             test_ids = file.readlines()
 
@@ -653,7 +689,7 @@ class TestPlanUtils:
         dev_data_format_part = parts[dev_data_format_index]
         if dev_data_format_part == "None":
             dev_data_format_part = None
-        dev_data_format = eval(f"forge._C.{dev_data_format_part}") if dev_data_format_part is not None else None
+        dev_data_format = cls.dev_data_format_from_str(dev_data_format_part)
 
         math_fidelity_part = parts[math_fidelity_index]
         if math_fidelity_part == "None":
@@ -661,6 +697,8 @@ class TestPlanUtils:
         # As last parameter in test id is math fidelity, in case of duplicated tests numeric suffix should be ignored
         if math_fidelity_part is not None and math_fidelity_part.startswith("HiFi4"):
             math_fidelity_part = "HiFi4"
+        if math_fidelity_part is not None and math_fidelity_part.startswith("None"):
+            math_fidelity_part = None
         math_fidelity = eval(f"forge._C.{math_fidelity_part}") if math_fidelity_part is not None else None
 
         return TestVector(
@@ -689,7 +727,7 @@ class FailingRulesConverter:
                     Union[Optional[InputSource], List[InputSource]],
                     Union[Optional[TensorShape], List[TensorShape]],
                     Union[Optional[OperatorParameterTypes.Kwargs], List[OperatorParameterTypes.Kwargs]],
-                    Union[Optional[forge.DataFormat], List[forge.DataFormat]],
+                    Union[Optional[FrameworkDataFormat], List[FrameworkDataFormat]],
                     Union[Optional[forge.MathFidelity], List[forge.MathFidelity]],
                     Optional[TestResultFailing],
                 ],
@@ -734,7 +772,7 @@ class FailingRulesConverter:
         input_source: Optional[Union[InputSource, List[InputSource]]],
         input_shape: Optional[Union[TensorShape, List[TensorShape]]],
         kwargs: Optional[Union[OperatorParameterTypes.Kwargs, List[OperatorParameterTypes.Kwargs]]],
-        dev_data_format: Optional[Union[forge.DataFormat, List[forge.DataFormat]]],
+        dev_data_format: Optional[Union[FrameworkDataFormat, List[FrameworkDataFormat]]],
         math_fidelity: Optional[Union[forge.MathFidelity, List[forge.MathFidelity]]],
         result_failing: Optional[TestResultFailing],
     ) -> TestCollection:

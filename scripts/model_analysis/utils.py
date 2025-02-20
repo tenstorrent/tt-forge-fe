@@ -143,7 +143,7 @@ class CompilerComponentFailureAnalysis:
         """
         self.compiler_component_and_failure_details = {
             compiler_component: dict(sorted(failure_details.items(), key=lambda item: len(item[1]), reverse=reverse))
-            for compiler_component, failure_details in self.compiler_component_and_failure_details.items()
+            for compiler_component, failure_details in sorted(self.compiler_component_and_failure_details.items())
         }
 
     def get_compiler_component_and_failure_details(self):

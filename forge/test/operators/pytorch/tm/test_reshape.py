@@ -17,6 +17,7 @@ from loguru import logger
 from forge.verify.config import VerifyConfig
 
 from forge.verify.value_checkers import AllCloseValueChecker
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify as forge_verify
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
@@ -129,6 +130,11 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # We use AllCloseValueChecker in all cases except for integer data formats:
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
+        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -140,7 +146,7 @@ class TestVerification:
             warm_reset=warm_reset,
             value_range=ValueRanges.SMALL,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker()),
+            verify_config=verify_config,
         )
 
 
@@ -235,6 +241,15 @@ class TestParamsData:
         return target_shapes
 
 
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    failed_allclose_value_checker = TestPlanUtils.load_test_ids_from_file(
+        f"{os.path.dirname(__file__)}/test_reshape_ids_failed_allclose_value_checker.txt"
+    )
+
+
 TestParamsData.test_plan = TestPlan(
     verify=lambda test_device, test_vector: TestVerification.verify(
         test_device,
@@ -280,46 +295,11 @@ TestParamsData.test_plan = TestPlan(
     ],
     failing_rules=[
         TestCollection(
-            criteria=lambda test_vector: test_vector.get_id()
-            in TestPlanUtils.load_test_ids_from_file(
-                f"{os.path.dirname(__file__)}/test_reshape_ids_failed_allclose_value_checker.txt"
-            ),
+            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
         TestCollection(
-            input_shapes=[(1, 10000)],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[
-                (100, 100),
-                (1000, 100),
-                (89, 3),
-                (1, 64, 1),
-                (1, 100, 100),
-                (11, 17, 41),
-                (1, 2, 3, 4),
-                (1, 11, 45, 17),
-                (1, 11, 17, 41),
-                (1, 13, 89, 3),
-                (8, 1, 10, 1000),
-                (11, 32, 32, 64),
-                (8, 8, 8),
-            ],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[(1, 2, 2, 2)],
-            criteria=lambda test_vector: test_vector.kwargs is not None
-            and "shape" in test_vector.kwargs
-            and test_vector.kwargs["shape"] == (8,),
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[(1, 49, 2304)],
-            criteria=lambda test_vector: test_vector.kwargs is not None
-            and "shape" in test_vector.kwargs
-            and test_vector.kwargs["shape"] == (-1,),
+            input_shapes=[(1, 10000), (7, 10, 1000, 100)],
             failing_reason=FailingReasons.INFERENCE_FAILED,
         ),
         TestCollection(

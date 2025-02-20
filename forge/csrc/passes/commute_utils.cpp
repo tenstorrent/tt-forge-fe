@@ -1052,7 +1052,7 @@ void update_reduce_attr(graphlib::OpNode *reduce, int reduce_dim, bool keep_dim)
     attr.push_back(keep_dim);
 
     graphlib::OpType::Attrs named_attrs = reduce->named_attrs();
-    named_attrs["dim_arg"] = reduce_dim;
+    named_attrs["dim"] = reduce_dim;
     named_attrs["keep_dim"] = keep_dim;
 
     reduce->overwrite_op_named_attrs(attr, named_attrs);

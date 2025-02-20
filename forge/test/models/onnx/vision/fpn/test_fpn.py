@@ -14,12 +14,8 @@ from forge import DepricatedVerifyConfig
 @pytest.mark.skip(reason="Not supported")
 @pytest.mark.nightly
 def test_fpn_onnx(test_device, test_kind):
-    compiler_cfg = forge.config._get_global_compiler_config()
-    compiler_cfg.balancer_policy = "Ribbon"
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.default_df_override = forge._C.Float16_b
-
-    os.environ["FORGE_RIBBON2"] = "1"
-    os.environ["FORGE_FORCE_EMULATE_HARVESTED"] = "1"
 
     # Load FPN model
     onnx_model_path = "third_party/confidential_customer_models/generated/files/fpn.onnx"

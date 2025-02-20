@@ -54,15 +54,13 @@ file(GLOB CPP_FILES
 
 add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})
 target_compile_options(ttforge_csrc_objs PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
-add_dependencies(ttforge_csrc_objs build_tt_mlir)
+add_dependencies(ttforge_csrc_objs tt-mlir)
 
 ### End of ttforge_csrc_objs ###
 
 ######## ttforge_csrc ########
 
-set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/lib/SharedLib")
-set(TTRUNTIME_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/runtime/lib")
-set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal-build/lib")
+set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/lib")
 set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
 
 add_library(ttforge_csrc SHARED)
@@ -83,11 +81,8 @@ target_link_libraries(ttforge_csrc PRIVATE
     runtime
     ttforge_csrc_objs
 
-    # NOTE: ordering of the libraries will affect the linking
-    LLVM
-    MLIR
-
-    TTMLIR
+    TTMLIRCompiler
+    TTMLIRRuntime
 
     xml2
     curses
@@ -108,9 +103,15 @@ target_compile_options(ttforge_csrc PRIVATE
 target_link_directories(ttforge_csrc PRIVATE
     ${TTMLIR_TOOLCHAIN_DIR}/lib
     ${TTMLIR_LIB_DIR}
-    ${TTRUNTIME_LIB_DIR}
-    ${METAL_LIB_DIR}
     ${TORCH_LIB_DIR})
+
+# Change the output name (the part after 'lib' and before '.so')
+set_target_properties(ttforge_csrc PROPERTIES
+    OUTPUT_NAME "_C" # Rename to _C instead of ttforge_csrc, so that it can be imported in python as `import forge._C`
+    PREFIX "" # Remove the 'lib' prefix
+    SUFFIX ".so"
+    INSTALL_RPATH "$ORIGIN:$ORIGIN/lib"
+)
 
 ### End of ttforge_csrc ###
 

@@ -1,18 +1,17 @@
-name: Build and Test
+name: Perf benchmark
 
 on:
-  workflow_dispatch:
   workflow_call:
+    inputs:
+      docker-image:
+        description: 'Docker image to use for build'
+        required: true
+        type: string
 
 jobs:
 
-  docker-build:
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
+  run-perf-benchmarks:
 
-  build-and-run-perf:
-
-    needs: docker-build
     strategy:
       fail-fast: false
     runs-on:
@@ -21,7 +20,7 @@ jobs:
       - performance
 
     container:
-      image: ${{ needs.docker-build.outputs.docker-image }}
+      image: ${{ inputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -31,23 +30,20 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
     steps:
 
+    - name: Fetch job id
+      id: fetch-job-id
+      uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
+      with:
+        job_name: "${{ github.job }}"
+
     - name: Set reusable strings
       id: strings
       shell: bash
       env:
-        job-name: "${{ github.job }}"
+        JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-
-        # Github job context unfortunately doesn't contain job_id, this is the workaround how to fetch it using GH API
-        echo "Expected job name: ${{ env.job-name }}"
-        JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" | \
-          jq -r '.jobs[] | select(.name | contains("${{ env.job-name }}")) | .id ')
-        echo "Current job id: $JOB_ID"
-
-        echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
         echo "perf_report_path=forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
@@ -55,7 +51,12 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
-          submodules: recursive
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+            .test_durations
           fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
@@ -65,24 +66,17 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
       with:
-        create-symlink: true
-        key: runner-runtime--
+        name: forge-wheel
 
-    - name: Build
+    - name: Install wheel
       shell: bash
       run: |
         source env/activate
-        cmake -G Ninja \
-        -B ${{ steps.strings.outputs.build-output-dir }} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++ \
-        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        pip install tvm*.whl --force-reinstall
+        pip install forge*.whl --force-reinstall
 
     - name: Run Perf Benchmark
       shell: bash

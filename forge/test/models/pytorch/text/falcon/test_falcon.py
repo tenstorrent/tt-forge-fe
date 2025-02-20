@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import AutoTokenizer, FalconForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer, FalconForCausalLM
 
 import forge
 from forge.verify.verify import verify
@@ -47,3 +47,40 @@ def test_falcon(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = [
+    "tiiuae/Falcon3-1B-Base",
+    "tiiuae/Falcon3-3B-Base",
+    "tiiuae/Falcon3-7B-Base",
+    "tiiuae/Falcon3-Mamba-7B-Base",
+]
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants)
+def test_falcon_3(record_forge_property, variant):
+
+    if variant == "tiiuae/Falcon3-Mamba-7B-Base" or variant == "tiiuae/Falcon3-7B-Base":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 36 GB)")
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="falcon3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    )
+
+    # Record Forge Property
+    record_forge_property("model_name", module_name)
+
+    tokenizer = AutoTokenizer.from_pretrained(variant)
+    model = AutoModelForCausalLM.from_pretrained(variant)
+    model.config.use_cache = False
+    model.config.return_dict = False
+
+    input_text = "Write a function to calculate the factorial of a number"
+    input_data = tokenizer.encode(input_text, return_tensors="pt")
+
+    # Forge compile framework model
+    compiled_model = forge.compile(model, sample_inputs=input_data, module_name=module_name)
+
+    # Model Verification
+    verify([input_data], model, compiled_model)

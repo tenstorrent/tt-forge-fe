@@ -22,10 +22,40 @@ jobs:
     uses: ./.github/workflows/pre-commit.yml
     secrets: inherit
   docker-build:
-    uses: ./.github/workflows/build-and-test.yml
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+    with:
+      mlir_override: ${{ inputs.mlir_override }}
+  build:
+    needs: docker-build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      mlir_override: ${{ inputs.mlir_override }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'push'
       test_group_cnt: 2
       test_group_ids: '[1,2]'
-      mlir_override: ${{ inputs.mlir_override }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+
+  check-all-green:
+    if: always()
+    needs:
+      - pre-commit
+      - spdx
+      - docker-build
+      - build
+      - test
+    runs-on: Ubuntu-latest
+    steps:
+    - name: Check if the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
