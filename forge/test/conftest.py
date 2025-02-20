@@ -441,12 +441,15 @@ def pytest_runtest_makereport(item, call):
     report = outcome.get_result()
 
     if call.when == "call":  # Only execute after the test has run
-        # Store additional properties(i.e execution_phase and execution_stage) same as `record_property`
+        # Store additional properties(i.e tags which contains execution_phase and execution_stage as dictionaries) same as `record_property`
         execution_phase, execution_stage = fetch_execution_phase_and_stage()
+        tags = {}
         if execution_phase is not None:
-            item.user_properties.append(("execution_phase", execution_phase))
+            tags["execution_phase"] = execution_phase
         if execution_stage is not None:
-            item.user_properties.append(("execution_stage", execution_stage))
+            tags["execution_stage"] = execution_stage
+        if len(tags) != 0:
+            item.user_properties.append(("tags", tags))
 
 
 def pytest_collection_modifyitems(config, items):
