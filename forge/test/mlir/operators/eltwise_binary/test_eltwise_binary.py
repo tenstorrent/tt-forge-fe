@@ -11,6 +11,40 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+@pytest.mark.parametrize(
+    "shape, dim",
+    [
+        ((10,), 0),
+        ((5, 10), 1),
+        ((3, 5, 10), 2),
+        ((2, 3, 5, 10), 3),
+        ((1, 6, 20, 50, 64), 4),
+    ],
+)
+@pytest.mark.push
+def test_binary_stack(shape, dim):
+    class BinaryStack(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, x, y):
+            stacked = torch.stack((x, y), dim=self.dim)
+            new_shape = list(x.shape)
+            new_shape[self.dim] *= 2
+            return stacked.view(*new_shape)
+
+    x = torch.rand(shape)
+    y = torch.rand(shape)
+
+    inputs = [x, y]
+
+    framework_model = BinaryStack(dim)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.xfail(
     reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
 )
