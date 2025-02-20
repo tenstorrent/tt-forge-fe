@@ -7,14 +7,13 @@ on:
 
 jobs:
   docker-build:
-      uses: ./.github/workflows/build-image.yml
-      secrets: inherit
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
   build:
     needs: docker-build
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
-      mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
   test:
     needs:
