@@ -43,7 +43,7 @@
 			<td rowspan="1">[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
 			<td rowspan="1">2</td>
 			<td>2</td>
-			<td><ul><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 512, 50176), dtype=float32)</td>
 			<td>dim : -1</td>
 		</tr>

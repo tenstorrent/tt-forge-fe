@@ -2203,11 +2203,11 @@
       <td>Concatenate</td>
       <td>Operand(type=Parameter, shape=(256, 1536, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384, 1536, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384, 1536, 1, 1), dtype=float32)</td>
       <td>axis : -4</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+      <td>[TT_METAL][tt-metal buffer allocation] RuntimeError tt_metal/impl/allocator/bank_manager.cpp Out of Memory: Not enough space to allocate DRAM buffer</td>
     </tr>
     <tr>
       <th>200</th>
@@ -2817,7 +2817,7 @@
     <tr>
       <th>255</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_01349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2850,7 +2850,7 @@
     <tr>
       <th>258</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_61349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_61605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2883,7 +2883,7 @@
     <tr>
       <th>261</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_91349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_91605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2916,7 +2916,7 @@
     <tr>
       <th>264</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_271349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_271605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2949,7 +2949,7 @@
     <tr>
       <th>267</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_331349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_331605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2982,7 +2982,7 @@
     <tr>
       <th>270</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_391349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_391605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3015,7 +3015,7 @@
     <tr>
       <th>273</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_781349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(320,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_781605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(320,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3048,7 +3048,7 @@
     <tr>
       <th>276</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_901349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_901605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3081,7 +3081,7 @@
     <tr>
       <th>279</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1021349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(448,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1021605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(448,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3114,7 +3114,7 @@
     <tr>
       <th>282</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1141349, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1141605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
