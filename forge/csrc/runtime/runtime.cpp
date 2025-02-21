@@ -193,12 +193,14 @@ std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     inputs.reserve(act_inputs.size() + persistent_inputs.size());
 
     size_t input_idx = 0;
-    for (auto& tensor : act_inputs)
+    for (auto tensor : act_inputs)
     {
-        auto rt_tensor = create_tensor(tensor);
         auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
-        rt_tensor = tt::runtime::toLayout(rt_tensor, device, layout);
-        inputs.emplace_back(rt_tensor);
+
+        tt::Tensor input_tensor(tensor);
+        input_tensor.to_device(device_id, layout);
+
+        inputs.emplace_back(input_tensor.get_runtime_tensor());
     }
 
     for (size_t i = 0; i < persistent_inputs.size(); ++i)
