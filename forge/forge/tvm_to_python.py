@@ -2283,7 +2283,7 @@ def compile_tvm_to_python(
                             f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: parameter, requires_grad: {requires_grad}"
                         )
                     else:
-                        if torch.numel(tensor) == 1 and len(tensor.shape) == 0:
+                        if len(tensor.shape) == 0 and torch.numel(tensor) == 1:
                             tensor = tensor.reshape((1,))
                         if len(tensor.shape) > 4 and all([x == 1 for x in tensor.shape[0:-4]]):
                             tensor = tensor.reshape(tensor.shape[-4:])

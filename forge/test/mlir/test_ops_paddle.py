@@ -107,6 +107,23 @@ def test_sqeeze_pp():
     forge.compile(framework_model, sample_inputs=inputs)
 
 
+@pytest.mark.push
+def test_flatten_pp():
+    class Flatten_pp(paddle.nn.Layer):
+        def __init__(self):
+            super().__init__()
+            self.flatten = paddle.nn.Flatten()
+
+        def forward(self, inputs):
+            y = self.flatten(inputs)
+            return y
+
+    inputs = [paddle.rand([2, 32, 32])]
+
+    framework_model = Flatten_pp()
+    forge.compile(framework_model, sample_inputs=inputs)
+
+
 @pytest.mark.parametrize(
     "shape_a, shape_b",
     [
@@ -132,9 +149,10 @@ def test_broadcast_pp(shape_a, shape_b):
     framework_model = Broadcast_pp()
     forge.compile(framework_model, sample_inputs=inputs)
 
-@pytest.mark.xfail(reason="Not supported yet")
+
+
 @pytest.mark.push
-def test_matmul_bias_pp():
+def test_linear_layer_pp():
     input_features, output_dim = (784, 10)
 
     class Linear_pp(paddle.nn.Layer):
@@ -149,5 +167,40 @@ def test_matmul_bias_pp():
 
     framework_model = Linear_pp()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    
+
+@pytest.mark.push
+def test_mnist_pp():
+
+    class PaddleMNISTLinear(paddle.nn.Layer):
+        def __init__(
+            self, input_size=784, output_size=10, hidden_size=512, bias=True): 
+            super(PaddleMNISTLinear, self).__init__()
+            self.model = paddle.nn.Sequential(
+                paddle.nn.Linear(input_size, hidden_size, bias_attr=bias),
+                paddle.nn.ReLU(),
+                paddle.nn.Linear(hidden_size, hidden_size, bias_attr=bias),
+                paddle.nn.ReLU(),
+                paddle.nn.Linear(hidden_size, output_size, bias_attr=bias)
+            )
+            
+
+        def forward(self, x):
+            logits = self.model(x)
+            return logits
+
+    inputs = [paddle.rand([1, 784])]
+
+    framework_model = PaddleMNISTLinear()
+    forge.compile(framework_model, sample_inputs=inputs)        
+
+@pytest.mark.xfail(reason="Loaded models (TranslatedLayer) not supported yet")
+@pytest.mark.push
+def test_paddleocr():
+    # downloaded from PaddleOCR repo
+    model_path = "../paddleocr/PaddleOCR/pretrained_models/en_PP-OCRv3_rec_infer/inference"
+    framework_model = paddle.jit.load(model_path)
+    inputs = [paddle.rand([1, 3, 32, 320])]
+    forge.compile(framework_model, sample_inputs=inputs)
 
 

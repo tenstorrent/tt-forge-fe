@@ -297,7 +297,7 @@ class ForgeWriter(PythonWriter):
     ):
         self.indent = 1
 
-        if self.framework == "pytorch" or self.framework == "paddle":
+        if self.framework == "pytorch":
             # Case 1: No parameter or buffer files provided. Extract parameters and buffers
             # directly from the model.
             if not named_params_file_name and not named_buffers_file_name:
@@ -412,6 +412,99 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
 
             self.indent = 0
+
+        elif self.framework == "paddle":
+            # Case 1: No parameter or buffer files provided. Extract parameters and buffers
+            # directly from the model.
+            if not named_params_file_name and not named_buffers_file_name:
+                self.wl("def process_framework_parameters(self, model):")
+                self.indent += 1
+                self.wl("named_parameters = dict(model.state_dict().items())")
+                self.wl("named_buffers = dict(model.named_buffers())")
+                self.wl("named_parameters.update(named_buffers)")
+            
+            else:
+                assert False, "Invalid combination of param files (either both or none)"
+
+            if len(param_names):
+                self.wl("flattened_to_hierarchical_map = {")
+                self.indent += 1
+                for k, v in param_names.items():
+                    self.wl(f"'{k}' : {v},")
+                self.indent -= 1
+                self.wl("}")
+
+            # Loop over all named params
+            self.wl("for name, paddle_param in named_parameters.items():")
+            self.indent += 1
+
+            # TODO: Handle -inf and inf values
+            
+            self.wl("tensor = torch.tensor(paddle_param.data.numpy())")
+
+            if len(param_names):
+                self.wl("if torch.numel(tensor) == 1 and len(tensor.shape) == 0:")
+                self.indent += 1
+                self.wl("tensor = tensor.reshape((1, 1))")
+                self.indent -= 1
+                self.wl("if name in flattened_to_hierarchical_map:")
+                self.indent += 1
+                self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
+
+                # If name in parameter dictionary
+                self.wl("if param_name in self.get_submodules()[layer_name]._parameters:")
+                self.indent += 1
+                self.wl("tensor.requires_grad = True")
+                self.wl("self.get_submodules()[layer_name].set_parameter(param_name, tensor)")
+                self.indent -= 1
+
+                # If name in constant dictionary
+                self.wl("elif param_name in self.get_submodules()[layer_name]._constants:")
+                self.indent += 1
+                self.wl("if torch.numel(tensor) == 1 and len(tensor.shape) == 0:")
+                self.indent += 1
+                self.wl("tensor = tensor.reshape((1, 1))")
+                self.indent -= 1
+                self.wl("tensor.requires_grad = False")
+                self.wl("self.get_submodules()[layer_name].set_constant(param_name, tensor)")
+                self.indent -= 1
+
+                self.wl("else:")
+                self.indent += 1
+                self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
+                self.indent -= 1
+
+                self.indent -= 1
+                self.wl("else:")
+                self.indent += 1
+            self.wl("if name in self._parameters:")
+            self.indent += 1
+            self.wl("tensor.requires_grad = torch.is_floating_point(tensor)")
+            self.wl("self.set_parameter(name, tensor)")
+            self.indent -= 1
+
+            self.wl("elif name in self._constants:")
+            self.indent += 1
+            self.wl("if torch.numel(tensor) == 1 and len(tensor.shape) == 0:")
+            self.indent += 1
+            self.wl("tensor = tensor.reshape((1, 1))")
+            self.indent -= 1
+            self.wl("tensor.requires_grad = False")
+            self.wl("if not torch.is_floating_point(tensor):")
+            self.indent += 1
+            self.wl("tensor = tensor.float()")
+            self.indent -= 1
+            self.wl("self.set_constant(name, tensor)")
+            self.indent -= 1
+
+            self.wl("else:")
+            self.indent += 1
+            self.wl('logger.warning(f"{name} not found in self._parameters and self._constants")')
+            self.indent -= 1
+            self.indent -= 1
+
+            self.indent = 0
+
 
         elif self.framework == "tensorflow":
             self.wl(f"def process_framework_parameters(self, model):")

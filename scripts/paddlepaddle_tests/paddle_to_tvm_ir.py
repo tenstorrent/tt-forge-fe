@@ -54,15 +54,21 @@ class PyTorchMNISTLinear(torch.nn.Module):
   
 
 def construct_from_paddle(paddle_model, input_shape):
-    input_spec = [paddle.static.InputSpec(shape=input_shape, dtype='float32')]
-    traced_model = paddle.jit.to_static(paddle_model, input_spec=input_spec, full_graph=True)
 
-    # hope there is a better way to do this
-    # must be paddle.jit.TranslatedLayer or paddle.static.Program
-    # paddle.static.save_inference_model and load_inference_model could be used if needed
-    model_save_path = "traced_model"
-    paddle.jit.save(traced_model, model_save_path)
-    loaded_model = paddle.jit.load("traced_model")
+    if isinstance(paddle_model, paddle.nn.Layer):
+
+        input_spec = [paddle.static.InputSpec(shape=input_shape, dtype='float32')]
+        traced_model = paddle.jit.to_static(paddle_model, input_spec=input_spec, full_graph=True)
+
+        # hope there is a better way to do this
+        # must be paddle.jit.TranslatedLayer or paddle.static.Program
+        # paddle.static.save_inference_model and load_inference_model could be used if needed
+        model_save_path = "traced_model"
+        paddle.jit.save(traced_model, model_save_path)
+        loaded_model = paddle.jit.load("traced_model")
+
+    else:
+        loaded_model = paddle_model
 
     # clean up
     for ext in [".pdiparams", ".pdiparams.info", ".pdmodel"]:
