@@ -279,8 +279,9 @@ def verify(
     # 0th step: input checks
 
     # Check if inputs are of the correct type
-    if not inputs:
+    if inputs is None:
         raise ValueError("Input tensors must be provided")
+
     for input_tensor in inputs:
         if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
             raise TypeError(
@@ -298,6 +299,7 @@ def verify(
         )
 
     # 1st step: run forward pass for the networks
+    print(f"type of fw model: {type(framework_model)}")
     fw_out = framework_model(*inputs)
     co_out = compiled_model(*inputs)
 
