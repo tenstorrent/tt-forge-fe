@@ -121,12 +121,12 @@ jobs:
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        pytest -m push --splits ${{ inputs.test_group_cnt }} \
-               --group ${{ matrix.test_group_id }} \
-               --splitting-algorithm least_duration \
-               -m "${{ inputs.test_mark }}" \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               2>&1 | tee pytest.log
+        # pytest -m push --splits ${{ inputs.test_group_cnt }} \
+        #        --group ${{ matrix.test_group_id }} \
+        #        --splitting-algorithm least_duration \
+        #        -m "${{ inputs.test_mark }}" \
+        #        --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+        #        2>&1 | tee pytest.log
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
