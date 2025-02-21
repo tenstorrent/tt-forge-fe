@@ -852,6 +852,9 @@ class TestPlanScanner:
 
         modules = cls.find_modules_in_directory(directory)
 
+        # sort modules to ensure consistent order of test plans
+        modules.sort()
+
         for module_name in modules:
             try:
                 module_name = f"{scan_package}.{module_name}"
