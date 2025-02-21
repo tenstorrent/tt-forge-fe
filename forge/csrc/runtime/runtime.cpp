@@ -5,6 +5,7 @@
 #include "runtime.hpp"
 
 #include <optional>
+#include <type_traits>
 
 #include "graph_lib/graph.hpp"
 #include "tensor.hpp"
@@ -85,6 +86,40 @@ void verify_input_tensors(
     }
 }
 
+void verify_input_descs(
+    const std::vector<runtime::TensorDesc>& descs, const std::vector<runtime::TensorDesc>& expected_descs)
+{
+    if (descs.size() != expected_descs.size())
+    {
+        log_fatal(LogTTDevice, "Input count mismatch: expected {}, got {}", descs.size(), expected_descs.size());
+    }
+
+    for (size_t i = 0; i < descs.size(); ++i)
+    {
+        const auto& desc = descs[i];
+        const auto& expected_desc = expected_descs[i];
+
+        if (desc.shape != expected_desc.shape)
+        {
+            log_fatal(
+                LogTTDevice, "Tensor {} - shape mismatch: expected {}, got {}", i, expected_desc.shape, desc.shape);
+        }
+
+        if (desc.stride != expected_desc.stride)
+        {
+            log_fatal(
+                LogTTDevice, "Tensor {} - stride mismatch: expected {}, got {}", i, expected_desc.stride, desc.stride);
+        }
+
+        if (desc.dataType != expected_desc.dataType)
+        {
+            auto expected = target::EnumNameDataType(expected_desc.dataType);
+            auto got = target::EnumNameDataType(desc.dataType);
+            log_fatal(LogTTDevice, "Tensor {} - data type mismatch: expected {}, got {}", i, expected, got);
+        }
+    }
+}
+
 void verify_tensor(size_t idx, const torch::Tensor& input, const runtime::TensorDesc& desc)
 {
     auto shape = as_vec_int64(desc.shape);
@@ -160,6 +195,144 @@ std::vector<tt::Tensor> create_runtime_tensors(std::vector<torch::Tensor> tensor
 
     return rt_tensors;
 }
+
+std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor> const& inputs)
+{
+    auto& system = TTSystem::get_system();
+
+    for (auto& device : system.devices)
+    {
+        if (!device->is_open())
+        {
+            device->open_device();
+        }
+    }
+
+    // For now, we only support a single device.
+    constexpr size_t device_id = 0;
+    auto& tt_device = system.devices[device_id];
+    if (!tt_device->is_open())
+    {
+        log_fatal(LogTTDevice, "Failed to open device");
+    }
+
+    auto& device = *tt_device->rt_device;
+
+    auto expected_input_descs = binary.getProgramInputs(program_idx);
+
+    std::vector<runtime::TensorDesc> input_descs;
+    input_descs.reserve(inputs.size());
+
+    std::transform(
+        inputs.begin(),
+        inputs.end(),
+        std::back_inserter(input_descs),
+        [](tt::Tensor& input) { return input.tensor_desc(); });
+
+    verify_input_descs(input_descs, expected_input_descs);
+
+    std::vector<runtime::Tensor> rt_inputs;
+    rt_inputs.reserve(inputs.size());
+
+    std::transform(
+        inputs.begin(),
+        inputs.end(),
+        std::back_inserter(rt_inputs),
+        [](tt::Tensor& input) { return input.get_runtime_tensor(); });
+
+    auto output_descs = binary.getProgramOutputs(program_idx);
+    std::vector<runtime::Tensor> rt_outputs = runtime::submit(device, binary, program_idx, rt_inputs);
+    TT_ASSERT(output_descs.size() == rt_outputs.size(), "Output count mismatch");
+
+    std::vector<tt::Tensor> outputs;
+    outputs.reserve(rt_outputs.size());
+
+    size_t output_id = 0;
+    std::transform(
+        rt_outputs.begin(),
+        rt_outputs.end(),
+        std::back_inserter(outputs),
+        [&output_id, &output_descs](runtime::Tensor& rt_output)
+        {
+            auto desc = output_descs[output_id++];
+            return tt::Tensor(rt_output, desc);
+        });
+
+    return outputs;
+}
+
+enum class ProgramType : uint32_t
+{
+    Forward = 0,
+    Backward,
+    Optimizer,
+    Count  // Keep this last
+};
+
+constexpr size_t PROGRAM_TYPE_COUNT = static_cast<std::underlying_type_t<ProgramType>>(ProgramType::Count);
+
+constexpr auto program_idx(ProgramType program_type)
+{
+    TT_ASSERT(program_type < ProgramType::Count, "Invalid program type");
+    return static_cast<std::underlying_type_t<ProgramType>>(program_type);
+}
+
+struct ProgramState
+{
+    ProgramType program_type;
+    std::vector<tt::Tensor> persistent_inputs;
+    std::vector<tt::Tensor> outputs;
+};
+
+struct ModelState
+{
+    runtime::Binary binary;
+    std::array<ProgramState, PROGRAM_TYPE_COUNT> program_states;
+    TensorPool tensor_pool;
+
+    ModelState(runtime::Binary binary) : binary{binary}, program_states{}, tensor_pool{} {}
+
+    void init_program_state(ProgramState&& program_state)
+    {
+        auto program_type = program_state.program_type;
+        auto pidx = program_idx(program_type);
+
+        program_states[pidx] = program_state;
+    }
+
+    void run_program(ProgramType program_type, std::vector<tt::Tensor> act_inputs)
+    {
+        constexpr size_t device_id = 0;
+        size_t pg_id = program_idx(program_type);
+        auto& program_state = program_states[pg_id];
+
+        std::vector<tt::Tensor> inputs;
+        inputs.reserve(act_inputs.size() + program_state.persistent_inputs.size());
+
+        size_t input_idx = 0;
+        for (auto tensor : act_inputs)
+        {
+            auto layout = tt::runtime::getLayout(binary, pg_id, input_idx++);
+            tensor.to_device(device_id, layout);
+
+            inputs.emplace_back(tensor);
+        }
+
+        for (auto& persistent_input : program_state.persistent_inputs)
+        {
+            size_t curr_input_id = input_idx++;
+            if (!persistent_input.on_device())
+            {
+                auto layout = tt::runtime::getLayout(binary, pg_id, curr_input_id);
+                persistent_input.to_device(device_id, layout);
+            }
+
+            inputs.emplace_back(persistent_input);
+        }
+
+        program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
+    }
+};
 
 std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     runtime::Binary& binary,

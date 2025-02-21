@@ -74,7 +74,10 @@ class Tensor
         desc.dataType = torch_scalar_type_to_dt(tensor.scalar_type());
     }
 
-    Tensor(runtime::Tensor& tensor) : tensor_storage(tensor), rt_tensor(tensor) {}
+    Tensor(runtime::Tensor& tensor, runtime::TensorDesc tensor_desc) :
+        tensor_storage(tensor), desc(tensor_desc), rt_tensor(tensor)
+    {
+    }
 
     std::shared_ptr<void> storage() const { return tensor_storage.borrow_data(); }
 
@@ -109,6 +112,8 @@ class Tensor
     }
 
     bool on_device() const { return rt_tensor.has_value(); }
+
+    runtime::TensorDesc tensor_desc() const { return desc; }
 
    private:
     TensorStorage tensor_storage;
