@@ -1715,14 +1715,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((102400, 4096), torch.float32)],
-        {
-            "model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((102400, 4096), torch.float32)],
+            {
+                "model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     (
         Transpose1,
@@ -2866,14 +2869,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((131072, 3072), torch.float32)],
-        {
-            "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((131072, 3072), torch.float32)],
+            {
+                "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     (
         Transpose1,
@@ -3087,14 +3093,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((256000, 2048), torch.float32)],
-        {
-            "model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((256000, 2048), torch.float32)],
+            {
+                "model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     (
         Transpose0,
@@ -4742,19 +4751,22 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((152064, 3584), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((152064, 3584), torch.float32)],
+            {
+                "model_name": [
+                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                    "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
+                    "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     (
         Transpose1,
@@ -5853,10 +5865,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((256008, 2048), torch.float32)],
-        {"model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "op_params": {"dim0": "-2", "dim1": "-1"}},
+    pytest.param(
+        (
+            Transpose0,
+            [((256008, 2048), torch.float32)],
+            {
+                "model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     (
         Transpose0,
