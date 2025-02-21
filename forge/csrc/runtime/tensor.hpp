@@ -6,6 +6,7 @@
 #include <optional>
 #include <variant>
 
+#include "runtime/tt_device.hpp"
 #include "torch/torch.h"
 #include "tt/runtime/runtime.h"
 #include "tt/runtime/types.h"
@@ -71,9 +72,6 @@ class Tensor
         desc.stride = stride;
         desc.itemsize = tensor.element_size();
         desc.dataType = torch_scalar_type_to_dt(tensor.scalar_type());
-
-        rt_tensor = runtime::createTensor(
-            data, shape, stride, tensor.element_size(), torch_scalar_type_to_dt(tensor.scalar_type()));
     }
 
     Tensor(runtime::Tensor& tensor) : tensor_storage(tensor), rt_tensor(tensor) {}
@@ -99,6 +97,18 @@ class Tensor
 
         return torch_tensor;
     }
+
+    void to_device(const size_t device_id, runtime::Layout& layout)
+    {
+        TT_ASSERT(!rt_tensor.has_value());
+        auto device = TTSystem::get_system().devices[device_id];
+
+        rt_tensor =
+            runtime::createTensor(tensor_storage.borrow_data(), desc.shape, desc.stride, desc.itemsize, desc.dataType);
+        rt_tensor = tt::runtime::toLayout(rt_tensor.value(), *device->rt_device, layout);
+    }
+
+    bool on_device() const { return rt_tensor.has_value(); }
 
    private:
     TensorStorage tensor_storage;

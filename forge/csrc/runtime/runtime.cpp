@@ -178,7 +178,8 @@ std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     }
 
     // For now, we only support a single device.
-    auto& tt_device = system.devices[0];
+    constexpr size_t device_id = 0;
+    auto& tt_device = system.devices[device_id];
     if (!tt_device->is_open())
     {
         log_fatal(LogTTDevice, "Failed to open device");
@@ -203,10 +204,12 @@ std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     for (size_t i = 0; i < persistent_inputs.size(); ++i)
     {
         size_t curr_input_id = input_idx++;
-        runtime::Tensor& rt_tensor = persistent_inputs[i].get_runtime_tensor();
-        auto layout = tt::runtime::getLayout(binary, program_idx, curr_input_id);
-        auto device_tensor = tt::runtime::toLayout(rt_tensor, device, layout);
-        persistent_inputs[i].set_runtime_tensor(device_tensor);
+        if (!persistent_inputs[i].on_device())
+        {
+            auto layout = tt::runtime::getLayout(binary, program_idx, curr_input_id);
+            persistent_inputs[i].to_device(device_id, layout);
+        }
+
         inputs.emplace_back(persistent_inputs[i].get_runtime_tensor());
     }
 
