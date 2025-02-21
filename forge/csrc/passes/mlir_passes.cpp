@@ -44,7 +44,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
     // This error handler is necessary when adding the pipeline to the pass manager (via PassPipelineInfo).
     // It's supposed to be called when there's an error during parsing of the pipeline options.
     // However, I think it's wrongly implemented in the MLIR library, so it doesn't get called.
-    mlir::function_ref<mlir::LogicalResult(const mlir::Twine &)> err_handler = [](const mlir::Twine &location)
+    auto err_handler = [](const mlir::Twine &location)
     {
         log_error(LogMLIRCompiler, "Error during parsing pipeline options: {}", location.str());
         return mlir::failure();
