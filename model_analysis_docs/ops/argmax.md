@@ -22,7 +22,7 @@
 			<td rowspan="1">[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
 			<td rowspan="1">3</td>
 			<td>3</td>
-			<td><ul><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32), dtype=int32)</td>
 			<td>dim : -1</td>
 		</tr>

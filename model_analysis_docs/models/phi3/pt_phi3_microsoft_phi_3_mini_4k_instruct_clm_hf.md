@@ -104,9 +104,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>9</th>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(9216, 3072), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(3072, 3072), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(3072, 3072), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(9216, 3072), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

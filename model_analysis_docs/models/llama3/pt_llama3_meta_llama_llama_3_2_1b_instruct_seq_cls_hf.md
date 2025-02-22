@@ -137,9 +137,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>12</th>
@@ -793,8 +793,8 @@
     <tr>
       <th>71</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1, 32), dtype=float32)</td>
-      <td>dim : 2</td>
+      <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
+      <td>dim : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,8 +804,8 @@
     <tr>
       <th>72</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
-      <td>dim : 0</td>
+      <td>Operand(type=Activation, shape=(1, 32), dtype=float32)</td>
+      <td>dim : 2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

@@ -19,7 +19,7 @@
 	<tbody>
 		<tr>
 			<td rowspan="1">1</td>
-			<td rowspan="1">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="1">[TT_METAL][tt-metal buffer allocation] RuntimeError tt_metal/impl/allocator/bank_manager.cpp Out of Memory: Not enough space to allocate DRAM buffer</td>
 			<td rowspan="1">2</td>
 			<td>2</td>
 			<td><ul><li>pt_inception_v4_img_cls_osmr</li><li>pt_inception_v4_img_cls_timm</li></ul></td>
