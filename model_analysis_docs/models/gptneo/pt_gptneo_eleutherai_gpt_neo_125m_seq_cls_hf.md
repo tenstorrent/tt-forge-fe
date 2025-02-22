@@ -91,11 +91,11 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][MLIR runtime ttnn ] tt::exception tt-mlir/runtime/lib/ttnn/runtime.cpp Unsupported data type</td>
+      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
     </tr>
     <tr>
       <th>8</th>
@@ -115,9 +115,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>10</th>
@@ -179,11 +179,11 @@
       <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 2048), dtype=uint1)</td>
       <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
     </tr>
     <tr>
       <th>16</th>
@@ -509,11 +509,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
     </tr>
   </tbody>
 </table>

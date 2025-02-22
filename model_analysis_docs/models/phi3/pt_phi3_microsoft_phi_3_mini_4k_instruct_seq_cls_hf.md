@@ -115,9 +115,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>10</th>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(9216, 3072), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(3072, 3072), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,6 +617,17 @@
     <tr>
       <th>55</th>
       <td>Transpose</td>
+      <td>Operand(type=Parameter, shape=(9216, 3072), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 5, 32, 96), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
@@ -626,7 +637,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>56</th>
+      <th>57</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 48, 5), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -637,20 +648,9 @@
       <td></td>
     </tr>
     <tr>
-      <th>57</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(32, 5, 96), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
       <th>58</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32, 5, 96), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -662,7 +662,7 @@
       <th>59</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,8 +672,8 @@
     <tr>
       <th>60</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(32, 96, 5), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(3072, 3072), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32, 96, 5), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

@@ -113,22 +113,22 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)</td>
       <td>dtype : torch.float32</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
     </tr>
     <tr>
       <th>10</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)</td>
       <td>dtype : torch.int32</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
     </tr>
     <tr>
       <th>11</th>
@@ -914,8 +914,8 @@
     <tr>
       <th>82</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1, 256), dtype=float32)</td>
-      <td>dim : 1</td>
+      <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
+      <td>dim : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -925,8 +925,8 @@
     <tr>
       <th>83</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1, 1, 256), dtype=float32)</td>
-      <td>dim : 2</td>
+      <td>Operand(type=Activation, shape=(1, 256), dtype=float32)</td>
+      <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -936,8 +936,8 @@
     <tr>
       <th>84</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
-      <td>dim : 0</td>
+      <td>Operand(type=Activation, shape=(1, 1, 256), dtype=float32)</td>
+      <td>dim : 2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

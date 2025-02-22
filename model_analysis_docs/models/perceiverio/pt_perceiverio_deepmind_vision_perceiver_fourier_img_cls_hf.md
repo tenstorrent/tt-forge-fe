@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Gelu</td>
-      <td>Operand(type=Activation, shape=(1, 512, 1024), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 1024), dtype=float32)</td>
       <td>approximate : "none"</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Gelu</td>
-      <td>Operand(type=Activation, shape=(1, 1, 1024), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 1024), dtype=float32)</td>
       <td>approximate : "none"</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

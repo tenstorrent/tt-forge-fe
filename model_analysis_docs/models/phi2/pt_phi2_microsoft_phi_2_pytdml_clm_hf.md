@@ -606,8 +606,8 @@
     <tr>
       <th>54</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1, 16), dtype=float32)</td>
-      <td>dim : 2</td>
+      <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
+      <td>dim : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,8 +617,8 @@
     <tr>
       <th>55</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
-      <td>dim : 0</td>
+      <td>Operand(type=Activation, shape=(1, 16), dtype=float32)</td>
+      <td>dim : 2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

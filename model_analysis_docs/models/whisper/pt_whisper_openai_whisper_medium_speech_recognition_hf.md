@@ -509,11 +509,11 @@
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 1), dtype=int64)</td>
       <td>shape : (1, 1)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
     </tr>
     <tr>
       <th>46</th>
