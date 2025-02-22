@@ -11,6 +11,48 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
+import pytest
+import torch
+
+
+@pytest.mark.parametrize(
+    "einsum_pattern, shape_1, shape_2",
+    [
+        pytest.param(
+            "bqnc,bnchw->bqnhw",
+            (1, 100, 8, 32),
+            (1, 8, 32, 14, 20),
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.0451398042494029"),
+        ),
+        pytest.param(
+            "bqnc,bnchw->bqnhw",
+            (3, 99, 7, 31),
+            (3, 7, 31, 15, 19),
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.008232882538975006"),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_einsum(einsum_pattern, shape_1, shape_2):
+    class EinsumModel(torch.nn.Module):
+        def __init__(self, pattern):
+            super().__init__()
+            self.pattern = pattern
+
+        def forward(self, input_1, input_2):
+            return torch.einsum(self.pattern, input_1, input_2)
+
+    input_1 = torch.randn(*shape_1)
+    input_2 = torch.randn(*shape_2)
+    inputs = [input_1, input_2]
+
+    framework_model = EinsumModel(einsum_pattern)
+    framework_model.eval()
+
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.xfail(
     reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
 )
