@@ -107,6 +107,9 @@ class FailingReasonsValidation:
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Exponent value"),
+            lambda ex: isinstance(ex, RuntimeError) and "normalized_index >= 0 and normalized_index < rank" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)]" in f"{ex}",
         ],
         FailingReasons.NOT_IMPLEMENTED: [
             lambda ex: isinstance(ex, NotImplementedError)
@@ -140,6 +143,7 @@ class FailingReasonsValidation:
             and "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:60: tt::exception"
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "Generated MLIR module failed verification" in f"{ex}",
+            lambda ex: f"InternalError: Check failed: *axis_ptr == X (Y vs. X) : cannot squeeze axis with dimension not equal to X in {ex}",
         ],
         FailingReasons.INFERENCE_FAILED: [
             lambda ex: isinstance(ex, AttributeError)
@@ -163,7 +167,16 @@ class FailingReasonsValidation:
             and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=0,y=0)] grow to 2663200 B which is beyond max L1 size of 1499136 B"
             in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
+            and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 28100144 B which is beyond max L1 size of 1499136 B"
+            in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
             and "Index is out of bounds for the rank, should be between 0 and 0 however is 1" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Generated MLIR module failed verification." in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Please look up dimensions by name, got: name = None" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "293 unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+            in f"{ex}",
         ],
     }
 

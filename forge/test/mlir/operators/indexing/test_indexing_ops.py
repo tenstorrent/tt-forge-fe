@@ -49,6 +49,7 @@ from forge.verify.verify import verify
         ),
     ],
 )
+@pytest.mark.push
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::diagonal']")
 def test_diagonal(input_tensor, offset, dim1, dim2):
     class DiagonalModule(nn.Module):
@@ -101,6 +102,7 @@ def test_diagonal(input_tensor, offset, dim1, dim2):
         ),
     ],
 )
+@pytest.mark.push
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::diag']")
 def test_diag(input_tensor, diagonal):
     class DiagModule(nn.Module):
@@ -159,6 +161,7 @@ def test_diag(input_tensor, diagonal):
         ),
     ],
 )
+@pytest.mark.push
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::diag_embed']")
 def test_diag_embed(input_tensor, offset, dim1, dim2):
     class DiagEmbedModule(nn.Module):
@@ -209,6 +212,7 @@ def test_diag_embed(input_tensor, offset, dim1, dim2):
         ),
     ],
 )
+@pytest.mark.push
 @pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
 def test_triu(input_tensor, diagonal):
     class TriuModule(nn.Module):
@@ -259,6 +263,7 @@ def test_triu(input_tensor, diagonal):
         ),
     ],
 )
+@pytest.mark.push
 def test_tril(input_tensor, diagonal):
     class TrilModule(nn.Module):
         def __init__(self, diagonal):
@@ -314,6 +319,7 @@ def test_tril(input_tensor, diagonal):
     ],
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::take_along_dim']")
+@pytest.mark.push
 def test_take_along_dim(input_tensor, indices, dim):
     class TakeAlongDimModule(nn.Module):
         def __init__(self, dim):
@@ -380,6 +386,7 @@ def test_take_along_dim(input_tensor, indices, dim):
         ),
     ],
 )
+@pytest.mark.push
 def test_gather(input_tensor, index, dim, sparse_grad):
     class GatherModule(nn.Module):
         def __init__(self, dim, sparse_grad, index):
@@ -430,6 +437,7 @@ def test_gather(input_tensor, index, dim, sparse_grad):
     ],
 )
 @pytest.mark.xfail(reason="Not supported in our version of pytorch")
+@pytest.mark.push
 def test_unravel_index(indices, shape):
     class UnravelIndexModule(nn.Module):
         def __init__(self, shape):
@@ -477,6 +485,7 @@ def test_unravel_index(indices, shape):
     ],
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::put']")
+@pytest.mark.push
 def test_put(input_tensor, indices, values):
     class PutModule(nn.Module):
         def __init__(self, indices, values):
@@ -540,6 +549,7 @@ def test_put(input_tensor, indices, values):
         ),
     ],
 )
+@pytest.mark.push
 def test_unique(input_tensor, sorted, return_inverse, return_counts, dim):
     class UniqueModule(nn.Module):
         def __init__(self, sorted, return_inverse, return_counts, dim):
@@ -602,6 +612,7 @@ def test_unique(input_tensor, sorted, return_inverse, return_counts, dim):
 @pytest.mark.xfail(
     reason="NotImplementedError: The following operators are not implemented: ['aten::unique_consecutive']"
 )
+@pytest.mark.push
 def test_unique_consecutive(input_tensor, return_inverse, return_counts, dim):
     class UniqueConsecutiveModule(nn.Module):
         def __init__(self, return_inverse, return_counts, dim):
@@ -644,6 +655,7 @@ def test_unique_consecutive(input_tensor, return_inverse, return_counts, dim):
     ],
 )
 @pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")
+@pytest.mark.push
 def test_where(input_tensor1, input_tensor2):
     class WhereModule(nn.Module):
         def __init__(self, input2):
@@ -679,6 +691,7 @@ def test_where(input_tensor1, input_tensor2):
     ],
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::argwhere']")
+@pytest.mark.push
 def test_argwhere(input_tensor):
     class ArgwhereModule(nn.Module):
         def forward(self, x):

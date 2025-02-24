@@ -49,13 +49,14 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], model
 
 
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
 
 @pytest.mark.nightly
+@pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
     # Build Module Name
@@ -66,13 +67,21 @@ def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
     # Record Forge Property
     record_forge_property("model_name", module_name)
 
-    framework_model, inputs, _ = generate_model_vilt_question_answering_hf_pytorch(variant)
+    framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    # Inference
+    output = compiled_model(*inputs)
+
+    # Post processing
+    logits = output[0]
+    idx = logits.argmax(-1).item()
+    print("Predicted answer:", model.config.id2label[idx])
 
 
 def generate_model_vilt_maskedlm_hf_pytorch(variant):

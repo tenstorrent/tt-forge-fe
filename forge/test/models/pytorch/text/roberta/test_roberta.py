@@ -12,7 +12,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -20,7 +20,9 @@ from test.utils import download_model
 @pytest.mark.parametrize("variant", ["xlm-roberta-base"])
 def test_roberta_masked_lm(record_forge_property, variant):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM)
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -57,7 +59,11 @@ def test_roberta_sentiment_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.SEQUENCE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="roberta",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

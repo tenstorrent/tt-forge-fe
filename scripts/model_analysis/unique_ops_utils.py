@@ -16,7 +16,10 @@ from utils import dump_logs, collect_all_model_analysis_test
 
 
 def generate_and_export_unique_ops_tests(
-    test_directory_or_file_path: str, unique_ops_output_directory_path: str, extract_tvm_unique_ops_config: bool = False
+    test_directory_or_file_path: str,
+    unique_ops_output_directory_path: str,
+    extract_tvm_unique_ops_config: bool = False,
+    timeout: int = 1200,
 ):
     """
     Collect all the tests that doesn't contain skip_model_analysis marker in the test_directory_or_file_path specified by the user
@@ -38,11 +41,6 @@ def generate_and_export_unique_ops_tests(
         else:
             model_name_to_tests[model_name].append(test)
 
-    if extract_tvm_unique_ops_config:
-        pytest_argument = "--extract-tvm-unique-ops-config"
-    else:
-        pytest_argument = "--generate-unique-ops-tests"
-
     # Generate unique op test for the all collected test and save the models unique ops test information in the unique_ops_output_directory_path
     model_output_dir_paths = []
     for model_name, tests in model_name_to_tests.items():
@@ -53,12 +51,15 @@ def generate_and_export_unique_ops_tests(
             logger.info(f"Running the tests : {test}")
             try:
                 result = subprocess.run(
-                    ["pytest", test, "-vss", pytest_argument],
+                    ["pytest", test, "-vss", "--no-skips"],
                     capture_output=True,
                     text=True,
                     check=True,
+                    timeout=timeout,
                     env=dict(
                         os.environ,
+                        FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS="1" if not extract_tvm_unique_ops_config else "0",
+                        FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG="1" if extract_tvm_unique_ops_config else "0",
                         FORGE_DISABLE_REPORTIFY_DUMP="1",
                         FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS="1",
                         FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS_DIR_PATH=model_output_dir_path,
@@ -71,6 +72,12 @@ def generate_and_export_unique_ops_tests(
 
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error while running the pytest:\n {e.output}")
+
+            except subprocess.TimeoutExpired as e:
+                logger.error(f"Test timed out after {timeout} seconds")
+
+            except Exception as e:
+                logger.error(f"An unexpected error occurred while running {test}: {e}")
 
     return model_output_dir_paths
 
@@ -88,7 +95,7 @@ def extract_unique_op_tests_from_models(
     unique_op_count = 0
 
     # Dictionary to store constants (name and tensor) used in the model variants
-    models_contants = {}
+    models_constants = {}
 
     # Iterate through all provided model directories
     for model_output_dir_path in model_output_dir_paths:
@@ -139,13 +146,14 @@ def extract_unique_op_tests_from_models(
             with open(model_variant_tvm_generated_unique_op_metadata_file_path, "r") as json_file:
                 model_variant_metadata = json.load(json_file)
 
-            # Load model variants parameters and buffers as tensors from specified files
-            named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
-            if model_variant_metadata["param_file_name"] is not None:
-                serialized_params = torch.load(model_variant_metadata["param_file_name"])
-                named_parameters.update(serialized_params)
-            named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
-            named_parameters.update(named_buffers)
+            if use_constant_value:
+                # Load model variants parameters and buffers as tensors from specified files
+                named_parameters = torch.load(model_variant_metadata["named_params_file_name"])
+                if model_variant_metadata["param_file_name"] is not None:
+                    serialized_params = torch.load(model_variant_metadata["param_file_name"])
+                    named_parameters.update(serialized_params)
+                named_buffers = torch.load(model_variant_metadata["named_buffers_file_name"])
+                named_parameters.update(named_buffers)
 
             # Process each row in the `.xlsx` file to extract operation configurations
             for index, row in model_variant_df.iterrows():
@@ -166,19 +174,6 @@ def extract_unique_op_tests_from_models(
                 if not pd.isna(row["Testfile"]):
                     metadata["model_variant_info"]["Testfile"] = row["Testfile"]
 
-                # Replace the contant node operand name with operand shape which can be extracted from the model parameters and buffers
-                if not use_constant_value:
-                    new_operand_shapes = []
-                    for operand_type, operand_shape in zip(operand_types, operand_shapes):
-                        if operand_type == NodeType.Constant:
-                            if len(named_parameters[operand_shape].shape) == 0:
-                                new_operand_shapes.append((torch.numel(named_parameters[operand_shape]),))
-                            else:
-                                new_operand_shapes.append(tuple(named_parameters[operand_shape].shape))
-                        else:
-                            new_operand_shapes.append(operand_shape)
-                    operand_shapes = list(new_operand_shapes)
-
                 # Create an Operation object with op name, shape, nodetype, dtype, arguments and operation metadata
                 models_operations[unique_op_count] = Operation(
                     function_name=row["Op"],
@@ -194,11 +189,11 @@ def extract_unique_op_tests_from_models(
                     # Store tensor which has constant nodetype as operands
                     for operand_type, operand_name in zip(operand_types, operand_names):
                         if operand_type == NodeType.Constant:
-                            models_contants[operand_name] = named_parameters[operand_name]
+                            models_constants[operand_name] = named_parameters[operand_name]
 
     # Extract unique operation configuration configuration across all the model variants
     unique_operations = UniqueOperations.create_unique_operations(
-        models_operations, models_contants, use_constant_value=use_constant_value
+        models_operations, models_constants, use_constant_value=use_constant_value
     )
 
     # Dump the extracted unique op configuration across all the model varaiants into log file.

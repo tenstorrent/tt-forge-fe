@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pytest
 import torchvision.transforms as transforms
 from datasets import load_dataset
@@ -10,13 +14,15 @@ from forge.verify.verify import verify
 
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 def test_conv_ae_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="conv")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -48,10 +54,21 @@ def test_conv_ae_pytorch(record_forge_property):
     verify(inputs, framework_model, compiled_model)
 
 
+# pretrained weights are not provided in https://github.com/udacity/deep-learning-v2-pytorch,
+# so training the model is necessary to obtain meaningful outputs.
+
+
+@pytest.mark.push
 @pytest.mark.nightly
 def test_linear_ae_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="autoencoder", variant="linear")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="autoencoder",
+        variant="linear",
+        task=Task.IMAGE_ENCODING,
+        source=Source.GITHUB,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -82,3 +99,13 @@ def test_linear_ae_pytorch(record_forge_property):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    # Inference
+    output = compiled_model(sample_tensor)
+
+    # Post processing
+    output_image = output[0].view(1, 28, 28).detach().numpy()
+    save_path = "forge/test/models/pytorch/vision/autoencoder/results"
+    os.makedirs(save_path, exist_ok=True)
+    reconstructed_image_path = f"{save_path}/reconstructed_image.png"
+    plt.imsave(reconstructed_image_path, np.squeeze(output_image), cmap="gray")

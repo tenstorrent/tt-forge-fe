@@ -13,7 +13,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
-from test.models.utils import Framework, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 variants_img_classification = [
     "nvidia/mit-b0",
@@ -33,7 +33,11 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="segformer", variant=variant, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="segformer",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
@@ -76,7 +80,11 @@ def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant)
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="segformer", variant=variant, suffix=Task.SEMANTIC_SEGMENTATION
+        framework=Framework.PYTORCH,
+        model="segformer",
+        variant=variant,
+        task=Task.SEMANTIC_SEGMENTATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property

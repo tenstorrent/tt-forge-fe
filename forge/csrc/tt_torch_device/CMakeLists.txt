@@ -5,4 +5,4 @@ add_library(tt_torch_device
     python_bindings.cpp)
 
 target_compile_options(tt_torch_device PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
-add_dependencies(tt_torch_device build_tt_mlir)
+add_dependencies(tt_torch_device tt-mlir)

@@ -12,6 +12,8 @@ from torch import nn
 import forge
 from forge.verify.compare import compare_with_golden_pcc
 
+# Common constants
+GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
@@ -44,6 +46,7 @@ HIDDEN_SIZE = [  # Hidden layer size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 
 ARCH = []
 DATAFORMAT = []
 MATH_FIDELITY = []
+LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 
 
 # Model definition
@@ -73,12 +76,13 @@ class MNISTLinear(nn.Module):
 @pytest.mark.parametrize("hidden_size", HIDDEN_SIZE, ids=[f"hidden_size={item}" for item in HIDDEN_SIZE])
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
-@pytest.mark.push
+@pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
 def test_mnist_linear(
     training,
     batch_size,
     input_size,
     hidden_size,
+    loop_count,
     # arch,
     # dataformat,
     # math_fidelity,
@@ -96,8 +100,12 @@ def test_mnist_linear(
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    start = time.time()
+    # Run for the first time to warm up the model.
+    # This is required to get accurate performance numbers.
     co_out = compiled_model(*inputs)
+    start = time.time()
+    for _ in range(loop_count):
+        co_out = compiled_model(*inputs)
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
@@ -111,48 +119,76 @@ def test_mnist_linear(
     )
     machine_name = socket.gethostname()
     total_time = end - start
+    total_samples = batch_size * loop_count
 
-    samples_per_sec = batch_size / total_time
+    samples_per_sec = total_samples / total_time
     model_name = "MNIST Linear"
+    model_type = "Classification, Random Input Data"
+    num_layers = 2  # Number of layers in the model, in this case 2 Linear hidden layers
+    dataset_name = "MNIST, Random Data"
 
     print("====================================================================")
     print("| MNIST Benchmark Results:                                         |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
+    print(f"| Model type: {model_type}")
+    print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
     print(f"| Total execution time: : {total_time}")
-    print(f"| Total samples: {batch_size}")
+    print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
     print(f"| Input size: {input_size}")
     print(f"| Hidden size: {hidden_size}")
+    print(f"| Number of layers: {num_layers}")
     print("====================================================================")
 
-    # Create a dictionary to store the results and the configuration
     result = {
         "model": model_name,
-        "config": "",
-        "date": date,
-        "hash": short_hash,
-        "machine_name": machine_name,
-        "samples_per_sec": samples_per_sec,
-        "total_samples": batch_size,
-        "total_time": total_time,
-        "training": training,
+        "model_type": model_type,
+        "run_type": f"{model_name}_{batch_size}_{input_size}_{hidden_size}",
+        "config": {"model_size": "small"},
+        "num_layers": num_layers,
         "batch_size": batch_size,
-        "output": "",
-        "arch": "",
-        "chips": "",
-        # "dataformat": dataformat,
-        # "math_fidelity": math_fidelity,
-        "device": "",
-        "galaxy": "",
-        "perf_analysis": "",
-        "load_tti": "",
-        "save_tti": "",
-        "task": "",
-        "evaluation_score": "",
+        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
+        # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
+        "dataset_name": dataset_name,
+        "profile_name": "",
+        "input_sequence_length": -1,  # When this value is negative, it means it is not applicable
+        "output_sequence_length": -1,  # When this value is negative, it means it is not applicable
+        "image_dimension": f"{MNIST_INPUT_FEATURE_SIZE}",
+        "perf_analysis": False,
+        "training": training,
+        "measurements": [
+            {
+                "iteration": 1,  # This is the number of iterations, we are running only one iteration.
+                "step_name": model_name,
+                "step_warm_up_num_iterations": 0,
+                "measurement_name": "total_samples",
+                "value": total_samples,
+                "target": -1,  # This value is negative, because we don't have a target value.
+                "device_power": -1.0,  # This value is negative, because we don't have a device power value.
+                "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
+            },
+            {
+                "iteration": 1,  # This is the number of iterations, we are running only one iteration.
+                "step_name": model_name,
+                "step_warm_up_num_iterations": 0,
+                "measurement_name": "total_time",
+                "value": total_time,
+                "target": -1,  # This value is negative, because we don't have a target value.
+                "device_power": -1.0,  # This value is negative, because we don't have a device power value.
+                "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
+            },
+        ],
+        "device_info": {
+            "device_name": "",
+            "galaxy": False,
+            "arch": "",
+            "chips": 1,
+        },
+        "device_ip": None,
     }
 
     return result
@@ -163,6 +199,7 @@ def mnist_linear_benchmark(config: dict):
     training = config["training"]
     batch_size = config["batch_size"]
     output_file = config["output"]
+    loop_count = config["loop_count"]
 
     input_size = MNIST_INPUT_FEATURE_SIZE if config["input_size"] is None else config["input_size"]
     hidden_size = MNIIST_HIDDEN_SIZE if config["hidden_size"] is None else config["hidden_size"]
@@ -172,6 +209,7 @@ def mnist_linear_benchmark(config: dict):
         batch_size=batch_size,
         input_size=input_size,
         hidden_size=hidden_size,
+        loop_count=loop_count,
     )
 
     if not output_file:

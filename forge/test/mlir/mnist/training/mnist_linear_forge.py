@@ -17,7 +17,6 @@ from utils import (
     load_tb_writer,
     load_dataset,
 )
-from forge.config import _get_global_compiler_config
 
 
 class FeedForward(torch.nn.Module):
@@ -74,9 +73,6 @@ def train(loss_on_cpu=True):
     else:
         tt_loss = forge.PyTorchModule(f"loss_{batch_size}", torch.nn.CrossEntropyLoss())
         tt0.place_loss_module(tt_loss)
-
-    compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.enable_auto_fusing = False
 
     if not loss_on_cpu:
         sample_target = (sample_target,)

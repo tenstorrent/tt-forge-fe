@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 # Paper - https://arxiv.org/abs/1311.2524
@@ -19,7 +19,9 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 def test_rcnn_pytorch(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="rcnn")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -79,7 +81,13 @@ def test_rcnn_pytorch(record_forge_property):
         inputs = [rect_transform.unsqueeze(0)]
 
         # Build Module Name
-        module_name = build_module_name(framework=Framework.PYTORCH, model="rcnn", suffix=f"rect_{idx}")
+        module_name = build_module_name(
+            framework=Framework.PYTORCH,
+            model="rcnn",
+            suffix=f"rect_{idx}",
+            source=Source.TORCHVISION,
+            task=Task.OBJECT_DETECTION,
+        )
 
         # Forge compile framework model
         compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

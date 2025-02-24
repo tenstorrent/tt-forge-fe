@@ -134,6 +134,10 @@ class TestVerification:
         if value_range is None:
             value_range = ValueRanges.SMALL
 
+        # Old behavior when dev_data_format was not set
+        if dev_data_format is None:
+            value_range = ValueRanges.SMALL_POSITIVE
+
         operator = getattr(torch, test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}

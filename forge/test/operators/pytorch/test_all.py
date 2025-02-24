@@ -7,12 +7,6 @@
 
 # Examples
 # pytest -svv forge/test/operators/pytorch/test_all.py::test_plan
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_failed
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_skipped
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_fatal
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_not_implemented
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_data_mismatch
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_unsupported_df
 # pytest -svv forge/test/operators/pytorch/test_all.py::test_custom
 # pytest -svv forge/test/operators/pytorch/test_all.py::test_query
 # pytest -svv forge/test/operators/pytorch/test_all.py::test_unique
@@ -26,13 +20,16 @@ import textwrap
 
 from loguru import logger
 from tabulate import tabulate
+from typing import List
 
 from test.operators.utils import DeviceUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
+from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
 
 
@@ -58,13 +55,21 @@ class TestParamsData:
 
     __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
-    test_suite = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
-
     @classmethod
     def get_single_list(cls) -> list[str]:
         """Provide a list of test ids to run for test_single method"""
         test_id_single = os.getenv("TEST_ID", None)
         return [test_id_single] if test_id_single else []
+
+    @classmethod
+    def get_ids_from_file(cls) -> list[str]:
+        """Provide a list of test ids from a file to run for test_ids method"""
+        id_file = os.getenv("ID_FILE", None)
+        if id_file is not None:
+            test_ids = TestPlanUtils.load_test_ids_from_file(id_file)
+        else:
+            test_ids = []
+        return test_ids
 
     @classmethod
     def build_filtered_collection(cls) -> TestCollection:
@@ -96,7 +101,9 @@ class TestParamsData:
         dev_data_formats = os.getenv("DEV_DATA_FORMATS", None)
         if dev_data_formats:
             dev_data_formats = dev_data_formats.split(",")
-            dev_data_formats = [getattr(forge.DataFormat, dev_data_format) for dev_data_format in dev_data_formats]
+            dev_data_formats = [
+                TestPlanUtils.dev_data_format_from_str(dev_data_format) for dev_data_format in dev_data_formats
+            ]
 
         math_fidelities = os.getenv("MATH_FIDELITIES", None)
         if math_fidelities:
@@ -161,6 +168,20 @@ class TestParamsData:
         return lambdas
 
     @classmethod
+    def get_random_seed(cls) -> int:
+        """Provide a random seed based on environment variables"""
+        random_seed = os.getenv("RANDOM_SEED", None)
+        return int(random_seed) if random_seed else 0
+
+    @classmethod
+    def get_filter_sample(cls) -> float:
+        """Provide a sample of test vectors to run based on environment variables"""
+
+        sample = os.getenv("SAMPLE", None)
+
+        return float(sample) if sample else 100
+
+    @classmethod
     def get_filter_range(cls) -> tuple[int, int]:
         """Provide a range of test vectors to run based on environment variables"""
 
@@ -173,6 +194,19 @@ class TestParamsData:
                 return int(range[0]), int(range[1])
 
         return 0, 100000
+
+    @classmethod
+    def filter_suite_by_operators(cls, test_suite: TestSuite, operators: List[str]) -> TestSuite:
+        """Filter test plans based on operator list to speed up test filtering"""
+        if operators is None:
+            return test_suite
+        else:
+            test_plans = [
+                test_plan
+                for test_plan in test_suite.test_plans
+                if len(list(set(test_plan.operators) & set(operators))) > 0
+            ]
+            return TestSuite(test_plans)
 
 
 class TestCollectionData:
@@ -206,6 +240,15 @@ class TestCollectionData:
             forge.DataFormat.Int8,
         ],
     )
+
+
+class TestSuiteData:
+
+    __test__ = False  # Avoid collecting TestSuiteData as a pytest test
+
+    all = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
+
+    filtered = TestParamsData.filter_suite_by_operators(all, TestCollectionData.all.operators)
 
 
 class VectorLambdas:
@@ -262,12 +305,9 @@ class VectorLambdas:
     )
 
 
-test_suite = TestParamsData.test_suite
-
-
 @pytest.mark.parametrize(
     "test_vector",
-    test_suite.query_all().filter(
+    TestSuiteData.filtered.query_all().filter(
         VectorLambdas.ALL_OPERATORS,
         VectorLambdas.QUICK,
         # VectorLambdas.FILTERED,
@@ -304,9 +344,10 @@ def test_custom(test_vector: TestVector, test_device):
 
 @pytest.mark.parametrize(
     "test_vector",
-    test_suite.query_all()
+    TestSuiteData.filtered.query_all()
     .filter(VectorLambdas.FILTERED)
     .filter(*TestParamsData.build_filter_lambdas())
+    .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
     .range(*TestParamsData.get_filter_range())
     .to_params(),
 )
@@ -316,7 +357,7 @@ def test_query(test_vector: TestVector, test_device):
 
 @pytest.mark.parametrize(
     "test_vector",
-    test_suite.query_all()
+    TestSuiteData.filtered.query_all()
     .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.SINGLE_SHAPE)
     .filter(
         lambda test_vector: test_vector.input_source in [InputSource.FROM_HOST]
@@ -330,13 +371,24 @@ def test_unique(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
-@pytest.mark.parametrize("test_vector", test_suite.query_from_id_list(TestParamsData.get_single_list()).to_params())
+@pytest.mark.parametrize(
+    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_single_list()).to_params()
+)
 def test_single(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
+@pytest.mark.parametrize(
+    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_ids_from_file()).to_params()
+)
+def test_ids(test_vector: TestVector, test_device):
+    test_vector.verify(test_device)
+
+
 @pytest.mark.nightly_sweeps
-@pytest.mark.parametrize("test_vector", test_suite.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params())
+@pytest.mark.parametrize(
+    "test_vector", TestSuiteData.filtered.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params()
+)
 def test_plan(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
@@ -361,67 +413,6 @@ def test_plan(test_vector: TestVector, test_device):
 # Below are examples of custom test functions that utilize filtering lambdas to run specific tests
 
 
-@pytest.mark.parametrize(
-    "test_vector",
-    test_suite.query_all()
-    .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.FAILING, VectorLambdas.NOT_SKIPED)
-    .to_params(),
-)
-def test_failed(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    test_suite.query_all().filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.SKIPED).to_params(),
-)
-def test_skipped(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    test_suite.query_all()
-    .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.FAILING, VectorLambdas.SKIPED_FATAL)
-    .to_params(),
-)
-def test_fatal(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    test_suite.query_all()
-    .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.FAILING, VectorLambdas.NOT_SKIPED)
-    .filter(VectorLambdas.UNSUPPORTED_DATA_FORMAT)
-    .to_params(),
-)
-def test_unsupported_df(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    test_suite.query_all()
-    .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.FAILING, VectorLambdas.NOT_SKIPED)
-    .filter(VectorLambdas.NOT_IMPLEMENTED)
-    .to_params(),
-)
-def test_not_implemented(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    test_suite.query_all()
-    .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.FAILING, VectorLambdas.NOT_SKIPED)
-    .filter(VectorLambdas.DATA_MISMATCH)
-    .to_params(),
-)
-def test_data_mismatch(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
 class InfoUtils:
     @classmethod
     def print_query_params(cls, max_width=80):
@@ -429,11 +420,15 @@ class InfoUtils:
         cls.print_query_values(max_width)
         print("Query examples:")
         cls.print_query_examples(max_width)
+        print("Configuration parameters:")
+        cls.print_configuration_params(max_width)
+        print("Configuration examples:")
+        cls.print_configuration_examples(max_width)
 
     @classmethod
     def print_query_values(cls, max_width=80):
 
-        operators = [key for key in test_suite.indices]
+        operators = [key for key in TestSuiteData.all.indices]
         operators = sorted(operators)
         operators = ", ".join(operators)
 
@@ -474,8 +469,11 @@ class InfoUtils:
             },
             {"name": "FAILING_REASONS", "description": f"List of failing reasons. Supported values: {failing_reasons}"},
             {"name": "SKIP_REASONS", "description": "Same as FAILING_REASONS"},
+            {"name": "RANDOM_SEED", "description": "Seed for random number generator"},
+            {"name": "SAMPLE", "description": "Percentage of results to sample"},
             {"name": "RANGE", "description": "Limit number of results"},
             {"name": "TEST_ID", "description": "Id of a test containing test parameters"},
+            {"name": "ID_FILE", "description": "Path to a file containing test ids"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Supported values"])
@@ -499,8 +497,33 @@ class InfoUtils:
             {"name": "FAILING_REASONS", "description": "export FAILING_REASONS=NOT_IMPLEMENTED"},
             {"name": "SKIP_REASONS", "description": "export SKIP_REASONS=FATAL_ERROR"},
             {"name": "RANGE", "description": "export RANGE=5"},
+            {"name": "RANDOM_SEED", "description": "export RANDOM_SEED=42"},
+            {"name": "SAMPLE", "description": "export SAMPLE=20"},
             {"name": "RANGE", "description": "export RANGE=10,20"},
             {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
+            {"name": "ID_FILE", "description": "export ID_FILE='/path/to/test_ids.log'"},
+        ]
+
+        cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])
+
+    @classmethod
+    def print_configuration_params(cls, max_width=80):
+
+        parameters = [
+            {
+                "name": "SKIP_FORGE_VERIFICATION",
+                "description": f"Skip Forge model verification including model compiling and inference",
+                "default": "false",
+            },
+        ]
+
+        cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Description", "Default"])
+
+    @classmethod
+    def print_configuration_examples(cls, max_width=80):
+
+        parameters = [
+            {"name": "SKIP_FORGE_VERIFICATION", "description": "export SKIP_FORGE_VERIFICATION=true"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])

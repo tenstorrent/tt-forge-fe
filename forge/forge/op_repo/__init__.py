@@ -15,6 +15,8 @@
 from .datatypes import OperandNumInt, OperandNumTuple, OperandNumRange
 from .datatypes import TensorShape, OperatorParam, OperatorParamNumber, OperatorDefinition, OperatorRepository
 from .datatypes import ShapeCalculationContext
+from .forge_operators import forge_operator_repository
+from .pytorch_operators import pytorch_operator_repository
 
 __ALL__ = [
     "OperandNumInt",
@@ -26,4 +28,6 @@ __ALL__ = [
     "OperatorDefinition",
     "OperatorRepository",
     "ShapeCalculationContext",
+    "forge_operator_repository",
+    "pytorch_operator_repository",
 ]

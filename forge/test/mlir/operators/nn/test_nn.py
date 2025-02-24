@@ -64,14 +64,14 @@ def test_avgpool3d(shape, kernel_size, stride):
         def forward(self, x):
             return nn.functional.avg_pool3d(x, kernel_size=kernel_size, stride=stride)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.compile_depth = (
         forge.CompileDepth.SPLIT_GRAPH
     )  # Due to #https://github.com/tenstorrent/tt-mlir/issues/1343
     inputs = [torch.rand(shape)]
 
     framework_model = AvgPool3D()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
         verify(inputs, framework_model, compiled_model)
@@ -86,9 +86,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 64, 55, 54),
@@ -96,9 +94,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 128, 26, 26),
@@ -106,9 +102,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 256, 26, 26),
@@ -116,9 +110,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes."
-            ),
+            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 96, 54, 54),
@@ -126,7 +118,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
         ),
         pytest.param(
             (1, 64, 55, 54),
@@ -134,9 +125,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(
-                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
-            ),
         ),
         pytest.param(
             (1, 128, 26, 26),
@@ -144,7 +132,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
         ),
         pytest.param(
             (1, 256, 26, 26),
@@ -152,7 +139,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             False,
-            marks=pytest.mark.xfail(reason="Runtime Error  : Shard page size must currently have L1 aligned page size"),
         ),
         pytest.param(
             (1, 3, 32, 32),
@@ -161,7 +147,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             (1, 1, 1, 1),
             False,
             marks=pytest.mark.xfail(
-                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
             ),
         ),
         pytest.param(
@@ -171,7 +157,7 @@ def test_avgpool3d(shape, kernel_size, stride):
             (1, 1, 2, 2),
             False,
             marks=pytest.mark.xfail(
-                reason="Invalid sharding configuration: For Row Major layout with element size of 2 bytes, the innermost dimension must align to 2 bytes"
+                reason="Runtime Error  : Shard page size must currently have L1 aligned page size."
             ),
         ),
     ],
@@ -298,7 +284,7 @@ def test_softmax():
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
 def test_embedding(vocab_size, token_num, embedding_dim):
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.enable_tvm_cpu_fallback = False
 
     class Embedding(nn.Module):
@@ -314,7 +300,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     ]
 
     framework_model = Embedding()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(inputs, framework_model, compiled_model)
 
@@ -363,9 +349,6 @@ def test_convtranspose2d(
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:474: new_volume == old_volume. Invalid arguments to reshape. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1574"
-)
 @pytest.mark.push
 def test_avg_pool2d():
     class AvgPool2d(nn.Module):

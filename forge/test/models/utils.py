@@ -18,16 +18,24 @@ class Framework(StrEnum):
 
 class Task(StrEnum):
     SPEECH_TRANSLATE = "speech_translate"
+    MUSIC_GENERATION = "music_generation"
+    SPEECH_RECOGNITION = "speech_recognition"
     QA = "qa"
     MASKED_LM = "mlm"
     CAUSAL_LM = "clm"
     TOKEN_CLASSIFICATION = "token_cls"
     SEQUENCE_CLASSIFICATION = "seq_cls"
     IMAGE_CLASSIFICATION = "img_cls"
+    IMAGE_SEGMENTATION = "img_seg"
+    POSE_ESTIMATION = "pose_estimation"
+    DEPTH_PREDICTION = "depth_prediction"
     TEXT_GENERATION = "text_gen"
     OBJECT_DETECTION = "obj_det"
     SEMANTIC_SEGMENTATION = "sem_seg"
     MASKED_IMAGE_MODELLING = "masked_img"
+    CONDITIONAL_GENERATION = "cond_gen"
+    IMAGE_ENCODING = "img_enc"
+    VISUAL_BACKBONE = "visual_bb"
 
 
 class Source(StrEnum):
@@ -36,23 +44,22 @@ class Source(StrEnum):
     TIMM = "timm"
     OSMR = "osmr"
     TORCHVISION = "torchvision"
+    GITHUB = "github"
 
 
 def build_module_name(
     framework: Framework,
     model: str,
+    task: Task,
+    source: Source,
     variant: str = "base",
-    task: str | None = None,
-    source: str | None = None,
     suffix: str | None = None,
 ) -> str:
     module_name = f"{framework}_{model}"
     if variant is not None:
         module_name += f"_{variant}"
-    if task is not None:
-        module_name += f"_{task}"
-    if source is not None:
-        module_name += f"_{source}"
+    module_name += f"_{task}"
+    module_name += f"_{source}"
     if suffix is not None:
         module_name += f"_{suffix}"
 

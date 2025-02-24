@@ -215,8 +215,31 @@ def test_transpose(params, data_format):
 
 @pytest.mark.parametrize(
     "source_and_target_shape",
-    [((8, 32, 256), (2, 4, 32, 256)), ((8, 32, 32), (1, 2, 4, 32, 32)), ((8192, 128), (1, 256, 32, 128))],
-    ids=["1", "2", "3"],
+    [
+        ((8,), (2, 4)),
+        ((32,), (1, 32, 1)),
+        ((4, 4), (2, 2, 2, 2)),
+        ((3, 5, 7), (105,)),
+        ((6, 3, 2), (3, 2, 3, 2)),
+        ((1, 8, 16, 32), (64, 4, 2, 8)),
+        ((9, 3, 5, 7, 2), (7, 2, 5, 3, 9)),
+        ((1, 3, 5, 7, 9, 2), (3, 5, 7, 2, 9, 1)),
+        ((10, 5, 2, 3, 8, 6, 4), (5, 10, 8, 4, 3, 6, 2)),
+        ((11, 3, 7, 9, 5, 2, 8, 6), (3, 7, 9, 5, 2, 8, 6, 11)),
+        ((12, 4, 3, 7, 9, 5, 2, 8, 6, 11), (3, 4, 7, 9, 5, 2, 8, 6, 11, 12)),
+        ((12, 4, 3, 7, 9, 5, 2, 8, 11), (3, 4, 7, 9, 5, 2, 8, 11, 12)),
+        ((11, 3, 7, 9, 5, 2, 8, 6), (3, 7, 9, 5, 2, 8, 6, 11)),
+        ((1024,), (1, 2, 4, 8, 2, 8)),
+        ((15, 7, 3), (3, 7, 15)),
+        ((2048, 2), (8, 4, 1, 64, 2)),
+        ((16, 32, 64, 128), (4, 8, 4, 64, 32, 16)),
+        ((8, 27), (3, 3, 3, 8)),
+        ((3, 5, 7, 11), (5, 7, 3, 11)),
+        ((8192, 128), (1, 256, 32, 128)),
+        ((1000,), (10, 10, 10)),
+        ((1024,), (1, 2, 4, 2, 2, 2, 4, 4)),
+    ],
+    ids=[str(i) for i in range(1, 23)],
 )
 @pytest.mark.push
 def test_reshape(source_and_target_shape):
@@ -272,6 +295,62 @@ def test_squeeze(input_shape_and_dim):
 
     framework_model = Squeeze()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.xfail(
+    reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
+)
+@pytest.mark.push
+@pytest.mark.parametrize(
+    "attn_weights_shape, attention_mask_shape, module_name",
+    [
+        pytest.param((16, 256, 256), (1, 1, 256, 256), "squeeze", id="squeeze"),
+        pytest.param((1, 16, 256, 256), (1, 256, 256), "unsqueeze", id="unsqueeze"),
+    ],
+)
+def test_operand_commute_clone(attn_weights_shape, attention_mask_shape, module_name):
+    """
+    Tests commuting broadcast through squeeze and unsqueeze operations
+    """
+
+    class SqueezeOperandCommuteClone(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, attn_weights, attention_mask):
+            bsz = 1
+            tgt_len = 256
+            src_len = 256
+            num_heads = 16
+
+            if module_name == "squeeze":
+                attn_weights = attn_weights.view(bsz, num_heads, tgt_len, src_len) + attention_mask
+                attn_weights = torch.max(
+                    attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min, device=attn_weights.device)
+                )
+                attn_weights = attn_weights.view(bsz * num_heads, tgt_len, src_len)
+            elif module_name == "unsqueeze":
+                attn_weights = attn_weights.view(bsz * num_heads, tgt_len, src_len) + attention_mask
+                attn_weights = torch.max(
+                    attn_weights, torch.tensor(torch.finfo(attn_weights.dtype).min, device=attn_weights.device)
+                )
+                attn_weights = attn_weights.view(bsz, num_heads, tgt_len, src_len)
+
+            return attn_weights
+
+    attn_weights = torch.randn(*attn_weights_shape)
+    attention_mask = torch.zeros(*attention_mask_shape, dtype=torch.int64)
+
+    if module_name == "squeeze":
+        attention_mask[:, :, :8, :8] = 1
+    elif module_name == "unsqueeze":
+        attention_mask[:, :8, :8] = 1
+
+    inputs = [attn_weights, attention_mask]
+    framework_model = SqueezeOperandCommuteClone()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify(inputs, framework_model, compiled_model)
 
@@ -504,9 +583,6 @@ def test_repeat():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat_interleave"
-)
 @pytest.mark.push
 def test_expand():
     class Expand(nn.Module):
@@ -525,23 +601,49 @@ def test_expand():
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat_interleave"
+@pytest.mark.parametrize(
+    "shape, dim, repeats",
+    [
+        # Basic cases
+        ((2, 3), 0, 2),  # Repeat along batch dimension
+        ((2, 3), 1, 3),  # Repeat along feature dimension
+        # More complex shapes
+        ((2, 3, 4), 0, 2),  # 3D tensor, repeat first dimension
+        ((2, 3, 4), 1, 3),  # 3D tensor, repeat middle dimension
+        ((2, 3, 4), 2, 4),  # 3D tensor, repeat last dimension
+        # Edge cases
+        ((1, 5), 0, 3),  # Single item in first dimension
+        ((5, 1), 1, 3),  # Single item in second dimension
+        ((2, 3), 0, 1),  # Repeat of 1 (identity case)
+        # Negative dimensions
+        ((2, 3, 4), -1, 2),  # 3D tensor, repeat last dimension
+        ((2, 3, 4), -2, 3),  # 3D tensor, repeat middle dimension
+        ((2, 3, 4, 5), -4, 4),  # 4D tensor, repeat first dimension
+        # Larger tensors
+        ((4, 3, 2, 2), 0, 2),  # 4D tensor, repeat first dimension
+        ((4, 3, 2, 2), 2, 3),  # 4D tensor, repeat third dimension
+        # Different repeat values
+        ((3, 4), 0, 5),  # Larger repeat value
+        ((2, 2, 2), 1, 4),  # 3D tensor with same dimensions
+    ],
 )
 @pytest.mark.push
-def test_repeat_interleave():
+def test_repeat_interleave(shape, dim, repeats):
     class RepeatInterleave(nn.Module):
-        def __init__(self, repeats, dim):
+        def __init__(self, dim, repeats):
             super().__init__()
             self.repeats = repeats
             self.dim = dim
 
-        def forward(self, x):
-            return x.repeat_interleave(self.repeats, dim=self.dim)
+        def forward(
+            self,
+            x,
+        ):
+            return torch.repeat_interleave(x, repeats=repeats, dim=dim)
 
-    inputs = [torch.rand(1, 2, 1, 4, 4)]
+    inputs = [torch.rand(shape)]
 
-    framework_model = RepeatInterleave(repeats=4, dim=2)
+    framework_model = RepeatInterleave(dim=dim, repeats=repeats)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)

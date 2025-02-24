@@ -275,13 +275,17 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                 auto updated_commute_shape = commute_shape;
                 updated_commute_shape[operand_dims.second] =
                     graph->node_by_id(operand_edge.producer_node_id)->shape()[operand_dims.first];
-                update_reshape_attr(op, updated_commute_shape);
+                if (op->op_name() == "reshape")
+                    update_reshape_attr(op, updated_commute_shape);
+
                 clone->set_shape(updated_commute_shape);
                 log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", updated_commute_shape);
             }
             else
             {
-                update_reshape_attr(op, commute_shape);
+                if (op->op_name() == "reshape")
+                    update_reshape_attr(op, commute_shape);
+
                 clone->set_shape(commute_shape);
                 log_trace(LogGraphCompiler, "  Operand commute clone shape: {}", commute_shape);
             }

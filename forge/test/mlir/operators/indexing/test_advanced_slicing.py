@@ -20,6 +20,7 @@ from forge.verify.verify import verify
         (torch.arange(1.0, 5.0).reshape(1, 4), 1, 2),  # Wide matrix, select third column
     ],
 )
+@pytest.mark.push
 def test_select(input_dim_index):
     input_tensor, dim, index = input_dim_index
 
@@ -47,11 +48,6 @@ def test_select(input_dim_index):
     [
         pytest.param(
             (torch.arange(10.0), [3, 3, 4], 0),  # 1D tensor  # Sizes to split  # Dimension to split along
-            marks=pytest.mark.xfail(
-                reason="- Emmiting mlir for function forward"
-                + "loc(\"index_0.dc.unsqueeze.0\"(\"forward\":4294967295:28)): error: 'ttir.unsqueeze' op requires attribute 'dim'"
-                + 'loc("SplitModule":0:0): error: module verification failed.'
-            ),
         ),
         pytest.param(
             (torch.arange(20.0).reshape(4, 5), 2, 0),  # 2D tensor  # Number of parts  # Dimension to split along
@@ -65,6 +61,7 @@ def test_select(input_dim_index):
         ),
     ],
 )
+@pytest.mark.push
 def test_split(input_tensor_sizes_dim):
     input_tensor, sizes_or_parts, dim = input_tensor_sizes_dim
 
@@ -102,6 +99,7 @@ def test_split(input_tensor_sizes_dim):
         ),
     ],
 )
+@pytest.mark.push
 def test_chunk(input_tensor_chunks_dim):
     input_tensor, chunks, dim = input_tensor_chunks_dim
 
@@ -182,6 +180,7 @@ def test_chunk(input_tensor_chunks_dim):
         ),
     ],
 )
+@pytest.mark.push
 def test_take(input_tensor_indices):
     input_tensor, indices = input_tensor_indices
 
@@ -244,6 +243,7 @@ def test_take(input_tensor_indices):
         ),
     ],
 )
+@pytest.mark.push
 def test_nonzero(input_tensor_as_tuple):
     input_tensor, as_tuple = input_tensor_as_tuple
 
@@ -311,6 +311,7 @@ def test_nonzero(input_tensor_as_tuple):
         ),
     ],
 )
+@pytest.mark.push
 def test_narrow(input_dim_start_length):
     input_tensor, dim, start, length = input_dim_start_length
 

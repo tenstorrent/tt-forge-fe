@@ -36,10 +36,12 @@ jobs:
         - /etc/udev/rules.d:/etc/udev/rules.d
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
 
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HF_HOME: /mnt/dockercache/huggingface
       HF_HUB_DISABLE_PROGRESS_BARS: 1
 
     steps:

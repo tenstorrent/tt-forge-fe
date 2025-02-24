@@ -46,7 +46,7 @@ def test_nan_to_num(shape, dtype):
         def forward(self, x1):
             return torch.nan_to_num(x1)
 
-    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg = forge.config.CompilerConfig()
 
     if dtype == torch.float16:
         # set compie depth to avoid Unsupported ttnn::DataType , Fatal Python error: Aborted
@@ -63,7 +63,7 @@ def test_nan_to_num(shape, dtype):
     inputs[0][mask_neginf] = float("-inf")
 
     framework_model = nan_to_num()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
     if dtype == torch.float32:
         verify(inputs, framework_model, compiled_model)
 
@@ -348,10 +348,27 @@ def test_clip(shape, min_val, max_val):
 @pytest.mark.parametrize(
     "shape, dim",
     [
+        ((56), 0),
         ((1, 128), 1),
+        pytest.param(
+            (1, 64, 76),
+            2,
+            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (1, 64, 76, 96),
+            3,
+            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        pytest.param(
+            (1, 64, 86, 100, 120),
+            4,
+            marks=pytest.mark.xfail(
+                reason=" RuntimeError: (dim >= 0 && dim <= 3),info: dim should be 0 - 3, but got: 4"
+            ),
+        ),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_cumsum(shape, dim):
     class CumSum(nn.Module):
@@ -476,7 +493,9 @@ def test_log(shape):
         ((1, 32, 32, 32), (1,)),
     ],
 )
-@pytest.mark.xfail(reason="TTNN maximum op: unsupported broadcast")
+@pytest.mark.xfail(
+    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
+)
 @pytest.mark.push
 def test_maximum(shape_x, shape_y):
     class Maximum(nn.Module):

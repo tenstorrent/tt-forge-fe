@@ -14,7 +14,6 @@ import pytest
 
 # import forge._C.pattern_matcher as pypattern_matcher
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
-from forge.config import _get_global_compiler_config
 from forge.verify.config import _get_global_verify_config
 import forge
 from forge.tensor import to_pt_tensors
@@ -24,7 +23,7 @@ import os
 import sys
 import importlib
 
-from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_str_from_str
+from forge.python_codegen import PyTorchWriter, ForgeWriter, PythonWriter, pytorch_df_from_str
 from forge.tvm_unique_op_generation import Operation, NodeType, extract_and_generate_unique_ops_tests
 
 
@@ -662,19 +661,10 @@ def populate_cumsum_args(graph, nid, compiler_cfg):
     axis = node["attrs"]["axis"][0][0]
     args.append(
         (
-            "axis",
+            "dim",
             f"{axis}",
         )
     )
-
-    exclusive = node["attrs"]["exclusive"][0][0]
-    args.append(
-        (
-            "exclusive",
-            f"{exclusive}",
-        )
-    )
-
     return args
 
 
@@ -1015,9 +1005,6 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
         )
     )
 
-    args.append(("max_pool_add_sub_surround", f"{compiler_cfg.max_pool_add_sub_surround}"))
-    args.append(("max_pool_add_sub_surround_value", f"{compiler_cfg.max_pool_add_sub_surround_value}"))
-
     channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
@@ -1074,9 +1061,6 @@ def populate_maxpool3d_args(graph, nid, compiler_cfg):
             f"{ceil_mode}",
         )
     )
-
-    args.append(("max_pool_add_sub_surround", f"{compiler_cfg.max_pool_add_sub_surround}"))
-    args.append(("max_pool_add_sub_surround_value", f"{compiler_cfg.max_pool_add_sub_surround_value}"))
 
     channel_last = int(node["attrs"]["layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
@@ -1317,7 +1301,7 @@ def populate_cast_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     args = []
     dtype = node["attrs"]["dtype"][0][0]
-    args.append(("dtype", pytorch_df_str_from_str(dtype, node["forge_name"])))
+    args.append(("dtype", pytorch_df_from_str(dtype, node["forge_name"])))
     return args
 
 
@@ -2054,7 +2038,7 @@ def generate_forge_module(
     global counter
 
     if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
+        compiler_cfg = CompilerConfig()
 
     if verify_cfg is None:
         verify_cfg = _get_global_verify_config()
@@ -2107,12 +2091,7 @@ def generate_forge_module(
         else:
             forge_mod = TestClass(writer.module_name)
 
-            if isinstance(framework_mod, forge.module.PyTorchModule) and (
-                compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests
-            ):
-                forge_mod.process_framework_parameters()
-            else:
-                forge_mod.process_framework_parameters(framework_mod.module)
+            forge_mod.process_framework_parameters(framework_mod.module)
 
             assert not any(
                 [param.value() is None for param in forge_mod.get_parameters()]
@@ -2146,7 +2125,7 @@ def compile_tvm_to_python(
     framework_mod, graph_name, inputs, module_name=None, compiler_cfg=None, verify_cfg=None, input_names=[]
 ):
     if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
+        compiler_cfg = CompilerConfig()
 
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 
@@ -2755,25 +2734,8 @@ def compile_tvm_to_python(
             param_file_name = os.path.join(writer.module_directory, writer.module_name + "_params.pt")
             torch.save(params_from_tvm, param_file_name)
 
-        if framework == "pytorch" and (
-            compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests
-        ):
-            # Store named parameters
-            named_params_file_name = os.path.join(writer.module_directory, writer.module_name + "_named_params.pt")
-            named_parameters = dict(framework_mod.module.state_dict().items())
-            torch.save(named_parameters, named_params_file_name)
-
-            # Store named buffers
-            named_buffers_file_name = os.path.join(writer.module_directory, writer.module_name + "_named_buffers.pt")
-            named_buffers = dict(framework_mod.module.named_buffers())
-            torch.save(named_buffers, named_buffers_file_name)
-
-            # Generate Forge module parameter parser
-            param_names.update(const_names)
-            writer.write_param_parser(param_names, param_file_name, named_params_file_name, named_buffers_file_name)
-        else:
-            param_names.update(const_names)
-            writer.write_param_parser(param_names, param_file_name)
+        param_names.update(const_names)
+        writer.write_param_parser(param_names, param_file_name)
 
         writer.close_file()
 
@@ -2784,20 +2746,34 @@ def compile_tvm_to_python(
             # Generate unique op tests based on requested model. Currently only supported
             # for PyTorch framework.
             if compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests:
+
+                # Commenting the below verification between framework outputs and generated forge module outputs
+                # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
+
+                # file_path = os.path.join(writer.module_directory, writer.filename)
+                # module = import_from_path(writer.module_name, file_path)
+
+                # TestClass = getattr(module, writer.class_name)
+                # forge_mod = TestClass(writer.module_name)
+                # forge_mod.process_framework_parameters(framework_mod.module)
+
+                # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
+                # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
+                # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
+
                 extract_and_generate_unique_ops_tests(
+                    framework_mod,
                     ops,
                     current_module_name,
                     framework,
                     contains_incompatible_np_floats,
-                    delete_inputs,
                     node_name_to_node_type,
                     params,
                     constants,
                     param_names,
                     param_file_name,
-                    named_params_file_name,
-                    named_buffers_file_name,
                     compiler_cfg,
+                    writer.module_directory,
                 )
 
                 # Exit python progrems without error

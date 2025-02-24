@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from transformers import (
     DPRContextEncoder,
     DPRContextEncoderTokenizer,
@@ -15,20 +16,30 @@ import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
-variants = ["facebook/dpr-ctx_encoder-single-nq-base", "facebook/dpr-ctx_encoder-multiset-base"]
+params = [
+    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.push]),
+    pytest.param("facebook/dpr-ctx_encoder-multiset-base"),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", params)
 def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     if variant != "facebook/dpr-ctx_encoder-single-nq-base":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="context_encoder")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="dpr",
+        variant=variant,
+        suffix="context_encoder",
+        source=Source.HUGGINGFACE,
+        task=Task.QA,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -59,6 +70,12 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
 
+    # Inference
+    embeddings = compiled_model(*inputs)
+
+    # Results
+    print("embeddings", embeddings)
+
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]
 
@@ -70,7 +87,12 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="question_encoder"
+        framework=Framework.PYTORCH,
+        model="dpr",
+        variant=variant,
+        suffix="question_encoder",
+        source=Source.HUGGINGFACE,
+        task=Task.QA,
     )
 
     # Record Forge Property
@@ -107,6 +129,12 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=verify_values))
 
+    # Inference
+    embeddings = compiled_model(*inputs)
+
+    # Results
+    print("embeddings", embeddings)
+
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
 
@@ -117,7 +145,14 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="dpr", variant=variant, suffix="reader")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="dpr",
+        variant=variant,
+        suffix="reader",
+        source=Source.HUGGINGFACE,
+        task=Task.QA,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
@@ -146,3 +181,24 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+
+    # Inference
+    outputs = compiled_model(*inputs)
+
+    # Post processing
+    start_logits = outputs[0]
+    end_logits = outputs[1]
+    relevance_logits = outputs[2]
+
+    start_indices = torch.argmax(start_logits, dim=1)
+    end_indices = torch.argmax(end_logits, dim=1)
+
+    answers = []
+    for i, input_id in enumerate(inputs[0]):
+        start_idx = start_indices[i].item()
+        end_idx = end_indices[i].item()
+        answer_tokens = input_id[start_idx : end_idx + 1]
+        answer = tokenizer.decode(answer_tokens, skip_special_tokens=True)
+        answers.append(answer)
+
+    print("Predicted Answer:", answers[0])

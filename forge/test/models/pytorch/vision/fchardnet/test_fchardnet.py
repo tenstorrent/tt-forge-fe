@@ -9,7 +9,7 @@ from PIL import Image
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -20,7 +20,9 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 def test_fchardnet(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="fchardnet")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="fchardnet", task=Task.IMAGE_CLASSIFICATION, source=Source.TORCHVISION
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)

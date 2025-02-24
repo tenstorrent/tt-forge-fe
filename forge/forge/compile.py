@@ -14,7 +14,6 @@ from forge.compiled_graph_state import CompiledGraphState, CompiledModel, Compil
 from forge.config import (
     CompilerConfig,
     CompileDepth,
-    _get_global_compiler_config,
 )
 from forge._C import (
     link_past_cache_ios,
@@ -34,13 +33,13 @@ import forge._C.graph as pygraph
 from forge._C.graph import Graph
 from forge._C.runtime import Binary
 import forge.ci as ci
-from forge.module import Module, ForgeModule, wrap_module
+from forge.module import Module, ForgeModule, wrap_module, AnyModule
 from forge.parameter import Parameter
 from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
-from forge.tensor import Tensor, to_pt_tensors
-from forge.typing import *
+from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
+from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 
 LAST_SUCCESSFUL_STAGE = None
@@ -184,6 +183,7 @@ def compile_main(
     optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None,
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
+    compiler_cfg: CompilerConfig = CompilerConfig(),
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -218,9 +218,6 @@ def compile_main(
     """
 
     assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, and Forge modules are supported."
-
-    compiler_cfg = _get_global_compiler_config()
-    compiler_cfg.apply_env_config_overrides()
 
     if module_name is None:
         module_name = module.__class__.__name__
@@ -441,7 +438,7 @@ def forge_compile_torch(
 
     inputs = list(inputs)
 
-    compiler_cfg = _get_global_compiler_config()
+    compiler_cfg = CompilerConfig()
     compiler_cfg.apply_env_config_overrides()
 
     compile_context: CompileContext = CompileContext(
@@ -462,7 +459,7 @@ def forge_compile(
     graph_name: str,
     *inputs: Union[Tensor, List[Any], Dict[str, Any]],
     targets: List[Tensor] = [],
-    compiler_cfg: Optional[CompilerConfig] = None,
+    compiler_cfg: CompilerConfig = CompilerConfig(),
     verify_cfg: Optional[DepricatedVerifyConfig] = None,
     losses: Optional[List[Tensor]] = None,
     microbatch_size: int = 1,
@@ -505,9 +502,6 @@ def forge_compile(
     inputs = list(inputs)
     if verify_cfg is None:
         verify_cfg = DepricatedVerifyConfig.disabled()  # no verification config provided, disable by default
-
-    if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
 
     compiler_cfg.apply_env_config_overrides()
 
@@ -643,9 +637,6 @@ def init_compile(context: CompileContext) -> CompileDepth:
     if force_full:
         compiler_cfg.compile_depth = CompileDepth.FULL
 
-    context.backend_output_directory = compiler_cfg.backend_output_dir
-    ci.initialize_output_build_directory(context.backend_output_directory)
-
     # compiler_cfg is fully formed
     if "FORGE_LOAD_CONFIG" in os.environ:
         compiler_cfg = load_compiler_cfg(compiler_cfg)
@@ -670,6 +661,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     -------
     CompileDepth - next compile stage
     """
+    record_execution_phase_and_stage(ExecutionPhase.NOT_STARTED)
 
     modules_ = []
     if context.compiler_cfg.compile_tvm_to_python and context.graph is None:
@@ -684,6 +676,8 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
                 context.inputs = module_inputs
 
             modules_.append(module)
+
+    record_execution_phase_and_stage(ExecutionStage.TVM_GENERATE_FORGE_MODULE)
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
@@ -721,6 +715,8 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
             for name, value in module.named_parameters():
                 context.parameter_dict[name] = value
 
+    record_execution_phase_and_stage(ExecutionStage.FORGE_GENERATE_INITIAL_GRAPH)
+
     return CompileDepth.POST_INITIAL_GRAPH_PASS
 
 
@@ -753,6 +749,7 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
 
     dump_graph(graph, graph_name, "decomposed_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
+    record_execution_phase_and_stage(ExecutionStage.FORGE_POST_INIT)
 
     next_stage = CompileDepth.OPTIMIZED_GRAPH
     if compiler_cfg.match_subgraph_patterns:
@@ -780,6 +777,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
     run_consteval_graph_pass(graph)
     dump_graph(graph, graph_name, "consteval_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
+    record_execution_phase_and_stage(ExecutionStage.FORGE_CONSTEVAL)
 
     return CompileDepth.PRE_LOWERING_PASS
 
@@ -829,6 +827,7 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
 
     run_optimization_graph_passes(graph)
     dump_graph(graph, graph_name, "optimized_graph")
+    record_execution_phase_and_stage(ExecutionStage.FORGE_OPTIMIZE)
 
     inserted_node_id_mapping = run_post_optimize_decompose_graph_passes(graph, compiler_cfg)
     dump_graph(graph, graph_name, "decomposed_optimized_graph")
@@ -836,6 +835,8 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
         if original_node_id in intermediate_tensors:
             intermediate_tensors[inserted_node_id] = intermediate_tensors[original_node_id]
+
+    record_execution_phase_and_stage(ExecutionStage.FORGE_POST_OPTIMIZE_DECOMP)
 
     next_stage = CompileDepth.POST_AUTOGRAD_PASS
     if context.training:
@@ -884,6 +885,8 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
         i.value().grad for i in context.inputs if i.value().requires_grad and i.value().grad is not None
     ]
 
+    record_execution_phase_and_stage(ExecutionStage.FORGE_AUTOGRAD)
+
     return CompileDepth.POST_AUTOGRAD_PASS
 
 
@@ -920,6 +923,8 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
     if compiler_cfg.enable_training:
         calculate_grads(outputs, dev, intermediate_tensors, False, losses)
 
+    record_execution_phase_and_stage(ExecutionStage.FORGE_GRAD_DECOMP)
+
     if compiler_cfg.enable_consteval:
         return CompileDepth.CONSTEVAL_GRAPH
 
@@ -946,6 +951,7 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph = run_pre_lowering_passes(graph, compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
+    record_execution_phase_and_stage(ExecutionStage.FORGE_PRE_LOWERING)
 
     context.final_graph = graph
     return CompileDepth.SPLIT_GRAPH
@@ -968,6 +974,8 @@ def split_graph(context: CompileContext) -> CompileDepth:
     assert context.graph is not None
     context.forge_module = forge._C.split_graph(context.graph)
 
+    record_execution_phase_and_stage(ExecutionStage.FORGE_GRAPH_SPLIT)
+
     return CompileDepth.RUN_MLIR_COMPILER
 
 
@@ -975,6 +983,8 @@ def run_mlir_compiler(context: CompileContext) -> CompileDepth:
     assert context.forge_module is not None
 
     context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module)
+
+    record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
 
     return CompileDepth.FINISH_COMPILE
 
@@ -1098,9 +1108,6 @@ def generate_graph(
     # Create the graph
     graph = Graph(graph_name)
     graph.set_microbatch(1)
-
-    if compiler_cfg is None:
-        compiler_cfg = _get_global_compiler_config()
 
     # Trace through the modules
     all_subgraph_outputs = []

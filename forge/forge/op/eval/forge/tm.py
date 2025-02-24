@@ -1032,7 +1032,7 @@ def decompose(type, attr, dc, inputs):
         if is_one_dim:
             # If input is a one-dimensional tensor, reshape it to a 2D tensor with one dimension equal to 1
             # and the other equal to the length. Use unsqueeze to add a dimension to the tensor.
-            act = dc.op("unsqueeze", [act], (0, len(act.shape)))
+            act = dc.op_with_named_attrs("unsqueeze", [act], {"dim": 0}, (0, len(act.shape)))
 
         row_indices = list(range(start, stop, stride))
 

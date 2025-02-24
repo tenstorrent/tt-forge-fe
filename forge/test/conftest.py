@@ -26,10 +26,10 @@ if os.environ.get("FORGE_ENABLE_EMULATION_DEVICE") == "1":
     sys.setdlopenflags(original_flags)
 
 import forge
+from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
-
-from forge.config import _get_global_compiler_config
+from forge.execution_tracker import fetch_execution_phase_and_stage
 
 collect_ignore = ["legacy_tests"]
 
@@ -69,6 +69,24 @@ def pytest_sessionstart(session):
         for key, value in tt_backend_specific_vars.items():
             print(f"{key}={value}")
 
+    if "PYTEST_REPORT_FILE_PATH" not in os.environ:
+        os.environ["PYTEST_REPORT_FILE_PATH"] = "test_report.json"
+
+
+@pytest.fixture(autouse=True)
+def set_environment_variable(request):
+
+    # Get the test file path (relative)
+    test_file_path = os.path.relpath(request.node.fspath)
+
+    # Get the test function
+    test_func = request.node.name
+
+    # Construct in pytest collect format
+    current_test = f"{test_file_path}::{test_func}"
+
+    os.environ["CURRENT_TEST"] = current_test
+
 
 @pytest.fixture(autouse=True)
 def clear_forge():
@@ -100,18 +118,6 @@ def clear_forge():
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--generate-unique-ops-tests",
-        action="store_true",
-        default=False,
-        help="Generate unique ops tests for the given model",
-    )
-    parser.addoption(
-        "--extract-tvm-unique-ops-config",
-        action="store_true",
-        default=False,
-        help="Extract the tvm unique op configuration for the given model",
-    )
     parser.addoption(
         "--silicon-only", action="store_true", default=False, help="run silicon tests only, skip golden/model"
     )
@@ -178,27 +184,6 @@ def pytest_addoption(parser):
 def runslow(request):
    return request.config.getoption("--runslow")
 """
-
-
-@pytest.fixture(autouse=True, scope="session")
-def initialize_global_compiler_configuration_based_on_pytest_args(pytestconfig):
-    """
-    Set the global compiler config options for the test session
-    which will generate op tests for the given model.
-    """
-    compiler_cfg = _get_global_compiler_config()
-
-    compiler_cfg.tvm_generate_unique_ops_tests = pytestconfig.getoption("--generate-unique-ops-tests")
-
-    compiler_cfg.extract_tvm_unique_ops_config = pytestconfig.getoption("--extract-tvm-unique-ops-config")
-
-    if compiler_cfg.tvm_generate_unique_ops_tests or compiler_cfg.extract_tvm_unique_ops_config:
-        # For running standalone tests, we need to retain the generated python files
-        # together with stored model parameters
-        compiler_cfg.retain_tvm_python_files = True
-
-        # Required to prevent early tensor deallocation
-        compiler_cfg.enable_op_level_comparision = True
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -383,10 +368,6 @@ def pytest_runtest_logreport(report):
         global environ_before_test
         environ_before_test = os.environ.copy()
 
-        global device_cfg_global
-        if device_cfg_global:
-            forge.set_configuration_options(device_config=device_cfg_global)
-
         if "FORGE_OVERRIDES_VETO" in os.environ:
             from forge.config import _set_forge_override_veto
 
@@ -453,6 +434,24 @@ def pytest_runtest_logreport(report):
                 os.environ[key] = default_value
 
 
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """Hook to record extra properties after the test execution."""
+    outcome = yield
+    report = outcome.get_result()
+
+    if call.when == "call":  # Only execute after the test has run
+        # Store additional properties(i.e tags which contains execution_phase and execution_stage as dictionaries) same as `record_property`
+        execution_phase, execution_stage = fetch_execution_phase_and_stage()
+        tags = {}
+        if execution_phase is not None:
+            tags["execution_phase"] = execution_phase
+        if execution_stage is not None:
+            tags["execution_stage"] = execution_stage
+        if len(tags) != 0:
+            item.user_properties.append(("tags", tags))
+
+
 def pytest_collection_modifyitems(config, items):
 
     marker = config.getoption("-m")  # Get the marker from the -m option
@@ -469,5 +468,3 @@ def pytest_collection_modifyitems(config, items):
         print(f"Automatic Model Analysis Collected test count: {test_count}")
         if test_count == 0:  # Warn if no tests match the marker
             print(f"Warning: No tests found with marker '{marker}'.")
-    else:
-        print(items)

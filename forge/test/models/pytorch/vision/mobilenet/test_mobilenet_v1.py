@@ -3,43 +3,49 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import requests
-import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 import forge
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
-from test.models.utils import Framework, Source, build_module_name
+from test.models.pytorch.vision.mobilenet.utils.utils import (
+    load_mobilenet_model,
+    post_processing,
+)
+from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
-def generate_model_mobilenetV1_base_custom_pytorch():
-    # Create Forge module from PyTorch model
-    model = MobileNetV1(9)
-
-    input_shape = (1, 3, 64, 64)
-    image_tensor = torch.rand(*input_shape)
-
-    return model, [image_tensor], {}
-
-
 @pytest.mark.nightly
+@pytest.mark.push
 def test_mobilenetv1_basic(record_forge_property):
     # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="mobilenet_v1", variant="basic")
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mobilenet_v1",
+        variant="basic",
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
 
     # Record Forge Property
     record_forge_property("model_name", module_name)
 
-    framework_model, inputs, _ = generate_model_mobilenetV1_base_custom_pytorch()
+    # Load the model and prepare input data
+    framework_model, inputs = load_mobilenet_model("mobilenet_v1")
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
+    #  Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    # Inference
+    output = compiled_model(*inputs)
+
+    # Post processing
+    post_processing(output)
 
 
 def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
@@ -65,7 +71,11 @@ def test_mobilenetv1_192(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilnet_v1",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
@@ -102,7 +112,11 @@ def test_mobilenetv1_224(record_forge_property, variant):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="mobilnet_v1", variant=variant, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="mobilnet_v1",
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property

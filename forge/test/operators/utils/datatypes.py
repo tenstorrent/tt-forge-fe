@@ -8,6 +8,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Dict, Union, Tuple, TypeAlias
 
+import torch
+import forge
+
+
+FrameworkDataFormat = Union[forge.DataFormat, torch.dtype]
+
 
 class OperatorParameterTypes:
     SingleValue: TypeAlias = Union[int, float]

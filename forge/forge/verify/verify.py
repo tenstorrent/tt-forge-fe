@@ -17,11 +17,11 @@ from forge.tensor import to_pt_tensors
 
 from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
 from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
-from ..config import PerfTraceLevel
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden
+from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -303,13 +303,11 @@ def verify(
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
-    if not isinstance(fw_out, torch.Tensor):
-        fw_out = to_pt_tensors(fw_out)
+    fw_out = to_pt_tensors(fw_out)
 
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 
     co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
 
     # 3rd step: verifications of outputs
     # - size check
@@ -333,3 +331,5 @@ def verify(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
+
+    record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
