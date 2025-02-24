@@ -237,7 +237,7 @@ class Adam(Optimizer):
             self.set_parameters_to_optimize(parameters)
 
     def get_cpu_param_dict(self, dtype: torch.dtype, shape: Tuple[int]) -> Dict:
-        # HACK: shapes are set to the shape of the parameter because of the following issue
+        # TODO: shapes are set to the shape of the parameter because of the following issue
         # https://github.com/tenstorrent/tt-metal/issues/16352
         if self.bias_correction:
             return {
