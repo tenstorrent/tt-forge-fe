@@ -307,7 +307,8 @@ class CompiledModel:
                     assert param is our_tensor
 
             # HACK: Refresh weight tensors (since they are actually not persistant, i.e. they were modified by the optimizer.
-            self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
+            if not self.optimizer_on_device():
+                self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
 
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
@@ -433,9 +434,10 @@ class CompiledModel:
             f"Running optimizer step on model {self.framework_module.get_name()} {self.opt_compiled_graph_state.graph.get_name()} on device..."
         )
 
-        out_params = run_binary_v2(self.compiled_binary, int(ProgramId.OPTIMIZER), inputs, self.opt_persistent_tensors)
+        self.runtime_model_state.run_program(ProgramType.Optimizer, inputs)
+        out_params = self.runtime_model_state.get_outputs(ProgramType.Optimizer)
 
-        update_param: Dict[str, torch.Tensor] = {}
+        update_param: Dict[str, CTensor] = {}
         for idx, param in enumerate(self.opt_compiled_graph_state.ordered_output_names):
             update_param[param] = out_params[idx]
 
@@ -457,27 +459,9 @@ class CompiledModel:
                     ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
 
-        self.fwd_persistent_tensors = [
-            self.tensor_pool.get_tensor(name)
-            for name in [
-                *self.fwd_compiled_graph_state.ordered_constant_node_names,
-                *self.fwd_compiled_graph_state.ordered_parameter_node_names,
-            ]
-        ]
-        self.bwd_persistent_tensors = [
-            self.tensor_pool.get_tensor(name)
-            for name in [
-                *self.bwd_compiled_graph_state.ordered_constant_node_names,
-                *self.bwd_compiled_graph_state.ordered_parameter_node_names,
-            ]
-        ]
-        self.opt_persistent_tensors = [
-            self.tensor_pool.get_tensor(name)
-            for name in [
-                *self.opt_compiled_graph_state.ordered_constant_node_names,
-                *self.opt_compiled_graph_state.ordered_parameter_node_names,
-            ]
-        ]
+        self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
+        self.create_program_state(ProgramType.Backward, self.tensor_pool, self.bwd_compiled_graph_state)
+        self.create_program_state(ProgramType.Optimizer, self.tensor_pool, self.opt_compiled_graph_state)
 
         self.gradient_outputs = []
 
