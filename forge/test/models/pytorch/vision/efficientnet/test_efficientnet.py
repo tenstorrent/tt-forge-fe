@@ -31,6 +31,7 @@ variants = [
     pytest.param(
         "efficientnet_b0",
         id="efficientnet_b0",
+        marks=[pytest.mark.push],
     ),
     pytest.param(
         "efficientnet_b4",
