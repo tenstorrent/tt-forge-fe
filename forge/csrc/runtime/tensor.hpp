@@ -123,6 +123,7 @@ class Tensor
     std::optional<runtime::Tensor> rt_tensor;
 };
 
+// Class containing all (persistent) tensors across all programs.
 class TensorPool
 {
    public:
