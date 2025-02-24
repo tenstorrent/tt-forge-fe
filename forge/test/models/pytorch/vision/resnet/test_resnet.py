@@ -53,6 +53,7 @@ def test_resnet_hf(variant, record_forge_property):
 
     # Verify data on sample input
     verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
+    verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
 
     # Run model on sample data and print results
     run_and_print_results(framework_model, compiled_model, images)
