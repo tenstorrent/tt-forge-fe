@@ -12,8 +12,8 @@ else
     MLIR_DOCKER_TAG="default-tag"
 fi
 
-# The hash is based on the environment files
-ENV_HASH=$(find env -type f -name "*.txt" | sort | xargs cat | sha256sum | cut -d ' ' -f 1)
+# The hash is based on the environment files (filter out files that are not tracked in git).
+ENV_HASH=$(find env -type f -name "*.txt" | sort | sed 's|^\./||' | grep -Fxf <(git ls-files env/) | xargs cat | sha256sum | cut -d ' ' -f 1)
 
 # The hash is based on the Dockerfile(s)
 DOCKERFILE_HASH=$(find .github -type f -name "Dockerfile.*" | sort | xargs cat | sha256sum | cut -d ' ' -f 1)
