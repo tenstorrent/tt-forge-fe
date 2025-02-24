@@ -314,7 +314,7 @@ class CompiledModel:
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
 
-        self.inputs = [CTensor(t) for t in inputs]
+        self.inputs = [CTensor(t) for t in torch_inputs]
         self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
 
         all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)
