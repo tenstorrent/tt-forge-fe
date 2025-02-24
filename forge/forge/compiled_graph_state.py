@@ -12,7 +12,16 @@ from typing import Dict, List, Any, Optional
 
 from forge._C.graph import Graph
 import forge._C.graph as pygraph
-from forge._C.runtime import run_binary, Binary, TensorPool, Tensor as CTensor, run_binary_v2
+from forge._C.runtime import (
+    run_binary,
+    Binary,
+    TensorPool,
+    Tensor as CTensor,
+    run_binary_v2,
+    ModelState,
+    create_program_state,
+    ProgramType,
+)
 from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, AnyTensor
 from forge.module import Module, PyTorchModule, AnyModule
 from forge.execution_tracker import ExecutionPhase, record_execution_phase_and_stage
@@ -157,6 +166,8 @@ class CompiledModel:
     is compiled for the device, and which are set up to be ran separately on the CPU.
     """
 
+    runtime_model_state: ModelState
+
     fwd_compiled_graph_state: CompiledGraphState
     tensor_pool: TensorPool
     bwd_compiled_graph_state: Optional[CompiledGraphState]
@@ -188,9 +199,12 @@ class CompiledModel:
         framework_module: AnyModule,
         attached_module: Optional["CompiledModel"] = None,
     ):
+        self.runtime_model_state = ModelState(compiled_binary)
+        self.tensor_pool = self.runtime_model_state.tensor_pool
+
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
-        self.tensor_pool = TensorPool()
-        self.create_persistent_inputs(self.tensor_pool, fwd_compiled_graph_state)
+        self.create_persistent_inputs(self.runtime_model_state.tensor_pool, fwd_compiled_graph_state)
+
         self.fwd_persistent_tensors = [
             self.tensor_pool.get_tensor(name)
             for name in [
@@ -198,6 +212,9 @@ class CompiledModel:
                 *self.fwd_compiled_graph_state.ordered_parameter_node_names,
             ]
         ]
+        self.fwd_program_state = create_program_state(ProgramType.Forward, self.fwd_persistent_tensors)
+
+        self.runtime_model_state.init_program_state(self.fwd_program_state)
 
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
         if self.bwd_compiled_graph_state is not None:
@@ -290,9 +307,14 @@ class CompiledModel:
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
-        self.fwd_persistent_tensors, all_outputs = run_binary_v2(
-            self.compiled_binary, int(ProgramId.FORWARD), self.inputs, self.fwd_persistent_tensors
-        )
+        # self.fwd_persistent_tensors, all_outputs = run_binary_v2(
+        #     self.compiled_binary, int(ProgramId.FORWARD), self.inputs, self.fwd_persistent_tensors
+        # )
+
+        rt_inputs = [CTensor(t) for t in self.inputs]
+        self.runtime_model_state.run_program(ProgramType.Forward, rt_inputs)
+
+        all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)
 
         self.intermediates = []
 
@@ -304,7 +326,7 @@ class CompiledModel:
                 self.intermediates.append(output)
             if output_name in self.fwd_compiled_graph_state.ordered_external_output_names:
                 self.outputs[output_name] = output
-                model_outputs.append(output)
+                model_outputs.append(output.to_torch())
 
         if self.training():
             # For executing loss and its backward graph on CPU, we need to tell torch to compute gradients.

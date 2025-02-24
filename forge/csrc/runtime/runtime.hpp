@@ -26,4 +26,7 @@ std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
 std::vector<torch::Tensor> run_binary_from_file(
     std::string const& filename, int program_idx, std::vector<torch::Tensor> const& inputs);
 
+// Entry point for invoking tt-mlir runtime and running the specific program from the binary on the device.
+std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor>& inputs);
+
 }  // namespace tt
