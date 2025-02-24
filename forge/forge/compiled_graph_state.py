@@ -370,13 +370,6 @@ class CompiledModel:
         )
         grads = self.runtime_model_state.get_outputs(ProgramType.Backward)
 
-        # grads = run_binary_v2(
-        #     self.compiled_binary,
-        #     int(ProgramId.BACKWARD),
-        #     [*self.gradient_inputs, *self.intermediates, *inputs],
-        #     self.bwd_persistent_tensors,
-        # )
-
         if self.optimizer_on_device():
             if self.gradient_outputs is None or len(self.gradient_outputs) == 0:
                 self.gradient_outputs = grads
@@ -459,6 +452,7 @@ class CompiledModel:
                     ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
 
+        # HACK: Refresh weight tensors (since they are actually not persistant, i.e. they were modified by the optimizer.
         self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
         self.create_program_state(ProgramType.Backward, self.tensor_pool, self.bwd_compiled_graph_state)
         self.create_program_state(ProgramType.Optimizer, self.tensor_pool, self.opt_compiled_graph_state)
