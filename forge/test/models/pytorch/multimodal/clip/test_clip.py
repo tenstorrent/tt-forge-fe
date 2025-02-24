@@ -21,7 +21,7 @@ def test_clip_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="clip", variant=variant, suffix="text")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load processor and model from HuggingFace
     model = download_model(CLIPModel.from_pretrained, variant, torchscript=True)

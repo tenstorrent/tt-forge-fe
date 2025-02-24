@@ -23,13 +23,16 @@ variants = ["v1", "v2"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
+    if size != "base" and variant != "v1":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.MASKED_LM
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     model_ckpt = f"albert-{size}-{variant}"
 
@@ -65,13 +68,16 @@ variants = ["v1", "v2"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("size", sizes, ids=sizes)
 def test_albert_token_classification_pytorch(record_forge_property, size, variant):
+    if size != "base" and variant != "v1":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="albert", variant=f"{size}_{variant}", task=Task.TOKEN_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.

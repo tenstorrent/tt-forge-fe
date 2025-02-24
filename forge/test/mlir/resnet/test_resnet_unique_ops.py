@@ -24,9 +24,6 @@ from forge.verify.config import VerifyConfig
             2,  # stride size
             (1, 1, 1, 1),  # padding
             False,  # ceil mode
-            marks=pytest.mark.xfail(
-                reason="Tensor mismatch. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1575"
-            ),
         ),
     ],
 )
@@ -82,9 +79,6 @@ def test_avg_pool2d_resnet():
             1,  # Outer dimension x
             1000,  # Outer dimension y
             2048,  # Inner dimension
-            marks=pytest.mark.xfail(
-                reason="Tensor mismatch. PCC = 0.9425581505871167, but required = 0.99. Tracking on: https://github.com/tenstorrent/tt-mlir/issues/1576"
-            ),
         ),
     ],
 )

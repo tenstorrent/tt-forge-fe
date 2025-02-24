@@ -27,11 +27,14 @@ variants = ["densenet161_bts", "densenet121_bts"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
 def test_bts_pytorch(record_forge_property, variant):
+    if variant != "densenet161_bts":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="bts", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"

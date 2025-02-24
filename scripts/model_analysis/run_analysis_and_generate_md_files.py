@@ -6,10 +6,9 @@ import os
 import time
 import json
 from loguru import logger
-import math
 import argparse
 import pandas as pd
-from typing import Dict, List
+from typing import Dict, List, Optional
 from dataclasses import dataclass
 import ast
 
@@ -20,7 +19,15 @@ from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
 from exception_rules import common_failure_matching_rules_list
 from markdown import HtmlSymbol, MarkDownWriter
 from unique_ops_utils import generate_and_export_unique_ops_tests, extract_unique_op_tests_from_models
-from utils import CompilerComponent, check_path, dump_logs, remove_directory
+from utils import (
+    CompilerComponent,
+    CompilerComponentFailureAnalysis,
+    sort_model_variant_info_list,
+    check_path,
+    dump_logs,
+    remove_directory,
+    get_commit_id,
+)
 
 
 class UniqueOpTestInfo:
@@ -96,11 +103,16 @@ class UniqueOpTestInfo:
             # If no match is found, mark the UNKNOWN compiler component alone to True.
             if not updated_compiler_component_status:
                 self.components[str(CompilerComponent.UNKNOWN.name)] = True
+                self.failure_reason = "[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component"
+            return matched_compiler_component, match_err_msg
+
         else:
             # If no error message is provided, mark all compiler components (except UNKNOWN) to True.
             for compiler_component in CompilerComponent:
                 if compiler_component != CompilerComponent.UNKNOWN:
                     self.components[str(compiler_component.name)] = True
+
+            return None, None
 
     def __str__(self):
         return f"UniqueOpTestInfo(op={self.op}, operands={self.operands}, args={self.args}, components={self.components}, self.failure_reason={self.failure_reason})"
@@ -130,7 +142,6 @@ class ModelVariantInfo:
     mlir_support_rate: float = 0.0
     ttmetal_support_rate: float = 0.0
     unknown_rate: float = 0.0
-    last_update_datetime: str = ""
 
     def get_support_rate(self, compiler_component: CompilerComponent):
         # Check and return the appropriate support rate based on the compiler component.
@@ -167,7 +178,6 @@ class ModelVariantInfo:
         model_variant_info += f"\t\tmlir_support_rate : {mlir_support_rate}\n"
         model_variant_info += f"\t\tttmetal_support_rate : {ttmetal_support_rate}\n"
         model_variant_info += f"\t\tunknown_rate : {unknown_rate}\n"
-        model_variant_info += f"\t\tlast_update_datetime : {last_update_datetime}\n"
         for idx, unique_op in enumerate(unique_ops):
             model_variant_info += f"\t\t\t\t{idx}){str(unique_op)}\n"
 
@@ -178,6 +188,8 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
     """
 
     models_details = {}
+
+    compiler_component_failure_analysis = CompilerComponentFailureAnalysis()
 
     # Iterate over each unique operation
     for forge_op_function_name in sorted(unique_operations):
@@ -269,7 +281,9 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
 
                         # Update the instance of the UniqueOpTestInfo components datamember status
                         # for each compiler component and error message in failure_reason datamember
-                        unique_op_test_info.update_compiler_components(error_message)
+                        matched_compiler_component, match_err_msg = unique_op_test_info.update_compiler_components(
+                            error_message
+                        )
 
                         # Save failure logs if dump_failure_logs is set to True
                         if dump_failure_logs:
@@ -279,14 +293,16 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
                         # If the test passed (return code is 0), update the UniqueOpTestInfo instance
                         # components datamember for all compiler component to True expect COMPILERCOMPONENT.UNKNOWN
                         logger.info(f"\tPassed ({elapsed_time:.2f} seconds)")
-                        unique_op_test_info.update_compiler_components()
+                        matched_compiler_component, match_err_msg = unique_op_test_info.update_compiler_components()
 
                 # Handle timeout exceptions if the test exceeds the allowed 60-second time limit
                 except subprocess.TimeoutExpired as e:
                     elapsed_time = time.time() - start_time
 
                     error_message = "Test timed out after 180 seconds"
-                    unique_op_test_info.update_compiler_components(error_message)
+                    matched_compiler_component, match_err_msg = unique_op_test_info.update_compiler_components(
+                        error_message
+                    )
 
                     logger.info(f"\tFailed ({elapsed_time:.2f} seconds) due to {error_message}")
 
@@ -312,7 +328,9 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
 
                     # Update the UniqueOpTestInfo instance components datamember status
                     # for each compiler component and error message in failure_reason datamember
-                    unique_op_test_info.update_compiler_components(error_message)
+                    matched_compiler_component, match_err_msg = unique_op_test_info.update_compiler_components(
+                        error_message
+                    )
 
                     if dump_failure_logs:
                         dump_logs(log_files, error_message)
@@ -323,11 +341,24 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
                     error_message = (
                         f"An unexpected error occurred while running {test}: {ex} ({elapsed_time:.2f} seconds)"
                     )
-                    unique_op_test_info.update_compiler_components(error_message)
+                    matched_compiler_component, match_err_msg = unique_op_test_info.update_compiler_components(
+                        error_message
+                    )
                     logger.info(error_message)
 
                     if dump_failure_logs:
                         dump_logs(log_files, error_message)
+
+                # Update the compiler component and failure reason and model variant names inside the compiler_component_failure_analysis
+                model_variant_names = [
+                    model_variant_info["variant_name"] for model_variant_info in model_variant_info_list
+                ]
+                if matched_compiler_component is not None and match_err_msg is not None:
+                    compiler_component_failure_analysis.update(
+                        compiler_component=matched_compiler_component,
+                        failure_reason=match_err_msg,
+                        model_variant_names=model_variant_names,
+                    )
 
                 # Update model details dictionary with variant name as key and ModelVariantInfo as values
                 for model_variant_info in model_variant_info_list:
@@ -351,14 +382,20 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
                 ]
             )
             total_num_of_test = len(model_variant_info.unique_ops)
-            compiler_component_pass_percentage = (
-                str(math.ceil((compiler_component_passed_test_count / total_num_of_test) * 100.0)) + " %"
+            compiler_component_pass_percentage = round(
+                (compiler_component_passed_test_count / total_num_of_test) * 100.0
             )
             models_details[variant_name].update_support_rate(compiler_component, compiler_component_pass_percentage)
 
-        models_details[variant_name].last_update_datetime = time.strftime("%A, %d %b %Y %I:%M:%S %p", time.gmtime())
+    model_variant_info_list = list(models_details.values())
 
-    return models_details
+    # Sort a list of ModelVariantInfo objects first by model_name and then by variant_name.
+    model_variant_info_list = sort_model_variant_info_list(model_variant_info_list)
+
+    # Sort the failure reasons for each compiler component based on the number of associated model variant names.
+    compiler_component_failure_analysis.sort_by_model_variant_names_length(reverse=True)
+
+    return model_variant_info_list, compiler_component_failure_analysis
 
 
 def generate_markdown(
@@ -367,6 +404,7 @@ def generate_markdown(
     table_heading: str,
     table_headers: Dict[str, List[str]],
     table_rows: List[List[str]],
+    lines_after_table_heading: Optional[List[str]] = None,
 ):
     """
     Generates a Markdown file that contains an HTML table with the given headers and rows.
@@ -377,6 +415,10 @@ def generate_markdown(
     # Write a heading for the HTML table
     markdown_writer.write_html_table_heading(table_heading)
 
+    if lines_after_table_heading is not None:
+        for line in lines_after_table_heading:
+            markdown_writer.write(line)
+
     # Generate and write the HTML table to the Markdown file
     markdown_writer.create_html_table_and_write(headers=table_headers, rows=table_rows)
 
@@ -384,7 +426,7 @@ def generate_markdown(
     markdown_writer.close_file()
 
 
-def create_root_and_sub_markdown_file(models_details, markdown_directory_path):
+def create_root_and_sub_markdown_file(model_variant_info_list, markdown_directory_path):
     """
     Creates root and sub Markdown files summarizing the models and their unique operation test results.
 
@@ -409,7 +451,6 @@ def create_root_and_sub_markdown_file(models_details, markdown_directory_path):
     root_markdown_table_headers = {
         "Model Details": ["Name", "Variant", "Framework"],
         "Passing rate of unique ops for each component": compiler_component_names,
-        "Last update(in GMT)": ["Date & time"],
     }
 
     sub_markdown_table_headers = {
@@ -420,14 +461,14 @@ def create_root_and_sub_markdown_file(models_details, markdown_directory_path):
 
     root_markdown_table_rows = []
 
-    remove_directory(directory_path=os.path.join(markdown_directory_path, "Models"))
+    remove_directory(directory_path=os.path.join(markdown_directory_path, "models"))
 
     # Iterate over model variants to generate sub markdown files and populate root markdown rows
-    for model_variant_info in models_details.values():
+    for model_variant_info in model_variant_info_list:
 
         # Prepare the path for the sub markdown file to store test results for this model variant
         sub_markdown_file_name = model_variant_info.variant_name
-        sub_markdown_directory_path = os.path.join(markdown_directory_path, "Models", model_variant_info.model_name)
+        sub_markdown_directory_path = os.path.join(markdown_directory_path, "models", model_variant_info.model_name)
 
         # List to store table rows for the sub markdown file
         sub_markdown_table_rows = []
@@ -473,24 +514,210 @@ def create_root_and_sub_markdown_file(models_details, markdown_directory_path):
         table_data.append(
             MarkDownWriter.create_html_link(
                 model_variant_info.variant_name,
-                os.path.join("./Models", model_variant_info.model_name, model_variant_info.variant_name + ".md"),
+                os.path.join("./models", model_variant_info.model_name, model_variant_info.variant_name + ".md"),
             )
         )
 
         table_data.append(model_variant_info.framework)
         for compiler_component in CompilerComponent:
-            table_data.append(model_variant_info.get_support_rate(compiler_component))
-        table_data.append(model_variant_info.last_update_datetime)
+            table_data.append(str(model_variant_info.get_support_rate(compiler_component)) + " %")
         root_markdown_table_rows.append(table_data)
+
+    commit_id, commit_url = get_commit_id()
+    if commit_id is None and commit_url is None:
+        commit_id = "Unknown"
+    else:
+        commit_id = MarkDownWriter.create_html_link(link_text=commit_id, url_or_path=commit_url)
+
+    commit_id_str = f"<p><b>Commit Id :</b> {str(commit_id)}</p>"
+    last_update_datetime = (
+        f'<p><b>Last updated date and time(in GMT) :</b> {time.strftime("%A, %d %b %Y %I:%M:%S %p", time.gmtime())}</p>'
+    )
+    statistics_report_description = '<p><b>Note:</b> For detailed insights into compiler failures and their effects on models, please refer to the <a href="./stats/compiler_analysis_report.md">compiler_analysis_report.md</a>.</p>'
+
+    content_after_table_heading = []
+    content_after_table_heading.append(last_update_datetime)
+    content_after_table_heading.append(commit_id_str)
+    content_after_table_heading.append(statistics_report_description)
 
     # Generate root markdown file that contain all the model variants result
     generate_markdown(
         markdown_file_name=root_markdown_file_name,
         markdown_file_dir_path=root_markdown_directory_path,
         table_heading=root_markdown_table_heading,
+        lines_after_table_heading=content_after_table_heading,
         table_headers=root_markdown_table_headers,
         table_rows=root_markdown_table_rows,
     )
+
+
+def calculate_statistical_data(model_variant_info_list):
+    """
+    Calculate statistical data for compiler components based on model variant information.
+
+    Args:
+        model_variant_info_list (list): A list of model variant information objects.
+
+    Returns:
+        dict: A dictionary containing statistical data for each compiler component.
+              Includes models pass count, models pass percentage, and average pass percentage.
+    """
+
+    # Initialize statistical data for each compiler component expect UNKNOWN compiler component
+    statistical_data = {}
+    for compiler_component in CompilerComponent:
+        if compiler_component != CompilerComponent.UNKNOWN:
+            statistical_data[compiler_component] = {"models_pass_count": 0, "average_pass_percentage": 0.0}
+
+    # Calculate pass counts and average pass percentage
+    for model_variant_info in model_variant_info_list:
+        for compiler_component in CompilerComponent:
+            if compiler_component != CompilerComponent.UNKNOWN:
+                compiler_support_rate = model_variant_info.get_support_rate(compiler_component)
+                statistical_data[compiler_component]["average_pass_percentage"] += compiler_support_rate
+                if int(compiler_support_rate) == 100:
+                    statistical_data[compiler_component]["models_pass_count"] += 1
+
+    # Calculate percentages by dividing sums by the total number of models
+    for compiler_component in CompilerComponent:
+        if compiler_component != CompilerComponent.UNKNOWN:
+            statistical_data[compiler_component]["models_pass_percentage"] = round(
+                (statistical_data[compiler_component]["models_pass_count"] / len(model_variant_info_list)) * 100.0
+            )
+            statistical_data[compiler_component]["average_pass_percentage"] = round(
+                statistical_data[compiler_component]["average_pass_percentage"] / len(model_variant_info_list)
+            )
+
+    return statistical_data
+
+
+def calculate_top_n_blocked_models(model_variant_info_list: List[ModelVariantInfo], n: int):
+    """
+    Calculates the top N models with the least support rate for each compiler component (excluding UNKNOWN).
+
+    Args:
+    - model_variant_info_list (List[ModelVariantInfo]): A list of ModelVariantInfo objects containing model data and support rates.
+    - n (int): The number of top models to return for each compiler component.
+
+    Returns:
+    - dict: A dictionary where the keys are compiler components (excluding UNKNOWN) and the values are lists of
+            the top N models' variant names, sorted by the least support rate for that component.
+    """
+
+    # Initialize an empty dictionary to store the top N blocked models for each compiler component
+    compiler_top_n_blocked_models = {}
+
+    # Iterate over each compiler component
+    for compiler_component in CompilerComponent:
+
+        # Skip the UNKNOWN compiler component as we do not need to calculate for it
+        if compiler_component != CompilerComponent.UNKNOWN:
+
+            # Sort the model variants by their support rate for the current compiler component in ascending order
+            sorted_model_variant_info_list = sorted(
+                model_variant_info_list,
+                key=lambda model_variant_info: model_variant_info.get_support_rate(compiler_component),
+            )
+
+            # Add the top N models (least support rate) for the current compiler component to the dictionary
+            compiler_top_n_blocked_models[compiler_component] = [
+                model_variant_info.variant_name
+                + " ("
+                + str(int(round(model_variant_info.get_support_rate(compiler_component))))
+                + " %)"
+                for model_variant_info in sorted_model_variant_info_list[:n]
+            ]
+
+    # Return the dictionary containing the top N models for each compiler component
+    return compiler_top_n_blocked_models
+
+
+def create_statistics_report_markdown_file(
+    model_variant_info_list, compiler_component_failure_analysis, markdown_directory_path
+):
+
+    """
+    Create a markdown report summarizing compiler statistics and failure analysis.
+
+    Args:
+        model_variant_info_list (list): A list of model variant information objects.
+        compiler_component_failure_analysis (CompilerComponentFailureAnalysis):
+            Object containing failure analysis for compiler components.
+        markdown_directory_path (str): Directory path where the markdown report will be saved.
+    """
+
+    statistics_report_markdown_file_name = "compiler_analysis_report"
+    statistics_report_directory_path = os.path.join(markdown_directory_path, "stats")
+    markdown_writer = MarkDownWriter(statistics_report_markdown_file_name, statistics_report_directory_path)
+
+    # Create failure analysis table
+    table_heading = "Compiler Component Failure Analysis by Model Impacts"
+    table_headers = ["Compiler Component", "Failure", "Number of Impacted Models", "Impacted Models"]
+    compiler_component_failure_analysis = (
+        compiler_component_failure_analysis.get_compiler_component_and_failure_details()
+    )
+    table_rows = []
+    for compiler_component, failure_details in compiler_component_failure_analysis.items():
+        component_name = MarkDownWriter.get_component_names_for_header(compiler_component)
+        for failure, model_variant_names in failure_details.items():
+            model_variant_names_html_list = [
+                f"<li>{model_variant_name}</li>" for model_variant_name in model_variant_names
+            ]
+            model_variant_names_html_list = "<ul>" + "".join(model_variant_names_html_list) + "</ul>"
+            table_rows.append(
+                [
+                    component_name,
+                    failure,
+                    len(model_variant_names),
+                    model_variant_names_html_list,
+                ]
+            )
+
+    # Write the failure analysis table to markdown
+    markdown_writer.write_html_table_heading(table_heading)
+    markdown_writer.write_html_table(table_headers=table_headers, table_rows=table_rows, rowspan_columns=[0])
+
+    # Create compiler statistics table
+    top_blocked_models_count = 10
+    table_heading = "Compiler-Specific Model Statistics"
+    table_headers = {
+        f"Total no of models : {len(model_variant_info_list)}": [
+            "Compiler Component",
+            "Models Passed",
+            "Pass Rate (%)",
+            "Average Pass Rate (%)",
+            f"Top-{top_blocked_models_count} Blocked Models (pass rate in %)",
+        ]
+    }
+    statistical_data = calculate_statistical_data(model_variant_info_list=model_variant_info_list)
+    compiler_top_n_blocked_models = calculate_top_n_blocked_models(
+        model_variant_info_list=model_variant_info_list, n=top_blocked_models_count
+    )
+    table_rows = []
+    for compiler_component in CompilerComponent:
+        if compiler_component != CompilerComponent.UNKNOWN:
+            component_name = MarkDownWriter.get_component_names_for_header(compiler_component)
+            blocked_model_variant_names = compiler_top_n_blocked_models[compiler_component]
+            blocked_model_variant_names = [
+                f"<li>{blocked_model_variant_name}</li>" for blocked_model_variant_name in blocked_model_variant_names
+            ]
+            blocked_model_variant_names = "<ul>" + "".join(blocked_model_variant_names) + "</ul>"
+            table_rows.append(
+                [
+                    component_name,
+                    str(statistical_data[compiler_component]["models_pass_count"]),
+                    str(statistical_data[compiler_component]["models_pass_percentage"]) + " %",
+                    str(statistical_data[compiler_component]["average_pass_percentage"]) + " %",
+                    blocked_model_variant_names,
+                ]
+            )
+
+    # Write the compiler statistics table to markdown
+    markdown_writer.write_html_table_heading(table_heading)
+    markdown_writer.write_html_table(table_headers=table_headers, table_rows=table_rows)
+
+    # Close the markdown file
+    markdown_writer.close_file()
 
 
 def main():
@@ -539,14 +766,20 @@ def main():
         unique_ops_config_file_path=unique_ops_config_across_all_models_file_path,
     )
 
-    models_details = run_models_unique_op_tests(
+    model_variant_info_list, compiler_component_failure_analysis = run_models_unique_op_tests(
         unique_operations=unique_operations,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
         dump_failure_logs=args.dump_failure_logs,
     )
 
     create_root_and_sub_markdown_file(
-        models_details=models_details, markdown_directory_path=args.markdown_directory_path
+        model_variant_info_list=model_variant_info_list, markdown_directory_path=args.markdown_directory_path
+    )
+
+    create_statistics_report_markdown_file(
+        model_variant_info_list=model_variant_info_list,
+        compiler_component_failure_analysis=compiler_component_failure_analysis,
+        markdown_directory_path=args.markdown_directory_path,
     )
 
 

@@ -11,6 +11,167 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.parametrize(
+    "shape, dtype",
+    [
+        pytest.param(
+            (1, 256, 6, 6),
+            torch.float32,
+            marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
+        ),
+        pytest.param((512,), torch.float16),
+        pytest.param(
+            (224, 224), torch.float32, marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")
+        ),
+        pytest.param(
+            (1, 8, 224, 224),
+            torch.float32,
+            marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
+        ),
+        pytest.param((2, 128, 8, 8), torch.float16),
+        pytest.param(
+            (4, 1, 32, 32),
+            torch.float32,
+            marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
+        ),
+        pytest.param((6, 1, 900, 256), torch.float16),
+        pytest.param((8, 64, 32, 32, 45), torch.float16),
+    ],
+)
+@pytest.mark.push
+def test_nan_to_num(shape, dtype):
+    class nan_to_num(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1):
+            return torch.nan_to_num(x1)
+
+    compiler_cfg = forge.config._get_global_compiler_config()
+
+    if dtype == torch.float16:
+        # set compie depth to avoid Unsupported ttnn::DataType , Fatal Python error: Aborted
+        compiler_cfg.compile_depth = forge.CompileDepth.SPLIT_GRAPH
+
+    inputs = [torch.randn(shape, dtype=dtype)]
+
+    mask_nan = torch.rand(shape, dtype=dtype) < 0.1
+    mask_posinf = torch.rand(shape, dtype=dtype) < 0.05
+    mask_neginf = torch.rand(shape, dtype=dtype) < 0.05
+
+    inputs[0][mask_nan] = float("nan")
+    inputs[0][mask_posinf] = float("inf")
+    inputs[0][mask_neginf] = float("-inf")
+
+    framework_model = nan_to_num()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    if dtype == torch.float32:
+        verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "shape, dtype",
+    [
+        pytest.param(
+            (1, 256),
+            torch.float32,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.float32"
+            ),
+        ),
+        pytest.param(
+            (1, 512, 14, 14),
+            torch.bfloat16,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.bfloat16"
+            ),
+        ),
+        pytest.param(
+            (1, 3, 224),
+            torch.bfloat16,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.bfloat16"
+            ),
+        ),
+        pytest.param(
+            (1, 8, 224, 224),
+            torch.float32,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.float32"
+            ),
+        ),
+        pytest.param(
+            (1, 8, 16, 128, 128),
+            torch.bfloat16,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.bfloat16"
+            ),
+        ),
+        pytest.param(
+            (4, 1, 32, 32),
+            torch.float32,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.float32"
+            ),
+        ),
+        pytest.param(
+            (100,),
+            torch.float32,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.float32"
+            ),
+        ),
+        pytest.param(
+            (1, 8, 64, 32, 32),
+            torch.bfloat16,
+            marks=pytest.mark.xfail(
+                reason="Dtype mismatch: framework_model.dtype=torch.bool, compiled_model.dtype=torch.bfloat16"
+            ),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_isnan(shape, dtype):
+    class isnan(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1):
+            return torch.isnan(x1)
+
+    inputs = [torch.randn(shape, dtype=dtype)]
+    mask_nan = torch.rand(shape) < 0.1
+    inputs[0][mask_nan] = float("nan")
+
+    framework_model = isnan()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Atan"
+)
+@pytest.mark.parametrize(
+    "shape",
+    [(888), (1, 7, 256), (3, 128, 128), (1, 10), (2, 2, 2), (5, 5), (1, 3, 224, 224), (8, 16, 32), (1, 3, 2, 544, 544)],
+)
+@pytest.mark.push
+def test_atan(shape):
+    class Atan(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1):
+            return torch.atan(x1)
+
+    inputs = [torch.randn(shape)]
+
+    framework_model = Atan()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "shape",
     [
         (10,),
@@ -315,7 +476,9 @@ def test_log(shape):
         ((1, 32, 32, 32), (1,)),
     ],
 )
-@pytest.mark.xfail(reason="TTNN maximum op: unsupported broadcast")
+@pytest.mark.xfail(
+    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
+)
 @pytest.mark.push
 def test_maximum(shape_x, shape_y):
     class Maximum(nn.Module):

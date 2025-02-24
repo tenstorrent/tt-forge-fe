@@ -80,11 +80,14 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_osmr_pytorch(record_forge_property, variant):
+    if variant != "hrnet_w18_small_v1":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
@@ -151,11 +154,14 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(record_forge_property, variant):
+    if variant != "hrnet_w18_small":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,

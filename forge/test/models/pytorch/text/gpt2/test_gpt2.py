@@ -21,7 +21,7 @@ def test_gpt2_text_gen(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained(variant)
@@ -80,7 +80,7 @@ def test_gpt2_past_cache(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     compiler_cfg = forge.config._get_global_compiler_config()
     compiler_cfg.compile_subgraphs = True

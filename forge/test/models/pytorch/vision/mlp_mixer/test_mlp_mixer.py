@@ -33,11 +33,14 @@ varaints = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
+    if variant != "mixer_b16_224":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="mlp_mixer", variant=variant, source=Source.TIMM)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=model)

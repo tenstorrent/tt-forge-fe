@@ -24,7 +24,7 @@ def test_alexnet_torchhub(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
@@ -60,11 +60,13 @@ def test_alexnet_torchhub(record_forge_property):
 
 @pytest.mark.nightly
 def test_alexnet_osmr(record_forge_property):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)

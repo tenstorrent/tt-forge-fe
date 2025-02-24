@@ -28,7 +28,7 @@ def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Sample Input
     image_w = 800

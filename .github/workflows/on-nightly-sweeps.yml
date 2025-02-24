@@ -11,3 +11,5 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'nightly_sweeps'
+      test_group_cnt: 4
+      test_group_ids: '[1,2,3,4]'

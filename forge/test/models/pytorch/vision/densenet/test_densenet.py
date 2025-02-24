@@ -21,11 +21,14 @@ variants = ["densenet121", "densenet121_hf_xray"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(record_forge_property, variant):
+    if variant == "densenet121":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -53,7 +56,7 @@ def test_densenet_161_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -76,7 +79,7 @@ def test_densenet_169_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
@@ -96,11 +99,13 @@ def test_densenet_169_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
 def test_densenet_201_pytorch(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="densenet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)

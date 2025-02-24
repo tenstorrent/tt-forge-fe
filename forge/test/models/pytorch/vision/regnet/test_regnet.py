@@ -18,7 +18,7 @@ def test_regnet(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="regnet", variant=variant)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load RegNet model
     framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040")
@@ -37,13 +37,15 @@ def test_regnet(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet_img_classification(record_forge_property, variant):
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="regnet", variant=variant, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")

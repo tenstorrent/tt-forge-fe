@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 from utils import CompilerComponent, MatchingExceptionRule, MatchingCompilerComponentException
+from exception_utils import collect_mlir_unsupported_ops, collect_error_msg_from_line
 
 common_failure_matching_rules_list = [
     MatchingCompilerComponentException(
@@ -25,6 +26,7 @@ common_failure_matching_rules_list = [
             MatchingExceptionRule(
                 "lower_to_mlir",
                 ["RuntimeError", "Found Unsupported operations while lowering from TTForge to TTIR in forward graph"],
+                collect_mlir_unsupported_ops,
             ),
             MatchingExceptionRule(
                 "lower_to_mlir",
@@ -39,19 +41,28 @@ common_failure_matching_rules_list = [
             MatchingExceptionRule("Runtime Datatype Unsupported", ["RuntimeError", "Unhandled dtype Bool"]),
             # Compiled model Runtime
             MatchingExceptionRule(
-                "Runtime Datatype mismatch", ["RuntimeError", "Tensor", "data type mismatch: expected", "got"]
+                "Runtime Datatype mismatch",
+                ["RuntimeError", "Tensor", "data type mismatch: expected", "got"],
+                collect_error_msg_from_line,
             ),
             MatchingExceptionRule(
                 "Runtime Shape mismatch", ["RuntimeError", "Tensor", "shape mismatch: expected", "got"]
             ),
             MatchingExceptionRule(
-                "Runtime stride mismatch", ["RuntimeError", "Tensor", "stride mismatch: expected", "got"]
+                "Runtime stride mismatch",
+                ["RuntimeError", "Tensor", "stride mismatch: expected", "got"],
+                collect_error_msg_from_line,
             ),
             MatchingExceptionRule(
                 "Runtime Input count mismatch", ["RuntimeError", "Input count mismatch: expected", "got"]
             ),
             MatchingExceptionRule(
                 "post_const_eval_tensors", ["RuntimeError", "unsupported memory format option Contiguous"]
+            ),
+            MatchingExceptionRule(
+                "TT-Metal vs Forge Output Dtype mismatch",
+                ["TypeError: Dtype mismatch: framework_model.dtype", ", compiled_model.dtype"],
+                collect_error_msg_from_line,
             ),
         ],
     ),

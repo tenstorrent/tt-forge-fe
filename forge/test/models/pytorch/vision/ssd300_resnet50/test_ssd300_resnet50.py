@@ -19,7 +19,7 @@ def test_pytorch_ssd300_resnet50(record_forge_property):
     module_name = build_module_name(framework=Framework.PYTORCH, model="ssd300_resnet50")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # STEP 2 : prepare model
     framework_model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)

@@ -36,6 +36,7 @@ def read_args():
     parser.add_argument(
         "-bs", "--batch_size", type=int, default=1, help="Batch size, number of samples to process at once."
     )
+    parser.add_argument("-lp", "--loop_count", type=int, default=1, help="Number of times to run the benchmark.")
     parser.add_argument(
         "-isz",
         "--input_size",
@@ -74,6 +75,7 @@ def read_args():
     parsed_args["model"] = args.model
     parsed_args["config"] = args.config
     parsed_args["training"] = args.training
+    parsed_args["loop_count"] = args.loop_count
 
     if not args.batch_size:
         print("\nBatch size is not specified. We set on size 1. \n\n")

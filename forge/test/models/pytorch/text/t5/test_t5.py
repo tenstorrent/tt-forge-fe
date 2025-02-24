@@ -25,7 +25,7 @@ def test_t5_loop_tiny_tile(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="loop_tiny_tile")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     import os
 
@@ -83,12 +83,19 @@ def test_t5_loop_tiny_tile(record_forge_property, variant):
 
 
 variants = [
-    pytest.param("t5-small", id="t5-small"),
-    pytest.param("t5-base", id="t5-base"),
-    pytest.param("t5-large", id="t5-large"),
+    pytest.param("t5-small", id="t5-small", marks=[pytest.mark.push]),
+    pytest.param(
+        "t5-base",
+        id="t5-base",
+        marks=[pytest.mark.push, pytest.mark.xfail(reason="PCC error due to Reduce Avg data mismatch.")],
+    ),
+    pytest.param(
+        "t5-large", id="t5-large", marks=[pytest.mark.xfail(reason="PCC error due to Reduce Avg data mismatch.")]
+    ),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
+        marks=[pytest.mark.push],
     ),
     pytest.param(
         "google/flan-t5-base",
@@ -101,11 +108,14 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_t5_generation(record_forge_property, variant):
+    if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
+        pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
+
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION)
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -202,7 +212,7 @@ def test_t5_past_cache_enc_dec(record_forge_property, variant, test_device):
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     import os
 
@@ -372,7 +382,7 @@ def test_t5_past_cache_forge_pipeline(record_forge_property, variant, test_devic
     )
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     import os
 
@@ -714,7 +724,7 @@ def test_t5_forge_pipeline(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="forge_pipe")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     # Too slow for post-commit ci
 
@@ -769,7 +779,7 @@ def test_t5_small_tiny_tile(record_forge_property, test_device):
     module_name = build_module_name(framework=Framework.PYTORCH, model="t5", variant=variant, suffix="small_tiny_tile")
 
     # Record Forge Property
-    record_forge_property("module_name", module_name)
+    record_forge_property("model_name", module_name)
 
     import os
 

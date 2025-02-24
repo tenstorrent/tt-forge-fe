@@ -4,6 +4,7 @@
 
 # Test plan management utilities
 
+from random import Random
 import types
 import pytest
 import forge
@@ -29,6 +30,7 @@ from forge.op_repo import TensorShape
 from .datatypes import OperatorParameterTypes
 from .pytest import PytestParamsUtils
 from .compat import TestDevice
+from .utils import RateLimiter
 
 
 class InputSource(Enum):
@@ -216,6 +218,13 @@ class TestQuery:
             if allow_or_skip == found:
                 yield test_vector
 
+    def _filter_sample(self, percent: float, random_seed: int) -> Generator[TestVector, None, None]:
+        rng = Random(random_seed)
+        rate_limiter = RateLimiter(rng, 100 * 10**5, int(percent * 10**5))
+        for test_vector in self.test_vectors:
+            if rate_limiter.is_allowed():
+                yield test_vector
+
     def _filter_group_limit(self, groups: List[str], limit: int) -> Generator[TestVector, None, None]:
         groups_count = {}
         for test_vector in self.test_vectors:
@@ -267,6 +276,10 @@ class TestQuery:
         indices = list(args)
         return TestQuery(self._filter_indices(indices, allow_or_skip=False))
 
+    def sample(self, percent: float, random_seed: int = 0) -> "TestQuery":
+        """Filter test vectors based on sampling percentage"""
+        return TestQuery(self._filter_sample(percent, random_seed))
+
     def group_limit(self, groups: List[str], limit: int) -> "TestQuery":
         """Limit the number of test vectors per group"""
         return TestQuery(self._filter_group_limit(groups, limit))
@@ -292,6 +305,7 @@ class TestQuery:
         test_vectors = self.test_vectors
         for test_vector in test_vectors:
             yield test_vector.to_param()
+        logger.trace("To params done")
 
     @classmethod
     def all(cls, test_plan: Union["TestPlan", "TestSuite"]) -> "TestQuery":
@@ -480,6 +494,7 @@ class TestSuite:
         return test_vectors
 
     def query_all(self) -> TestQuery:
+        logger.trace("Query all test vectors")
         return TestQuery.all(self)
 
     def query_from_id_file(self, test_ids_file: str) -> TestQuery:
@@ -606,8 +621,22 @@ class TestPlanUtils:
 
         test_id = test_id.replace("no_device-", "")
 
-        # Split by '-' but not by ' -'
-        parts = re.split(r"(?<! )-", test_id)
+        # Split by '-' but not by ' -' and not by '(-'
+        # Explanation: Valid negative numbers can appear in kwargs or shapes or potentially other tuples
+        # * Space ' ' before '-' is for separating parameters
+        #   Example: reshape-FROM_HOST-{'shape': (8, -1)}-(2, 2, 2, 2)-None-None
+        # * Open bracket '(' before '-' is for opening tuples
+        #   Example: reshape-FROM_HOST-{'shape': (-1, 15)}-(3, 4, 5)-None-None
+
+        # Replace - with |
+        test_id = test_id.replace("-", "|")
+        # Replace ' |' with ' -' (revert previous replacement for valid negative numbers)
+        test_id = test_id.replace(" |", " -")
+        # Replace '(|' with '(-' (revert previous replacement for valid negative numbers)
+        test_id = test_id.replace("(|", "(-")
+
+        parts = test_id.split("|")
+
         assert len(parts) == 6 or len(parts) == 7, f"Invalid test id: {test_id} / {parts}"
         if len(parts) == 6:
             dev_data_format_index = 4
@@ -629,11 +658,8 @@ class TestPlanUtils:
         math_fidelity_part = parts[math_fidelity_index]
         if math_fidelity_part == "None":
             math_fidelity_part = None
-        # TODO remove hardcoded values here
-        if math_fidelity_part in (
-            "HiFi40",
-            "HiFi41",
-        ):
+        # As last parameter in test id is math fidelity, in case of duplicated tests numeric suffix should be ignored
+        if math_fidelity_part is not None and math_fidelity_part.startswith("HiFi4"):
             math_fidelity_part = "HiFi4"
         math_fidelity = eval(f"forge._C.{math_fidelity_part}") if math_fidelity_part is not None else None
 
@@ -819,6 +845,8 @@ class TestPlanScanner:
     @classmethod
     def build_test_suite(cls, scan_file: str, scan_package: str) -> TestSuite:
         """Build test suite from scaned test plans."""
+        logger.trace(f"Building test suite from file: {scan_file} and package: {scan_package}")
         test_plans = cls.get_all_test_plans(scan_file, scan_package)
         test_plans = list(test_plans)
+        logger.trace(f"Found test plans: {len(test_plans)}")
         return TestSuite(test_plans=test_plans)

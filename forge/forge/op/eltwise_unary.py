@@ -389,6 +389,27 @@ def Sine(name: str, operandA: Tensor) -> Tensor:
     return op("sine", name, operandA).get_tensor()
 
 
+def Atan(name: str, operandA: Tensor) -> Tensor:
+    """
+    Elementwise arctangent (atan)
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return op("atan", name, operandA).get_tensor()
+
+
 def Cosine(name: str, operandA: Tensor) -> Tensor:
     """
     Elementwise cosine
