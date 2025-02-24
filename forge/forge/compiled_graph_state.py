@@ -346,7 +346,6 @@ class CompiledModel:
     def backward(self) -> List[torch.Tensor]:
         assert self.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
-        assert self.bwd_persistent_tensors is not None, "Persistent tensors should be present for backward pass."
 
         for grad in self.gradient_inputs:
             assert grad is not None, "Gradients not provided for backward pass."
