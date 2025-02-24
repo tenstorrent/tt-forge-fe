@@ -176,7 +176,7 @@ class CompiledModel:
     # Compiled flatbuffer binary composed of programs which execute compiled graphs (e.g., forward, backward, etc.)
     compiled_binary: Binary
 
-    inputs: List[torch.Tensor]
+    inputs: List[CTensor]
     outputs: Dict[str, torch.Tensor]
     intermediates: List[torch.Tensor]
 
@@ -203,40 +203,15 @@ class CompiledModel:
         self.tensor_pool = self.runtime_model_state.tensor_pool
 
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
-        self.create_persistent_inputs(self.runtime_model_state.tensor_pool, fwd_compiled_graph_state)
-
-        self.fwd_persistent_tensors = [
-            self.tensor_pool.get_tensor(name)
-            for name in [
-                *self.fwd_compiled_graph_state.ordered_constant_node_names,
-                *self.fwd_compiled_graph_state.ordered_parameter_node_names,
-            ]
-        ]
-        self.fwd_program_state = create_program_state(ProgramType.Forward, self.fwd_persistent_tensors)
-
-        self.runtime_model_state.init_program_state(self.fwd_program_state)
+        self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
 
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
         if self.bwd_compiled_graph_state is not None:
-            self.create_persistent_inputs(self.tensor_pool, self.bwd_compiled_graph_state)
-            self.bwd_persistent_tensors = [
-                self.tensor_pool.get_tensor(name)
-                for name in [
-                    *self.bwd_compiled_graph_state.ordered_constant_node_names,
-                    *self.bwd_compiled_graph_state.ordered_parameter_node_names,
-                ]
-            ]
+            self.create_program_state(ProgramType.Backward, self.tensor_pool, self.bwd_compiled_graph_state)
 
         self.opt_compiled_graph_state = opt_compiled_graph_state
         if self.opt_compiled_graph_state is not None:
-            self.create_persistent_inputs(self.tensor_pool, self.opt_compiled_graph_state)
-            self.opt_persistent_tensors = [
-                self.tensor_pool.get_tensor(name)
-                for name in [
-                    *self.opt_compiled_graph_state.ordered_constant_node_names,
-                    *self.opt_compiled_graph_state.ordered_parameter_node_names,
-                ]
-            ]
+            self.create_program_state(ProgramType.Optimizer, self.tensor_pool, self.opt_compiled_graph_state)
 
         self.compiled_binary = compiled_binary
         self.inputs = []
@@ -263,6 +238,22 @@ class CompiledModel:
         for name, tensor in persistent_inputs:
             tensor_pool.insert(name, tensor)
 
+    def create_program_state(
+        self, program_type: ProgramType, tensor_pool: TensorPool, compiled_graph_state: CompiledGraphState
+    ):
+        self.create_persistent_inputs(tensor_pool, compiled_graph_state)
+
+        persistent_tensors = [
+            self.tensor_pool.get_tensor(name)
+            for name in [
+                *compiled_graph_state.ordered_constant_node_names,
+                *compiled_graph_state.ordered_parameter_node_names,
+            ]
+        ]
+
+        pstate = create_program_state(program_type, persistent_tensors)
+        self.runtime_model_state.init_program_state(pstate)
+
     def tie_grad_fn(self, grad_id: int, grad: torch.Tensor) -> None:
         """
         Hook function to tie the gradients produced by torch as inputs to the backward pass which will be ran on the
@@ -287,9 +278,9 @@ class CompiledModel:
         List[Tensor]
             Output tensors
         """
-        self.inputs = [*to_pt_tensors(inputs)]
+        torch_inputs = [*to_pt_tensors(inputs)]
 
-        assert all([isinstance(t, torch.Tensor) for t in self.inputs]), "All inputs should be torch tensors by now."
+        assert all([isinstance(t, torch.Tensor) for t in torch_inputs]), "All inputs should be torch tensors by now."
 
         if self.training() and isinstance(self.framework_module, PyTorchModule):
             for name, param in self.framework_module.module.named_parameters():
@@ -304,15 +295,15 @@ class CompiledModel:
                     # This could change in the future, but for now ensure that our premise is correct.
                     assert param is our_tensor
 
+            # HACK: Refresh weight tensors (since they are actually not persistant, i.e. they were modified by the optimizer.
+            self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
+
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
         )
-        # self.fwd_persistent_tensors, all_outputs = run_binary_v2(
-        #     self.compiled_binary, int(ProgramId.FORWARD), self.inputs, self.fwd_persistent_tensors
-        # )
 
-        rt_inputs = [CTensor(t) for t in self.inputs]
-        self.runtime_model_state.run_program(ProgramType.Forward, rt_inputs)
+        self.inputs = [CTensor(t) for t in inputs]
+        self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
 
         all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)
 
