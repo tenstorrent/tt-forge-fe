@@ -537,3 +537,70 @@ def test_optimizer_device():
         break
 
     print(f"Test (total) loss: {test_loss}")
+
+
+@pytest.mark.push
+def test_e2e_device():
+    torch.manual_seed(0)
+
+    # Config
+    num_epochs = 5
+    batch_size = 1024
+    learning_rate = 0.1
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size)
+
+    framework_model = MNISTLinear(bias=False)
+    framework_loss = torch.nn.CrossEntropyLoss()
+    optimizer = forge.optimizers.SGD(learning_rate=learning_rate)
+
+    tt_model = forge.compile(
+        framework_model, sample_inputs=[torch.rand(batch_size, 784)], optimizer=optimizer, training=True
+    )
+
+    loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
+    loss_inputs = to_forge_tensors(loss_inputs)
+    tt_loss = forge.compile(
+        CrossEntropyLoss(name="cross_entropy_loss"), sample_inputs=loss_inputs, training=True, attach_to=tt_model
+    )
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+
+    for epoch_idx in range(num_epochs):
+        total_loss = 0
+        for batch_idx, (data, target) in enumerate(train_loader):
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).float()
+
+            # Forward pass (prediction) on device
+            pred = tt_model(data)[0]
+            golden_pred = framework_model(data)
+            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+
+            # Execute loss (and its backward) on CPU.
+            golden_loss = framework_loss(pred, target)
+            loss = tt_loss(pred, target)[0]
+            total_loss += loss.item()
+
+            assert compare_with_golden(golden_loss, loss[0][0], rtol=52e-2)
+
+            tt_loss.backward()
+
+            # Adjust weights on the device.
+            # NOTE: after executing the step, this will also zero the gradients.
+            optimizer.step()
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+
+    test_loss = 0
+    for batch_idx, (data, target) in enumerate(test_loader):
+        pred = tt_model(data)[0]
+        target = nn.functional.one_hot(target, num_classes=10).float()
+
+        test_loss += framework_loss(pred, target)
+        break
+
+    print(f"Test (total) loss: {test_loss}")
