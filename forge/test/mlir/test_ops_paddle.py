@@ -194,11 +194,34 @@ def test_mnist_pp():
     framework_model = PaddleMNISTLinear()
     forge.compile(framework_model, sample_inputs=inputs)        
 
-@pytest.mark.xfail(reason="Loaded models (TranslatedLayer) not supported yet")
+@pytest.mark.push
+def test_loaded_model():
+    input_features, output_dim = (784, 10)
+
+    class Linear_pp(paddle.nn.Layer):
+        def __init__(self):
+            super().__init__()
+            self.l1 = paddle.nn.Linear(input_features, output_dim, bias_attr=True)
+
+        def forward(self, a):
+            return self.l1(a)
+
+    inputs = [paddle.rand([1, input_features])]
+
+    framework_model = Linear_pp()
+    traced_model = paddle.jit.to_static(framework_model, input_spec=[paddle.static.InputSpec(shape=[1, input_features], dtype='float32')], full_graph=True)
+    paddle.jit.save(traced_model, "linear_pp_model")
+    loaded_model = paddle.jit.load("linear_pp_model")
+    loaded_model.name = "LoadedLineaerModel"
+    
+    forge.compile(loaded_model, sample_inputs=inputs)
+
+@pytest.mark.xfail(reason="PaddleOCR model is not supported yet")
 @pytest.mark.push
 def test_paddleocr():
     # downloaded from PaddleOCR repo
-    model_path = "../paddleocr/PaddleOCR/pretrained_models/en_PP-OCRv3_rec_infer/inference"
+    # model_path = "~/paddleocr/inference"
+    model_path = "inference"
     framework_model = paddle.jit.load(model_path)
     inputs = [paddle.rand([1, 3, 32, 320])]
     forge.compile(framework_model, sample_inputs=inputs)

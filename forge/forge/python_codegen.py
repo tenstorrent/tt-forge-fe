@@ -419,9 +419,9 @@ class ForgeWriter(PythonWriter):
             if not named_params_file_name and not named_buffers_file_name:
                 self.wl("def process_framework_parameters(self, model):")
                 self.indent += 1
-                self.wl("named_parameters = dict(model.state_dict().items())")
-                self.wl("named_buffers = dict(model.named_buffers())")
-                self.wl("named_parameters.update(named_buffers)")
+                # self.wl("named_parameters = dict(model.state_dict().items())")
+                # self.wl("named_buffers = dict(model.named_buffers())")
+                # self.wl("named_parameters.update(named_buffers)")
             
             else:
                 assert False, "Invalid combination of param files (either both or none)"
@@ -435,9 +435,9 @@ class ForgeWriter(PythonWriter):
                 self.wl("}")
 
             # Loop over all named params
-            self.wl("for name, paddle_param in named_parameters.items():")
+            self.wl("for paddle_param in model.parameters():")
             self.indent += 1
-
+            self.wl("name = paddle_param.name")
             # TODO: Handle -inf and inf values
             
             self.wl("tensor = torch.tensor(paddle_param.data.numpy())")

@@ -2256,7 +2256,7 @@ def compile_tvm_to_python(
                     make_parser_friendly_name(node, "input_")
                     # TVM might not preserve input order; check json graph
                     inp_idx = nid
-                    if "nid_to_input_idx" in json_graph.keys() and len(json_graph["nid_to_input_idx"]) != 0:
+                    if "nid_to_input_idx" in json_graph.keys() and len(json_graph["nid_to_input_idx"]) > nid:
                         inp_idx = json_graph["nid_to_input_idx"][nid]
                         forge_inputs[inp_idx] = flattened_pytorch_inputs[inp_idx]
 

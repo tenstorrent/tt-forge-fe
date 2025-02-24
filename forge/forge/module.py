@@ -249,8 +249,8 @@ class PaddleModule(Module):
 
     def get_parameters(self) -> List[Parameter]:
         params = []
-        for name, param in self.module.named_parameters():
-            forge_param = Parameter(torch.tensor(param.numpy()), requires_grad=param.stop_gradient, name=name)
+        for param in self.module.parameters():
+            forge_param = Parameter(torch.tensor(param.numpy()), requires_grad=param.stop_gradient, name=param.name)
             params.append(forge_param)
         return params
 
