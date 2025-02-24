@@ -92,7 +92,9 @@ class Tensor
     torch::Tensor to_host() const
     {
         TT_ASSERT(rt_tensor.has_value());
-        auto host = tt::runtime::toHost(rt_tensor.value());
+
+        constexpr bool untilize_tensor = true;
+        auto host = tt::runtime::toHost(rt_tensor.value(), untilize_tensor);
         auto torch_tensor = at::empty_strided(
             as_vec_int64(desc.shape), as_vec_int64(desc.stride), dt_to_torch_scalar_type(desc.dataType));
 
