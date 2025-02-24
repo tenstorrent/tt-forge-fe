@@ -33,6 +33,7 @@ from .datatypes import FrameworkDataFormat
 from .pytest import PytestParamsUtils
 from .compat import TestDevice
 from .utils import RateLimiter
+from .context import test_sweep_context_provider
 
 
 class InputSource(Enum):
@@ -302,12 +303,17 @@ class TestQuery:
         """Log the test vectors"""
         return TestQuery(self._log())
 
-    def to_params(self) -> Generator[ParameterSet, None, None]:
+    def to_params_gen(self) -> Generator[ParameterSet, None, None]:
         """Convert test vectors to pytest parameter sets"""
         test_vectors = self.test_vectors
         for test_vector in test_vectors:
             yield test_vector.to_param()
         logger.trace("To params done")
+
+    def to_params(self) -> Generator[ParameterSet, None, None]:
+        """Convert test vectors to pytest parameter sets"""
+        with test_sweep_context_provider():
+            yield from self.to_params_gen()
 
     @classmethod
     def all(cls, test_plan: Union["TestPlan", "TestSuite"]) -> "TestQuery":
