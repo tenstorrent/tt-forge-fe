@@ -62,6 +62,7 @@ void TTDevice::open_device()
 void TTDevice::close_device()
 {
     TT_ASSERT(is_open());
+    log_info(LogTTDevice, "Closing device {}...", index);
     runtime::closeDevice(rt_device.value());
     rt_device.reset();
 }
