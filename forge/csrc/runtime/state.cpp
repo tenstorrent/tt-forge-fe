@@ -39,8 +39,11 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
     size_t input_idx = 0;
     for (auto tensor : act_inputs)
     {
-        auto layout = tt::runtime::getLayout(binary, pg_id, input_idx++);
-        tensor.to_device(device_id, layout);
+        if (!tensor.on_device())
+        {
+            auto layout = tt::runtime::getLayout(binary, pg_id, input_idx++);
+            tensor.to_device(device_id, layout);
+        }
 
         inputs.emplace_back(tensor);
     }
