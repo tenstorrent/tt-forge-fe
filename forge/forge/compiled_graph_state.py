@@ -262,7 +262,7 @@ class CompiledModel:
         NOTE: Should be used only when loss is computed on CPU (outside of our runtime).
         """
         assert len(self.gradient_inputs) > grad_id, "More gradients than expected."
-        self.gradient_inputs[grad_id] = grad
+        self.gradient_inputs[grad_id] = CTensor(grad)
 
     def __call__(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         """
@@ -355,12 +355,18 @@ class CompiledModel:
         logger.info(
             f"Running backward pass on model {self.framework_module.get_name()} {self.bwd_compiled_graph_state.graph.get_name()} on device..."
         )
-        grads = run_binary_v2(
-            self.compiled_binary,
-            int(ProgramId.BACKWARD),
-            [*self.gradient_inputs, *self.intermediates, *inputs],
-            self.bwd_persistent_tensors,
+
+        self.runtime_model_state.run_program(
+            ProgramType.Backward, [*self.gradient_inputs, *self.intermediates, *inputs]
         )
+        grads = self.runtime_model_state.get_outputs(ProgramType.Backward)
+
+        # grads = run_binary_v2(
+        #     self.compiled_binary,
+        #     int(ProgramId.BACKWARD),
+        #     [*self.gradient_inputs, *self.intermediates, *inputs],
+        #     self.bwd_persistent_tensors,
+        # )
 
         if self.optimizer_on_device():
             if self.gradient_outputs is None or len(self.gradient_outputs) == 0:
@@ -376,7 +382,7 @@ class CompiledModel:
                 for name, param in self.framework_module.module.named_parameters():
                     for idx, grad_output_name in enumerate(self.bwd_compiled_graph_state.ordered_output_names):
                         if name in grad_output_name:
-                            grad_tensor = grads[idx]
+                            grad_tensor = grads[idx].to_torch()
                             if param.shape != grad_tensor.shape:
                                 # Our gradients for bias are 2D (of [1, N] shape) but PyTorch expects 1D - [N].
                                 assert (torch.squeeze(grad_tensor, 0)).shape == param.shape
