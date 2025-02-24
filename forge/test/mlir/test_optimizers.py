@@ -42,6 +42,8 @@ def train_and_compare_optimizers(
         golden_optimizer.step()
 
         # Compare all the parameters
+        # TODO: Switch to verify once this is closed
+        # https://github.com/tenstorrent/tt-forge-fe/issues/1310
         for i, (tt_param, golden_param) in enumerate(
             zip(tt_model.framework_module.module.parameters(), golden_model.parameters())
         ):
