@@ -80,6 +80,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     start_time = time.time()
     for _ in range(32):
         transformer_outputs = compiled_decoder(input_ids)
+        assert torch.allclose(first_transformer_outputs[0], transformer_outputs[0])
     end_time = time.time()
     print(f"Time per batch (prefill): {(end_time - start_time) / 32}")
 
