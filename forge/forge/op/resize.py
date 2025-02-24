@@ -62,6 +62,44 @@ def Resize2d(
     return result
 
 
+def Upsample2d(
+    name: str, operandA: Tensor, scale_factor: int, mode: str = "nearest", channel_last: bool = False
+) -> Tensor:
+    """
+    Upsample 2D operation
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A
+
+    scale_factor: int
+        multiplier for spatial size.
+
+    mode: str
+        the upsampling algorithm
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    result: Tensor = op(
+        "upsample2d",
+        name,
+        operandA,
+        attrs=(scale_factor, mode, channel_last),
+        scale_factor=scale_factor,
+        mode=mode,
+        channel_last=channel_last,
+    ).get_tensor()
+
+    return result
+
+
 def Resize3d(
     name: str,
     operandA: Tensor,
