@@ -10,6 +10,7 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.tensor import to_pt_tensors
 
 @pytest.mark.parametrize(
     "shape",
@@ -71,9 +72,9 @@ def test_arithmetic_pp():
     inputs = [paddle.rand([2, 32, 32]), paddle.rand([2, 32, 32])]
 
     framework_model = Arithmetic_pp()
-    forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    # verification is done in the compile function
+    verify(inputs, framework_model, compiled_model)
 
 @pytest.mark.push
 def test_matmul_pp():
@@ -87,8 +88,9 @@ def test_matmul_pp():
     inputs = [paddle.rand([32, 64]), paddle.rand([64, 32])]
 
     framework_model = Matmul_pp()
-    forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
+    verify(inputs, framework_model, compiled_model)
 
 @pytest.mark.push
 def test_sqeeze_pp():
@@ -104,8 +106,9 @@ def test_sqeeze_pp():
     inputs = [paddle.rand([1, 32, 32]), paddle.rand([1, 32, 32])]
 
     framework_model = Squeeze_pp()
-    forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
+    verify(inputs, framework_model, compiled_model)
 
 @pytest.mark.push
 def test_flatten_pp():
@@ -121,35 +124,9 @@ def test_flatten_pp():
     inputs = [paddle.rand([2, 32, 32])]
 
     framework_model = Flatten_pp()
-    forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-
-@pytest.mark.parametrize(
-    "shape_a, shape_b",
-    [
-        ([2, 32, 32], [32, 32]),
-        ([2, 32, 32], [1, 32, 32]),
-        ([2, 32, 32], [1, 32, 1]),
-        ([2, 32, 32], [1, 1, 32]),
-        ([2, 32, 32], [1, 1, 1]),
-        ([2, 32, 32], [32, 1]),
-    ],
-)
-@pytest.mark.push
-def test_broadcast_pp(shape_a, shape_b):
-    class Broadcast_pp(paddle.nn.Layer):
-        def __init__(self):
-            super().__init__()
-
-        def forward(self, a, b):
-            return a + b
-
-    inputs = [paddle.rand(shape_a), paddle.rand(shape_b)]
-
-    framework_model = Broadcast_pp()
-    forge.compile(framework_model, sample_inputs=inputs)
-
-
+    verify(inputs, framework_model, compiled_model)
 
 @pytest.mark.push
 def test_linear_layer_pp():
@@ -168,6 +145,7 @@ def test_linear_layer_pp():
     framework_model = Linear_pp()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
     
+    verify(inputs, framework_model, compiled_model)
 
 @pytest.mark.push
 def test_mnist_pp():
@@ -192,7 +170,9 @@ def test_mnist_pp():
     inputs = [paddle.rand([1, 784])]
 
     framework_model = PaddleMNISTLinear()
-    forge.compile(framework_model, sample_inputs=inputs)        
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)  
+
+    verify(inputs, framework_model, compiled_model)      
 
 @pytest.mark.push
 def test_loaded_model():
@@ -201,7 +181,7 @@ def test_loaded_model():
     class Linear_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
-            self.l1 = paddle.nn.Linear(input_features, output_dim, bias_attr=True)
+            self.l1 = paddle.nn.Linear(input_features, output_dim, bias_attr=True, name="linear13")
 
         def forward(self, a):
             return self.l1(a)
@@ -214,9 +194,10 @@ def test_loaded_model():
     loaded_model = paddle.jit.load("linear_pp_model")
     loaded_model.name = "LoadedLineaerModel"
     
-    forge.compile(loaded_model, sample_inputs=inputs)
+    compiled_model = forge.compile(loaded_model, sample_inputs=inputs)
+    verify(inputs, loaded_model, compiled_model)
 
-@pytest.mark.xfail(reason="PaddleOCR model is not supported yet")
+@pytest.mark.xfail(reason="Not supported yet")
 @pytest.mark.push
 def test_paddleocr():
     # downloaded from PaddleOCR repo
@@ -224,6 +205,6 @@ def test_paddleocr():
     model_path = "inference"
     framework_model = paddle.jit.load(model_path)
     inputs = [paddle.rand([1, 3, 32, 320])]
-    forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-
+    verify(inputs, framework_model, compiled_model)

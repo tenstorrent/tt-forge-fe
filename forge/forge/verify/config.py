@@ -279,7 +279,7 @@ class VerifyConfig:
     def supported_tensor_types(self) -> Tuple:
         from forge import Tensor  # Local import to avoid circular dependency
 
-        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor)
+        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor, paddle.Tensor)
 
     @property
     def compiled_model_types(self) -> Tuple:
