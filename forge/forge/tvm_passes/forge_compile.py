@@ -15,7 +15,6 @@ from tensorflow.python.framework.convert_to_constants import (
     convert_variables_to_constants_v2,
     _construct_concrete_function,
 )
-from tvm.contrib import graph_executor
 from loguru import logger
 
 from ctypes import c_void_p
@@ -24,7 +23,6 @@ import json
 
 from collections import OrderedDict
 from collections.abc import MutableMapping
-import forge
 
 from json import JSONEncoder
 import os
@@ -35,13 +33,12 @@ import onnx
 import onnx.numpy_helper
 import mxnet as mx
 from tvm.relay.expr import Tuple
-from tvm.relay.op.contrib.forge.forge import verify_tvm_compile
-
+from forge.tvm_passes.relay_op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
 from jax.experimental import jax2tf
 from jax.tools.jax_to_ir import tf_wrap_with_input_names
 import collections
 from transformers.utils.generic import ModelOutput
-from tvm.contrib.forge_utils import (
+from forge.tvm_passes.forge_utils import (
     extract_framework_model_outputs, 
     extract_flatten_inputs, 
     construct_tvm_ir,
@@ -377,7 +374,7 @@ def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verif
     logger.trace("From PyTorch")
     logger.trace(mod.functions)
 
-    mod = tvm.relay.op.contrib.flatten_IO(mod, flattened_name_map)
+    mod = flatten_IO(mod, flattened_name_map)
     record_execution_phase_and_stage(ExecutionStage.TVM_FLATTEN_IO)
 
     # Construct TVM IR
@@ -408,7 +405,7 @@ def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verif
 def compile_tvm_for_forge(mod, params, inputs, golden_outputs, graph_name, input_names = [], return_params=False, compiler_cfg=None, verify_cfg=None):
     target = "llvm"
     verify_args = {'inputs': inputs, 'framework_outputs': golden_outputs, 'verify_cfg': verify_cfg}
-    mod, params = tvm.relay.op.contrib.compile_for_forge(mod, target=target, params=params, graph_name=graph_name, **verify_args)
+    mod, params = compile_for_forge(mod, target=target, params=params, graph_name=graph_name, **verify_args)
 
     if verify_cfg is not None and verify_cfg.verify_tvm_compile:
         assert compiler_cfg.convert_framework_params_to_tvm, "Cannot verify TVM compile without converting framework params to relay"
@@ -420,7 +417,7 @@ def compile_tvm_for_forge(mod, params, inputs, golden_outputs, graph_name, input
             verify_tvm_compile(mod, params, inputs, target, golden_outputs, "compile_for_forge", verify_cfg=verify_cfg)
 
     # Reconstruct Ops + export forge graph
-    mod, forge_params = tvm.relay.op.contrib.forge.partition_for_forge(mod, graph_name=graph_name, compiler_cfg=compiler_cfg, input_names=input_names)
+    mod, forge_params = partition_for_forge(mod, graph_name=graph_name, compiler_cfg=compiler_cfg, input_names=input_names)
     tvm.relay.build_module.build(mod, target=target, params=params)
     record_execution_phase_and_stage(ExecutionStage.TVM_GRAPH_PARTITIONING)
 
@@ -890,7 +887,7 @@ def compile_tf_graphdef_for_forge(graph_def, *inputs, graph_name, compiler_cfg,)
         mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], propped_params))
 
     target = "llvm"
-    mod, params = tvm.relay.op.contrib.compile_for_forge(mod, target=target, params=params, graph_name=graph_name)
+    mod, params = compile_for_forge(mod, target=target, params=params, graph_name=graph_name)
 
     # Reconstruct Ops + export forge graph
     partitioned_mod, forge_params = tvm.relay.op.contrib.forge.partition_for_forge(mod, graph_name=graph_name, compiler_cfg=compiler_cfg, input_names=input_names)
