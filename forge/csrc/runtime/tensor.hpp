@@ -144,11 +144,11 @@ class TensorPool
 
     bool exists(const std::string& name) const { return tensor_name_to_idx.find(name) != tensor_name_to_idx.end(); }
 
-    void update_tensor(std::string& name, torch::Tensor& tensor)
+    void update_tensor(const std::string& name, tt::Tensor& tensor)
     {
         TT_ASSERT(tensor_name_to_idx.find(name) != tensor_name_to_idx.end(), "Tensor {} not found", name);
         size_t idx = tensor_name_to_idx.at(name);
-        tensors.at(idx) = Tensor(tensor);
+        tensors.at(idx) = tensor;
     }
 
    private:
