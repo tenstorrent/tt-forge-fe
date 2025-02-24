@@ -26,6 +26,7 @@ jobs:
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
   perf-benchmark:
     needs:
       - docker-build

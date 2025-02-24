@@ -22,6 +22,11 @@ on:
         description: 'Docker image to use for build'
         required: true
         type: string
+      runs-on:
+        description: 'Runs on'
+        required: false
+        type: string
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
 
 permissions:
   packages: write
@@ -35,11 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build:
-          [
-            {runs-on: n150 },
-            {runs-on: n300 },
-          ]
+        build: ${{ fromJson(inputs.runs-on) }}
         test_group_id: ${{ fromJson(inputs.test_group_ids) }}
 
     runs-on:
