@@ -61,7 +61,7 @@ def test_efficientnet_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property.add("tags.model_name", module_name)
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -128,7 +128,7 @@ def test_efficientnet_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property.add("tags.model_name", module_name)
 
     # Load model
     if variant == "efficientnet_b0":
