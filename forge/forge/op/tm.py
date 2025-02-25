@@ -367,7 +367,6 @@ def Repeat(name: str, operandA: Tensor, repeats: List[int]) -> Tensor:
     Tensor
         Forge tensor
     """
-    assert len(operandA.shape) == len(repeats)
     return op("repeat", name, operandA, attrs=repeats, repeats=repeats).get_tensor()
 
 
