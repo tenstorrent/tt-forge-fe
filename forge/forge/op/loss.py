@@ -5,7 +5,7 @@ from functools import wraps
 from forge.op.tm import Broadcast, Unsqueeze
 from ..module import ForgeModule
 from .constant import Constant
-from .eltwise_unary import Clip, Log, Abs, Pow, Sigmoid, Sqrt
+from .eltwise_unary import Clip, Log, Abs, Sigmoid, Sqrt
 from .eltwise_binary import Add, GreaterEqual, Less, Max, Min, Subtract, Multiply
 from .nn import Softmax
 from .reduce import ReduceSum, ReduceAvg
@@ -324,13 +324,8 @@ class TripletMarginLoss(ForgeModule):
         self.eps = eps
         self.is_loss = True
 
-    @validate_shapes(min_dim=1, max_dim=2)
+    @validate_shapes(min_dim=2, max_dim=2)
     def forward(self, anchor, positive, negative):
-        if anchor.ndim() == 1:
-            anchor = Unsqueeze("unsqueeze_anchor", anchor, 0)
-            positive = Unsqueeze("unsqueeze_positive", positive, 0)
-            negative = Unsqueeze("unsqueeze_negative", negative, 0)
-
         eps_const = Constant("eps_pos", constant=self.eps)
 
         # Squared distance for positive pair (anchor-positive)

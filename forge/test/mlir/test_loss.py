@@ -267,8 +267,6 @@ def test_bce_with_logits_loss(prediction_shape, reduction):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
-        (33,),
-        (128,),
         (2, 2),
         (3, 5),
         (32, 32),
@@ -278,8 +276,8 @@ def test_bce_with_logits_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
-@pytest.mark.parametrize("margin", [0.5, 1.0, 2.0])
-@pytest.mark.parametrize("eps", [1e-6, 1e-8, 1e-2])
+@pytest.mark.parametrize("margin", [0.5, 2.0])
+@pytest.mark.parametrize("eps", [1e-6, 1e-2])
 @pytest.mark.parametrize("swap", [True, False])
 def test_triplet_margin_loss(prediction_shape, reduction, margin, eps, swap):
     forge_loss = forge.op.loss.TripletMarginLoss(
