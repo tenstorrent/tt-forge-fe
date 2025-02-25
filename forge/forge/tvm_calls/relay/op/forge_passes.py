@@ -1734,6 +1734,36 @@ class DecomposeEinsum(DFPatternCallback):
             # torch.einsum("abcd,->abcd", a_valt, b_valt)
                         
             return res
+        elif match_einsum_pattern("bqnc,bnchw->bqnhw", equation):
+            # Ensure the einsum pattern is matched, and there are two input nodes
+            assert len(node_map[self.act][0]) == 2
+
+            srcA = node_map[self.act][0][0]  #  (b, q, n, c)
+            srcB = node_map[self.act][0][1]  #  (b, n, c, h, w)
+
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+
+            # Expand dimensions of srcA to align with the einsum pattern
+            srcA_expanded = tvm.relay.expand_dims(srcA, axis=-1)  # Shape: (b, q, n, c, 1)
+
+            # Reshape srcB to collapse the last two spatial dimensions
+            srcB_reduced = tvm.relay.reshape(srcB, newshape=(srcB_shape[0], srcB_shape[1], srcB_shape[2], srcB_shape[3]*srcB_shape[4]))
+            # New shape: (b, n, c, h*w)
+
+            # Expand dimensions of srcB to prepare for broadcasting
+            srcB_expanded = tvm.relay.expand_dims(srcB_reduced, axis=1)  # Shape: (b, 1, n, c, h*w)
+
+            # Perform element-wise multiplication between expanded tensors
+            multiplied = tvm.relay.multiply(srcA_expanded, srcB_expanded)  # Shape: (b, q, n, c, h*w)
+
+            # Sum along the c-axis to match einsum reduction
+            result = tvm.relay.sum(multiplied, axis=3)  # Shape: (b, q, n, h*w)
+
+            # Reshape the result tensor back to (b, q, n, h, w)
+            result = tvm.relay.reshape(result, newshape=(srcA_shape[0], srcA_shape[1], srcA_shape[2], srcB_shape[3], srcB_shape[4]))
+
+            return result
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 
