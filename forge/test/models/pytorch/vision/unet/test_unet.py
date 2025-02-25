@@ -23,6 +23,7 @@ from torchvision.transforms import (
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.unet.utils.model import UNET
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -217,6 +218,33 @@ def test_unet_torchhub_pytorch(record_forge_property):
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+# Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
+@pytest.mark.nightly
+def test_unet_carvana(record_forge_property):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="unet_carvana",
+        source=Source.GITHUB,
+        task=Task.IMAGE_SEGMENTATION,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and input
+    framework_model = UNET(in_channels=3, out_channels=1)
+    framework_model.eval()
+    inputs = [torch.rand((1, 3, 224, 224))]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
