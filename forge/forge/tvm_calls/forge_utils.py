@@ -16,7 +16,9 @@ from tvm.relay import ExprVisitor
 from forge.config import CompilerConfig
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.tensor import to_pt_tensors
-from forge.tvm_passes.relay_op.forge import extract_function_callnodes, trace_to_origin
+from forge.tvm_calls.relay.op.forge import extract_function_callnodes, trace_to_origin
+
+
 def extract_framework_model_outputs(
     framework: str, 
     model, 

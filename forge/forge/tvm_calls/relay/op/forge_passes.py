@@ -12,7 +12,7 @@ from tvm._ffi.base import TVMError
 import numpy as np
 import math
 import numpy as np
-from tvm.relay.dataflow_pattern import *
+from forge.tvm_calls.relay.dataflow_pattern import construct_pre_node_map
 
 from loguru import logger
 from .utils import *

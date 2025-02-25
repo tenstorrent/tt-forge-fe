@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-#
-# SPDX-License-Identifier: Apache-2.0
 import logging
 import torch
 from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
@@ -19,6 +16,7 @@ from tvm.relay import function as _function
 from tvm.relay.op.transform import broadcast_to
 from tvm.target.compilation_config import make_compilation_config
 from tvm.relay.op.contrib.register import register_pattern_table
+from forge.tvm_calls.relay.dataflow_pattern import construct_pre_node_map
 from .reportify import dump_graph
 from .forge_passes import run_forge_compile_passes
 from .relay_passes import run_relay_compile_passes
