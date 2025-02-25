@@ -5,10 +5,10 @@ import pytest
 
 import forge
 
-from test.models.pytorch.multimodal.deepseek.utils.model import (
+from test.models.pytorch.multimodal.deepseek_math.utils.load_model import (
     DeepSeekWrapper,
     download_model_and_tokenizer,
-    generation,
+    generate,
 )
 from test.models.utils import Framework, Source, Task, build_module_name
 
@@ -20,7 +20,7 @@ def test_deepseek_inference_no_cache_cpu(variant):
 
     framework_model = DeepSeekWrapper(model)
 
-    generated_text = generation(
+    generated_text = generate(
         max_new_tokens=200, compiled_model=framework_model, input_ids=input_ids, tokenizer=tokenizer
     )
     print(generated_text)
@@ -41,7 +41,5 @@ def test_deepseek_inference(record_forge_property, variant):
     framework_model = DeepSeekWrapper(model)
 
     compiled_model = forge.compile(framework_model, sample_inputs=[input_ids], module_name=module_name)
-    generated_text = generation(
-        max_new_tokens=1, compiled_model=compiled_model, input_ids=input_ids, tokenizer=tokenizer
-    )
+    generated_text = generate(max_new_tokens=1, compiled_model=compiled_model, input_ids=input_ids, tokenizer=tokenizer)
     print(generated_text)
