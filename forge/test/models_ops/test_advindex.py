@@ -97,32 +97,32 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Advindex0,
         [((448, 1024), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99},
+        {"model_name": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex0,
         [((448, 1280), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99},
+        {"model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex0,
         [((448, 384), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex0,
         [((448, 512), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99},
+        {"model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex0,
         [((448, 768), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex0,
         [((448, 1280), torch.float32), ((1, 2), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99},
+        {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex1,
@@ -143,6 +143,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
+            "max_int": 0,
         },
     ),
     (
@@ -155,6 +156,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_opt_facebook_opt_350m_seq_cls_hf",
             ],
             "pcc": 0.99,
+            "max_int": 31,
         },
     ),
     (
@@ -167,27 +169,28 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_nbeats_generic_basis_clm_hf",
             ],
             "pcc": 0.99,
+            "max_int": 0,
         },
     ),
     (
         Advindex2,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
     (
         Advindex3,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
     (
         Advindex4,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
     (
         Advindex5,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
 ]
 
@@ -200,11 +203,11 @@ def test_module(forge_module_and_shapes_dtypes, record_forge_property):
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
+    max_int = metadata.pop("max_int")
 
     for metadata_name, metadata_value in metadata.items():
         record_forge_property(metadata_name, metadata_value)
 
-    max_int = 1000
     inputs = [
         Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
         for operand_shape, operand_dtype in operand_shapes_dtypes
@@ -228,3 +231,4 @@ def test_module(forge_module_and_shapes_dtypes, record_forge_property):
     compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+
