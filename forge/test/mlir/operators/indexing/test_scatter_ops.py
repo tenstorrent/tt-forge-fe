@@ -16,7 +16,48 @@ from forge.verify.verify import verify
             torch.zeros(10, dtype=torch.float32),  # 1D input tensor
             torch.tensor([True, False, True, False, True, False, True, False, True, False]),  # Mask
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0]),  # Source tensor
-            id="1d_masked_scatter",
+            id="test_masked_scatter_1",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
+        ),
+        # Less Number of elements in source
+        pytest.param(
+            torch.tensor([1, 2, 3, 4, 5], dtype=torch.float32),  # input_tensor shape = (5,)
+            torch.tensor([True, False, True, False, True], dtype=torch.bool),  # mask shape = (5,)
+            torch.tensor([10, 20, 30], dtype=torch.float32),  # source shape = (3,)
+            id="test_masked_scatter_2",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
+        ),
+        # Broadcasting: 1D input and mask with 2D source tensor
+        pytest.param(
+            torch.tensor([1, 2, 3, 4, 5], dtype=torch.float32),  # input_tensor shape = (5,)
+            torch.tensor([True, False, True, False, True], dtype=torch.bool),  # mask shape = (5,)
+            torch.tensor([[10], [20], [30]], dtype=torch.float32),  # source shape = (3, 1)
+            id="test_masked_scatter_3",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
+        ),
+        # 2D tensors where mask has a different shape from input tensor but can be broadcasted
+        pytest.param(
+            torch.tensor([[1, 2], [3, 4], [5, 6]], dtype=torch.float32),  # input_tensor shape = (3, 2)
+            torch.tensor([[True, False], [False, True], [True, True]], dtype=torch.bool),  # mask shape = (3, 2)
+            torch.tensor([10, 20, 30, 40], dtype=torch.float32),  # source shape = (4,)
+            id="test_masked_scatter_4",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
+        ),
+        # Test with a mask of all False (nothing should be replaced)
+        pytest.param(
+            torch.tensor([1, 2, 3, 4, 5], dtype=torch.float32),  # input_tensor shape = (5,)
+            torch.tensor([False, False, False, False, False], dtype=torch.bool),  # mask shape = (5,)
+            torch.tensor([10, 20, 30], dtype=torch.float32),  # source shape = (3,)
+            id="test_masked_scatter_5",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
+        ),
+        # Test with a mask of all True (everything should be replaced)
+        pytest.param(
+            torch.tensor([1, 2, 3, 4, 5], dtype=torch.float32),  # input_tensor shape = (5,)
+            torch.tensor([True, True, True, True, True], dtype=torch.bool),  # mask shape = (5,)
+            torch.tensor([10, 20, 30, 40, 50], dtype=torch.float32),  # source shape = (5,)
+            id="test_masked_scatter_6",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         pytest.param(
             torch.zeros((4, 4), dtype=torch.float32),  # 2D input tensor
@@ -29,27 +70,25 @@ from forge.verify.verify import verify
                 ]
             ),
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]),  # Source tensor
-            id="2d_masked_scatter",
+            id="test_masked_scatter_7",
+            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
     ],
 )
-@pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::masked_scatter']")
 @pytest.mark.push
 def test_masked_scatter(input_tensor, mask, source):
     class MaskedScatterModule(torch.nn.Module):
-        def __init__(self, mask, source):
+        def __init__(self):
             super().__init__()
-            self.mask = mask
-            self.source = source
 
-        def forward(self, x):
+        def forward(self, x, mask, source):
             # Apply masked_scatter
-            return x.masked_scatter(self.mask, self.source)
+            return x.masked_scatter(mask, source)
 
     # Inputs for the test
-    inputs = [input_tensor]
+    inputs = [input_tensor, mask, source]
 
-    framework_model = MaskedScatterModule(mask, source)
+    framework_model = MaskedScatterModule()
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify outputs
