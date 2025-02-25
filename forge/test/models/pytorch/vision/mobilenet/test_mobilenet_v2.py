@@ -21,7 +21,9 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.utils import (
+    load_input,
     load_mobilenet_model,
+    load_model,
     post_processing,
 )
 from test.models.utils import Framework, Source, Task, build_module_name
@@ -277,6 +279,31 @@ def test_mobilenetv2_deeplabv3(record_forge_property, variant):
     record_forge_property("model_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+def test_mobilenetv2_torchvision(record_forge_property):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mobilenetv2_torchvision",
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
+
+    # Record Forge Property
+    record_forge_property("model_name", module_name)
+
+    # Load model and input
+    framework_model = load_model()
+    inputs = load_input()
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
