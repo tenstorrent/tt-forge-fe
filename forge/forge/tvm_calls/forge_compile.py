@@ -33,12 +33,12 @@ import onnx
 import onnx.numpy_helper
 import mxnet as mx
 from tvm.relay.expr import Tuple
-from forge.tvm_passes.relay_op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
+from forge.tvm_calls.relay.op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
 from jax.experimental import jax2tf
 from jax.tools.jax_to_ir import tf_wrap_with_input_names
 import collections
 from transformers.utils.generic import ModelOutput
-from forge.tvm_passes.forge_utils import (
+from forge.tvm_calls.forge_utils import (
     extract_framework_model_outputs, 
     extract_flatten_inputs, 
     construct_tvm_ir,
