@@ -262,3 +262,38 @@ def test_bce_with_logits_loss(prediction_shape, reduction):
     torch_loss_out = torch_loss(prediction, target)
 
     assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3)
+
+
+@pytest.mark.parametrize(
+    "prediction_shape",
+    [
+        (2, 2),
+        (3, 5),
+        (32, 32),
+        (33, 127),
+        (128, 20),
+        (128, 128),
+    ],
+)
+@pytest.mark.parametrize("reduction", ["mean", "sum"])
+@pytest.mark.parametrize("margin", [0.5, 2.0])
+@pytest.mark.parametrize("eps", [1e-6, 1e-2])
+@pytest.mark.parametrize("swap", [True, False])
+def test_triplet_margin_loss(prediction_shape, reduction, margin, eps, swap):
+    forge_loss = forge.op.loss.TripletMarginLoss(
+        "triplet_margin_loss", margin=margin, reduction=reduction, eps=eps, swap=swap
+    )
+    torch_loss = torch.nn.TripletMarginLoss(margin=margin, p=2.0, reduction=reduction, eps=eps, swap=swap)
+
+    anchor = torch.randn(prediction_shape, requires_grad=True)
+    anchor_forge = forge.tensor.Tensor.create_from_torch(anchor)
+    positive = torch.randn(prediction_shape, requires_grad=True)
+    positive_forge = forge.tensor.Tensor.create_from_torch(positive)
+    negative = torch.randn(prediction_shape, requires_grad=True)
+    negative_forge = forge.tensor.Tensor.create_from_torch(negative)
+
+    forge_loss = forge.compile(forge_loss, sample_inputs=[anchor_forge, positive_forge, negative_forge])
+    forge_loss_out = forge_loss(anchor_forge, positive_forge, negative_forge)
+    torch_loss_out = torch_loss(anchor, positive, negative)
+
+    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2)
