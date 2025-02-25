@@ -19,6 +19,7 @@ from typing import Optional, List, Dict, Type, Union
 
 from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.op_repo import TensorShape
+from forge.op_repo.pytorch_operators import pytorch_operator_repository
 from forge.verify import TestKind  # , verify_module
 from forge._C import MathFidelity
 
@@ -315,3 +316,19 @@ class RateLimiter:
             return f"{self.current_value} <= {self.current_limit}"
         else:
             return f"{self.current_value} > {self.current_limit}"
+
+
+class PytorchUtils:
+    """Utility functions for PyTorch operators"""
+
+    @staticmethod
+    def get_pytorch_module(module_name: str):
+        """Retrieving the module that contains a given operator, based on its full name.\n
+        For example, for "torch.nn.functional.gelu", the function returns module torch.nn.functional."""
+        repo_operator = pytorch_operator_repository.get_by_name(module_name).full_name
+        module_name = repo_operator.rsplit(".", 1)[0]
+        # module = importlib.import_module(module_name)  # bad performance
+        module = torch
+        if module_name == "torch.nn.functional":
+            module = torch.nn.functional
+        return module
