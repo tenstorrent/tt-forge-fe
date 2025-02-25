@@ -36,6 +36,7 @@ class Task(StrEnum):
     CONDITIONAL_GENERATION = "cond_gen"
     IMAGE_ENCODING = "img_enc"
     VISUAL_BACKBONE = "visual_bb"
+    DEPTH_ESTIMATION = "depth_estimation"
 
 
 class Source(StrEnum):

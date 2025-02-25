@@ -4,7 +4,9 @@
 import os
 import urllib
 
+import requests
 import torch
+import torchvision.models as models
 from PIL import Image
 from torchvision import transforms
 
@@ -59,3 +61,20 @@ def post_processing(output, top_k=5):
     # Cleanup
     os.remove("imagenet_classes.txt")
     os.remove("dog.jpg")
+
+
+def load_model():
+    weights = models.MobileNet_V2_Weights.DEFAULT
+    model = models.mobilenet_v2(weights=weights)
+    model.eval()
+    return model
+
+
+def load_input():
+    weights = models.MobileNet_V2_Weights.DEFAULT
+    preprocess = weights.transforms()
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    image = Image.open(requests.get(url, stream=True).raw)
+    img_t = preprocess(image)
+    batch_t = torch.unsqueeze(img_t, 0)
+    return [batch_t]
