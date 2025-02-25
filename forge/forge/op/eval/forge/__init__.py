@@ -123,6 +123,7 @@ op_to_module_map = {
     "constant": "constant",
     "resize2d": "resize",
     "resize3d": "resize",
+    "upsample2d": "resize",
     "dram_queue": "dram_queue",
     "softmax": "nn",
     "log_softmax": "nn",
