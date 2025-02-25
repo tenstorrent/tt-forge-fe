@@ -40,7 +40,7 @@ def test_vovnet_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
 
@@ -73,7 +73,7 @@ def test_vovnet_v1_39_stigma_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
@@ -107,7 +107,7 @@ def test_vovnet_v1_57_stigma_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
 
@@ -142,7 +142,7 @@ def test_vovnet_timm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,

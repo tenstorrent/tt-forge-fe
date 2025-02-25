@@ -24,7 +24,7 @@ def test_regnet(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load RegNet model
     framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040")
@@ -55,7 +55,7 @@ def test_regnet_img_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")

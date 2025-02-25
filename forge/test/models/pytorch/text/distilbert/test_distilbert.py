@@ -31,7 +31,7 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
@@ -73,7 +73,7 @@ def test_distilbert_question_answering_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -125,7 +125,7 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property, varia
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -167,7 +167,7 @@ def test_distilbert_token_classification_pytorch(record_forge_property, variant)
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load DistilBERT tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)

@@ -26,7 +26,7 @@ def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -60,7 +60,7 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -87,7 +87,7 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 

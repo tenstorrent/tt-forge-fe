@@ -2043,14 +2043,14 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, record_forge_property):
-    record_forge_property("op_name", "Reciprocal")
+    record_forge_property("tags.op_name", "Reciprocal")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        record_forge_property(metadata_name, metadata_value)
+        record_forge_property("tags." + str(metadata_name), metadata_value)
 
     max_int = 1000
     inputs = [
