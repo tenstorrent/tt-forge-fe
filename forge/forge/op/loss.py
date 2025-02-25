@@ -5,8 +5,8 @@ from functools import wraps
 from forge.op.tm import Broadcast, Unsqueeze
 from ..module import ForgeModule
 from .constant import Constant
-from .eltwise_unary import Clip, Log, Abs, Sigmoid, Sqrt
-from .eltwise_binary import Add, GreaterEqual, Less, Subtract, Multiply
+from .eltwise_unary import Clip, Log, Abs, Pow, Sigmoid, Sqrt
+from .eltwise_binary import Add, GreaterEqual, Less, Max, Min, Subtract, Multiply
 from .nn import Softmax
 from .reduce import ReduceSum, ReduceAvg
 
@@ -294,13 +294,34 @@ class BCEWithLogitsLoss(ForgeModule):
 
 
 class TripletMarginLoss(ForgeModule):
-    def __init__(self, name: str, margin: float = 1.0, reduction: str = "mean"):
+    """
+    Triplet Margin Loss
+
+    Used to measure the relative similarity between anchor, positive and negative samples.
+
+    loss = reduce(max(dist(anchor, positive) - dist(anchor, negative) + margin, 0), dim=0)
+    when swap is True:
+    neg_dist = min(dist(anchor, negative), dist(positive, negative))
+    loss = reduce(max(dist(anchor, positive) - neg_dist + margin, 0), dim=0)
+    """
+
+    def __init__(
+        self,
+        name: str,
+        margin: float = 1.0,
+        p: float = 2.0,
+        reduction: str = "mean",
+        swap: bool = False,
+        eps: float = 1e-8,
+    ):
         super().__init__(name)
         self.margin = margin
         # pow is fixed to 2.0
-        # https://github.com/tenstorrent/tt-mlir/issues/1203
+        # https://github.com/tenstorrent/tt-mlir/issues/1033
         self.p = 2.0
         self.reduction = reduction
+        self.swap = swap
+        self.eps = eps
         self.is_loss = True
 
     @validate_shapes(min_dim=1, max_dim=2)
@@ -310,24 +331,38 @@ class TripletMarginLoss(ForgeModule):
             positive = Unsqueeze("unsqueeze_positive", positive, 0)
             negative = Unsqueeze("unsqueeze_negative", negative, 0)
 
-        # Squared distance for positive pair
+        eps_const = Constant("eps_pos", constant=self.eps)
+
+        # Squared distance for positive pair (anchor-positive)
         sub_pos = Subtract("sub_pos", anchor, positive)
+        # Add eps for numerical stability
+        sub_pos = Add("add_eps_pos", sub_pos, eps_const)
         square_pos = Multiply("square_pos", sub_pos, sub_pos)
         square_pos = ReduceSum("reduce_pos_sum_dim_1", square_pos, 1)
         pos_dist = Sqrt("sqrt_pos", square_pos)
 
-        # Squared distance for negative pair
+        # Squared distance for negative pair (anchor-negative)
         sub_neg = Subtract("sub_neg", anchor, negative)
+        # Add eps for numerical stability
+        sub_neg = Add("add_eps_neg", sub_neg, eps_const)
         square_neg = Multiply("square_neg", sub_neg, sub_neg)
         square_neg = ReduceSum("reduce_neg_sum_dim_1", square_neg, 1)
         neg_dist = Sqrt("sqrt_neg", square_neg)
 
-        # Compute triplet loss
-        dist_diff = Subtract("dist_diff", pos_dist, neg_dist)
+        if self.swap:
+            # Squared distance for positive-negative pair
+            sub_pos_neg = Subtract("sub_pos_neg", positive, negative)
+            # Add eps for numerical stability
+            sub_pos_neg = Add("add_eps_pos_neg", sub_pos_neg, eps_const)
+            square_pos_neg = Multiply("square_pos_neg", sub_pos_neg, sub_pos_neg)
+            square_pos_neg = ReduceSum("reduce_pos_neg_sum_dim_1", square_pos_neg, 1)
+            pos_neg_dist = Sqrt("sqrt_pos_neg", square_pos_neg)
 
-        # Margin
-        # doing manual broadcasting because of the following issue:
-        # https://github.com/tenstorrent/tt-metal/issues/15965
+            # Take minimum of dist(positive, negative) and dist(anchor, negative)
+            neg_dist = Min("min_diff", pos_neg_dist, neg_dist)
+
+        # Compute original triplet loss
+        dist_diff = Subtract("dist_diff", pos_dist, neg_dist)
         margin = Constant("margin", constant=self.margin)
         margin = Unsqueeze("expand_margin", margin, -1)
         margin = Broadcast("broadcast_margin", margin, 0, dist_diff.shape[0])
@@ -335,7 +370,7 @@ class TripletMarginLoss(ForgeModule):
 
         dist_with_margin = Add("dist_with_margin", dist_diff, margin)
 
-        # clip to (0, inf)
+        # Clip to (0, inf)
         clip_dist = Clip("clip_dist", dist_with_margin, 0.0, float("inf"))
         loss = reduce_loss(self.reduction, clip_dist)
         return loss

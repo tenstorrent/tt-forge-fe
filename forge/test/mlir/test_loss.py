@@ -279,9 +279,13 @@ def test_bce_with_logits_loss(prediction_shape, reduction):
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
 @pytest.mark.parametrize("margin", [0.5, 1.0, 2.0])
-def test_triplet_margin_loss(prediction_shape, reduction, margin):
-    forge_loss = forge.op.loss.TripletMarginLoss("triplet_margin_loss", margin=margin, reduction=reduction)
-    torch_loss = torch.nn.TripletMarginLoss(margin=margin, p=2.0, reduction=reduction)
+@pytest.mark.parametrize("eps", [1e-6, 1e-8, 1e-2])
+@pytest.mark.parametrize("swap", [True, False])
+def test_triplet_margin_loss(prediction_shape, reduction, margin, eps, swap):
+    forge_loss = forge.op.loss.TripletMarginLoss(
+        "triplet_margin_loss", margin=margin, reduction=reduction, eps=eps, swap=swap
+    )
+    torch_loss = torch.nn.TripletMarginLoss(margin=margin, p=2.0, reduction=reduction, eps=eps, swap=swap)
 
     anchor = torch.randn(prediction_shape, requires_grad=True)
     anchor_forge = forge.tensor.Tensor.create_from_torch(anchor)
