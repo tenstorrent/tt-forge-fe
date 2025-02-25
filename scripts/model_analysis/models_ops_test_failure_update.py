@@ -90,12 +90,12 @@ def read_file(file_path: str):
 def rename_marker(marker: str) -> str:
     """
     Standardizes the test marker name to either 'xfail' or 'skip'.
-    
+
     Args:
         marker (str): The original marker name.
-    
+
     Returns:
-        str: Normalized marker ('xfail' or 'skip') if it matches known values, 
+        str: Normalized marker ('xfail' or 'skip') if it matches known values,
              otherwise returns the lowercase version of the input.
     """
     marker_lower = marker.lower()
@@ -105,6 +105,7 @@ def rename_marker(marker: str) -> str:
         return "skip"
     else:
         return marker_lower
+
 
 def extract_test_file_path_and_test_case_func(test_case: str):
     """
@@ -127,6 +128,7 @@ def extract_test_file_path_and_test_case_func(test_case: str):
 
     return test_file_path, test_case_func
 
+
 def extract_unique_test_file_paths(test_cases: List[str]) -> set:
     """
     Extracts unique test file paths from a list of test cases.
@@ -141,7 +143,7 @@ def extract_unique_test_file_paths(test_cases: List[str]) -> set:
 
     for test_case in test_cases:
         test_file_path, _ = extract_test_file_path_and_test_case_func(test_case)
-        
+
         # Add file path to the set if it exists
         if test_file_path is not None:
             unique_test_file_paths.add(test_file_path)
@@ -213,8 +215,10 @@ def extract_models_ops_test_params(file_path: str, return_marker_with_reason: bo
                                 if kw.arg == "marks":
                                     marks_found = True
                                     # The marks can be provided as a list/tuple or as a single marker
-                                    mark_nodes = kw.value.elts if isinstance(kw.value, (ast.List, ast.Tuple)) else [kw.value]
-                                    
+                                    mark_nodes = (
+                                        kw.value.elts if isinstance(kw.value, (ast.List, ast.Tuple)) else [kw.value]
+                                    )
+
                                     # Process each marker node
                                     for mark_node in mark_nodes:
                                         # Initialize variables for marker name and reason
@@ -222,10 +226,12 @@ def extract_models_ops_test_params(file_path: str, return_marker_with_reason: bo
                                         reason = None
 
                                         # Check if the marker is a function call (e.g., pytest.mark.skip(reason="..."))
-                                        if isinstance(mark_node, ast.Call) and isinstance(mark_node.func, ast.Attribute):
+                                        if isinstance(mark_node, ast.Call) and isinstance(
+                                            mark_node.func, ast.Attribute
+                                        ):
                                             # Extract the marker name from the function call's attribute (e.g., 'skip' in pytest.mark.skip)
                                             marker_name = mark_node.func.attr
-                                            
+
                                             # Look for a 'reason' keyword argument in the marker call
                                             for m_kw in mark_node.keywords:
                                                 if m_kw.arg == "reason":
@@ -242,7 +248,6 @@ def extract_models_ops_test_params(file_path: str, return_marker_with_reason: bo
                                         if marker_name:
                                             marks_dict[marker_name] = reason
 
-
                         # If the element is not a pytest.param call, check if it's directly a tuple
                         elif isinstance(elt, ast.Tuple):
                             param_tuple = elt
@@ -256,7 +261,7 @@ def extract_models_ops_test_params(file_path: str, return_marker_with_reason: bo
                             tuple_elements = [ast.unparse(item) for item in param_tuple.elts]
                             # Append the test parameter tuple to the list
                             models_ops_test_params.append(tuple_elements)
-                            
+
                             # If markers were found, update the marker information dictionary accordingly
                             if marks_found and marks_dict:
                                 for marker_name, reason in marks_dict.items():
@@ -281,23 +286,21 @@ def extract_models_ops_test_params(file_path: str, return_marker_with_reason: bo
 
 
 def extract_test_cases_and_status(
-    log_files: List[str],
-    target_dirs: Optional[List[str]] = None,
-    target_statuses: Optional[List[str]] = None
+    log_files: List[str], target_dirs: Optional[List[str]] = None, target_statuses: Optional[List[str]] = None
 ) -> Dict[str, Dict[str, str]]:
     """
     Extract test cases and their statuses from provided log files.
 
-    This function processes each log file and extracts test case names along with their statuses 
+    This function processes each log file and extracts test case names along with their statuses
     using a regular expression pattern. It supports filtering by target directories paths and target statuses.
     The extraction halts upon encountering the "==== FAILURES ====" marker in a log file.
 
     Args:
         log_files (List[str]): A list of file paths to the log files that need to be processed.
-        target_dirs (Optional[List[str]]): A list of directory paths to filter test cases. 
+        target_dirs (Optional[List[str]]): A list of directory paths to filter test cases.
             Only test cases whose paths contain one of these directory paths will be included.
             Defaults to None, which means no directory filtering is applied.
-        target_statuses (Optional[List[str]]): A list of statuses to filter test cases. 
+        target_statuses (Optional[List[str]]): A list of statuses to filter test cases.
             Only test cases with one of these statuses will be included.
             Defaults to None, meaning no status filtering is applied.
 
@@ -316,7 +319,7 @@ def extract_test_cases_and_status(
     #   (PASSED|FAILED|SKIPPED|XFAIL) - Capture one of the specified statuses.
     #   .*                 - Followed by any characters (the remainder of the line).
     pattern = re.compile(r"^(.*?)\s+(PASSED|FAILED|SKIPPED|XFAIL).*")
-    
+
     # Process each log file provided in the log_files list.
     for log_file in log_files:
         # Check if the log file exists using the check_path function.
@@ -330,7 +333,7 @@ def extract_test_cases_and_status(
                     # Extract the test case name and status from the regex match groups.
                     test_case = match.group(1).strip()
                     status = match.group(2).strip()
-                    
+
                     # convert 'SKIPPED' to 'SKIP'.
                     if status == "SKIPPED":
                         status = "SKIP"
@@ -347,18 +350,20 @@ def extract_test_cases_and_status(
                             else:
                                 # Otherwise, create a new entry for this status with the test case.
                                 status_to_tests_and_reason[status] = {test_case: ""}
-                
+
                 # Stop processing further lines once the failures section is reached.
                 if "==== FAILURES ====" in line:
                     break
         else:
             # Log a warning if the provided log file path does not exist.
             logger.warning(f"Provided path {log_file} does not exist!")
-    
+
     return status_to_tests_and_reason
 
 
-def update_reason_for_xfailed_skipped_test(status_to_tests_and_reason: Dict[str, Dict[str, str]]) -> Dict[str, Dict[str, str]]:
+def update_reason_for_xfailed_skipped_test(
+    status_to_tests_and_reason: Dict[str, Dict[str, str]]
+) -> Dict[str, Dict[str, str]]:
     """
     Update the reasons for test cases marked as 'XFAIL' or 'SKIP' based on marker details extracted from test files.
 
@@ -372,9 +377,9 @@ def update_reason_for_xfailed_skipped_test(status_to_tests_and_reason: Dict[str,
          update the test case's reason in the input dictionary.
 
     Args:
-        status_to_tests_and_reason (Dict[str, Dict[str, str]]): 
+        status_to_tests_and_reason (Dict[str, Dict[str, str]]):
             A dictionary mapping statuses (e.g., 'SKIP', 'XFAIL') to dictionaries of test case strings and their reasons.
-    
+
     Returns:
         Dict[str, Dict[str, str]]: The updated dictionary with reasons for test cases modified based on the marker data.
     """
@@ -383,23 +388,22 @@ def update_reason_for_xfailed_skipped_test(status_to_tests_and_reason: Dict[str,
     # Collect test cases for 'SKIP' status if present.
     if "SKIP" in status_to_tests_and_reason.keys():
         test_cases.extend(status_to_tests_and_reason["SKIP"])
-    
+
     # Collect test cases for 'XFAIL' status if present.
     if "XFAIL" in status_to_tests_and_reason.keys():
         test_cases.extend(status_to_tests_and_reason["XFAIL"])
-    
+
     # Remove duplicate test cases.
     test_cases = list(set(test_cases))
-    
+
     # Extract unique file paths from the collected test case strings.
     unique_test_file_paths = extract_unique_test_file_paths(test_cases=test_cases)
-    
+
     # For each unique test file path, extract marker information along with reasons.
     for test_file_path in unique_test_file_paths:
         # The function returns a tuple; we are interested in the marker information dictionary.
         _, marker_with_reason_and_params = extract_models_ops_test_params(
-            file_path=test_file_path, 
-            return_marker_with_reason=True
+            file_path=test_file_path, return_marker_with_reason=True
         )
         # Iterate over each marker (e.g., 'skip', 'xfail') and its associated reason and parameter list.
         for marker, reason_with_params in marker_with_reason_and_params.items():
@@ -416,7 +420,10 @@ def update_reason_for_xfailed_skipped_test(status_to_tests_and_reason: Dict[str,
                                 break  # Once updated, no need to check further for this test case.
     return status_to_tests_and_reason
 
-def extract_xfailed_and_skipped_tests_with_reason(log_files: List[str], models_ops_test_dir_path: str) -> Dict[str, Dict[str, str]]:
+
+def extract_xfailed_and_skipped_tests_with_reason(
+    log_files: List[str], models_ops_test_dir_path: str
+) -> Dict[str, Dict[str, str]]:
     """
     Extract and update test cases with statuses 'XFAIL' and 'SKIP' from log files, including detailed reasons.
 
@@ -437,42 +444,42 @@ def extract_xfailed_and_skipped_tests_with_reason(log_files: List[str], models_o
     # Extract test cases with statuses 'XFAIL' and 'SKIP' from the log files,
     # filtering for those test cases within the specified directory.
     status_to_tests_and_reason = extract_test_cases_and_status(
-        log_files=log_files, 
-        target_dirs=[models_ops_test_dir_path], 
-        target_statuses=["XFAIL", "SKIP"]
+        log_files=log_files, target_dirs=[models_ops_test_dir_path], target_statuses=["XFAIL", "SKIP"]
     )
-    
+
     # If test cases were found, update them with the marker-based reason information.
     if len(status_to_tests_and_reason) != 0:
         status_to_tests_and_reason = update_reason_for_xfailed_skipped_test(
             status_to_tests_and_reason=status_to_tests_and_reason
         )
-    
+
     return status_to_tests_and_reason
 
 
-def extract_failed_tests_with_failure_reason(log_files: List[str], target_dirs: Optional[List[str]] = None) -> Dict[str, str]:
+def extract_failed_tests_with_failure_reason(
+    log_files: List[str], target_dirs: Optional[List[str]] = None
+) -> Dict[str, str]:
     """
     Extract failed test cases along with their failure reasons from pytest log files.
 
-    This function processes one or more pytest log files to identify failed tests and extract their 
+    This function processes one or more pytest log files to identify failed tests and extract their
     corresponding error messages. It operates in two main phases:
-    
+
     1. Short Test Summary Extraction:
        - Scans each log file for the "short test summary info" section.
-       - Identifies test cases marked as FAILED and filters them based on the provided target 
+       - Identifies test cases marked as FAILED and filters them based on the provided target
          directories (if any).
-       - Stores these failed test cases in a dictionary with an empty string as a placeholder 
+       - Stores these failed test cases in a dictionary with an empty string as a placeholder
          for the failure reason.
 
     2. Detailed Failure Reason Extraction:
        - After the summary, the function parses the "==== FAILURES ====" section.
        - It uses a regular expression pattern to locate the test function names within the failure details.
-       - For lines starting with "E  " (indicating error messages), it collects up to a specified maximum 
+       - For lines starting with "E  " (indicating error messages), it collects up to a specified maximum
          number of consecutive error lines to form a comprehensive error message.
-       - An external helper, `ErrorMessageUpdater`, is used to further refine or update the error message 
+       - An external helper, `ErrorMessageUpdater`, is used to further refine or update the error message
          with additional context from subsequent lines.
-       - The refined error message is then matched with the corresponding failed test case (using substring 
+       - The refined error message is then matched with the corresponding failed test case (using substring
          checks) and updated in the dictionary.
 
     Args:
@@ -482,8 +489,8 @@ def extract_failed_tests_with_failure_reason(log_files: List[str], target_dirs: 
             If None, all failed tests from the log files are considered.
 
     Returns:
-        Dict[str, str]: A dictionary mapping each failed test case (as a string) to its corresponding 
-        failure reason (error message). If a test case's error message could not be determined, its value 
+        Dict[str, str]: A dictionary mapping each failed test case (as a string) to its corresponding
+        failure reason (error message). If a test case's error message could not be determined, its value
         remains an empty string.
     """
     # Instantiate the helper object for refining error messages with additional context.
@@ -591,7 +598,7 @@ def update_params(models_ops_test_params, marker_with_test_config, marker_with_r
 
     This function iterates over each test parameter tuple in `models_ops_test_params` and updates it
     based on two sources of marker data:
-    
+
       1. `marker_with_test_config`: A dictionary mapping marker names to lists of configuration dictionaries.
          Each configuration is expected to contain:
             - "module_name": the module name associated with the test parameter.
@@ -599,7 +606,7 @@ def update_params(models_ops_test_params, marker_with_test_config, marker_with_r
             - "reason": the reason to be applied for the marker.
          If a test parameter matches a configuration (i.e. its module name and shapes_and_dtypes match the config),
          a marker string (with reason) is created and appended.
-      
+
       2. `marker_with_reason_and_params`: Additional marker information, where for each marker, a set of reasons
          and associated parameter tuples is provided. If the current test parameter matches one of these tuples,
          an additional marker string is appended. If the reason is not "No_Reason", it is included in the marker string.
@@ -648,11 +655,11 @@ def update_params(models_ops_test_params, marker_with_test_config, marker_with_r
                         # Check if the current test parameter matches the parameter tuple from marker reason info
                         if param_tuple[0] == param[0] and param_tuple[1] == param[1]:
                             # Build an additional marker string. Note: using marker_name might be intended instead of marker.
-                            additional_param_str = f'pytest.mark.{rename_marker(marker_name)}'
+                            additional_param_str = f"pytest.mark.{rename_marker(marker_name)}"
                             if reason != "No_Reason":
                                 additional_param_str += f'(reason="{reason}")'
                             markers_str.append(additional_param_str)
-        
+
         # Format the updated test parameter with marker annotations if any markers were added.
         if len(markers_str) != 0:
             # Join all marker strings into a single comma-separated string
@@ -661,7 +668,7 @@ def update_params(models_ops_test_params, marker_with_test_config, marker_with_r
         else:
             # If no markers apply, retain the original test parameter tuple format.
             new_models_ops_test_params.append(f"({param_str})")
-    
+
     return new_models_ops_test_params
 
 
@@ -670,7 +677,7 @@ def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, Lis
     Update test files with new test parameters that include marker configurations and failure reasons.
 
     For each test file specified in the `models_ops_test_update_info` dictionary, this function:
-    
+
       1. Extracts the current test parameters and marker reason information by calling `extract_models_ops_test_params`
          with `return_marker_with_reason=True`.
       2. Removes any existing "skip" or "xfail" entries from the marker reason information.
@@ -680,7 +687,7 @@ def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, Lis
       5. Writes the updated content back to the file, effectively updating the tests in place.
 
     Args:
-        models_ops_test_update_info (Dict[str, Dict[str, List[Dict[str, str]]]]): 
+        models_ops_test_update_info (Dict[str, Dict[str, List[Dict[str, str]]]]):
             A dictionary where each key is a test file path and each value is a dictionary mapping marker names to a list
             of configuration dictionaries. Each configuration dictionary should include information such as "module_name",
             "shapes_and_dtypes", and "reason".
@@ -709,13 +716,13 @@ def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, Lis
         # Read the entire content of the test file
         lines = read_file(test_file_path)
 
-        new_lines = []         # Will store the updated file content
+        new_lines = []  # Will store the updated file content
         is_pytest_params = False  # Flag to indicate if we are inside the old test parameter block
 
         # Process each line of the file
         for line in lines:
-            # When encountering the marker "@pytest.mark.push", insert the updated test parameters before it
-            if "@pytest.mark.push" in line:
+            # When encountering the marker "@pytest.mark.nightly_models_ops", insert the updated test parameters before it
+            if "@pytest.mark.nightly_models_ops" in line:
                 new_lines.append("forge_modules_and_shapes_dtypes_list = [\n")
                 # Append each updated test parameter (indented for formatting)
                 for test_param in new_models_ops_test_params:
@@ -737,10 +744,12 @@ def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, Lis
         with open(test_file_path, "w") as file:
             file.writelines(new_lines)
 
-    
-def create_report(report_file_path: str, 
-                  failed_models_ops_tests: Dict[str, str], 
-                  status_to_tests_and_reason: Optional[Dict[str, Dict[str, str]]] = None):
+
+def create_report(
+    report_file_path: str,
+    failed_models_ops_tests: Dict[str, str],
+    status_to_tests_and_reason: Optional[Dict[str, Dict[str, str]]] = None,
+):
     """
     Create an Excel report summarizing failed tests and tests with specific markers and reasons.
 
@@ -792,7 +801,7 @@ def extract_data_from_report(report_file_path: str):
     This function reads an Excel report that contains test case details, markers, and reasons,
     then parses and organizes the data to generate a mapping of test file paths to marker configuration
     details for updating model ops tests.
-    
+
     Args:
         report_file_path (str): The file path to the Excel report.
 
@@ -858,10 +867,8 @@ def extract_data_from_report(report_file_path: str):
     return models_ops_test_update_info
 
 
-
-
-#python scripts/model_analysis/models_ops_test_failure_update.py --log_files ci_logs/pytest_1.log ci_logs/pytest_2.log ci_logs/pytest_3.log ci_logs/pytest_4.log
-#python scripts/model_analysis/models_ops_test_failure_update.py --report_file_path model_ops_tests_report.xlsx --use_report
+# python scripts/model_analysis/models_ops_test_failure_update.py --log_files ci_logs/pytest_1.log ci_logs/pytest_2.log ci_logs/pytest_3.log ci_logs/pytest_4.log
+# python scripts/model_analysis/models_ops_test_failure_update.py --report_file_path model_ops_tests_report.xlsx --use_report
 def main():
     """
     Main function to update model ops tests based on pytest log failures.
@@ -875,9 +882,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(
-        description=(
-            "Update model ops tests with xfail marks based on pytest log failures. "
-        )
+        description=("Update model ops tests with xfail marks based on pytest log failures. ")
     )
     parser.add_argument(
         "--log_files",
@@ -895,8 +900,7 @@ def main():
         default="forge/test/models_ops/",
         required=False,
         help=(
-            "The directory path that contains the generated model ops tests. "
-            "Defaults to 'forge/test/models_ops/'."
+            "The directory path that contains the generated model ops tests. " "Defaults to 'forge/test/models_ops/'."
         ),
     )
     parser.add_argument(
@@ -949,7 +953,6 @@ def main():
             failed_models_ops_tests=failed_models_ops_tests,
             status_to_tests_and_reason=status_to_tests_and_reason,
         )
-
 
 
 if __name__ == "__main__":

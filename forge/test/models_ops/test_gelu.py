@@ -919,7 +919,7 @@ forge_modules_and_shapes_dtypes_list = [
 ]
 
 
-@pytest.mark.push
+@pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, record_forge_property):
     record_forge_property("op_name", "Gelu")
