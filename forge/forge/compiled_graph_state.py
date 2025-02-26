@@ -451,11 +451,6 @@ class CompiledModel:
                     ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
 
-        # HACK: Refresh weight tensors (since they are actually not persistant, i.e. they were modified by the optimizer.
-        self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
-        self.create_program_state(ProgramType.Backward, self.tensor_pool, self.bwd_compiled_graph_state)
-        self.create_program_state(ProgramType.Optimizer, self.tensor_pool, self.opt_compiled_graph_state)
-
         self.gradient_outputs = []
 
     def export_to_cpp(self, export_path: str) -> None:
