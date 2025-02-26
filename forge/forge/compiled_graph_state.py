@@ -438,7 +438,7 @@ class CompiledModel:
 
         for weight_update_name in self.opt_compiled_graph_state.aliased_outputs:
             weight_name = self.opt_compiled_graph_state.aliased_outputs[weight_update_name]
-            self.opt_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
+            # self.opt_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
             self.tensor_pool.update_tensor(
                 weight_name, update_param[weight_update_name]
             )  # get_tensor(weight_name).set_tensor_data(update_param[weight_update_name])
