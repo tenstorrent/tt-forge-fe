@@ -355,6 +355,42 @@ def test_query(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
 
 
+class TestQueries:
+
+    __test__ = False  # Avoid collecting TestQueries as a pytest test
+
+    def query_new():
+        if os.getenv("TEST_ID", None) and os.getenv("ID_FILE", None):
+            raise ValueError("TEST_ID and ID_FILE cannot be used together")
+
+        test_suite = TestSuiteData.filtered
+
+        if os.getenv("ID_FILE", None):
+            logger.info("Using test ids from file")
+            query_source = test_suite.query_from_id_list(TestParamsData.get_ids_from_file())
+        elif os.getenv("TEST_ID", None):
+            logger.info("Using single test id")
+            query_source = test_suite.query_from_id_list(TestParamsData.get_single_list())
+        else:
+            logger.info("Using all test vectors")
+            query_source = test_suite.query_all()
+
+        query = query_source \
+        .filter(VectorLambdas.FILTERED) \
+        .filter(*TestParamsData.build_filter_lambdas()) \
+        .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed()) \
+        .filter(VectorLambdas.SKIP_LIST) \
+        .range(*TestParamsData.get_filter_range()) \
+        # .log() \
+
+        return query
+
+
+@pytest.mark.parametrize("test_vector",TestQueries.query_new().to_params())
+def test_query_new(test_vector: TestVector, test_device):
+    TestVerification.verify(test_vector, test_device)
+
+
 @pytest.mark.parametrize(
     "test_vector",
     TestSuiteData.filtered.query_all()
@@ -382,7 +418,7 @@ def test_single(test_vector: TestVector, test_device):
     "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_ids_from_file()).to_params()
 )
 def test_ids(test_vector: TestVector, test_device):
-    test_vector.verify(test_device)
+    TestVerification.verify(test_vector, test_device)
 
 
 @pytest.mark.nightly_sweeps
