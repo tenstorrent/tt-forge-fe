@@ -2146,7 +2146,7 @@ def compile_tvm_to_python(
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded
-    from tvm.contrib.forge_compile import load_tvm_graph
+    from .tvm_passes import load_tvm_graph
 
     json_graphs, flattened_pytorch_inputs, weights = load_tvm_graph(
         inputs,
