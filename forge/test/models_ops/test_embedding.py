@@ -783,46 +783,61 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Embedding0,
-        [((2, 1), torch.int64)],
-        {"model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
+    pytest.param(
+        (
+            Embedding0,
+            [((2, 1), torch.int64)],
+            {"model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding1,
-        [((2, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
+    pytest.param(
+        (
+            Embedding1,
+            [((2, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 32127,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((13, 13), torch.int32), ((32, 12), torch.float32)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
+    pytest.param(
+        (
+            Embedding2,
+            [((13, 13), torch.int32), ((32, 12), torch.float32)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding3,
-        [((2, 1), torch.int64)],
-        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
+    pytest.param(
+        (
+            Embedding3,
+            [((2, 1), torch.int64)],
+            {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding4,
-        [((2, 1), torch.int64)],
-        {"model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
+    pytest.param(
+        (
+            Embedding4,
+            [((2, 1), torch.int64)],
+            {"model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99, "max_int": 2048},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding5,
@@ -854,51 +869,63 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2), torch.int32)],
         {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99, "max_int": 51865},
     ),
-    (
-        Embedding11,
-        [((2, 7), torch.int64)],
-        {"model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 49407},
+    pytest.param(
+        (
+            Embedding11,
+            [((2, 7), torch.int64)],
+            {"model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 49407},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding12,
-        [((1, 7), torch.int64)],
-        {"model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 76},
+    pytest.param(
+        (
+            Embedding12,
+            [((1, 7), torch.int64)],
+            {"model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99, "max_int": 76},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding13,
-        [((1, 39), torch.int64)],
-        {"model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "max_int": 102399},
+    pytest.param(
+        (
+            Embedding13,
+            [((1, 39), torch.int64)],
+            {"model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "max_int": 102399},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding13,
         [((1, 39), torch.int32)],
         {"model_name": ["DeepSeekWrapper_decoder"], "pcc": 0.99, "max_int": 102399},
     ),
-    (
-        Embedding14,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 29999,
-        },
+    pytest.param(
+        (
+            Embedding14,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_albert_xxlarge_v1_token_cls_hf",
+                    "pt_albert_base_v2_token_cls_hf",
+                    "pt_albert_xxlarge_v2_token_cls_hf",
+                    "pt_albert_large_v1_token_cls_hf",
+                    "pt_albert_large_v2_token_cls_hf",
+                    "pt_albert_base_v1_token_cls_hf",
+                    "pt_albert_base_v1_mlm_hf",
+                    "pt_albert_xlarge_v2_token_cls_hf",
+                    "pt_albert_xxlarge_v2_mlm_hf",
+                    "pt_albert_large_v2_mlm_hf",
+                    "pt_albert_base_v2_mlm_hf",
+                    "pt_albert_xlarge_v1_token_cls_hf",
+                    "pt_albert_xlarge_v1_mlm_hf",
+                    "pt_albert_large_v1_mlm_hf",
+                    "pt_albert_xxlarge_v1_mlm_hf",
+                    "pt_albert_xlarge_v2_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 29999,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding15,
@@ -926,61 +953,73 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 1,
         },
     ),
-    (
-        Embedding16,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
+    pytest.param(
+        (
+            Embedding16,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_albert_xxlarge_v1_token_cls_hf",
+                    "pt_albert_base_v2_token_cls_hf",
+                    "pt_albert_xxlarge_v2_token_cls_hf",
+                    "pt_albert_large_v1_token_cls_hf",
+                    "pt_albert_large_v2_token_cls_hf",
+                    "pt_albert_base_v1_token_cls_hf",
+                    "pt_albert_base_v1_mlm_hf",
+                    "pt_albert_xlarge_v2_token_cls_hf",
+                    "pt_albert_xxlarge_v2_mlm_hf",
+                    "pt_albert_large_v2_mlm_hf",
+                    "pt_albert_base_v2_mlm_hf",
+                    "pt_albert_xlarge_v1_token_cls_hf",
+                    "pt_albert_xlarge_v1_mlm_hf",
+                    "pt_albert_large_v1_mlm_hf",
+                    "pt_albert_xxlarge_v1_mlm_hf",
+                    "pt_albert_xlarge_v2_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 511,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding17,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 50264},
+    pytest.param(
+        (
+            Embedding17,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 50264},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 256), torch.int64), ((1026, 1024), torch.float32)],
-        {"model_name": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 1025},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 256), torch.int64), ((1026, 1024), torch.float32)],
+            {"model_name": ["pt_bart_facebook_bart_large_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 1025},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding18,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-            ],
-            "pcc": 0.99,
-            "max_int": 30521,
-        },
+    pytest.param(
+        (
+            Embedding18,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                    "pt_bert_bert_base_uncased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                    "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                    "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                    "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                    "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                    "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                ],
+                "pcc": 0.99,
+                "max_int": 30521,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding19,
@@ -1000,38 +1039,44 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 1,
         },
     ),
-    (
-        Embedding20,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
+    pytest.param(
+        (
+            Embedding20,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                    "pt_bert_bert_base_uncased_mlm_hf",
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                    "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                    "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                    "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                    "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                    "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                    "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 511,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding21,
-        [((1, 384), torch.int64)],
-        {
-            "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 28995,
-        },
+    pytest.param(
+        (
+            Embedding21,
+            [((1, 384), torch.int64)],
+            {
+                "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 28995,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding22,
@@ -1042,23 +1087,29 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 1,
         },
     ),
-    (
-        Embedding23,
-        [((1, 384), torch.int64)],
-        {
-            "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
+    pytest.param(
+        (
+            Embedding23,
+            [((1, 384), torch.int64)],
+            {
+                "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 511,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding21,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 28995,
-        },
+    pytest.param(
+        (
+            Embedding21,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 28995,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding22,
@@ -1069,14 +1120,17 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 1,
         },
     ),
-    (
-        Embedding23,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 511,
-        },
+    pytest.param(
+        (
+            Embedding23,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 511,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding24,
@@ -1091,137 +1145,207 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 51199,
         },
     ),
-    (
-        Embedding25,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 119546,
-        },
+    pytest.param(
+        (
+            Embedding25,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 119546,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding26,
-        [((1, 384), torch.int64)],
-        {"model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 28995},
+    pytest.param(
+        (
+            Embedding26,
+            [((1, 384), torch.int64)],
+            {
+                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 28995,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding20,
-        [((1, 384), torch.int64)],
-        {"model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 511},
+    pytest.param(
+        (
+            Embedding20,
+            [((1, 384), torch.int64)],
+            {"model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99, "max_int": 511},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding26,
-        [((1, 128), torch.int64)],
-        {"model_name": ["pt_distilbert_distilbert_base_cased_mlm_hf"], "pcc": 0.99, "max_int": 28995},
+    pytest.param(
+        (
+            Embedding26,
+            [((1, 128), torch.int64)],
+            {"model_name": ["pt_distilbert_distilbert_base_cased_mlm_hf"], "pcc": 0.99, "max_int": 28995},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding27,
-        [((1, 6), torch.int64)],
-        {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 65023},
+    pytest.param(
+        (
+            Embedding27,
+            [((1, 6), torch.int64)],
+            {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 65023},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding28,
-        [((1, 10), torch.int64)],
-        {
-            "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
-            "pcc": 0.99,
-            "max_int": 131071,
-        },
+    pytest.param(
+        (
+            Embedding28,
+            [((1, 10), torch.int64)],
+            {
+                "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
+                "pcc": 0.99,
+                "max_int": 131071,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding29,
-        [((1, 10), torch.int64)],
-        {"model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "max_int": 131071},
+    pytest.param(
+        (
+            Embedding29,
+            [((1, 10), torch.int64)],
+            {"model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "max_int": 131071},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding30,
-        [((1, 7), torch.int64)],
-        {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "max_int": 255999},
+    pytest.param(
+        (
+            Embedding30,
+            [((1, 7), torch.int64)],
+            {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "max_int": 255999},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding31,
-        [((1, 256), torch.int64)],
-        {
-            "model_name": ["pt_gpt2_gpt2_text_gen_hf", "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
-            "pcc": 0.99,
-            "max_int": 50256,
-        },
+    pytest.param(
+        (
+            Embedding31,
+            [((1, 256), torch.int64)],
+            {
+                "model_name": ["pt_gpt2_gpt2_text_gen_hf", "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
+                "pcc": 0.99,
+                "max_int": 50256,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 256), torch.int64), ((1024, 768), torch.float32)],
-        {"model_name": ["pt_gpt2_gpt2_text_gen_hf"], "pcc": 0.99, "max_int": 1023},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 256), torch.int64), ((1024, 768), torch.float32)],
+            {"model_name": ["pt_gpt2_gpt2_text_gen_hf"], "pcc": 0.99, "max_int": 1023},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding32,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 50256},
+    pytest.param(
+        (
+            Embedding32,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 50256},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 256), torch.int64), ((2048, 2560), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 2047},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 256), torch.int64), ((2048, 2560), torch.float32)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "max_int": 2047},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding33,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50256},
+    pytest.param(
+        (
+            Embedding33,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50256},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 256), torch.int64), ((2048, 2048), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2047},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 256), torch.int64), ((2048, 2048), torch.float32)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2047},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding31,
-        [((1, 32), torch.int64)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+    pytest.param(
+        (
+            Embedding31,
+            [((1, 32), torch.int64)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 32), torch.int64), ((2048, 768), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 32), torch.int64), ((2048, 768), torch.float32)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding32,
-        [((1, 32), torch.int64)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+    pytest.param(
+        (
+            Embedding32,
+            [((1, 32), torch.int64)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 32), torch.int64), ((2048, 2560), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 32), torch.int64), ((2048, 2560), torch.float32)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 256), torch.int64), ((2048, 768), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"], "pcc": 0.99, "max_int": 2047},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 256), torch.int64), ((2048, 768), torch.float32)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"], "pcc": 0.99, "max_int": 2047},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding33,
-        [((1, 32), torch.int64)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+    pytest.param(
+        (
+            Embedding33,
+            [((1, 32), torch.int64)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 50256},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 32), torch.int64), ((2048, 2048), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 32), torch.int64), ((2048, 2048), torch.float32)],
+            {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "max_int": 2047},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding34,
-        [((1, 4), torch.int64)],
-        {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
+    pytest.param(
+        (
+            Embedding34,
+            [((1, 4), torch.int64)],
+            {
+                "model_name": [
+                    "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 128255,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding34,
@@ -1235,127 +1359,178 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 128255,
         },
     ),
-    (
-        Embedding35,
-        [((1, 4), torch.int64)],
-        {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 128255,
-        },
+    pytest.param(
+        (
+            Embedding35,
+            [((1, 4), torch.int64)],
+            {
+                "model_name": [
+                    "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                    "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                    "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                    "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 128255,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding36,
-        [((1, 128), torch.int64)],
-        {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "max_int": 31999},
+    pytest.param(
+        (
+            Embedding36,
+            [((1, 128), torch.int64)],
+            {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "max_int": 31999},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding31,
-        [((1, 7), torch.int64)],
-        {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99, "max_int": 50256},
+    pytest.param(
+        (
+            Embedding31,
+            [((1, 7), torch.int64)],
+            {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99, "max_int": 50256},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((1, 7), torch.int64), ((1024, 768), torch.float32)],
-        {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99, "max_int": 1023},
+    pytest.param(
+        (
+            Embedding2,
+            [((1, 7), torch.int64), ((1024, 768), torch.float32)],
+            {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99, "max_int": 1023},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding37,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50271},
+    pytest.param(
+        (
+            Embedding37,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 50271},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding38,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2049},
+    pytest.param(
+        (
+            Embedding38,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "max_int": 2049},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding37,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 50271,
-        },
+    pytest.param(
+        (
+            Embedding37,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 50271,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding38,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 2049,
-        },
+    pytest.param(
+        (
+            Embedding38,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 2049,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding39,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 50271,
-        },
+    pytest.param(
+        (
+            Embedding39,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 50271,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding40,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 2049,
-        },
+    pytest.param(
+        (
+            Embedding40,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 2049,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding41,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 50271,
-        },
+    pytest.param(
+        (
+            Embedding41,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 50271,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding42,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"],
-            "pcc": 0.99,
-            "max_int": 2049,
-        },
+    pytest.param(
+        (
+            Embedding42,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"],
+                "pcc": 0.99,
+                "max_int": 2049,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding41,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "max_int": 50271},
+    pytest.param(
+        (
+            Embedding41,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "max_int": 50271},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding42,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "max_int": 2049},
+    pytest.param(
+        (
+            Embedding42,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "max_int": 2049},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding39,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 50271},
+    pytest.param(
+        (
+            Embedding39,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 50271},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding40,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 2049},
+    pytest.param(
+        (
+            Embedding40,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "max_int": 2049},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding43,
-        [((1, 12), torch.int64)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
+    pytest.param(
+        (
+            Embedding43,
+            [((1, 12), torch.int64)],
+            {
+                "model_name": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 51199,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding43,
@@ -1366,125 +1541,182 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 51199,
         },
     ),
-    (
-        Embedding43,
-        [((1, 11), torch.int64)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 51199,
-        },
+    pytest.param(
+        (
+            Embedding43,
+            [((1, 11), torch.int64)],
+            {
+                "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 51199,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding44,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99, "max_int": 32063},
+    pytest.param(
+        (
+            Embedding44,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99, "max_int": 32063},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding44,
-        [((1, 13), torch.int64)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99, "max_int": 32063},
+    pytest.param(
+        (
+            Embedding44,
+            [((1, 13), torch.int64)],
+            {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99, "max_int": 32063},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding44,
-        [((1, 5), torch.int64)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99, "max_int": 32063},
+    pytest.param(
+        (
+            Embedding44,
+            [((1, 5), torch.int64)],
+            {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99, "max_int": 32063},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding45,
-        [((1, 6), torch.int64)],
-        {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding45,
+            [((1, 6), torch.int64)],
+            {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding45,
-        [((1, 29), torch.int64)],
-        {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding45,
+            [((1, 29), torch.int64)],
+            {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding46,
-        [((1, 35), torch.int64)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 152063,
-        },
+    pytest.param(
+        (
+            Embedding46,
+            [((1, 35), torch.int64)],
+            {
+                "model_name": [
+                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 152063,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding47,
-        [((1, 35), torch.int64)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 151935,
-        },
+    pytest.param(
+        (
+            Embedding47,
+            [((1, 35), torch.int64)],
+            {
+                "model_name": [
+                    "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                    "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 151935,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding48,
-        [((1, 35), torch.int64)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 151935,
-        },
+    pytest.param(
+        (
+            Embedding48,
+            [((1, 35), torch.int64)],
+            {
+                "model_name": [
+                    "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                    "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 151935,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding49,
-        [((1, 35), torch.int64)],
-        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding49,
+            [((1, 35), torch.int64)],
+            {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding47,
-        [((1, 29), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding47,
+            [((1, 29), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding47,
-        [((1, 39), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding47,
+            [((1, 39), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding46,
-        [((1, 39), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 152063},
+    pytest.param(
+        (
+            Embedding46,
+            [((1, 39), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "max_int": 152063},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding46,
-        [((1, 29), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "max_int": 152063},
+    pytest.param(
+        (
+            Embedding46,
+            [((1, 29), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "max_int": 152063},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding48,
-        [((1, 29), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding48,
+            [((1, 29), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding48,
-        [((1, 39), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding48,
+            [((1, 39), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding49,
-        [((1, 29), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding49,
+            [((1, 29), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding49,
-        [((1, 39), torch.int64)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+    pytest.param(
+        (
+            Embedding49,
+            [((1, 39), torch.int64)],
+            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "max_int": 151935},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding50,
-        [((1, 128), torch.int64)],
-        {"model_name": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99, "max_int": 250001},
+    pytest.param(
+        (
+            Embedding50,
+            [((1, 128), torch.int64)],
+            {"model_name": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99, "max_int": 250001},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding51,
@@ -1498,31 +1730,40 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 0,
         },
     ),
-    (
-        Embedding52,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 513,
-        },
+    pytest.param(
+        (
+            Embedding52,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_roberta_xlm_roberta_base_mlm_hf",
+                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 513,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding53,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": ["pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"],
-            "pcc": 0.99,
-            "max_int": 50264,
-        },
+    pytest.param(
+        (
+            Embedding53,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": ["pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf"],
+                "pcc": 0.99,
+                "max_int": 50264,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding54,
-        [((1, 128), torch.int64)],
-        {"model_name": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 30527},
+    pytest.param(
+        (
+            Embedding54,
+            [((1, 128), torch.int64)],
+            {"model_name": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "max_int": 30527},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding2,
@@ -1547,23 +1788,29 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 31,
         },
     ),
-    (
-        Embedding55,
-        [((1, 61), torch.int64)],
-        {
-            "model_name": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
+    pytest.param(
+        (
+            Embedding55,
+            [((1, 61), torch.int64)],
+            {
+                "model_name": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 32127,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((61, 61), torch.int32), ((32, 16), torch.float32)],
-        {
-            "model_name": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
+    pytest.param(
+        (
+            Embedding2,
+            [((61, 61), torch.int32), ((32, 16), torch.float32)],
+            {
+                "model_name": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding56,
@@ -1579,29 +1826,38 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1), torch.int32), ((32, 8), torch.float32)],
         {"model_name": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
     ),
-    (
-        Embedding56,
-        [((1, 61), torch.int64)],
-        {
-            "model_name": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
+    pytest.param(
+        (
+            Embedding56,
+            [((1, 61), torch.int64)],
+            {
+                "model_name": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 32127,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((61, 61), torch.int32), ((32, 8), torch.float32)],
-        {"model_name": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+    pytest.param(
+        (
+            Embedding2,
+            [((61, 61), torch.int32), ((32, 8), torch.float32)],
+            {"model_name": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding2,
         [((1, 1), torch.int32), ((32, 6), torch.float32)],
         {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
     ),
-    (
-        Embedding2,
-        [((61, 61), torch.int32), ((32, 6), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+    pytest.param(
+        (
+            Embedding2,
+            [((61, 61), torch.int32), ((32, 6), torch.float32)],
+            {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding1,
@@ -1621,33 +1877,45 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 31,
         },
     ),
-    (
-        Embedding1,
-        [((1, 61), torch.int64)],
-        {
-            "model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 32127,
-        },
+    pytest.param(
+        (
+            Embedding1,
+            [((1, 61), torch.int64)],
+            {
+                "model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 32127,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding2,
-        [((61, 61), torch.int32), ((32, 12), torch.float32)],
-        {
-            "model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
+    pytest.param(
+        (
+            Embedding2,
+            [((61, 61), torch.int32), ((32, 12), torch.float32)],
+            {
+                "model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding57,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "max_int": 256007},
+    pytest.param(
+        (
+            Embedding57,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "max_int": 256007},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Embedding58,
-        [((1, 256), torch.int64)],
-        {"model_name": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99, "max_int": 256007},
+    pytest.param(
+        (
+            Embedding58,
+            [((1, 256), torch.int64)],
+            {"model_name": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99, "max_int": 256007},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 

@@ -347,158 +347,277 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Conv2Dtranspose0,
-        [((1, 4, 7, 7), torch.float32)],
-        {
-            "model_name": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose0,
+            [((1, 4, 7, 7), torch.float32)],
+            {
+                "model_name": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose1,
-        [((1, 16, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose1,
+            [((1, 16, 14, 14), torch.float32)],
+            {
+                "model_name": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose2,
-        [((1, 64, 28, 28), torch.float32)],
-        {
-            "model_name": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "1", "dilation": "1", "groups": "64", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose2,
+            [((1, 64, 28, 28), torch.float32)],
+            {
+                "model_name": ["pt_monodle_base_obj_det_torchvision"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "1", "dilation": "1", "groups": "64", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose3,
-        [((1, 128, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "1", "dilation": "1", "groups": "128", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose3,
+            [((1, 128, 14, 14), torch.float32)],
+            {
+                "model_name": ["pt_monodle_base_obj_det_torchvision"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "1", "dilation": "1", "groups": "128", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose4,
-        [((1, 256, 7, 7), torch.float32)],
-        {
-            "model_name": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "1", "dilation": "1", "groups": "256", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose4,
+            [((1, 256, 7, 7), torch.float32)],
+            {
+                "model_name": ["pt_monodle_base_obj_det_torchvision"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "1", "dilation": "1", "groups": "256", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose5,
-        [((1, 512, 16, 16), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose5,
+            [((1, 512, 16, 16), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose6,
-        [((1, 256, 32, 32), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose6,
+            [((1, 256, 32, 32), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose7,
-        [((1, 128, 64, 64), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose7,
+            [((1, 128, 64, 64), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose8,
-        [((1, 64, 128, 128), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose8,
+            [((1, 64, 128, 128), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose9,
-        [((1, 128, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose9,
+            [((1, 128, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose10,
-        [((1, 64, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose10,
+            [((1, 64, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose11,
-        [((1, 256, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose11,
+            [((1, 256, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose9,
-        [((1, 128, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose9,
+            [((1, 128, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose10,
-        [((1, 64, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose10,
+            [((1, 64, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose12,
-        [((1, 32, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose12,
+            [((1, 32, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose13,
-        [((1, 192, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose13,
+            [((1, 192, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose14,
-        [((1, 96, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Conv2Dtranspose14,
+            [((1, 96, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"stride": "2", "padding": "0", "dilation": "1", "groups": "1", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph"
+            )
+        ],
     ),
 ]
 

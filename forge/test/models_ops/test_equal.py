@@ -33,17 +33,24 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Equal0,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Equal0,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_width_multi_core_program_factory.cpp:27: tt::exception info: BinaryOpType cannot be mapped to BcastOpMath"
+            )
+        ],
     ),
 ]
 

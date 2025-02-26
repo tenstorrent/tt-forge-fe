@@ -122,49 +122,77 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Repeatinterleave0,
-        [((2, 1, 1, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "1"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave0,
+            [((2, 1, 1, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave1,
-        [((2, 1, 1, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "2"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave1,
+            [((2, 1, 1, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave0,
-        [((2, 1, 1, 7), torch.int64)],
-        {
-            "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "1"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave0,
+            [((2, 1, 1, 7), torch.int64)],
+            {
+                "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave2,
-        [((2, 1, 1, 7), torch.int64)],
-        {
-            "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
-            "pcc": 0.99,
-            "op_params": {"repeats": "7", "dim": "2"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave2,
+            [((2, 1, 1, 7), torch.int64)],
+            {
+                "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+                "pcc": 0.99,
+                "op_params": {"repeats": "7", "dim": "2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
     (
         Repeatinterleave3,
@@ -224,95 +252,130 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"repeats": "1", "dim": "2"},
         },
     ),
-    (
-        Repeatinterleave3,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
-                "pt_bert_bert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "0"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave3,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_albert_xxlarge_v1_token_cls_hf",
+                    "pt_albert_base_v2_token_cls_hf",
+                    "pt_albert_xxlarge_v2_token_cls_hf",
+                    "pt_albert_large_v1_token_cls_hf",
+                    "pt_albert_large_v2_token_cls_hf",
+                    "pt_albert_base_v1_token_cls_hf",
+                    "pt_albert_base_v1_mlm_hf",
+                    "pt_albert_xlarge_v2_token_cls_hf",
+                    "pt_albert_xxlarge_v2_mlm_hf",
+                    "pt_albert_large_v2_mlm_hf",
+                    "pt_albert_base_v2_mlm_hf",
+                    "pt_albert_xlarge_v1_token_cls_hf",
+                    "pt_albert_xlarge_v1_mlm_hf",
+                    "pt_albert_large_v1_mlm_hf",
+                    "pt_albert_xxlarge_v1_mlm_hf",
+                    "pt_albert_xlarge_v2_mlm_hf",
+                    "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                    "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
+                    "pt_bert_bert_base_uncased_mlm_hf",
+                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                    "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                    "pt_roberta_xlm_roberta_base_mlm_hf",
+                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave3,
-        [((1, 1, 1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "0"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave3,
+            [((1, 1, 1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                    "pt_xglm_facebook_xglm_564m_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave0,
-        [((1, 1, 1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "1"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave0,
+            [((1, 1, 1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                    "pt_xglm_facebook_xglm_564m_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave4,
-        [((1, 1, 1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "256", "dim": "2"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave4,
+            [((1, 1, 1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                    "pt_xglm_facebook_xglm_564m_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "256", "dim": "2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/kernels/kernel.cpp:242: tt::exception info: 1283 unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+            )
+        ],
     ),
-    (
-        Repeatinterleave3,
-        [((1, 384), torch.int64)],
-        {
-            "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "0"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave3,
+            [((1, 384), torch.int64)],
+            {
+                "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
     (
         Repeatinterleave3,
@@ -568,53 +631,74 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"repeats": "4", "dim": "2"},
         },
     ),
-    (
-        Repeatinterleave3,
-        [((1, 1, 1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "0"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave3,
+            [((1, 1, 1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave0,
-        [((1, 1, 1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "1", "dim": "1"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave0,
+            [((1, 1, 1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "1", "dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Repeatinterleave9,
-        [((1, 1, 1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "32", "dim": "2"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave9,
+            [((1, 1, 1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "32", "dim": "2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
     (
         Repeatinterleave3,

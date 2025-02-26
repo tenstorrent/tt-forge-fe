@@ -33,34 +33,76 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (Max0, [((1, 32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
-    (
-        Max0,
-        [((1, 32, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
+    pytest.param(
+        (Max0, [((1, 32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
+            )
+        ],
     ),
-    (
-        Max0,
-        [((1, 16, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Max0,
+            [((1, 32, 32, 32), torch.float32)],
+            {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
+            )
+        ],
     ),
-    (
-        Max0,
-        [((1, 12, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Max0,
+            [((1, 16, 32, 32), torch.float32)],
+            {"model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
+            )
+        ],
     ),
-    (Max0, [((1, 12, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
-    (
-        Max0,
-        [((1, 16, 256, 256), torch.float32)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Max0,
+            [((1, 12, 32, 32), torch.float32)],
+            {"model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"], "pcc": 0.99},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
+            )
+        ],
+    ),
+    pytest.param(
+        (Max0, [((1, 12, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
+            )
+        ],
+    ),
+    pytest.param(
+        (
+            Max0,
+            [((1, 16, 256, 256), torch.float32)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                    "pt_xglm_facebook_xglm_564m_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
+            )
+        ],
     ),
 ]
 

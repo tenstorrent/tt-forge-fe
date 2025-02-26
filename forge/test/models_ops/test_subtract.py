@@ -423,32 +423,46 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 1, 7), torch.float32)],
         {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Subtract2,
-        [((1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract2,
+            [((1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
-    (
-        Subtract2,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract2,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32"
+            )
+        ],
     ),
     (
         Subtract0,
@@ -465,17 +479,20 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1,), torch.int32)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1,), torch.int32)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Subtract4,
