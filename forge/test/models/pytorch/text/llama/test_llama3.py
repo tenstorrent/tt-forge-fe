@@ -161,7 +161,6 @@ def test_llama3_causal_lm(record_forge_property, variant):
     attn_mask = inputs["attention_mask"]
 
     # Get Inputs
-    input_ids = input_ids.to(torch.int32)
     attn_mask = attn_mask.to(torch.float32)
     inputs = [input_ids, attn_mask]
 
