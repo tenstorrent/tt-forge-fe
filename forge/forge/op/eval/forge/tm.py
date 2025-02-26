@@ -139,7 +139,6 @@ def eval(type, attr, ops):
 
     if type == "repeat":
         sizes = attr
-        assert len(t_ops[0].shape) == len(sizes)
         return t_ops[0].repeat(*sizes)
 
     if type == "repeat_interleave":
@@ -486,7 +485,15 @@ def shape(type, attr, ops):
 
     if type == "repeat":
         sizes = attr
-        return tuple(dim * size for dim, size in zip(list(ops[0]), sizes)), []
+        if len(ops[0]) < len(sizes):
+            # Scenario: When the input is a 1D tensor and needs to be repeated in 2D,
+            # `ttir.repeat` does not currently support this directly,
+            # so we are calculating the new shape by expanding the dimensions
+            # to match repeat attr dimensions and calculate the output shape
+            shape = (1,) * (len(sizes) - len(ops[0])) + tuple(ops[0])
+        else:
+            shape = ops[0]
+        return tuple(dim * size for dim, size in zip(list(shape), sizes)), []
 
     if type == "repeat_interleave":
         assert len(attr) <= 3, "repeat_interleave should have two attributes - repeats and dim"
@@ -1379,6 +1386,19 @@ def decompose(type, attr, dc, inputs):
                 rank -= 1
             dc.fuse(result)
             return
+    if type == "repeat":
+        input_shape = inputs[0].shape.as_list()
+        target_shape = attr
+        result = inputs[0]
+
+        if len(input_shape) < len(target_shape):
+            # Scenario: When the input is a 1D tensor and needs to be repeated in 2D,
+            # `ttir.repeat` does not currently support this directly.
+            # To handle this, we first reshape the input to ensure both the input and the repeats have the same dimensions
+            new_shape = (1,) * (len(target_shape) - len(input_shape)) + tuple(input_shape)
+            result = dc.op("reshape", [result], new_shape)
+            result = dc.op_with_named_attrs("repeat", [result], {"repeats": target_shape}, target_shape)
+            dc.fuse(result)
 
 
 def create_row_picker_matrix(col_indices, lhs_num_cols, lhs_num_channels=None, lhs_batch_size=None):
