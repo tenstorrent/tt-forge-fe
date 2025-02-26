@@ -2,11 +2,8 @@ name: On Nightly Models Ops
 
 on:
   workflow_dispatch:
-  # Temporarily disabled the scheduled run configuration because there are currently no tests
-  # marked with 'nightly_models_ops' in main branch. When model ops tests are added, uncomment the schedule below to
-  # automatically run them at 02:00 AM UTC every day.
-  # schedule:
-  #   - cron: '0 2 * * *'  # Runs at 02:00 AM UTC every day
+  schedule:
+    - cron: '0 2 * * *'  # Runs at 02:00 AM UTC every day
 
 jobs:
   docker-build:

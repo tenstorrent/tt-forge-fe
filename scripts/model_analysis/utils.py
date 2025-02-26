@@ -259,7 +259,7 @@ def run_command(command: str):
 
 def run_precommit(directory_path: str):
     """Checks if pre-commit is installed and runs it on all files in the given directory."""
-    
+
     # Check if pre-commit is installed
     if shutil.which("pre-commit") is None:
         logger.info("pre-commit is not installed. Installing...")

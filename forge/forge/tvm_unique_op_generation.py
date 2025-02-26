@@ -1094,7 +1094,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                 pytest_metadata_list.append(pytest_metadata)
 
         # List of marker that will added at the top of the test function
-        markers = ["push"]
+        markers = ["nightly_models_ops"]
 
         # To avoid recording pcc in record_property pytest fixture and add the pcc to the exclude metadata property list
         exclude_record_property = ["pcc"]

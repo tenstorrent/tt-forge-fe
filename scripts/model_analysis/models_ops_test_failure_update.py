@@ -867,8 +867,6 @@ def extract_data_from_report(report_file_path: str):
     return models_ops_test_update_info
 
 
-# python scripts/model_analysis/models_ops_test_failure_update.py --log_files ci_logs/pytest_1.log ci_logs/pytest_2.log ci_logs/pytest_3.log ci_logs/pytest_4.log
-# python scripts/model_analysis/models_ops_test_failure_update.py --report_file_path model_ops_tests_report.xlsx --use_report
 def main():
     """
     Main function to update model ops tests based on pytest log failures.
