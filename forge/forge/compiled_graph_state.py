@@ -305,7 +305,7 @@ class CompiledModel:
 
             # HACK: Refresh weight tensors (since they are actually not persistant, i.e. they were modified by the optimizer.
             if not self.optimizer_on_device():
-                self.create_program_state(ProgramType.Forward, self.tensor_pool, self.fwd_compiled_graph_state)
+                self.remove_weights_from_device()
 
         logger.info(
             f"Running model {self.framework_module.get_name()} {self.fwd_compiled_graph_state.graph.get_name()} on device..."
@@ -488,3 +488,8 @@ class CompiledModel:
             if param.requires_grad:
                 weight = self.tensor_pool.get_tensor(name)
                 weight.update_host_data()
+
+    def remove_weights_from_device(self):
+        for name, param in self.framework_module.module.named_parameters():
+            if param.requires_grad:
+                self.tensor_pool.get_tensor(name).detach_from_device()
