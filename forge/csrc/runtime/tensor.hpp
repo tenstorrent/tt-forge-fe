@@ -123,6 +123,8 @@ class TensorImpl : public std::enable_shared_from_this<TensorImpl>
 
     bool on_device() const { return rt_tensor.has_value(); }
 
+    void detach_from_device() { rt_tensor.reset(); }
+
     runtime::TensorDesc tensor_desc() const { return desc; }
 
    private:
@@ -152,6 +154,8 @@ class Tensor
     bool on_device() const { return impl->on_device(); }
 
     runtime::TensorDesc tensor_desc() const { return impl->tensor_desc(); }
+
+    void detach_from_device() { impl->detach_from_device(); }
 
    private:
     std::shared_ptr<TensorImpl> impl;
