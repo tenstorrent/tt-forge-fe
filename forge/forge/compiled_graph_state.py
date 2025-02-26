@@ -178,8 +178,8 @@ class CompiledModel:
     compiled_binary: Binary
 
     inputs: List[CTensor]
-    outputs: Dict[str, torch.Tensor]
-    intermediates: List[torch.Tensor]
+    outputs: Dict[str, CTensor]
+    intermediates: List[CTensor]
 
     # Original user-defined module.
     framework_module: AnyModule
@@ -191,8 +191,8 @@ class CompiledModel:
 
     # Gradients to be passed into the backward pass.
     # Used when CompiledModel.backward() is part of a chain of backward passes.
-    gradient_inputs: List[Optional[torch.Tensor]]
-    gradient_outputs: List[torch.Tensor]
+    gradient_inputs: List[Optional[CTensor]]
+    gradient_outputs: List[CTensor]
 
     attached_module: Optional["CompiledModel"]
 
@@ -344,7 +344,7 @@ class CompiledModel:
     def forward(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         return self(*inputs)
 
-    def backward(self) -> List[torch.Tensor]:
+    def backward(self):
         assert self.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
 
@@ -374,9 +374,12 @@ class CompiledModel:
             if self.gradient_outputs is None or len(self.gradient_outputs) == 0:
                 self.gradient_outputs = grads
             else:
+                # TODO: How to handle gradient accumulation?
                 assert len(self.gradient_outputs) == len(grads), "Number of gradients does not match number of outputs"
-                for idx, grad in enumerate(grads):
-                    self.gradient_outputs[idx] += grad
+                assert False, "Gradient accumulation not implemented yet"
+                # This doesn't work because the gradient outputs are on the device in general.
+                # for idx, grad in enumerate(grads):
+                #     self.gradient_outputs[idx] += grad
         else:
             self.gradient_outputs = grads
             # Accumulate gradients in the PyTorch module
@@ -407,8 +410,6 @@ class CompiledModel:
             self.attached_module.gradient_inputs[0] = self.gradient_outputs[0]
             self.attached_module.backward()
 
-        return self.gradient_outputs
-
     def training(self) -> bool:
         return self.fwd_compiled_graph_state.graph.training()
 
@@ -418,6 +419,7 @@ class CompiledModel:
     def step(self) -> None:
         assert self.fwd_compiled_graph_state.graph.training(), "Model not compiled for training."
         assert self.opt_compiled_graph_state is not None, "Optimizer graph should be present for training."
+        assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
 
         inputs = [
             *self.gradient_outputs,
