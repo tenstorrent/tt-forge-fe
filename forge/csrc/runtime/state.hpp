@@ -36,8 +36,6 @@ struct ProgramState
     std::vector<tt::Tensor> outputs;
 };
 
-ProgramState create_program_state(ProgramType program_type, std::vector<tt::Tensor> persistent_inputs);
-
 struct ModelState
 {
     runtime::Binary binary;
@@ -60,5 +58,8 @@ struct ModelState
 
     void run_program(ProgramType program_type, std::vector<tt::Tensor> act_inputs);
 };
+
+ProgramState create_program_state(
+    ProgramType program_type, ModelState& model_state, std::vector<std::string> persistent_input_names);
 
 }  // namespace tt

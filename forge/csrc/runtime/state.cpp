@@ -10,8 +10,17 @@
 namespace tt
 {
 
-ProgramState create_program_state(ProgramType program_type, std::vector<tt::Tensor> persistent_inputs)
+ProgramState create_program_state(
+    ProgramType program_type, ModelState& model_state, std::vector<std::string> persistent_input_names)
 {
+    std::vector<tt::Tensor> persistent_inputs;
+    persistent_inputs.reserve(persistent_input_names.size());
+
+    for (auto& name : persistent_input_names)
+    {
+        auto tensor = model_state.tensor_pool.get_tensor(name);
+        persistent_inputs.emplace_back(tensor);
+    }
     return ProgramState{program_type, persistent_inputs, {}};
 }
 

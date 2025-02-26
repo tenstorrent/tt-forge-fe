@@ -58,13 +58,11 @@ class TensorStorage
     std::variant<torch::Tensor, runtime::Tensor> storage;
 };
 
-class Tensor
+class TensorImpl : public std::enable_shared_from_this<TensorImpl>
 {
    public:
-    Tensor(torch::Tensor& tensor) : tensor_storage(tensor), rt_tensor(std::nullopt)
+    TensorImpl(torch::Tensor& tensor) : tensor_storage(tensor), rt_tensor(std::nullopt)
     {
-        auto data = std::shared_ptr<void>(tensor.data_ptr(), [](void*) {});
-
         auto shape = std::vector<uint32_t>(tensor.sizes().begin(), tensor.sizes().end());
         auto stride = std::vector<uint32_t>(tensor.strides().begin(), tensor.strides().end());
 
@@ -74,7 +72,7 @@ class Tensor
         desc.dataType = torch_scalar_type_to_dt(tensor.scalar_type());
     }
 
-    Tensor(runtime::Tensor& tensor, runtime::TensorDesc tensor_desc) :
+    TensorImpl(runtime::Tensor& tensor, runtime::TensorDesc tensor_desc) :
         tensor_storage(tensor), desc(tensor_desc), rt_tensor(tensor)
     {
     }
@@ -113,6 +111,16 @@ class Tensor
         rt_tensor = tt::runtime::toLayout(rt_tensor.value(), *device->rt_device, layout);
     }
 
+    void update_host_data()
+    {
+        TT_ASSERT(rt_tensor.has_value());
+        constexpr bool untilize_tensor = true;
+        auto host = tt::runtime::toHost(rt_tensor.value(), untilize_tensor);
+
+        TT_ASSERT(storage().get() != nullptr);
+        tt::runtime::memcpy(storage().get(), host);
+    }
+
     bool on_device() const { return rt_tensor.has_value(); }
 
     runtime::TensorDesc tensor_desc() const { return desc; }
@@ -121,6 +129,32 @@ class Tensor
     TensorStorage tensor_storage;
     runtime::TensorDesc desc;
     std::optional<runtime::Tensor> rt_tensor;
+};
+
+class Tensor
+{
+   public:
+    Tensor(torch::Tensor& tensor) : impl(new TensorImpl(tensor)) {}
+    Tensor(runtime::Tensor& tensor, runtime::TensorDesc tensor_desc) : impl(new TensorImpl(tensor, tensor_desc)) {}
+
+    std::shared_ptr<void> storage() const { return impl->storage(); }
+
+    runtime::Tensor& get_runtime_tensor() { return impl->get_runtime_tensor(); }
+
+    void set_runtime_tensor(runtime::Tensor tensor) { impl->set_runtime_tensor(tensor); }
+
+    torch::Tensor to_host() const { return impl->to_host(); }
+
+    void to_device(const size_t device_id, runtime::Layout& layout) { impl->to_device(device_id, layout); }
+
+    void update_host_data() { impl->update_host_data(); }
+
+    bool on_device() const { return impl->on_device(); }
+
+    runtime::TensorDesc tensor_desc() const { return impl->tensor_desc(); }
+
+   private:
+    std::shared_ptr<TensorImpl> impl;
 };
 
 // Class containing all (persistent) tensors across all programs.
@@ -148,7 +182,7 @@ class TensorPool
     {
         TT_ASSERT(tensor_name_to_idx.find(name) != tensor_name_to_idx.end(), "Tensor {} not found", name);
         size_t idx = tensor_name_to_idx.at(name);
-        tensors.at(idx) = tensor;
+        tensors.at(idx).get_runtime_tensor() = tensor.get_runtime_tensor();
     }
 
    private:

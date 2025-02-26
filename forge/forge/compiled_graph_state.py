@@ -244,14 +244,11 @@ class CompiledModel:
         self.create_persistent_inputs(tensor_pool, compiled_graph_state)
 
         persistent_tensors = [
-            self.tensor_pool.get_tensor(name)
-            for name in [
-                *compiled_graph_state.ordered_constant_node_names,
-                *compiled_graph_state.ordered_parameter_node_names,
-            ]
+            *compiled_graph_state.ordered_constant_node_names,
+            *compiled_graph_state.ordered_parameter_node_names,
         ]
 
-        pstate = create_program_state(program_type, persistent_tensors)
+        pstate = create_program_state(program_type, self.runtime_model_state, persistent_tensors)
         self.runtime_model_state.init_program_state(pstate)
 
     def tie_grad_fn(self, grad_id: int, grad: torch.Tensor) -> None:
@@ -451,3 +448,9 @@ class CompiledModel:
         self.create_program_state(ProgramType.Optimizer, self.tensor_pool, self.opt_compiled_graph_state)
 
         self.gradient_outputs = []
+
+    def update_host_weights(self):
+        for name, param in self.framework_module.module.named_parameters():
+            if param.requires_grad:
+                weight = self.tensor_pool.get_tensor(name)
+                weight.update_host_data()
