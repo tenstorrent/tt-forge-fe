@@ -19,7 +19,10 @@ void RuntimeModule(py::module& m_runtime)
     m_runtime.def("run_binary", tt::run_binary);
     m_runtime.def("run_binary_v2", tt::run_binary_v2);
 
-    py::class_<Tensor>(m_runtime, "Tensor").def(py::init<torch::Tensor&>()).def("to_torch", &Tensor::to_host);
+    py::class_<Tensor>(m_runtime, "Tensor")
+        .def(py::init<torch::Tensor&>())
+        .def("to_torch", &Tensor::to_host)
+        .def("update_host_data", &Tensor::update_host_data);
     py::class_<TensorPool>(m_runtime, "TensorPool")
         .def(py::init<>())
         .def("get_tensor", &TensorPool::get_tensor)
