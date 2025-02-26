@@ -16,7 +16,7 @@ from tvm.relay import function as _function
 from tvm.relay.op.transform import broadcast_to
 from tvm.target.compilation_config import make_compilation_config
 from tvm.relay.op.contrib.register import register_pattern_table
-from forge.tvm_calls.relay.dataflow_pattern import construct_pre_node_map
+from tvm.relay.dataflow_pattern import *
 from .reportify import dump_graph
 from .forge_passes import run_forge_compile_passes
 from .relay_passes import run_relay_compile_passes
