@@ -76,9 +76,10 @@ def test_mnist_training():
             golden_loss = loss_fn(golden_pred, target)
             assert torch.allclose(loss, golden_loss, rtol=1e-1)  # 10% tolerance
 
-            # Run backward pass on device
+            # Loss backward pass on CPU.
             loss.backward()
 
+            # Run backward pass on device.
             tt_model.backward()
 
             # Adjust weights (on CPU)

@@ -22,7 +22,8 @@ void RuntimeModule(py::module& m_runtime)
     py::class_<Tensor>(m_runtime, "Tensor")
         .def(py::init<torch::Tensor&>())
         .def("to_torch", &Tensor::to_host)
-        .def("update_host_data", &Tensor::update_host_data);
+        .def("update_host_data", &Tensor::update_host_data)
+        .def("detach_from_device", &Tensor::detach_from_device);
     py::class_<TensorPool>(m_runtime, "TensorPool")
         .def(py::init<>())
         .def("get_tensor", &TensorPool::get_tensor)
