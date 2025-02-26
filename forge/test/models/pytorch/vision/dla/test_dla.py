@@ -10,7 +10,7 @@ from test.models.pytorch.vision.dla.utils.utils import load_dla_model, post_proc
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-    pytest.param("dla34", marks=[pytest.mark.push]),
+    "dla34",
     "dla46_c",
     "dla46x_c",
     "dla60",
