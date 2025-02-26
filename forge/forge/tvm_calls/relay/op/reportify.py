@@ -9,9 +9,11 @@ from tvm import relay
 from tvm.relay import transform
 from tvm.relay.expr_functor import ExprVisitor, ExprMutator
 
+
 def get_default_reportify_path(test_name):
     home = os.environ["HOME"]
     return home + "/testify/ll-sw/" + test_name
+
 
 def initialize_directory(path, test_name):
     filename = path + "/" + "summary.yaml"
@@ -22,8 +24,10 @@ def initialize_directory(path, test_name):
         f.write(f"  output-dir: {path}\n")
         f.write(f"type: summary\n")
 
+
 def get_tvm_reports_relpath():
     return "/tvm_reports/Passes/"
+
 
 class CreateJson(ExprVisitor):
     def __init__(self):
@@ -51,12 +55,12 @@ class CreateJson(ExprVisitor):
 
     def visit_call(self, call):
         if call not in self.visited_tgvs:
-            if hasattr(call.op, 'name'):
+            if hasattr(call.op, "name"):
                 name_partial = call.op.name
-            elif hasattr(call.op, 'name_hint'):
+            elif hasattr(call.op, "name_hint"):
                 name_partial = call.op.name_hint
             else:
-                name_partial = call.op.attrs["Composite"] # Composite functions
+                name_partial = call.op.attrs["Composite"]  # Composite functions
             name = f"{name_partial}_{self.node_idx}"
             op = self.get_default_op(name)
             if isinstance(call.checked_type, tvm.ir.type.TupleType):
@@ -66,11 +70,15 @@ class CreateJson(ExprVisitor):
                         shape.append([int(dim) for dim in field.shape])
                 op["cache"] = {"shape": shape}
             else:
-                op["cache"] = {"shape": [int(dim) if isinstance(dim, tvm.tir.expr.IntImm) else -1 for dim in call.checked_type.shape]}
+                op["cache"] = {
+                    "shape": [
+                        int(dim) if isinstance(dim, tvm.tir.expr.IntImm) else -1 for dim in call.checked_type.shape
+                    ]
+                }
             op["class"] = name_partial
             op["type"] = name_partial
             op["opcode"] = "RelayOp"
-            if hasattr(call, 'span'):
+            if hasattr(call, "span"):
                 op["span"] = repr(call.span)
             self.node_map[call] = name
         return super().visit_call(call)
@@ -86,13 +94,16 @@ class CreateJson(ExprVisitor):
                     shape.append([int(dim) for dim in field.shape])
             op["cache"] = {"shape": shape}
         else:
-            op["cache"] = {"shape": [int(dim) if isinstance(dim, (int, float, complex)) else str(dim) for dim in call.checked_type.shape]}
+            op["cache"] = {
+                "shape": [
+                    int(dim) if isinstance(dim, (int, float, complex)) else str(dim) for dim in call.checked_type.shape
+                ]
+            }
         op["opcode"] = "Input"
         op["class"] = "Input::"
         op["type"] = "Input::input"
         self.node_map[call] = name
         return super().visit_var(call)
-
 
     def visit_constant(self, const):
         name = f"constant_{self.node_idx}"
@@ -110,16 +121,18 @@ class CreateJson(ExprVisitor):
         else:
             if isinstance(t.tuple_value, tvm.relay.expr.Tuple):
                 op_type = "tuple"
-            elif hasattr(t.tuple_value.op, 'name'):
+            elif hasattr(t.tuple_value.op, "name"):
                 op_type = t.tuple_value.op.name
-            elif hasattr(t.tuple_value.op, 'name_hint'):
+            elif hasattr(t.tuple_value.op, "name_hint"):
                 op_type = t.tuple_value.op.name_hint
             else:
                 op_type = "Unknown"
             name = f"{op_type}_{self.node_idx}"
             op = self.get_default_op(name)
             if hasattr(t.checked_type, "shape"):
-                assert not any(isinstance(dim, tvm.tir.expr.Any) for dim in t.checked_type.shape), "Dynamic shapes not supported"
+                assert not any(
+                    isinstance(dim, tvm.tir.expr.Any) for dim in t.checked_type.shape
+                ), "Dynamic shapes not supported"
                 op["cache"] = {"shape": [int(dim) for dim in t.checked_type.shape]}
             else:
                 op["cache"] = {"shape": []}
@@ -195,9 +208,9 @@ def dump_graph(mod, test_name, stage):
         tvm_subdir = path + get_tvm_reports_relpath()
         os.makedirs(tvm_subdir + stage + "_graphs", exist_ok=True)
 
-        filename = tvm_subdir + stage + "_" + global_var.name_hint + "_"  + ".forge"
+        filename = tvm_subdir + stage + "_" + global_var.name_hint + "_" + ".forge"
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "w") as f:
             f.write(tvm_graph)
-        
+
     # assert(False)

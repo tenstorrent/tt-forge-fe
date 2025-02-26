@@ -20,11 +20,13 @@ import os
 from loguru import logger
 
 
-
 def fskip_eliminate(expr):
-    if isinstance(expr, relay.expr.Call) and (expr.op.name == "transpose" or expr.op.name == "qnn.dequantize" or expr.op.name == "qnn.quantize"):
+    if isinstance(expr, relay.expr.Call) and (
+        expr.op.name == "transpose" or expr.op.name == "qnn.dequantize" or expr.op.name == "qnn.quantize"
+    ):
         return True
     return False
+
 
 def run_relay_compile_passes(relay_module, print_all=False):
 
