@@ -26,28 +26,29 @@ def eval(type, attr, ops):
         assert len(ops) == 1
         resize_method = INT_TO_RESIZE2d_METHOD[attr[-3]]
         acts = ops[0]
+        shape = acts.shape
+        channel_last = attr[-1]
+        sizes = attr
+
+        # Determine whether to use upsample2d or downsample2d to replicate the resize2d operation.
+        # If the target size is larger than the input size, apply upsampling; otherwise, apply downsampling.
+        # Example: Given target size (14,14) and input shape (1,3,7,7), since 14 > 7, we use upsampling.
+        upsample = sizes[0] >= shape[-3] if channel_last else sizes[0] >= shape[-2]
+        scale_factor = sizes[0] // shape[-3] if channel_last else sizes[0] // shape[-2]
+
         if attr[-1]:
             # channel last
             acts = ops[0].permute((0, 3, 1, 2))
 
-        if resize_method == "nearest":
-            upsample = torch.nn.Upsample(
-                size=attr[0:2],
-                mode=resize_method,
-            )
+        if upsample:
+            upsample = torch.nn.Upsample(scale_factor=scale_factor, mode=resize_method)
+            result = upsample(acts)
         else:
-            upsample = torch.nn.Upsample(
-                size=attr[0:2],
-                mode=resize_method,
-                align_corners=bool(attr[-2]),
-            )
-
-        t_ops = to_torch_operands(acts)
-
-        result = upsample(*t_ops)
+            raise NotImplementedError("Downsampling of resize2d is not supported yet")
 
         if attr[-1]:
             result = result.permute((0, 2, 3, 1))
+
         return result
     elif type == "resize3d":
         assert len(attr) == 6, "Resize3d should have 6 attrs: [size, size, size, method, align_corners, channel_last]"
@@ -76,6 +77,14 @@ def eval(type, attr, ops):
 
         if attr[-1]:
             result = result.permute((0, 2, 3, 4, 1))
+        return result
+    elif type == "upsample2d":
+        operandA = ops[0]
+        scale_factor = attr[0]
+        resize_method = attr[2]
+
+        upsample = torch.nn.Upsample(scale_factor=scale_factor, mode=resize_method)
+        result = upsample(operandA)
         return result
 
 
@@ -157,6 +166,16 @@ def shape(type, attr, ops):
                 ), "Only support same scale factor for H and W"
             shape[-3], shape[-2], shape[-1] = attr[0], attr[1], attr[2]
             return shape, []
+
+    elif type == "upsample2d":
+        channel_last = attr[2]
+        scale_factor = attr[0]
+        shape = list(ops[0])
+        if channel_last:
+            shape[-3], shape[-2] = shape[-3] * scale_factor, shape[-2] * scale_factor
+        else:
+            shape[-2], shape[-1] = shape[-2] * scale_factor, shape[-1] * scale_factor
+        return shape, []
 
 
 def lower(type, attr, lc, ops, outputs):
@@ -277,6 +296,39 @@ def decompose_resize3d(attr, dc, inputs, resize_method):
 
 
 def decompose(type, attr, dc, inputs):
+    if type == "resize2d":
+        resize_method = INT_TO_RESIZE2d_METHOD[attr[2]]
+        acts = inputs[0]
+        shape = acts.shape
+        channel_last = attr[-1]
+        sizes = attr[0:2]
+        result = inputs[0]
+
+        upsample = sizes[0] >= shape[-3] if channel_last else sizes[0] >= shape[-2]
+
+        if not channel_last:
+            # Changing  the Layout from NCHW to NHWC as ttir.upsample2d supports only the NHWC layout
+            result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
+            result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
+
+        if upsample:
+            scale_factor = sizes[0] // shape[-3] if channel_last else sizes[0] // shape[-2]
+            result = dc.op_with_named_attrs(
+                "upsample2d",
+                [result],
+                {"scale_factor": scale_factor, "mode": resize_method, "channel_last": True},
+                (scale_factor, resize_method, True),
+            )
+        else:
+            raise NotImplementedError("Downsampling of resize2d is not supported yet")
+
+        if not channel_last:
+            # Changing the Layout back to NCHW from NHWC after ttir.upsample2d operation
+            result = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [result])
+            result = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [result])
+
+        dc.fuse(result)
+
     if type == "resize3d":
         assert len(attr) == 6, "Resize3d should have 6 attrs: [size, size, size, method, align_corners, channel_last]"
         assert len(inputs) == 1
