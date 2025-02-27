@@ -72,7 +72,7 @@ from .tm import (
 from .constant import Constant
 from .nn import Softmax, Layernorm, LogSoftmax, Batchnorm, MaxPool2dModule
 from .eltwise_nary import Concatenate, Where, IndexCopy, Stack, Interleave
-from .resize import Resize2d, Resize3d
+from .resize import Resize2d, Resize3d, Upsample2d
 from .embedding import Embedding
 from .dram_queue import DRAMQueue
 from .quantize import Quantize, Dequantize, Requantize, ForgeRequantize
