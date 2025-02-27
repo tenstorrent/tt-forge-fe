@@ -148,13 +148,14 @@ variants = [
     "hrnet_w44",
     "hrnet_w48",
     "hrnet_w64",
+    "hrnet_w18.ms_aug_in1k",
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_hrnet_timm_pytorch(record_forge_property, variant):
-    if variant != "hrnet_w18_small":
+    if variant not in ["hrnet_w18_small", "hrnet_w18.ms_aug_in1k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
