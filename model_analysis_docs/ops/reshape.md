@@ -22,43 +22,43 @@
 			<td rowspan="10">[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
 			<td rowspan="10">42</td>
 			<td>11</td>
-			<td><ul><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li></ul></td>
+			<td><ul><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1), dtype=int64)</td>
 			<td>shape : (1, 1)</td>
 		</tr>
 		<tr>
 			<td>7</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_gpt2_gpt2_text_gen_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_gpt2_gpt2_text_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256), dtype=int64)</td>
 			<td>shape : (1, 256)</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32), dtype=int64)</td>
 			<td>shape : (1, 32)</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li></ul></td>
+			<td><ul><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 61), dtype=int64)</td>
 			<td>shape : (1, 61)</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td><ul><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(8, 1), dtype=int64)</td>
 			<td>shape : (2, 4, 1)</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td><ul><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(2, 1, 1), dtype=int64)</td>
 			<td>shape : (2, 1)</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td><ul><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
 			<td>shape : (2, 13)</td>
 		</tr>
@@ -85,7 +85,7 @@
 			<td rowspan="2">[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
 			<td rowspan="2">6</td>
 			<td>5</td>
-			<td><ul><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li></ul></td>
+			<td><ul><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128), dtype=uint1)</td>
 			<td>shape : (1, 1, 1, 128)</td>
 		</tr>
@@ -100,7 +100,7 @@
 			<td rowspan="1">[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 1152, 384]</td>
 			<td rowspan="1">5</td>
 			<td>5</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Parameter, shape=(384, 1, 3, 3), dtype=float32)</td>
 			<td>shape : (384, 1, 3, 3)</td>
 		</tr>

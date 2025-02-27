@@ -716,8 +716,8 @@
     <tr>
       <th>64</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 29, 28, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Activation, shape=(1, 64, 29), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,8 +727,8 @@
     <tr>
       <th>65</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 64, 29), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 29, 28, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
