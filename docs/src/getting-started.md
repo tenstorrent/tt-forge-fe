@@ -17,6 +17,15 @@ pip install *.whl
 
 > Note: Make sure to run the command from the directory where wheels are downloaded.
 
+#### Run Wheel test
+
+To confirm that your wheel is installed properly, you can run this command.
+
+```bash
+curl -o forge/test/mlir/test_ops_tf.py https://raw.githubusercontent.com/tenstorrent/tt-forge-fe/main/forge/test/test_api.py
+pytest -svv forge/test/
+```
+
 ### Build from Source
 
 To build Forge-FE from source, you need to clone the project from our GitHub page:
@@ -26,7 +35,7 @@ git clone https://github.com/tenstorrent/tt-forge-fe.git
 
 Afterwards, you can follow our [build instructions](https://docs.tenstorrent.com/tt-forge-fe/build.html) which outline prerequisites, as well as how to build dependencies and our project.
 
-## Run First Example Case
+#### Run Source build test
 
 To confirm that our environment is properly setup, let's run one sanity test for element-wise add operation:
 ```bash
