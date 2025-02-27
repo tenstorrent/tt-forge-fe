@@ -61,9 +61,18 @@ void TTDevice::open_device()
 
 void TTDevice::close_device()
 {
-    TT_ASSERT(is_open());
     runtime::closeDevice(rt_device.value());
     rt_device.reset();
+}
+
+void TTDevice::clear_program_cache()
+{
+    if (!is_open())
+    {
+        return;
+    }
+
+    runtime::clearProgramCache(rt_device.value());
 }
 
 }  // namespace tt

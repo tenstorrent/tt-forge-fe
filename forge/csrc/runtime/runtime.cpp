@@ -14,6 +14,15 @@
 namespace tt
 {
 
+void clear_program_cache()
+{
+    auto& system = TTSystem::get_system();
+    for (auto& device : system.devices)
+    {
+        device->clear_program_cache();
+    }
+}
+
 static target::DataType torch_scalar_type_to_dt(torch::ScalarType st)
 {
     switch (st)

@@ -37,6 +37,8 @@ struct TTDevice
 
     void open_device();
     void close_device();
+
+    void clear_program_cache();
 };
 
 struct TTSystem

@@ -15,6 +15,8 @@ namespace tt
 std::vector<torch::Tensor> run_binary(
     runtime::Binary& binary, int program_idx, std::vector<torch::Tensor> const& inputs);
 
+void clear_program_cache();
+
 // Helper function to run the binary from the file - might be useful for testing/debugging.
 std::vector<torch::Tensor> run_binary_from_file(
     std::string const& filename, int program_idx, std::vector<torch::Tensor> const& inputs);

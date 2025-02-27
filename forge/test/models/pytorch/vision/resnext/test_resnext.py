@@ -22,6 +22,10 @@ from test.utils import download_model
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext50_32x4d"])
 def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
+    from forge._C.runtime import clear_program_cache
+
+    clear_program_cache()
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -54,6 +58,11 @@ def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["resnext101_32x8d"])
 def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
+
+    from forge._C.runtime import clear_program_cache
+
+    clear_program_cache()
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
