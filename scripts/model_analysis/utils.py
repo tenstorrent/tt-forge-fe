@@ -258,7 +258,16 @@ def run_command(command: str):
 
 
 def run_precommit(directory_path: str):
-    run_command("pip install pre-commit")
+    """Checks if pre-commit is installed and runs it on all files in the given directory."""
+
+    # Check if pre-commit is installed
+    if shutil.which("pre-commit") is None:
+        logger.info("pre-commit is not installed. Installing...")
+        run_command("pip install pre-commit")
+    else:
+        logger.info("pre-commit is already installed.")
+
+    # Run pre-commit on all files in the directory
     run_command(f"pre-commit run --files $(find {directory_path} -type f)")
 
 
