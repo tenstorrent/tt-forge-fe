@@ -124,11 +124,11 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][MLIR runtime ttnn ] tt::exception tt-mlir/runtime/lib/ttnn/runtime.cpp Unsupported data type</td>
+      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8</td>
     </tr>
     <tr>
       <th>11</th>
@@ -146,11 +146,11 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int32)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][MLIR runtime ttnn ] tt::exception tt-mlir/runtime/lib/ttnn/runtime.cpp Unsupported data type</td>
+      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8</td>
     </tr>
     <tr>
       <th>13</th>
