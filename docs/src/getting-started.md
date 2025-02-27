@@ -7,7 +7,15 @@ You choose between two ways to setup our project:
 
 ### Install using Wheel
 
-*Wheel installation instructions will be provided soon. Stay tuned!*
+Download the latest `tt-forge-fe` release, which includes both TVM and Forge wheels:
+- https://github.com/tenstorrent/tt-forge/releases
+
+Install both TVM and Forge wheels using following command:
+```py
+pip install *.whl
+```
+
+> Note: Make sure to run the command from the directory where wheels are downloaded.
 
 ### Build from Source
 
