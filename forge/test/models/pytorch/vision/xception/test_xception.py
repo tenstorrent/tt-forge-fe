@@ -12,6 +12,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.xception.utils.utils import post_processing
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -35,13 +36,19 @@ def generate_model_xception_imgcls_timm(variant):
     return framework_model, [img_tensor]
 
 
-variants = ["xception", "xception41", "xception65", "xception71"]
+params = [
+    pytest.param("xception"),
+    pytest.param("xception41"),
+    pytest.param("xception65"),
+    pytest.param("xception71"),
+    pytest.param("xception71.tf_in1k", marks=[pytest.mark.push]),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", params)
 def test_xception_timm(record_forge_property, variant):
-    if variant != "xception":
+    if variant not in ["xception", "xception71.tf_in1k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -63,3 +70,10 @@ def test_xception_timm(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+    # Inference
+    output = compiled_model(*inputs)
+
+    # Post Processing
+    if variant == "xception71.tf_in1k":
+        post_processing(output)

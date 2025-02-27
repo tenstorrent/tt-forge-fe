@@ -124,13 +124,14 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
     return model, [image_tensor], {}
 
 
-variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b"]
+variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b", "ese_vovnet19b_dw.ra_in1k"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vovnet_timm_pytorch(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    if variant != "ese_vovnet19b_dw.ra_in1k":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(

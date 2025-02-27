@@ -13,6 +13,7 @@ from forge.verify.verify import verify
 
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 from test.models.pytorch.vision.retinanet.utils.model import Model
+from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
@@ -77,3 +78,35 @@ def test_retinanet(record_forge_property, variant):
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)
     os.remove(local_zip_path)
+
+
+variants_with_weights = {
+    "retinanet_resnet50_fpn_v2": "RetinaNet_ResNet50_FPN_V2_Weights",
+}
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants_with_weights.keys())
+def test_retinanet_torchvision(record_forge_property, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="retinanet",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and input
+    weight_name = variants_with_weights[variant]
+    framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
