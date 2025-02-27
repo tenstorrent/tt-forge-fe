@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_30, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_30, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
