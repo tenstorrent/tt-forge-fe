@@ -41,7 +41,7 @@ def test_yolov5_320x320(record_forge_property, size):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -84,7 +84,7 @@ def test_yolov5_640x640(record_forge_property, size):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -123,7 +123,7 @@ def test_yolov5_480x480(record_forge_property, size):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -153,7 +153,7 @@ def test_yolov5_1280x1280(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model = download_model(torch.hub.load, "ultralytics/yolov5", variant, pretrained=True)
 

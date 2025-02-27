@@ -21,7 +21,7 @@ def test_gpt2_text_gen(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained(variant)

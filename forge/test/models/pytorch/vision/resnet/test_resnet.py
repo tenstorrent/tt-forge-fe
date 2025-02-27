@@ -38,7 +38,7 @@ def test_resnet_hf(variant, record_forge_property):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
@@ -100,7 +100,7 @@ def test_resnet_timm(record_forge_property):
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load framework model
     framework_model = download_model(timm.create_model, "resnet50", pretrained=True)
@@ -123,7 +123,7 @@ def test_resnet_torchvision(record_forge_property):
         variant="50",
         task=Task.IMAGE_CLASSIFICATION,
     )
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load framework model
     framework_model = resnet50()
