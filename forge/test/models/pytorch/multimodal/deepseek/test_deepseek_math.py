@@ -34,7 +34,7 @@ def test_deepseek_inference(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     model_name = f"deepseek-ai/{variant}"
     model, tokenizer, input_ids = download_model_and_tokenizer(model_name)

@@ -22,7 +22,7 @@ def test_falcon(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)
@@ -69,7 +69,7 @@ def test_falcon_3(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = AutoModelForCausalLM.from_pretrained(variant)

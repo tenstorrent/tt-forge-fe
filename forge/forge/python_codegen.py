@@ -1108,9 +1108,9 @@ class ForgeWriter(PythonWriter):
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
                 if isinstance(metadata_value, str):
-                    self.wl(f'record_forge_property("{metadata_name}", "{metadata_value}")')
+                    self.wl(f'record_forge_property("tags.{metadata_name}", "{metadata_value}")')
                 else:
-                    self.wl(f'record_forge_property("{metadata_name}", {metadata_value})')
+                    self.wl(f'record_forge_property("tags.{metadata_name}", {metadata_value})')
         self.wl("")
         if is_pytest_metadata_list_empty:
             self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
@@ -1123,7 +1123,7 @@ class ForgeWriter(PythonWriter):
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl(f"record_forge_property(metadata_name, metadata_value)")
+            self.wl(f'record_forge_property("tags." + str(metadata_name), metadata_value)')
             self.indent -= 1
         self.wl("")
         if is_pytest_metadata_list_empty or (

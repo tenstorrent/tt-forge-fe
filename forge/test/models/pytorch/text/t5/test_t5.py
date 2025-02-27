@@ -45,7 +45,7 @@ def test_t5_generation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
