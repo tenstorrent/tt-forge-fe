@@ -5,7 +5,7 @@ import pytest
 
 import forge
 
-from test.models.pytorch.multimodal.deepseek.utils.model import (
+from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
     DeepSeekWrapper,
     download_model_and_tokenizer,
     generation,
@@ -19,6 +19,7 @@ def test_deepseek_inference_no_cache_cpu(variant):
     model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
 
     framework_model = DeepSeekWrapper(model)
+    framework_model.eval()
 
     generated_text = generation(
         max_new_tokens=200, compiled_model=framework_model, input_ids=input_ids, tokenizer=tokenizer
@@ -39,6 +40,7 @@ def test_deepseek_inference(record_forge_property, variant):
     model_name = f"deepseek-ai/{variant}"
     model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
     framework_model = DeepSeekWrapper(model)
+    framework_model.eval()
 
     compiled_model = forge.compile(framework_model, sample_inputs=[input_ids], module_name=module_name)
     generated_text = generation(
