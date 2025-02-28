@@ -44,6 +44,7 @@ jobs:
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: ["n150", "n300"]
 
   check-all-green:
     if: always()
