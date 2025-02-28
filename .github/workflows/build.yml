@@ -134,7 +134,7 @@ jobs:
         id: fetch-job-id
         uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
         with:
-          job_name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.build.name }})"
+          job_name: "${{ github.job }}"
 
       - name: Set reusable strings
         id: strings
@@ -164,6 +164,12 @@ jobs:
         run: |
             git submodule foreach --recursive git clean -ffdx
             git submodule foreach --recursive git reset --hard
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          create-symlink: true
+          key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}
 
       - name: Debug Build
         shell: bash
@@ -197,7 +203,7 @@ jobs:
         if: success() || failure()
         with:
           report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-XLA Tests
+          check_name: TT-FORGE-FE Tests
 
       - name: Prepare code coverage report
         run: |
