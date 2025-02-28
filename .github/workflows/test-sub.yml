@@ -26,7 +26,7 @@ on:
         description: 'Runs on'
         required: false
         type: string
-        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}, {"runs-on": "p150"}]'
       operators:
         description: 'Operators to test (comma separated)'
         required: false

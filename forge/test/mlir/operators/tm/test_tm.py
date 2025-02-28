@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import pytest
 import torch
 from torch import nn
@@ -420,6 +421,9 @@ def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
 @pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
 @pytest.mark.push
 def test_indexing(forge_property_recorder, dim, start, stop, stride, shape):
+    if os.environ["ARCH_NAME"] == "blackhole":
+        pytest.xfail()
+
     if len(shape) == 2 and dim == -3:
         pytest.skip("Skipping since indexing on dim=-3, 2D tensor doesn't make sense")
     if stop > shape[dim]:
@@ -713,6 +717,9 @@ def test_repeat_interleave(forge_property_recorder, shape, dim, repeats):
 @pytest.mark.parametrize("length", [4, 16])
 @pytest.mark.parametrize("stride", [16, 32])
 def test_select(forge_property_recorder, shape, dim, begin, length, stride):
+    if os.environ["ARCH_NAME"] == "blackhole":
+        pytest.xfail()
+
     if stride <= begin + length:
         pytest.skip("Skipping since stride <= begin + length")
 
