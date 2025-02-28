@@ -270,15 +270,24 @@ def verify(
     verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     """
-    Verify the compiled model against the framework model
+    Performs verification of a compiled model by comparing its outputs against a reference framework model.
+
+    Runs inference on both models with the same inputs and performs various validation checks
+    based on the provided verification configuration. Checks can include output size matching,
+    dtype consistency, shape equivalence, and numeric value comparison.
+
+    Parameters:
+        inputs: List of tensor inputs
+        framework_model: Reference model
+        compiled_model: compiled model to verify
+        verify_cfg: Configuration object controlling which verification checks to perform
+
+    Returns:
+        tuple: (framework_outputs, compiled_outputs) - outputs from both models
+               Returns (None, None) if verification is disabled
     """
-    if not verify_cfg.enabled:
-        logger.warning("Verification is disabled")
-        return
 
-    # 0th step: input checks
-
-    # Check if inputs are of the correct type
+    # 0th step: Check if inputs are of the correct type
     if not inputs:
         raise ValueError("Input tensors must be provided")
     for input_tensor in inputs:
@@ -309,6 +318,10 @@ def verify(
 
     co_out = [co.to("cpu") for co in co_out]
 
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return fw_out, co_out
+
     # 3rd step: verifications of outputs
     # - size check
     # - dtype check
@@ -333,3 +346,6 @@ def verify(
             verify_cfg.value_checker.check(fw, co)
 
     record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
+
+    # Return both the framework and compiled model outputs
+    return fw_out, co_out
