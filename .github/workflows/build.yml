@@ -177,7 +177,7 @@ jobs:
           source env/activate
           cmake -G Ninja \
           -B ${{ steps.strings.outputs.build-output-dir }} \
-          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_C_COMPILER=clang \
           -DCMAKE_CXX_COMPILER=clang++ \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache \
@@ -194,8 +194,8 @@ jobs:
       - name: Prepare code coverage report
         run: |
           lcov --directory build --capture --output-file coverage.info --gcov-tool ${{ steps.strings.outputs.work-dir }}/.github/workflows/gcov_for_clang.sh
-          lcov --extract coverage.info '**/tt-forge-fe/src/*' --output-file coverage.info
-          sed -i 's|SF:/__w/tt-forge-fe/tt-forge-fe/src/|SF:src/|' coverage.info
+          lcov --extract coverage.info '**/tt-forge-fe/forge/csrc/*' --output-file coverage.info
+          sed -i 's|SF:/__w/tt-forge-fe/tt-forge-fe/forge/csrc/|SF:csrc/|' coverage.info
           lcov --list coverage.info
 
       - name: Upload coverage reports to Codecov
