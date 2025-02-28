@@ -31,6 +31,7 @@ on:
         options:
           - n150
           - n300
+          - p150
       test_group_cnt:
         description: 'Test group count'
         required: false
