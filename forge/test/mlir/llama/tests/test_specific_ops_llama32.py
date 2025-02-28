@@ -108,7 +108,6 @@ def test_sine(shapes):
         ((1, 11), 128256, 2048),
     ],
 )
-@pytest.mark.xfail(reason="TTNN Layout::ROW_MAJOR error")
 @pytest.mark.push
 def test_embedding(shapes):
     input_size, vocab_size, embedding_dim = shapes

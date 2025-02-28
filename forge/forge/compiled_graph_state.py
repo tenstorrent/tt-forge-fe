@@ -13,7 +13,7 @@ from typing import Dict, List, Any, Optional
 from forge._C.graph import Graph
 import forge._C.graph as pygraph
 from forge._C.runtime import run_binary, Binary
-from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, AnyTensor
+from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, cast_unsupported_torch_dtype, AnyTensor
 from forge.module import Module, PyTorchModule, AnyModule
 from forge.execution_tracker import ExecutionPhase, record_execution_phase_and_stage
 
@@ -224,6 +224,8 @@ class CompiledModel:
             Output tensors
         """
         self.inputs = [*to_pt_tensors(inputs)]
+        # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
+        self.inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in self.inputs]
 
         inputs_and_parameters = [
             *self.inputs,

@@ -297,7 +297,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
             return self.embedding(x)
 
     inputs = [
-        torch.randint(0, vocab_size, (1, token_num)).to(torch.int32),
+        torch.randint(0, vocab_size, (1, token_num)),
     ]
 
     framework_model = Embedding()

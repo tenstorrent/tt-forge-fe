@@ -58,7 +58,7 @@ def test_phi2_clm(record_forge_property, variant):
         truncation=True,
     )
 
-    input_ids = inputs["input_ids"].to(torch.int32)
+    input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"].to(torch.float32)
 
     inputs = [input_ids, attn_mask]
