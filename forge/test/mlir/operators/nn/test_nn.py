@@ -10,7 +10,6 @@ import forge
 from forge.verify.verify import verify
 
 
-@pytest.mark.xfail(reason="error: 'ttnn.conv2d' op Bias must only have data on the final dimenstion")
 @pytest.mark.parametrize(
     "input_shape, in_channels, out_channels, kernel_size, padding_value",
     [
@@ -396,14 +395,8 @@ def test_avgpool2d_decompose_to_conv2d(shape, padding):
 @pytest.mark.parametrize(
     "padding",
     [
-        pytest.param(
-            (1, 1, 1, 1),
-            marks=pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion"),
-        ),
-        pytest.param(
-            (1, 1, 2, 2),
-            marks=pytest.mark.xfail(reason="'ttnn.conv2d' op Bias must only have data on the final dimenstion"),
-        ),
+        pytest.param((1, 1, 1, 1)),
+        pytest.param((1, 1, 2, 2)),
         pytest.param(
             (1, 2, 1, 2),
             marks=pytest.mark.xfail(
