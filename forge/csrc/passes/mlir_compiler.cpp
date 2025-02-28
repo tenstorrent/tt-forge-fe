@@ -27,11 +27,13 @@
 #pragma clang diagnostic pop
 
 // TTMLIR headers
+#include "mlir/Target/Cpp/CppEmitter.h"
 #include "tt/runtime/types.h"
 #include "tt_torch_device/tt_device.hpp"
 #include "ttmlir/Dialect/TT/IR/TT.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIR.h"
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
+#include "ttmlir/Dialect/TTNN/Transforms/TTNNToCpp.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
 
 // Reportify headers
@@ -39,8 +41,10 @@
 
 namespace tt::passes
 {
-/// Public API for lowering to MLIR, running MLIR passes and generate runtime binary.
-runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
+
+// Template function to run the MLIR compiler pipeline, depending on the desired output.
+template <MLIROutputKind output>
+auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
 {
     // Register all the required dialects.
     mlir::DialectRegistry registry;
@@ -70,24 +74,55 @@ runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
     // Generate MLIR from the Forge graph.
     mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
 
-    // Run MLIR registered passes.
-    run_mlir_passes(mlir_module);
+    // Run MLIR pipeline.
+    run_mlir_passes<output>(mlir_module);
+
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
     mlir_module->dump();
 
-    // save what's dumped to a file named "{name}.mlir"
-    reportify::dump_mlir("ttnn", mlir_module->getName()->str(), mlir_module.get());
-
-    // Generate binary from the MLIR module.
-    auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
-    tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
-
-    if (binary == nullptr)
+    if constexpr (output == MLIROutputKind::Flatbuffer)
     {
-        throw std::runtime_error("Failed to generate flatbuffer binary.");
-    }
+        // Save generated ttnn module to a file named "{name}.mlir".
+        reportify::dump_mlir("ttnn", mlir_module->getName()->str(), mlir_module.get());
 
-    return binary;
+        // Generate binary from the MLIR module.
+        auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
+        tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
+
+        if (binary == nullptr)
+        {
+            throw std::runtime_error("Failed to generate flatbuffer binary.");
+        }
+
+        return binary;
+    }
+    else if constexpr (output == MLIROutputKind::Cpp)
+    {
+        std::string cpp_source;
+        llvm::raw_string_ostream rso(cpp_source);
+
+        log_info(LogMLIRCompiler, "Generating C++ code from MLIR module.");
+        auto res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
+        if (mlir::failed(res))
+        {
+            throw std::runtime_error("Failed to generate C++ code.");
+        }
+
+        rso.flush();
+
+        tt::log_info(LogMLIRCompiler, "C++ code generated successfully.");
+        return cpp_source;
+    }
+}
+
+runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
+{
+    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module);
+}
+
+std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module)
+{
+    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module);
 }
 }  // namespace tt::passes

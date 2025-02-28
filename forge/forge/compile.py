@@ -393,6 +393,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
     assert context.compiled_binary is not None
 
     compiled_module = CompiledModel(
+        context.forge_module,
         fwd_compiled_graph_state,
         bwd_compiled_graph_state,
         opt_compiled_graph_state,
