@@ -7,7 +7,7 @@ import torch
 import forge
 from forge.verify.compare import compare_with_golden
 
-from test.models.pytorch.multimodal.deepseek.utils.model import (
+from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
     DeepSeekWrapper_decoder,
     download_model_and_tokenizer,
 )
@@ -67,6 +67,7 @@ def test_deepseek_prefil_on_device_decode_on_cpu(variant):
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()
     model_decoder = DeepSeekWrapper_decoder(model_decoder)
+    model_decoder.eval()
     compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
 
     # Prefill Phase - Process the initial prompt on device
