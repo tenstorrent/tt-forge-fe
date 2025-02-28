@@ -106,16 +106,118 @@ jobs:
         cd ../../..
         cp third_party/tvm/python/dist/*.whl dist/
 
-    - name: Run Unit Tests
-      shell: bash
-      run: |
-        source env/activate
-        pip install dist/forge*.whl --force-reinstall
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
-
     - name: Upload Build
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
         name: forge-wheel
         path: dist/*.whl
+
+
+  test-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          - runs-on: [runner]
+
+    runs-on:
+      - in-service
+      - ${{ matrix.build.runs-on }}
+
+    container:
+      image: ${{ inputs.docker-image }}
+
+    steps:
+
+      - name: Fetch job id
+        id: fetch-job-id
+        uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
+        with:
+          job_name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.build.name }})"
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        env:
+          JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+          echo "install-output-dir=$(pwd)/install" >> "$GITHUB_OUTPUT"
+          echo "test_report_path=report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: |
+          git config --system --add safe.directory ${{ steps.strings.outputs.work-dir }}
+          chown -R root:root ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+            submodules: recursive
+            clean: true
+            fetch-depth: 0 # Fetch all history and tags
+
+      # Clean everything from submodules (needed to avoid issues
+      # with cmake generated files leftover from previous builds)
+      - name: Cleanup submodules
+        run: |
+            git submodule foreach --recursive git clean -ffdx
+            git submodule foreach --recursive git reset --hard
+
+      - name: Debug Build
+        shell: bash
+        run: |
+          source env/activate
+          cmake -G Ninja \
+          -B ${{ steps.strings.outputs.build-output-dir }} \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER=clang \
+          -DCMAKE_CXX_COMPILER=clang++ \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          -DCODE_COVERAGE=ON
+          cmake --build ${{ steps.strings.outputs.build-output-dir }}
+
+      - name: Run Unit Tests
+        shell: bash
+        run: |
+          source env/activate
+          cmake --build ${{ steps.strings.outputs.build-output-dir }} -- run_unit_tests
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-reports-${{ matrix.build.runs-on }}
+          path: ${{ steps.strings.outputs.test_report_path }}
+
+      - name: Show Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          report_paths: ${{ steps.strings.outputs.test_report_path }}
+          check_name: TT-XLA Tests
+
+      - name: Prepare code coverage report
+        run: |
+          lcov --directory build --capture --output-file coverage.info
+          lcov --extract coverage.info '**/tt-forge-fe/src/*' --output-file coverage.info
+          sed -i 's|SF:/__w/tt-forge-fe/tt-forge-fe/src/|SF:src/|' coverage.info
+          lcov --list coverage.info
+
+      - name: Upload coverage reports to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.info
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        if: success() || failure()
+        uses: codecov/test-results-action@v1
+        with:
+          files: ${{ steps.strings.outputs.test_report_path }}
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
