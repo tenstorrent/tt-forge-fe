@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 24, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.0.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.0.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.2.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 48, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.2.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.4.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 48, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.5.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.6.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 96, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.7.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.4.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.8.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.5.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.9.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.6.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.10.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 96, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.11.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.7.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.12.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.13.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.8.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.14.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.9.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.15.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.10.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.16.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.17.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.11.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.18.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 384, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.19.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.12.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.20.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.13.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.21.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.14.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.22.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.15.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.23.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.16.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.24.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.17.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.25.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.18.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1001), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1001,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.19.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.20.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 48, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.21.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 48, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.22.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 384, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.23.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 768, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.24.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.25.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -496,7 +496,7 @@
     <tr>
       <th>44</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1001), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1001,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1057,7 +1057,7 @@
     <tr>
       <th>95</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 24, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.conv_stem.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1068,7 +1068,7 @@
     <tr>
       <th>96</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.conv_stem.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.0.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1079,7 +1079,7 @@
     <tr>
       <th>97</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.0.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.1.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1090,7 +1090,7 @@
     <tr>
       <th>98</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 48, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.2.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1101,7 +1101,7 @@
     <tr>
       <th>99</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.1.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.3.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1112,7 +1112,7 @@
     <tr>
       <th>100</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 48, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.4.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1123,7 +1123,7 @@
     <tr>
       <th>101</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.2.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.5.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1134,7 +1134,7 @@
     <tr>
       <th>102</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 96, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.6.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1145,7 +1145,7 @@
     <tr>
       <th>103</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.3.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.7.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1156,7 +1156,7 @@
     <tr>
       <th>104</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.4.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.8.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1167,7 +1167,7 @@
     <tr>
       <th>105</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.5.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.9.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1178,7 +1178,7 @@
     <tr>
       <th>106</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 96, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.10.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1189,7 +1189,7 @@
     <tr>
       <th>107</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.6.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.11.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1200,7 +1200,7 @@
     <tr>
       <th>108</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.12.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1211,7 +1211,7 @@
     <tr>
       <th>109</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.7.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.13.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1222,7 +1222,7 @@
     <tr>
       <th>110</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.8.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.14.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1233,7 +1233,7 @@
     <tr>
       <th>111</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.9.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.15.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1244,7 +1244,7 @@
     <tr>
       <th>112</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.16.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1255,7 +1255,7 @@
     <tr>
       <th>113</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.10.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.17.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1266,7 +1266,7 @@
     <tr>
       <th>114</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 384, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.18.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1277,7 +1277,7 @@
     <tr>
       <th>115</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.11.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.19.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_62214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1288,7 +1288,7 @@
     <tr>
       <th>116</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.12.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.20.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1299,7 +1299,7 @@
     <tr>
       <th>117</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.13.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.21.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1310,7 +1310,7 @@
     <tr>
       <th>118</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.14.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.22.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1321,7 +1321,7 @@
     <tr>
       <th>119</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.15.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.23.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1332,7 +1332,7 @@
     <tr>
       <th>120</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.16.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.24.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1343,7 +1343,7 @@
     <tr>
       <th>121</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.17.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56214, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v1.layer.25.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80214, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1354,7 +1354,7 @@
     <tr>
       <th>122</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.18.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1365,7 +1365,7 @@
     <tr>
       <th>123</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.19.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_62214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 48, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1376,7 +1376,7 @@
     <tr>
       <th>124</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.20.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 48, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1387,7 +1387,7 @@
     <tr>
       <th>125</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.21.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1398,7 +1398,7 @@
     <tr>
       <th>126</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 384, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1409,7 +1409,7 @@
     <tr>
       <th>127</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.22.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1420,7 +1420,7 @@
     <tr>
       <th>128</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 768, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1431,7 +1431,7 @@
     <tr>
       <th>129</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.23.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1442,7 +1442,7 @@
     <tr>
       <th>130</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.24.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1453,7 +1453,7 @@
     <tr>
       <th>131</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=mobilenet_v1.layer.25.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80214, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1717,7 +1717,7 @@
     <tr>
       <th>155</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1739,7 +1739,7 @@
     <tr>
       <th>157</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

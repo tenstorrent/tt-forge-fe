@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Identity</td>
-      <td>Operand(type=Activation, shape=(1, 1, 1024), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 6, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Identity</td>
-      <td>Operand(type=Activation, shape=(1, 6, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 1024), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

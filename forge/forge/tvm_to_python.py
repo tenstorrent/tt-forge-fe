@@ -1762,6 +1762,7 @@ tvm_to_forge_op_map = {
     "qnn.requantize": "requantize",
     "qnn.dense": "matmul",
     "atan": "atan",
+    "upsample2d": "upsample2d",
 }
 
 forge_op_to_function_name = {
@@ -1847,6 +1848,7 @@ forge_op_to_function_name = {
     "dequantize": "forge.op.Dequantize",
     "requantize": "forge.op.Requantize",
     "atan": "forge.op.Atan",
+    "upsample2d": "forge.op.Upsample2d",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
@@ -2146,7 +2148,7 @@ def compile_tvm_to_python(
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded
-    from tvm.contrib.forge_compile import load_tvm_graph
+    from forge.tvm_calls.forge_compile import load_tvm_graph
 
     json_graphs, flattened_pytorch_inputs, weights = load_tvm_graph(
         inputs,

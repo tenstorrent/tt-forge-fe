@@ -39,7 +39,7 @@ def test_retinanet(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"

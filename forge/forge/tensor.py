@@ -619,6 +619,32 @@ AnyTensor: TypeAlias = FrameworkTensor | Tensor
 #         raise RuntimeError(f"{msg}: Shape {data.shape}: Row of {data.shape[-2]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
 
 
+def cast_unsupported_torch_dtype(tensor: torch.Tensor):
+    """
+    Casts a PyTorch tensor to the dtype that is supported in Forge.
+
+    Args:
+        tensor (torch.Tensor): Input tensor.
+
+    Returns:
+        torch.Tensor: Tensor casted to the supported data format.
+    """
+    forge_dataformat = pytorch_dtype_to_forge_dataformat(tensor.dtype)
+
+    # Get the corresponding PyTorch dtype
+    new_dtype = forge_dataformat_to_pytorch_dtype(forge_dataformat)
+
+    # If mapping exists and is different from the current dtype, cast the tensor
+    if new_dtype and new_dtype != tensor.dtype:
+        logger.warning(
+            "Tensor dtype {} is not supported in forge. Therefore, it is casted in to {}", tensor.dtype, new_dtype
+        )
+        return tensor.to(new_dtype)
+
+    # If no change is needed, return the original tensor
+    return tensor
+
+
 def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optional[DataFormat] = None) -> DataFormat:
 
     if isinstance(dtype, DataFormat):

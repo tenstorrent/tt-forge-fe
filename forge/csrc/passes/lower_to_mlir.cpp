@@ -56,6 +56,7 @@ enum class TargetType
     SourceType,
     UInt32,
     Int64,
+    DenseI64ArrayAttr,
 };
 
 struct AttributeRemap
@@ -106,6 +107,7 @@ class AttributeMapper
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UInt32));
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::Int64));
+        add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
 
         // Add more default mappings here
     }
@@ -237,6 +239,10 @@ class MLIRGenerator
                     TT_ASSERT(std::get<int>(value) >= 0, "Value must be an >= 0 for conversion to uint32");
                     return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
                 case TargetType::Int64: return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
+
+                case TargetType::DenseI64ArrayAttr:
+                    return builder_.getDenseI64ArrayAttr(std::vector<int64_t>(
+                        std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
                 default:
                     // If type not handled, throw an exception
                     throw std::runtime_error("Unhandled target type conversion");
@@ -636,6 +642,7 @@ class MLIRGenerator
         lowering_handler_map["remainder"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RemainderOp>;
         lowering_handler_map["repeat_interleave"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatInterleaveOp>;
+        lowering_handler_map["repeat"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatOp>;
         lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;
         lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SelectOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;
@@ -647,6 +654,7 @@ class MLIRGenerator
         lowering_handler_map["tanh"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TanhOp>;
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
+        lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
     }
 };
 

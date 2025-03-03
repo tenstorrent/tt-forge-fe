@@ -14,6 +14,7 @@ from .utils import VerifyUtils
 from .utils import LoggerUtils
 from .utils import RateLimiter
 from .utils import FrameworkModelType
+from .utils import PytorchUtils
 from .features import TestFeaturesConfiguration
 from .plan import InputSource
 from .plan import TestVector
@@ -47,6 +48,7 @@ __all__ = [
     "RateLimiter",
     "TestFeaturesConfiguration",
     "FrameworkModelType",
+    "PytorchUtils",
     "InputSource",
     "TestVector",
     "TestCollection",

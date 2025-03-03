@@ -36,7 +36,7 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"

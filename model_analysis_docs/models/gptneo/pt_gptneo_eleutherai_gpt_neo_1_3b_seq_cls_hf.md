@@ -166,17 +166,6 @@
     <tr>
       <th>14</th>
       <td>Index</td>
-      <td>Operand(type=Constant, name=model.transformer.h.1.attn.attention.bias, dtype=uint1)</td>
-      <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[FORGE][Runtime Datatype Unsupported] RuntimeError Unhandled dtype Bool</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 2048), dtype=uint1)</td>
       <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
       <td>&#x274C;</td>
@@ -184,6 +173,17 @@
       <td>&#x274C;</td>
       <td></td>
       <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Index</td>
+      <td>Operand(type=Constant, name=model.transformer.h.1.attn.attention.bias, dtype=uint1)</td>
+      <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Runtime Datatype Unsupported] RuntimeError Unhandled dtype Bool</td>
     </tr>
     <tr>
       <th>16</th>

@@ -30,7 +30,7 @@ def test_ghostnet_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_ghostnet_model(variant)

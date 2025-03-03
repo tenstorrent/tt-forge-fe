@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -89,7 +89,7 @@
     <tr>
       <th>7</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_9160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_12160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_15160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_9160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_18160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_21160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_12160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_24160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_15160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_27160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_18160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_33160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_21160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_36160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_24160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_39160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_42160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_27160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_45160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_48160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_33160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_51160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_54160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_36160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_57160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_39160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_42160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_45160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_48160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_51160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_54160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_57160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1017,9 +1017,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>92</th>
@@ -1083,9 +1083,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>98</th>
@@ -1105,9 +1105,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>100</th>
@@ -1244,7 +1244,7 @@
     <tr>
       <th>112</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2160, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 3, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1255,7 +1255,7 @@
     <tr>
       <th>113</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2160, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1266,7 +1266,7 @@
     <tr>
       <th>114</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1277,7 +1277,7 @@
     <tr>
       <th>115</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1288,7 +1288,7 @@
     <tr>
       <th>116</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1299,7 +1299,7 @@
     <tr>
       <th>117</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1310,7 +1310,7 @@
     <tr>
       <th>118</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1321,7 +1321,7 @@
     <tr>
       <th>119</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1332,7 +1332,7 @@
     <tr>
       <th>120</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer1.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1343,7 +1343,7 @@
     <tr>
       <th>121</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1354,7 +1354,7 @@
     <tr>
       <th>122</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1365,7 +1365,7 @@
     <tr>
       <th>123</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1376,7 +1376,7 @@
     <tr>
       <th>124</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1387,7 +1387,7 @@
     <tr>
       <th>125</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1398,7 +1398,7 @@
     <tr>
       <th>126</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer2.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1409,7 +1409,7 @@
     <tr>
       <th>127</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1420,7 +1420,7 @@
     <tr>
       <th>128</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1431,7 +1431,7 @@
     <tr>
       <th>129</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1442,7 +1442,7 @@
     <tr>
       <th>130</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1453,7 +1453,7 @@
     <tr>
       <th>131</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1464,7 +1464,7 @@
     <tr>
       <th>132</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61160, dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer3.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1475,7 +1475,7 @@
     <tr>
       <th>133</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 3, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1160, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1486,7 +1486,7 @@
     <tr>
       <th>134</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1497,7 +1497,7 @@
     <tr>
       <th>135</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1508,7 +1508,7 @@
     <tr>
       <th>136</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1519,7 +1519,7 @@
     <tr>
       <th>137</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1530,7 +1530,7 @@
     <tr>
       <th>138</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=encoder.encoder.layer4.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61160, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1981,7 +1981,7 @@
     <tr>
       <th>179</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1992,7 +1992,7 @@
     <tr>
       <th>180</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(256, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2014,7 +2014,7 @@
     <tr>
       <th>182</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

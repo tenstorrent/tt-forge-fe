@@ -14,4 +14,7 @@ namespace tt::passes
 {
 /// Public API for running MLIR passes and generating binary.
 runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module);
+
+/// Public API for lowering to MLIR, running MLIR passes and generate C++ code.
+std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module);
 }  // namespace tt::passes

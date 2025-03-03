@@ -36,7 +36,7 @@ def test_nanogpt_text_generation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model
     tokenizer = AutoTokenizer.from_pretrained(variant)

@@ -188,6 +188,17 @@
     <tr>
       <th>16</th>
       <td>Index</td>
+      <td>Operand(type=Activation, shape=(1, 128, 768), dtype=float32)</td>
+      <td>dim : -2<br>start : 0<br>stop : 1<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Index</td>
       <td>Operand(type=Parameter, shape=(2,), dtype=float32)</td>
       <td>dim : -1<br>start : 0<br>stop : 1<br>stride : 1</td>
       <td>&#x2705;</td>
@@ -197,21 +208,10 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>17</th>
+      <th>18</th>
       <td>Index</td>
       <td>Operand(type=Parameter, shape=(2,), dtype=float32)</td>
       <td>dim : -1<br>start : 1<br>stop : 2<br>stride : 1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 128, 768), dtype=float32)</td>
-      <td>dim : -2<br>start : 0<br>stop : 1<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 12, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_00, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 12, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_00, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

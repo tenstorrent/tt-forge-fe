@@ -45,7 +45,7 @@ def test_unet_osmr_cityscape_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
@@ -99,7 +99,7 @@ def test_unet_holocron_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -156,7 +156,7 @@ def test_unet_qubvel_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
@@ -212,7 +212,7 @@ def test_unet_torchhub_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",

@@ -60,7 +60,7 @@ jobs:
       run: |
         source env/activate
         apt install cargo -y
-        cargo install --version ${MDBOOK_VERSION} mdbook
+        cargo install --version ${MDBOOK_VERSION} mdbook --locked
 
     - name: Setup Pages
       id: pages

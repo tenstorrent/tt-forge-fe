@@ -28,7 +28,7 @@ def test_bert_masked_lm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
@@ -105,7 +105,7 @@ def test_bert_question_answering_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch(variant)
 
@@ -151,7 +151,7 @@ def test_bert_sequence_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
@@ -203,7 +203,7 @@ def test_bert_token_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
 

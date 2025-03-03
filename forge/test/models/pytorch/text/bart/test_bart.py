@@ -37,7 +37,7 @@ def test_pt_bart_classifier(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)

@@ -2410,7 +2410,7 @@
     <tr>
       <th>218</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(192, 192), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(1000, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2421,7 +2421,7 @@
     <tr>
       <th>219</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(768, 192), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(192, 192), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2432,7 +2432,7 @@
     <tr>
       <th>220</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(192, 768), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(768, 192), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2443,7 +2443,7 @@
     <tr>
       <th>221</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(1000, 768), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(192, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

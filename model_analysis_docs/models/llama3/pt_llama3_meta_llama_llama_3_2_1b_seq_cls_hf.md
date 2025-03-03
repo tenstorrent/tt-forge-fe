@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(1, 32, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(4, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 2048), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(4, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 2048), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

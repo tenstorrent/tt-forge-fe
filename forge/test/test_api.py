@@ -88,3 +88,27 @@ def test_forge():
 
     if not torch.allclose(output[0], golden.to_pytorch(), rtol=1e-1):
         raise ValueError("Output does not match the golden output")
+
+
+def test_export_to_cpp():
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1, x2):
+            return torch.add(x1, x2)
+
+    model = Add()
+    shape = (1, 1024, 32)
+    inputs = [torch.rand(shape), torch.rand(shape)]
+
+    compiled_model = forge.compile(model, sample_inputs=[torch.rand(shape), torch.rand(shape)])
+
+    file_path = "generated_export_add.cpp"
+    compiled_model.export_to_cpp(file_path)
+
+    assert os.path.exists(file_path)
+    with open(file_path, "r") as f:
+        print(f.read())
+
+    os.remove(file_path)

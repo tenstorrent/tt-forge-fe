@@ -48,7 +48,7 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     model_ckpt = f"albert-{size}-{variant}"
 
@@ -120,7 +120,7 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.

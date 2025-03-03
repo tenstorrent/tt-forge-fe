@@ -10,7 +10,7 @@ from test.models.pytorch.vision.dla.utils.utils import load_dla_model, post_proc
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-    pytest.param("dla34", marks=[pytest.mark.push]),
+    "dla34",
     "dla46_c",
     "dla46x_c",
     "dla60",
@@ -35,7 +35,7 @@ def test_dla_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_dla_model(variant)

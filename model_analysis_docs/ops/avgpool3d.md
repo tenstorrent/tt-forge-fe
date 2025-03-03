@@ -19,7 +19,7 @@
 	<tbody>
 		<tr>
 			<td rowspan="2">1</td>
-			<td rowspan="2">[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:460: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
+			<td rowspan="2">[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:461: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
 			<td rowspan="2">2</td>
 			<td>1</td>
 			<td><ul><li>pt_alexnet_base_img_cls_osmr</li></ul></td>

@@ -22,49 +22,49 @@
 			<td rowspan="11">[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
 			<td rowspan="11">62</td>
 			<td>23</td>
-			<td><ul><li>pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf</li><li>pt_bert_bert_base_uncased_mlm_hf</li><li>pt_albert_xlarge_v1_token_cls_hf</li><li>pt_albert_large_v2_mlm_hf</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_albert_base_v1_token_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_albert_base_v2_token_cls_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_large_v1_mlm_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_base_v1_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_albert_xlarge_v2_mlm_hf</li><li>pt_albert_large_v2_token_cls_hf</li><li>pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf</li><li>pt_albert_xlarge_v2_token_cls_hf</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_albert_base_v2_mlm_hf</li><li>pt_albert_large_v1_token_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_albert_xlarge_v1_mlm_hf</li></ul></td>
+			<td><ul><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_albert_large_v1_mlm_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf</li><li>pt_albert_xlarge_v2_mlm_hf</li><li>pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_albert_base_v1_token_cls_hf</li><li>pt_albert_base_v1_mlm_hf</li><li>pt_bert_bert_base_uncased_mlm_hf</li><li>pt_albert_base_v2_token_cls_hf</li><li>pt_albert_large_v2_token_cls_hf</li><li>pt_albert_xlarge_v1_token_cls_hf</li><li>pt_albert_large_v1_token_cls_hf</li><li>pt_albert_large_v2_mlm_hf</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_albert_xlarge_v1_mlm_hf</li><li>pt_albert_base_v2_mlm_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_albert_xlarge_v2_token_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 0</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 0</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 1</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1, 32), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 0</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1, 32), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 1</td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1, 32), dtype=int64)</td>
 			<td>repeats : 32<br>dim : 2</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td><ul><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 1</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td><ul><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
 			<td>repeats : 1<br>dim : 2</td>
 		</tr>
@@ -91,7 +91,7 @@
 			<td rowspan="1">[TT_METAL][tt-metal kernel] RuntimeError tt-metal/tt_metal/impl/kernels/kernel.cpp unique+common runtime args targeting kernel are too large</td>
 			<td rowspan="1">6</td>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=int64)</td>
 			<td>repeats : 256<br>dim : 2</td>
 		</tr>

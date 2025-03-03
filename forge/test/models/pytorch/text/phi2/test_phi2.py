@@ -31,7 +31,7 @@ def test_phi2_clm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -58,7 +58,7 @@ def test_phi2_clm(record_forge_property, variant):
         truncation=True,
     )
 
-    input_ids = inputs["input_ids"].to(torch.int32)
+    input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"].to(torch.float32)
 
     inputs = [input_ids, attn_mask]
@@ -85,7 +85,7 @@ def test_phi2_token_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -129,7 +129,7 @@ def test_phi2_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

@@ -27,7 +27,7 @@ def test_detr_detection(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
@@ -60,7 +60,7 @@ def test_detr_segmentation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)

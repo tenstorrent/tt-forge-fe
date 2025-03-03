@@ -22,7 +22,7 @@ def test_googlenet_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Create Forge module from PyTorch model
     # Two ways to load the same model

@@ -188,11 +188,12 @@ def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
 @pytest.mark.parametrize(
     "shape, mode",
     [
-        ((1, 2048, 7, 7), "nearest"),
-        ((1, 2048, 7, 7), "bilinear"),
+        pytest.param((1, 2048, 7, 7), "nearest"),
+        pytest.param(
+            (1, 2048, 7, 7), "bilinear", marks=pytest.mark.xfail(reason="Runtime Error TTNN: info: Unsupported mode ")
+        ),
     ],
 )
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
 def test_interpolate(shape, mode):
     class Interpolate(nn.Module):
@@ -296,7 +297,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
             return self.embedding(x)
 
     inputs = [
-        torch.randint(0, vocab_size, (1, token_num)).to(torch.int32),
+        torch.randint(0, vocab_size, (1, token_num)),
     ]
 
     framework_model = Embedding()
