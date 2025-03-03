@@ -322,7 +322,7 @@ def test_embedding(forge_property_recorder, vocab_size, token_num, embedding_dim
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+# @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
