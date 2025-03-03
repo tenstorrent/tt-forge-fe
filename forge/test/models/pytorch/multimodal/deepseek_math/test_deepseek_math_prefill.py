@@ -6,20 +6,12 @@ import torch
 
 import forge
 from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
     DeepSeekWrapper_decoder,
     download_model_and_tokenizer,
 )
-
-
-def prefill_on_cpu(model, input_ids):
-    with torch.no_grad():
-        transformer_outputs = model.model(
-            input_ids=input_ids,  # Pass the entire updated sequence
-        )
-        hidden_states = transformer_outputs.last_hidden_state
-    return hidden_states
 
 
 def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
@@ -69,19 +61,22 @@ def test_deepseek_prefil_on_device_decode_on_cpu(variant):
     model_decoder = model.get_decoder()
     model_decoder = DeepSeekWrapper_decoder(model_decoder)
     model_decoder.eval()
-    compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
+
+    inputs = [input_ids]
+
+    # Compile the PyTorch Model
+    compiled_decoder = forge.compile(model_decoder, sample_inputs=inputs)
 
     # Prefill Phase - Process the initial prompt on device
-    transformer_outputs = compiled_decoder(input_ids)
-    # Get hidden states for all tokens from the last "transformer layer".
-    hidden_states_compiled = transformer_outputs[0]
+    # Validate prefill outputs between TT and CPU
+    framework_output, compiled_output = verify(
+        inputs=inputs, framework_model=model_decoder, compiled_model=compiled_decoder
+    )
 
-    # Get hidden states for all tokens from the last "transformer layer" calculated on CPU.
-    hidden_states_framework = prefill_on_cpu(model, input_ids)
+    # Get hidden states for all tokens from the last "transformer layer" on both TT and CPU.
+    hidden_states_compiled = compiled_output[0]
+    hidden_states_framework = framework_output[0]
 
-    # Compare result of prefilling on device with the result of prefilling on CPU.
-    # Calculate the pcc for only the last vector in the hidden states tensor.
-    assert compare_with_golden(hidden_states_framework[:, -1, :], hidden_states_compiled[:, -1, :])
     # Decode Phase - Generate new tokens
     max_new_tokens = 200
     output_ids_compiled, output_logits_compiled = decode_on_cpu(

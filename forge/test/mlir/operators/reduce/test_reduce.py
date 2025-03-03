@@ -5,6 +5,7 @@
 import pytest
 import torch
 from torch import nn
+from forge.verify.verify import verify
 
 import forge
 
@@ -12,8 +13,18 @@ import forge
 @pytest.mark.parametrize(
     "input_shape, dim, keepdim",
     [
-        ((64,), 0, True),
-        ((64,), -1, True),
+        pytest.param(
+            (64,),
+            0,
+            True,
+            marks=pytest.mark.xfail(reason="Tensor mismatch between framework and compiled model output"),
+        ),
+        pytest.param(
+            (64,),
+            -1,
+            True,
+            marks=pytest.mark.xfail(reason="Tensor mismatch between framework and compiled model output"),
+        ),
         ((4, 64), 0, True),
         ((32, 32), -2, True),
         ((2, 32, 32), 0, True),
@@ -70,22 +81,27 @@ def test_reduce_sum(input_shape, dim, keepdim):
     inputs = [torch.rand(input_shape)]
 
     framework_model = ReduceSum()
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Skipping PCC check due to inconsistencies between Framework and Compiled model
-    #
-    # co_out = [co.to("cpu") for co in co_out]
-    # assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
     "input_shape, dim, keepdim",
     [
-        ((64,), 0, True),
-        ((64,), -1, True),
+        pytest.param(
+            (64,),
+            0,
+            True,
+            marks=pytest.mark.xfail(reason="Tensor mismatch between framework and compiled model output"),
+        ),
+        pytest.param(
+            (64,),
+            -1,
+            True,
+            marks=pytest.mark.xfail(reason="Tensor mismatch between framework and compiled model output"),
+        ),
         ((4, 64), 0, True),
         ((32, 32), -2, True),
         ((2, 32, 32), 0, True),
@@ -142,15 +158,10 @@ def test_reduce_mean(input_shape, dim, keepdim):
     inputs = [torch.rand(input_shape)]
 
     framework_model = ReduceMean()
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Skipping PCC check due to inconsistencies between Framework and Compiled model
-    #
-    # co_out = [co.to("cpu") for co in co_out]
-    # assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
@@ -170,22 +181,27 @@ def test_mean(x_shape, y_shape, dim):
     ]
 
     framework_model = Mean()
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    # Skipping PCC check due to inconsistencies between Framework and Compiled model
-    #
-    # co_out = [co.to("cpu") for co in co_out]
-    # assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
     "input_shape, dim, keepdim",
     [
-        ((64,), 0, True),
-        ((64,), -1, True),
+        pytest.param(
+            (64,),
+            0,
+            True,
+            marks=pytest.mark.xfail(reason="Tensor mismatch between framework and compiled model output"),
+        ),
+        pytest.param(
+            (64,),
+            -1,
+            True,
+            marks=pytest.mark.xfail(reason="Tensor mismatch between framework and compiled model output"),
+        ),
         ((4, 64), 0, True),
         ((32, 32), -2, True),
         ((2, 32, 32), 0, True),
@@ -224,11 +240,6 @@ def test_reduce_max(input_shape, dim, keepdim):
     if input in [((64,), 0, False), ((64,), -1, False)]:
         pytest.xfail(reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion `end > 0' failed.")
 
-    # TTNN Max issues:
-    #   Unsupported dim - https://github.com/tenstorrent/tt-metal/issues/13186
-    #   Shape mismatch along the H and W dimension - https://github.com/tenstorrent/tt-metal/issues/13189
-    #   Tensor rank is not 4 - https://github.com/tenstorrent/tt-metal/issues/13190
-
     class ReduceMax(nn.Module):
         def __init__(self):
             super().__init__()
@@ -240,14 +251,7 @@ def test_reduce_max(input_shape, dim, keepdim):
 
     framework_model = ReduceMax()
     framework_model.eval()
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-
-    # Skipping PCC check due to inconsistencies between Framework and Compiled model
-    #
-    # co_out = [co.to("cpu") for co in co_out]
-    # assert compare_with_golden_pcc(golden=fw_out, calculated=co_out[0], pcc=0.99)
+    verify(inputs, framework_model, compiled_model)
