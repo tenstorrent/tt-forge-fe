@@ -113,7 +113,7 @@ class AttributeMapper
         add_op_mapping("conv2d", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::I64Attr));
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
-        add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::I32Attr));
+        add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UI32Attr));
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
 
         // Add more default mappings here
