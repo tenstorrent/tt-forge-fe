@@ -11,8 +11,62 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 
 
-import pytest
-import torch
+@pytest.mark.parametrize(
+    "shape, dim",
+    [
+        ((10,), 0),
+        pytest.param(
+            (5, 10),
+            1,
+            marks=pytest.mark.xfail(
+                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            ),
+        ),
+        pytest.param(
+            (3, 5, 10),
+            2,
+            marks=pytest.mark.xfail(
+                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            ),
+        ),
+        pytest.param(
+            (2, 3, 5, 10),
+            3,
+            marks=pytest.mark.xfail(
+                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            ),
+        ),
+        pytest.param(
+            (1, 6, 20, 50, 64),
+            4,
+            marks=pytest.mark.xfail(
+                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            ),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_stack_and_view(shape, dim):
+    class stack_and_view(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.dim = dim
+
+        def forward(self, x, y):
+            stacked = torch.stack((x, y), dim=self.dim)
+            new_shape = list(x.shape)
+            new_shape[self.dim] *= 2
+            return stacked.view(*new_shape)
+
+    x = torch.rand(shape)
+    y = torch.rand(shape)
+
+    inputs = [x, y]
+
+    framework_model = stack_and_view(dim)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(

@@ -31,17 +31,6 @@ import sys
 import json
 
 
-def populate_binary_stack_attrs(graph, nid, attrs):
-    node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["forge_shape"]
-    node_shape = node["forge_shape"]
-
-    for dim, (i, o) in enumerate(zip(input_shape, node_shape)):
-        if i != o:
-            attrs.append(dim - len(input_shape))
-            break
-
-
 def populate_conv2d_attrs(graph, nid, attrs):
     node = graph["nodes"][nid]
     strides = [int(stride) for stride in node["attrs"]["strides"][0]]
@@ -498,7 +487,6 @@ tvm_to_forge_op_map = {
     "add": "add",
     "argmax": "argmax",
     "broadcast_to": "broadcast",
-    "forge.binary_stack": "binary_stack",
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
     "forge.hslice": "hslice",
@@ -548,7 +536,6 @@ compound_forge_ops = [
 ops_needing_attributes = {
     "argmax": populate_argmax_attrs,
     "avg_pool2d": populate_avgpool2d_attrs,
-    "binary_stack": populate_binary_stack_attrs,
     "broadcast": populate_broadcast_attrs,
     "clip": populate_clip_transpose_attrs,
     "concatenate": populate_concatenate_attrs,

@@ -543,22 +543,6 @@ pytorch_ops_needing_arguments = {
 }
 
 
-def populate_binary_stack_args(graph, nid, compiler_cfg):
-    args = []
-    node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["forge_shape"]
-    node_shape = node["forge_shape"]
-
-    for dim, (i, o) in enumerate(zip(input_shape, node_shape)):
-        if i != o:
-            args = [
-                ("dim", f"{dim - len(input_shape)}"),
-            ]
-            return args
-
-    return args
-
-
 def populate_conv2d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1727,7 +1711,6 @@ tvm_to_forge_op_map = {
     "power": "power",
     "nn.prelu": "prelu",
     "forge.adv_index": "adv_index",
-    "forge.binary_stack": "binary_stack",
     "forge.forge_conv2d_transpose_with_bias": "conv2d_transpose",
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
@@ -1774,7 +1757,6 @@ forge_op_to_function_name = {
     "avg_pool1d": "forge.op.AvgPool1d",
     "avg_pool2d": "forge.op.AvgPool2d",
     "avg_pool3d": "forge.op.AvgPool3d",
-    "binary_stack": "forge.op.BinaryStack",
     "broadcast": "forge.op.Broadcast",
     "cast": "forge.op.Cast",  # Datatype cast
     "clip": "forge.op.Clip",
@@ -1855,7 +1837,6 @@ forge_ops_needing_arguments = {
     "avg_pool1d": populate_avgpool1d_args,
     "avg_pool2d": populate_avgpool2d_args,
     "avg_pool3d": populate_avgpool3d_args,
-    "binary_stack": populate_binary_stack_args,
     "broadcast": populate_broadcast_args,
     "cast": populate_cast_args,
     "clip": populate_clip_transpose_args,
