@@ -9,7 +9,6 @@ from loguru import logger
 import torch
 
 from forge import Tensor, compile
-from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig

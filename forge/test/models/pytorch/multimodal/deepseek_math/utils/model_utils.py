@@ -54,11 +54,10 @@ class DeepSeekWrapper(torch.nn.Module):
 
 
 class DeepSeekWrapper_decoder(torch.nn.Module):
-    def __init__(self, model, max_new_tokens=200):
+    def __init__(self, model):
         super().__init__()
         self.model = model
-        self.max_new_tokens = max_new_tokens
 
     def forward(self, input_tensor):
-        output = self.model(input_tensor, max_new_tokens=self.max_new_tokens)
+        output = self.model(input_tensor)
         return output.last_hidden_state

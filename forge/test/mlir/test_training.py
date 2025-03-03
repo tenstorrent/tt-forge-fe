@@ -8,7 +8,7 @@ import pytest
 
 import forge
 import forge.config
-from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
 
 from forge.config import CompilerConfig
 
@@ -44,7 +44,7 @@ def test_torch_training():
         output = tt_model(inputs)
 
         output = [co.to("cpu") for co in output]
-        assert compare_with_golden(golden=golden, calculated=output[0])
+        verify(inputs=[inputs], framework_model=model, compiled_model=tt_model)
 
         optimizer.zero_grad()
 
