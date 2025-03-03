@@ -129,46 +129,6 @@ def is_transpose_reshape_reshape_hstack(call):
     return _is_transpose_reshape_hstack_helper(t_axes, r_newshape, r_input_shape)
 
 
-def is_stack_reshape_reshape_to_binary_stack(call):
-    dim = len(call.checked_type.shape)
-    stack_axis = call.args[0].attrs.axis.value
-    if stack_axis < 0:
-        stack_axis = stack_axis + dim
-
-    input_shape = [int(dim) for dim in call.args[0].args[0][0].checked_type.shape]
-    output_shape = [int(dim) for dim in call.checked_type.shape]
-
-    # if input_shape == output_shape:
-    #     return False
-
-    works = all(
-        [
-            (dim != stack_axis and i == o) or (dim == stack_axis and o == 2 * i)
-            for dim, (i, o) in enumerate(zip(input_shape, output_shape))
-        ]
-    )
-    return works
-
-
-def is_concat_reshape_reshape_to_binary_stack(call):
-    dim = len(call.checked_type.shape)
-    concat_axis = call.args[0].attrs.axis - 1  # decrement by 1 because inputs are unsqueezed first
-    if concat_axis < 0:
-        concat_axis = concat_axis + dim
-
-    for operand in call.args[0].args[0]:
-        if operand.op.name != "reshape":
-            return False
-
-    input_shape = [int(dim) for dim in call.args[0].args[0][0].args[0].checked_type.shape]
-    output_shape = [int(dim) for dim in call.checked_type.shape]
-
-    works = all(
-        [i == o or (dim == concat_axis and o == 2 * i) for dim, (i, o) in enumerate(zip(input_shape, output_shape))]
-    )
-    return works
-
-
 def match_einsum_pattern(pattern, query):
     query = query.replace(" ", "")
     pattern = pattern.replace(" ", "")

@@ -14,7 +14,6 @@ from .eltwise_binary import (
     Max,
     Min,
     Heaviside,
-    BinaryStack,
     Power,
     Greater,
     GreaterEqual,

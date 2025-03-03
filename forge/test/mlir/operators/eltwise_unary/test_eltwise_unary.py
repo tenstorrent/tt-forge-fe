@@ -11,6 +11,55 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.parametrize(
+    "input_shape, scale_factor",
+    [
+        pytest.param(
+            (1, 256, 4, 128),
+            2,
+            marks=pytest.mark.xfail(
+                reason="Unsupported operations while lowering from TTForge to TTIR in forward graph - narrow, pad_tile, sparse_matmul, vstack"
+            ),
+        ),
+        pytest.param(
+            (3, 32, 10, 10),
+            4,
+            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
+        ),
+        pytest.param(
+            (2, 98, 6, 6),
+            7,
+            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
+        ),
+        pytest.param(
+            (4, 18, 8, 8),
+            3,
+            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
+        ),
+        pytest.param(
+            (2, 50, 12, 12),
+            5,
+            marks=pytest.mark.xfail(reason="NotImplementedError: Pixel shuffle decomposition only supports r=2"),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_pixel_shuffle(input_shape, scale_factor):
+    class PixelShuffleModel(nn.Module):
+        def __init__(self, scale_factor):
+            super().__init__()
+            self.model = nn.PixelShuffle(scale_factor)
+
+        def forward(self, x):
+            return self.model(x)
+
+    inputs = [torch.randn(*input_shape)]
+    framework_model = PixelShuffleModel(scale_factor)
+    framework_model.eval()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
     "shape, dtype",
     [
         pytest.param(
