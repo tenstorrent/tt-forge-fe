@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-from forge.tensor import to_tf_tensors, to_pt_tensors
+from forge.tensor import to_tf_tensors, to_pt_tensor, to_pt_tensors, pt_to_paddle_tensors
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
 import torch
+import paddle
 
 import numpy as np
 import tvm
@@ -165,6 +166,9 @@ def compile_tvm_graph(
             verify_cfg=verify_cfg,
             input_names=input_names,
         )
+    elif framework == "paddle":
+        json_graphs, inputs = compile_paddle_for_forge(module, *inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg, input_names=input_names)
+
     elif framework == "tensorflow":
         # convert pytorch tensors to tf tensors
         tf_inputs = to_tf_tensors(inputs)
@@ -497,6 +501,68 @@ def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verif
     json_graphs = extract_graphs(
         partitioned_mod, forge_params, flattened_input_names, torchmod.state_dict().keys(), graph_hash=m.hexdigest()
     )
+
+    return json_graphs, flattened_inputs
+
+
+def compile_paddle_for_forge(paddlemod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[]):
+
+    paddle_inputs = pt_to_paddle_tensors(inputs)
+    
+    with ConvertEmulatedDtypes(paddlemod, inputs):
+        framework_outputs = extract_framework_model_outputs(
+            framework="paddle",
+            model=paddlemod,
+            inputs=paddle_inputs,
+            verify_tvm_compile=verify_cfg.verify_tvm_compile,
+        )
+
+    flattened_inputs, input_names, flattened_name_map, input_spec = extract_flatten_inputs(
+        framework="paddle",
+        model=paddlemod,
+        inputs=inputs,
+        input_names=input_names,
+    )
+
+    if isinstance(paddlemod, paddle.jit.TranslatedLayer):
+        traced_model, param_name_lookup = paddlemod, None
+    else:
+        traced_model, param_name_lookup = paddle_trace(paddlemod, input_spec)
+
+
+    # Input names must match with the ones in the forward method
+    named_inputs = {name: inp.shape for name, inp in zip(input_names, paddle_inputs)}
+
+    
+
+    # Generate TVM module
+    mod, params = tvm.relay.frontend.from_paddle(traced_model, named_inputs) 
+
+    record_execution_phase_and_stage(ExecutionStage.TVM_GENERATE_RELAY_IRMODULE)
+    logger.trace("From Paddle")
+    logger.trace(mod.functions)
+
+    mod = flatten_IO(mod, flattened_name_map)
+    record_execution_phase_and_stage(ExecutionStage.TVM_FLATTEN_IO)
+
+    # Construct TVM IR
+    mod, _ = construct_tvm_ir(
+        framework="paddle", 
+        model=paddlemod,
+        tvm_mod=mod,
+        params=params,
+        compiler_cfg=compiler_cfg,
+    )
+
+    # Construct NumPy inputs
+    flattened_inputs_as_float = (act.float() if torch.is_floating_point(act) else act for act in flattened_inputs)
+    np_inputs = {name:inp.detach().numpy() for name, inp in zip(input_names, flattened_inputs_as_float)}
+    
+    # Compile TVM for Forge
+    partitioned_mod, forge_params = compile_tvm_for_forge(mod, params, np_inputs, framework_outputs, input_names=input_names, graph_name=graph_name, return_params=True, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg)
+
+    # Extract Graphs (TT, CPU, ...)
+    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, paddlemod.state_dict().keys(), param_name_lookup=param_name_lookup, graph_hash="")
 
     return json_graphs, flattened_inputs
 
@@ -1188,6 +1254,14 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
             key: (value, named_params[key].requires_grad if key in named_params else False)
             for key, value in torch_weights.items()
         }
+
+    elif framework == "paddle":
+        paddle_weights = module.state_dict()
+        named_buffers = dict(module.named_buffers())
+        paddle_weights.update(named_buffers)
+        named_params = dict(module.named_parameters())
+        weights = {value.name : (to_pt_tensor(value), value.trainable if key in named_params else False) for key, value in paddle_weights.items()}
+        
     elif framework == "tensorflow":
         weights = {
             weight.name: (
