@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 from test.mlir.nerf.spherical_harmonics import eval_sh
 
+
 class NeRFHead(nn.Module):
     def __init__(self, W, out_dim, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,7 +19,7 @@ class NeRFHead(nn.Module):
         x = self.relu1(x)
         x = self.layer2(x)
         return x
-    
+
 
 class NeRFEncoding(nn.Module):
     def __init__(self, in_dim, W, out_dim, *args, **kwargs):
@@ -57,12 +58,12 @@ class NeRF(nn.Module):
 
         xyz_ = input_xyz
         for i in range(self.D):
-            xyz_ = getattr(self, f"xyz_encoding_{i+1}")(xyz_)        
+            xyz_ = getattr(self, f"xyz_encoding_{i+1}")(xyz_)
 
         sigma = self.sigma(xyz_)
         sh = self.sh(xyz_)
         return sigma, sh
-    
+
     def postprocess(self, sigma, sh, dirs=None):
         sh = sh[:, :27]
         rgb = eval_sh(deg=self.deg, sh=sh.reshape(-1, 3, (self.deg + 1) ** 2), dirs=dirs)

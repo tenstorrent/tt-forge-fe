@@ -28,10 +28,10 @@ def test_nerf_training():
     deg = 2
 
     # Define models
-    nerf_coarse = NeRF(D=4, W=128, in_channels_xyz=63, in_channels_dir=32,  deg=deg)
+    nerf_coarse = NeRF(D=4, W=128, in_channels_xyz=63, in_channels_dir=32, deg=deg)
     nerf_fine = NeRF(D=4, W=192, in_channels_xyz=63, in_channels_dir=32, deg=deg)
-    
-    golden_nerf_coarse = NeRF(D=4, W=128, in_channels_xyz=63, in_channels_dir=32,  deg=deg)
+
+    golden_nerf_coarse = NeRF(D=4, W=128, in_channels_xyz=63, in_channels_dir=32, deg=deg)
     golden_nerf_fine = NeRF(D=4, W=192, in_channels_xyz=63, in_channels_dir=32, deg=deg)
 
     copy_params(nerf_coarse, golden_nerf_coarse)
@@ -79,7 +79,7 @@ def test_nerf_training():
             output_coarse_sigma, output_coarse_sh = tt_nerf_coarse(input_xyz)
             output_coarse_sh = output_coarse_sh[:, :27].reshape(-1, 3, (deg + 1) ** 2)
             output_coarse_rgb = eval_sh(deg, output_coarse_sh, input_dirs)
-            
+
             output_fine_sigma, output_fine_sh = tt_nerf_fine(input_xyz)
             output_fine_sh = output_fine_sh[:, :27].reshape(-1, 3, (deg + 1) ** 2)
             output_fine_rgb = eval_sh(deg, output_fine_sh, input_dirs)
@@ -112,8 +112,12 @@ def test_nerf_training():
             golden_loss_fine = golden_loss_fine_sigma + golden_loss_fine_sh
 
             # Compare TT and PyTorch losses
-            assert compare_with_golden(loss_coarse, golden_loss_coarse, rtol=0.05, atol=0.05), f"Loss coarse mismatch at epoch {epoch_idx}, batch {batch_idx}"
-            assert compare_with_golden(loss_fine, golden_loss_fine, rtol=0.05, atol=0.05), f"Loss fine mismatch at epoch {epoch_idx}, batch {batch_idx}"
+            assert compare_with_golden(
+                loss_coarse, golden_loss_coarse, rtol=0.05, atol=0.05
+            ), f"Loss coarse mismatch at epoch {epoch_idx}, batch {batch_idx}"
+            assert compare_with_golden(
+                loss_fine, golden_loss_fine, rtol=0.05, atol=0.05
+            ), f"Loss fine mismatch at epoch {epoch_idx}, batch {batch_idx}"
 
             # Backward pass
             loss_coarse.backward()
@@ -131,5 +135,3 @@ def test_nerf_training():
 
     logger.enable("")
     logger.info("NeRF training loop completed.")
-
-
