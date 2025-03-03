@@ -301,7 +301,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
+# @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.parametrize(
     "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
     [
@@ -323,7 +323,7 @@ def test_embedding(vocab_size, token_num, embedding_dim):
         (32, 32, (1, 1), 1, (5, 6), 1, False, 1, "zeros", (10, 32, 20, 20)),
     ],
 )
-def test_convtranspose2d(
+def test_conv2d_transpose(
     in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape
 ):
     inputs = [torch.randn(*input_shape)]
