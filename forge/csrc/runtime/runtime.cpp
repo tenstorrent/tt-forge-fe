@@ -21,7 +21,7 @@ static target::DataType torch_scalar_type_to_dt(torch::ScalarType st)
         case torch::ScalarType::Byte: return target::DataType::UInt8;
         case torch::ScalarType::Char: return target::DataType::UInt8;
         case torch::ScalarType::Short: return target::DataType::UInt16;
-        case torch::ScalarType::Int: return target::DataType::UInt32;
+        case torch::ScalarType::Int: return target::DataType::Int32;
         case torch::ScalarType::Long: return target::DataType::UInt32;
         case torch::ScalarType::Half: return target::DataType::Float16;
         case torch::ScalarType::Float: return target::DataType::Float32;
