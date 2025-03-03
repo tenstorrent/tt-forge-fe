@@ -588,7 +588,7 @@ def decompose(type, attr, dc, inputs):
         result = dc.op_with_named_attrs(
             Conv2d.create(
                 stride=stride,
-                dilation=dilation,
+                dilation=[dilation, dilation],
                 groups=cin,
                 padding=padding,
                 channel_last=channel_last,
@@ -596,7 +596,7 @@ def decompose(type, attr, dc, inputs):
             [activations, weight],
             {
                 "stride": stride,
-                "dilation": dilation,
+                "dilation": [dilation, dilation],
                 "groups": cin,
                 "padding": padding,
                 "channel_last": channel_last,
