@@ -65,8 +65,6 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
-    # cast input_ids to int32 since int64 causes embedding op data mismatch. Tracking issue: https://github.com/tenstorrent/tt-forge-fe/issues/952
-    input_ids = input_ids.to(torch.int32)
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()

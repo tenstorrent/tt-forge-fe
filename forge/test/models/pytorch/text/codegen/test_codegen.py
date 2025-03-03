@@ -65,7 +65,6 @@ def test_codegen(record_forge_property, variant):
     framework_model = Wrapper(framework_model)
 
     # Sanity run
-    input_ids = input_ids.to(torch.int32)
     attn_mask = attn_mask.to(torch.float32)
 
     inputs = [input_ids, attn_mask]

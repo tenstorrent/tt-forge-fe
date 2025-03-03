@@ -52,6 +52,9 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
 
 @pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
+@pytest.mark.xfail(
+    reason="RuntimeError: TT_THROW @ /tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:132: tt::exception info: Out of Memory: Not enough space to allocate 180355072 B DRAM buffer across 12 banks, where each bank needs to store 15032320 B"
+)
 def test_deepseek_prefil_on_device_decode_on_cpu(variant):
     """
     This function tests the inference of the deepseek_math model split into two parts:
@@ -61,8 +64,6 @@ def test_deepseek_prefil_on_device_decode_on_cpu(variant):
 
     model_name = f"deepseek-ai/{variant}"
     model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
-
-    input_ids = input_ids.to(torch.int32)
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()

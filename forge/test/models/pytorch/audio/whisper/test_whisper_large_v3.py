@@ -66,7 +66,6 @@ def test_whisper_large_v3_speech_translation(record_forge_property, variant):
 
     # Get decoder inputs
     decoder_input_ids = torch.tensor([[1, 1]]) * model_config.decoder_start_token_id
-    decoder_input_ids = decoder_input_ids.to(torch.int32)
     encoder_outputs = framework_model.model.model.encoder(input_features)[0].detach()
     encoder_outputs = encoder_outputs.to(torch.float32)
     inputs = [decoder_input_ids, encoder_outputs]
