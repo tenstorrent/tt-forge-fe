@@ -24,11 +24,19 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
             continue;
 
         auto attrs = op->op_attrs();
-        if (std::get<int>(attrs[attrs.size() - 2]) != 0)
+
+        auto top_pad = std::get<int>(attrs[0]);
+        auto bottom_pad = std::get<int>(attrs[1]);
+        auto left_pad = std::get<int>(attrs[2]);
+        auto right_pad = std::get<int>(attrs[3]);
+
+        // Check if top_pad != bottom_pad or left_pad != right_pad
+        if (top_pad != bottom_pad || left_pad != right_pad)
         {
-            // Second last attr must be 0 (constant mode), otherwise cannot fuse into conv2d
+            // Padding conditions are not equal, cannot fuse into conv2d
             continue;
         }
+
         auto users = graph->users(node);
 
         bool all_users_are_conv2d = true;
@@ -59,7 +67,6 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
             auto conv_attrs = user_op->op_attrs();
-            TT_ASSERT(conv_attrs.size() == 13);
             // Conv2d attributes are
             // [stride[0],stride[1],dilation,groups,padding[0],padding[1],padding[2],padding[3],channel_last]
             int pad_idx_offset = 4;
