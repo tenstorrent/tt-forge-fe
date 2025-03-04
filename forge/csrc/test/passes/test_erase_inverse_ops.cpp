@@ -503,14 +503,9 @@ struct UpdateConvAttrsTest : testing::Test
             *graph, "conv2d", "conv2d", {3, 3, 1, 1, 0, 0, 1, 1, 1}, {input_node_0, weight_node});
         auto named_attrs = conv_node->named_attrs();
         named_attrs["channel_last"] = false;
-        named_attrs["padding_top"] = 1;
-        named_attrs["padding_bottom"] = 1;
-        named_attrs["padding_left"] = 1;
-        named_attrs["padding_right"] = 1;
-        named_attrs["stride_height"] = 1;
-        named_attrs["stride_width"] = 1;
-        named_attrs["dilation_height"] = 1;
-        named_attrs["dilation_width"] = 1;
+        named_attrs["padding"] = std::vector<int>{1, 1, 1, 1};
+        named_attrs["stride"] = std::vector<int>{1, 1};
+        named_attrs["dilation"] = std::vector<int>{1, 1};
 
         conv_node->overwrite_named_attrs(named_attrs);
         create_output(*graph, "out", conv_node);
