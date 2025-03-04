@@ -9,6 +9,36 @@ import forge
 from forge.verify.verify import verify
 
 
+@pytest.mark.xfail(
+    reason="[MLIR] error: type of return operand 0 doesn't match function result type in function @forward"
+)
+@pytest.mark.parametrize(
+    "shapes",
+    [
+        [(41,), (30,)],
+        [(30,), (40,), (50,)],
+        [(21,), (31,), (49,), (50,)],
+        [(62,), (22,), (36,), (14,), (15,)],
+        [(9,), (19,), (29,), (39,), (49,), (59,)],
+    ],
+)
+@pytest.mark.push
+def test_meshgrid(shapes):
+    class Meshgrid(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, *inputs):
+            return torch.meshgrid(*inputs)
+
+    inputs = [torch.arange(i * 10 + 1, i * 10 + 1 + shape[0], dtype=torch.float32) for i, shape in enumerate(shapes)]
+
+    framework_model = Meshgrid()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.parametrize(
     "condition, input, other",
     [

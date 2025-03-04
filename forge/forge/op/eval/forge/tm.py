@@ -1346,14 +1346,15 @@ def decompose(type, attr, dc, inputs):
 
             curr_sub_sub_slice = sub_sub_slices[0]
             for sub_sub_slice in sub_sub_slices[1:]:
-                curr_sub_sub_slice = dc.op("binary_stack", [curr_sub_sub_slice, sub_sub_slice], (-1,))
-
+                curr_sub_slice = dc.op_with_named_attrs(
+                    "concatenate", [curr_sub_sub_slice, sub_sub_slice], {"dim": -1}, (-1,)
+                )
             sub_slices.append(curr_sub_sub_slice)
 
         curr_sub_slice = dc.op(TransposeTM.create(-2, -1), [sub_slices[0]])
         for sub_slice in sub_slices[1:]:
             sub_slice = dc.op(TransposeTM.create(-2, -1), [sub_slice])
-            curr_sub_slice = dc.op("binary_stack", [curr_sub_slice, sub_slice], (-1,))
+            curr_sub_slice = dc.op_with_named_attrs("concatenate", [curr_sub_slice, sub_slice], {"dim": -1}, (-1,))
 
         result = dc.op(TransposeTM.create(-2, -1), [curr_sub_slice])
         dc.fuse(result)
