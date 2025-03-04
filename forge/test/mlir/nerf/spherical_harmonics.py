@@ -4,13 +4,7 @@
 
 C0 = 0.28209479177387814
 C1 = 0.4886025119029199
-C2 = [
-    1.0925484305920792,
-    -1.0925484305920792,
-    0.31539156525252005,
-    -1.0925484305920792,
-    0.5462742152960396
-]
+C2 = [1.0925484305920792, -1.0925484305920792, 0.31539156525252005, -1.0925484305920792, 0.5462742152960396]
 C3 = [
     -0.5900435899266435,
     2.890611442640554,
@@ -18,7 +12,7 @@ C3 = [
     0.3731763325901154,
     -0.4570457994644658,
     1.445305721320277,
-    -0.5900435899266435
+    -0.5900435899266435,
 ]
 C4 = [
     2.5033429417967046,
@@ -32,15 +26,16 @@ C4 = [
     0.6258357354491761,
 ]
 
+
 def eval_sh(deg, sh, dirs):
     """
     Evaluate spherical harmonics at unit directions using hardcoded SH polynomials.
-    
+
     Args:
         deg: Degree of spherical harmonics (0-4)
         sh: Spherical harmonics coefficients
         dirs: Unit direction vectors [..., 3]
-    
+
     Returns:
         Evaluated spherical harmonics
     """
@@ -48,24 +43,20 @@ def eval_sh(deg, sh, dirs):
     assert (deg + 1) ** 2 == sh.shape[-1], "Invalid SH coefficients shape"
 
     result = C0 * sh[..., 0]
-    
+
     if deg == 0:
         return result
 
     x, y, z = dirs[..., 0:1], dirs[..., 1:2], dirs[..., 2:3]
-    
-    result += (
-        -C1 * y * sh[..., 1]
-        + C1 * z * sh[..., 2]
-        - C1 * x * sh[..., 3]
-    )
-    
+
+    result += -C1 * y * sh[..., 1] + C1 * z * sh[..., 2] - C1 * x * sh[..., 3]
+
     if deg == 1:
         return result
-        
+
     xx, yy, zz = x * x, y * y, z * z
     xy, yz, xz = x * y, y * z, x * z
-    
+
     result += (
         C2[0] * xy * sh[..., 4]
         + C2[1] * yz * sh[..., 5]
@@ -73,10 +64,10 @@ def eval_sh(deg, sh, dirs):
         + C2[3] * xz * sh[..., 7]
         + C2[4] * (xx - yy) * sh[..., 8]
     )
-    
+
     if deg == 2:
         return result
-        
+
     result += (
         C3[0] * y * (3 * xx - yy) * sh[..., 9]
         + C3[1] * xy * z * sh[..., 10]
@@ -86,10 +77,10 @@ def eval_sh(deg, sh, dirs):
         + C3[5] * z * (xx - yy) * sh[..., 14]
         + C3[6] * x * (xx - 3 * yy) * sh[..., 15]
     )
-    
+
     if deg == 3:
         return result
-        
+
     result += (
         C4[0] * xy * (xx - yy) * sh[..., 16]
         + C4[1] * yz * (3 * xx - yy) * sh[..., 17]
@@ -101,5 +92,5 @@ def eval_sh(deg, sh, dirs):
         + C4[7] * xz * (xx - 3 * yy) * sh[..., 23]
         + C4[8] * (xx * (xx - 3 * yy) - yy * (3 * xx - yy)) * sh[..., 24]
     )
-    
+
     return result
