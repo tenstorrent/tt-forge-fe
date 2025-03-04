@@ -66,3 +66,6 @@ generated
 infra/.coverage
 infra/pytest.xml
 pipeline_*.json
+
+coverage.info
+coverage.xml
