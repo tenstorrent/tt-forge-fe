@@ -553,13 +553,10 @@ def test_stack(input_shapes, dim):
     inputs = [torch.rand(shape) for shape in input_shapes]
 
     framework_model = Stack(dim)
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="stack_sanity")
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
