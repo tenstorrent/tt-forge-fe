@@ -864,6 +864,7 @@ def is_forge_shape(tensor: torch.Tensor, min_dim=-1) -> bool:
     return tensor.shape[-1] % TILE_DIM == 0 and tensor.shape[-2] % TILE_DIM == 0
 
 
+# This function was used to pad pytorch tensor to BUDA format. It is not used anymore.
 def pad_pytorch_tensor_to_forge(
     tensor: torch.Tensor,
     tile_broadcast_dims: List[int],
@@ -943,6 +944,7 @@ def pad_pytorch_tensor_to_forge(
     return ret
 
 
+# This function was used to pad pytorch tensor to BUDA format. It is not used anymore.
 def narrow_forge_tensor_to_pytorch(
     tensor: torch.Tensor, shape: List[int], has_microbatch_dim: bool = False
 ) -> torch.Tensor:

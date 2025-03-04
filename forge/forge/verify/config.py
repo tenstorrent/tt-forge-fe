@@ -156,6 +156,9 @@ class DepricatedVerifyConfig:
     _input_gradient_queue: Optional[torch.multiprocessing.Queue] = None
     _parameter_gradient_queue: Optional[torch.multiprocessing.Queue] = None
 
+    if "FORGE_TEST_INTERMEDIATE_VERIFY" in os.environ and os.environ["FORGE_TEST_INTERMEDIATE_VERIFY"] == "1":
+        intermediates = True
+
     if "FORGE_VERIFY_RESULTS_OFF_BY_DEFAULT" in os.environ and not (
         "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
     ):

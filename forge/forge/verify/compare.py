@@ -12,7 +12,7 @@ import numpy as np
 from loguru import logger
 from scipy.spatial import distance
 
-from forge.tensor import narrow_forge_tensor_to_pytorch
+# from forge.tensor import narrow_forge_tensor_to_pytorch
 from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
@@ -154,7 +154,7 @@ def compare_tensor_to_golden(
     name: str,
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    is_forge=False,
+    # is_forge=False, # This was is_buda which is always false in this stack => should be removed
     rtol=None,
     atol=None,
     pcc=None,
@@ -162,6 +162,7 @@ def compare_tensor_to_golden(
     relative_atol=None,
     verify_cfg=None,
 ):
+    print("Inside compare_tensor_to_golden.")
     # Convert golden to pytorch tensor for comparisons
     if isinstance(golden, (tf.Tensor, tf.Variable)):
         golden = torch.from_numpy(golden.numpy())
@@ -172,8 +173,8 @@ def compare_tensor_to_golden(
     if golden.dtype == torch.bool and calculated.dtype == torch.bool:
         return bool(torch.all(golden == calculated))
 
-    if is_forge:
-        calculated = narrow_forge_tensor_to_pytorch(calculated, golden.shape)
+    # if is_forge:
+    #     calculated = narrow_forge_tensor_to_pytorch(calculated, golden.shape)
 
     if rtol is None or (isinstance(rtol, dict) and (golden.dtype not in rtol or rtol[golden.dtype] is None)):
         if verify_cfg is not None and golden.dtype in verify_cfg.rtol and verify_cfg.rtol[golden.dtype] is not None:

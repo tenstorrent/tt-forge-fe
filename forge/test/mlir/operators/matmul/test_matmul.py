@@ -32,3 +32,31 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize("batch_size", [1,])
+@pytest.mark.parametrize("outer_dim_x", [7])
+@pytest.mark.parametrize("outer_dim_y", [7])
+@pytest.mark.parametrize("inner_dim", [64])
+@pytest.mark.push
+def test_matmul_and_add(batch_size, outer_dim_x, outer_dim_y, inner_dim):
+    class MatmulAdd(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, y, z, t):
+            mm = torch.matmul(x, y)
+            mm_add = mm + z
+            return mm_add * t
+
+    inputs = [
+        torch.rand(batch_size, outer_dim_x, inner_dim),
+        torch.rand(batch_size, inner_dim, outer_dim_y),
+        torch.rand(batch_size, outer_dim_x, outer_dim_y),
+        torch.rand(batch_size, outer_dim_x, outer_dim_y)
+    ]
+
+    framework_model = MatmulAdd()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
