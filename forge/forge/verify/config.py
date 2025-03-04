@@ -7,6 +7,7 @@ from enum import Enum
 import os
 
 
+import paddle
 import torch
 import tensorflow as tf
 import forge
@@ -278,7 +279,7 @@ class VerifyConfig:
     def supported_tensor_types(self) -> Tuple:
         from forge import Tensor  # Local import to avoid circular dependency
 
-        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor)
+        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor, paddle.Tensor)
 
     @property
     def compiled_model_types(self) -> Tuple:
@@ -288,4 +289,4 @@ class VerifyConfig:
 
     @property
     def framework_model_types(self) -> Tuple:
-        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule)
+        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule, paddle.nn.Layer)
