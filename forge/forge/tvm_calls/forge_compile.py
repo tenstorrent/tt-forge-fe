@@ -1298,21 +1298,19 @@ def get_auto_path(graph_hash, compiler_cfg, is_load):
         if auto_cache == -1 and is_load:
             auto_path = ""
         else:
-            submodules = (
-                subprocess.check_output(["git", "submodule", "status", "--recursive"]).decode("ascii").split("\n")
-            )
-            tvm_short_cache = None
-            for submodule in submodules:
-                split_string = submodule.split(" ")
-                if split_string[0] != "":
-                    split_string.insert(0, "")
-                    split_string[1] = split_string[1][1:]
-                if len(split_string) > 2 and split_string[2] == "third_party/tvm":
-                    tvm_short_cache = split_string[1][:8]
-                    break
-            assert tvm_short_cache is not None, "Couild not find tvm submodule, are you running from forge git repo?"
-
-            auto_path = "generated_modules/tvm_cache/" + tvm_short_cache + "_" + graph_hash
+            tvm_path = os.path.dirname(tvm.__file__)
+            if "site-packages" in tvm_path:
+                tvm_info = subprocess.check_output(['pip', 'show', 'tvm']).decode('utf-8')
+                for line in tvm_info.split('\n'):
+                    if "Version:" in line:
+                        tvm_ver = line.split("Version: ")[-1]
+                        tvm_hash = tvm_ver.split('+')[-1]
+                        break
+            else:
+                tvm_hash = (
+                    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=tvm_path).decode("utf-8").strip()
+                )
+            auto_path = "generated_modules/tvm_cache/" + tvm_hash + "_" + graph_hash
     else:
         auto_path = compiler_cfg.tvm_graph_load_path if is_load else compiler_cfg.tvm_graph_store_path
 
