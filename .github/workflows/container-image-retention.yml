@@ -20,5 +20,4 @@ jobs:
           image-names: "tt-forge*"
           cut-off: 4w
           keep-n-most-recent: 5
-          rust-log: info
           dry-run: true
