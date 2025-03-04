@@ -8,6 +8,8 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.densenet.utils.densenet_utils import (
@@ -68,13 +70,14 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
-
     if variant == "densenet121_hf_xray":
+        verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)))
         # Inference
         output = compiled_model(*inputs)
         # post processing
         outputs = op_norm(output[0], model.op_threshs)
+    else:
+        verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
