@@ -1299,7 +1299,9 @@ def get_auto_path(graph_hash, compiler_cfg, is_load):
             auto_path = ""
         else:
             tvm_path = os.path.dirname(tvm.__file__)
-            tvm_hash = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], cwd=tvm_path).decode('utf-8').strip()
+            tvm_hash = (
+                subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=tvm_path).decode("utf-8").strip()
+            )
             auto_path = "generated_modules/tvm_cache/" + tvm_hash + "_" + graph_hash
     else:
         auto_path = compiler_cfg.tvm_graph_load_path if is_load else compiler_cfg.tvm_graph_store_path
