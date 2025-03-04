@@ -12,7 +12,7 @@ from loguru import logger
 import forge
 from forge.op.loss import CrossEntropyLoss, L1Loss
 from forge.tensor import to_forge_tensors
-from forge.verify.compare import compare_with_golden
+from forge.verify import compare_with_golden, verify, VerifyConfig, AutomaticValueChecker
 from ..utils import *
 from test.mlir.utils import *
 
@@ -64,10 +64,13 @@ def test_mnist_training():
             target = nn.functional.one_hot(target, num_classes=10).to(dtype)
 
             # Forward pass (prediction) on device
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert golden_pred.dtype == dtype
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            golden_pred, pred = golden_pred[0], pred[0]
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)
@@ -134,9 +137,13 @@ def test_mnist_training_with_grad_accumulation():
             target = nn.functional.one_hot(target, num_classes=10).float()
 
             # Forward pass (prediction) on device
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            golden_pred, pred = golden_pred[0], pred[0]
 
             # Compute loss on CPU
             loss = loss_fn(pred, target)
@@ -373,9 +380,13 @@ def test_loss_device():
             target = nn.functional.one_hot(target, num_classes=10).float()
 
             # Forward pass (prediction) on device
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            pred = pred[0]
 
             loss = tt_loss(pred, target)
             total_loss += loss[0].item()
@@ -437,9 +448,13 @@ def test_lora():
             target = nn.functional.one_hot(target, num_classes=10).float()
 
             # Forward pass (prediction) on device
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            pred = pred[0]
 
             loss = tt_loss(pred, target)[0]
 
@@ -498,9 +513,13 @@ def test_optimizer_device():
             target = nn.functional.one_hot(target, num_classes=10).float()
 
             # Forward pass (prediction) on device
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            pred = pred[0]
 
             # Execute loss (and its backward) on CPU.
             loss = framework_loss(pred, target)
@@ -566,17 +585,23 @@ def test_e2e_device():
             # Create target tensor and leave on CPU.
             target = nn.functional.one_hot(target, num_classes=10).float()
 
-            # Forward pass (prediction) on device.
-            pred = tt_model(data)[0]
-            golden_pred = framework_model(data)
-            assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            # Forward pass
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            pred = pred[0]
 
             # Execute loss (and its backward) on device.
-            loss = tt_loss(pred, target)[0]
-            total_loss += loss.item()
-
-            golden_loss = framework_loss(pred, target)
-            assert compare_with_golden(golden_loss, loss, rtol=1e-1)
+            golden_loss, loss = verify(
+                inputs=[pred, target],
+                framework_model=framework_loss,
+                compiled_model=tt_loss,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(rtol=1e-1), verify_shape=False),
+            )
+            total_loss += loss[0].item()
 
             tt_loss.backward()
 
