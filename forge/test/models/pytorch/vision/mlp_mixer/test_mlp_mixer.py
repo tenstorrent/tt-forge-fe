@@ -6,6 +6,7 @@ import requests
 import timm
 import torch
 from loguru import logger
+from mlp_mixer_pytorch import MLPMixer
 from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
@@ -63,6 +64,40 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     pixel_values = transform(image).unsqueeze(0)
 
     inputs = [pixel_values]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+def test_mlp_mixer_pytorch(record_forge_property):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mlp_mixer",
+        source=Source.GITHUB,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and input
+    framework_model = MLPMixer(
+        image_size=256,
+        channels=3,
+        patch_size=16,
+        dim=512,
+        depth=12,
+        num_classes=1000,
+    )
+    framework_model.eval()
+
+    inputs = [torch.randn(1, 3, 256, 256)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
