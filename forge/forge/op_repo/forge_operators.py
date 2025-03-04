@@ -63,7 +63,6 @@ _OPERATORS = [
     OperatorDefinition("maximum", "forge.op.Max", 2),
     OperatorDefinition("minimum", "forge.op.Min", 2),
     OperatorDefinition("heaviside", "forge.op.Heaviside", 2),
-    OperatorDefinition("binary_stack", "forge.op.BinaryStack", 2),
     OperatorDefinition("power", "forge.op.Power", 2),
     OperatorDefinition("greater", "forge.op.Greater", 2),
     OperatorDefinition("greater_equal", "forge.op.GreaterEqual", 2),

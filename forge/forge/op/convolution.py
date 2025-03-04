@@ -58,15 +58,10 @@ def Conv2d(
         "conv2d",
         name,
         *inputs,
-        stride_height=stride[0],
-        stride_width=stride[1],
-        dilation_height=dilation[0],
-        dilation_width=dilation[1],
+        stride=stride,
+        dilation=dilation,
         groups=groups,
-        padding_left=padding[0],
-        padding_right=padding[1],
-        padding_top=padding[2],
-        padding_bottom=padding[3],
+        padding=padding,
         channel_last=channel_last,
     ).get_tensor()
 
@@ -138,15 +133,10 @@ def Conv2dTranspose(
         name,
         *inputs,
         attrs=attrs,
-        stride_height=stride[0],
-        stride_width=stride[1],
-        dilation_height=dilation,
-        dilation_width=dilation,
+        stride=stride,  # [sH, sW]
+        dilation=dilation,  # [dH, dW]
         groups=groups,
-        padding_top=padding[0],
-        padding_left=padding[1],
-        padding_bottom=padding[2],
-        padding_right=padding[3],
+        padding=padding,  # [pT, pL, pB, pR]
         channel_last=channel_last,
     ).get_tensor()
 

@@ -23,7 +23,7 @@ from forge.op.eval.common import calculate_tile_size
 
 def eval(type, attr, ops):
     assert len(ops) == 2, "Eltwise binary should have two inputs"
-    assert type == "binary_stack" or len(attr) == 0, "Eltwise binary should have no attributes"
+    assert len(attr) == 0, "Eltwise binary should have no attributes"
 
     t_ops = to_torch_operands(*ops)
 
@@ -41,7 +41,6 @@ def eval(type, attr, ops):
         "maximum": lambda i: torch.maximum(t_ops[0], t_ops[1]),
         "minimum": lambda i: torch.minimum(t_ops[0], t_ops[1]),
         "heaviside": lambda i: torch.heaviside(t_ops[0], t_ops[1]),
-        "binary_stack": lambda i: torch.stack((t_ops[0], t_ops[1]), axis=attr[0]).flatten(attr[0] - 1, attr[0]),
         "power": lambda i: torch.pow(t_ops[0], t_ops[1]),
         "greater": lambda i: torch.gt(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
         "greater_equal": lambda i: torch.ge(t_ops[0], t_ops[1]).to(t_ops[0].dtype),
@@ -60,14 +59,6 @@ def eval(type, attr, ops):
 # Return shape, and list of dimensions that were broadcast on operands
 def shape(type, attr, ops) -> Tuple[Tuple, List]:
     assert len(ops) == 2, "Eltwise binary should have two inputs"
-
-    if type == "binary_stack":
-        dim = attr[0]
-        assert ops[0] == ops[1]
-        output_shape = list(ops[0])
-        output_shape[dim] *= 2
-        return tuple(output_shape), []
-
     assert len(attr) == 0, "Eltwise binary should have no attributes"
 
     broadcast = []
@@ -101,17 +92,7 @@ def shape(type, attr, ops) -> Tuple[Tuple, List]:
 def lower(type, attr, lc, ops, outputs):
     assert len(ops) == 2, "Eltwise binary should have two inputs"
 
-    if type == "binary_stack":
-        dim = attr[0]
-        if dim < 0:
-            dim += len(lc.shape(ops[0]))
-
-        if dim == len(lc.shape(ops[0])) - 1:
-            lc.op("binary_vstack", ops, [])
-        elif dim == len(lc.shape(ops[0])) - 2:
-            lc.op("binary_hstack", ops, [])
-
-    elif type in ["greater", "less", "greater_equal", "less_equal", "equal", "not_equal"]:
+    if type in ["greater", "less", "greater_equal", "less_equal", "equal", "not_equal"]:
 
         A = ops[0]
         B = ops[1]
@@ -275,106 +256,7 @@ def backward(op_type, attr, ac, operand, inputs, output, grad):
 
 
 def decompose(op_type, attr, dc, inputs):
-    if op_type == "binary_stack":
-        operand0 = inputs[0]
-        operand1 = inputs[1]
-
-        axis = attr[0]
-        # import pdb; pdb.set_trace()
-        if operand0.shape[axis] % TILE_DIM != 0 or operand1.shape[axis] % TILE_DIM != 0:
-            # Currently only support TILE aligned binary stack
-            return
-        assert operand0.shape == operand1.shape, "Inputs to BinaryStack must have the same shape"
-
-        total_size = operand0.shape[axis] + operand1.shape[axis]
-        if axis == -1:
-            # Operand 0
-            vstack0 = dc.op("vstack", [operand0], (operand0.shape[-3],))
-            transpose0 = dc.op(TransposeTM.create(-2, -1), [vstack0])
-            # Picker matmul to expand and interleave input size
-            cols = torch.arange(operand0.shape[axis])
-            rows = cols * 2
-            operand0_picker = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (total_size, operand0.shape[axis]),
-                dtype=torch.float32,
-            )
-            lhs0 = dc.tensor(operand0_picker)
-            operand0_mm = dc.op("sparse_matmul", [lhs0, transpose0])
-            # Convert shape back
-            transpose_back0 = dc.op(TransposeTM.create(-2, -1), [operand0_mm])
-            vslice0 = dc.op("vslice", [transpose_back0], (operand0.shape[-3],))
-
-            # Operand 1
-            vstack1 = dc.op("vstack", [operand1], (operand1.shape[-3],))
-            transpose1 = dc.op(TransposeTM.create(-2, -1), [vstack1])
-            # Picker matmul to expand and interleave input size
-            cols = torch.arange(operand1.shape[axis])
-            rows = cols * 2 + 1
-            operand1_picker = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (total_size, operand1.shape[axis]),
-                dtype=torch.float32,
-            )
-            lhs1 = dc.tensor(operand1_picker)
-            operand1_mm = dc.op("sparse_matmul", [lhs1, transpose1])
-            # Convert shape back
-            transpose_back1 = dc.op(TransposeTM.create(-2, -1), [operand1_mm])
-            vslice1 = dc.op("vslice", [transpose_back1], (operand1.shape[-3],))
-
-            # Add 2 sides together
-            result = dc.op(
-                "add",
-                [vslice0, vslice1],
-            )
-            dc.fuse(result)
-            return
-        elif axis == -2:
-            # Operand 0
-            hstack0 = dc.op("hstack", [operand0], (operand0.shape[-3],))
-            # Picker matmul to expand and interleave input size
-            cols = torch.arange(operand0.shape[axis])
-            rows = cols * 2
-            operand0_picker = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (total_size, operand0.shape[axis]),
-                dtype=torch.float32,
-            )
-            lhs0 = dc.tensor(operand0_picker)
-            operand0_mm = dc.op("sparse_matmul", [lhs0, hstack0])
-            # Convert shape back
-            hslice0 = dc.op("hslice", [operand0_mm], (operand0.shape[-3],))
-
-            # Operand 1
-            hstack1 = dc.op("hstack", [operand1], (operand1.shape[-3]))
-            # Picker matmul to expand and interleave input size
-            cols = torch.arange(operand1.shape[axis])
-            rows = cols * 2 + 1
-            operand1_picker = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (total_size, operand1.shape[axis]),
-                dtype=torch.float32,
-            )
-            lhs1 = dc.tensor(operand1_picker)
-            operand1_mm = dc.op("sparse_matmul", [lhs1, hstack1])
-            # Convert shape back
-            hslice1 = dc.op("hslice", [operand1_mm], (operand1.shape[-3],))
-
-            # Add 2 sides together
-            result = dc.op(
-                "add",
-                [hslice0, hslice1],
-            )
-            dc.fuse(result)
-            return
-        else:
-            raise RuntimeError(f"Found BinaryStack op with axis {axis}")
-
-    elif op_type == "divide":
+    if op_type == "divide":
         recip = dc.op(Reciprocal.create(), [inputs[1]])
         result = dc.op("multiply", [inputs[0], recip])
         dc.fuse(result)
@@ -495,92 +377,6 @@ def decompose_post_optimize(op_type, attr, dc, inputs):
         result = dc.op("multiply", [binary_max, negative_one_tensor])
         dc.fuse(result)
         return
-
-    if op_type == "binary_stack":
-        axis = attr[0]
-
-        operand0 = dc.op("pad_tile", [operand0], (-2, orig_op0_shape[-2]))
-        operand0 = dc.op("pad_tile", [operand0], (-1, orig_op0_shape[-1]))
-        padded_op0_shape = operand0.shape
-        operand1 = dc.op("pad_tile", [operand1], (-2, orig_op1_shape[-2]))
-        operand1 = dc.op("pad_tile", [operand1], (-1, orig_op1_shape[-1]))
-        padded_op1_shape = operand1.shape
-
-        total_size = operand0.shape[axis] + operand1.shape[axis]
-        # import pdb; pdb.set_trace()
-        if axis == -1:
-            # Operand 0
-            vstack0 = dc.op("vstack", [operand0], (operand0.shape[-3],))
-            transpose0 = dc.op(TransposeTM.create(-2, -1), [vstack0])
-            # Picker matmul to expand and interleave input size
-            cols = torch.arange(operand0.shape[axis])
-            rows = cols * 2
-            operand0_picker = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (total_size, operand0.shape[axis]),
-                dtype=torch.float32,
-            )
-            lhs0 = dc.tensor(operand0_picker)
-            operand0_mm = dc.op("sparse_matmul", [lhs0, transpose0])
-            # Convert shape back
-            transpose_back0 = dc.op(TransposeTM.create(-2, -1), [operand0_mm])
-            vslice0 = dc.op("vslice", [transpose_back0], (operand0.shape[-3],))
-
-            # Operand 1
-            vstack1 = dc.op("vstack", [operand1], (operand1.shape[-3],))
-            transpose1 = dc.op(TransposeTM.create(-2, -1), [vstack1])
-            # Picker matmul to expand and interleave input size
-            cols = torch.arange(operand1.shape[axis])
-            rows = cols * 2 + 1
-            operand1_picker = torch.sparse_coo_tensor(
-                [rows.tolist(), cols.tolist()],
-                torch.ones(cols.shape[0]),
-                (total_size, operand1.shape[axis]),
-                dtype=torch.float32,
-            )
-            lhs1 = dc.tensor(operand1_picker)
-            operand1_mm = dc.op("sparse_matmul", [lhs1, transpose1])
-            # Convert shape back
-            transpose_back1 = dc.op(TransposeTM.create(-2, -1), [operand1_mm])
-            vslice1 = dc.op("vslice", [transpose_back1], (operand1.shape[-3],))
-
-            # Add 2 sides together
-            result = dc.op(
-                "add",
-                [vslice0, vslice1],
-            )
-
-            # Narrow back down to original size
-            if result.shape[-1] - (orig_op0_shape[-1] + orig_op1_shape[-1]) >= TILE_DIM:
-                result = dc.op("vstack", [result], (orig_op0_shape[-3],))
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-
-                cols = torch.arange(orig_op0_shape[-1] + orig_op1_shape[-1])
-                rows = cols
-
-                size = align_up_tile(orig_op0_shape[-1] + orig_op1_shape[-1])
-
-                picker = torch.sparse_coo_tensor(
-                    [rows.tolist(), cols.tolist()],
-                    torch.ones(cols.shape[0]),
-                    (size, result.shape[-2]),
-                    dtype=torch.float32,
-                )
-                # import pdb; pdb.set_trace()
-                lhs = dc.tensor(picker)
-                result = dc.op("sparse_matmul", [lhs, result])
-
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                result = dc.op("vslice", [result], (orig_op0_shape[-3],))
-
-            result = dc.op("narrow", [result], (-1, 0, orig_op1_shape[-1] + orig_op0_shape[-1], result.shape[-1]))
-            result = dc.op("narrow", [result], (-2, 0, orig_op1_shape[-2], result.shape[-2]))
-
-            dc.fuse(result)
-            return
-        else:
-            raise RuntimeError(f"Found BinaryStack op with axis {axis}")
 
 
 def initial_flops_estimate(type, attr, ops):
