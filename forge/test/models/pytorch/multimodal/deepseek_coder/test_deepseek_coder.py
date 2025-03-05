@@ -18,6 +18,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepseek-coder-1.3b-instruct"])
 def test_deepseek_inference_no_cache(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Build Module Name
     module_name = build_module_name(

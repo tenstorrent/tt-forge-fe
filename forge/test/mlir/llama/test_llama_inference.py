@@ -18,6 +18,9 @@ from test.mlir.llama.utils.utils import load_model
     ],
 )
 def test_llama_inference(model_path):
+    if model_path == "openlm-research/open_llama_3b":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
+
     # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path)
 
