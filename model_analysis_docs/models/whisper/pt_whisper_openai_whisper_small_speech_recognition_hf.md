@@ -157,11 +157,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 1), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(51865, 768), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>14</th>
@@ -496,8 +496,8 @@
     <tr>
       <th>44</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 80, 3000), dtype=float32)</td>
-      <td>shape : (1, 80, 3000, 1)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 768), dtype=float32)</td>
+      <td>shape : (1, 768)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -508,17 +508,6 @@
       <th>45</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 1, 768), dtype=float32)</td>
-      <td>shape : (1, 768)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>46</th>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 1, 768), dtype=float32)</td>
       <td>shape : (1, 1, 12, 64)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -527,7 +516,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>47</th>
+      <th>46</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 768), dtype=float32)</td>
       <td>shape : (1, 1, 768)</td>
@@ -538,7 +527,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>48</th>
+      <th>47</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 768), dtype=float32)</td>
       <td>shape : (1, 1, 12, 64)</td>
@@ -549,7 +538,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>49</th>
+      <th>48</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 12, 1, 64), dtype=float32)</td>
       <td>shape : (12, 1, 64)</td>
@@ -560,7 +549,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>50</th>
+      <th>49</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(12, 1, 1), dtype=float32)</td>
       <td>shape : (1, 12, 1, 1)</td>
@@ -571,7 +560,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>51</th>
+      <th>50</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 12, 1, 1), dtype=float32)</td>
       <td>shape : (12, 1, 1)</td>
@@ -582,7 +571,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>52</th>
+      <th>51</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 12, 64, 1), dtype=float32)</td>
       <td>shape : (12, 64, 1)</td>
@@ -593,7 +582,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>53</th>
+      <th>52</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(12, 1, 64), dtype=float32)</td>
       <td>shape : (1, 12, 1, 64)</td>
@@ -604,10 +593,21 @@
       <td></td>
     </tr>
     <tr>
-      <th>54</th>
+      <th>53</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 1, 12, 64), dtype=float32)</td>
       <td>shape : (1, 768)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(1, 80, 3000), dtype=float32)</td>
+      <td>shape : (1, 80, 3000, 1)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
