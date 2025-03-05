@@ -265,7 +265,7 @@ def verify_golden(
 
 
 def verify(
-    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
+    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
     framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer],
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
@@ -301,9 +301,7 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    pt_inputs = to_pt_tensors(inputs)
-
-    co_out = compiled_model(*pt_inputs)
+    co_out = compiled_model(*inputs)
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
