@@ -61,7 +61,7 @@ def Conv2d(
         stride=stride,
         dilation=dilation,
         groups=groups,
-        padding=padding,
+        padding=padding,  # [pT, pL, pB, pR]
         channel_last=channel_last,
     ).get_tensor()
 

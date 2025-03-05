@@ -31,8 +31,7 @@ class Conv2d(PyOp):
         self = cls("conv2d")
         self.stride = stride
         self.groups = groups
-        # Transform padding from [pL, pR, pT, pB] to [pT, pL, pB, pR]
-        self.padding = [padding[2], padding[0], padding[3], padding[1]]
+        self.padding = padding
         self.dilation = dilation
         self.channel_last = int(channel_last)
         return self
@@ -47,7 +46,7 @@ class Conv2d(PyOp):
         bias = t_ops[2] if len(t_ops) == 3 else None
 
         groups = self.groups
-        padding = self.padding
+        padding = [self.padding[1], self.padding[3], self.padding[0], self.padding[2]]
         stride = self.stride
         dilation = self.dilation
 
