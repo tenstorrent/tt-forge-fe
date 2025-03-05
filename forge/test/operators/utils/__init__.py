@@ -7,6 +7,7 @@ from .datatypes import ValueRange
 from .datatypes import ValueRanges
 from .datatypes import FrameworkDataFormat
 from .utils import ShapeUtils
+from .utils import TensorUtils
 from .utils import InputSourceFlag, InputSourceFlags
 from .utils import CompilerUtils
 from .utils import DeviceUtils
@@ -39,6 +40,7 @@ __all__ = [
     "ValueRanges",
     "FrameworkDataFormat",
     "ShapeUtils",
+    "TensorUtils",
     "InputSourceFlag",
     "InputSourceFlags",
     "CompilerUtils",

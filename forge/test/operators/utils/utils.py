@@ -33,7 +33,9 @@ from .compat import (
     verify_module_for_inputs_deprecated,
     verify_module_for_inputs_torch,
 )
-from .datatypes import ValueRanges
+from .datatypes import ValueRange, ValueRanges
+from .datatypes import OperatorParameterTypes
+from .datatypes import FrameworkDataFormat
 from .features import TestFeaturesConfiguration
 
 
@@ -70,6 +72,21 @@ class ShapeUtils:
             else:
                 shapes_with_ids.append(pytest.param(shape.values[0], marks=shape.marks, id=f"shape={shape.values[0]}"))
         return shapes_with_ids
+
+
+class TensorUtils:
+    def create_torch_constant(
+        input_shape: TensorShape,
+        reduce_microbatch: bool = False,
+        dev_data_format: FrameworkDataFormat = None,
+        value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
+        random_seed: Optional[int] = None,
+    ) -> torch.Tensor:
+        input_shape = ShapeUtils.reduce_microbatch_size(input_shape) if reduce_microbatch else input_shape
+
+        constant = create_torch_inputs([input_shape], dev_data_format, value_range, random_seed)[0]
+
+        return constant
 
 
 @dataclass(frozen=True)
