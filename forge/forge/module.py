@@ -452,47 +452,6 @@ class TFLiteModule(Module):
         return []  # TODO
 
 
-# class MXNetModule(Module):
-#     """
-#     A wrapper around a MXNet module.
-#     """
-#     def __init__(self, name: str, module: mx.gluon.HybridBlock,):
-#         """
-#         Create MXNet module wrapper.
-
-#         Parameters
-#         ----------
-#         module: mx.gluon.HybridBlock
-#             MXNet module
-#         """
-#         super().__init__(name)
-
-#         if not isinstance(module, mx.gluon.HybridBlock):
-#             raise RuntimeError("mx.gluon.HybridBlock module expected, got " + str(type(module)))
-#         self.module = module
-
-#     def forward(self, *args, **kwargs):
-#         return self.module(*args)
-
-#     def call(self, *args, **kwargs):
-#         raise NotImplementedError
-
-#     def backward(self, *args):
-
-#         raise NotImplementedError
-
-#     def set_parameters(self, **kwargs):
-#         raise NotImplementedError
-
-#     def cpu_eval_forward(self, *args, **kwargs):
-#         mxnet_inputs = [mx.nd.array(x.detach().numpy()) for x in args]
-#         outputs = self.module(*mxnet_inputs, **kwargs)
-#         return to_pt_tensors(outputs)
-
-#     def get_parameters(self) -> List[Parameter]:
-#         return [] # TODO
-
-
 class TFGraphDefModule(Module):
     """
     A wrapper around a TFGraphDef module.

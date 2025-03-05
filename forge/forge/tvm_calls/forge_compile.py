@@ -31,7 +31,6 @@ from os.path import exists as file_exists
 import onnxruntime as ort
 import onnx
 import onnx.numpy_helper
-import mxnet as mx
 from tvm.relay.expr import Tuple
 from forge.tvm_calls.relay.op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
 from jax.experimental import jax2tf
@@ -187,12 +186,6 @@ def compile_tvm_graph(
         onnx_inputs = [x.detach().numpy() for x in inputs]
         json_graphs, _ = compile_onnx_for_forge(
             module, path, *onnx_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
-        )
-    elif framework == "mxnet":
-        assert all([isinstance(x, torch.Tensor) for x in inputs])
-        mxnet_inputs = [mx.nd.array(x.detach().numpy()) for x in inputs]
-        json_graphs = compile_mxnet_for_forge(
-            module, *mxnet_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
         )
     elif framework == "jax":
         tf_inputs = to_tf_tensors(inputs, force_float32=True)
@@ -1084,77 +1077,6 @@ def compile_tf_graphdef_for_forge(
     return json_graphs
 
 
-def compile_mxnet_for_forge(module, *inputs, graph_name, compiler_cfg, verify_cfg=None):
-    framework_outputs = []
-    if verify_cfg is not None and verify_cfg.verify_tvm_compile:
-        framework_outputs = module(*inputs)
-        if not isinstance(framework_outputs, (list, tuple)):
-            framework_outputs = [framework_outputs]
-
-        framework_outputs = [x.asnumpy() for x in framework_outputs if isinstance(x, mx.ndarray.ndarray.NDArray)]
-
-    input_dict = {"input_" + str(i): inp.shape for i, inp in enumerate(inputs)}
-
-    mod_inputs = []
-    if isinstance(module, mx.gluon.HybridBlock):
-        for name in input_dict:
-            mod_inputs.append(mx.sym.Variable(name))
-        sym = module(*mod_inputs)
-        if isinstance(sym, (list, tuple)):
-            sym = mx.sym.Group(sym)
-    else:
-        sym = module
-    graph_string = sym.tojson().encode("utf-8")
-    m = hashlib.sha256()
-    m.update(graph_string)
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="mxnet")
-    if cached_graphs is not None:
-        return cached_graphs
-
-    input_name_to_tensor = {name: tensor.asnumpy() for name, tensor in zip(input_dict.keys(), inputs)}
-    mod, params = relay.frontend.from_mxnet(module, shape=input_dict)
-
-    if not compiler_cfg.enable_tvm_constant_prop:
-        mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], {}))
-    else:
-        assert (
-            compiler_cfg.convert_framework_params_to_tvm
-        ), "Cannot use constant prop without converting framework params to relay"
-        propped_params = {k: (v, True) for k, v, in params.items()}
-        mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], propped_params))
-
-    _, forge_params = compile_tvm_for_forge(
-        mod,
-        params,
-        input_name_to_tensor,
-        framework_outputs,
-        input_names=list(input_dict.keys()),
-        graph_name=graph_name,
-        return_params=True,
-        compiler_cfg=compiler_cfg,
-        verify_cfg=verify_cfg,
-    )
-
-    dev_json_graph["hash"] = m.hexdigest()
-    dev_json_graph["params"] = {}
-    for function_name in forge_params.keys():
-        dev_json_graph["params"].update(
-            {
-                name: v.numpy()
-                for (k, v), name in zip(
-                    forge_params[function_name].items(), dev_json_graph["param_names"][function_name]
-                )
-            }
-        )
-
-    dev_functions = list(dev_json_graph["functions"].keys())
-    dev_json_graph["graph"] = dev_json_graph["functions"][dev_functions[0]]
-
-    json_graph = []
-    json_graph.append(copy.deepcopy(clean_names(json_graph=dev_json_graph, forge_params=forge_params)))
-    return json_graph
-
-
 def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
     """
     Formats model weights based on specific framework.
@@ -1214,16 +1136,6 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
 
         if not (len(inputs) > 0 and isinstance(inputs[0], torch.Tensor)):
             inputs = [torch.tensor(onnx.numpy_helper.to_array(x)) for x in inputs if x is not None]
-    elif framework == "mxnet":
-        weights = {
-            name: (
-                torch.Tensor(mx_param.data().asnumpy()),
-                issubclass(mx_param.data().asnumpy().dtype.type, np.floating),
-            )
-            for name, mx_param in module.collect_params().items()
-        }
-        if not (len(inputs) > 0 and isinstance(inputs[0], torch.Tensor)):
-            inputs = [torch.tensor(x.asnumpy()) for x in inputs if x is not None]
     elif framework == "jax":
 
         def flatten_params(params, parent_key="", sep="."):
