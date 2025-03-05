@@ -30,10 +30,6 @@ jobs:
       - name: Maximize space
         uses: tenstorrent/tt-github-actions/.github/actions/maximize_space@main
 
-      - name: Fix permissions
-        shell: bash
-        run: sudo chown ubuntu:ubuntu -R $(pwd)
-
       - uses: actions/checkout@v4
         with:
             submodules: recursive
