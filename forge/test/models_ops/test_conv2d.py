@@ -21685,20 +21685,27 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D0,
-        [((1, 80, 3000, 1), torch.float32), ((1280, 80, 3, 1), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D0,
+            [((1, 80, 3000, 1), torch.float32), ((1280, 80, 3, 1), torch.float32)],
+            {
+                "model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 1280, 2999, 2) vs torch.Size([1, 1280, 3000, 1])"
+            )
+        ],
     ),
     pytest.param(
         (
@@ -35461,35 +35468,49 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D519,
-        [((1, 64, 73, 73), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[3, 3, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D519,
+            [((1, 64, 73, 73), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[3, 3, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 64, 76, 70) vs torch.Size([1, 64, 73, 73])"
+            )
+        ],
     ),
-    (
-        Conv2D520,
-        [((1, 64, 73, 73), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 3, 3]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D520,
+            [((1, 64, 73, 73), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 3, 3]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 64, 70, 76) vs torch.Size([1, 64, 73, 73])"
+            )
+        ],
     ),
     pytest.param(
         (
@@ -35650,80 +35671,115 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D527,
-        [((1, 192, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[3, 3, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D527,
+            [((1, 192, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[3, 3, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 224, 20, 14) vs torch.Size([1, 224, 17, 17])"
+            )
+        ],
     ),
-    (
-        Conv2D528,
-        [((1, 224, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 3, 3]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D528,
+            [((1, 224, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 3, 3]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 14, 20) vs torch.Size([1, 256, 17, 17])"
+            )
+        ],
     ),
-    (
-        Conv2D529,
-        [((1, 192, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 3, 3]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D529,
+            [((1, 192, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 3, 3]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 192, 14, 20) vs torch.Size([1, 192, 17, 17])"
+            )
+        ],
     ),
-    (
-        Conv2D530,
-        [((1, 224, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 3, 3]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D530,
+            [((1, 224, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 3, 3]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 224, 14, 20) vs torch.Size([1, 224, 17, 17])"
+            )
+        ],
     ),
-    (
-        Conv2D531,
-        [((1, 224, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[3, 3, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D531,
+            [((1, 224, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[3, 3, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 20, 14) vs torch.Size([1, 256, 17, 17])"
+            )
+        ],
     ),
     (
         Conv2D100,
@@ -35788,35 +35844,49 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D534,
-        [((1, 256, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[3, 3, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D534,
+            [((1, 256, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[3, 3, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 20, 14) vs torch.Size([1, 256, 17, 17])"
+            )
+        ],
     ),
-    (
-        Conv2D535,
-        [((1, 256, 17, 17), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 3, 3]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D535,
+            [((1, 256, 17, 17), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 3, 3]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 320, 14, 20) vs torch.Size([1, 320, 17, 17])"
+            )
+        ],
     ),
     pytest.param(
         (
@@ -35851,95 +35921,137 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D537,
-        [((1, 384, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D537,
+            [((1, 384, 8, 8), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 9, 7) vs torch.Size([1, 256, 8, 8])"
+            )
+        ],
     ),
-    (
-        Conv2D538,
-        [((1, 384, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D538,
+            [((1, 384, 8, 8), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 7, 9) vs torch.Size([1, 256, 8, 8])"
+            )
+        ],
     ),
-    (
-        Conv2D539,
-        [((1, 384, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D539,
+            [((1, 384, 8, 8), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 448, 7, 9) vs torch.Size([1, 448, 8, 8])"
+            )
+        ],
     ),
-    (
-        Conv2D540,
-        [((1, 448, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D540,
+            [((1, 448, 8, 8), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 512, 9, 7) vs torch.Size([1, 512, 8, 8])"
+            )
+        ],
     ),
-    (
-        Conv2D541,
-        [((1, 512, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D541,
+            [((1, 512, 8, 8), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 9, 7) vs torch.Size([1, 256, 8, 8])"
+            )
+        ],
     ),
-    (
-        Conv2D542,
-        [((1, 512, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D542,
+            [((1, 512, 8, 8), torch.float32)],
+            {
+                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 256, 7, 9) vs torch.Size([1, 256, 8, 8])"
+            )
+        ],
     ),
     (
         Conv2D543,

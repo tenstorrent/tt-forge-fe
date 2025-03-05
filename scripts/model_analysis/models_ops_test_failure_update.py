@@ -7,7 +7,7 @@ import re
 from loguru import logger
 import argparse
 from utils import check_path, run_precommit
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Tuple
 from forge.utils import create_excel_file
 import pandas as pd
 
@@ -103,6 +103,8 @@ def rename_marker(marker: str) -> str:
         return "xfail"
     elif marker_lower in ["skip", "skipped"]:
         return "skip"
+    elif marker_lower in ["xpass"]:
+        return "xpass"
     else:
         return marker_lower
 
@@ -456,14 +458,15 @@ def extract_xfailed_and_skipped_tests_with_reason(
     return status_to_tests_and_reason
 
 
-def extract_failed_tests_with_failure_reason(
+def extract_failed_and_xpass_tests_with_failure_reason(
     log_files: List[str], target_dirs: Optional[List[str]] = None
-) -> Dict[str, str]:
+) -> Tuple[Dict[str, str], Dict[str, str]]:
     """
-    Extract failed test cases along with their failure reasons from pytest log files.
+    Extract failed and XPASS test cases along with their corresponding failure reasons from pytest log files.
 
-    This function processes one or more pytest log files to identify failed tests and extract their
-    corresponding error messages. It operates in two main phases:
+    This function processes one or more pytest log files to identify both failed tests and tests
+    that unexpectedly passed (XPASS). It extracts and associates error messages or failure reasons with
+    the respective test cases. The extraction occurs in two primary phases:
 
     1. Short Test Summary Extraction:
        - Scans each log file for the "short test summary info" section.
@@ -481,6 +484,7 @@ def extract_failed_tests_with_failure_reason(
          with additional context from subsequent lines.
        - The refined error message is then matched with the corresponding failed test case (using substring
          checks) and updated in the dictionary.
+       - Additionally, for lines indicating an "XPASS" result, a separate dictionary is maintained.
 
     Args:
         log_files (List[str]): A list of file paths to pytest log files.
@@ -489,18 +493,21 @@ def extract_failed_tests_with_failure_reason(
             If None, all failed tests from the log files are considered.
 
     Returns:
-        Dict[str, str]: A dictionary mapping each failed test case (as a string) to its corresponding
-        failure reason (error message). If a test case's error message could not be determined, its value
-        remains an empty string.
+        Tuple[Dict[str, str], Dict[str, str]]:
+            - The first dictionary maps each failed test case (as a string) to its corresponding failure reason
+              (error message). If a failure reason could not be determined, the value remains an empty string.
+            - The second dictionary maps test cases that produced an "XPASS" result to their associated message.
     """
     # Instantiate the helper object for refining error messages with additional context.
     error_message_updater = ErrorMessageUpdater()
 
     # Regular expression to capture the test function name from lines in the detailed failure section.
     test_func_pattern = r"^_+\s+(test_[a-zA-Z0-9_]+\[.*\])\s+_+$"
+    xpass_pattern = r"^\[[^\]]+\]\s*(.*)$"
 
-    # Dictionary to store mapping from each failed test case to its failure message.
+    # Dictionaries to store the mapping from test cases to their error messages.
     failed_tests_with_reason: Dict[str, str] = {}
+    xpass_tests_with_reason: Dict[str, str] = {}
 
     # Define the maximum number of consecutive error lines to consider for assembling a complete error message.
     maximum_error_lines = 3
@@ -547,13 +554,26 @@ def extract_failed_tests_with_failure_reason(
                 if "==== FAILURES ====" in line:
                     collect_failure_reason = True
 
+                elif "==== short test summary info ====" in line:
+                    collect_failure_reason = False
+                    break
+
                 elif collect_failure_reason:
-                    # If the test function name hasn't been captured yet, try to extract it.
-                    if len(test_case_func) == 0:
-                        match = re.search(test_func_pattern, line)
-                        if match:
-                            # Capture the test function name (including parameterized details).
-                            test_case_func = match.group(1)
+                    # Attempt to match a test function name using the defined pattern.
+                    match = re.search(test_func_pattern, line)
+                    if match:
+                        # If a test function was already captured, update its failure reason as "No_Reason"
+                        # because no error message was found before capturing a new test function.
+                        if len(test_case_func) != 0:
+                            for failed_test in failed_tests_with_reason.keys():
+                                if test_case_func in failed_test:
+                                    failed_tests_with_reason[failed_test] = "No_Reason"
+                                    break
+                        # Capture the test function name (including parameterized details).
+                        test_case_func = match.group(1)
+                    elif len(test_case_func) == 0:
+                        # If no test function is currently active, skip further processing.
+                        continue
                     else:
                         # When the test function is identified, look for lines starting with "E  " which denote error messages.
                         if line.startswith("E  "):
@@ -586,10 +606,33 @@ def extract_failed_tests_with_failure_reason(
 
                             # Reset the test function tracker for processing the next failure.
                             test_case_func = ""
+
+                        # Check for XPASS indicators and process accordingly.
+                        elif "XPASS" in line:
+                            match = re.match(xpass_pattern, line)
+                            if match:
+                                message = match.group(1).strip("\n").strip()
+                            else:
+                                message = "No_Reason"
+
+                            xpass_test = None
+                            for failed_test in failed_tests_with_reason.keys():
+                                if test_case_func in failed_test:
+                                    xpass_test = str(failed_test)
+                                    break
+
+                            # Remove XPASS test from the failed tests dictionary and add it to the XPASS dictionary.
+                            if xpass_test is not None:
+                                failed_tests_with_reason.pop(xpass_test)
+                                if xpass_test not in xpass_tests_with_reason.keys():
+                                    xpass_tests_with_reason[xpass_test] = message
+
+                                test_case_func = ""
+
         else:
             logger.warning(f"Provided {log_file} path doesn't exist!")
 
-    return failed_tests_with_reason
+    return failed_tests_with_reason, xpass_tests_with_reason
 
 
 def update_params(models_ops_test_params, marker_with_test_config, marker_with_reason_and_params):
@@ -634,18 +677,27 @@ def update_params(models_ops_test_params, marker_with_test_config, marker_with_r
         param_str = ", ".join(param)
 
         markers_str = []  # List to collect marker strings for this parameter
+        param_match_with_xpass_marker = False  # Flag to indicate if the parameter matches an XPASS marker
 
         # Check marker configurations from marker_with_test_config
         for marker, configs in marker_with_test_config.items():
             for config in configs:
                 # If the test parameter matches the configuration based on module_name and shapes_and_dtypes...
                 if param[0] == config["module_name"] and param[1] == config["shapes_and_dtypes"]:
+
+                    # Special handling for the XPASS marker; if it matches, set the flag and break.
+                    if rename_marker(marker) == "xpass":
+                        param_match_with_xpass_marker = True
+                        break
+
                     reason = config["reason"]
                     # Append the marker with its reason using the rename_marker helper function
                     markers_str.append(f'pytest.mark.{rename_marker(marker)}(reason="{reason}")')
                     break  # Stop processing further configs for this marker if a match is found
-            if len(markers_str) != 0:
-                break  # If a marker is already found, exit the outer loop
+
+            # If a marker is found or XPASS is matched, exit the outer loop to prevent adding multiple markers.
+            if len(markers_str) != 0 or param_match_with_xpass_marker:
+                break
 
         # Process additional marker reason information if provided
         if len(marker_with_reason_and_params) != 0:
@@ -747,22 +799,26 @@ def update_models_ops_tests(models_ops_test_update_info: Dict[str, Dict[str, Lis
 
 def create_report(
     report_file_path: str,
-    failed_models_ops_tests: Dict[str, str],
+    failed_tests_with_reason: Dict[str, str],
+    xpass_tests_with_reason: Dict[str, str],
     status_to_tests_and_reason: Optional[Dict[str, Dict[str, str]]] = None,
 ):
     """
-    Create an Excel report summarizing failed tests and tests with specific markers and reasons.
+    Create an Excel report summarizing failed tests, XPASS tests, and
+    tests with additional markers (e.g., SKIP, XFAIL) along with their failure reasons.
 
     This function generates an Excel report that consolidates:
-      1. Failed test cases (from `failed_models_ops_tests`), each marked as "FAILED".
-      2. Additional test cases with marker information (from `status_to_tests_and_reason`, if provided).
+      1. Failed test cases (from `failed_tests_with_reason`), each marked as "FAILED".
+      2. XPASS test cases (from `xpass_tests_with_reason`) and marks them as "XPASS".
+      3. Additional test cases with marker information (from `status_to_tests_and_reason`, if provided).
          For these tests, the corresponding marker (e.g., "SKIP", "XFAIL") and the reason are included.
 
     The report is written to the file specified by `report_file_path` using the `create_excel_file` helper.
 
     Args:
         report_file_path (str): The file path where the Excel report will be saved.
-        failed_models_ops_tests (Dict[str, str]): A dictionary mapping failed test cases to their failure reasons.
+        failed_tests_with_reason (Dict[str, str]): A dictionary mapping failed test cases to their failure reasons.
+        xpass_tests_with_reason (Dict[str, str]): A dictionary mapping XPASS test cases to their associatedmessages or reasons.
         status_to_tests_and_reason (Optional[Dict[str, Dict[str, str]]], optional):
             A dictionary mapping marker names to a dictionary of test cases and their associated reasons.
             Defaults to None, meaning only failed tests will be reported.
@@ -775,8 +831,12 @@ def create_report(
     data = []  # List to hold rows of data for the report
 
     # Add each failed test case to the report data with a "FAILED" marker.
-    for failed_test, failure_reason in failed_models_ops_tests.items():
+    for failed_test, failure_reason in failed_tests_with_reason.items():
         data.append([failed_test, "FAILED", failure_reason])
+
+    # Add each xpass test case to the report data with a "XPASS" marker.
+    for xpass_test, failure_reason in xpass_tests_with_reason.items():
+        data.append([xpass_test, "XPASS", failure_reason])
 
     # If additional test status information is provided, add those test cases to the report.
     # Note: The check ensures that the dictionary is not None and not empty.
@@ -938,17 +998,18 @@ def main():
             log_files=log_files, models_ops_test_dir_path=models_ops_test_dir_path
         )
 
-        failed_models_ops_tests = extract_failed_tests_with_failure_reason(
+        failed_tests_with_reason, xpass_tests_with_reason = extract_failed_and_xpass_tests_with_failure_reason(
             log_files=log_files, target_dirs=[models_ops_test_dir_path]
         )
 
-        if len(failed_models_ops_tests) == 0:
+        if len(failed_tests_with_reason) == 0 and len(xpass_tests_with_reason) == 0:
             log_files_str = ", ".join(log_files)
-            logger.error(f"There are no failures in the provided {log_files_str} log files")
+            logger.error(f"There are no failed/xpass tests in the provided {log_files_str} log files")
 
         create_report(
             report_file_path=report_file_path,
-            failed_models_ops_tests=failed_models_ops_tests,
+            failed_tests_with_reason=failed_tests_with_reason,
+            xpass_tests_with_reason=xpass_tests_with_reason,
             status_to_tests_and_reason=status_to_tests_and_reason,
         )
 

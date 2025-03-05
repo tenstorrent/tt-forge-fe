@@ -1734,13 +1734,10 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 128, 768), torch.float32), ((768, 119547), torch.float32)],
-            {"model_name": ["pt_distilbert_distilbert_base_multilingual_cased_mlm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 128, 768), torch.float32), ((768, 119547), torch.float32)],
+        {"model_name": ["pt_distilbert_distilbert_base_multilingual_cased_mlm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,
@@ -2457,19 +2454,16 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 256, 2048), torch.float32), ((2048, 128256), torch.float32)],
-            {
-                "model_name": [
-                    "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                    "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 256, 2048), torch.float32), ((2048, 128256), torch.float32)],
+        {
+            "model_name": [
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul0,
@@ -3196,19 +3190,16 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 35, 3584), torch.float32), ((3584, 152064), torch.float32)],
-            {
-                "model_name": [
-                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 35, 3584), torch.float32), ((3584, 152064), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul0,
@@ -3279,19 +3270,16 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 35, 1536), torch.float32), ((1536, 151936), torch.float32)],
-            {
-                "model_name": [
-                    "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-                    "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 35, 1536), torch.float32), ((1536, 151936), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul0,
@@ -3362,19 +3350,16 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 35, 2048), torch.float32), ((2048, 151936), torch.float32)],
-            {
-                "model_name": [
-                    "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                    "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 35, 2048), torch.float32), ((2048, 151936), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul0,
@@ -3411,13 +3396,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 35, 4864), torch.float32), ((4864, 896), torch.float32)],
         {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 35, 896), torch.float32), ((896, 151936), torch.float32)],
-            {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 35, 896), torch.float32), ((896, 151936), torch.float32)],
+        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,
@@ -3502,13 +3484,10 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 39, 1536), torch.float32), ((1536, 151936), torch.float32)],
-            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 39, 1536), torch.float32), ((1536, 151936), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,
@@ -3543,13 +3522,10 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 39, 3584), torch.float32), ((3584, 152064), torch.float32)],
-            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 39, 3584), torch.float32), ((3584, 152064), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,
@@ -3660,13 +3636,10 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 39, 2048), torch.float32), ((2048, 151936), torch.float32)],
-            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 39, 2048), torch.float32), ((2048, 151936), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,
@@ -3738,21 +3711,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 39, 4864), torch.float32), ((4864, 896), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 39, 896), torch.float32), ((896, 151936), torch.float32)],
-            {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 39, 896), torch.float32), ((896, 151936), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 128, 768), torch.float32), ((768, 250002), torch.float32)],
-            {"model_name": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 128, 768), torch.float32), ((768, 250002), torch.float32)],
+        {"model_name": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,
@@ -3985,21 +3952,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 2048), torch.float32), ((2048, 768), torch.float32)],
         {"model_name": ["pt_t5_google_flan_t5_base_text_gen_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 256, 2048), torch.float32), ((2048, 256008), torch.float32)],
-            {"model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 256, 2048), torch.float32), ((2048, 256008), torch.float32)],
+        {"model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Matmul0,
-            [((1, 256, 1024), torch.float32), ((1024, 256008), torch.float32)],
-            {"model_name": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Matmul0,
+        [((1, 256, 1024), torch.float32), ((1024, 256008), torch.float32)],
+        {"model_name": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99},
     ),
     (
         Matmul0,

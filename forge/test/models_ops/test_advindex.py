@@ -119,17 +119,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((448, 768), torch.float32), ((1, 1), torch.int64)],
         {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
-    pytest.param(
-        (
-            Advindex0,
-            [((448, 1280), torch.float32), ((1, 2), torch.int64)],
-            {
-                "model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
-                "pcc": 0.99,
-                "max_int": 447,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Advindex0,
+        [((448, 1280), torch.float32), ((1, 2), torch.int64)],
+        {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex1,
@@ -179,37 +172,25 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 0,
         },
     ),
-    pytest.param(
-        (
-            Advindex2,
-            [((2401,), torch.int64)],
-            {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Advindex2,
+        [((2401,), torch.int64)],
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
-    pytest.param(
-        (
-            Advindex3,
-            [((2401,), torch.int64)],
-            {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Advindex3,
+        [((2401,), torch.int64)],
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
-    pytest.param(
-        (
-            Advindex4,
-            [((2401,), torch.int64)],
-            {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Advindex4,
+        [((2401,), torch.int64)],
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
-    pytest.param(
-        (
-            Advindex5,
-            [((2401,), torch.int64)],
-            {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Advindex5,
+        [((2401,), torch.int64)],
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
 ]
 
