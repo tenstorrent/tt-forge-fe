@@ -12,11 +12,18 @@ from typing import Tuple, Dict, List, Any, Union
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import torch
+from torch import nn
 import tensorflow as tf
-from forge.tensor import to_pt_tensors
+from forge.tensor import to_pt_tensors, TensorFromTrace
 
 from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
-from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
+from .config import (
+    DepricatedVerifyConfig,
+    VerifyConfig,
+    VerifyTensorMetadata,
+    should_waive_gradient,
+    AutomaticValueChecker,
+)
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
@@ -263,6 +270,128 @@ def verify_golden(
     assert False  # Run ttnn golden
 
 
+def verify_backward(
+    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
+    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model],
+    compiled_model: CompiledModel,
+    verify_cfg: VerifyConfig = VerifyConfig(
+        verify_backward=True, value_checker_backward=AutomaticValueChecker(pcc=0.95, rtol=1e-03, atol=1e-02)
+    ),
+):
+    """
+    Verify the compiled model against the framework model with backward pass
+    """
+
+    """
+    Needed steps:
+    - Run forward pass for the networks
+    - Run backward pass for the compiled model
+    - Run backward pass for the framework model
+        - For the framework model, we need to run the backward pass to get the gradients
+        - For now only pytorch is supported
+    - Compare the gradients
+
+    - Error checking in general
+    """
+
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return
+
+    # if not isinstance(framework_model, (torch.nn.Module, )):
+    #     raise TypeError(f"Verify backward pass is only supported for PyTorch models, but got {type(framework_model)}")
+
+    # TODO: check if compiled model is compiled for backward pass
+    # TODO: zero out grads for both models
+
+    # 0th step: input checks
+
+    # Check if inputs are of the correct type
+    if not inputs:
+        raise ValueError("Input tensors must be provided")
+    for input_tensor in inputs:
+        if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
+            raise TypeError(
+                f"Input tensor must be of type {verify_cfg.supported_tensor_types}, but got {type(input_tensor)}"
+            )
+
+    if not isinstance(framework_model, verify_cfg.framework_model_types):
+        raise TypeError(
+            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
+        )
+
+    if not isinstance(compiled_model, verify_cfg.compiled_model_types):
+        raise TypeError(
+            f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
+        )
+
+    # 1st step: run forward pass for the networks
+    fw_out = framework_model(*inputs)
+    co_out = compiled_model(*inputs)
+
+    # TODO: check if fw_out is a list of tensors or a single tensor
+    if isinstance(fw_out, TensorFromTrace):
+        fw_out = fw_out.value()
+    fake_output_grad = torch.rand_like(fw_out)
+
+    # Run backward pass for the compiled model
+    compiled_model.gradient_inputs = [fake_output_grad]
+    compiled_model.backward()
+
+    # Run backward pass for the framework model
+    fw_out.backward(gradient=fake_output_grad, inputs=inputs)
+
+    # Grab the gradients
+    # TODO: check type of the tensor
+    fw_grads = [input.grad for input in inputs]
+    co_grads = compiled_model.gradient_outputs
+
+    co_grads.reverse()
+
+    # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
+    #  cast from tensorflow tensors to pytorch tensors if needed)
+    fw_grads = to_pt_tensors(fw_grads)
+
+    assert all(isinstance(co, torch.Tensor) for co in co_grads), f"Compiled model output is not a list of torch.Tensor"
+
+    co_grads = [co.to("cpu") for co in co_grads]
+
+    # 3rd step: verifications of outputs
+    # - size check
+    # - dtype check
+    # - shape check
+    # - compare with golden
+    if verify_cfg.verify_size:
+        if len(fw_grads) != len(co_grads):
+            raise ValueError(
+                f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_grads)} outputs, compiled model has {len(co_grads)} outputs"
+            )
+
+    for fw, co in zip(fw_grads, co_grads):
+
+        if verify_cfg.verify_dtype:
+            if fw.dtype != co.dtype:
+                raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
+
+        if verify_cfg.verify_shape:
+            if fw.shape != co.shape:
+                # Squeeze the gradients if necessary
+                fw = fw.squeeze()
+                co = co.squeeze()
+                if co.shape == []:
+                    co = co.unsqueeze(0)
+                if fw.shape == []:
+                    fw = fw.unsqueeze(0)
+
+                if fw.shape != co.shape:
+                    raise TypeError(
+                        f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}"
+                    )
+
+        if verify_cfg.verify_values:
+            verify_cfg.value_checker.check(fw, co)
+
+
 def verify(
     inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
     framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model],
@@ -344,6 +473,9 @@ def verify(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
+
+    if verify_cfg.verify_backward:
+        verify_backward(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
 
