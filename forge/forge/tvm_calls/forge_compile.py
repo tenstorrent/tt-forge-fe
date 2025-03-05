@@ -1300,15 +1300,17 @@ def get_auto_path(graph_hash, compiler_cfg, is_load):
         else:
             tvm_path = os.path.dirname(tvm.__file__)
             if "site-packages" in tvm_path:
-                tvm_info = subprocess.check_output(['pip', 'show', 'tvm']).decode('utf-8')
-                for line in tvm_info.split('\n'):
+                tvm_info = subprocess.check_output(["pip", "show", "tvm"]).decode("utf-8")
+                for line in tvm_info.split("\n"):
                     if "Version:" in line:
                         tvm_ver = line.split("Version: ")[-1]
-                        tvm_hash = tvm_ver.split('+')[-1]
+                        tvm_hash = tvm_ver.split("+")[-1]
                         break
             else:
                 tvm_hash = (
-                    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=tvm_path).decode("utf-8").strip()
+                    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=tvm_path)
+                    .decode("utf-8")
+                    .strip()
                 )
             auto_path = "generated_modules/tvm_cache/" + tvm_hash + "_" + graph_hash
     else:
