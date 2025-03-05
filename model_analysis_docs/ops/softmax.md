@@ -22,19 +22,19 @@
 			<td rowspan="3">[TT_METAL][ttnn softmax] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B Inputs must be of bfloat16 or bfloat8_b type</td>
 			<td rowspan="3">6</td>
 			<td>2</td>
-			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 17, 4, 4480), dtype=float32)</td>
 			<td>dim : 1</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 17, 4, 1120), dtype=float32)</td>
 			<td>dim : 1</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 17, 4, 280), dtype=float32)</td>
 			<td>dim : 1</td>
 		</tr>

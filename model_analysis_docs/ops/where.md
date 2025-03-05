@@ -18,138 +18,138 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="44">1</td>
-			<td rowspan="44">[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
-			<td rowspan="44">188</td>
+			<td rowspan="45">1</td>
+			<td rowspan="45">[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+			<td rowspan="45">189</td>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 6, 20), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 6, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_63160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 6, 20), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 6, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 6, 20), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 12, 40), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 12, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_66160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 12, 40), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 12, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 12, 40), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 12, 40), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 12, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_69160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 12, 40), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 12, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 12, 40), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 24, 80), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 24, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_72160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 24, 80), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 24, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 24, 80), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 24, 80), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 24, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 24, 80), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 24, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 24, 80), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 48, 160), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 48, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_78160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 48, 160), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 48, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 48, 160), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 48, 160), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 48, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 48, 160), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 48, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 48, 160), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_84160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 96, 320), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 96, 320), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_87160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 96, 320), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 96, 320), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 96, 320), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 192, 640), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 192, 640), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90160, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 192, 640), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 192, 640), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 192, 640), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_125m_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -274,6 +274,12 @@
 		</tr>
 		<tr>
 			<td>1</td>
+			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2441216,), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
 			<td><ul><li>pt_gpt2_gpt2_text_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
 			<td></td>
@@ -282,6 +288,15 @@
 			<td>1</td>
 			<td><ul><li>pt_nanogpt_financialsupport_nanogpt_text_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 7, 7), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td rowspan="1">2</td>
+			<td rowspan="1">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+			<td rowspan="1">1</td>
+			<td>1</td>
+			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2441216,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_500, dtype=float32)</td>
 			<td></td>
 		</tr>
 	</tbody>

@@ -113,11 +113,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 5), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32064, 3072), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>10</th>
@@ -144,28 +144,6 @@
     <tr>
       <th>12</th>
       <td>Index</td>
-      <td>Operand(type=Parameter, shape=(16384, 3072), dtype=float32)</td>
-      <td>dim : -2<br>start : 8192<br>stop : 16384<br>stride : 1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Index</td>
-      <td>Operand(type=Parameter, shape=(16384, 3072), dtype=float32)</td>
-      <td>dim : -2<br>start : 0<br>stop : 8192<br>stride : 1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 5, 9216), dtype=float32)</td>
       <td>dim : -1<br>start : 0<br>stop : 3072<br>stride : 1</td>
       <td>&#x2705;</td>
@@ -175,7 +153,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>15</th>
+      <th>13</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 5, 9216), dtype=float32)</td>
       <td>dim : -1<br>start : 3072<br>stop : 6144<br>stride : 1</td>
@@ -186,7 +164,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>16</th>
+      <th>14</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 5, 9216), dtype=float32)</td>
       <td>dim : -1<br>start : 6144<br>stop : 9216<br>stride : 1</td>
@@ -197,7 +175,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>17</th>
+      <th>15</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
       <td>dim : -1<br>start : 48<br>stop : 96<br>stride : 1</td>
@@ -208,10 +186,32 @@
       <td></td>
     </tr>
     <tr>
-      <th>18</th>
+      <th>16</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
       <td>dim : -1<br>start : 0<br>stop : 48<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Index</td>
+      <td>Operand(type=Parameter, shape=(16384, 3072), dtype=float32)</td>
+      <td>dim : -2<br>start : 8192<br>stop : 16384<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Index</td>
+      <td>Operand(type=Parameter, shape=(16384, 3072), dtype=float32)</td>
+      <td>dim : -2<br>start : 0<br>stop : 8192<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(1, 48, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 5, 3072), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(3072, 9216), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(1, 5, 3072), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(3072, 9216), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 48, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,28 +628,6 @@
     <tr>
       <th>56</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(8192, 3072), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>57</th>
-      <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(3072, 8192), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>58</th>
-      <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 5, 32, 96), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
@@ -659,7 +637,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>59</th>
+      <th>57</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 48, 5), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -670,7 +648,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>60</th>
+      <th>58</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(32, 5, 96), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -681,7 +659,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>61</th>
+      <th>59</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -692,7 +670,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>62</th>
+      <th>60</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 32, 5, 96), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -703,9 +681,31 @@
       <td></td>
     </tr>
     <tr>
-      <th>63</th>
+      <th>61</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(32, 96, 5), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(8192, 3072), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>63</th>
+      <td>Transpose</td>
+      <td>Operand(type=Parameter, shape=(3072, 8192), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
