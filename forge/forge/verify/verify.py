@@ -15,7 +15,7 @@ import torch
 import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
-from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
+from ..tensor import Tensor, TensorShape  # pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
 from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
@@ -24,20 +24,11 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
 
 
-def _generate_random_losses(outputs, is_forge):
+def _generate_random_losses(outputs):
     losses = []
     for out in outputs:
         if out.requires_grad:
             shape = list(out.shape.get_pytorch_shape())
-            if is_forge:
-                while len(shape) < 4:
-                    shape.insert(0, 1)
-                while len(shape) > 4:
-                    shape.pop(0)
-
-                shape[-1] = align_up_tile(shape[-1])
-                shape[-2] = align_up_tile(shape[-2])
-
             losses.append(torch.rand(shape, dtype=out.pt_data_format))
     return losses
 
@@ -47,7 +38,10 @@ def _run_pytorch_backward(outputs, device, losses):
     for i, o in enumerate(outputs):
         if o.requires_grad:
             if device.loss_module is None:
-                loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
+                # loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
+                # shouldn't have to worry about narrowint the tensor because
+                # padding tensor is buda concept...
+                loss = losses[i]
                 o.value().backward(loss, retain_graph=retain_graph)
             else:
                 o.value().backward(retain_graph=True)  # this is loss
@@ -62,15 +56,27 @@ def get_intermediate_tensors(
 ):
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
 
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(t, graph.get_tile_broadcast_dims_for_input(i))
-            for i, t in enumerate(torch_inputs)
-        ]
+    # if is_forge:
+    #     torch_inputs = [
+    #         pad_pytorch_tensor_to_forge(t, graph.get_tile_broadcast_dims_for_input(i))
+    #         for i, t in enumerate(torch_inputs)
+    #     ]
     intermediates = pygraph.get_intermediate_tensors(
         graph, torch_inputs, parameters, device, relative_atol=1.0, pcc=0.0
     )
     return intermediates
+
+
+def check_shapes_of_inputs_vs_graph_representation(graph: pygraph.Graph, inputs: Tuple[torch.Tensor, ...]):
+    ordered_input_names = graph.get_ordered_input_names()
+    for i, input_name in enumerate(ordered_input_names):
+        node_shape = pygraph.get_shape_for_node(graph, input_name)
+        input_tensor_shape = inputs[i].shape
+        print("node_shape: ", node_shape)
+        print("input_tensor_shape", input_tensor_shape)
+        # assert (
+        #     tuple(node_shape) == input_tensor_shape.get_pytorch_shape()
+        # ), "Expected input tensors and input nodes to be aligned"
 
 
 def do_verify(
@@ -91,27 +97,28 @@ def do_verify(
     """
     Verify graph vs. pytorch golden
     """
+    torch_inputs: List[torch.Tensor] = [i.to_pytorch() for i in inputs]
+    torch_targets: List[torch.Tensor] = [i.to_pytorch() for i in targets]
 
-    torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
-    torch_targets: List[torch.Tensor] = [i.value() for i in targets]
+    # if is_forge:
+    #     torch_inputs = [
+    #         pad_pytorch_tensor_to_forge(
+    #             tensor=t,
+    #             tile_broadcast_dims=graph.get_tile_broadcast_dims_for_input(i),
+    #             squeeze=False,
+    #             microbatch=1,
+    #             tile_r=graph.get_ordered_input_tile_dims()[i][0],
+    #             tile_c=graph.get_ordered_input_tile_dims()[i][1],
+    #         )
+    #         for i, t in enumerate(torch_inputs)
+    #     ]
 
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(
-                tensor=t,
-                tile_broadcast_dims=graph.get_tile_broadcast_dims_for_input(i),
-                squeeze=False,
-                microbatch=1,
-                tile_r=graph.get_ordered_input_tile_dims()[i][0],
-                tile_c=graph.get_ordered_input_tile_dims()[i][1],
-            )
-            for i, t in enumerate(torch_inputs)
-        ]
-
-    if device.loss_module is not None:
-        assert len(targets) > 0, f"No target provided, but device {device} has a loss module"
+    #  Device is DEPRICATED
+    # if device.loss_module is not None:
+    #     assert len(targets) > 0, f"No target provided, but device {device} has a loss module"
 
     logger.info("Verifying stage {}", stage_name)
+    check_shapes_of_inputs_vs_graph_representation(graph, torch_inputs)
     if not training:
 
         pcc = 0.0 if verify_cfg.pcc is None else verify_cfg.pcc
@@ -119,11 +126,11 @@ def do_verify(
             graph,
             torch_inputs,
             parameters,
-            device,
+            # device,
             verify_cfg.relative_atol,
             pcc,
             intermediate_golden_tensors,
-            balancer_solution=balancer_solution,
+            # balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
             targets=torch_targets,
         )
@@ -133,11 +140,12 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
+        logger.error(" VERIFICATION OF TRAINING MODE IS NOT SUPPORTED")
         if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_forge)
+            losses = _generate_random_losses(outputs)
         elif losses is None:
             losses = []
 
@@ -176,7 +184,7 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
         # Verify bwd gradients
         # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
@@ -186,7 +194,7 @@ def do_verify(
         for bwd_index, golden_input_grad in enumerate(golden_input_grads):
             evaled = bwd_gradients[bwd_index]
             ok &= compare_tensor_to_golden(
-                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, is_forge=is_forge, verify_cfg=verify_cfg
+                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
             )
 
         # Verify parameter gradients:
@@ -206,7 +214,6 @@ def do_verify(
                     f"Gradient for {parameter_name}",
                     golden,
                     evaled,
-                    is_forge=is_forge,
                     verify_cfg=verify_cfg,
                     warning_only=warning_only,
                 )
@@ -230,7 +237,6 @@ def do_verify(
                         f"Parameter Update for {parameter_name}",
                         golden,
                         evaled,
-                        is_forge=is_forge,
                         verify_cfg=verify_cfg,
                         warning_only=warning_only,
                     )

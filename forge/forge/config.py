@@ -83,7 +83,7 @@ class CompilerConfig:
     enable_tvm_unsupported_ops: bool = False
 
     # Should we need to compare every op with framework output at each compilation stage.
-    enable_op_level_comparision: bool = False
+    enable_op_level_comparision: bool = True
     # Should we constant prop in tvm
     enable_tvm_constant_prop: bool = False
     # Convert framework params to relay params
