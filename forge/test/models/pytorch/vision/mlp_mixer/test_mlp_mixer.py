@@ -28,13 +28,14 @@ varaints = [
     "mixer_l32_224",
     "mixer_s16_224",
     "mixer_s32_224",
+    "mixer_b16_224.goog_in21k",
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints, ids=varaints)
 def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
-    if variant != "mixer_b16_224":
+    if variant not in ["mixer_b16_224", "mixer_b16_224.goog_in21k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name

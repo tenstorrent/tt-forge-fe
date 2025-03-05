@@ -30,6 +30,8 @@ variants = [
     "meta-llama/Llama-3.1-8B-Instruct",
     "meta-llama/Llama-3.2-1B",
     "meta-llama/Llama-3.2-1B-Instruct",
+    "meta-llama/Llama-3.2-3B",
+    "huggyllama/llama-7b",
 ]
 
 
@@ -145,18 +147,27 @@ def test_llama3_causal_lm(record_forge_property, variant):
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
-
+    framework_model.eval()
     # Input prompt
     input_prompt = "Hey how are you doing today?"
 
     # Tokenize input
-    inputs = tokenizer(
-        input_prompt,
-        return_tensors="pt",
-        max_length=256,
-        pad_to_max_length=True,
-        truncation=True,
-    )
+    if variant in ["meta-llama/Llama-3.2-3B", "huggyllama/llama-7b"]:
+        inputs = tokenizer.encode_plus(
+            input_prompt,
+            return_tensors="pt",
+            max_length=32,
+            padding="max_length",
+            truncation=True,
+        )
+    else:
+        inputs = tokenizer(
+            input_prompt,
+            return_tensors="pt",
+            max_length=256,
+            pad_to_max_length=True,
+            truncation=True,
+        )
     input_ids = inputs["input_ids"]
     attn_mask = inputs["attention_mask"]
 
@@ -197,6 +208,7 @@ def test_llama3_sequence_classification(record_forge_property, variant):
     framework_model = download_model(
         AutoModelForSequenceClassification.from_pretrained, variant, use_cache=False, return_dict=False
     )
+    framework_model.eval()
 
     # Input prompt
     input_prompt = "Movie is great"
