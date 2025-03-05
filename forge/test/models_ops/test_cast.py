@@ -59,37 +59,31 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Cast0,
-            [((2, 1, 1, 13), torch.int64)],
-            {
-                "model_name": [
-                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((2, 1, 1, 13), torch.int64)],
+        {
+            "model_name": [
+                "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
-    pytest.param(
-        (
-            Cast0,
-            [((2, 13, 1), torch.int64)],
-            {
-                "model_name": [
-                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((2, 13, 1), torch.int64)],
+        {
+            "model_name": [
+                "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
     pytest.param(
         (
@@ -107,17 +101,14 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
-    pytest.param(
-        (
-            Cast0,
-            [((2, 1, 7, 7), torch.int64)],
-            {
-                "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((2, 1, 7, 7), torch.int64)],
+        {
+            "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
     pytest.param(
         (
@@ -131,60 +122,54 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
-    pytest.param(
-        (
-            Cast0,
-            [((1, 1, 1, 128), torch.int64)],
-            {
-                "model_name": [
-                    "pt_albert_xxlarge_v1_token_cls_hf",
-                    "pt_albert_base_v2_token_cls_hf",
-                    "pt_albert_xxlarge_v2_token_cls_hf",
-                    "pt_albert_large_v1_token_cls_hf",
-                    "pt_albert_large_v2_token_cls_hf",
-                    "pt_albert_base_v1_token_cls_hf",
-                    "pt_albert_base_v1_mlm_hf",
-                    "pt_albert_xlarge_v2_token_cls_hf",
-                    "pt_albert_xxlarge_v2_mlm_hf",
-                    "pt_albert_large_v2_mlm_hf",
-                    "pt_albert_base_v2_mlm_hf",
-                    "pt_albert_xlarge_v1_token_cls_hf",
-                    "pt_albert_xlarge_v1_mlm_hf",
-                    "pt_albert_large_v1_mlm_hf",
-                    "pt_albert_xxlarge_v1_mlm_hf",
-                    "pt_albert_xlarge_v2_mlm_hf",
-                    "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                    "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                    "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                    "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
-                    "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                    "pt_roberta_xlm_roberta_base_mlm_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((1, 1, 1, 128), torch.int64)],
+        {
+            "model_name": [
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_base_v1_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
-    pytest.param(
-        (
-            Cast0,
-            [((1, 1, 256, 256), torch.int64)],
-            {
-                "model_name": [
-                    "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_clm_hf",
-                    "pt_opt_facebook_opt_125m_clm_hf",
-                    "pt_opt_facebook_opt_350m_clm_hf",
-                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                    "pt_xglm_facebook_xglm_564m_clm_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((1, 1, 256, 256), torch.int64)],
+        {
+            "model_name": [
+                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_opt_facebook_opt_125m_clm_hf",
+                "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_xglm_facebook_xglm_564m_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
     pytest.param(
         (
@@ -474,36 +459,30 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
-    pytest.param(
-        (
-            Cast0,
-            [((1, 1, 1, 7), torch.int64)],
-            {
-                "model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((1, 1, 1, 7), torch.int64)],
+        {
+            "model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
-    pytest.param(
-        (
-            Cast0,
-            [((1, 1, 32, 32), torch.int64)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_qa_hf",
-                    "pt_opt_facebook_opt_350m_qa_hf",
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                    "pt_opt_facebook_opt_125m_qa_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dtype": "torch.float32"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cast0,
+        [((1, 1, 32, 32), torch.int64)],
+        {
+            "model_name": [
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_125m_qa_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dtype": "torch.float32"},
+        },
     ),
     pytest.param(
         (
