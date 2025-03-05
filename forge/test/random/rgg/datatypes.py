@@ -5,7 +5,7 @@
 # Generic test model randomizer
 
 
-from typing import Dict, List, Type, Optional, Final
+from typing import Dict, List, Type, Optional, Final, Any, Callable
 from dataclasses import dataclass, field
 import random
 import torch
@@ -184,6 +184,7 @@ class RandomizerTestContext:
     rng_shape: Optional[random.Random] = None
     # random number generators for parameters
     rng_params: Optional[random.Random] = None
+    record_property: Optional[Callable[[str, Any], None]] = None
 
 
 class ModelBuilder:

@@ -9,7 +9,7 @@ import pytest
 
 from copy import copy
 from dataclasses import dataclass
-from typing import Generator, Tuple, List, Union
+from typing import Generator, Tuple, List, Union, Callable, Any
 
 from forge.op_repo import OperatorParamNumber
 
@@ -392,7 +392,13 @@ class RGGConfiguraionProvider:
 @pytest.mark.parametrize("test_index, random_seed", get_random_seeds())
 @pytest.mark.parametrize("framework, config_name, randomizer_config", RGGConfiguraionProvider.get_tests())
 def test_random_graph_algorithm(
-    test_index, random_seed, test_device, framework, config_name: str, randomizer_config: RandomizerConfig
+    test_index,
+    random_seed,
+    test_device,
+    framework,
+    config_name: str,
+    randomizer_config: RandomizerConfig,
+    record_property: Callable[[str, Any], None],
 ):
     process_test(
         config_name,
@@ -402,6 +408,7 @@ def test_random_graph_algorithm(
         randomizer_config,
         graph_builder_type=RandomGraphAlgorithm,
         framework=framework,
+        record_property=record_property,
     )
 
 

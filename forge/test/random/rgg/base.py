@@ -5,7 +5,7 @@
 # Base classes for random randomizer generator
 
 
-from typing import Type
+from typing import Type, Any, Callable
 from loguru import logger
 from jinja2 import Environment, FileSystemLoader
 import os
@@ -212,12 +212,15 @@ class RandomizerRunner:
         # verify Forge model
         verify_module(model, input_shapes, random_seed=parameters.random_seed)
 
+    def get_test_file_name(self) -> str:
+        return f"test_gen_model_{StrUtils.test_id(self.test_context)}.py"
+
     def save_test(self, test_code_str: str, failing_test: bool = False):
         test_dir = self.test_context.randomizer_config.test_dir
         if failing_test:
             test_dir = f"{test_dir}/failing_tests"
             test_code_str = test_code_str.replace("# @pytest.mark.xfail", "@pytest.mark.xfail")
-        test_code_file_name = f"{test_dir}/test_gen_model_{StrUtils.test_id(self.test_context)}.py"
+        test_code_file_name = f"{test_dir}/{self.get_test_file_name()}"
 
         if not os.path.exists(test_dir):
             logger.info(f"Creating test directory {test_dir}")
@@ -270,6 +273,8 @@ class RandomizerRunner:
 
         # generate test source code with test function
         test_code_str = self.generate_code()
+        self.test_context.record_property("test_file", self.get_test_file_name())
+        self.test_context.record_property("test_code", test_code_str)
 
         if randomizer_config.print_code:
             # printing generated test source code to console for debugging purposes
@@ -308,6 +313,7 @@ def process_test(
     randomizer_config: RandomizerConfig,
     graph_builder_type: Type[GraphBuilder],
     framework: Framework,
+    record_property: Callable[[str, Any], None],
 ):
     """
     Process a single randomizer test.
@@ -320,6 +326,7 @@ def process_test(
         randomizer_config (RandomizerConfig): The configuration for the randomizer.
         graph_builder_type (Type[GraphBuilder]): The graph builder type (algorithm) for the test.
         framework (Framework): The test framework for the test.
+        record_property (Callable[[str, Any], None]): The function for recording test properties.
     """
     # TODO read framwework from randomizer_config
 
@@ -331,7 +338,11 @@ def process_test(
     )
     # instantiate test_context
     test_context = RandomizerTestContext(
-        randomizer_config=randomizer_config, parameters=parameters, graph=None, test_name=test_name
+        randomizer_config=randomizer_config,
+        parameters=parameters,
+        graph=None,
+        test_name=test_name,
+        record_property=record_property,
     )
     # instantiate graph_builder
     model_builder = framework.ModelBuilderType()
