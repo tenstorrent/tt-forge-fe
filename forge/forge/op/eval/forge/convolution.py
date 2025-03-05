@@ -91,7 +91,7 @@ class Conv2d(PyOp):
         h_in = act[-3] if self.channel_last else act[-2]
         w_in = act[-2] if self.channel_last else act[-1]
 
-        padding_top, padding_left, padding_bottom, padding_right = self.padding
+        padding_left, padding_right, padding_top, padding_bottom = self.padding
         dilation_height, dilation_width = self.dilation
         stride_height, stride_width = self.stride
 
@@ -132,6 +132,11 @@ class Conv2d(PyOp):
         if not is_channel_last:
             activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
             activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
+
+        # The below condition checks whether the channel is last and the required output channel position (1, 1, 1, C_out) in the bias, as well as the bias type.
+        if (bias is not None) and (bias.shape[-1] != weight.shape[-4]) and (not is_channel_last):
+            bias = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [bias])
+            bias = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [bias])
 
         # Only want to re-create the Conv2d op if something has changed. Otherwise it the compiler will infinitely
         # decompose the same Conv2d over and over.
@@ -303,6 +308,11 @@ class Conv2dTranspose(PyOp):
         if not is_channel_last:
             activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
             activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
+
+        # The below condition checks whether the channel is last and the required output channel position (1, 1, 1, C_out) in the bias, as well as the bias type.
+        if (bias is not None) and (bias.shape[-1] != weight.shape[-4]) and (not is_channel_last):
+            bias = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [bias])
+            bias = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [bias])
 
         # Only want to re-create the Conv2dTranspose op if something has changed. Otherwise it the compiler will infinitely
         # decompose the same Conv2dTranspose over and over.
