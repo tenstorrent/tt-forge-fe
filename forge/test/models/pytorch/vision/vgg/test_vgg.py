@@ -17,6 +17,7 @@ from vgg_pytorch import VGG
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -206,6 +207,47 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
         input_batch = torch.rand(1, 3, 224, 224)
 
     inputs = [input_batch]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+variants_with_weights = {
+    "vgg11": "VGG11_Weights",
+    "vgg11_bn": "VGG11_BN_Weights",
+    "vgg13": "VGG13_Weights",
+    "vgg13_bn": "VGG13_BN_Weights",
+    "vgg16": "VGG16_Weights",
+    "vgg16_bn": "VGG16_BN_Weights",
+    "vgg19": "VGG19_Weights",
+}
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants_with_weights.keys())
+def test_vgg_torchvision(record_forge_property, variant):
+
+    if variant != "vgg11":
+        pytest.skip("Skipping this variant; only testing the small variant(vgg11) for now.")
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="vgg",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and input
+    weight_name = variants_with_weights[variant]
+    framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
