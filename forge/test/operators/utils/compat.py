@@ -14,6 +14,7 @@ from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.tensor import to_pt_tensors
 from forge.op_repo import TensorShape
 from forge.config import CompilerConfig
+from forge.tensor import to_forge_tensors
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
@@ -248,26 +249,9 @@ class TestTensorsUtils:
             pass
         return value_range
 
-
-# TODO remove this method, used only in RGG
-# Compatibility method for verifying models
-def verify_module_old(
-    model: Module,
-    input_shapes: List[TensorShape],
-    pcc: Optional[float] = None,
-    dev_data_format: FrameworkDataFormat = None,
-    value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
-    random_seed: int = 42,
-    convert_to_forge: bool = True,  # explicit conversion to forge data format
-):
-
-    logger.debug(
-        f"Verifying model class: {model.__class__.__name__}({model.__class__.__base__.__module__}.{model.__class__.__base__.__name__}) input_shapes: {input_shapes}"
-    )
-
-    inputs = create_torch_inputs(input_shapes, dev_data_format, value_range, random_seed)
-
-    verify_module_for_inputs(model, inputs, pcc, dev_data_format, convert_to_forge)
+    def convert_to_forge_tensors(inputs: List[torch.Tensor], dev_data_format: forge.DataFormat) -> List[forge.Tensor]:
+        # return [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+        return to_forge_tensors(inputs)
 
 
 # TODO move to class TestTensorsUtils
@@ -313,7 +297,7 @@ def verify_module_for_inputs_deprecated(
     fw_out = model(*inputs)
 
     if convert_to_forge:
-        forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+        forge_inputs = TestTensorsUtils.convert_to_forge_tensors(inputs, dev_data_format)
     else:
         forge_inputs = inputs
 
@@ -347,12 +331,12 @@ def verify_module_for_inputs(
 ):
 
     if convert_to_forge:
-        forge_inputs = [forge.Tensor.create_from_torch(input, dev_data_format=dev_data_format) for input in inputs]
+        forge_inputs = TestTensorsUtils.convert_to_forge_tensors(inputs, dev_data_format)
     else:
         forge_inputs = inputs
 
     compiled_model = forge.compile(model, sample_inputs=forge_inputs, compiler_cfg=compiler_cfg)
-    verify(inputs, model, compiled_model, verify_config)
+    verify(forge_inputs, model, compiled_model, verify_config)
 
 
 def verify_module_for_inputs_torch(
