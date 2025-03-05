@@ -94,6 +94,8 @@ target_link_libraries(ttforge_csrc PRIVATE
     ${TORCH_LIBRARIES}
 )
 
+target_link_libraries(ttforge_csrc PUBLIC coverage_config)
+
 target_compile_options(ttforge_csrc PRIVATE
     ${TTFORGE_CSRC_CFLAGS}
     ${CXXFLAGS}

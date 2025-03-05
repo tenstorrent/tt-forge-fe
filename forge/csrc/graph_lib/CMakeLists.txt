@@ -9,4 +9,6 @@ add_library(graph
     utils.cpp
     python_bindings.cpp)
 
+target_link_libraries(graph PUBLIC coverage_config)
+
 target_compile_options(graph PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
