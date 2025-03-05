@@ -23,7 +23,7 @@
     <tr>
       <th>1</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1024, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 24), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1024, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 24), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -34,7 +34,7 @@
     <tr>
       <th>2</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1024, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 24), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1024, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 24), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

@@ -34,7 +34,7 @@
     <tr>
       <th>2</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -56,7 +56,7 @@
     <tr>
       <th>4</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -67,7 +67,7 @@
     <tr>
       <th>5</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(4096,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(4096,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -93,42 +93,42 @@
       <td>dtype : torch.float32</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>8</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(30000, 128), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>9</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2, 128), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>10</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 128), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>11</th>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_00, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_00, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,28 +342,6 @@
     <tr>
       <th>30</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)</td>
-      <td>shape : (16, 128, 128)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(16, 128, 128), dtype=float32)</td>
-      <td>shape : (1, 16, 128, 128)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td>shape : (128, 1024)</td>
       <td>&#x2705;</td>
@@ -373,7 +351,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>33</th>
+      <th>31</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td>shape : (1, 128, 16, 64)</td>
@@ -384,7 +362,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>34</th>
+      <th>32</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(128, 1024), dtype=float32)</td>
       <td>shape : (1, 128, 1024)</td>
@@ -395,10 +373,32 @@
       <td></td>
     </tr>
     <tr>
-      <th>35</th>
+      <th>33</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 16, 128, 64), dtype=float32)</td>
       <td>shape : (16, 128, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(16, 128, 128), dtype=float32)</td>
+      <td>shape : (1, 16, 128, 128)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)</td>
+      <td>shape : (16, 128, 128)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

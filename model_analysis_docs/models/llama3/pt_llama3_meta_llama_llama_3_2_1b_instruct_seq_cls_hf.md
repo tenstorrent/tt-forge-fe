@@ -135,11 +135,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 4), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128256, 2048), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>12</th>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(4, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 2048), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(1, 32, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(4, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2048, 2048), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -280,9 +280,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>25</th>

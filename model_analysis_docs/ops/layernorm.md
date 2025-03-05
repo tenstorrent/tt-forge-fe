@@ -22,8 +22,8 @@
 			<td rowspan="3">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
 			<td rowspan="3">3</td>
 			<td>1</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2, 1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048,), dtype=float32)</td>
+			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
 			<td>dim : -1<br>epsilon : 1e-05</td>
 		</tr>
 		<tr>
@@ -34,8 +34,8 @@
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2, 1, 1536), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
+			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2, 1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048,), dtype=float32)</td>
 			<td>dim : -1<br>epsilon : 1e-05</td>
 		</tr>
 	</tbody>

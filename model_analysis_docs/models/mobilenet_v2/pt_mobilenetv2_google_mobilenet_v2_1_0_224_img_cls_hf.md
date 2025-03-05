@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(32,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(24,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(24,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(24,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(24,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 144, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 320, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(320, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 144, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 320, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(320, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 96, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.conv_stem.first_conv.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1414, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 96, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.conv_stem.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.conv_stem.first_conv.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.conv_stem.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.conv_stem.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.0.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.conv_stem.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.0.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.0.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.0.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.0.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -496,7 +496,7 @@
     <tr>
       <th>44</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.1.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.0.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -507,7 +507,7 @@
     <tr>
       <th>45</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.1.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.1.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -518,7 +518,7 @@
     <tr>
       <th>46</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.1.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.1.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -529,7 +529,7 @@
     <tr>
       <th>47</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.2.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.1.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -540,7 +540,7 @@
     <tr>
       <th>48</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.2.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.2.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -551,7 +551,7 @@
     <tr>
       <th>49</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.2.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.2.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -562,7 +562,7 @@
     <tr>
       <th>50</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.3.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.2.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.3.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.3.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.3.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.3.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -595,7 +595,7 @@
     <tr>
       <th>53</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.4.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.3.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.4.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.4.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.4.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.4.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.5.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.4.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -639,7 +639,7 @@
     <tr>
       <th>57</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.5.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.5.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -650,7 +650,7 @@
     <tr>
       <th>58</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.5.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.5.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.6.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.5.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,7 +672,7 @@
     <tr>
       <th>60</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.6.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.6.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.6.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.6.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.7.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.6.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.7.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.7.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.7.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.7.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.8.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.7.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.8.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.8.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.8.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.8.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.9.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.8.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.9.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.9.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.9.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.9.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -793,7 +793,7 @@
     <tr>
       <th>71</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.10.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.9.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,7 +804,7 @@
     <tr>
       <th>72</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.10.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.10.expand_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -815,7 +815,7 @@
     <tr>
       <th>73</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=mobilenet_v2.layer.10.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106414, dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.10.conv_3x3.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -826,7 +826,7 @@
     <tr>
       <th>74</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 96, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 96, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Constant, name=mobilenet_v2.layer.10.reduce_1x1.normalization.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106414, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1948,7 +1948,7 @@
     <tr>
       <th>176</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_0454, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_01342, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1959,7 +1959,7 @@
     <tr>
       <th>177</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(32,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1970,7 +1970,7 @@
     <tr>
       <th>178</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1981,7 +1981,7 @@
     <tr>
       <th>179</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(32,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_61342, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1992,7 +1992,7 @@
     <tr>
       <th>180</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_6454, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2014,7 +2014,7 @@
     <tr>
       <th>182</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2025,7 +2025,7 @@
     <tr>
       <th>183</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2036,7 +2036,7 @@
     <tr>
       <th>184</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_15454, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2047,7 +2047,7 @@
     <tr>
       <th>185</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(24,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(24,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2058,7 +2058,7 @@
     <tr>
       <th>186</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_15454, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2069,7 +2069,7 @@
     <tr>
       <th>187</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(24,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(24,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(24,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2080,7 +2080,7 @@
     <tr>
       <th>188</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 144, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2091,7 +2091,7 @@
     <tr>
       <th>189</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 320, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(320, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(24,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2102,7 +2102,7 @@
     <tr>
       <th>190</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 144, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2113,7 +2113,7 @@
     <tr>
       <th>191</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 320, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(320, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2124,7 +2124,7 @@
     <tr>
       <th>192</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2828,7 +2828,7 @@
     <tr>
       <th>256</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2839,7 +2839,7 @@
     <tr>
       <th>257</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3059,7 +3059,7 @@
     <tr>
       <th>277</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3070,7 +3070,7 @@
     <tr>
       <th>278</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3116,16 +3116,16 @@
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(1001, 1280), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [1280, 1], got [1, 1001]</td>
     </tr>
     <tr>
       <th>283</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3136,7 +3136,7 @@
     <tr>
       <th>284</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3147,7 +3147,7 @@
     <tr>
       <th>285</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(384, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3158,7 +3158,7 @@
     <tr>
       <th>286</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3356,7 +3356,7 @@
     <tr>
       <th>304</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3367,7 +3367,7 @@
     <tr>
       <th>305</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(32, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3378,7 +3378,7 @@
     <tr>
       <th>306</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
