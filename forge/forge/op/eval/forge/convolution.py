@@ -91,7 +91,7 @@ class Conv2d(PyOp):
         h_in = act[-3] if self.channel_last else act[-2]
         w_in = act[-2] if self.channel_last else act[-1]
 
-        padding_top, padding_left, padding_bottom, padding_right = self.padding
+        padding_left, padding_right, padding_top, padding_bottom = self.padding
         dilation_height, dilation_width = self.dilation
         stride_height, stride_width = self.stride
 
