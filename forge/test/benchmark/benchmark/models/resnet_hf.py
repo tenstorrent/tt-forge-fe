@@ -2,90 +2,70 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Built-in modules
 import pytest
 import time
 import socket
 import subprocess
 import json
+import random
+
+# import sys
+# import os
+from datetime import datetime
+
+# Third-party modules
 import torch
 from torch import nn
+from transformers import ResNetForImageClassification
+from datasets import load_dataset
+
+# Forge modules
 import forge
-from forge.verify.verify import verify
+from forge.verify.compare import compare_with_golden_pcc
+
+# from ....utils import download_model
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../")))
+from test.utils import download_model
 
 # Common constants
 GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
 
 # Batch size configurations
-MNIST_BATCH_SIZE_EXP_RANGE = 7
+BATCH_SIZE = [
+    1,
+]
 
 # Input size configurations
-MNIIST_INPUT_SIZE_EXP_RANGE = [5, 7]
-MNIIST_INPUT_SIZE_FACTORS = [1, 3, 5, 7]
-
-# Hidden layer size configurations
-MNIST_HIDDEN_SIZE_EXP_RANGE = [5, 7]
-MNIIST_HIDDEN_SIZE_FACTORS = [1, 3]
-
-MNIST_INPUT_FEATURE_SIZE = 784  # 784 = 28 * 28, default size of MNIST image
-MNIST_OUTPUT_FEATURE_SIZE = 10  # 10 classes in MNIST, default output size
-MNIIST_HIDDEN_SIZE = 256  # Hidden layer size, default size
-
-BATCH_SIZE = [
-    2**i for i in range(MNIST_BATCH_SIZE_EXP_RANGE)
-]  # Batch size, sizes will be 1, 2, 4, 8, 16, 32, 64, etc.
-INPUT_SIZE = [  # Input size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 5 * 2^5 = 160, 7 * 2^5 = 224, etc.
-    factor * hidden
-    for factor in MNIIST_INPUT_SIZE_FACTORS
-    for hidden in [2**i for i in range(MNIIST_INPUT_SIZE_EXP_RANGE[0], MNIIST_INPUT_SIZE_EXP_RANGE[1])]
+INPUT_SIZE = [
+    (224, 224),
 ]
-HIDDEN_SIZE = [  # Hidden layer size, sizes will be 1 * 2^5 = 32, 3 * 2^5 = 96, 1 * 2^6 = 64, 3 * 2^6 = 192, etc.
-    factor * hidden
-    for factor in MNIIST_HIDDEN_SIZE_FACTORS
-    for hidden in [2**i for i in range(MNIST_HIDDEN_SIZE_EXP_RANGE[0], MNIST_HIDDEN_SIZE_EXP_RANGE[1])]
+
+# Channel size configurations
+CHANNEL_SIZE = [
+    3,
 ]
-ARCH = []
-DATAFORMAT = []
-MATH_FIDELITY = []
+
+# Loop count configurations
 LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 
-
-# Model definition
-class MNISTLinear(nn.Module):
-    def __init__(
-        self, input_size=MNIST_INPUT_FEATURE_SIZE, output_size=MNIST_OUTPUT_FEATURE_SIZE, hidden_size=MNIIST_HIDDEN_SIZE
-    ):
-
-        super(MNISTLinear, self).__init__()
-        self.l1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.l2 = nn.Linear(hidden_size, output_size)
-
-    def forward(self, x):
-
-        x = self.l1(x)
-        x = self.relu(x)
-        x = self.l2(x)
-
-        return nn.functional.softmax(x)
+variants = [
+    "microsoft/resnet-50",
+]
 
 
-# @TODO - For now, we are skipping these parameters, because we are not supporting them
-# @pytest.mark.parametrize("math_fidelity", MATH_FIDELITY, ids=[f"math_fidelity={item}" for item in MATH_FIDELITY])
-# @pytest.mark.parametrize("dataformat", DATAFORMAT, ids=[f"dataformat={item}" for item in DATAFORMAT])
-# @pytest.mark.parametrize("arch", ARCH, ids=[f"arch={item}" for item in ARCH])
-@pytest.mark.parametrize("hidden_size", HIDDEN_SIZE, ids=[f"hidden_size={item}" for item in HIDDEN_SIZE])
+@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
-def test_mnist_linear(
+def test_resnet_hf(
     training,
     batch_size,
     input_size,
-    hidden_size,
+    channel_size,
     loop_count,
-    # arch,
-    # dataformat,
-    # math_fidelity,
+    variant,
 ):
 
     if training:
@@ -94,21 +74,30 @@ def test_mnist_linear(
     if batch_size > 1:
         pytest.skip("Batch size greater than 1 is not supported")
 
-    inputs = [torch.rand(batch_size, input_size)]
+    # TODO: This we will need when when we run resnet with real data.
+    # Load tiny dataset
+    # dataset = load_dataset("zh-plus/tiny-imagenet")
+    # images = random.sample(dataset["valid"]["image"], 10)
 
-    framework_model = MNISTLinear(input_size=input_size, hidden_size=hidden_size)
-    fw_out = framework_model(*inputs)
+    # Random data
+    input_sample = [torch.rand(batch_size, channel_size, *input_size)]
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    # Load framework model
+    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    fw_out = framework_model(*input_sample)
+
+    # Compile model
+    compiled_model = forge.compile(framework_model, *input_sample)
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
-    co_out = compiled_model(*inputs)
+    co_out = compiled_model(*input_sample)
     start = time.time()
     for _ in range(loop_count):
-        co_out = compiled_model(*inputs)
+        co_out = compiled_model(*input_sample)
     end = time.time()
 
-    verify(inputs, framework_model, compiled_model)
+    co_out = [co.to("cpu") for co in co_out]
+    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     # date = (
@@ -122,13 +111,13 @@ def test_mnist_linear(
     total_samples = batch_size * loop_count
 
     samples_per_sec = total_samples / total_time
-    model_name = "MNIST Linear"
+    model_name = "Resnet 50 HF"
     model_type = "Classification, Random Input Data"
-    num_layers = 2  # Number of layers in the model, in this case 2 Linear hidden layers
-    dataset_name = "MNIST, Random Data"
+    dataset_name = "Resnet, Random Data"
+    num_layers = 50  # Number of layers in the model, in this case 50 layers
 
     print("====================================================================")
-    print("| MNIST Benchmark Results:                                         |")
+    print("| Resnet Benchmark Results:                                         |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")
@@ -140,14 +129,12 @@ def test_mnist_linear(
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
     print(f"| Input size: {input_size}")
-    print(f"| Hidden size: {hidden_size}")
-    print(f"| Number of layers: {num_layers}")
     print("====================================================================")
 
     result = {
         "model": model_name,
         "model_type": model_type,
-        "run_type": f"{model_name}_{batch_size}_{input_size}_{hidden_size}",
+        "run_type": f"{'x'.join(model_name)}_{batch_size}_{input_size}_{num_layers}_{loop_count}",
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
@@ -157,7 +144,7 @@ def test_mnist_linear(
         "profile_name": "",
         "input_sequence_length": -1,  # When this value is negative, it means it is not applicable
         "output_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "image_dimension": f"{MNIST_INPUT_FEATURE_SIZE}",
+        "image_dimension": f"{input_size[0]}x{input_size[1]}",
         "perf_analysis": False,
         "training": training,
         "measurements": [
@@ -194,26 +181,27 @@ def test_mnist_linear(
     return result
 
 
-def mnist_linear_benchmark(config: dict):
+def resnet_hf_benchmark(config: dict):
 
     training = config["training"]
     batch_size = config["batch_size"]
+    input_size = INPUT_SIZE[0]
+    channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
     loop_count = config["loop_count"]
+    variant = variants[0]
 
-    input_size = MNIST_INPUT_FEATURE_SIZE if config["input_size"] is None else config["input_size"]
-    hidden_size = MNIIST_HIDDEN_SIZE if config["hidden_size"] is None else config["hidden_size"]
-
-    result = test_mnist_linear(
+    result = test_resnet_hf(
         training=training,
         batch_size=batch_size,
         input_size=input_size,
-        hidden_size=hidden_size,
+        channel_size=channel_size,
         loop_count=loop_count,
+        variant=variant,
     )
 
     if not output_file:
-        output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
+        output_file = f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
 
     result["output"] = output_file
 
