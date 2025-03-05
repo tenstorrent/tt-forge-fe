@@ -9,7 +9,6 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 
 
@@ -133,7 +132,7 @@ def test_batch_size_training(batch_size, in_features, out_features):
 
     pred = tt_model(in_data)[0]
     golden_pred = model(in_data)
-    assert compare_with_golden(golden_pred, pred, pcc=0.95)  # 0.95 is the minimum value for which the test passes
+    verify(inputs=[in_data], framework_model=model, compiled_model=tt_model)
 
     loss = loss_fn(pred, target)
     golden_loss = loss_fn(golden_pred, target)
