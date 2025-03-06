@@ -339,6 +339,8 @@ def verify_backward(
 
     if original_model is None:
         original_model = framework_model
+    elif not isinstance(original_model, torch.nn.Module):
+        raise TypeError(f"Original model must be of type {torch.nn.Module}, but got {type(original_model)}")
 
     # 1st step: run backward pass for the networks and get gradients
     [input.grad.zero_() for input in inputs if input.grad is not None]
@@ -348,7 +350,7 @@ def verify_backward(
     co_grads = [
         grad
         for grad, name in zip(co_gradient_outputs, compiled_model.bwd_compiled_graph_state.ordered_output_names)
-        if not name.startswith("grad_acc_")  # This is set to gradient of the parameter node
+        if not name.startswith("grad_acc_")  # This is added to gradient of the parameter node
     ]
     # HACK: This will fail if the first argument is not used first, second argument is not used second, etc.
     co_grads = list(reversed(co_grads))
