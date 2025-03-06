@@ -4,3 +4,4 @@
 
 from .mnist_linear import mnist_linear_benchmark
 from .resnet_hf import resnet_hf_benchmark
+from .llama import llama_prefill_benchmark
