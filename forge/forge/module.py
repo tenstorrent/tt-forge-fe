@@ -7,6 +7,7 @@ from typing import Optional, Tuple, List, Dict, TypeAlias
 from collections import deque, OrderedDict
 import itertools
 
+import paddle
 import torch
 import tensorflow as tf
 from loguru import logger
@@ -19,6 +20,7 @@ from .tensor import (
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
+    pt_to_paddle_tensors,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
@@ -209,6 +211,44 @@ class PyTorchModule(Module):
             params.append(forge_param)
             recorded_names.append(name)
 
+        return params
+
+
+class PaddleModule(Module):
+    """
+    A wrapper around a Paddle module.
+    """
+
+    def __init__(self, name: str, module: paddle.nn.Layer):
+        super().__init__(name)
+        self.module = module
+
+    def forward(self, *args, **kwargs):
+        paddle_args = pt_to_paddle_tensors(args)
+        outputs = self.module(*paddle_args, **kwargs)
+        return to_pt_tensors(outputs)
+
+    def call(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def backward(self, *args):
+        raise NotImplementedError
+
+    def set_parameters(self, **kwargs):
+        raise NotImplementedError
+
+    def cpu_eval_forward(self, *args, **kwargs):
+        self.module.eval()
+
+        outputs = self.forward(*args, **kwargs)
+        outputs = flatten_structured_output([outputs])
+        return outputs
+
+    def get_parameters(self) -> List[Parameter]:
+        params = []
+        for param in self.module.parameters():
+            forge_param = Parameter(torch.tensor(param.numpy()), requires_grad=param.stop_gradient, name=param.name)
+            params.append(forge_param)
         return params
 
 
@@ -918,9 +958,11 @@ def wrap_module(module, name: str) -> Module:
         return TFModule(name, module)
     elif isinstance(module, ForgeModule):
         return module
+    elif isinstance(module, paddle.nn.Layer):
+        return PaddleModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model
+FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer
 AnyModule: TypeAlias = FrameworkModule | ForgeModule
