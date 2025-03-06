@@ -71,12 +71,18 @@ class FrameworkBuilder:
 
     NOT_IMPLEMENTED_FORGE = (
         # Unary operators
+        "atan",
         "buffer",
         "pow",
+        "logical_not",  # bug
+        "logical_and",  # bug
+        "dropout",  # pcc?
         # Binary operators
         "less_equal",
+        "power",  # occasionally fails
         # Nary operators
         "interleave",
+        # Other
     )
 
     UNSTABLE_FORGE = (
@@ -85,14 +91,9 @@ class FrameworkBuilder:
         "sqrt",  # skip because it's failing for negative values
         "cumsum",  # bug
         "argmax",  # shape calc is wrong
-        "logical_not",  # bug
-        "dropout",  # pcc?
         "tilizer",  # bug
         # Binary operators
         "divide",  # bug
-        "binary_stack",  # bug
-        "power",  # occasionally fails
-        "logical_and",  # bug
         # Nary operators
         "where",  # pcc?
         # Other
@@ -113,7 +114,7 @@ class FrameworkBuilder:
         "arctan",
         "atanh",
         "arctanh",
-        "bitwise_not",
+        # "bitwise_not",
         "ceil",
         "conj_physical",
         "cosh",
@@ -168,6 +169,7 @@ class FrameworkBuilder:
         # "log1p",
         # "gelu",
         # "leaky_relu",
+        "bitwise_not",
         # Binary operators
         # Nary operators
         # Other
