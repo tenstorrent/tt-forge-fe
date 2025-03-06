@@ -28,6 +28,7 @@ def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Sample Input

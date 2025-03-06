@@ -35,6 +35,7 @@ def test_gptneo_causal_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Set random seed for repeatability
@@ -101,6 +102,7 @@ def test_gptneo_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace

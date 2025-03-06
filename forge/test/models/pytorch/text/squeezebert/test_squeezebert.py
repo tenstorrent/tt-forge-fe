@@ -24,6 +24,7 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property, vari
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Bart tokenizer and model from HuggingFace

@@ -22,6 +22,7 @@ def test_falcon(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -69,6 +70,7 @@ def test_falcon_3(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)

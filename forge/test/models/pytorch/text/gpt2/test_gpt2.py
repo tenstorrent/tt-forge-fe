@@ -36,6 +36,7 @@ def test_gpt2_text_gen(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
@@ -75,6 +76,7 @@ def test_gpt2_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace

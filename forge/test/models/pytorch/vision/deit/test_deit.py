@@ -50,6 +50,7 @@ def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(

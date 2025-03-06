@@ -24,6 +24,7 @@ def test_mistral(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     configuration = MistralConfig()

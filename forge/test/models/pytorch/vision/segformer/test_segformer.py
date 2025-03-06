@@ -41,6 +41,10 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    if variant in ["nvidia/mit-b0"]:
+        record_forge_property("group", "priority")
+    else:
+        record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Set model configurations
@@ -88,6 +92,7 @@ def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant)
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the model from HuggingFace

@@ -25,6 +25,7 @@ def test_regnet(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load RegNet model
@@ -56,6 +57,7 @@ def test_regnet_img_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the image processor and the RegNet model
@@ -108,6 +110,7 @@ def test_regnet_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

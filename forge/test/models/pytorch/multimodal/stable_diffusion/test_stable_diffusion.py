@@ -19,6 +19,7 @@ def test_stable_diffusion_pytorch(record_forge_property, variant):
     module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     batch_size = 1
