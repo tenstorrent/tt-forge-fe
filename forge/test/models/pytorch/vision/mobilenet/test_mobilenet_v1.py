@@ -13,6 +13,7 @@ from test.models.pytorch.vision.mobilenet.utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
+from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -129,3 +130,32 @@ def test_mobilenetv1_224(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = ["mobilenetv1_100.ra4_e3600_r224_in1k"]
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants)
+def test_mobilenet_v1_timm(record_forge_property, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mobilenet_v1",
+        variant=variant,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load the model and inputs
+    framework_model, inputs = load_timm_model_and_input(variant)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
