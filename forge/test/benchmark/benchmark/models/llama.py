@@ -166,25 +166,6 @@ def test_llama_prefill(
 
     return result
 
-    # # Decode Phase - Generate new tokens
-    # max_new_tokens = 46
-    # output_ids_compiled, output_logits_compiled = decode_on_cpu(
-    #     model, tokenizer, input_ids, hidden_states_compiled, max_new_tokens
-    # )
-    # _, output_logits_framework = decode_on_cpu(model, tokenizer, input_ids, hidden_states_framework, max_new_tokens)
-
-    # # Compare the logits of the generated tokens with the golden values from CPU.
-    # assert all(
-    #     [
-    #         compare_with_golden(golden=out_logits_fw, calculated=out_logits_tt)
-    #         for out_logits_fw, out_logits_tt in zip(output_logits_framework, output_logits_compiled)
-    #     ]
-    # )
-
-    # # Generated text
-    # generated_text_compiled = tokenizer.decode(output_ids_compiled[0], skip_special_tokens=True)
-    # print(generated_text_compiled)
-
 
 def llama_prefill_benchmark(config: dict):
 
