@@ -9,9 +9,7 @@ import socket
 import subprocess
 import json
 import random
-
-# import sys
-# import os
+import os
 from datetime import datetime
 
 # Third-party modules
@@ -23,13 +21,11 @@ from datasets import load_dataset
 # Forge modules
 import forge
 from forge.verify.compare import compare_with_golden_pcc
-
-# from ....utils import download_model
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../")))
 from test.utils import download_model
 
 # Common constants
 GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
+REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [
@@ -100,11 +96,6 @@ def test_resnet_hf(
     assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
-    # date = (
-    #     subprocess.check_output(["git", "show", "-s", "--format=%cd", "--date=format:%y-%m-%d", "HEAD"])
-    #     .decode("ascii")
-    #     .strip()
-    # )
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
@@ -200,11 +191,12 @@ def resnet_hf_benchmark(config: dict):
         variant=variant,
     )
 
+    if not os.path.exists(REPORTS_DIR):
+        os.makedirs(REPORTS_DIR)
     if not output_file:
-        output_file = f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
-
-    result["output"] = output_file
+        output_file = REPORTS_DIR + f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
+    result["output"] = REPORTS_DIR + output_file
 
     # Save the results to a file
-    with open(output_file, "w") as f:
+    with open(result["output"], "w") as f:
         json.dump(result, f)
