@@ -82,7 +82,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
+        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
         PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
 
     - name: Upload Perf Report
