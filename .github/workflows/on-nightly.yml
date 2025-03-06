@@ -15,7 +15,7 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  test:
+  test_full_model:
     needs:
       - docker-build
       - build
