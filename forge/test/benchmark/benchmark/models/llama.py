@@ -2,14 +2,22 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Built-in modules
 
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+# Third-party modules
+
+# Forge modules
+
+# Common constants
+GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
+
+# Model path
+MODEL_PATH = ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"]
+
+
+@pytest.mark.parametrize("model_path", MODEL_PATH)
 def test_llama_prefil_on_device_decode_on_cpu(model_path):
-    """
-    This function tests the inference of the Llama models split into two parts:
-    - The first part is the prefilling of the model on the device.
-    - The second part is the decoding of the model on the CPU without KV cache.
-    """
+
     if model_path == "openlm-research/open_llama_3b":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
