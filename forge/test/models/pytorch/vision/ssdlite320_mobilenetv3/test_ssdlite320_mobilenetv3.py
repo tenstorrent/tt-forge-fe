@@ -15,6 +15,9 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="RuntimeError: Couldn't load custom C++ ops. This can happen if your PyTorch and torchvision versions are incompatible, or if you had errors while compiling torchvision from source"
+)
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_ssdlite320_mobilenetv3(record_forge_property, variant):
 

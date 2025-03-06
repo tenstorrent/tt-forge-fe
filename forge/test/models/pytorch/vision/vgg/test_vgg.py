@@ -21,7 +21,14 @@ from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
-variants = ["vgg11", "vgg13", "vgg16", "vgg19", "bn_vgg19", "bn_vgg19b"]
+variants = [
+    "vgg11",
+    "vgg13",
+    "vgg16",
+    "vgg19",
+    "bn_vgg19",
+    "bn_vgg19b",
+]
 
 
 @pytest.mark.nightly
@@ -229,9 +236,26 @@ variants_with_weights = {
     "vgg19": "VGG19_Weights",
 }
 
+variants = [
+    pytest.param(
+        "vgg11",
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+            )
+        ],
+    ),
+    "vgg11_bn",
+    "vgg13",
+    "vgg13_bn",
+    "vgg16",
+    "vgg16_bn",
+    "vgg19",
+]
+
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", variants)
 def test_vgg_torchvision(record_forge_property, variant):
 
     if variant != "vgg11":

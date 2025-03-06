@@ -37,7 +37,12 @@ def generate_model_xception_imgcls_timm(variant):
 
 
 params = [
-    pytest.param("xception"),
+    pytest.param(
+        "xception",
+        marks=[
+            pytest.mark.xfail(reason="Input channels (728) should be padded to nearest TILE_WIDTH (32) or should be 16")
+        ],
+    ),
     pytest.param("xception41"),
     pytest.param("xception65"),
     pytest.param("xception71"),

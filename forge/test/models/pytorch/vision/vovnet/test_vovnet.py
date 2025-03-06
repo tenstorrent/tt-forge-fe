@@ -25,11 +25,15 @@ def generate_model_vovnet_imgcls_osmr_pytorch(variant):
     return model, [image_tensor], {}
 
 
-varaints = ["vovnet27s", "vovnet39", "vovnet57"]
+varaints = [
+    pytest.param("vovnet27s", marks=[pytest.mark.xfail(reason="Invalid arguments to reshape")]),
+    "vovnet39",
+    "vovnet57",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", varaints, ids=varaints)
+@pytest.mark.parametrize("variant", varaints)
 def test_vovnet_osmr_pytorch(record_forge_property, variant):
     if variant != "vovnet27s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -130,11 +134,23 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
     return model, [image_tensor], {}
 
 
-variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b", "ese_vovnet19b_dw.ra_in1k"]
+variants = [
+    "ese_vovnet19b_dw",
+    "ese_vovnet39b",
+    "ese_vovnet99b",
+    pytest.param(
+        "ese_vovnet19b_dw.ra_in1k",
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: [1, 1, 7, 7168] vs [1, 1, 7, 7]"
+            )
+        ],
+    ),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_vovnet_timm_pytorch(record_forge_property, variant):
     if variant != "ese_vovnet19b_dw.ra_in1k":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")

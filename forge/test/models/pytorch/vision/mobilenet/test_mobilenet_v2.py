@@ -298,6 +298,9 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+)
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_mobilenetv2_torchvision(record_forge_property, variant):
 

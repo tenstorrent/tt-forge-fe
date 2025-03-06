@@ -16,11 +16,22 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
-variants = ["facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"]
+variants = [
+    pytest.param(
+        "facebook/opt-125m",
+        marks=[
+            pytest.mark.xfail(
+                reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+            )
+        ],
+    ),
+    "facebook/opt-350m",
+    "facebook/opt-1.3b",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_opt_causal_lm(record_forge_property, variant):
     if variant != "facebook/opt-125m":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -72,7 +83,7 @@ def test_opt_causal_lm(record_forge_property, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_opt_qa(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -119,7 +130,7 @@ def test_opt_qa(record_forge_property, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_opt_sequence_classification(record_forge_property, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 

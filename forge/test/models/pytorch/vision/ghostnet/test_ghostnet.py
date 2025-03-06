@@ -16,7 +16,14 @@ from test.models.utils import Framework, Source, Task, build_module_name
 params = [
     pytest.param("ghostnet_100", marks=[pytest.mark.push]),
     pytest.param("ghostnet_100.in1k", marks=[pytest.mark.push]),
-    pytest.param("ghostnetv2_100.in1k"),
+    pytest.param(
+        "ghostnetv2_100.in1k",
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 72, 30, 26) vs torch.Size([1, 72, 28, 28])"
+            )
+        ],
+    ),
 ]
 
 

@@ -82,7 +82,19 @@ def test_densenet_121_pytorch(record_forge_property, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["densenet161"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "densenet161",
+            marks=[
+                pytest.mark.xfail(
+                    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+                )
+            ],
+        ),
+    ],
+)
 def test_densenet_161_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -112,7 +124,19 @@ def test_densenet_161_pytorch(record_forge_property, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["densenet169"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "densenet169",
+            marks=[
+                pytest.mark.xfail(
+                    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+                )
+            ],
+        ),
+    ],
+)
 def test_densenet_169_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(

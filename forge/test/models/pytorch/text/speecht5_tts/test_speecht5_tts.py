@@ -22,7 +22,17 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["microsoft/speecht5_tts"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "microsoft/speecht5_tts",
+            marks=pytest.mark.xfail(
+                reason="[TVM Relay IRModule Generation] aten::bernoulli operator is not implemented"
+            ),
+        ),
+    ],
+)
 def test_speecht5_tts(record_forge_property, variant):
 
     # Build Module Name

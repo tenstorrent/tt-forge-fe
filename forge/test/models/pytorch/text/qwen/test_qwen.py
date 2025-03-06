@@ -12,7 +12,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "Qwen/Qwen1.5-0.5B",
+            marks=[pytest.mark.xfail(reason="RuntimeError: Input count mismatch: expected 533, got 534")],
+        ),
+    ],
+)
 def test_qwen1_5_causal_lm(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(

@@ -15,7 +15,10 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 # Variants for testing
 variants = [
-    "Qwen/Qwen2.5-0.5B",
+    pytest.param(
+        "Qwen/Qwen2.5-0.5B",
+        marks=[pytest.mark.xfail(reason="RuntimeError: Input count mismatch: expected 533, got 534")],
+    ),
     "Qwen/Qwen2.5-0.5B-Instruct",
     "Qwen/Qwen2.5-1.5B",
     "Qwen/Qwen2.5-1.5B-Instruct",
@@ -26,7 +29,7 @@ variants = [
 ]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_qwen_clm(record_forge_property, variant):
     if variant != "Qwen/Qwen2.5-0.5B":

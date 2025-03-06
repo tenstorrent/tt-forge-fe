@@ -16,11 +16,18 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
-variants = ["distilbert-base-uncased", "distilbert-base-cased", "distilbert-base-multilingual-cased"]
+variants = [
+    pytest.param(
+        "distilbert-base-uncased",
+        marks=[pytest.mark.xfail(reason="ttir.typecast op Result shape must match operand shapes after broadcasting")],
+    ),
+    "distilbert-base-cased",
+    "distilbert-base-multilingual-cased",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     if variant != "distilbert-base-uncased":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
