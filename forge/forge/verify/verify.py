@@ -49,6 +49,11 @@ def _generate_random_losses(outputs, is_forge):
     return losses
 
 
+def _squeeze_tensor(t: torch.Tensor):
+    t = t.squeeze()
+    return t
+
+
 def _run_pytorch_backward(outputs, device, losses):
     retain_graph = True
     for i, o in enumerate(outputs):
@@ -271,90 +276,97 @@ def verify_golden(
 
 
 def verify_backward(
-    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
-    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model],
+    inputs: List[torch.Tensor],
+    output_grad: torch.Tensor,
+    framework_output: torch.Tensor,
+    compiled_output: torch.Tensor,
+    framework_model: torch.nn.Module,
     compiled_model: CompiledModel,
-    verify_cfg: VerifyConfig = VerifyConfig(
-        verify_backward=True, value_checker_backward=AutomaticValueChecker(pcc=0.95, rtol=1e-03, atol=1e-02)
-    ),
+    original_model: torch.nn.Module = None,
+    verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     """
-    Verify the compiled model against the framework model with backward pass
-    """
+    Performs verification of a compiled model by comparing its outputs against a reference framework model.
 
-    """
-    Needed steps:
-    - Run forward pass for the networks
-    - Run backward pass for the compiled model
-    - Run backward pass for the framework model
-        - For the framework model, we need to run the backward pass to get the gradients
-        - For now only pytorch is supported
-    - Compare the gradients
+    Runs backward on both models with the same inputs and performs various validation checks
+    based on the provided verification configuration. Checks can include output size matching,
+    dtype consistency, shape equivalence, and numeric value comparison.
 
-    - Error checking in general
+    Parameters:
+        inputs: List of tensor inputs
+        output_grad: Output gradient tensor
+        framework_output: Output tensor from the reference framework model
+        compiled_output: Output tensor from the compiled model
+        framework_model: Reference model
+        compiled_model: compiled model to verify
+        verify_cfg: Configuration object controlling which verification checks to perform
     """
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
         return
 
-    # if not isinstance(framework_model, (torch.nn.Module, )):
-    #     raise TypeError(f"Verify backward pass is only supported for PyTorch models, but got {type(framework_model)}")
-
-    # TODO: check if compiled model is compiled for backward pass
-    # TODO: zero out grads for both models
-
-    # 0th step: input checks
+    assert compiled_model.training(), "Compiled model must be in compiled for training for backward verification"
 
     # Check if inputs are of the correct type
     if not inputs:
         raise ValueError("Input tensors must be provided")
-    for input_tensor in inputs:
-        if not isinstance(input_tensor, verify_cfg.supported_tensor_types):
-            raise TypeError(
-                f"Input tensor must be of type {verify_cfg.supported_tensor_types}, but got {type(input_tensor)}"
-            )
 
-    if not isinstance(framework_model, verify_cfg.framework_model_types):
-        raise TypeError(
-            f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
-        )
+    req_grad = False
+    for input_tensor in inputs:
+        if not isinstance(input_tensor, torch.Tensor):
+            raise TypeError(f"Input tensor must be of type {torch.Tensor}, but got {type(input_tensor)}")
+        req_grad |= input_tensor.requires_grad
+
+    if not req_grad:
+        raise ValueError("One of the input tensors must require gradient")
+
+    if not isinstance(output_grad, torch.Tensor):
+        raise TypeError(f"Output gradient tensor must be of type {torch.Tensor}, but got {type(output_grad)}")
+
+    if not isinstance(framework_output, torch.Tensor):
+        raise TypeError(f"Framework output tensor must be of type {torch.Tensor}, but got {type(framework_output)}")
+    if not isinstance(compiled_output, torch.Tensor):
+        raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
+
+    if not isinstance(framework_model, torch.nn.Module):
+        raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
 
     if not isinstance(compiled_model, verify_cfg.compiled_model_types):
         raise TypeError(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
-    # 1st step: run forward pass for the networks
-    fw_out = framework_model(*inputs)
-    co_out = compiled_model(*inputs)
+    if original_model is None:
+        original_model = framework_model
 
-    # TODO: check if fw_out is a list of tensors or a single tensor
-    if isinstance(fw_out, TensorFromTrace):
-        fw_out = fw_out.value()
-    fake_output_grad = torch.rand_like(fw_out)
+    # 1st step: run backward pass for the networks and get gradients
+    [input.grad.zero_() for input in inputs if input.grad is not None]  # NOTE: Probably not needed
+    original_model.zero_grad()  # NOTE: Probably not needed
+    compiled_model.gradient_inputs = [output_grad]
+    co_gradient_outputs = compiled_model.backward()
+    co_grads = [
+        grad
+        for grad, name in zip(co_gradient_outputs, compiled_model.bwd_compiled_graph_state.ordered_output_names)
+        if not (name.startswith("grad_acc_") and name.endswith("_grad_accumulator"))
+    ]
+    # HACK: This will fail if the first argument in forward pass is not used first in forward pass and so on
+    co_grads = list(reversed(co_grads))
+    co_grads += [param.grad.clone() for param in original_model.parameters() if param.requires_grad]
 
-    # Run backward pass for the compiled model
-    compiled_model.gradient_inputs = [fake_output_grad]
-    compiled_model.backward()
-
-    # Run backward pass for the framework model
-    fw_out.backward(gradient=fake_output_grad, inputs=inputs)
-
-    # Grab the gradients
-    # TODO: check type of the tensor
-    fw_grads = [input.grad for input in inputs]
-    co_grads = compiled_model.gradient_outputs
-
-    co_grads.reverse()
+    # Run backward on framework model
+    [input.grad.zero_() for input in inputs if input.grad is not None]  # NOTE: Probably not needed
+    framework_model.zero_grad()  # NOTE: Probably not needed
+    framework_output.backward(gradient=output_grad)
+    fw_grads = [input.grad.clone() for input in inputs if input.requires_grad]
+    fw_grads += [param.grad for param in framework_model.parameters() if param.requires_grad]
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
     fw_grads = to_pt_tensors(fw_grads)
+    co_grads = [co.to("cpu") for co in co_grads]
 
     assert all(isinstance(co, torch.Tensor) for co in co_grads), f"Compiled model output is not a list of torch.Tensor"
-
-    co_grads = [co.to("cpu") for co in co_grads]
 
     # 3rd step: verifications of outputs
     # - size check
@@ -364,10 +376,14 @@ def verify_backward(
     if verify_cfg.verify_size:
         if len(fw_grads) != len(co_grads):
             raise ValueError(
-                f"Number of outputs from framework model and compiled model do not match: framework model has {len(fw_grads)} outputs, compiled model has {len(co_grads)} outputs"
+                f"Number of gradients from framework model and compiled model do not match: framework model has {len(fw_grads)} outputs, compiled model has {len(co_grads)} outputs"
             )
 
     for fw, co in zip(fw_grads, co_grads):
+        # Squeeze the tensors to remove any extra dimensions
+        # NOTE: realized that there is narrow_forge_tensor_to_pytorch that should do the same but seams to be unused
+        fw = _squeeze_tensor(fw)
+        co = _squeeze_tensor(co)
 
         if verify_cfg.verify_dtype:
             if fw.dtype != co.dtype:
@@ -375,14 +391,6 @@ def verify_backward(
 
         if verify_cfg.verify_shape:
             if fw.shape != co.shape:
-                # Squeeze the gradients if necessary
-                fw = fw.squeeze()
-                co = co.squeeze()
-                if co.shape == []:
-                    co = co.unsqueeze(0)
-                if fw.shape == []:
-                    fw = fw.unsqueeze(0)
-
                 if fw.shape != co.shape:
                     raise TypeError(
                         f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}"
@@ -473,9 +481,6 @@ def verify(
 
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
-
-    if verify_cfg.verify_backward:
-        verify_backward(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
 
     record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
 
