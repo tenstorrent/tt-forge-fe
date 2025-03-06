@@ -9,7 +9,7 @@ from benchmark import models
 MODELS = {
     "mnist_linear": models.mnist_linear.mnist_linear_benchmark,
     "resnet50_hf": models.resnet_hf.resnet_hf_benchmark,
-    "llama": models.llama.llama_benchmark,
+    "llama": models.llama.llama_prefill_benchmark,
 }
 
 
