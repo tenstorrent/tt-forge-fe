@@ -1,5 +1,6 @@
 import torch
 import forge
+from test.operators.utils import TensorUtils
 {% if test_format %}
 import pytest
 from test.random.rgg.verify import verify_module
@@ -18,7 +19,7 @@ class GeneratedTestModel_{{ test_index }}_{{ random_seed }}(torch.nn.Module):
 {% for node in graph.nodes %}{% if node.operator.is_layer %}
         self.{{ node.layer_name }} = {{ node.operator.full_name }}({{ constructor_kwargs(node=node) }}){% endif %}{% endfor %}
         {% for constant_node in graph.constant_nodes %}
-        self.{{ constant_node.out_value }} = torch.randn({{ reduce_microbatch_size(constant_node.input_shape) }}){% endfor %}
+        self.{{ constant_node.out_value }} = TensorUtils.create_torch_constant(input_shape={{ constant_node.input_shape }}, random_seed={{ random_seed}}){% endfor %}
 
     def forward(self{% for node in graph.input_nodes %},
             {{ node.out_value }}: torch.Tensor{% endfor %}
