@@ -105,7 +105,10 @@ _OPERATORS = [
     OperatorDefinition("mul", "torch.mul", 2),
     OperatorDefinition("div", "torch.div", 2),
     OperatorDefinition("ge", "torch.ge", 2),
+    # Binary operators (not implemented)
+    # Matmul
     OperatorDefinition("matmul", "torch.matmul", 2),
+    # Nary operators
 ]
 
 
