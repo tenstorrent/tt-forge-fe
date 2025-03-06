@@ -146,7 +146,6 @@ def compare_tensor_to_golden(
     name: str,
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    is_forge=False,
     rtol=None,
     atol=None,
     pcc=None,
@@ -163,9 +162,6 @@ def compare_tensor_to_golden(
 
     if golden.dtype == torch.bool and calculated.dtype == torch.bool:
         return bool(torch.all(golden == calculated))
-
-    if is_forge:
-        calculated = narrow_forge_tensor_to_pytorch(calculated, golden.shape)
 
     if rtol is None or (isinstance(rtol, dict) and (golden.dtype not in rtol or rtol[golden.dtype] is None)):
         if verify_cfg is not None and golden.dtype in verify_cfg.rtol and verify_cfg.rtol[golden.dtype] is not None:
