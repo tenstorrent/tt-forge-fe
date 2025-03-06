@@ -407,16 +407,19 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99},
     ),
     (Subtract0, [((1, 1, 1, 256), torch.float32)], {"model_name": ["pt_gpt2_gpt2_text_gen_hf"], "pcc": 0.99}),
-    (
-        Subtract1,
-        [((1, 1, 256, 256), torch.int32)],
-        {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract1,
+            [((1, 1, 256, 256), torch.int32)],
+            {
+                "model_name": [
+                    "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Subtract0,
@@ -479,20 +482,17 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    pytest.param(
-        (
-            Subtract3,
-            [((1,), torch.int32)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Subtract3,
+        [((1,), torch.int32)],
+        {
+            "model_name": [
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Subtract4,
