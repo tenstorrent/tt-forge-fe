@@ -46,13 +46,35 @@ _OPERATORS = [
     OperatorDefinition("rsqrt", "torch.rsqrt", 1),
     OperatorDefinition("sin", "torch.sin", 1),
     OperatorDefinition("square", "torch.square", 1),
-    OperatorDefinition("pow", "torch.pow", 1),
-    OperatorDefinition("clamp", "torch.clamp", 1),
+    OperatorDefinition(
+        "pow",
+        "torch.pow",
+        1,
+        forward_params=[
+            OperatorParamNumber("exponent", int, -10, 10),
+        ],
+    ),
+    OperatorDefinition(
+        "clamp",
+        "torch.clamp",
+        1,
+        forward_params=[
+            OperatorParamNumber("min", int, -100, 100),
+            OperatorParamNumber("max", int, -100, 100),
+        ],
+    ),
     OperatorDefinition("log", "torch.log", 1),
     OperatorDefinition("log1p", "torch.log1p", 1),
     OperatorDefinition("gelu", "torch.nn.functional.gelu", 1),
     OperatorDefinition("leaky_relu", "torch.nn.functional.leaky_relu", 1),
-    OperatorDefinition("cumsum", "torch.cumsum", 1),
+    OperatorDefinition(
+        "cumsum",
+        "torch.cumsum",
+        1,
+        forward_params=[
+            OperatorParamNumber("dim", int, -3, 3),
+        ],
+    ),
     OperatorDefinition("softmax", "torch.softmax", 1),
     # Unary operators (not implemented)
     OperatorDefinition("acos", "torch.acos", 1),
@@ -106,7 +128,10 @@ _OPERATORS = [
     OperatorDefinition("mul", "torch.mul", 2),
     OperatorDefinition("div", "torch.div", 2),
     OperatorDefinition("ge", "torch.ge", 2),
+    # Binary operators (not implemented)
+    # Matmul
     OperatorDefinition("matmul", "torch.matmul", 2),
+    # Nary operators
 ]
 
 
