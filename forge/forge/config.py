@@ -81,9 +81,6 @@ class CompilerConfig:
     enable_tvm_dropout: bool = False
     # Create "unsupported" forge ops in python file, allowing user to modify later
     enable_tvm_unsupported_ops: bool = False
-
-    # Should we need to compare every op with framework output at each compilation stage.
-    enable_op_level_comparision: bool = False
     # Should we constant prop in tvm
     enable_tvm_constant_prop: bool = False
     # Convert framework params to relay params

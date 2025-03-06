@@ -28,9 +28,6 @@ set_evn_flags() {
     local arch=$1
     local runtype=$2
     local device_config=$3
-    export FORGE_VERIFY_POST_AUTOGRAD_PASSES=1
-    export FORGE_VERIFY_POST_PLACER=1
-    export FORGE_VERIFY_NET2PIPE=3
     export PYTEST_ADDOPTS=" -svv"
 
     if [ "$arch" = "wormhole_b0" ] ; then
