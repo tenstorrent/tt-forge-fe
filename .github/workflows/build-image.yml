@@ -22,7 +22,7 @@ on:
 jobs:
 
   build-image:
-    runs-on: builder
+    runs-on: tt-beta-ubuntu-2204-large
     outputs:
       docker-image: ${{ steps.build.outputs.docker-image }}
     steps:
