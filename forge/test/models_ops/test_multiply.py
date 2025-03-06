@@ -3824,19 +3824,16 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 39, 4864), torch.float32), ((1, 39, 4864), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Multiply1,
-            [((1, 128), torch.int32), ((1, 128), torch.int32)],
-            {
-                "model_name": [
-                    "pt_roberta_xlm_roberta_base_mlm_hf",
-                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Multiply1,
+        [((1, 128), torch.int32), ((1, 128), torch.int32)],
+        {
+            "model_name": [
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply1,

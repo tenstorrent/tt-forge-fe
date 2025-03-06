@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1894, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 24, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 960, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 960, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(72,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(72,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(72,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(72,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 72, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(72, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 72, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(72, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(72, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,17 +452,6 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(72, 1, 1), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>41</th>
-      <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_57680, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
@@ -472,7 +461,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>42</th>
+      <th>41</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 120, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(120, 1, 1), dtype=float32)</td>
       <td></td>
@@ -483,7 +472,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>43</th>
+      <th>42</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 120, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77680, dtype=float32)</td>
       <td></td>
@@ -494,7 +483,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>44</th>
+      <th>43</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(120,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(120,), dtype=float32)</td>
       <td></td>
@@ -505,7 +494,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>45</th>
+      <th>44</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 120, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(120, 1, 1), dtype=float32)</td>
       <td></td>
@@ -516,7 +505,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>46</th>
+      <th>45</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 480, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148680, dtype=float32)</td>
       <td></td>
@@ -527,7 +516,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>47</th>
+      <th>46</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 168, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(168, 1, 1), dtype=float32)</td>
       <td></td>
@@ -538,7 +527,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>48</th>
+      <th>47</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 672, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168680, dtype=float32)</td>
       <td></td>
@@ -549,7 +538,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>49</th>
+      <th>48</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
       <td></td>
@@ -560,7 +549,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>50</th>
+      <th>49</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 160, 7, 7), dtype=float32)</td>
       <td></td>
@@ -571,7 +560,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>51</th>
+      <th>50</th>
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 960, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217680, dtype=float32)</td>
       <td></td>
@@ -582,9 +571,20 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
+      <th>51</th>
+      <td>Add</td>
+      <td>Operand(type=Constant, name=features.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1414, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
       <th>52</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3358, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 240, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49358, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.1.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.1.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_9452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -639,7 +639,7 @@
     <tr>
       <th>57</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.2.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_12452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -650,7 +650,7 @@
     <tr>
       <th>58</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.2.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_15452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_78452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.2.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_18452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(184,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(184,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,7 +672,7 @@
     <tr>
       <th>60</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.3.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_21452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(184, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.3.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_24452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.3.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_27452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_117452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.4.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_132452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.4.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_33452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_152452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.4.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 960, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_162452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.5.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.1.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.5.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.1.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_9452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.5.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.2.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_12452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.6.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.2.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_15452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.6.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.2.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_18452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -793,7 +793,7 @@
     <tr>
       <th>71</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.6.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.3.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_21452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,7 +804,7 @@
     <tr>
       <th>72</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.7.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_63452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.3.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_24452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -815,7 +815,7 @@
     <tr>
       <th>73</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.3.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_27452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -826,7 +826,7 @@
     <tr>
       <th>74</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.7.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.4.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -837,7 +837,7 @@
     <tr>
       <th>75</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.7.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.4.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_33452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -848,7 +848,7 @@
     <tr>
       <th>76</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.8.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.4.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -859,7 +859,7 @@
     <tr>
       <th>77</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(200,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.5.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -870,7 +870,7 @@
     <tr>
       <th>78</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.5.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -881,7 +881,7 @@
     <tr>
       <th>79</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_78452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.5.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -892,7 +892,7 @@
     <tr>
       <th>80</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.8.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.6.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -903,7 +903,7 @@
     <tr>
       <th>81</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.8.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.6.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -914,7 +914,7 @@
     <tr>
       <th>82</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.9.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.6.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -925,7 +925,7 @@
     <tr>
       <th>83</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(184,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(184,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.7.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_63452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -936,7 +936,7 @@
     <tr>
       <th>84</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(184, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.7.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -947,7 +947,7 @@
     <tr>
       <th>85</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.7.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -958,7 +958,7 @@
     <tr>
       <th>86</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.9.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.8.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -969,7 +969,7 @@
     <tr>
       <th>87</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.9.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_99452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.8.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -980,7 +980,7 @@
     <tr>
       <th>88</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.10.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_102452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.8.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -991,7 +991,7 @@
     <tr>
       <th>89</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.10.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.9.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1002,7 +1002,7 @@
     <tr>
       <th>90</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.10.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.9.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1013,7 +1013,7 @@
     <tr>
       <th>91</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.11.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.9.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_99452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1024,7 +1024,7 @@
     <tr>
       <th>92</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_117452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.10.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_102452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1035,7 +1035,7 @@
     <tr>
       <th>93</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.11.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_120452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.10.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1046,7 +1046,7 @@
     <tr>
       <th>94</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.11.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.10.block.2.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1057,7 +1057,7 @@
     <tr>
       <th>95</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.12.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.11.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1068,7 +1068,7 @@
     <tr>
       <th>96</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_132452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.11.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_120452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1079,7 +1079,7 @@
     <tr>
       <th>97</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.12.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_135452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.11.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1090,7 +1090,7 @@
     <tr>
       <th>98</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.12.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.12.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1101,7 +1101,7 @@
     <tr>
       <th>99</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.13.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.12.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_135452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1112,7 +1112,7 @@
     <tr>
       <th>100</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.13.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_150452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.12.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1123,7 +1123,7 @@
     <tr>
       <th>101</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 672, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_152452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.13.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1134,7 +1134,7 @@
     <tr>
       <th>102</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.13.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.13.block.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_150452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1145,7 +1145,7 @@
     <tr>
       <th>103</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.14.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_160452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.13.block.3.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1156,7 +1156,7 @@
     <tr>
       <th>104</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 960, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_162452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.14.block.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_160452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1398,7 +1398,7 @@
     <tr>
       <th>126</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 240, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1409,7 +1409,7 @@
     <tr>
       <th>127</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 14, 14), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1761,17 +1761,6 @@
     <tr>
       <th>159</th>
       <td>Conv2d</td>
-      <td>Operand(type=Activation, shape=(1, 72, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(72, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 72<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>160</th>
-      <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16, 16, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
@@ -1781,7 +1770,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>161</th>
+      <th>160</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 16, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -1792,7 +1781,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>162</th>
+      <th>161</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 64, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(24, 64, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -1803,10 +1792,21 @@
       <td></td>
     </tr>
     <tr>
-      <th>163</th>
+      <th>162</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 24, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(72, 24, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>163</th>
+      <td>Conv2d</td>
+      <td>Operand(type=Activation, shape=(1, 72, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(72, 1, 3, 3), dtype=float32)</td>
+      <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 72<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2278,7 +2278,7 @@
     <tr>
       <th>206</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_6454, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_01342, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2300,7 +2300,7 @@
     <tr>
       <th>208</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2311,7 +2311,7 @@
     <tr>
       <th>209</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2784,7 +2784,7 @@
     <tr>
       <th>252</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4358, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2817,7 +2817,7 @@
     <tr>
       <th>255</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 240, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50358, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_66452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2828,7 +2828,7 @@
     <tr>
       <th>256</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.1.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2839,7 +2839,7 @@
     <tr>
       <th>257</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.1.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_75452, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2850,7 +2850,7 @@
     <tr>
       <th>258</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.2.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2861,7 +2861,7 @@
     <tr>
       <th>259</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.2.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2872,7 +2872,7 @@
     <tr>
       <th>260</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.2.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19452, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2883,259 +2883,6 @@
     <tr>
       <th>261</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.3.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>262</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.3.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>263</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.3.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>264</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.4.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>265</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.4.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>266</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 72, 28, 28), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>267</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.4.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_39452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>268</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.5.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_42452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>269</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.5.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_45452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>270</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 120, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 120, 28, 28), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>271</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.5.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>272</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.6.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>273</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.6.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>274</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.6.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>275</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.7.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>276</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_66452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>277</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.7.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_69452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>278</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.7.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>279</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_75452, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200,), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>280</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(200,), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>281</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200, 1, 1), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>282</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.8.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>283</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(200,), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>284</th>
-      <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
@@ -3145,7 +2892,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>285</th>
+      <th>262</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 200, 14, 14), dtype=float32)</td>
       <td></td>
@@ -3156,29 +2903,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>286</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.8.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>287</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.8.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_87452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>288</th>
+      <th>263</th>
       <td>Multiply</td>
       <td>Operand(type=Constant, name=const_88452, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(184,), dtype=float32)</td>
       <td></td>
@@ -3189,7 +2914,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>289</th>
+      <th>264</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(184,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(184,), dtype=float32)</td>
       <td></td>
@@ -3200,7 +2925,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>290</th>
+      <th>265</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(184, 1, 1), dtype=float32)</td>
       <td></td>
@@ -3211,18 +2936,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>291</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.9.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>292</th>
+      <th>266</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(184,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(184,), dtype=float32)</td>
       <td></td>
@@ -3233,7 +2947,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>293</th>
+      <th>267</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92452, dtype=float32)</td>
       <td></td>
@@ -3244,7 +2958,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>294</th>
+      <th>268</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 184, 14, 14), dtype=float32)</td>
       <td></td>
@@ -3255,73 +2969,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>295</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.9.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>296</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.9.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>297</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.10.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>298</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.10.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_108452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>299</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.10.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>300</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.11.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>301</th>
+      <th>269</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_118452, dtype=float32)</td>
       <td></td>
@@ -3332,40 +2980,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>302</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.11.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>303</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.11.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>304</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.12.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>305</th>
+      <th>270</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133452, dtype=float32)</td>
       <td></td>
@@ -3376,51 +2991,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>306</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.12.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>307</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.12.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_143452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>308</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.13.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>309</th>
-      <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.13.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>310</th>
+      <th>271</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 672, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_153452, dtype=float32)</td>
       <td></td>
@@ -3431,9 +3002,438 @@
       <td></td>
     </tr>
     <tr>
+      <th>272</th>
+      <td>Multiply</td>
+      <td>Operand(type=Activation, shape=(1, 960, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_163452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>273</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.1.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>274</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.1.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>275</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.2.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>276</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.2.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>277</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.2.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>278</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.3.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>279</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.3.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>280</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.3.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>281</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.4.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>282</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.4.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>283</th>
+      <td>Multiply</td>
+      <td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 72, 28, 28), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>284</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.4.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_39452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>285</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.5.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_42452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>286</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.5.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_45452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>287</th>
+      <td>Multiply</td>
+      <td>Operand(type=Activation, shape=(1, 120, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 120, 28, 28), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>288</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.5.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>289</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.6.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>290</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.6.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.6.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>292</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.7.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>293</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.7.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_69452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>294</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.7.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.8.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>296</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.8.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>297</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.8.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_87452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>298</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.9.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>299</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.9.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>300</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.9.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>301</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.10.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>302</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.10.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_108452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>303</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.10.block.2.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.11.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>305</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.11.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>306</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.11.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>307</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.12.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
+      <th>308</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.12.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>309</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.12.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_143452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>310</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.13.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+    </tr>
+    <tr>
       <th>311</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.13.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_158452, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.13.block.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3444,6 +3444,17 @@
     <tr>
       <th>312</th>
       <td>Multiply</td>
+      <td>Operand(type=Constant, name=features.13.block.3.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_158452, dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>313</th>
+      <td>Multiply</td>
       <td>Operand(type=Constant, name=features.14.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161452, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
@@ -3451,17 +3462,6 @@
       <td>&#x274C;</td>
       <td></td>
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-    </tr>
-    <tr>
-      <th>313</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 960, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_163452, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
     </tr>
     <tr>
       <th>314</th>
@@ -4335,7 +4335,7 @@
     <tr>
       <th>393</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(32, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -4346,7 +4346,7 @@
     <tr>
       <th>394</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(32,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -4357,7 +4357,7 @@
     <tr>
       <th>395</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(32,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

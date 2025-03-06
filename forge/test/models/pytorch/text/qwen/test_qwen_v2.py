@@ -2,7 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    Qwen2ForTokenClassification,
+)
 
 import forge
 from forge.verify.verify import verify
@@ -51,6 +55,41 @@ def test_qwen_clm(record_forge_property, variant):
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
     inputs = [input_ids, attention_mask]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
+def test_qwen2_token_classification(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="qwen_v2",
+        variant=variant,
+        task=Task.TOKEN_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and tokenizer
+    framework_model = Qwen2ForTokenClassification.from_pretrained(variant)
+    framework_model.eval()
+    tokenizer = AutoTokenizer.from_pretrained(variant)
+
+    # Prepare input
+    text = "HuggingFace is a company based in Paris and New York."
+    model_inputs = tokenizer(text, add_special_tokens=False, return_tensors="pt")
+
+    inputs = [model_inputs["input_ids"], model_inputs["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

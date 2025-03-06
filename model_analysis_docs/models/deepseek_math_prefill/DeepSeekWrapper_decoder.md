@@ -100,13 +100,13 @@
     <tr>
       <th>8</th>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(1, 39), dtype=int32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(102400, 4096), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>Operand(type=Activation, shape=(1, 39), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(102400, 4096), dtype=float32)</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>9</th>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(39, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4096, 4096), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Matmul</td>
-      <td>Operand(type=Activation, shape=(1, 64, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(39, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4096, 4096), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
