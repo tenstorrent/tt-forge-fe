@@ -341,22 +341,22 @@ def verify_backward(
         original_model = framework_model
 
     # 1st step: run backward pass for the networks and get gradients
-    [input.grad.zero_() for input in inputs if input.grad is not None]  # NOTE: Probably not needed
-    original_model.zero_grad()  # NOTE: Probably not needed
+    [input.grad.zero_() for input in inputs if input.grad is not None]
+    original_model.zero_grad()
     compiled_model.gradient_inputs = [output_grad]
     co_gradient_outputs = compiled_model.backward()
     co_grads = [
         grad
         for grad, name in zip(co_gradient_outputs, compiled_model.bwd_compiled_graph_state.ordered_output_names)
-        if not (name.startswith("grad_acc_") and name.endswith("_grad_accumulator"))
+        if not name.startswith("grad_acc_")  # This is set to gradient of the parameter node
     ]
-    # HACK: This will fail if the first argument in forward pass is not used first in forward pass and so on
+    # HACK: This will fail if the first argument is not used first, second argument is not used second, etc.
     co_grads = list(reversed(co_grads))
     co_grads += [param.grad.clone() for param in original_model.parameters() if param.requires_grad]
 
     # Run backward on framework model
-    [input.grad.zero_() for input in inputs if input.grad is not None]  # NOTE: Probably not needed
-    framework_model.zero_grad()  # NOTE: Probably not needed
+    [input.grad.zero_() for input in inputs if input.grad is not None]
+    framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
     fw_grads = [input.grad.clone() for input in inputs if input.requires_grad]
     fw_grads += [param.grad for param in framework_model.parameters() if param.requires_grad]

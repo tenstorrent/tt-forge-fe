@@ -9,7 +9,7 @@ from torch import nn
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
+from forge.verify.verify import verify, verify_backward
 
 
 @pytest.mark.parametrize(
@@ -128,6 +128,7 @@ def test_embedding(shapes):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.parametrize("train", [True, False])
 @pytest.mark.parametrize(
     "shapes",
     [
@@ -142,7 +143,7 @@ def test_embedding(shapes):
     ],
 )
 @pytest.mark.push
-def test_matmul(shapes):
+def test_matmul(shapes, train):
     shape1, shape2 = shapes
 
     class Matmul(nn.Module):
@@ -153,14 +154,27 @@ def test_matmul(shapes):
             return torch.matmul(x, y)
 
     inputs = [
-        torch.rand(shape1),
-        torch.rand(shape2),
+        torch.rand(shape1, requires_grad=train),
+        torch.rand(shape2, requires_grad=train),
     ]
 
     framework_model = Matmul()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    framework_model.eval() if not train else framework_model.train()
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
+    # NOTE: We probably need two framework models with the same state_dict to compare the outputs
+    #       But for now it works without that for some reason?
+    # model_for_compile = Matmul()
+    # model_for_compile.eval() if not training else model_for_compile.train()
+    # model_for_compile.load_state_dict(framework_model.state_dict())
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=train)
+
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+    )
+    if train:
+        # Simulate the backward pass of the loss
+        output_grad = torch.rand_like(fw_out[0])
+        verify_backward(inputs, output_grad, fw_out[0], co_out[0], framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
