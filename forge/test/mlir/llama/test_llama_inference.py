@@ -145,7 +145,6 @@ def test_llama_input_sequence_lengths(model_path, seq_len):
 
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
-    input_ids = input_ids.to(torch.int32)
 
     # Compile the model and run fwd pass
     compiled_model = forge.compile(framework_model, input_ids)
