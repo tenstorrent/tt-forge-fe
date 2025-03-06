@@ -1902,8 +1902,6 @@ def get_framework(module):
         framework = "tf_graphdef"
     elif isinstance(module, forge.module.OnnxModule):
         framework = "onnx"
-    elif isinstance(module, forge.module.MXNetModule):
-        framework = "mxnet"
     elif isinstance(module, forge.module.JaxModule):
         framework = "jax"
     elif isinstance(module, forge.module.TFLiteModule):
