@@ -66,6 +66,7 @@ def test_qwen_clm(record_forge_property, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
 def test_qwen2_token_classification(record_forge_property, variant):
+    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Build Module Name
     module_name = build_module_name(
