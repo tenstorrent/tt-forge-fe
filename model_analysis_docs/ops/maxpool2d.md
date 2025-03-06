@@ -20,21 +20,21 @@
 		<tr>
 			<td rowspan="10">1</td>
 			<td rowspan="10">[TT_METAL][ttnn.reshape] RuntimeError tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp new_volume == old_volume Invalid arguments to reshape</td>
-			<td rowspan="10">22</td>
-			<td>5</td>
-			<td><ul><li>pt_vovnet_vovnet39_obj_det_osmr</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_vovnet57_obj_det_osmr</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li></ul></td>
+			<td rowspan="10">28</td>
+			<td>7</td>
+			<td><ul><li>pt_vovnet_vovnet57_obj_det_osmr</li><li>pt_vovnet_vovnet39_obj_det_osmr</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_v1_vovnet39_obj_det_torchhub</li><li>pt_vovnet_vovnet_v1_57_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)</td>
 			<td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
 		</tr>
 		<tr>
-			<td>5</td>
-			<td><ul><li>pt_vovnet_vovnet39_obj_det_osmr</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_vovnet57_obj_det_osmr</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li></ul></td>
+			<td>7</td>
+			<td><ul><li>pt_vovnet_vovnet57_obj_det_osmr</li><li>pt_vovnet_vovnet39_obj_det_osmr</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_v1_vovnet39_obj_det_torchhub</li><li>pt_vovnet_vovnet_v1_57_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)</td>
 			<td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
 		</tr>
 		<tr>
-			<td>5</td>
-			<td><ul><li>pt_vovnet_vovnet39_obj_det_osmr</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_vovnet57_obj_det_osmr</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li></ul></td>
+			<td>7</td>
+			<td><ul><li>pt_vovnet_vovnet57_obj_det_osmr</li><li>pt_vovnet_vovnet39_obj_det_osmr</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_v1_vovnet39_obj_det_torchhub</li><li>pt_vovnet_vovnet_v1_57_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)</td>
 			<td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
 		</tr>
@@ -52,8 +52,8 @@
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_googlenet_base_img_cls_torchvision</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)</td>
+			<td><ul><li>pt_vovnet_vovnet27s_obj_det_osmr</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)</td>
 			<td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
 		</tr>
 		<tr>
@@ -65,13 +65,13 @@
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_googlenet_base_img_cls_torchvision</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)</td>
+			<td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)</td>
 			<td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_vovnet_vovnet27s_obj_det_osmr</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)</td>
+			<td><ul><li>pt_googlenet_base_img_cls_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)</td>
 			<td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
 		</tr>
 		<tr>

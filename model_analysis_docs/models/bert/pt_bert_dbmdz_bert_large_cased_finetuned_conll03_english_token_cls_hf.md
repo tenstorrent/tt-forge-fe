@@ -80,33 +80,33 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(28996, 1024), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2, 1024), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 1024), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>9</th>
@@ -265,28 +265,6 @@
     <tr>
       <th>23</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)</td>
-      <td>shape : (16, 128, 128)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(16, 128, 128), dtype=float32)</td>
-      <td>shape : (1, 16, 128, 128)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td>shape : (128, 1024)</td>
       <td>&#x2705;</td>
@@ -296,7 +274,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>26</th>
+      <th>24</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td>shape : (1, 128, 16, 64)</td>
@@ -307,7 +285,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>27</th>
+      <th>25</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(128, 1024), dtype=float32)</td>
       <td>shape : (1, 128, 1024)</td>
@@ -318,10 +296,32 @@
       <td></td>
     </tr>
     <tr>
-      <th>28</th>
+      <th>26</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 16, 128, 64), dtype=float32)</td>
       <td>shape : (16, 128, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(16, 128, 128), dtype=float32)</td>
+      <td>shape : (1, 16, 128, 128)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)</td>
+      <td>shape : (16, 128, 128)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
