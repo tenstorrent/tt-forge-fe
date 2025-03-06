@@ -252,11 +252,14 @@ class VerifyUtils:
                 convert_to_forge=convert_to_forge,
             )
         elif skip_forge_verification:
-            verify_module_for_inputs_torch(
-                model=model,
-                inputs=inputs,
-                verify_config=verify_config,
-            )
+            if isinstance(model, ForgeModule):
+                logger.warning("Nothing to validate while skipping Forge verification for Forge module")
+            else:
+                verify_module_for_inputs_torch(
+                    model=model,
+                    inputs=inputs,
+                    verify_config=verify_config,
+                )
         else:
             verify_module_for_inputs(
                 model=model,
