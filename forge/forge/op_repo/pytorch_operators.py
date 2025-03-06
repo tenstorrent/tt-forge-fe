@@ -75,6 +75,7 @@ _OPERATORS = [
             OperatorParamNumber("dim", int, -3, 3),
         ],
     ),
+    OperatorDefinition("softmax", "torch.softmax", 1),
     # Unary operators (not implemented)
     OperatorDefinition("acos", "torch.acos", 1),
     OperatorDefinition("arccos", "torch.acos", 1),
