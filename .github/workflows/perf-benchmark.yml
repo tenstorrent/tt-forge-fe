@@ -84,6 +84,7 @@ jobs:
         source env/activate
         PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
         PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
+        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4

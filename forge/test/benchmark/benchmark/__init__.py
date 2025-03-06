@@ -4,3 +4,4 @@
 
 from .models import mnist_linear
 from .models import resnet_hf
+from .models import llama
