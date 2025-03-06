@@ -1906,6 +1906,8 @@ def get_framework(module):
         framework = "jax"
     elif isinstance(module, forge.module.TFLiteModule):
         framework = "tflite"
+    elif isinstance(module, forge.module.PaddleModule):
+        framework = "paddle"
     else:
         assert False, f"Unsupported framework: {type(module)}"
 

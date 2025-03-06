@@ -297,7 +297,7 @@ class ForgeWriter(PythonWriter):
     ):
         self.indent = 1
 
-        if self.framework == "pytorch":
+        if self.framework == "pytorch" or self.framework == "paddle":
             # Case 1: No parameter or buffer files provided. Extract parameters and buffers
             # directly from the model.
             if not named_params_file_name and not named_buffers_file_name:
@@ -311,6 +311,7 @@ class ForgeWriter(PythonWriter):
                 self.wl("named_parameters.update(named_buffers)")
             # Case 2: Parameter and buffer files provided. Load parameters and buffers from
             # the serialized files.
+
             elif named_params_file_name and named_buffers_file_name:
                 self.wl(f"def process_framework_parameters(self):")
                 self.indent += 1
@@ -330,25 +331,30 @@ class ForgeWriter(PythonWriter):
                     self.wl(f"'{k}' : {v},")
                 self.indent -= 1
                 self.wl("}")
-
-            # Loop over all named params
             self.wl("for name, torch_param in named_parameters.items():")
             self.indent += 1
+            if self.framework == "paddle":
+                self.wl("if hasattr(torch_param, 'name') and torch_param.name is not None:")
+                self.indent += 1
+                self.wl("name = torch_param.name")
+                self.indent -= 1
+                self.wl("tensor = torch.tensor(torch_param.data.numpy())")
 
-            # Handle -inf and inf values
-            self.wl("# Replace infinities with relevant numbers")
-            self.wl("if torch.any(torch.isinf(torch_param)):")
-            self.indent += 1
-            self.wl(
-                "torch_param = torch.where(torch.isposinf(torch_param), torch.tensor(1e4, dtype=torch_param.dtype), torch_param)"
-            )
-            self.wl(
-                "torch_param = torch.where(torch.isneginf(torch_param), torch.tensor(-1e4, dtype=torch_param.dtype), torch_param)"
-            )
-            self.wl('logger.warning(f"Replacing -inf and inf values in tensor param: {name}")')
-            self.indent -= 1
+            else:
+                # Handle -inf and inf values
+                self.wl("# Replace infinities with relevant numbers")
+                self.wl("if torch.any(torch.isinf(torch_param)):")
+                self.indent += 1
+                self.wl(
+                    "torch_param = torch.where(torch.isposinf(torch_param), torch.tensor(1e4, dtype=torch_param.dtype), torch_param)"
+                )
+                self.wl(
+                    "torch_param = torch.where(torch.isneginf(torch_param), torch.tensor(-1e4, dtype=torch_param.dtype), torch_param)"
+                )
+                self.wl('logger.warning(f"Replacing -inf and inf values in tensor param: {name}")')
+                self.indent -= 1
 
-            self.wl("tensor = torch_param.data")
+                self.wl("tensor = torch_param.data")
 
             if len(param_names):
                 self.wl("if torch.numel(tensor) == 1 and len(tensor.shape) == 0:")
