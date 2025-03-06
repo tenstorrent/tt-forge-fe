@@ -473,3 +473,31 @@ def test_grid_sample(img, grid, align_corners, test_device):
     grid = torch.randn(grid)
     output = model(img, grid)
     compiled_model = forge.compile(model, sample_inputs=[img, grid], module_name="grid_sample")
+
+
+@pytest.mark.parametrize("vocab_size", [32000])
+@pytest.mark.parametrize("token_num", [12])
+@pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
+def test_embedding_constant_input(vocab_size, token_num, embedding_dim):
+    compiler_cfg = forge.config._get_global_compiler_config()
+    compiler_cfg.enable_tvm_cpu_fallback = False
+
+    class EmbeddingConstantInput(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embedding = nn.Embedding(vocab_size, embedding_dim)
+            self.embedding_indices = torch.randint(0, vocab_size, (1, token_num)).to(torch.int32)
+
+        def forward(self, x):
+            embedding_output = self.embedding(self.embedding_indices)
+            return x + embedding_output
+
+    inputs = [
+        torch.randn((token_num, embedding_dim)).to(torch.bfloat16),
+    ]
+
+    framework_model = EmbeddingConstantInput()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
