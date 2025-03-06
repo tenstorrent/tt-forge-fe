@@ -2,18 +2,26 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Built-in modules
 import pytest
 import time
 import socket
 import subprocess
 import json
+import os
+from datetime import datetime
+
+# Third-party modules
 import torch
 from torch import nn
+
+# Forge modules
 import forge
 from forge.verify.verify import verify
 
 # Common constants
 GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
+REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
@@ -111,11 +119,6 @@ def test_mnist_linear(
     verify(inputs, framework_model, compiled_model)
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
-    # date = (
-    #     subprocess.check_output(["git", "show", "-s", "--format=%cd", "--date=format:%y-%m-%d", "HEAD"])
-    #     .decode("ascii")
-    #     .strip()
-    # )
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
@@ -212,11 +215,12 @@ def mnist_linear_benchmark(config: dict):
         loop_count=loop_count,
     )
 
+    if not os.path.exists(REPORTS_DIR):
+        os.makedirs(REPORTS_DIR)
     if not output_file:
-        output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
-
-    result["output"] = output_file
+        output_file = REPORTS_DIR + f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
+    result["output"] = REPORTS_DIR + output_file
 
     # Save the results to a file
-    with open(output_file, "w") as f:
+    with open(result["output"], "w") as f:
         json.dump(result, f)
