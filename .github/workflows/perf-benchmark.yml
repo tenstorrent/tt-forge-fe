@@ -44,7 +44,10 @@ jobs:
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=./benchmark_reports >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=./benchmark_reports/" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path_mnist=./benchmark_reports/forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path_resnet_hf=./benchmark_reports/forge-benchmark-e2e-resnet_hf_$JOB_ID.json" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path_llama=./benchmark_reports/forge-benchmark-e2e-llama_$JOB_ID.json" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -82,9 +85,9 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
-        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
-        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
+        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path_mnist }}
+        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path_resnet_hf }}
+        PYTHONPATH=./forge python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path_llama }}
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
