@@ -22,7 +22,7 @@ import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden
-from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
+from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -310,7 +310,9 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
+    record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
     co_out = compiled_model(*inputs)
+    record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
