@@ -44,6 +44,7 @@ def test_stable_diffusion_generation(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the pipeline and set it to use the CPU

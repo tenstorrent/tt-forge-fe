@@ -42,6 +42,7 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
@@ -96,6 +97,7 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
@@ -155,6 +157,7 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace

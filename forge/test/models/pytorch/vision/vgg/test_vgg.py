@@ -36,6 +36,7 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -80,6 +81,7 @@ def test_vgg_19_hf_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     """
@@ -153,6 +155,7 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     torch.multiprocessing.set_sharing_strategy("file_system")
@@ -181,6 +184,7 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
@@ -243,6 +247,7 @@ def test_vgg_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

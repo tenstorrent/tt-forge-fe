@@ -48,6 +48,7 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -85,6 +86,7 @@ def test_mlp_mixer_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

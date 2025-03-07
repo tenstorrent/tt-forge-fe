@@ -36,6 +36,7 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2 :prepare model

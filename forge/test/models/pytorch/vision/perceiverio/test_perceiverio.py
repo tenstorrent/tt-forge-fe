@@ -61,6 +61,7 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Sample Image

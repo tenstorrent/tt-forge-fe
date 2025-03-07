@@ -174,7 +174,7 @@ def record_forge_property(record_property):
 
     This fixture:
       1. Instantiates a ForgePropertyStore.
-      2. Adds a default property ("tags.frontend": "tt-forge-fe").
+      2. Adds a default property ("owner": "tt-forge-fe").
       3. Yields the store for use in tests.
       4. After the test, fetches execution phase and stage, updates the store,
          and then records each top-level property using the provided record_property function.
@@ -183,7 +183,7 @@ def record_forge_property(record_property):
     forge_property_store = ForgePropertyStore()
 
     # Add a default property.
-    forge_property_store.add("tags.frontend", "tt-forge-fe")
+    forge_property_store.add("owner", "tt-forge-fe")
 
     # Provide the store to the test function.
     yield forge_property_store

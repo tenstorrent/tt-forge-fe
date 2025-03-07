@@ -32,6 +32,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 1: Create Forge module from PyTorch model
@@ -64,6 +65,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "priority")
     record_forge_property("tags.model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -95,6 +97,7 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -126,6 +129,7 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -168,6 +172,7 @@ def test_swin_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

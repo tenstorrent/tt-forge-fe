@@ -37,6 +37,7 @@ def test_pt_bart_classifier(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
