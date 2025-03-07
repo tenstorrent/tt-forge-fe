@@ -51,6 +51,7 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     model_ckpt = f"albert-{size}-{variant}"
@@ -123,6 +124,7 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
@@ -181,6 +183,7 @@ def test_albert_question_answering_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Albert tokenizer and model from HuggingFace
@@ -217,6 +220,7 @@ def test_albert_sequence_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Albert tokenizer and model from HuggingFace

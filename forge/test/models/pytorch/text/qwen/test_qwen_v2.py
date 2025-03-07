@@ -38,6 +38,7 @@ def test_qwen_clm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and tokenizer
@@ -78,6 +79,7 @@ def test_qwen2_token_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and tokenizer

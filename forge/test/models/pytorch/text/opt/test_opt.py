@@ -31,6 +31,7 @@ def test_opt_causal_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
@@ -81,6 +82,7 @@ def test_opt_qa(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace
@@ -131,6 +133,7 @@ def test_opt_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace

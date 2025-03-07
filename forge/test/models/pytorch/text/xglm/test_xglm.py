@@ -25,6 +25,7 @@ def test_xglm_causal_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     config = XGLMConfig.from_pretrained(variant)

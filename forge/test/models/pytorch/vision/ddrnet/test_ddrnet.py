@@ -39,6 +39,7 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -103,6 +104,7 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # prepare model

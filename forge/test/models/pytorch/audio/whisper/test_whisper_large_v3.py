@@ -52,6 +52,7 @@ def test_whisper_large_v3_speech_translation(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     processor = WhisperProcessor.from_pretrained(variant)

@@ -21,6 +21,7 @@ def test_pytorch_ssd300_resnet50(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2 : prepare model
