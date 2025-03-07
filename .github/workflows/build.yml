@@ -31,10 +31,9 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - runs-on: [runner]
+          - runs-on: [tt-beta-ubuntu-2204-large]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -119,10 +118,9 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - runs-on: [runner]
+          - runs-on: [tt-beta-ubuntu-2204-large]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
