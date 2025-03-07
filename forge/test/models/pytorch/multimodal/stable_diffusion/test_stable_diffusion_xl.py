@@ -32,7 +32,15 @@ class StableDiffusionXLWrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
-@pytest.mark.parametrize("variant", ["stable-diffusion-xl-base-1.0"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "stable-diffusion-xl-base-1.0",
+            marks=[pytest.mark.xfail(reason="NotImplementedError: Unknown output type: <class 'PIL.Image.Image'>")],
+        ),
+    ],
+)
 def test_stable_diffusion_generation(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(

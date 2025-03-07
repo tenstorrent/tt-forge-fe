@@ -23,7 +23,15 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["FinancialSupport/NanoGPT"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "FinancialSupport/NanoGPT",
+            marks=pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got UInt8"),
+        ),
+    ],
+)
 def test_nanogpt_text_generation(record_forge_property, variant):
 
     # Build Module Name

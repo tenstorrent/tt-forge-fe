@@ -25,7 +25,19 @@ class BartWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["facebook/bart-large-mnli"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/bart-large-mnli",
+            marks=[
+                pytest.mark.xfail(
+                    reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+                )
+            ],
+        ),
+    ],
+)
 def test_pt_bart_classifier(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(

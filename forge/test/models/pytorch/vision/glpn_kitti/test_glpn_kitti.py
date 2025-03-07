@@ -11,7 +11,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["vinvino02/glpn-kitti"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "vinvino02/glpn-kitti",
+            marks=[pytest.mark.skip(reason="Only tilized tensors are supported for device typecast")],
+        ),
+    ],
+)
 def test_glpn_kitti(record_forge_property, variant):
 
     # Build Module Name

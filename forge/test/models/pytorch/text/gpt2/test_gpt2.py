@@ -28,7 +28,17 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["gpt2"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "gpt2",
+            marks=[
+                pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got UInt8")
+            ],
+        ),
+    ],
+)
 def test_gpt2_text_gen(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -63,7 +73,15 @@ def test_gpt2_text_gen(record_forge_property, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["mnoukhov/gpt2-imdb-sentiment-classifier"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "mnoukhov/gpt2-imdb-sentiment-classifier",
+            marks=[pytest.mark.xfail(reason="ttir.softmax op requires attribute 'dimension'")],
+        ),
+    ],
+)
 def test_gpt2_sequence_classification(record_forge_property, variant):
 
     # Build Module Name

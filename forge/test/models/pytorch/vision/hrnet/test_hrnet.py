@@ -76,7 +76,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_hrnet_osmr_pytorch(record_forge_property, variant):
     if variant != "hrnet_w18_small_v1":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -154,7 +154,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_hrnet_timm_pytorch(record_forge_property, variant):
     if variant not in ["hrnet_w18_small", "hrnet_w18.ms_aug_in1k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")

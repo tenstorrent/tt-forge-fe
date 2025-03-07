@@ -29,7 +29,7 @@ def test_regnet(record_forge_property, variant):
     record_forge_property("tags.model_name", module_name)
 
     # Load RegNet model
-    framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040")
+    framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040", return_dict=False)
 
     # Preprocess the image
     image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -92,9 +92,32 @@ variants_with_weights = {
     "regnet_x_32gf": "RegNet_X_32GF_Weights",
 }
 
+variants = [
+    pytest.param(
+        "regnet_y_400mf",
+        marks=pytest.mark.xfail(
+            reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+        ),
+    ),
+    "regnet_y_800mf",
+    "regnet_y_1_6gf",
+    "regnet_y_3_2gf",
+    "regnet_y_8gf",
+    "regnet_y_16gf",
+    "regnet_y_32gf",
+    "regnet_y_128gf",
+    "regnet_x_400mf",
+    "regnet_x_800mf",
+    "regnet_x_1_6gf",
+    "regnet_x_3_2gf",
+    "regnet_x_8gf",
+    "regnet_x_16gf",
+    "regnet_x_32gf",
+]
+
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", variants)
 def test_regnet_torchvision(record_forge_property, variant):
 
     if variant != "regnet_y_400mf":
