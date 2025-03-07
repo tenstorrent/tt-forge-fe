@@ -108,13 +108,7 @@ class ExecutionStage(Enum):
 
     # Stage under PASSED
 
-    # 1. Compared the golden and framework output (compare_with_golden in forge/forge/verify/compare.py).
-    COMPARE_WITH_GOLDEN = (
-        ExecutionPhase.PASSED,
-        "COMPARE_WITH_GOLDEN",
-    )
-
-    # 2. Performed verification (verify function in forge/forge/verify/verify.py).
+    # 1. Performed verification (verify function in forge/forge/verify/verify.py).
     VERIFICATON = (ExecutionPhase.PASSED, "VERIFICATON")
 
     def __init__(self, phase, stage_name):

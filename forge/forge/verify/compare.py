@@ -13,7 +13,6 @@ from loguru import logger
 from scipy.spatial import distance
 
 from forge.tensor import narrow_forge_tensor_to_pytorch
-from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
@@ -44,13 +43,6 @@ def compare_with_golden(
             logger.error(calculated)
 
         result = all_close
-
-    # The verify function (in forge/forge/verify/verify.py) calls compare_with_golden for each output.
-    # If any call returns False, it signals a tensor mismatch, so we revert to the previous execution phase (EXECUTED_TTNN)
-    if result:
-        record_execution_phase_and_stage(ExecutionStage.COMPARE_WITH_GOLDEN)
-    else:
-        record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
 
     return result
 

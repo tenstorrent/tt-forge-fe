@@ -17,7 +17,6 @@ from forge._C.runtime import run_binary, Binary
 from forge._C import run_mlir_compiler_to_cpp
 from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, cast_unsupported_torch_dtype, AnyTensor
 from forge.module import Module, PyTorchModule, AnyModule
-from forge.execution_tracker import ExecutionPhase, record_execution_phase_and_stage
 
 
 class CompileResults:
@@ -284,8 +283,6 @@ class CompiledModel:
                 # NOTE: the default idx parameter for the lambda is used to capture the idx by value. Otherwise, the lambda
                 # would capture the idx by reference, and all the lambdas would have the same idx value.
                 output.register_hook(lambda grad, idx=idx: self.tie_grad_fn(idx, grad))
-
-        record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
 
         return model_outputs
 
