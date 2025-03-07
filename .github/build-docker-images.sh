@@ -5,15 +5,6 @@
 
 set -e
 
-# Ensure skopeo is installed
-if ! command -v skopeo &> /dev/null; then
-    sudo apt-get update
-    sudo apt-get install -y software-properties-common
-    sudo add-apt-repository -y ppa:projectatomic/ppa
-    sudo apt-get update
-    sudo apt-get install -y skopeo
-fi
-
 REPO=tenstorrent/tt-forge-fe
 BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ubuntu-22-04
 CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ci-ubuntu-22-04
@@ -23,10 +14,6 @@ IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ird-ubuntu-22-04
 # Compute the hash of the Dockerfile
 DOCKER_TAG=$(./.github/get-docker-tag.sh)
 echo "Docker tag: $DOCKER_TAG"
-
-# Are we on main branch
-ON_MAIN=$(git branch --show-current | grep -q main && echo "true" || echo "false")
-HAS_CHANGES=$(git diff --quiet origin/main && echo "false" || echo "true")
 
 build_and_push() {
     local image_name=$1
@@ -46,12 +33,6 @@ build_and_push() {
 
         echo "Pushing image $image_name:$DOCKER_TAG"
         docker push $image_name:$DOCKER_TAG
-    fi
-
-    # If we are on main branch update manifest and add latest tag
-    if [ "$ON_MAIN" = "true" ] && [ "$HAS_CHANGES" = "false" ]; then
-        echo "Adding latest tag to image $image_name:$DOCKER_TAG"
-        skopeo copy "docker://$image_name:$DOCKER_TAG" "docker://$image_name:latest"
     fi
 }
 
