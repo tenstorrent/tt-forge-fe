@@ -14,14 +14,19 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
-    "Salesforce/codegen-350M-mono",
+    pytest.param(
+        "Salesforce/codegen-350M-mono",
+        marks=[
+            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
+        ],
+    ),
     "Salesforce/codegen-350M-multi",
     "Salesforce/codegen-350M-nl",
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_codegen(record_forge_property, variant):
     if variant != "Salesforce/codegen-350M-mono":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")

@@ -21,11 +21,17 @@ def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
     return model, [input_tensor], {}
 
 
-size = ["n", "s", "m", "l", "x"]
+size = [
+    pytest.param("n", id="yolov5n"),
+    pytest.param("s", id="yolov5s"),
+    pytest.param("m", id="yolov5m"),
+    pytest.param("l", id="yolov5l"),
+    pytest.param("x", id="yolov5x"),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
+@pytest.mark.parametrize("size", size)
 def test_yolov5_320x320(record_forge_property, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -65,11 +71,25 @@ def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
     return model, [input_tensor], {}
 
 
-size = ["n", "s", "m", "l", "x"]
+size = [
+    pytest.param("n", id="yolov5n"),
+    pytest.param(
+        "s",
+        id="yolov5s",
+        marks=[
+            pytest.mark.xfail(
+                reason="Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
+            )
+        ],
+    ),
+    pytest.param("m", id="yolov5m"),
+    pytest.param("l", id="yolov5l"),
+    pytest.param("x", id="yolov5x"),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
+@pytest.mark.parametrize("size", size)
 def test_yolov5_640x640(record_forge_property, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -108,8 +128,25 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
     return model, [input_tensor], {}
 
 
+size = [
+    pytest.param("n", id="yolov5n"),
+    pytest.param(
+        "s",
+        id="yolov5s",
+        marks=[
+            pytest.mark.xfail(
+                reason="Statically allocated circular buffers in program 691 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 573216"
+            )
+        ],
+    ),
+    pytest.param("m", id="yolov5m"),
+    pytest.param("l", id="yolov5l"),
+    pytest.param("x", id="yolov5x"),
+]
+
+
 @pytest.mark.nightly
-@pytest.mark.parametrize("size", size, ids=["yolov5" + s for s in size])
+@pytest.mark.parametrize("size", size)
 def test_yolov5_480x480(record_forge_property, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")

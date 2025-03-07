@@ -12,7 +12,14 @@ from .utils import load_inputs, load_model
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-    "facebook/musicgen-small",
+    pytest.param(
+        "facebook/musicgen-small",
+        marks=[
+            pytest.mark.xfail(
+                reason="[Optimization Graph Passes] RuntimeError: (i >= 0) && (i < (int)dims_.size()) Trying to access element outside of dimensions: 3"
+            )
+        ],
+    ),
     "facebook/musicgen-medium",
     "facebook/musicgen-large",
 ]

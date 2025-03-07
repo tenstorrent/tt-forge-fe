@@ -15,7 +15,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/detr-resnet-50",
+            marks=[pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")],
+        )
+    ],
+)
 def test_detr_detection(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(

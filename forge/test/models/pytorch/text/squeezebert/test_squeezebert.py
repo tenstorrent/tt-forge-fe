@@ -29,7 +29,7 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property, vari
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False)
 
     # Example from multi-nli validation set
     text = """Hello, my dog is cute"""

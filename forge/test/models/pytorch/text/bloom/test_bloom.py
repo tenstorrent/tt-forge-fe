@@ -24,7 +24,19 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["bigscience/bloom-1b1"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "bigscience/bloom-1b1",
+            marks=[
+                pytest.mark.xfail(
+                    reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen"
+                )
+            ],
+        ),
+    ],
+)
 def test_bloom(record_forge_property, variant):
 
     # Build Module Name

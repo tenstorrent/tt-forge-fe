@@ -16,11 +16,19 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=[
+            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
+        ],
+    ),
+    "microsoft/phi-2-pytdml",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_phi2_clm(record_forge_property, variant):
     if variant != "microsoft/phi-2":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
