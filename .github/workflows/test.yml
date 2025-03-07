@@ -44,7 +44,6 @@ jobs:
         test_group_id: ${{ fromJson(inputs.test_group_ids) }}
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
