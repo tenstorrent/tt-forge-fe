@@ -7,8 +7,11 @@ set -e
 
 # Ensure skopeo is installed
 if ! command -v skopeo &> /dev/null; then
-    echo "skopeo could not be found, installing..."
-    sudo apt-get update && sudo apt-get install -y skopeo
+    sudo apt-get update
+    sudo apt-get install -y software-properties-common
+    sudo add-apt-repository -y ppa:projectatomic/ppa
+    sudo apt-get update
+    sudo apt-get install -y skopeo
 fi
 
 REPO=tenstorrent/tt-forge-fe
