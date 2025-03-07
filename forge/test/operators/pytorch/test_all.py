@@ -6,6 +6,8 @@
 
 
 import os
+import gc
+import pytest
 import forge
 import textwrap
 import json
@@ -26,6 +28,20 @@ from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+
+
+test_counter = 0
+
+
+@pytest.fixture(autouse=True)
+def run_gc():
+    """Run garbage collection regularly to avoid memory leaks"""
+    yield
+    global test_counter
+    test_counter += 1
+    # Run garbage collection every 10 tests
+    if test_counter % 10 == 0:
+        gc.collect()
 
 
 @dataclass
