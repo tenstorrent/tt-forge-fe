@@ -64,6 +64,9 @@ def test_falcon_3(record_forge_property, variant):
 
     if variant == "tiiuae/Falcon3-Mamba-7B-Base" or variant == "tiiuae/Falcon3-7B-Base":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 36 GB)")
+    if variant == "tiiuae/Falcon3-3B-Base":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 25 GB)")
+
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="falcon3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
