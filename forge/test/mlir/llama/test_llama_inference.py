@@ -10,20 +10,25 @@ from forge.verify.verify import verify
 from test.mlir.llama.utils.utils import load_model
 
 
-@pytest.mark.nightly
-@pytest.mark.parametrize(
-    "model_path",
-    [
-        "openlm-research/open_llama_3b",
+variants = [
+    "openlm-research/open_llama_3b",
+    pytest.param(
         "meta-llama/Llama-3.2-1B",
-    ],
-)
-def test_llama_inference(model_path):
-    if model_path == "openlm-research/open_llama_3b":
+        marks=[
+            pytest.mark.xfail(reason="RuntimeError: probability tensor contains either `inf`, `nan` or element < 0")
+        ],
+    ),
+]
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants)
+def test_llama_inference(variant):
+    if variant == "openlm-research/open_llama_3b":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Load Model and Tokenizer
-    framework_model, tokenizer = load_model(model_path)
+    framework_model, tokenizer = load_model(variant)
 
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids

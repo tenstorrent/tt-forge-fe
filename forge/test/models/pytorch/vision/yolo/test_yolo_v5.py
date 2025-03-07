@@ -32,6 +32,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
+@pytest.mark.xfail(reason="FileNotFoundError: [Errno 2] No such file or directory: 'yolov5s.pt'")
 def test_yolov5_320x320(record_forge_property, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")

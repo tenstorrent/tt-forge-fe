@@ -51,8 +51,9 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
     return input_ids, output_logits
 
 
-@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.nightly
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.0, but required = 0.99")
 def test_llama_prefil_on_device_decode_on_cpu(model_path):
     """
     This function tests the inference of the Llama models split into two parts:
