@@ -66,6 +66,11 @@ void fuse_conv2d_bias(graphlib::Graph *graph)
 
         // Create a new bias edge to conv2d
         tt::graphlib::Edge bias_input_edge = graph->operand_data_edges(op)[1];
+
+        // The broadcast dimensions are cleared in the bias edge before copying to the conv2d edge,
+        // as the conv2d bias needs to be converted to the required layout.
+        graph->get_edge_attributes(bias_input_edge)->clear_broadcast_dims();
+
         tt::graphlib::Edge new_bias_input_edge = tt::graphlib::Edge(
             bias_input_edge.producer_node_id,
             bias_input_edge.producer_output_port_id,
