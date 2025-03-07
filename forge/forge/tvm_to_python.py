@@ -555,18 +555,11 @@ def populate_conv2d_args(graph, nid, compiler_cfg):
     )
 
     padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    # TVM has padding [top, left, bottom, right]
-    # Convert to [left right top bottom]
-    reordered_padding = [
-        padding[1],
-        padding[3],
-        padding[0],
-        padding[2],
-    ]
+    # Retaining the Padding format for Forge Conv2d Pad Format (Top,Left,Bottom,Right)
     args.append(
         (
             "padding",
-            f"{reordered_padding}",
+            f"{padding}",
         )
     )
 
