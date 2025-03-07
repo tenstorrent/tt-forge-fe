@@ -5,6 +5,12 @@
 
 set -e
 
+# Ensure skopeo is installed
+if ! command -v skopeo &> /dev/null; then
+    echo "skopeo could not be found, installing..."
+    sudo apt-get update && sudo apt-get install -y skopeo
+fi
+
 REPO=tenstorrent/tt-forge-fe
 BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ubuntu-22-04
 CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ci-ubuntu-22-04
