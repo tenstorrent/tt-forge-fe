@@ -82,6 +82,12 @@ jobs:
     needs: build-image
     # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set latest tag on the image
         run: |
           DOCKER_IMAGE=${{ needs.build-image.outputs.docker-image }}
