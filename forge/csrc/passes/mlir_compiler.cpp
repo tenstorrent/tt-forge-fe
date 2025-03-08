@@ -56,9 +56,13 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
         mlir::arith::ArithDialect,
         mlir::func::FuncDialect,
         mlir::ml_program::MLProgramDialect,
-        mlir::tensor::TensorDialect>();
+        mlir::tensor::TensorDialect,
+        mlir::LLVM::LLVMDialect>();
 
     mlir::func::registerInlinerExtension(registry);
+
+    // Register the LLVM dialect inliner extension
+    mlir::LLVM::registerInlinerInterface(registry);
 
     // Create a context with all registered dialects.
     mlir::MLIRContext context(registry);
