@@ -31,4 +31,5 @@ void replace_with_broadcasted_const(
     graphlib::Shape target_shape,
     graphlib::PyOpNode *original_tile_bcast);
 
+void convert_broadcast_tms_to_repeat(Graph *graph);
 }  // namespace tt
