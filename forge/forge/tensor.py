@@ -1197,6 +1197,8 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
         pt = torch.Tensor(t.numpy())
         pt.requires_grad = t.stop_gradient == False
         return pt
+    elif isinstance(t, np.ndarray):
+        return torch.from_numpy(t)
     else:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 

@@ -12,6 +12,7 @@ from typing import Tuple, Dict, List, Any, Union
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import paddle
+import onnx
 import torch
 import tensorflow as tf
 from forge.tensor import to_pt_tensors
@@ -266,7 +267,7 @@ def verify_golden(
 
 def verify(
     inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
-    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer],
+    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer, onnx.onnx_ml_pb2.ModelProto],
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
 ):
