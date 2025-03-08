@@ -54,7 +54,7 @@ def test_hardnet_onnx(variant, test_device):
 
     # Create Forge module from onnx weights
     model = onnx.load(load_path)
-    tt_model = forge.OnnxModule(model_name, model, load_path)
+    tt_model = forge.OnnxModule(model_name, model)
 
     # Run inference on Tenstorrent device
     verify_module(

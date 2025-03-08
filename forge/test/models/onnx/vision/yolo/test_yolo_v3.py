@@ -52,7 +52,7 @@ def test_yolov3_tiny_onnx(test_device):
     # STEP 1: Create Forge module from PyTorch model
     load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/tiny-yolov3-11.onnx"
     model = onnx.load(load_path)
-    tt_model = forge.OnnxModule("onnx_yolov3_tiny", model, load_path)
+    tt_model = forge.OnnxModule("onnx_yolov3_tiny", model)
 
     # Image preprocessing
     pil_img = Image.open("third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/carvana.jpg")
@@ -82,7 +82,7 @@ def test_yolov3_onnx(test_device):
     # STEP 1: Create Forge module from PyTorch model
     load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/yolov3-10.onnx"
     model = onnx.load(load_path)
-    tt_model = forge.OnnxModule("onnx_yolov3_tiny", model, load_path)
+    tt_model = forge.OnnxModule("onnx_yolov3_tiny", model)
 
     # Image preprocessing
     pil_img = Image.open("third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/carvana.jpg")
