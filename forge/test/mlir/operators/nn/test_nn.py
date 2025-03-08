@@ -85,7 +85,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 64, 55, 54),
@@ -93,7 +92,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 128, 26, 26),
@@ -101,7 +99,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 256, 26, 26),
@@ -109,7 +106,6 @@ def test_avgpool3d(shape, kernel_size, stride):
             2,
             0,
             True,
-            marks=pytest.mark.xfail(reason="Invalid arguments to reshape"),
         ),
         pytest.param(
             (1, 96, 54, 54),
