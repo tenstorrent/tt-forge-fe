@@ -16,7 +16,7 @@ from forge._C import DataFormat
 from dataclasses_json import dataclass_json
 from forge.utils import as_json
 from forge.verify.value_checkers import ValueChecker, AutomaticValueChecker
-
+from forge.config import CompileDepth
 
 class TestKind(Enum):
     INFERENCE = 1
@@ -85,6 +85,22 @@ class NebulaGalaxy:
         17,
     ]  # CI
 
+def get_stages_to_perform_intermediate_verification():
+    """
+    Get the stages to perform intermediate verification from the environment variable.
+    The environment variable should be a comma-separated list of stage names from CompileDepth enum class.
+    """
+    # Read and parse the environment variable
+    env_value = os.getenv("STAGES_TO_PERFORM_INTERMEDIATE_VERIFICATION", "")
+    stages_to_verify = set()
+
+    if env_value:
+        stage_names = env_value.split(",")
+        for stage_name in stage_names:
+            stage_name = stage_name.strip()  # Remove extra spaces
+            if stage_name in CompileDepth.__members__:  # Validate the stage name
+                stages_to_verify.add(CompileDepth[stage_name])  # Convert to Enum
+    return stages_to_verify
 
 @dataclass_json
 @dataclass
@@ -119,12 +135,8 @@ class DepricatedVerifyConfig:
         "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
     )  # Whether or not to verify after every compile stage
     verify_last: bool = True  # Whether or not to verify after the final stage (overriden by disabled())
-    verify_post_autograd_passes: bool = (
-        "FORGE_VERIFY_POST_AUTOGRAD_PASSES" in os.environ and os.environ["FORGE_VERIFY_POST_AUTOGRAD_PASSES"] == "1"
-    )  # Whether or not to force verification at post autograd passes (overridden by disabled())
-    verify_post_placer: bool = (
-        "FORGE_VERIFY_POST_PLACER" in os.environ and os.environ["FORGE_VERIFY_POST_PLACER"] == "1"
-    )  # Whether or not to force verification at post placer (overidden by disabled())
+    # When we want to perform verification after some specific compilation stages.
+    stages_for_intermediate_verification = get_stages_to_perform_intermediate_verification()
 
     # names of parameters for which gradient error will not fail the test. Some gradients are so small that
     # atol/rtol/pcc will never be good enough to pass
@@ -157,18 +169,8 @@ class DepricatedVerifyConfig:
     _input_gradient_queue: Optional[torch.multiprocessing.Queue] = None
     _parameter_gradient_queue: Optional[torch.multiprocessing.Queue] = None
 
-    if "FORGE_VERIFY_RESULTS_OFF_BY_DEFAULT" in os.environ and not (
-        "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
-    ):
-        intermediates = False
-        run_golden = False
-        verify_all = False
-        verify_last = False
-        verify_post_placer = False
-        verify_post_autograd_passes = False
-        verify_tvm_compile = False
-        verify_pipeline_result_vs_framework = False
-        verify_forge_codegen_vs_framework = False
+    if "FORGE_TEST_INTERMEDIATE_VERIFY" in os.environ and os.environ["FORGE_TEST_INTERMEDIATE_VERIFY"] == "1":
+        intermediates = True
 
     if verify_all:
         verify_pipeline_result_vs_framework = True
@@ -216,8 +218,6 @@ class DepricatedVerifyConfig:
         v.intermediates = False
         v.run_golden = False
         v.scale_loss = 1.0
-        v.verify_post_autograd_passes = False
-        v.verify_post_placer = False
         return v
 
     def total_number_of_inputs(self):

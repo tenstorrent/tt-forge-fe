@@ -82,8 +82,12 @@ class CompilerConfig:
     # Create "unsupported" forge ops in python file, allowing user to modify later
     enable_tvm_unsupported_ops: bool = False
 
-    # Should we need to compare every op with framework output at each compilation stage.
-    enable_op_level_comparision: bool = False
+    # Setting this to true will enable intermediate outputs to remain in graph
+    # If false, all unused outputs will be removed. This needs to be true for intermediate golden verification 
+    # if we want to compare all intermediate tensors in graph. 
+    enable_op_level_comparision: bool = (
+        "FORGE_OP_LEVEL_COMPARISON" in os.environ and os.environ["FORGE_OP_LEVEL_COMPARISON"] == "1"
+    )
     # Should we constant prop in tvm
     enable_tvm_constant_prop: bool = False
     # Convert framework params to relay params
