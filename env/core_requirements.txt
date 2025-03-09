@@ -51,3 +51,9 @@ openpyxl==3.1.5
 GitPython==3.1.44
 kornia==0.8.0
 mlp-mixer-pytorch==0.2.0
+mmcv-full==1.4.0
+mmdet==2.14.0
+mmsegmentation==0.14.1
+lyft_dataset_sdk==0.0.8
+trimesh==4.6.4
+numba==0.48.0
