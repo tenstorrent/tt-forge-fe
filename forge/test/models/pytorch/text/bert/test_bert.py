@@ -2,11 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from transformers import (
     BertForMaskedLM,
     BertForQuestionAnswering,
     BertForSequenceClassification,
     BertForTokenClassification,
+    BertModel,
     BertTokenizer,
 )
 
@@ -239,3 +241,50 @@ def test_bert_token_classification_pytorch(record_forge_property, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+
+
+@pytest.mark.nightly
+@pytest.mark.push
+@pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
+def test_bert_sentence_embedding_generation_pytorch(record_forge_property, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="bert",
+        variant=variant,
+        task=Task.SENTENCE_EMBEDDING_GENERATION,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and tokenizer
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    framework_model = download_model(BertModel.from_pretrained, variant, return_dict=False, use_cache=False)
+    framework_model.eval()
+
+    # prepare input
+    sentences = "Bu örnek bir cümle"
+    encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
+    inputs = [encoded_input["input_ids"], encoded_input["attention_mask"], encoded_input["token_type_ids"]]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+
+    # Mean Pooling - Take attention mask into account for correct averaging
+    def mean_pooling(model_output, attention_mask):
+        token_embeddings = model_output[0]  # First element of model_output contains all token embeddings
+        input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+        return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+
+    # Perform pooling. In this case, mean pooling.
+    sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])
+
+    print("Sentence embeddings:", sentence_embeddings)
