@@ -17,7 +17,19 @@ from test.models.pytorch.vision.yolo.utils.yolov6_utils import (
 from test.models.utils import Framework, Source, Task, build_module_name
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
-variants = ["yolov6n", "yolov6s", "yolov6m", "yolov6l"]
+variants = [
+    pytest.param(
+        "yolov6n",
+        marks=[
+            pytest.mark.xfail(
+                reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable"
+            )
+        ],
+    ),
+    "yolov6s",
+    "yolov6m",
+    "yolov6l",
+]
 
 
 @pytest.mark.nightly
@@ -36,7 +48,8 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"

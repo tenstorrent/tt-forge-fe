@@ -6,6 +6,7 @@ import torch
 import pytest
 
 import forge
+from forge.verify.verify import verify
 from test.mlir.llama.utils.utils import load_model
 
 
@@ -18,6 +19,9 @@ from test.mlir.llama.utils.utils import load_model
     ],
 )
 def test_llama_inference(model_path):
+    if model_path == "openlm-research/open_llama_3b":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
+
     # Load Model and Tokenizer
     framework_model, tokenizer = load_model(model_path)
 
@@ -124,3 +128,25 @@ def test_llama_inference_cache_cpu(model_path):
     # Generated text
     generated_text = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
     print(generated_text)
+
+
+@pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
+@pytest.mark.parametrize("seq_len", [2048, 512, 128])
+def test_llama_input_sequence_lengths(model_path, seq_len):
+    if model_path == "openlm-research/open_llama_3b" and seq_len == 2048:
+        pytest.skip("ValueError: Data mismatch for openlm-research/open_llama_3b - sequence length of 2048")
+    # Load Model and Tokenizer
+    framework_model, tokenizer = load_model(model_path, num_hidden_layers=1)
+
+    # Adjust tokenizer for max sequence length padding
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+    tokenizer.model_max_length = seq_len
+
+    prompt = "Q: What is the largest animal?\nA:"
+    input_ids = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
+
+    # Compile the model and run fwd pass
+    compiled_model = forge.compile(framework_model, input_ids)
+
+    verify([input_ids], framework_model, compiled_model)

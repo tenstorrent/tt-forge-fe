@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(80, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.stem.conv.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.stem.conv.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.1.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.2.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.2.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.2.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.m.2.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.1.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.2.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.2.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.2.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -496,7 +496,7 @@
     <tr>
       <th>44</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.m.2.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -507,7 +507,7 @@
     <tr>
       <th>45</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -518,7 +518,7 @@
     <tr>
       <th>46</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.1.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -529,7 +529,7 @@
     <tr>
       <th>47</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -540,7 +540,7 @@
     <tr>
       <th>48</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.1.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -551,7 +551,7 @@
     <tr>
       <th>49</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.1.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -562,7 +562,7 @@
     <tr>
       <th>50</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -595,7 +595,7 @@
     <tr>
       <th>53</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.2.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.lateral_conv0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.lateral_conv0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p4.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p4.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p4.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -639,7 +639,7 @@
     <tr>
       <th>57</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p4.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p4.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -650,7 +650,7 @@
     <tr>
       <th>58</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p4.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p4.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_118607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p4.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_118607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p4.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,7 +672,7 @@
     <tr>
       <th>60</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p4.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.reduce_conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.reduce_conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p3.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p3.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p3.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p3.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p3.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p3.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p3.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p3.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_p3.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_p3.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.stems.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.stems.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_154607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -793,7 +793,7 @@
     <tr>
       <th>71</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_154607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.bu_conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,7 +804,7 @@
     <tr>
       <th>72</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.bu_conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n3.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_160607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -815,7 +815,7 @@
     <tr>
       <th>73</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n3.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_160607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n3.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_163607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -826,7 +826,7 @@
     <tr>
       <th>74</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n3.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_163607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n3.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_166607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -837,7 +837,7 @@
     <tr>
       <th>75</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n3.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_166607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n3.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_169607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -848,7 +848,7 @@
     <tr>
       <th>76</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n3.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_169607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n3.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_172607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -859,7 +859,7 @@
     <tr>
       <th>77</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n3.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_172607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.stems.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_175607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -870,7 +870,7 @@
     <tr>
       <th>78</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.stems.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_175607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_178607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -881,7 +881,7 @@
     <tr>
       <th>79</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_178607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_181607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -892,7 +892,7 @@
     <tr>
       <th>80</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_181607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_184607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -903,7 +903,7 @@
     <tr>
       <th>81</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_184607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_187607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -914,7 +914,7 @@
     <tr>
       <th>82</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_187607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.bu_conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_190607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -925,7 +925,7 @@
     <tr>
       <th>83</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.bu_conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_190607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n4.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_193607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -936,7 +936,7 @@
     <tr>
       <th>84</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n4.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_193607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n4.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_196607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -947,7 +947,7 @@
     <tr>
       <th>85</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n4.m.0.conv1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_196607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n4.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_199607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -958,7 +958,7 @@
     <tr>
       <th>86</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n4.m.0.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_199607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n4.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_202607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -969,7 +969,7 @@
     <tr>
       <th>87</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n4.conv2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_202607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.C3_n4.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_205607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -980,7 +980,7 @@
     <tr>
       <th>88</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.C3_n4.conv3.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_205607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.stems.2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_208607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -991,7 +991,7 @@
     <tr>
       <th>89</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.stems.2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_208607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_211607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1002,7 +1002,7 @@
     <tr>
       <th>90</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_211607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_214607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1013,7 +1013,7 @@
     <tr>
       <th>91</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_214607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1024,7 +1024,7 @@
     <tr>
       <th>92</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1035,7 +1035,7 @@
     <tr>
       <th>93</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220607, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 4, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1046,7 +1046,7 @@
     <tr>
       <th>94</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 4, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1057,7 +1057,7 @@
     <tr>
       <th>95</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(80, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1156,7 +1156,7 @@
     <tr>
       <th>104</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
       <td>axis : -3</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1167,7 +1167,7 @@
     <tr>
       <th>105</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
       <td>axis : -3</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1178,7 +1178,7 @@
     <tr>
       <th>106</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
       <td>axis : -3</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1189,7 +1189,7 @@
     <tr>
       <th>107</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
       <td>axis : -3</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1970,7 +1970,7 @@
     <tr>
       <th>178</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1981,7 +1981,7 @@
     <tr>
       <th>179</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1992,7 +1992,7 @@
     <tr>
       <th>180</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2014,7 +2014,7 @@
     <tr>
       <th>182</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2025,7 +2025,7 @@
     <tr>
       <th>183</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3050,22 +3050,22 @@
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
       <td>sizes : [40, 40]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>277</th>
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
       <td>sizes : [80, 80]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>278</th>
@@ -3114,7 +3114,7 @@
     <tr>
       <th>282</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3125,7 +3125,7 @@
     <tr>
       <th>283</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3136,7 +3136,7 @@
     <tr>
       <th>284</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3147,7 +3147,7 @@
     <tr>
       <th>285</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3158,7 +3158,7 @@
     <tr>
       <th>286</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3169,7 +3169,7 @@
     <tr>
       <th>287</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 32, 160, 160), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3180,7 +3180,7 @@
     <tr>
       <th>288</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3191,7 +3191,7 @@
     <tr>
       <th>289</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

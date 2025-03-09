@@ -25,7 +25,8 @@ def test_fchardnet(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"

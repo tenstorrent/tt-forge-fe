@@ -8,7 +8,6 @@ import timm
 import torch
 from datasets import load_dataset
 from tabulate import tabulate
-from torchvision.models.resnet import resnet50
 from transformers import AutoImageProcessor, ResNetForImageClassification
 
 import forge
@@ -16,6 +15,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -38,7 +38,7 @@ def test_resnet_hf(variant, record_forge_property):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
@@ -100,7 +100,7 @@ def test_resnet_timm(record_forge_property):
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
-    record_forge_property("model_name", module_name)
+    record_forge_property("tags.model_name", module_name)
 
     # Load framework model
     framework_model = download_model(timm.create_model, "resnet50", pretrained=True)
@@ -113,24 +113,41 @@ def test_resnet_timm(record_forge_property):
     verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
 
 
+variants_with_weights = {
+    "resnet18": "ResNet18_Weights",
+    "resnet34": "ResNet34_Weights",
+    "resnet50": "ResNet50_Weights",
+    "resnet101": "ResNet101_Weights",
+    "resnet152": "ResNet152_Weights",
+}
+
+
 @pytest.mark.nightly
-def test_resnet_torchvision(record_forge_property):
-    # Record model details
+@pytest.mark.xfail(
+    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+)
+@pytest.mark.parametrize("variant", variants_with_weights.keys())
+def test_resnet_torchvision(record_forge_property, variant):
+
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
         model="resnet",
-        source=Source.TORCHVISION,
-        variant="50",
+        variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCHVISION,
     )
-    record_forge_property("model_name", module_name)
 
-    # Load framework model
-    framework_model = resnet50()
+    # Record Forge Property
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
-    # Compile model
-    input_sample = [torch.rand(1, 3, 224, 224)]
-    compiled_model = forge.compile(framework_model, input_sample)
+    # Load model and input
+    weight_name = variants_with_weights[variant]
+    framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
-    # Verify data on sample input
-    verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)

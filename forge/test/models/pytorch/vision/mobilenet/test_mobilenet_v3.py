@@ -43,7 +43,8 @@ def test_mobilenetv3_basic(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model(variant)
@@ -107,7 +108,8 @@ def test_mobilenetv3_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,

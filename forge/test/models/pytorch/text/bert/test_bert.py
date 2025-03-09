@@ -28,7 +28,8 @@ def test_bert_masked_lm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
@@ -91,13 +92,20 @@ def generate_model_bert_qa_hf_pytorch(variant):
         return_tensors="pt",
     )
 
-    return model, [input_tokens["input_ids"]], {}
+    return model, [input_tokens["input_ids"]], tokenizer
+
+
+variants = [
+    pytest.param("phiyodr/bert-large-finetuned-squad2", marks=[pytest.mark.push]),
+    pytest.param("bert-large-cased-whole-word-masking-finetuned-squad"),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["bert-large-cased-whole-word-masking-finetuned-squad"])
+@pytest.mark.parametrize("variant", variants)
 def test_bert_question_answering_pytorch(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    if variant == "bert-large-cased-whole-word-masking-finetuned-squad":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -105,15 +113,32 @@ def test_bert_question_answering_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
-    framework_model, inputs, _ = generate_model_bert_qa_hf_pytorch(variant)
+    framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
+    framework_model.eval()
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+
+    # Inference
+    output = compiled_model(*inputs)
+
+    # post processing
+    start_logits = output[0]
+    end_logits = output[1]
+
+    answer_start_index = start_logits.argmax()
+    answer_end_index = end_logits.argmax()
+
+    input_ids = inputs[0]
+    predict_answer_tokens = input_ids[0, answer_start_index : answer_end_index + 1]
+
+    print("predicted answer ", tokenizer.decode(predict_answer_tokens, skip_special_tokens=True))
 
 
 def generate_model_bert_seqcls_hf_pytorch(variant):
@@ -151,7 +176,8 @@ def test_bert_sequence_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
@@ -203,7 +229,8 @@ def test_bert_token_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
 

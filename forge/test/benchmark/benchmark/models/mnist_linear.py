@@ -10,7 +10,7 @@ import json
 import torch
 from torch import nn
 import forge
-from forge.verify.compare import compare_with_golden_pcc
+from forge.verify.verify import verify
 
 # Common constants
 GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
@@ -108,8 +108,7 @@ def test_mnist_linear(
         co_out = compiled_model(*inputs)
     end = time.time()
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)]
+    verify(inputs, framework_model, compiled_model)
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = (

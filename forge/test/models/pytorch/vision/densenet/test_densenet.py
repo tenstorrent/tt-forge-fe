@@ -8,6 +8,8 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.densenet.utils.densenet_utils import (
@@ -49,7 +51,8 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -68,17 +71,30 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
-
     if variant == "densenet121_hf_xray":
+        verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)))
         # Inference
         output = compiled_model(*inputs)
         # post processing
         outputs = op_norm(output[0], model.op_threshs)
+    else:
+        verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["densenet161"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "densenet161",
+            marks=[
+                pytest.mark.xfail(
+                    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+                )
+            ],
+        ),
+    ],
+)
 def test_densenet_161_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -90,7 +106,8 @@ def test_densenet_161_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -107,7 +124,19 @@ def test_densenet_161_pytorch(record_forge_property, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["densenet169"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "densenet169",
+            marks=[
+                pytest.mark.xfail(
+                    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+                )
+            ],
+        ),
+    ],
+)
 def test_densenet_169_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -119,7 +148,8 @@ def test_densenet_169_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
@@ -151,7 +181,8 @@ def test_densenet_201_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)

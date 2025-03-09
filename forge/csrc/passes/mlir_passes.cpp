@@ -17,9 +17,10 @@
 
 namespace tt::passes
 {
-/// Public API for running MLIR passes and generating binary.
-void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
+
+void register_mlir_passes()
 {
+    // Static (only once) initialization of the MLIR passes.
     static bool _ = []()
     {
         // Register required passes
@@ -34,17 +35,27 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
         return true;
     }();
     (void)_;
+}
+
+template <MLIROutputKind output>
+void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
+{
+    // Register the MLIR passes.
+    register_mlir_passes();
 
     // Create a pass manager.
     mlir::PassManager pm(mlir_module.get()->getName());
 
     // Get the pipeline info for the wanted pipeline.
-    const auto pipelineInfo = mlir::PassPipelineInfo::lookup("ttir-to-ttnn-backend-pipeline");
+    static_assert(
+        output == MLIROutputKind::Flatbuffer || output == MLIROutputKind::Cpp,
+        "Handling only Flatbuffer and Cpp output correctly.");
+    constexpr auto pipeline_name =
+        (output == MLIROutputKind::Flatbuffer) ? "ttir-to-ttnn-backend-pipeline" : "ttir-to-emitc-pipeline";
+    const auto pipelineInfo = mlir::PassPipelineInfo::lookup(pipeline_name);
 
-    // This error handler is necessary when adding the pipeline to the pass manager (via PassPipelineInfo).
-    // It's supposed to be called when there's an error during parsing of the pipeline options.
-    // However, I think it's wrongly implemented in the MLIR library, so it doesn't get called.
-    mlir::function_ref<mlir::LogicalResult(const mlir::Twine &)> err_handler = [](const mlir::Twine &location)
+    // Error handler for the pipeline. Will be called if there is an error during parsing of the pipeline options.
+    auto err_handler = [](const mlir::Twine &location)
     {
         log_error(LogMLIRCompiler, "Error during parsing pipeline options: {}", location.str());
         return mlir::failure();
@@ -80,4 +91,9 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
     log_trace(LogMLIRCompiler, "MLIR module after running passes:\n{}", moduleStr);
 #endif
 }
+
+// Explicit templates instantiation.
+template void run_mlir_passes<MLIROutputKind::Flatbuffer>(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module);
+template void run_mlir_passes<MLIROutputKind::Cpp>(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module);
+
 }  // namespace tt::passes

@@ -32,7 +32,8 @@ def test_gemma_2b(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Random see for reproducibility
     torch.manual_seed(42)

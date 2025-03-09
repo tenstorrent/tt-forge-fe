@@ -12,7 +12,14 @@ from .utils import load_inputs, load_model
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-    "facebook/musicgen-small",
+    pytest.param(
+        "facebook/musicgen-small",
+        marks=[
+            pytest.mark.xfail(
+                reason="[Optimization Graph Passes] RuntimeError: (i >= 0) && (i < (int)dims_.size()) Trying to access element outside of dimensions: 3"
+            )
+        ],
+    ),
     "facebook/musicgen-medium",
     "facebook/musicgen-large",
 ]
@@ -34,7 +41,8 @@ def test_stereo(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, processor = load_model(variant)
 

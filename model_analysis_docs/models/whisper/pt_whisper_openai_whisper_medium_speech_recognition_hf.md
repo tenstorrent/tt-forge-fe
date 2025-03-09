@@ -137,9 +137,9 @@
       <td>stride : [1, 1]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][ttnn conv2d] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/device/conv2d_op_sharded_program_factory.cpp act_block_w_datums == round_up(conv_act_size_c * filter_w, TILE_WIDTH)</td>
     </tr>
     <tr>
       <th>12</th>
@@ -157,11 +157,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 1), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(51865, 1024), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>14</th>

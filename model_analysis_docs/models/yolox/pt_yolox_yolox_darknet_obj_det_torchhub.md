@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(80, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark3.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark4.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark3.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=backbone.backbone.dark5.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark4.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.stems.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=backbone.backbone.dark5.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.stems.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_154607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.0.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.stems.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_175607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.0.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_154607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_178607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.stems.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_175607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_181607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_178607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_184607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_181607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_187607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.1.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_184607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.stems.2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_208607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.1.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_187607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_211607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.stems.2.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_208607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.reg_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_214607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_211607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.reg_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_214607, dtype=float32)</td>
+      <td>Operand(type=Constant, name=head.cls_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220607, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.2.0.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217607, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=head.cls_convs.2.1.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220607, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 4, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 4, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(4, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(80, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3336,27 +3336,27 @@
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 20), dtype=float32)</td>
       <td>sizes : [40, 40]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>303</th>
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 128, 40, 40), dtype=float32)</td>
       <td>sizes : [80, 80]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>304</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3367,7 +3367,7 @@
     <tr>
       <th>305</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 1, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 80, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

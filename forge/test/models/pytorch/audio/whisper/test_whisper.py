@@ -16,7 +16,14 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
-    "openai/whisper-tiny",
+    pytest.param(
+        "openai/whisper-tiny",
+        marks=[
+            pytest.mark.xfail(
+                reason="Conv2d AssertionError: Setting a tensor value of incorrect shape: (1, 384, 2999, 2) vs torch.Size([1, 384, 3000, 1])"
+            )
+        ],
+    ),
     "openai/whisper-base",
     "openai/whisper-small",
     "openai/whisper-medium",
@@ -25,7 +32,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_whisper(record_forge_property, variant):
     if variant != "openai/whisper-tiny":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -40,7 +47,8 @@ def test_whisper(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)

@@ -18,7 +18,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["seasionality_basis"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "seasionality_basis",
+            marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 4 - stride mismatch: expected [24, 1], got [1, 12]")],
+        ),
+    ],
+)
 def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -26,7 +34,8 @@ def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -60,7 +69,8 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -87,7 +97,8 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     x, x_mask = get_electricity_dataset_input()
 

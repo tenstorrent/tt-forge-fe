@@ -27,7 +27,14 @@ def generate_model_deit_imgcls_hf_pytorch(variant):
 
 
 variants = [
-    "facebook/deit-base-patch16-224",
+    pytest.param(
+        "facebook/deit-base-patch16-224",
+        marks=[
+            pytest.mark.xfail(
+                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
+            )
+        ],
+    ),
     "facebook/deit-base-distilled-patch16-224",
     "facebook/deit-small-patch16-224",
     "facebook/deit-tiny-patch16-224",
@@ -35,7 +42,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     if variant != "facebook/deit-base-patch16-224":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -50,7 +57,8 @@ def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,

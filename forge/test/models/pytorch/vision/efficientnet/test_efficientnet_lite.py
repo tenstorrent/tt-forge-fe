@@ -10,6 +10,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.efficientnet.utils import (
     src_efficientnet_lite as efflite,
 )
+from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
 from test.models.utils import Framework, Source, Task, build_module_name
 
 
@@ -27,7 +28,8 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
@@ -61,7 +63,8 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -95,7 +98,8 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
@@ -129,7 +133,8 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
@@ -163,7 +168,8 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
@@ -175,6 +181,41 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     wh = efflite.efficientnet_lite_params[model_name][2]
     img_tensor = efflite.get_image_tensor(wh)
     inputs = [img_tensor]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+variants = [
+    "tf_efficientnet_lite0.in1k",
+    "tf_efficientnet_lite1.in1k",
+    "tf_efficientnet_lite2.in1k",
+    "tf_efficientnet_lite3.in1k",
+    "tf_efficientnet_lite4.in1k",
+]
+
+
+@pytest.mark.parametrize("variant", variants)
+def test_efficientnet_lite_timm(record_forge_property, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="efficientnet_lite",
+        variant=variant,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
+
+    # Record Forge Property
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
+
+    # Load the model and inputs
+    framework_model, inputs = load_timm_model_and_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

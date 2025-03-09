@@ -23,6 +23,7 @@ from torchvision.transforms import (
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.unet.utils.model import UNET
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -37,6 +38,9 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.xfail(
+    reason="RuntimeError: TT_THROW tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp Unsupported mode"
+)
 @pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
     # Build Module Name
@@ -45,7 +49,8 @@ def test_unet_osmr_cityscape_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "priority")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
@@ -99,7 +104,8 @@ def test_unet_holocron_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -156,7 +162,8 @@ def test_unet_qubvel_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
@@ -212,11 +219,41 @@ def test_unet_torchhub_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+# Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
+@pytest.mark.nightly
+@pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
+def test_unet_carvana(record_forge_property):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="unet_carvana",
+        source=Source.GITHUB,
+        task=Task.IMAGE_SEGMENTATION,
+    )
+
+    # Record Forge Property
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
+
+    # Load model and input
+    framework_model = UNET(in_channels=3, out_channels=1)
+    framework_model.eval()
+    inputs = [torch.rand((1, 3, 224, 224))]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

@@ -39,7 +39,8 @@ def test_monodepth2(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # prepare model and input
     download_model(variant)

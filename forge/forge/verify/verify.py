@@ -11,6 +11,7 @@ from typing import Tuple, Dict, List, Any, Union
 
 from loguru import logger
 from forge.forgeglobal import align_up_tile
+import paddle
 import torch
 import tensorflow as tf
 from forge.tensor import to_pt_tensors
@@ -21,7 +22,7 @@ import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden
-from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
+from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -264,21 +265,30 @@ def verify_golden(
 
 
 def verify(
-    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable]],
-    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model],
+    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
+    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer],
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
 ):
     """
-    Verify the compiled model against the framework model
+    Performs verification of a compiled model by comparing its outputs against a reference framework model.
+
+    Runs inference on both models with the same inputs and performs various validation checks
+    based on the provided verification configuration. Checks can include output size matching,
+    dtype consistency, shape equivalence, and numeric value comparison.
+
+    Parameters:
+        inputs: List of tensor inputs
+        framework_model: Reference model
+        compiled_model: compiled model to verify
+        verify_cfg: Configuration object controlling which verification checks to perform
+
+    Returns:
+        tuple: (framework_outputs, compiled_outputs) - outputs from both models
+               Returns (None, None) if verification is disabled
     """
-    if not verify_cfg.enabled:
-        logger.warning("Verification is disabled")
-        return
 
-    # 0th step: input checks
-
-    # Check if inputs are of the correct type
+    # 0th step: Check if inputs are of the correct type
     if not inputs:
         raise ValueError("Input tensors must be provided")
     for input_tensor in inputs:
@@ -299,7 +309,10 @@ def verify(
 
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
+
+    record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
     co_out = compiled_model(*inputs)
+    record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
@@ -308,6 +321,10 @@ def verify(
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 
     co_out = [co.to("cpu") for co in co_out]
+
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return fw_out, co_out
 
     # 3rd step: verifications of outputs
     # - size check
@@ -333,3 +350,6 @@ def verify(
             verify_cfg.value_checker.check(fw, co)
 
     record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
+
+    # Return both the framework and compiled model outputs
+    return fw_out, co_out

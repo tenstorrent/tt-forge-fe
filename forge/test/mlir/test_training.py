@@ -8,7 +8,7 @@ import pytest
 
 import forge
 import forge.config
-from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
 
 from forge.config import CompilerConfig
 
@@ -40,23 +40,20 @@ def test_torch_training():
 
     model.train()
     for epoch in range(num_epochs):
-        golden = model(inputs)
-        output = tt_model(inputs)
-
-        output = [co.to("cpu") for co in output]
-        assert compare_with_golden(golden=golden, calculated=output[0])
+        fw_out, tt_out = verify(inputs=[inputs], framework_model=model, compiled_model=tt_model)
+        fw_out, tt_out = fw_out[0], tt_out[0]
 
         optimizer.zero_grad()
 
-        loss = loss_fn(output[0], target)
+        loss = loss_fn(tt_out, target)
         loss.backward()
 
-        golden_loss = loss_fn(golden, target)
+        golden_loss = loss_fn(fw_out, target)
         print(f"epoch: {epoch} loss: {loss}")
         print(f"epoch: {epoch} golden_loss: {golden_loss}")
-        print(f"output.grad: {output[0].grad}")
+        print(f"output.grad: {tt_out.grad}")
 
-        loss_grad = output[0].grad
+        loss_grad = tt_out.grad
         assert loss_grad is not None
         grad = tt_model.backward()
 

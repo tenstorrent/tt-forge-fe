@@ -5,8 +5,11 @@ import pytest
 import torch
 from transformers import (
     AlbertForMaskedLM,
+    AlbertForQuestionAnswering,
+    AlbertForSequenceClassification,
     AlbertForTokenClassification,
     AlbertTokenizer,
+    AutoTokenizer,
 )
 
 import forge
@@ -48,7 +51,8 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     model_ckpt = f"albert-{size}-{variant}"
 
@@ -120,7 +124,8 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
@@ -162,3 +167,85 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
 
     print(f"Context: {sample_text}")
     print(f"Answer: {predicted_tokens_classes}")
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", ["twmkn9/albert-base-v2-squad2"])
+def test_albert_question_answering_pytorch(record_forge_property, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="albert",
+        variant=variant,
+        task=Task.QA,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
+
+    # Load Albert tokenizer and model from HuggingFace
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AlbertForQuestionAnswering.from_pretrained, variant, return_dict=False)
+    framework_model.eval()
+
+    # Load data sample
+    question, text = "Who was Jim Henson?", "Jim Henson was a nice puppet"
+
+    # Data preprocessing
+    input_tokens = tokenizer(question, text, return_tensors="pt")
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.nightly
+@pytest.mark.push
+@pytest.mark.parametrize("variant", ["textattack/albert-base-v2-imdb"])
+def test_albert_sequence_classification_pytorch(record_forge_property, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="albert",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
+
+    # Load Albert tokenizer and model from HuggingFace
+    tokenizer = download_model(AlbertTokenizer.from_pretrained, variant)
+    framework_model = download_model(AlbertForSequenceClassification.from_pretrained, variant, return_dict=False)
+    framework_model.eval()
+
+    # Load data sample
+    input_text = "Hello, my dog is cute."
+
+    # Data preprocessing
+    input_tokens = tokenizer(input_text, return_tensors="pt")
+    inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model)
+
+    # Inference
+    co_out = compiled_model(*inputs)
+
+    # post processing
+    predicted_class_id = co_out[0].argmax().item()
+    predicted_category = framework_model.config.id2label[predicted_class_id]
+
+    print(f"predicted category: {predicted_category}")

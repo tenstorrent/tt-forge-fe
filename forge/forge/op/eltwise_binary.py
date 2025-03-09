@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+
 from typing import Union
 
 from ..tensor import Tensor
@@ -184,34 +185,6 @@ def Heaviside(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -
     """
 
     return _Eltwise(name, operandA, operandB, "heaviside")
-
-
-def BinaryStack(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter], dim: int) -> Tensor:
-    """
-    Elementwise max of two tensors
-
-    Parameters
-    ----------
-    name: str
-        Op name, unique to the module, or leave blank to autoset
-
-    operandA: Tensor
-        First operand
-
-    operandB: Tensor
-        Second operand
-
-    dim: int
-        Dimention on which to stack
-
-    Returns
-    -------
-    Tensor
-        Forge tensor
-
-    """
-
-    return op("binary_stack", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
 
 def Power(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:

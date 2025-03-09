@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(255, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -89,7 +89,7 @@
     <tr>
       <th>7</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(255, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(255, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(255, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,17 +298,6 @@
     <tr>
       <th>26</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 4800, 85), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1200, 85), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 300, 85), dtype=float32)</td>
-      <td>axis : -2</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
       <td>axis : -3</td>
       <td>&#x2705;</td>
@@ -318,7 +307,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>28</th>
+      <th>27</th>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
       <td>axis : -3</td>
@@ -329,7 +318,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>29</th>
+      <th>28</th>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
       <td>axis : -3</td>
@@ -340,7 +329,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>30</th>
+      <th>29</th>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
       <td>axis : -3</td>
@@ -351,7 +340,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>31</th>
+      <th>30</th>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
       <td>axis : -3</td>
@@ -362,7 +351,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>32</th>
+      <th>31</th>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
       <td>axis : -3</td>
@@ -373,10 +362,21 @@
       <td></td>
     </tr>
     <tr>
-      <th>33</th>
+      <th>32</th>
       <td>Concatenate</td>
       <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)</td>
       <td>axis : -3</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Concatenate</td>
+      <td>Operand(type=Activation, shape=(1, 4800, 85), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1200, 85), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 300, 85), dtype=float32)</td>
+      <td>axis : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1079,7 +1079,7 @@
     <tr>
       <th>97</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1090,7 +1090,7 @@
     <tr>
       <th>98</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1101,7 +1101,7 @@
     <tr>
       <th>99</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1112,7 +1112,7 @@
     <tr>
       <th>100</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1123,7 +1123,7 @@
     <tr>
       <th>101</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1134,7 +1134,7 @@
     <tr>
       <th>102</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1145,7 +1145,7 @@
     <tr>
       <th>103</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_150, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1156,7 +1156,7 @@
     <tr>
       <th>104</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_190, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1167,7 +1167,7 @@
     <tr>
       <th>105</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_200, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1178,7 +1178,7 @@
     <tr>
       <th>106</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_210, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1189,7 +1189,7 @@
     <tr>
       <th>107</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1200,7 +1200,7 @@
     <tr>
       <th>108</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1211,7 +1211,7 @@
     <tr>
       <th>109</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_260, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1222,7 +1222,7 @@
     <tr>
       <th>110</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_300, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1233,7 +1233,7 @@
     <tr>
       <th>111</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_310, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1244,7 +1244,7 @@
     <tr>
       <th>112</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_320, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_150, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1255,7 +1255,7 @@
     <tr>
       <th>113</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_190, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1266,7 +1266,7 @@
     <tr>
       <th>114</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_200, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1277,7 +1277,7 @@
     <tr>
       <th>115</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_210, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1288,7 +1288,7 @@
     <tr>
       <th>116</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1299,7 +1299,7 @@
     <tr>
       <th>117</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1310,7 +1310,7 @@
     <tr>
       <th>118</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_260, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1321,7 +1321,7 @@
     <tr>
       <th>119</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_300, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1332,7 +1332,7 @@
     <tr>
       <th>120</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1343,7 +1343,7 @@
     <tr>
       <th>121</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_320, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1488,22 +1488,22 @@
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
       <td>sizes : [20, 20]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>135</th>
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
       <td>sizes : [40, 40]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>136</th>
@@ -1519,7 +1519,7 @@
     <tr>
       <th>137</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1530,7 +1530,7 @@
     <tr>
       <th>138</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1541,7 +1541,7 @@
     <tr>
       <th>139</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 16, 160, 160), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1552,7 +1552,7 @@
     <tr>
       <th>140</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 32, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1563,7 +1563,7 @@
     <tr>
       <th>141</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 16, 80, 80), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1574,7 +1574,7 @@
     <tr>
       <th>142</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 64, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1585,7 +1585,7 @@
     <tr>
       <th>143</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 32, 40, 40), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1596,7 +1596,7 @@
     <tr>
       <th>144</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 128, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1607,7 +1607,7 @@
     <tr>
       <th>145</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 64, 20, 20), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1618,7 +1618,7 @@
     <tr>
       <th>146</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 256, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 20, 20), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1629,7 +1629,7 @@
     <tr>
       <th>147</th>
       <td>Sigmoid</td>
-      <td>Operand(type=Activation, shape=(1, 128, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 255, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

@@ -22,27 +22,17 @@ class Conv2d(PyOp):
     @classmethod
     def create(
         cls,
-        stride_height,
-        stride_width,
-        dilation_height,
-        dilation_width,
+        stride,  # Input format: [dH, dW]
+        dilation,  # Input format: [dH, dW]
         groups,
-        padding_left,
-        padding_right,
-        padding_top,
-        padding_bottom,
+        padding,  # Input format: [pL, pR, pT, pB]
         channel_last,
     ):
         self = cls("conv2d")
-        self.stride_height = stride_height
-        self.stride_width = stride_width
-        self.dilation_height = dilation_height
-        self.dilation_width = dilation_width
+        self.stride = stride
         self.groups = groups
-        self.padding_left = padding_left
-        self.padding_right = padding_right
-        self.padding_top = padding_top
-        self.padding_bottom = padding_bottom
+        self.padding = padding
+        self.dilation = dilation
         self.channel_last = int(channel_last)
         return self
 
@@ -55,15 +45,10 @@ class Conv2d(PyOp):
         weights = t_ops[1]
         bias = t_ops[2] if len(t_ops) == 3 else None
 
-        stride = [self.stride_height, self.stride_width]
-        dilation = [self.dilation_height, self.dilation_width]
         groups = self.groups
-        padding = [
-            self.padding_left,
-            self.padding_right,
-            self.padding_top,
-            self.padding_bottom,
-        ]
+        padding = [self.padding[1], self.padding[3], self.padding[0], self.padding[2]]
+        stride = self.stride
+        dilation = self.dilation
 
         channel_last = self.channel_last
         if channel_last:
@@ -105,11 +90,15 @@ class Conv2d(PyOp):
         h_in = act[-3] if self.channel_last else act[-2]
         w_in = act[-2] if self.channel_last else act[-1]
 
-        h_numerator = h_in + (self.padding_top + self.padding_bottom) - self.dilation_height * (weight[-2] - 1) - 1
-        h_out = math.floor(1 + (h_numerator / self.stride_height))
+        padding_top, padding_left, padding_bottom, padding_right = self.padding
+        dilation_height, dilation_width = self.dilation
+        stride_height, stride_width = self.stride
 
-        w_numerator = w_in + (self.padding_left + self.padding_right) - self.dilation_width * (weight[-1] - 1) - 1
-        w_out = math.floor(1 + (w_numerator / self.stride_width))
+        h_numerator = h_in + (padding_top + padding_bottom) - dilation_height * (weight[-2] - 1) - 1
+        h_out = math.floor(1 + (h_numerator / stride_height))
+
+        w_numerator = w_in + (padding_left + padding_right) - dilation_width * (weight[-1] - 1) - 1
+        w_out = math.floor(1 + (w_numerator / stride_width))
 
         out_shape = [batch_size, h_out, w_out, cout] if self.channel_last else [batch_size, cout, h_out, w_out]
 
@@ -143,21 +132,21 @@ class Conv2d(PyOp):
             activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
             activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
 
+        # The below condition checks whether the channel is last and the required output channel position (1, 1, 1, C_out) in the bias, as well as the bias type.
+        if (bias is not None) and (bias.shape[-1] != weight.shape[-4]) and (not is_channel_last):
+            bias = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [bias])
+            bias = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [bias])
+
         # Only want to re-create the Conv2d op if something has changed. Otherwise it the compiler will infinitely
         # decompose the same Conv2d over and over.
         if not is_bias_unchanged or not is_channel_last:
             new_inputs = [activations, weight] if bias is None else [activations, weight, bias]
             result = dc.op(
                 Conv2d.create(
-                    self.stride_height,
-                    self.stride_width,
-                    self.dilation_height,
-                    self.dilation_width,
+                    self.stride,
+                    self.dilation,
                     self.groups,
-                    self.padding_left,
-                    self.padding_right,
-                    self.padding_top,
-                    self.padding_bottom,
+                    self.padding,
                     True,  # If the original Conv2d was channel-last, that will not change.
                     # If it was channel-first, it the input will have been permuted by this point.
                     # So, the Conv2d op being created here is certainly channel-last.
@@ -197,27 +186,17 @@ class Conv2dTranspose(PyOp):
     @classmethod
     def create(
         cls,
-        stride_height,
-        stride_width,
-        dilation_height,
-        dilation_width,
+        stride,  # Input format: [sH, sW]
+        dilation,  # Input format: [dH, dW]
         groups,
-        padding_left,
-        padding_right,
-        padding_top,
-        padding_bottom,
+        padding,  # Input format: [pL, pR, pT, pB]
         channel_last,
     ):
         self = cls("conv2d_transpose")
-        self.stride_height = stride_height
-        self.stride_width = stride_width
-        self.dilation_height = dilation_height
-        self.dilation_width = dilation_width
+        self.stride = stride
+        self.dilation = dilation
         self.groups = groups
-        self.padding_left = padding_left
-        self.padding_right = padding_right
-        self.padding_top = padding_top
-        self.padding_bottom = padding_bottom
+        self.padding = padding
         self.channel_last = int(channel_last)
         return self
 
@@ -229,10 +208,13 @@ class Conv2dTranspose(PyOp):
         weights = t_ops[1]
         bias = t_ops[2] if len(t_ops) == 3 else None
 
-        stride = [self.stride_height, self.stride_width]
-        dilation = [self.dilation_height, self.dilation_width]
+        stride = self.stride
+        dilation = self.dilation
         groups = self.groups
-        padding = (self.padding_top, self.padding_left)
+        padding = (
+            self.padding[2],
+            self.padding[0],
+        )  # [pT, pL] not sure why padding only has two elements (meenakshiramanathan1 PR #826)
 
         channel_last = self.channel_last
         if channel_last:
@@ -262,6 +244,15 @@ class Conv2dTranspose(PyOp):
         return result
 
     def shape(self, tensor_shapes):
+        stride_height = self.stride[0]
+        stride_width = self.stride[1]
+        dilation_height = self.dilation[0]
+        dilation_width = self.dilation[1]
+        padding_left = self.padding[0]
+        padding_right = self.padding[1]
+        padding_top = self.padding[2]
+        padding_bottom = self.padding[3]
+
         act, weight = tensor_shapes[:2]
         batch_size = act[0]
         cout = weight[1] * self.groups
@@ -273,16 +264,16 @@ class Conv2dTranspose(PyOp):
         output_padding_width = 0
 
         h_out = (
-            (h_in - 1) * self.stride_height
-            - (self.padding_top + self.padding_bottom)
-            + self.dilation_height * (weight[-2] - 1)
+            (h_in - 1) * stride_height
+            - (padding_top + padding_bottom)
+            + dilation_height * (weight[-2] - 1)
             + output_padding_height
             + 1
         )
         w_out = (
-            (w_in - 1) * self.stride_width
-            - (self.padding_left + self.padding_right)
-            + self.dilation_width * (weight[-1] - 1)
+            (w_in - 1) * stride_width
+            - (padding_left + padding_right)
+            + dilation_width * (weight[-1] - 1)
             + output_padding_width
             + 1
         )
@@ -317,21 +308,21 @@ class Conv2dTranspose(PyOp):
             activations = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [activations])
             activations = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [activations])
 
+        # The below condition checks whether the channel is last and the required output channel position (1, 1, 1, C_out) in the bias, as well as the bias type.
+        if (bias is not None) and (bias.shape[-1] != weight.shape[-4]) and (not is_channel_last):
+            bias = dc.op(TransposeTM.create(dim0=-3, dim1=-2), [bias])
+            bias = dc.op(TransposeTM.create(dim0=-2, dim1=-1), [bias])
+
         # Only want to re-create the Conv2dTranspose op if something has changed. Otherwise it the compiler will infinitely
         # decompose the same Conv2dTranspose over and over.
         if not is_bias_unchanged or not is_channel_last:
             new_inputs = [activations, weight] if bias is None else [activations, weight, bias]
             result = dc.op(
                 Conv2dTranspose.create(
-                    self.stride_height,
-                    self.stride_width,
-                    self.dilation_height,
-                    self.dilation_width,
+                    self.stride,
+                    self.dilation,
                     self.groups,
-                    self.padding_left,
-                    self.padding_right,
-                    self.padding_top,
-                    self.padding_bottom,
+                    self.padding,
                     True,  # If the original Conv2dTranspose was channel-last, that will not change.
                     # If it was channel-first, it the input will have been permuted by this point.
                     # So, the Conv2dTranspose op being created here is certainly channel-last.

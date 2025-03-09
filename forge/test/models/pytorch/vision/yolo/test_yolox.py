@@ -33,7 +33,15 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_darknet", "yolox_x"]
+variants = [
+    "yolox_nano",
+    "yolox_tiny",
+    "yolox_s",
+    "yolox_m",
+    "yolox_l",
+    "yolox_darknet",
+    "yolox_x",
+]
 
 
 @pytest.mark.nightly
@@ -48,7 +56,8 @@ def test_yolox_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # prepare model
     weight_name = f"{variant}.pth"

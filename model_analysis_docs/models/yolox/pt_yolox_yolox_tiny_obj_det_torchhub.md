@@ -3050,22 +3050,22 @@
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 192, 13, 13), dtype=float32)</td>
       <td>sizes : [26, 26]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>277</th>
       <td>Resize2d</td>
       <td>Operand(type=Activation, shape=(1, 96, 26, 26), dtype=float32)</td>
       <td>sizes : [52, 52]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: resize2d</td>
+      <td></td>
     </tr>
     <tr>
       <th>278</th>

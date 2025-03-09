@@ -34,7 +34,7 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li></ul></td>
+			<td><ul><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 512), dtype=float32)</td>
 			<td>dim : -1<br>keep_dim : True</td>
 		</tr>

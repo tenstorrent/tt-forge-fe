@@ -16,7 +16,14 @@ from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_da
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants_img_classification = [
-    "nvidia/mit-b0",
+    pytest.param(
+        "nvidia/mit-b0",
+        marks=[
+            pytest.mark.xfail(
+                reason="Statically allocated circular buffers in program 9 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 213120 and static circular buffer region ends at 626464"
+            )
+        ],
+    ),
     "nvidia/mit-b1",
     "nvidia/mit-b2",
     "nvidia/mit-b3",
@@ -41,7 +48,11 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    if variant in ["nvidia/mit-b0"]:
+        record_forge_property("group", "priority")
+    else:
+        record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -88,7 +99,8 @@ def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant)
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load the model from HuggingFace
     framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)

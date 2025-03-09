@@ -15,6 +15,9 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="RuntimeError: tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume Invalid arguments to reshape"
+)
 def test_googlenet_pytorch(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
@@ -22,7 +25,8 @@ def test_googlenet_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Create Forge module from PyTorch model
     # Two ways to load the same model

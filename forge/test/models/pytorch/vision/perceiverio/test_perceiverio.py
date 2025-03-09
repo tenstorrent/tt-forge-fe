@@ -61,20 +61,21 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Sample Image
     pixel_values = get_sample_data(variant)
 
     # Load the model from HuggingFace
     if variant == "deepmind/vision-perceiver-learned":
-        framework_model = PerceiverForImageClassificationLearned.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationLearned.from_pretrained(variant, return_dict=False)
 
     elif variant == "deepmind/vision-perceiver-conv":
-        framework_model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationConvProcessing.from_pretrained(variant, return_dict=False)
 
     elif variant == "deepmind/vision-perceiver-fourier":
-        framework_model = PerceiverForImageClassificationFourier.from_pretrained(variant)
+        framework_model = PerceiverForImageClassificationFourier.from_pretrained(variant, return_dict=False)
 
     else:
         logger.info(f"The model {variant} is not supported")

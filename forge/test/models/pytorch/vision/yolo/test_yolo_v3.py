@@ -47,7 +47,8 @@ def test_yolov3_tiny_holli_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
 
@@ -93,7 +94,8 @@ def test_yolov3_holli_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
 

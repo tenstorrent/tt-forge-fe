@@ -20,10 +20,10 @@
 		<tr>
 			<td rowspan="1">1</td>
 			<td rowspan="1">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td rowspan="1">6</td>
-			<td>6</td>
-			<td><ul><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_84160, dtype=float32)</td>
+			<td rowspan="1">3</td>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90160, dtype=float32)</td>
 			<td></td>
 		</tr>
 	</tbody>

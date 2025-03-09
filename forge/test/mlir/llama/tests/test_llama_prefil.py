@@ -8,15 +8,18 @@ from transformers import LlamaTokenizer
 import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
+from forge.verify.verify import verify
 
 
-def prefil_on_cpu(model, input_ids):
-    with torch.no_grad():
-        transformer_outputs = model.model(
-            input_ids=input_ids,  # Pass the entire updated sequence
-        )
-        hidden_states = transformer_outputs.last_hidden_state
-    return hidden_states
+class LlamaPrefillModel(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model.get_decoder()
+
+    def forward(self, input_ids):
+        model_outputs = self.model(input_ids)
+        hidden_states = model_outputs.last_hidden_state
+        return hidden_states
 
 
 def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
@@ -65,25 +68,19 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
     # Prepare input sentence
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
-    # cast input_ids to int32 since int64 causes embedding op data mismatch. Tracking issue: https://github.com/tenstorrent/tt-forge-fe/issues/952
-    input_ids = input_ids.to(torch.int32)
+    inputs = [input_ids]
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
-    model_decoder = model.get_decoder()
-    compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
+    framework_model = LlamaPrefillModel(model)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     # Prefill Phase - Process the initial prompt on device
-    transformer_outputs = compiled_decoder(input_ids)
-    # Get hidden states for all tokens from the last "transformer layer".
-    hidden_states_compiled = transformer_outputs[0]
-    hidden_states_compiled = hidden_states_compiled.to("cpu")
+    # Validate prefill outputs between TT and CPU
+    framework_output, compiled_output = verify(inputs, framework_model, compiled_model)
 
-    # Get hidden states for all tokens from the last "transformer layer" calculated on CPU.
-    hidden_states_framework = prefil_on_cpu(model, input_ids)
-
-    # Compare result of prefilling on device with the result of prefilling on CPU.
-    # Calculate the pcc for only the last vector in the hidden states tensor.
-    assert compare_with_golden(hidden_states_framework[:, -1, :], hidden_states_compiled[:, -1, :])
+    # Get hidden states for all tokens from the last "transformer layer" on both TT and CPU.
+    hidden_states_compiled = compiled_output[0]
+    hidden_states_framework = framework_output[0]
 
     # Decode Phase - Generate new tokens
     max_new_tokens = 46

@@ -35,7 +35,8 @@ def test_blazepose_detector_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load BlazePose Detector
     framework_model = BlazePose()
@@ -73,7 +74,8 @@ def test_blazepose_regressor_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load BlazePose Landmark Regressor
     framework_model = BlazePoseLandmark()
@@ -98,7 +100,8 @@ def test_blaze_palm_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load BlazePalm Detector
     framework_model = BlazePalm()
@@ -133,7 +136,8 @@ def test_blaze_hand_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load BlazePalm Detector
     framework_model = BlazeHandLandmark()

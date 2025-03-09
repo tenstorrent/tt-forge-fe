@@ -23,4 +23,6 @@ class FPNWrapper(nn.Module):
         x["feat0"] = feat0
         x["feat1"] = feat1
         x["feat2"] = feat2
-        return self.fpn(x)
+        outputs = self.fpn(x)
+        outputs = tuple(outputs.values())
+        return outputs

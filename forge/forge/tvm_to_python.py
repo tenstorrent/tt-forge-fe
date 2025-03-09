@@ -543,22 +543,6 @@ pytorch_ops_needing_arguments = {
 }
 
 
-def populate_binary_stack_args(graph, nid, compiler_cfg):
-    args = []
-    node = graph["nodes"][nid]
-    input_shape = graph["nodes"][node["inputs"][0][0]]["forge_shape"]
-    node_shape = node["forge_shape"]
-
-    for dim, (i, o) in enumerate(zip(input_shape, node_shape)):
-        if i != o:
-            args = [
-                ("dim", f"{dim - len(input_shape)}"),
-            ]
-            return args
-
-    return args
-
-
 def populate_conv2d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -571,18 +555,11 @@ def populate_conv2d_args(graph, nid, compiler_cfg):
     )
 
     padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    # TVM has padding [top, left, bottom, right]
-    # Convert to [left right top bottom]
-    reordered_padding = [
-        padding[1],
-        padding[3],
-        padding[0],
-        padding[2],
-    ]
+    # Retaining the Padding format for Forge Conv2d Pad Format (Top,Left,Bottom,Right)
     args.append(
         (
             "padding",
-            f"{reordered_padding}",
+            f"{padding}",
         )
     )
 
@@ -1727,7 +1704,6 @@ tvm_to_forge_op_map = {
     "power": "power",
     "nn.prelu": "prelu",
     "forge.adv_index": "adv_index",
-    "forge.binary_stack": "binary_stack",
     "forge.forge_conv2d_transpose_with_bias": "conv2d_transpose",
     "forge.forge_conv2d_with_bias": "conv2d",
     "forge.concatenate": "concatenate",
@@ -1762,6 +1738,7 @@ tvm_to_forge_op_map = {
     "qnn.requantize": "requantize",
     "qnn.dense": "matmul",
     "atan": "atan",
+    "upsample2d": "upsample2d",
 }
 
 forge_op_to_function_name = {
@@ -1773,7 +1750,6 @@ forge_op_to_function_name = {
     "avg_pool1d": "forge.op.AvgPool1d",
     "avg_pool2d": "forge.op.AvgPool2d",
     "avg_pool3d": "forge.op.AvgPool3d",
-    "binary_stack": "forge.op.BinaryStack",
     "broadcast": "forge.op.Broadcast",
     "cast": "forge.op.Cast",  # Datatype cast
     "clip": "forge.op.Clip",
@@ -1847,13 +1823,13 @@ forge_op_to_function_name = {
     "dequantize": "forge.op.Dequantize",
     "requantize": "forge.op.Requantize",
     "atan": "forge.op.Atan",
+    "upsample2d": "forge.op.Upsample2d",
 }
 forge_ops_needing_arguments = {
     "argmax": populate_argmax_args,
     "avg_pool1d": populate_avgpool1d_args,
     "avg_pool2d": populate_avgpool2d_args,
     "avg_pool3d": populate_avgpool3d_args,
-    "binary_stack": populate_binary_stack_args,
     "broadcast": populate_broadcast_args,
     "cast": populate_cast_args,
     "clip": populate_clip_transpose_args,
@@ -1919,12 +1895,12 @@ def get_framework(module):
         framework = "tf_graphdef"
     elif isinstance(module, forge.module.OnnxModule):
         framework = "onnx"
-    elif isinstance(module, forge.module.MXNetModule):
-        framework = "mxnet"
     elif isinstance(module, forge.module.JaxModule):
         framework = "jax"
     elif isinstance(module, forge.module.TFLiteModule):
         framework = "tflite"
+    elif isinstance(module, forge.module.PaddleModule):
+        framework = "paddle"
     else:
         assert False, f"Unsupported framework: {type(module)}"
 
@@ -2146,7 +2122,7 @@ def compile_tvm_to_python(
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded
-    from tvm.contrib.forge_compile import load_tvm_graph
+    from forge.tvm_calls.forge_compile import load_tvm_graph
 
     json_graphs, flattened_pytorch_inputs, weights = load_tvm_graph(
         inputs,

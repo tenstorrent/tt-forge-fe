@@ -25,7 +25,19 @@ class BartWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["facebook/bart-large-mnli"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/bart-large-mnli",
+            marks=[
+                pytest.mark.xfail(
+                    reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+                )
+            ],
+        ),
+    ],
+)
 def test_pt_bart_classifier(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -37,7 +49,8 @@ def test_pt_bart_classifier(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)

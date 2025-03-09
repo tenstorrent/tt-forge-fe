@@ -19,6 +19,7 @@ from typing import Optional, List, Dict, Type, Union
 
 from forge import ForgeModule, Module, DepricatedVerifyConfig
 from forge.op_repo import TensorShape
+from forge.op_repo.pytorch_operators import pytorch_operator_repository
 from forge.verify import TestKind  # , verify_module
 from forge._C import MathFidelity
 
@@ -32,7 +33,9 @@ from .compat import (
     verify_module_for_inputs_deprecated,
     verify_module_for_inputs_torch,
 )
-from .datatypes import ValueRanges
+from .datatypes import ValueRange, ValueRanges
+from .datatypes import OperatorParameterTypes
+from .datatypes import FrameworkDataFormat
 from .features import TestFeaturesConfiguration
 
 
@@ -69,6 +72,21 @@ class ShapeUtils:
             else:
                 shapes_with_ids.append(pytest.param(shape.values[0], marks=shape.marks, id=f"shape={shape.values[0]}"))
         return shapes_with_ids
+
+
+class TensorUtils:
+    def create_torch_constant(
+        input_shape: TensorShape,
+        reduce_microbatch: bool = False,
+        dev_data_format: FrameworkDataFormat = None,
+        value_range: Optional[Union[ValueRanges, ValueRange, OperatorParameterTypes.RangeValue]] = None,
+        random_seed: Optional[int] = None,
+    ) -> torch.Tensor:
+        input_shape = ShapeUtils.reduce_microbatch_size(input_shape) if reduce_microbatch else input_shape
+
+        constant = create_torch_inputs([input_shape], dev_data_format, value_range, random_seed)[0]
+
+        return constant
 
 
 @dataclass(frozen=True)
@@ -130,10 +148,11 @@ class VerifyUtils:
         test_device: TestDevice,
         input_shapes: List[TensorShape],
         input_params: List[Dict] = [],
+        compiler_cfg: CompilerConfig = CompilerConfig(),
         pcc: Optional[float] = None,
         input_source_flag: InputSourceFlags = None,
         dev_data_format: forge.DataFormat = None,
-        convert_to_forge: bool = True,  # explicit conversion to forge data format
+        convert_to_forge: Optional[bool] = None,
         math_fidelity: forge.MathFidelity = None,
         value_range: Optional[ValueRanges] = None,
         random_seed: Optional[int] = None,
@@ -149,9 +168,11 @@ class VerifyUtils:
             test_device: TestDevice
             input_shapes: List of input shapes
             input_params: List of input parameters
+            compiler_cfg: Compiler configuration
             pcc: PCC value for verification
             input_source_flag: Input source flag
             dev_data_format: Data format
+            convert_to_forge: Convert input tensors to Forge data format
             math_fidelity: Math fidelity
             value_range: Value range of input tensors
             random_seed: Random seed
@@ -161,7 +182,13 @@ class VerifyUtils:
             skip_forge_verification: Skip verification with Forge module
         """
 
-        compiler_cfg = CompilerConfig()
+        # Conclude if we should convert to forge data format
+        if convert_to_forge is None:
+            if deprecated_verification:
+                convert_to_forge = True
+            else:
+                if isinstance(model, ForgeModule):
+                    convert_to_forge = True
 
         cls.setup(
             compiler_cfg=compiler_cfg,
@@ -177,30 +204,17 @@ class VerifyUtils:
             random_seed=random_seed,
         )
 
-        if deprecated_verification:
-            cls.verify_module_for_inputs_deprecated(
-                model=model,
-                inputs=inputs,
-                compiler_cfg=compiler_cfg,
-                pcc=pcc,
-                dev_data_format=dev_data_format,
-                convert_to_forge=convert_to_forge,
-            )
-        elif skip_forge_verification:
-            verify_module_for_inputs_torch(
-                model=model,
-                inputs=inputs,
-                verify_config=verify_config,
-            )
-        else:
-            cls.verify_module_for_inputs(
-                model=model,
-                inputs=inputs,
-                compiler_cfg=compiler_cfg,
-                verify_config=verify_config,
-                dev_data_format=dev_data_format,
-                convert_to_forge=convert_to_forge,
-            )
+        cls.verify_module_for_inputs(
+            model=model,
+            inputs=inputs,
+            compiler_cfg=compiler_cfg,
+            pcc=pcc,
+            verify_config=verify_config,
+            dev_data_format=dev_data_format,
+            convert_to_forge=convert_to_forge,
+            deprecated_verification=deprecated_verification,
+            skip_forge_verification=skip_forge_verification,
+        )
 
     @classmethod
     def setup(
@@ -241,44 +255,46 @@ class VerifyUtils:
         return inputs
 
     @classmethod
-    def verify_module_for_inputs_deprecated(
-        cls,
-        model: Module,
-        inputs: List[torch.Tensor],
-        compiler_cfg: CompilerConfig,
-        pcc: Optional[float] = None,
-        dev_data_format: forge.DataFormat = None,
-        convert_to_forge: bool = True,  # explicit conversion to forge data format
-    ):
-
-        verify_module_for_inputs_deprecated(
-            model=model,
-            inputs=inputs,
-            compiler_cfg=compiler_cfg,
-            pcc=pcc,
-            dev_data_format=dev_data_format,
-            convert_to_forge=convert_to_forge,
-        )
-
-    @classmethod
     def verify_module_for_inputs(
         cls,
         model: Module,
         inputs: List[torch.Tensor],
         compiler_cfg: CompilerConfig,
-        verify_config: Optional[VerifyConfig] = VerifyConfig(),
+        pcc: Optional[float] = None,
+        verify_config: Optional[VerifyConfig] = None,
         dev_data_format: forge.DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
+        deprecated_verification: bool = True,
+        skip_forge_verification: bool = TestFeaturesConfiguration.SKIP_FORGE_VERIFICATION,
     ):
 
-        verify_module_for_inputs(
-            model=model,
-            inputs=inputs,
-            compiler_cfg=compiler_cfg,
-            verify_config=verify_config,
-            dev_data_format=dev_data_format,
-            convert_to_forge=convert_to_forge,
-        )
+        if deprecated_verification:
+            verify_module_for_inputs_deprecated(
+                model=model,
+                inputs=inputs,
+                compiler_cfg=compiler_cfg,
+                pcc=pcc,
+                dev_data_format=dev_data_format,
+                convert_to_forge=convert_to_forge,
+            )
+        elif skip_forge_verification:
+            if isinstance(model, ForgeModule):
+                logger.warning("Nothing to validate while skipping Forge verification for Forge module")
+            else:
+                verify_module_for_inputs_torch(
+                    model=model,
+                    inputs=inputs,
+                    verify_config=verify_config,
+                )
+        else:
+            verify_module_for_inputs(
+                model=model,
+                inputs=inputs,
+                compiler_cfg=compiler_cfg,
+                verify_config=verify_config,
+                dev_data_format=dev_data_format,
+                convert_to_forge=convert_to_forge,
+            )
 
 
 class LoggerUtils:
@@ -315,3 +331,19 @@ class RateLimiter:
             return f"{self.current_value} <= {self.current_limit}"
         else:
             return f"{self.current_value} > {self.current_limit}"
+
+
+class PytorchUtils:
+    """Utility functions for PyTorch operators"""
+
+    @staticmethod
+    def get_pytorch_module(module_name: str):
+        """Retrieving the module that contains a given operator, based on its full name.\n
+        For example, for "torch.nn.functional.gelu", the function returns module torch.nn.functional."""
+        repo_operator = pytorch_operator_repository.get_by_name(module_name).full_name
+        module_name = repo_operator.rsplit(".", 1)[0]
+        # module = importlib.import_module(module_name)  # bad performance
+        module = torch
+        if module_name == "torch.nn.functional":
+            module = torch.nn.functional
+        return module

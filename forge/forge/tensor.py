@@ -5,6 +5,7 @@
 from typing import Union, Tuple, List, Optional, Dict, TypeAlias
 from forge.tvm_utils import map_tf_dtype_to_pt
 
+import paddle
 import torch
 import tensorflow as tf
 import numpy as np
@@ -619,6 +620,32 @@ AnyTensor: TypeAlias = FrameworkTensor | Tensor
 #         raise RuntimeError(f"{msg}: Shape {data.shape}: Row of {data.shape[-2]} encountered, which is not divisible with tile dimension of {TILE_DIM}")
 
 
+def cast_unsupported_torch_dtype(tensor: torch.Tensor):
+    """
+    Casts a PyTorch tensor to the dtype that is supported in Forge.
+
+    Args:
+        tensor (torch.Tensor): Input tensor.
+
+    Returns:
+        torch.Tensor: Tensor casted to the supported data format.
+    """
+    forge_dataformat = pytorch_dtype_to_forge_dataformat(tensor.dtype)
+
+    # Get the corresponding PyTorch dtype
+    new_dtype = forge_dataformat_to_pytorch_dtype(forge_dataformat)
+
+    # If mapping exists and is different from the current dtype, cast the tensor
+    if new_dtype and new_dtype != tensor.dtype:
+        logger.warning(
+            "Tensor dtype {} is not supported in forge. Therefore, it is casted in to {}", tensor.dtype, new_dtype
+        )
+        return tensor.to(new_dtype)
+
+    # If no change is needed, return the original tensor
+    return tensor
+
+
 def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optional[DataFormat] = None) -> DataFormat:
 
     if isinstance(dtype, DataFormat):
@@ -1166,8 +1193,34 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
     elif isinstance(t, Tensor):
         assert t.has_value(), "Expected Forge tensor to have a value"
         return t.value()
+    elif isinstance(t, paddle.Tensor):
+        pt = torch.Tensor(t.numpy())
+        pt.requires_grad = t.stop_gradient == False
+        return pt
     else:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
+
+
+def pt_to_paddle_tensor(pt: torch.Tensor):
+    if isinstance(pt, paddle.Tensor):
+        return pt
+    elif isinstance(pt, torch.Tensor):
+        return paddle.to_tensor(pt.detach().numpy())
+
+    else:
+        raise RuntimeError(f"Unknown type of tensor: {type(pt)}")
+
+
+def pt_to_paddle_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]):
+    paddle_tensors = []
+
+    if not isinstance(tensors, (list, tuple)):
+        tensors = (tensors,)
+
+    for t in tensors:
+        paddle_tensors.append(pt_to_paddle_tensor(t))
+
+    return tuple(paddle_tensors)
 
 
 def to_jax_tensors(

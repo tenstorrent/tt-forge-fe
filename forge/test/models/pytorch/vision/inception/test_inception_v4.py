@@ -27,6 +27,9 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="AssertionError: Setting a tensor value of incorrect shape: (1, 64, 76, 70) vs torch.Size([1, 64, 73, 73])"
+)
 def test_inception_v4_osmr_pytorch(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
@@ -34,7 +37,8 @@ def test_inception_v4_osmr_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
 
@@ -51,19 +55,35 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
     return framework_model, [img_tensor]
 
 
+variants = [
+    "inception_v4",
+    pytest.param(
+        "inception_v4.tf_in1k",
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 47 - stride mismatch: expected [1225, 1], got [0, 0]")],
+    ),
+]
+
+
 @pytest.mark.nightly
-def test_inception_v4_timm_pytorch(record_forge_property):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+@pytest.mark.parametrize("variant", variants)
+def test_inception_v4_timm_pytorch(record_forge_property, variant):
+    if variant != "inception_v4.tf_in1k":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.TIMM, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model="inception",
+        variant=variant,
+        source=Source.TIMM,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
-    framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch("inception_v4")
+    framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

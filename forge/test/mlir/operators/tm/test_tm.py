@@ -553,20 +553,34 @@ def test_stack(input_shapes, dim):
     inputs = [torch.rand(shape) for shape in input_shapes]
 
     framework_model = Stack(dim)
-    fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="stack_sanity")
-    co_out = compiled_model(*inputs)
 
-    co_out = [co.to("cpu") for co in co_out]
-    fw_out = [fw_out] if isinstance(fw_out, torch.Tensor) else fw_out
+    verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - repeat"
+@pytest.mark.parametrize(
+    ["input_shape", "repeats"],
+    [
+        pytest.param((1, 2), (10, 1)),
+        pytest.param((1, 99), (100, 1)),
+        pytest.param(
+            (1, 100),
+            (50, 2),
+            marks=pytest.mark.xfail(reason="info:Incompatible dimensions 200 and 100"),
+        ),
+        pytest.param(
+            (3,),
+            (4, 2),
+            marks=pytest.mark.xfail(reason="info:Incompatible dimensions 6 and 3"),
+        ),
+        pytest.param((4, 1, 4), (1, 10, 1)),
+        pytest.param((2, 2, 1, 2), (1, 1, 4, 1)),
+        pytest.param((1, 4, 1, 4, 4), (1, 1, 3, 1, 1)),
+    ],
 )
 @pytest.mark.push
-def test_repeat():
+def test_repeat(input_shape, repeats):
     class Repeat(nn.Module):
         def __init__(self, repeats):
             super().__init__()
@@ -575,9 +589,9 @@ def test_repeat():
         def forward(self, x):
             return x.repeat(*self.repeats)
 
-    inputs = [torch.rand(1, 2, 1, 4, 4)]
+    inputs = [torch.rand(input_shape)]
 
-    framework_model = Repeat(repeats=(1, 1, 4, 1, 1))
+    framework_model = Repeat(repeats=repeats)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)

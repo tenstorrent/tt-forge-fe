@@ -17,6 +17,9 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="Statically allocated circular buffers in program 11 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=5)]. L1 buffer allocated at 947328 and static circular buffer region ends at 1191648"
+)
 def test_alexnet_torchhub(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
@@ -28,7 +31,8 @@ def test_alexnet_torchhub(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
@@ -72,7 +76,8 @@ def test_alexnet_osmr(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("model_name", module_name)
+    record_forge_property("group", "generality")
+    record_forge_property("tags.model_name", module_name)
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)

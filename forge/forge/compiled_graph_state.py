@@ -10,12 +10,13 @@ import torch
 from typing import Dict, List, Any, Optional
 
 
+from forge._C import ForgeGraphModule
 from forge._C.graph import Graph
 import forge._C.graph as pygraph
 from forge._C.runtime import run_binary, Binary
-from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, AnyTensor
+from forge._C import run_mlir_compiler_to_cpp
+from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, cast_unsupported_torch_dtype, AnyTensor
 from forge.module import Module, PyTorchModule, AnyModule
-from forge.execution_tracker import ExecutionPhase, record_execution_phase_and_stage
 
 
 class CompileResults:
@@ -159,6 +160,7 @@ class CompiledModel:
 
     fwd_compiled_graph_state: CompiledGraphState
     bwd_compiled_graph_state: Optional[CompiledGraphState]
+    opt_compiled_graph_state: Optional[CompiledGraphState]
 
     # Compiled flatbuffer binary composed of programs which execute compiled graphs (e.g., forward, backward, etc.)
     compiled_binary: Binary
@@ -170,6 +172,11 @@ class CompiledModel:
     # Original user-defined module.
     framework_module: AnyModule
 
+    # Forge graph module, currently used for exporting the model to a cpp file.
+    # Needed by the lower to MLIR logic.
+    # Issue(#1350): current state of `CompiledModel` is a bit messy, we should clean it up.
+    forge_graph_module: ForgeGraphModule
+
     # Gradients to be passed into the backward pass.
     # Used when CompiledModel.backward() is part of a chain of backward passes.
     gradient_inputs: List[Optional[torch.Tensor]]
@@ -179,6 +186,7 @@ class CompiledModel:
 
     def __init__(
         self,
+        forge_graph_module: ForgeGraphModule,
         fwd_compiled_graph_state: CompiledGraphState,
         bwd_compiled_graph_state: Optional[CompiledGraphState],
         opt_compiled_graph_state: Optional[CompiledGraphState],
@@ -186,6 +194,7 @@ class CompiledModel:
         framework_module: AnyModule,
         attached_module: Optional["CompiledModel"] = None,
     ):
+        self.forge_graph_module = forge_graph_module
         self.fwd_compiled_graph_state = fwd_compiled_graph_state
         self.bwd_compiled_graph_state = bwd_compiled_graph_state
         self.opt_compiled_graph_state = opt_compiled_graph_state
@@ -224,6 +233,8 @@ class CompiledModel:
             Output tensors
         """
         self.inputs = [*to_pt_tensors(inputs)]
+        # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
+        self.inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in self.inputs]
 
         inputs_and_parameters = [
             *self.inputs,
@@ -272,8 +283,6 @@ class CompiledModel:
                 # NOTE: the default idx parameter for the lambda is used to capture the idx by value. Otherwise, the lambda
                 # would capture the idx by reference, and all the lambdas would have the same idx value.
                 output.register_hook(lambda grad, idx=idx: self.tie_grad_fn(idx, grad))
-
-        record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
 
         return model_outputs
 
@@ -377,10 +386,7 @@ class CompiledModel:
 
         for weight_update_name in self.opt_compiled_graph_state.aliased_outputs:
             weight_name = self.opt_compiled_graph_state.aliased_outputs[weight_update_name]
-            assert self.opt_compiled_graph_state.get_parameter_tensor(
-                weight_name
-            ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
-            self.fwd_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
+            self.opt_compiled_graph_state.get_parameter_tensor(weight_name).data = update_param[weight_update_name].data
 
             # Sanity check - assert that the parameter tensors in framework module are the same as the ones in our runtime.
             assert isinstance(
@@ -388,6 +394,33 @@ class CompiledModel:
             ), "For now only PyTorchModule is supported in training"
             for torch_name, val in self.framework_module.module.named_parameters():
                 if torch_name == weight_name:
+                    assert self.opt_compiled_graph_state.get_parameter_tensor(
+                        weight_name
+                    ) is self.fwd_compiled_graph_state.get_parameter_tensor(weight_name)
                     assert self.fwd_compiled_graph_state.get_parameter_tensor(weight_name) is val
-
         self.gradient_outputs = []
+
+    def export_to_cpp(self, export_path: str) -> None:
+        """
+        Export the model to a cpp file.
+
+        Parameters
+        ----------
+        export_path: str
+            Path to the file where the model c++ code will be exported.
+        """
+
+        logger.info(f"Exporting model {self.framework_module.get_name()} to cpp file...")
+        cpp_code = run_mlir_compiler_to_cpp(self.forge_graph_module)
+
+        with open(export_path, "w") as f:
+            f.write(cpp_code)
+
+        logger.info(f'Exported model as cpp file to "{export_path}"')
+        logger.info(
+            f"To compile and run this code, one can utilize the ttnn-standalone tool within the tt-mlir project. \
+            It provides all the necessary build and run scripts. Copy the contents of the .cpp to ttnn-standalone.cpp \
+            and use `./run` to compile&run the code."
+        )
+        logger.info(f"    Tool: https://github.com/tenstorrent/tt-mlir/tree/main/tools/ttnn-standalone")
+        logger.info(f"    Docs: https://docs.tenstorrent.com/tt-mlir/ttnn-standalone.html")
