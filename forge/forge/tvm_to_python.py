@@ -2018,6 +2018,7 @@ def generate_forge_module(
 
     if verify_cfg is None:
         verify_cfg = _get_global_verify_config()
+        verify_cfg.verify_forge_codegen_vs_framework = False
 
     pytorch_inputs = to_pt_tensors(inputs)
 

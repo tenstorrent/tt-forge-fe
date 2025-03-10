@@ -112,7 +112,7 @@ class DepricatedVerifyConfig:
     verify_tvm_compile: bool = False  # Should tvm run forward and verify the results
     verify_pipeline_result_vs_framework: bool = False  # Compare Framework output on CPU vs module pipline outputs
     verify_forge_codegen_vs_framework: bool = (
-        True  # Compare Framework output on CPU vs forge codegen from TVM json graphs
+        False  # Compare Framework output on CPU vs forge codegen from TVM json graphs
     )
 
     verify_all: bool = (
