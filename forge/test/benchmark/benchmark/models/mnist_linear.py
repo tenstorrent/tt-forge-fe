@@ -218,7 +218,7 @@ def mnist_linear_benchmark(config: dict):
     if not os.path.exists(REPORTS_DIR):
         os.makedirs(REPORTS_DIR)
     if not output_file:
-        output_file = REPORTS_DIR + f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
+        output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
     result["output"] = REPORTS_DIR + output_file
 
     # Save the results to a file
