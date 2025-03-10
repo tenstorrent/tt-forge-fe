@@ -16,3 +16,9 @@
 [submodule "third_party/pybind11_json"]
 	path = third_party/pybind11_json
 	url = https://github.com/pybind/pybind11_json
+[submodule "third_party/mmdetection3d"]
+	path = third_party/mmdetection3d
+	url = https://github.com/kamalrajkannan78/mmdetection3d.git
+[submodule "third_party/models/MapTR"]
+	path = third_party/models/MapTR
+	url = https://github.com/kamalrajkannan78/MapTR.git
