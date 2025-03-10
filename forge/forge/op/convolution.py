@@ -111,7 +111,7 @@ def Conv2dTranspose(
 
     if isinstance(padding, tuple):
         padding = list(padding)
-        
+
     if isinstance(dilation, int):
         dilation = [dilation] * 2
 

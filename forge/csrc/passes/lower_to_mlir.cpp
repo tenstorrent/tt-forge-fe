@@ -111,7 +111,8 @@ class AttributeMapper
         // Sort the mappings in lexicographical order
         add_op_mapping("conv2d_transpose", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d_transpose", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));
-        add_op_mapping("conv2d_transpose", "output_padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping(
+            "conv2d_transpose", "output_padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d_transpose", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d_transpose", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
@@ -252,11 +253,9 @@ class MLIRGenerator
                 case TargetType::UI32Attr:
                     TT_ASSERT(std::get<int>(value) >= 0, "Value must be an >= 0 for conversion to uint32");
                     return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
-                case TargetType::I32Attr: 
-                    return builder_.getI32IntegerAttr(static_cast<int32_t>(std::get<int>(value)));
-                case TargetType::I64Attr: 
-                    return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
-                    
+                case TargetType::I32Attr: return builder_.getI32IntegerAttr(static_cast<int32_t>(std::get<int>(value)));
+                case TargetType::I64Attr: return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
+
                 case TargetType::DenseI64ArrayAttr:
                     return builder_.getDenseI64ArrayAttr(std::vector<int64_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
@@ -663,7 +662,8 @@ class MLIRGenerator
         lowering_handler_map["repeat_interleave"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatInterleaveOp>;
         lowering_handler_map["repeat"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatOp>;
-        lowering_handler_map["conv2d_transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
+        lowering_handler_map["conv2d_transpose"] =
+            &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
         lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;
         lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SelectOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;
