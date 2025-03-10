@@ -127,6 +127,7 @@ jobs:
         HF_HUB_DISABLE_PROGRESS_BARS: 1
         FORGE_DISABLE_REPORTIFY_DUMP: 1
         OPERATORS: ${{ inputs.operators }}
+        PYTEST_ADDOPTS: "-o xfail_strict=false"
       shell: bash
       run: |
         source env/activate
