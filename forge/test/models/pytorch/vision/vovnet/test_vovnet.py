@@ -26,7 +26,7 @@ def generate_model_vovnet_imgcls_osmr_pytorch(variant):
 
 
 varaints = [
-    pytest.param("vovnet27s", marks=[pytest.mark.xfail(reason="Invalid arguments to reshape")]),
+    "vovnet27s",
     "vovnet39",
     "vovnet57",
 ]
