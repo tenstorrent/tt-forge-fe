@@ -448,12 +448,12 @@ def verify(
 
     co_out = [co.to("cpu") for co in co_out]
 
-    if forge_property_handler is not None:
-        pcc, atol = determine_consistency_limits(fw_out, co_out)
-        if pcc is not None:
-            forge_property_handler.record_pcc(pcc=pcc)
-        if atol is not None:
-            forge_property_handler.record_atol(atol=atol)
+    # if forge_property_handler is not None:
+    #     pcc, atol = determine_consistency_limits(fw_out, co_out)
+    #     if pcc is not None:
+    #         forge_property_handler.record_pcc(pcc=pcc)
+    #     if atol is not None:
+    #         forge_property_handler.record_atol(atol=atol)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
