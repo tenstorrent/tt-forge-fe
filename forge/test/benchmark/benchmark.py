@@ -96,12 +96,6 @@ def read_args():
 
     parsed_args["input_size"] = args.input_size
     parsed_args["hidden_size"] = args.hidden_size
-
-    # if not args.output:
-    #     print("\nOutput file is not specified.\n\n")
-    #     print(parser.print_help())
-    #     exit(1)
-
     parsed_args["output"] = args.output
 
     return parsed_args
