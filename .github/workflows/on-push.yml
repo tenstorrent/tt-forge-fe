@@ -3,24 +3,9 @@ name: On push
 on:
   workflow_dispatch:
   push:
-#    branches: [ "main" ]
+    branches: [ "main" ]
 
 jobs:
-  fail-notify:
-    if: always()
-    runs-on: Ubuntu-latest
-    steps:
-      - name: Send Fail Notification
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>",
-              "channel": "C08HFLL9L56"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
-
   docker-build:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
