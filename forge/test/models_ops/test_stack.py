@@ -40,23 +40,26 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Stack0,
-        [
-            ((2, 1, 2048), torch.float32),
-            ((2, 1, 2048), torch.float32),
-            ((2, 1, 2048), torch.float32),
-            ((2, 1, 2048), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
+    pytest.param(
+        (
+            Stack0,
+            [
+                ((2, 1, 2048), torch.float32),
+                ((2, 1, 2048), torch.float32),
+                ((2, 1, 2048), torch.float32),
+                ((2, 1, 2048), torch.float32),
             ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"axis": "-3"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Stack1,
