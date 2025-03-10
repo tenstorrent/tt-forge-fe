@@ -35,3 +35,29 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+
+  fail-notify:
+    if: always()
+    needs:
+      - docker-build
+      - build
+      - test_full_model
+      - perf-benchmark
+    runs-on: Ubuntu-latest
+    steps:
+      - name: Check if the needed jobs succeeded or failed
+        id: check
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+      - name: Send Fail Notification
+        if: ${{ steps.check.outputs.failure == 'true' }}
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "Nightly build has failed: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "channel": "C07R5GYEW8J"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CHANNEL_WEBHOOK_URL }}
