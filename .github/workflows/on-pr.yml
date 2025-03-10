@@ -7,6 +7,7 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir'
         required: false
         type: string
+  push:
   pull_request:
     branches: [ "main" ]
 
@@ -44,7 +45,7 @@ jobs:
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}, {"runs-on": "p150"}]'
+      runs-on: '[{"runs-on": "p150"}]'
 
   check-all-green:
     if: always()
