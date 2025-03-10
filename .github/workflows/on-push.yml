@@ -15,7 +15,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>",
+              "text": "Bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>",
               "channel": "C08HFLL9L56"
             }
         env:
