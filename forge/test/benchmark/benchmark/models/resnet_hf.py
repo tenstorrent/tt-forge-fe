@@ -125,7 +125,7 @@ def test_resnet_hf(
     result = {
         "model": model_name,
         "model_type": model_type,
-        "run_type": f"{'x'.join(model_name)}_{batch_size}_{input_size}_{num_layers}_{loop_count}",
+        "run_type": f"{'_'.join(model_name.split())}_{batch_size}_{'_'.join([str(dim) for dim in input_size])}_{num_layers}_{loop_count}",
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
@@ -194,7 +194,7 @@ def resnet_hf_benchmark(config: dict):
     if not os.path.exists(REPORTS_DIR):
         os.makedirs(REPORTS_DIR)
     if not output_file:
-        output_file = REPORTS_DIR + f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
+        output_file = f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
     result["output"] = REPORTS_DIR + output_file
 
     # Save the results to a file

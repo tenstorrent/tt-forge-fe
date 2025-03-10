@@ -120,7 +120,7 @@ def test_llama_prefill(
     result = {
         "model": model_name,
         "model_type": model_type,
-        "run_type": f"{'x'.join(model_name)}_{input_size}_{loop_count}",
+        "run_type": f"{'_'.join(model_name.split())}_{input_size}_{loop_count}",
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
@@ -180,7 +180,7 @@ def llama_prefill_benchmark(config: dict):
     if not os.path.exists(REPORTS_DIR):
         os.makedirs(REPORTS_DIR)
     if not output_file:
-        output_file = REPORTS_DIR + f"forge-benchmark-e2e-llama_prefill_{result['run_type']}.json"
+        output_file = f"forge-benchmark-e2e-llama_prefill_{result['run_type']}.json"
     result["output"] = REPORTS_DIR + output_file
 
     # Save the results to a file
