@@ -14,6 +14,7 @@
 
 
 import os
+import gc
 import pytest
 import forge
 import textwrap
@@ -31,6 +32,20 @@ from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+
+
+test_counter = 0
+
+
+@pytest.fixture(autouse=True)
+def run_gc():
+    """Run garbage collection regularly to avoid memory leaks"""
+    yield
+    global test_counter
+    test_counter += 1
+    # Run garbage collection every 10 tests
+    if test_counter % 10 == 0:
+        gc.collect()
 
 
 class TestVerification:
@@ -70,6 +85,33 @@ class TestParamsData:
         else:
             test_ids = []
         return test_ids
+
+    @classmethod
+    def load_test_ids_from_files(cls, test_ids_files: List[str]) -> list[str]:
+        all_test_ids = []
+        for test_ids_file in test_ids_files:
+            test_ids_file = f"{os.path.dirname(__file__)}/{test_ids_file}"
+
+            if not os.path.exists(test_ids_file):
+                raise FileNotFoundError(f"Test ids file not found: {test_ids_file}")
+
+            test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
+            all_test_ids.extend(test_ids)
+        if len(all_test_ids) == 0:
+            all_test_ids = None
+        return all_test_ids
+
+    @classmethod
+    def get_ignore_test_ids_filenames(cls) -> list[str]:
+
+        """Provide a list of files with test ids to ignore"""
+        id_files_ignore = os.getenv("ID_FILES_IGNORE", None)
+        if id_files_ignore is not None:
+            id_files_ignore = id_files_ignore.split(",")
+            id_files_ignore = [id_file for id_file in id_files_ignore if id_file]
+        else:
+            id_files_ignore = None
+        return id_files_ignore
 
     @classmethod
     def build_filtered_collection(cls) -> TestCollection:
@@ -242,6 +284,23 @@ class TestCollectionData:
     )
 
 
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    __skip_list_file = f"{os.path.dirname(__file__)}/_ids/skip_list.txt"
+
+    skip_list = TestPlanUtils.load_test_ids_from_file(__skip_list_file) if os.path.exists(__skip_list_file) else []
+
+    ignore_list = TestParamsData.load_test_ids_from_files(
+        TestParamsData.get_ignore_test_ids_filenames()
+        if TestParamsData.get_ignore_test_ids_filenames() is not None
+        else ["ids/blacklist.txt"]
+    )
+
+    black_list = TestParamsData.load_test_ids_from_files(["ids/blacklist.txt"])
+
+
 class TestSuiteData:
 
     __test__ = False  # Avoid collecting TestSuiteData as a pytest test
@@ -259,6 +318,16 @@ class VectorLambdas:
 
     QUICK = lambda test_vector: test_vector in TestCollectionData.quick
     FILTERED = lambda test_vector: test_vector in TestCollectionData.filtered
+
+    SKIP_LIST = lambda test_vector: test_vector.get_id() not in TestIdsData.skip_list
+
+    SKIP_IGNORE_LIST = (
+        lambda test_vector: TestIdsData.ignore_list is None or test_vector.get_id() not in TestIdsData.ignore_list
+    )
+
+    SKIP_BLACK_LIST = (
+        lambda test_vector: TestIdsData.black_list is None or test_vector.get_id() not in TestIdsData.black_list
+    )
 
     SINGLE_SHAPE = lambda test_vector: test_vector.input_shape in TestCollectionCommon.single.input_shapes
 
@@ -348,6 +417,7 @@ def test_custom(test_vector: TestVector, test_device):
     .filter(VectorLambdas.FILTERED)
     .filter(*TestParamsData.build_filter_lambdas())
     .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
+    .filter(VectorLambdas.SKIP_IGNORE_LIST)
     .range(*TestParamsData.get_filter_range())
     .to_params(),
 )
@@ -387,7 +457,11 @@ def test_ids(test_vector: TestVector, test_device):
 
 @pytest.mark.nightly_sweeps
 @pytest.mark.parametrize(
-    "test_vector", TestSuiteData.filtered.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params()
+    "test_vector",
+    TestSuiteData.filtered.query_all()
+    .filter(VectorLambdas.ALL_OPERATORS)
+    .filter(VectorLambdas.SKIP_BLACK_LIST)
+    .to_params(),
 )
 def test_plan(test_vector: TestVector, test_device):
     TestVerification.verify(test_vector, test_device)
