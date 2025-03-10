@@ -304,6 +304,34 @@ def test_add():
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.parametrize(
+    "shape_dtype",
+    [
+        ((1, 128), torch.int64),
+    ],
+)
+@pytest.mark.push
+def test_add_ints(shape_dtype):
+
+    shape, dtype = shape_dtype
+
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return a + b
+
+    a = torch.randint(high=10, size=shape, dtype=dtype)
+    b = torch.randint(high=10, size=shape, dtype=dtype)
+    inputs = [a, b]
+
+    framework_model = Add()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model)
+
+
 @pytest.mark.parametrize("dims", [(1, 32, 64), (6, 33), (4, 16, 17)])
 @pytest.mark.push
 def test_greater_equal(dims):
