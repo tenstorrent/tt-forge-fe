@@ -616,6 +616,8 @@ def test_e2e_device():
             # NOTE: after executing the step, this will also zero the gradients.
             tt_optimizer.step()
 
+            tt_model.update_host_weights()
+
         print(f"epoch: {epoch_idx} loss: {total_loss}")
 
         assert prev_total_loss - total_loss > 1e-5, "Loss should go down"
