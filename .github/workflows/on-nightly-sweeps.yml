@@ -2,6 +2,18 @@ name: On nightly_sweeps
 
 on:
   workflow_dispatch:
+    inputs:
+      runs-on:
+        description: 'Runs on'
+        required: false
+        type: choice
+        options:
+          - n150
+          - n300
+        default: 'n150'
+      operators:
+        description: 'Operators to test (comma separated)'
+        required: false
   schedule:
     - cron: '0 4 * * *'  # Runs at 04:00 UTC every day
 
@@ -26,3 +38,5 @@ jobs:
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "${{ github.event.inputs.runs-on }}"}]'
+      operators: ${{ github.event.inputs.operators }}
