@@ -60,7 +60,7 @@ jobs:
           payload: |
             {
               "text": "Nightly build has failed: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "channel": "C07R5GYEW8J"
+              "channel": "C08HFLL9L56"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CHANNEL_WEBHOOK_URL }}
