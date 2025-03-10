@@ -124,9 +124,7 @@ jobs:
         pytest -m push --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
-               -m "${{ inputs.test_mark }}" \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               2>&1 | tee pytest.log
+               -m "${{ inputs.test_mark }}" 
 
     - name: Upload Test Log
       uses: actions/upload-artifact@v4
