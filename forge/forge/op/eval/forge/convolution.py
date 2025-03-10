@@ -216,7 +216,7 @@ class Conv2dTranspose(PyOp):
         padding = (
             self.padding[0],
             self.padding[1],
-        ) 
+        )
 
         channel_last = self.channel_last
         if channel_last:
@@ -255,7 +255,7 @@ class Conv2dTranspose(PyOp):
         padding_left = self.padding[1]
         padding_bottom = self.padding[2]
         padding_right = self.padding[3]
-        
+
         act, weight = tensor_shapes[:2]
         print(act, weight)
         batch_size = act[0]
@@ -288,7 +288,7 @@ class Conv2dTranspose(PyOp):
         )
         out_shape = [batch_size, h_out, w_out, cout] if self.channel_last else [batch_size, cout, h_out, w_out]
         return out_shape, []
-    
+
     def decompose(self, dc, inputs):
         # TTNN can only perform a channel last convolution with its conv_transpose2d op.
         # The TTNN conv_transpose2d requires the input to be in the shape: (N, H, W, C) or (1, 1, N*H*W, C).
