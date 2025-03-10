@@ -286,7 +286,7 @@ class CompiledModel:
         """
         torch_inputs = [*to_pt_tensors(inputs)]
         # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
-        torch_inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in self.inputs]
+        torch_inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in torch_inputs]
 
         assert all([isinstance(t, torch.Tensor) for t in torch_inputs]), "All inputs should be torch tensors by now."
 
