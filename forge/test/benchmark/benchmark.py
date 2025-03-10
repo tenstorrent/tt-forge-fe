@@ -2,6 +2,15 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import sys
+import os
+
+# Get the absolute path of the project root and add it to the path
+# When we run the tests from benchmark directory it can't find test.utils module,
+# so we add the project root to the path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, project_root)
+
 import argparse
 
 from benchmark import models
