@@ -84,7 +84,7 @@ def test_yolo_v5_320x320_onnx(test_device, variant):
 
     # Run inference on Tenstorrent device
     verify_module(
-        forge.OnnxModule(model_name, onnx_model, onnx_model_path),
+        forge.OnnxModule(model_name, onnx_model),
         input_shapes=([pixel_values.shape]),
         inputs=([pixel_values]),
         verify_cfg=DepricatedVerifyConfig(
@@ -126,7 +126,7 @@ def test_yolo_v5_480x480_onnx(test_device, variant):
 
     # Run inference on Tenstorrent device
     verify_module(
-        forge.OnnxModule(model_name, onnx_model, onnx_model_path),
+        forge.OnnxModule(model_name, onnx_model),
         input_shapes=([pixel_values.shape]),
         inputs=([pixel_values]),
         verify_cfg=DepricatedVerifyConfig(
@@ -167,7 +167,7 @@ def test_yolo_v5_640x640_onnx(test_device, variant):
 
     # Run inference on Tenstorrent device
     verify_module(
-        forge.OnnxModule(model_name, onnx_model, onnx_model_path),
+        forge.OnnxModule(model_name, onnx_model),
         input_shapes=([pixel_values.shape]),
         inputs=([pixel_values]),
         verify_cfg=DepricatedVerifyConfig(

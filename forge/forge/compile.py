@@ -191,7 +191,7 @@ def compile_main(
     Parameters
     ----------
     module: AnyModule
-        Torch, TensorFlow, or Forge module to compile
+        Torch, TensorFlow, ONNX or Forge module to compile
 
     sample_inputs: List[torch.Tensor]
         List of sample inputs for the module (used to infer shapes)
@@ -217,7 +217,7 @@ def compile_main(
 
     """
 
-    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, and Forge modules are supported."
+    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, ONNX and Forge modules are supported."
 
     if module_name is None:
         module_name = module.__class__.__name__

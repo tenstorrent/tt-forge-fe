@@ -42,7 +42,7 @@ def test_ddrnet(variant, test_device):
     load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
 
     model = onnx.load(load_path)
-    tt_model = forge.OnnxModule(model_name, model, load_path)
+    tt_model = forge.OnnxModule(model_name, model)
 
     # STEP 3: Prepare input
     url = "https://raw.githubusercontent.com/pytorch/hub/master/images/dog.jpg"
@@ -147,7 +147,7 @@ def test_ddrnet_semantic_segmentation_onnx(variant, test_device):
     model = onnx.load(load_path)
     onnx.checker.check_model(model)
     model_name = f"onnx_{variant}"
-    tt_model = forge.OnnxModule(model_name, model, load_path)
+    tt_model = forge.OnnxModule(model_name, model)
 
     # Prepare input
     image_path = "third_party/confidential_customer_models/cv_demos/ddrnet/semantic_segmentation/image/road_scenes.png"

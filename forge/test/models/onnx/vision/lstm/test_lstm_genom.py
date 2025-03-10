@@ -24,7 +24,7 @@ def test_lstm_genom_onnx(test_device):
     # Run inference on Tenstorrent device
     inputs = tf.random.uniform(shape=[1, 10, 4])
     verify_module(
-        forge.OnnxModule("onnx_lstm", model, load_path),
+        forge.OnnxModule("onnx_lstm", model),
         input_shapes=(inputs.shape,),
         inputs=[(inputs,)],
         verify_cfg=DepricatedVerifyConfig(
