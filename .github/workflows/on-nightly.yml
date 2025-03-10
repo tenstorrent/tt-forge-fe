@@ -50,8 +50,11 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+      - name: Check if branch is main
+        id: branch-check
+        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
       - name: Send Fail Notification
-        if: ${{ steps.check.outputs.failure == 'true' }}
+        if: ${{ steps.check.outputs.failure == 'true' && steps.branch-check.outputs.IS_MAIN == 'true' }}
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
