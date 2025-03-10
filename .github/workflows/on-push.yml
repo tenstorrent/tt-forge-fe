@@ -11,16 +11,15 @@ jobs:
     runs-on: Ubuntu-latest
     steps:
       - name: Send Fail Notification
-        uses: rtCamp/action-slack-notify@v2
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>",
+              "channel": "C08HFLL9L56"
+            }
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_CHANNEL_WEBHOOK_URL }}
-          SLACK_CHANNEL: "C08HFLL9L56"
-          SLACK_TITLE: "Nightly build has failed"
-          SLACK_USERNAME: "CI Bot"
-          SLACK_COLOR: "#FF0000"
-          SLACK_ICON: ":red_circle:"
-          SLACK_FOOTER: "Tenstorrent CI"
-          SLACK_MESSAGE: "TESTING IGNORE Nightly build has failed: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
 
   docker-build:
     uses: ./.github/workflows/build-image.yml
