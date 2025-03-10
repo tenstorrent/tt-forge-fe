@@ -1,4 +1,4 @@
-Embedding-FROM_HOST-{'num_embeddings': 34266, 'embedding_dim': 10000, 'weight_dtype': torch.bfloat16}-(32, 64)-forge.UInt16-None
-Embedding-FROM_HOST-{'num_embeddings': 21, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.Int8-None
-Embedding-FROM_DRAM_QUEUE-{'num_embeddings': 26106, 'embedding_dim': 10000, 'weight_dtype': torch.bfloat16}-(1, 1000)-forge.RawUInt32-None
-Embedding-FROM_HOST-{'num_embeddings': 41, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt8-None
+# Embedding-FROM_HOST-{'num_embeddings': 34266, 'embedding_dim': 10000, 'weight_dtype': torch.bfloat16}-(32, 64)-forge.UInt16-None
+# Embedding-FROM_HOST-{'num_embeddings': 21, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.Int8-None
+# Embedding-FROM_DRAM_QUEUE-{'num_embeddings': 26106, 'embedding_dim': 10000, 'weight_dtype': torch.bfloat16}-(1, 1000)-forge.RawUInt32-None
+# Embedding-FROM_HOST-{'num_embeddings': 41, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt8-None
