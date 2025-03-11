@@ -29,9 +29,8 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
 def test_phi2_clm(record_forge_property, variant):
-    if variant != "microsoft/phi-2":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(

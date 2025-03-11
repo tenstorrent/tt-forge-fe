@@ -27,6 +27,10 @@ on:
         required: false
         type: string
         default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      operators:
+        description: 'Operators to test (comma separated)'
+        required: false
+        type: string
 
 permissions:
   packages: write
@@ -114,6 +118,7 @@ jobs:
         HF_HOME: /mnt/dockercache/huggingface
         HF_HUB_DISABLE_PROGRESS_BARS: 1
         FORGE_DISABLE_REPORTIFY_DUMP: 1
+        OPERATORS: ${{ inputs.operators }}
       shell: bash
       run: |
         source env/activate
@@ -139,7 +144,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
+        name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
         path: ${{ steps.strings.outputs.test_report_path }}
 
     - name: Show Test Report

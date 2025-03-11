@@ -266,28 +266,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 96, 54, 54), torch.float32)],
-            {
-                "model_name": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 96, 54, 54), torch.float32)],
+        {
+            "model_name": ["pt_alexnet_base_img_cls_osmr"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D1,
@@ -395,28 +388,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 64, 112, 112), torch.float32)],
-            {
-                "model_name": ["pt_googlenet_base_img_cls_torchvision"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 64, 112, 112), torch.float32)],
+        {
+            "model_name": ["pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D0,
@@ -555,28 +541,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 128, 56, 56), torch.float32)],
-            {
-                "model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 128, 56, 56), torch.float32)],
+        {
+            "model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D2,
@@ -617,28 +596,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 256, 28, 28), torch.float32)],
-            {
-                "model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 256, 28, 28), torch.float32)],
+        {
+            "model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D2,
@@ -744,28 +716,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 192, 56, 56), torch.float32)],
-            {
-                "model_name": ["pt_googlenet_base_img_cls_torchvision"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 192, 56, 56), torch.float32)],
+        {
+            "model_name": ["pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D4,
@@ -783,28 +748,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 480, 28, 28), torch.float32)],
-            {
-                "model_name": ["pt_googlenet_base_img_cls_torchvision"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 480, 28, 28), torch.float32)],
+        {
+            "model_name": ["pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D4,
@@ -1167,34 +1125,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 256, 56, 56), torch.float32)],
-            {
-                "model_name": [
-                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                    "pt_vovnet_vovnet39_obj_det_osmr",
-                    "pt_vovnet_vovnet57_obj_det_osmr",
-                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 256, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet57_obj_det_osmr",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D2,
@@ -1223,86 +1174,65 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 512, 28, 28), torch.float32)],
-            {
-                "model_name": [
-                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                    "pt_vovnet_vovnet39_obj_det_osmr",
-                    "pt_vovnet_vovnet57_obj_det_osmr",
-                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 512, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet57_obj_det_osmr",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 768, 14, 14), torch.float32)],
-            {
-                "model_name": [
-                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                    "pt_vovnet_vovnet39_obj_det_osmr",
-                    "pt_vovnet_vovnet57_obj_det_osmr",
-                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 768, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet57_obj_det_osmr",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Maxpool2D1,
-            [((1, 384, 14, 14), torch.float32)],
-            {
-                "model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "3",
-                    "stride": "2",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "ceil_mode": "True",
-                    "channel_last": "0",
-                },
+    (
+        Maxpool2D1,
+        [((1, 384, 14, 14), torch.float32)],
+        {
+            "model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "ceil_mode": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume info: Invalid arguments to reshape"
-            )
-        ],
+        },
     ),
     (
         Maxpool2D3,

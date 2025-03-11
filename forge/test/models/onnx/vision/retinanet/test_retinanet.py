@@ -60,7 +60,7 @@ def test_retinanet_r101_640x480_onnx(test_device):
     # STEP 2: Create Forge module from PyTorch model
     load_path = "third_party/confidential_customer_models/model_2/onnx/retinanet/retinanet-9.onnx"
     model = onnx.load(load_path)
-    tt_model = forge.OnnxModule("onnx_retinanet", model, load_path)
+    tt_model = forge.OnnxModule("onnx_retinanet", model)
 
     # Image preprocessing
     img_tensor = img_preprocess()
@@ -120,7 +120,7 @@ def test_retinanet_onnx(variant, test_device):
     load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
     model_name = f"onnx_{variant}"
     model = onnx.load(load_path)
-    tt_model = forge.OnnxModule(model_name, model, load_path)
+    tt_model = forge.OnnxModule(model_name, model)
 
     # Prepare input
     input_batch = img_preprocessing()

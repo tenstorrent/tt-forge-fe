@@ -20,7 +20,7 @@ def test_fpn_onnx(test_device, test_kind):
     # Load FPN model
     onnx_model_path = "third_party/confidential_customer_models/generated/files/fpn.onnx"
     model = onnx.load(onnx_model_path)
-    tt_model = forge.OnnxModule("onnx_fpn", model, onnx_model_path)
+    tt_model = forge.OnnxModule("onnx_fpn", model)
 
     feat0 = torch.rand(1, 10, 64, 64)
     feat1 = torch.rand(1, 20, 16, 16)
