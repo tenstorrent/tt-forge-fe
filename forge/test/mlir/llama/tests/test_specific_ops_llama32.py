@@ -9,7 +9,7 @@ from torch import nn
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
+from forge.verify.verify import verify, verify_backward
 
 
 @pytest.mark.parametrize(
@@ -128,21 +128,30 @@ def test_embedding(shapes):
     verify(inputs, framework_model, compiled_model)
 
 
+# @pytest.mark.parametrize("train", [False, True])
 @pytest.mark.parametrize(
-    "shapes",
+    "shapes, train",
     [
-        ((11, 2048), (2048, 2048)),
-        ((1, 32, 1), (1, 1, 11)),
-        ((11, 2048), (2048, 512)),
-        ((32, 11, 64), (32, 64, 11)),
-        ((32, 11, 11), (32, 11, 64)),
-        ((11, 2048), (2048, 8192)),
-        ((1, 11, 8192), (8192, 2048)),
-        ((1, 11, 2048), (2048, 128256)),
+        (((11, 2048), (2048, 2048)), False),
+        (((1, 32, 1), (1, 1, 11)), False),
+        (((11, 2048), (2048, 512)), False),
+        (((32, 11, 64), (32, 64, 11)), False),
+        (((32, 11, 11), (32, 11, 64)), False),
+        (((11, 2048), (2048, 8192)), False),
+        (((1, 11, 8192), (8192, 2048)), False),
+        (((1, 11, 2048), (2048, 128256)), False),
+        (((11, 2048), (2048, 2048)), True),
+        (((1, 32, 1), (1, 1, 11)), True),
+        (((11, 2048), (2048, 512)), True),
+        (((32, 11, 64), (32, 64, 11)), True),
+        (((32, 11, 11), (32, 11, 64)), True),
+        (((11, 2048), (2048, 8192)), True),
+        (((1, 11, 8192), (8192, 2048)), True),
+        pytest.param(((1, 11, 2048), (2048, 128256)), True, marks=pytest.mark.xfail(reason="Low PCC")),
     ],
 )
 @pytest.mark.push
-def test_matmul(shapes):
+def test_matmul(shapes, train):
     shape1, shape2 = shapes
 
     class Matmul(nn.Module):
@@ -153,14 +162,36 @@ def test_matmul(shapes):
             return torch.matmul(x, y)
 
     inputs = [
-        torch.rand(shape1),
-        torch.rand(shape2),
+        torch.rand(shape1, requires_grad=train),
+        torch.rand(shape2, requires_grad=train),
     ]
 
     framework_model = Matmul()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    framework_model.eval() if not train else framework_model.train()
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
+    # NOTE: We probably need two framework models with the same state_dict to compare the outputs
+    #       But for now it works without that for some reason?
+    # model_for_compile = Matmul()
+    # model_for_compile.eval() if not training else model_for_compile.train()
+    # model_for_compile.load_state_dict(framework_model.state_dict())
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=train)
+
+    fw_out, co_out = verify(
+        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+    )
+    if train:
+        # Simulate the backward pass of the loss
+        output_grad = torch.rand_like(fw_out[0])
+
+        verify_backward(
+            inputs,
+            output_grad,
+            fw_out[0],
+            co_out[0],
+            framework_model,
+            compiled_model,
+            verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        )
 
 
 @pytest.mark.parametrize(
