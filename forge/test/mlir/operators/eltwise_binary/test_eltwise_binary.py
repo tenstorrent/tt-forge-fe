@@ -287,32 +287,15 @@ def test_equal(shape):
     verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
 
 
-@pytest.mark.push
-def test_add():
-    class Add(nn.Module):
-        def __init__(self):
-            super().__init__()
-
-        def forward(self, a, b):
-            return a + b
-
-    inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
-
-    framework_model = Add()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-
-    verify(inputs, framework_model, compiled_model)
-
-
 @pytest.mark.parametrize(
     "shape_dtype",
     [
+        ((2, 32, 32), torch.float32),
         ((1, 128), torch.int64),
     ],
 )
 @pytest.mark.push
-def test_add_ints(shape_dtype):
-
+def test_add(shape_dtype):
     shape, dtype = shape_dtype
 
     class Add(nn.Module):
@@ -322,8 +305,10 @@ def test_add_ints(shape_dtype):
         def forward(self, a, b):
             return a + b
 
-    a = torch.randint(high=10, size=shape, dtype=dtype)
-    b = torch.randint(high=10, size=shape, dtype=dtype)
+    # Generate random tensors of the appropriate shape and dtype
+    a = torch.rand(size=shape).to(dtype)
+    b = torch.rand(size=shape).to(dtype)
+
     inputs = [a, b]
 
     framework_model = Add()
