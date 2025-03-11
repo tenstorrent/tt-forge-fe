@@ -99,9 +99,6 @@ def test_mnist_linear(
     if training:
         pytest.skip("Training is not supported")
 
-    if batch_size > 1:
-        pytest.skip("Batch size greater than 1 is not supported")
-
     inputs = [torch.rand(batch_size, input_size)]
 
     framework_model = MNISTLinear(input_size=input_size, hidden_size=hidden_size)
