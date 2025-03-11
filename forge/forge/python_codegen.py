@@ -339,21 +339,6 @@ class ForgeWriter(PythonWriter):
                 self.indent -= 1
                 self.wl("tensor = torch.tensor(torch_param.data.numpy())")
 
-            else:
-                # Handle -inf and inf values
-                self.wl("# Replace infinities with relevant numbers")
-                self.wl("if torch.any(torch.isinf(torch_param)):")
-                self.indent += 1
-                self.wl(
-                    "torch_param = torch.where(torch.isposinf(torch_param), torch.tensor(1e4, dtype=torch_param.dtype), torch_param)"
-                )
-                self.wl(
-                    "torch_param = torch.where(torch.isneginf(torch_param), torch.tensor(-1e4, dtype=torch_param.dtype), torch_param)"
-                )
-                self.wl('logger.warning(f"Replacing -inf and inf values in tensor param: {name}")')
-                self.indent -= 1
-
-                self.wl("tensor = torch_param.data")
 
             if len(param_names):
                 self.wl("if torch.numel(tensor) == 1 and len(tensor.shape) == 0:")
