@@ -69,7 +69,7 @@ def test_segformer_image_classification_onnx(test_device, variant):
     model = onnx.load(onnx_model_path)
     onnx.checker.check_model(model)
 
-    tt_model = forge.OnnxModule(str(variant).split("/")[-1].replace("-", "_"), model, onnx_model_path)
+    tt_model = forge.OnnxModule(str(variant).split("/")[-1].replace("-", "_"), model)
 
     # Run inference on Tenstorrent device
     verify_module(
