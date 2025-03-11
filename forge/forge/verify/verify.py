@@ -17,7 +17,14 @@ import torch
 import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
-from ..tensor import Tensor, TensorShape, pad_pytorch_tensor_to_forge, narrow_forge_tensor_to_pytorch
+from ..tensor import (
+    Tensor,
+    TensorShape,
+    pad_pytorch_tensor_to_forge,
+    narrow_forge_tensor_to_pytorch,
+    pytorch_dtype_to_forge_dataformat,
+    forge_dataformat_to_pytorch_dtype,
+)
 from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
@@ -265,6 +272,36 @@ def verify_golden(
     assert False  # Run ttnn golden
 
 
+def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
+    """
+    Verifies that two PyTorch data types are equivalent when considering Forge's supported data types.
+
+    This function addresses the fact that Forge tensors support a subset of PyTorch's data types.
+    For example, Forge might map torch.int64 to torch.int32 internally. When comparing outputs
+    between the original PyTorch model and the Forge-compiled model, we need to account for
+    these conversions to avoid false verification failures.
+
+    The verification works by converting the framework dtype to its Forge representation
+    and then back to PyTorch, then comparing this "round-trip" dtype with the compiled model's dtype.
+
+    Args:
+        fw_dtype (torch.dtype): Data type from the original PyTorch model
+        co_dtype (torch.dtype): Data type from the Forge-compiled model
+
+    Raises:
+        ValueError: If the dtypes are incompatible after accounting for Forge's conversions
+    """
+    # Convert framework dtype to Forge's internal representation
+    forge_dataformat = pytorch_dtype_to_forge_dataformat(fw_dtype)
+
+    # Convert back to PyTorch dtype (this accounts for Forge's supported types)
+    equivalent_pytorch_dtype = forge_dataformat_to_pytorch_dtype(forge_dataformat)
+
+    # Check if the compiled dtype matches the equivalent dtype
+    if equivalent_pytorch_dtype != co_dtype:
+        raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
+
+
 def verify(
     inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
     framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer, onnx.onnx_ml_pb2.ModelProto],
@@ -340,8 +377,7 @@ def verify(
 
     for fw, co in zip(fw_out, co_out):
         if verify_cfg.verify_dtype:
-            if fw.dtype != co.dtype:
-                raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
+            check_dtypes(fw_dtype=fw.dtype, co_dtype=co.dtype)
 
         if verify_cfg.verify_shape:
             if fw.shape != co.shape:
