@@ -94,15 +94,15 @@ def test_matmul_pp():
 
 
 @pytest.mark.push
-def test_sqeeze_pp():
+def test_squeeze_pp():
     class Squeeze_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
 
         def forward(self, a, b):
-            sqeezed_a = paddle.squeeze(a, axis=0)
-            sqeezed_b = paddle.squeeze(b, axis=0)
-            return sqeezed_a.T + sqeezed_b
+            squeezed_a = paddle.squeeze(a, axis=0)
+            squeezed_b = paddle.squeeze(b, axis=0)
+            return squeezed_a.T + squeezed_b
 
     inputs = [paddle.rand([1, 32, 32]), paddle.rand([1, 32, 32])]
 

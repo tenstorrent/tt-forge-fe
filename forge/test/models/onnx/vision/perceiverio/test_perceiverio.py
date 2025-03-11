@@ -60,7 +60,6 @@ def test_perceiver_for_image_classification_onnx(test_device, model_name):
     tt_model = forge.OnnxModule(
         str(model_name.split("/")[-1].replace("-", "_")) + "_onnx",
         onnx_model,
-        onnx_model_path,
     )
 
     # Run inference on Tenstorrent device

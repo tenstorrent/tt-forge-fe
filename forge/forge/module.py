@@ -26,7 +26,6 @@ from .tensor import (
 )
 from .parameter import Parameter
 import onnx
-import onnxruntime
 import jax.numpy as jnp
 import numpy as np
 
@@ -361,7 +360,7 @@ class OnnxModule(Module):
     A wrapper around a Onnx module.
     """
 
-    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto, onnx_path: str):
+    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto):
         """
         Create Onnx module wrapper.
 
@@ -369,27 +368,26 @@ class OnnxModule(Module):
         ----------
         module: onnx.onnx_ml_pb2.ModelProto
             onnx module
-        onnx_path: str
-            path of the onnx object
         """
         super().__init__(name)
 
         if not isinstance(module, onnx.onnx_ml_pb2.ModelProto):
             raise RuntimeError("onnx.onnx_ml_pb2.ModelProto module expected, got " + str(type(module)))
         self.module = module
-        self.onnx_path = onnx_path
+
+    def __call__(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
 
     def forward(self, *args, **kwargs):
         import onnxruntime as ort
-
-        assert self.onnx_path != None, "Onnx compile needs path to onnx file on disk."
 
         so = ort.SessionOptions()
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
 
+        module_bytes = self.module.SerializeToString()
         ort_sess = ort.InferenceSession(
-            self.onnx_path,
+            module_bytes,
             sess_options=so,
             use_deterministic_compute=True,
             providers=["CPUExecutionProvider"],
@@ -434,14 +432,19 @@ class OnnxModule(Module):
         return self.forward(*args, **kwargs)
 
     def backward(self, *args):
-
         raise NotImplementedError
 
     def set_parameters(self, **kwargs):
         raise NotImplementedError
 
     def get_parameters(self) -> List[Parameter]:
-        return []  # TODO
+        params = []
+        for param in self.module.graph.initializer:
+            d_type = onnx.mapping.TENSOR_TYPE_TO_NP_TYPE[param.data_type]
+            param_data = np.frombuffer(param.raw_data, dtype=d_type).reshape(param.dims)
+            forge_param = Parameter(torch.tensor(param_data), requires_grad=False, name=param.name)
+            params.append(forge_param)
+        return params
 
 
 class TFLiteModule(Module):
@@ -960,9 +963,11 @@ def wrap_module(module, name: str) -> Module:
         return module
     elif isinstance(module, paddle.nn.Layer):
         return PaddleModule(name, module)
+    elif isinstance(module, onnx.onnx_ml_pb2.ModelProto):
+        return OnnxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer
+FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto
 AnyModule: TypeAlias = FrameworkModule | ForgeModule
