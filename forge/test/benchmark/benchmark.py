@@ -2,13 +2,23 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import sys
+import os
+
+# Get the absolute path of the project root and add it to the path
+# When we run the tests from benchmark directory it can't find test.utils module,
+# so we add the project root to the path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, project_root)
+
 import argparse
 
 from benchmark import models
 
-
 MODELS = {
     "mnist_linear": models.mnist_linear.mnist_linear_benchmark,
+    "resnet50_hf": models.resnet_hf.resnet_hf_benchmark,
+    "llama": models.llama.llama_prefill_benchmark,
 }
 
 
@@ -54,6 +64,7 @@ def read_args():
     parser.add_argument(
         "-o",
         "--output",
+        default=None,
         help="Output json file to write results to, optionally. If file already exists, results will be appended.",
     )
 
@@ -85,12 +96,6 @@ def read_args():
 
     parsed_args["input_size"] = args.input_size
     parsed_args["hidden_size"] = args.hidden_size
-
-    if not args.output:
-        print("\nOutput file is not specified.\n\n")
-        print(parser.print_help())
-        exit(1)
-
     parsed_args["output"] = args.output
 
     return parsed_args

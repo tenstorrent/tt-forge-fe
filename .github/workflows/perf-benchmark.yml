@@ -44,7 +44,7 @@ jobs:
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=./benchmark_reports/" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -82,7 +82,9 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
+        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32
+        python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 1 -lp 32
+        python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
