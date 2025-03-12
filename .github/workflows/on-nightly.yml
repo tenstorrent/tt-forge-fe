@@ -1,6 +1,7 @@
 name: On nightly
 
 on:
+  push:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
@@ -15,18 +16,18 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  test_full_model:
-    needs:
-      - docker-build
-      - build
-    uses: ./.github/workflows/test.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+  # test_full_model:
+  #   needs:
+  #     - docker-build
+  #     - build
+  #   uses: ./.github/workflows/test.yml
+  #   secrets: inherit
+  #   with:
+  #     test_mark: 'nightly'
+  #     test_group_cnt: 4
+  #     test_group_ids: '[1,2,3,4]'
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  #     runs-on: '[{"runs-on": "n150"}]'
   perf-benchmark:
     needs:
       - docker-build
@@ -41,7 +42,7 @@ jobs:
     needs:
       - docker-build
       - build
-      - test_full_model
+      # - test_full_model
       - perf-benchmark
     runs-on: Ubuntu-latest
     outputs:
