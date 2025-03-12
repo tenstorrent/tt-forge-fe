@@ -17,7 +17,6 @@ void RuntimeModule(py::module& m_runtime)
         .def("get_program_inputs", &runtime::Binary::getProgramInputs)
         .def("get_program_outputs", &runtime::Binary::getProgramOutputs);
     m_runtime.def("run_binary", tt::run_binary);
-    m_runtime.def("run_binary_v2", tt::run_binary_v2);
 
     py::class_<Tensor>(m_runtime, "Tensor")
         .def(py::init<torch::Tensor&>())

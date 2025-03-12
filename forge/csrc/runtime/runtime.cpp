@@ -5,7 +5,6 @@
 #include "runtime.hpp"
 
 #include <optional>
-#include <type_traits>
 
 #include "graph_lib/graph.hpp"
 #include "tensor.hpp"
@@ -41,8 +40,8 @@ std::vector<torch::Tensor> run_binary_from_file(
     std::string const& filename, int program_idx, std::vector<torch::Tensor> const& inputs)
 {
     auto binary = load_binary_from_file(filename);
-
-    return run_binary(binary, program_idx, inputs);
+    // TODO: Implement properly
+    return {};// run_binary(binary, program_idx, inputs);
 }
 
 void verify_input_tensors(
@@ -161,40 +160,6 @@ void verify_tensor(size_t idx, const torch::Tensor& input, const runtime::Tensor
 //     }
 // }
 //
-std::vector<Tensor> construct_persistent_tensors(const graphlib::Graph* graph, const TensorPool& tensor_pool)
-{
-    auto const_names = graph->get_constant_names();
-    auto param_names = graph->get_parameter_names();
-
-    // Reserve space for module inputs, constants and parameters.
-    std::vector<Tensor> inputs;
-    inputs.reserve(const_names.size() + param_names.size());
-
-    // Append constant and param tensors.
-    std::vector<std::string> params_and_consts_names;
-    params_and_consts_names.insert(params_and_consts_names.end(), const_names.begin(), const_names.end());
-    params_and_consts_names.insert(params_and_consts_names.end(), param_names.begin(), param_names.end());
-
-    for (auto const& name : params_and_consts_names)
-    {
-        inputs.push_back(tensor_pool.get_tensor(name));
-    }
-
-    return inputs;
-}
-
-std::vector<tt::Tensor> create_runtime_tensors(std::vector<torch::Tensor> tensors)
-{
-    std::vector<tt::Tensor> rt_tensors;
-    rt_tensors.reserve(tensors.size());
-
-    for (auto& tensor : tensors)
-    {
-        rt_tensors.emplace_back(tensor);
-    }
-
-    return rt_tensors;
-}
 
 std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor>& inputs)
 {
@@ -261,7 +226,7 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
     return outputs;
 }
 
-std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
+std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary(
     runtime::Binary& binary,
     int program_idx,
     std::vector<torch::Tensor> const& act_inputs,
@@ -348,73 +313,6 @@ std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
     }
 
     return std::make_pair(persistent_inputs, outputs);
-}
-
-std::vector<torch::Tensor> run_binary(
-    runtime::Binary& binary, int program_idx, std::vector<torch::Tensor> const& inputs)
-{
-    auto& system = TTSystem::get_system();
-
-    for (auto& device : system.devices)
-    {
-        if (!device->is_open())
-        {
-            device->open_device();
-        }
-    }
-
-    // For now, we only support a single device.
-    auto& tt_device = system.devices[0];
-    if (!tt_device->is_open())
-    {
-        log_fatal(LogTTDevice, "Failed to open device");
-    }
-
-    auto& device = *tt_device->rt_device;
-
-    auto input_descs = binary.getProgramInputs(program_idx);
-    verify_input_tensors(inputs, input_descs);
-
-    std::vector<runtime::Tensor> rt_inputs;
-    size_t input_idx = 0;
-    for (auto const& input : inputs)
-    {
-        auto tensor = create_tensor(input);
-        auto layout = tt::runtime::getLayout(binary, program_idx, input_idx++);
-        tensor = tt::runtime::toLayout(tensor, device, layout);
-        rt_inputs.emplace_back(tensor);
-    }
-
-    std::vector<torch::Tensor> outputs;
-    std::vector<runtime::Tensor> rt_outputs;
-    std::vector<runtime::TensorDesc> output_descs = binary.getProgramOutputs(program_idx);
-    outputs.reserve(output_descs.size());
-    for (auto const& desc : output_descs)
-    {
-        std::vector<std::int64_t> shape = as_vec_int64(desc.shape);
-        // std::vector<std::int64_t> stride = as_vec_int64(desc.stride);
-        std::vector<std::int64_t> stride(shape.size());
-        stride[shape.size() - 1] = 1;
-        for (size_t i = shape.size() - 2; i >= 0 && i < shape.size(); --i)
-        {
-            stride[i] = shape[i + 1] * stride[i + 1];
-        }
-
-        torch::Tensor output = at::empty_strided(shape, stride, dt_to_torch_scalar_type(desc.dataType));
-        outputs.emplace_back(std::move(output));
-        rt_outputs.emplace_back(create_tensor(outputs.back()));
-    }
-
-    std::vector<runtime::Tensor> submit_outputs = runtime::submit(device, binary, program_idx, rt_inputs);
-    TT_ASSERT(submit_outputs.size() == rt_outputs.size(), "Output count mismatch");
-    for (size_t i = 0; i < submit_outputs.size(); ++i)
-    {
-        auto host = runtime::toHost(submit_outputs[i], true /*untilize*/);
-        runtime::memcpy(rt_outputs[i], host);
-        runtime::deallocateTensor(submit_outputs[i], true);
-    }
-
-    return outputs;
 }
 
 }  // namespace tt

@@ -13,10 +13,7 @@ namespace tt
 {
 
 // Entry point for invoking tt-mlir runtime and running the binary on the device.
-std::vector<torch::Tensor> run_binary(
-    runtime::Binary& binary, int program_idx, std::vector<torch::Tensor> const& inputs);
-
-std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary_v2(
+std::pair<std::vector<tt::Tensor>, std::vector<torch::Tensor>> run_binary(
     runtime::Binary& binary,
     int program_idx,
     std::vector<torch::Tensor> const& act_inputs,

@@ -14,11 +14,9 @@ from forge._C import ForgeGraphModule
 from forge._C.graph import Graph
 import forge._C.graph as pygraph
 from forge._C.runtime import (
-    run_binary,
     Binary,
     TensorPool,
     Tensor as CTensor,
-    run_binary_v2,
     ModelState,
     create_program_state,
     ProgramType,
