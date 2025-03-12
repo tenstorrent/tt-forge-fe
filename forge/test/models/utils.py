@@ -39,6 +39,8 @@ class Task(StrEnum):
     DEPTH_ESTIMATION = "depth_estimation"
     SCENE_TEXT_RECOGNITION = "scene_text_recognition"
     TEXT_TO_SPEECH = "text_to_speech"
+    SENTENCE_EMBEDDING_GENERATION = "sentence_embed_gen"
+    MULTIMODAL_TEXT_GENERATION = "multimodal_text_gen"
 
 
 class Source(StrEnum):
