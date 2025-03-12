@@ -347,7 +347,6 @@ def verify(
         )
 
     # 1st step: run forward pass for the networks
-    print(f"type of fw model: {type(framework_model)}")
     fw_out = framework_model(*inputs)
 
     record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
