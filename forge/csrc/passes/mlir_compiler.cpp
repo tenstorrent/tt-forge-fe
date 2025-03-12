@@ -11,6 +11,7 @@
 
 // Forge headers
 #include "graph_lib/graph.hpp"
+#include "shared_utils/forge_property_utils.hpp"
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #include "graph_lib/node_types.hpp"
@@ -44,7 +45,7 @@ namespace tt::passes
 
 // Template function to run the MLIR compiler pipeline, depending on the desired output.
 template <MLIROutputKind output>
-auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
+auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
 {
     // Register all the required dialects.
     mlir::DialectRegistry registry;
@@ -78,6 +79,9 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
     // Generate MLIR from the Forge graph.
     mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
 
+    tt::property::record_execution_depth(
+        forge_property_handler, tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION);
+
     // Run MLIR pipeline.
     run_mlir_passes<output>(mlir_module);
 
@@ -98,6 +102,8 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
         {
             throw std::runtime_error("Failed to generate flatbuffer binary.");
         }
+
+        tt::property::record_execution_depth(forge_property_handler, tt::property::ExecutionDepth::FAILED_RUNTIME);
 
         return binary;
     }
@@ -120,13 +126,14 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
     }
 }
 
-runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
+runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module);
+    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module, forge_property_handler);
 }
 
-std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module)
+std::string run_mlir_compiler_to_cpp(
+    tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module);
+    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, forge_property_handler);
 }
 }  // namespace tt::passes

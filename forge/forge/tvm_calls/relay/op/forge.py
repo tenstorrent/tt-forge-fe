@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import logging
 import torch
-from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
+from forge.forge_property_utils import ExecutionStage
 
 import tvm
 from tvm import relay
@@ -1138,7 +1138,14 @@ def warn_of_int_comparisons(mod):
 
 
 def compile_for_forge(
-    relay_module, graph_name, target="llvm", params=None, inputs=None, framework_outputs=None, verify_cfg=None
+    relay_module,
+    graph_name,
+    target="llvm",
+    params=None,
+    inputs=None,
+    framework_outputs=None,
+    forge_property_handler=None,
+    verify_cfg=None,
 ):
 
     if not isinstance(relay_module, (IRModule, _function.Function)):
@@ -1162,13 +1169,15 @@ def compile_for_forge(
 
         relay_module = run_relay_compile_passes(relay_module)
         dump_graph(relay_module, graph_name, "after_relay_passes")
-        record_execution_phase_and_stage(ExecutionStage.TVM_RELAY_IR_TRANSFORM)
+        if forge_property_handler is not None:
+            forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TVM_PATTERN_CALLBACKS)
 
         compiled_relay_module = run_forge_compile_passes(
             relay_module, params, inputs, target, framework_outputs, verify_cfg
         )
         dump_graph(compiled_relay_module, graph_name, "after_forge_passes")
-        record_execution_phase_and_stage(ExecutionStage.TVM_PATTERN_CALLBACKS)
+        if forge_property_handler is not None:
+            forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TVM_GRAPH_PARTITIONING)
 
         # Integer comparisons may lead to incorrect results on HW
         warn_of_int_comparisons(compiled_relay_module)
