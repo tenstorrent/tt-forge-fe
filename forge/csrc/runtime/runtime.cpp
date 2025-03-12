@@ -41,7 +41,7 @@ std::vector<torch::Tensor> run_binary_from_file(
 {
     auto binary = load_binary_from_file(filename);
     // TODO: Implement properly
-    return {};// run_binary(binary, program_idx, inputs);
+    return {};  // run_binary(binary, program_idx, inputs);
 }
 
 void verify_input_tensors(
