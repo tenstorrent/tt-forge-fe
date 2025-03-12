@@ -441,7 +441,12 @@ class OnnxModule(Module):
         params = []
         for param in self.module.graph.initializer:
             d_type = onnx.mapping.TENSOR_TYPE_TO_NP_TYPE[param.data_type]
-            param_data = np.frombuffer(param.raw_data, dtype=d_type).reshape(param.dims)
+            if param.raw_data:
+                param_data = np.frombuffer(param.raw_data, dtype=d_type).reshape(param.dims)
+            elif param.float_data:
+                param_data = param.float_data
+            else:
+                raise ValueError(f"Parameter: {param.name} don't have raw_data or float_data")
             forge_param = Parameter(torch.tensor(param_data), requires_grad=False, name=param.name)
             params.append(forge_param)
         return params
