@@ -85,7 +85,6 @@ Full list of supported query parameters
 | RANGE                 | Limit number of results                                                                       | test_query                            |
 | RANDOM_SEED           | Seed for random number generator                                                              | test_query                            |
 | SAMPLE                | Percentage of results to sample                                                               | test_query                            |
-| UNIQUE_KWARGS         | Only representative tests with unique kwargs values                                           | test_query                            |
 | TEST_ID               | Id of a single test to run containing all test parameters                                     | test_query                            |
 | ID_FILES              | Paths to files containing test ids instead of tests from test plan                            | test_query                            |
 | ID_FILES_IGNORE       | Paths to files containing test ids to be ignored                                              | test_query                            |
@@ -129,19 +128,18 @@ with-params pytest
 Print representative tests ids of all operators with examples for kwargs values
 
 ```sh
-UNIQUE_KWARGS=true with-params pytest --collect-only
+FILTERS=UNIQUE_KWARGS with-params pytest --collect-only
 ```
 
 Print representative tests ids of few operators
 
 ```sh
-export OPERATORS=add,div
-UNIQUE_KWARGS=true with-params pytest --collect-only
+OPERATORS=add,div FILTERS=UNIQUE_KWARGS with-params pytest --collect-only
 ```
 
 Each test can be uniquely identified via a test id. Format of test id is `{operator}-{input_source}-{kwargs}-{input_shape}[-{number_of_operands)-]{dev_data_format}-{math_fidelity}`.
 
-Kwarg is a mandatory or optional attribute of an operator. See framework (PyTorch, Forge, ...) operator documentation for each operator or use parameter `UNIQUE_KWARGS` to find examples.
+Kwarg is a mandatory or optional attribute of an operator. See framework (PyTorch, Forge, ...) operator documentation for each operator or use filter `UNIQUE_KWARGS` to find examples.
 
 Run single test based on a test id. Test id may be from a test plan or constructed custom by specifying custom values for kwargs and input_shapes.
 

@@ -37,7 +37,6 @@ function print_params {
     echo "  SKIP_REASONS=$SKIP_REASONS"
     echo "  RANDOM_SEED=$RANDOM_SEED"
     echo "  SAMPLE=$SAMPLE"
-    echo "  UNIQUE_KWARGS=$UNIQUE_KWARGS"
     echo "  RANGE=$RANGE"
     echo "  TEST_ID=$TEST_ID"
     echo "  ID_FILES=$ID_FILES"
@@ -74,7 +73,6 @@ function reset_query_params {
     unset SKIP_REASONS
     unset RANDOM_SEED
     unset SAMPLE
-    unset UNIQUE_KWARGS
     unset RANGE
     unset TEST_ID
     unset ID_FILES
