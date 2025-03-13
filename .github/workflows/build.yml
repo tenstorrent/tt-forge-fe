@@ -30,8 +30,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build:
-          - runs-on: [runner]
+        build: [
+          { runs-on: runner, build-type: Release },
+        ]
 
     runs-on:
       - in-service
@@ -94,7 +95,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         create-symlink: true
-        key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}
+        key: forge-build-${{ matrix.build.build-type }}
 
     - name: Build (creates tvm and tt-forge-fe wheels)
       shell: bash
@@ -118,8 +119,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build:
-          - runs-on: [runner]
+        build: [
+          { runs-on: runner, build-type: Debug },
+        ]
 
     runs-on:
       - in-service
@@ -169,7 +171,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           create-symlink: true
-          key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}
+          key: forge-build-${{ matrix.build.build-type }}
 
       - name: Debug Build
         shell: bash
