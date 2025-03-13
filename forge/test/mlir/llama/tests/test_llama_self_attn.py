@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 import torch
 import pytest
-import time
 
 import forge
 from test.mlir.llama.utils.utils import load_model
@@ -49,10 +48,3 @@ def test_llama_self_attn(model_path):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model)
-
-    start_time = time.time()
-    for _ in range(32):
-        verify(inputs, framework_model, compiled_model)
-    end_time = time.time()
-
-    print(f"Time per batch: {(end_time - start_time) / 32}")
