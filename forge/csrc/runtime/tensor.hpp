@@ -220,12 +220,12 @@ inline target::DataType torch_scalar_type_to_dt(torch::ScalarType st)
         case torch::ScalarType::Long: return target::DataType::UInt32;
         case torch::ScalarType::Half: return target::DataType::Float16;
         case torch::ScalarType::Float: return target::DataType::Float32;
-        // case torch::ScalarType::Double:
-        // case torch::ScalarType::ComplexHalf:
-        // case torch::ScalarType::ComplexFloat:
-        // case torch::ScalarType::ComplexDouble:
-        // case torch::ScalarType::Bool:
         case torch::ScalarType::BFloat16: return target::DataType::BFloat16;
+        case torch::ScalarType::Double:
+        case torch::ScalarType::ComplexHalf:
+        case torch::ScalarType::ComplexFloat:
+        case torch::ScalarType::ComplexDouble:
+        case torch::ScalarType::Bool:
         default: TT_THROW(false, "Unhandled scalar type {}", st);
     }
 

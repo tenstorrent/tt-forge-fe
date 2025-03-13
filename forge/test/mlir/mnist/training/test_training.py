@@ -530,29 +530,25 @@ def test_optimizer_device():
             target = nn.functional.one_hot(target, num_classes=10).float()
 
             # Forward pass (prediction) on device
-            # golden_pred, pred = verify(
-            #     inputs=[data],
-            #     framework_model=framework_model,
-            #     compiled_model=tt_model,
-            #     verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-            # )
-            # pred = pred[0]
-            pred = tt_model(data)[0]
-            # golden_pred = framework_model(data)
-            # assert compare_with_golden(golden_pred, pred, pcc=0.95)
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+            )
+            pred = pred[0]
 
             # Execute loss (and its backward) on CPU.
             loss = framework_loss(pred, target)
             total_loss += loss.item()
 
             loss.backward()
-
-            # Run backward pass on device
             tt_model.backward()
 
             # Adjust weights on the device.
             # NOTE: after executing the step, this will also zero the gradients.
             optimizer.step()
+            tt_model.update_host_weights()
 
             if batch_idx >= limit_num_batches:
                 break
