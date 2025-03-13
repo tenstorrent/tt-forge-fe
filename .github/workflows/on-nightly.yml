@@ -15,14 +15,14 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  test_full_model:
+  test_full_model_passing:
     needs:
       - docker-build
       - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
-      test_mark: 'nightly'
+      test_mark: 'nightly and not xfail'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
@@ -41,7 +41,7 @@ jobs:
     needs:
       - docker-build
       - build
-      - test_full_model
+      - test_full_model_passing
       - perf-benchmark
     runs-on: Ubuntu-latest
     outputs:
