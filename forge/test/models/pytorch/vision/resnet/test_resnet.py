@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import random
-import time
 
 import pytest
 import timm
@@ -56,12 +55,7 @@ def test_resnet_hf(variant, record_forge_property):
     verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
 
     # Run model on sample data and print results
-    start_time = time.time()
-    for _ in range(3):
-        run_and_print_results(framework_model, compiled_model, images)
-    end_time = time.time()
-
-    print(f"Total time taken: {end_time - start_time:.2f} seconds")
+    run_and_print_results(framework_model, compiled_model, images)
 
 
 def run_and_print_results(framework_model, compiled_model, inputs):

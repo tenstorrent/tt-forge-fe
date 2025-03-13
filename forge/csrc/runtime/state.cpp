@@ -35,11 +35,6 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
         TTSystem::get_system().devices[device_id]->open_device();
     }
 
-    // for (auto& tensor : program_state.outputs)
-    // {
-    //     runtime::deallocateTensor(tensor.get_runtime_tensor(), true);
-    // }
-
     program_state.outputs.clear();
 
     std::vector<tt::Tensor> inputs;
