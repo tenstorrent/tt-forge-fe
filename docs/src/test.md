@@ -67,17 +67,14 @@ Available commands
 | `print_params`        | Print current query parameters values.                                |
 | `collect_only_on`     | Enable only collecting tests by including --collect-only.             |
 | `collect_only_off`    | Remove collect only setup.                                            |
-| `test_plan`           | Run all tests from test plan.                                         |
-| `test_query`          | Run subset of test plan based on a query parameters.                  |
+| `test_query`          | Run all tests or subset of test plan based on a query parameters.     |
 | `test_unique`         | Run representative examples of all available tests.                   |
-| `test_single`         | Run single test based on TEST_ID parameter.                           |
-| `test_ids`            | Run tests for multile ids from a test id file.                        |
 
 Full list of supported query parameters
 
 | Parameter             | Description                                                                                   | Supported by commands                 |
 | --------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------- |
-| OPERATORS             | List of operators                                                                             | test_plan, test_query, test_unique    |
+| OPERATORS             | List of operators                                                                             | test_query, test_unique               |
 | FILTERS               | List of lambda filters                                                                        | test_query                            |
 | INPUT_SOURCES         | List of input sources                                                                         | test_query                            |
 | INPUT_SHAPES          | List of input shapes                                                                          | test_query                            |
@@ -89,8 +86,9 @@ Full list of supported query parameters
 | RANGE                 | Limit number of results                                                                       | test_query                            |
 | RANDOM_SEED           | Seed for random number generator                                                              | test_query                            |
 | SAMPLE                | Percentage of results to sample                                                               | test_query                            |
-| TEST_ID               | Id of a test containing test parameters                                                       | test_single                           |
-| ID_FILE               | Path to a file containing test ids                                                            | test_ids                              |
+| TEST_ID               | Id of a single test to run containing all test parameters                                     | test_query                            |
+| ID_FILE               | Path to a file containing test ids instead of tests from test plan                            | test_query                            |
+| ID_FILES_IGNORE       | Paths to files containing test ids to be ignored                                              | test_query                            |
 
 Test configuration parameters
 
@@ -106,14 +104,14 @@ Usage examples
 Run all tests
 
 ```sh
-test_plan
+test_query
 ```
 
 Run all tests for few operators
 
 ```sh
 export OPERATORS=add,div
-test_plan
+test_query
 ```
 
 Run subset of tests based on query criteria
@@ -153,6 +151,5 @@ Kwarg is a mandatory or optional attribute of an operator. See framework (PyTorc
 Run single test based on a test id. Test id may be from a test plan or constructed custom by specifying custom values for kwargs and input_shapes.
 
 ```sh
-export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'
-test_single
+TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4' test_query
 ```
