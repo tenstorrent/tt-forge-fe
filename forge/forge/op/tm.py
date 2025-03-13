@@ -231,13 +231,14 @@ def Select(
         },
     ).get_tensor()
 
-
 def Pad(
     name: str,
     operandA: Tensor,
-    pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
+    pad: Tuple[int, ...],
+    pad_len: int,
     mode: str = "constant",
     channel_last: bool = False,
+    value: int = 0,
 ) -> Tensor:
     """
     TM
@@ -267,19 +268,94 @@ def Pad(
         "reflect",
     ], "Currently pad op only supports constant/replicate/reflect mode"
 
-    mode_index = {
-        "constant": 0,
-        "replicate": 1,
-        "reflect": 2,
-    }
+    # breakpoint()
+    rank = len(operandA.shape)
+    pad_len = len(pad)
+    if pad_len ==2:
+        forge_pad = [0]*(2*rank)
+        # breakpoint()
+        forge_pad[-pad_len:] = pad
+    elif pad_len == 4:
+        forge_pad = [0]*(2*rank)
+        forge_pad[-pad_len:] = pad
+    #(left,right,top,bottom)
+    # top,bottom -> height
+    # left,right -> width
 
-    attrs = list(pad) + [mode_index[mode], channel_last]
+    # left,right -> (left,right)
+    # breakpoint()
     return op(
         "pad",
         name,
         operandA,
-        attrs=attrs,
+        padding=forge_pad,
+        mode=mode,
+        channel_last=channel_last,
+        value = float(value),
+        pad_len = pad_len
     ).get_tensor()
+    # 1x96x56x56
+    # 1,96,54,54
+    # 
+# (0,0,0,0,0,0,0,0)
+# 025-03-12 17:15:43.963 | INFO     | MLIRCompiler    - Generated MLIR for node pad_0 with value %1 = "ttir.pad"(%arg0, %0) <{padding = array<i32: 0, 0, 0, 0, 1, 1, 0, 0>, value = 0.000000e+00 : f32}> {channel_last = false, mode = "constant", pad_len = 4 : si32} : (tensor<1x96x54x54xf32>, tensor<1x96x54x56xf32>) -> tensor<1x96x54x56xf32>
+# 2025-03-12 17:15:43.963 | INFO     | MLIRCompiler    - Skipping node Pad0.output_pad_0 as it is not a TTForge operation.
+# loc("pad_0"("forward":4294967295:5)): error: 'ttir.pad' op Output tensor shape (1,96,54,56) must match the inferred shape: (1,96,56,54)
+
+# 2025-03-12 17:24:47.251 | INFO     | MLIRCompiler    - Generated MLIR for node pad_0 with value %1 = "ttir.pad"(%arg0, %0) <{padding = array<i32: 0, 0, 0, 0, 0, 0, 1, 1>, value = 0.000000e+00 : f32}> {channel_last = false, mode = "constant", pad_len = 4 : si32} : (tensor<1x96x54x54xf32>, tensor<1x96x56x54xf32>) -> tensor<1x96x56x54xf32>
+# 2025-03-12 17:24:47.251 | INFO     | MLIRCompiler    - Skipping node Pad0.output_pad_0 as it is not a TTForge operation.
+# loc("pad_0"("forward":4294967295:5)): error: 'ttir.pad' op Output tensor shape (1,96,56,54) must match the inferred shape: (1,96,54,56)
+# loc("Pad0":0:0): error: module verification failed.
+
+# # (_,_,_,_,Top,Bottom,left,right)
+# def Pad(
+#     name: str,
+#     operandA: Tensor,
+#     pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
+#     mode: str = "constant",
+#     channel_last: bool = False,
+# ) -> Tensor:
+#     """
+#     TM
+
+#     Parameters
+#     ----------
+#     name: str
+#         Op name, unique to the module, or leave blank to autoset
+
+#     operandA: Tensor
+#         Input operand A
+
+#     pad: tuple
+#         Either (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom))
+
+#     Returns
+#     -------
+#     Tensor
+#         Forge tensor
+#     """
+#     assert (
+#         len(pad) == 2 or len(pad) == 4
+#     ), "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
+#     assert mode in [
+#         "constant",
+#         "replicate",
+#         "reflect",
+#     ], "Currently pad op only supports constant/replicate/reflect mode"
+
+#     mode_index = {
+#         "constant": 0,
+#         "replicate": 1,
+#         "reflect": 2,
+#     }
+
+#     attrs = list(pad) + [mode_index[mode], channel_last]
+#     return op(
+#         "pad",
+#         name,
+#         operandA,
+#         attrs=attrs,
+#     ).get_tensor()
 
 
 def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:

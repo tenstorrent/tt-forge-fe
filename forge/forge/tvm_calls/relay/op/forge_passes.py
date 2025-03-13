@@ -4694,33 +4694,33 @@ class DecomposeMeshgrid(DFPatternCallback):
         return tvm.relay.Tuple(broadcasted_grids)
 
 
-class ConvertBcastCastToRepeatCast(DFPatternCallback):
-    def __init__(self):
-        super().__init__(rewrite_once=True, require_type=True)
-        self.act = wildcard()
-        self.broadcast_to = is_op("broadcast_to")(self.act)
-        self.cast = is_op("cast")(self.broadcast_to)
-        self.pattern = self.cast
+# class ConvertBcastCastToRepeatCast(DFPatternCallback):
+#     def __init__(self):
+#         super().__init__(rewrite_once=True, require_type=True)
+#         self.act = wildcard()
+#         self.broadcast_to = is_op("broadcast_to")(self.act)
+#         self.cast = is_op("cast")(self.broadcast_to)
+#         self.pattern = self.cast
 
-    def callback(self, pre, post, node_map):
-        act = node_map[self.act][0]
-        b_c = node_map[self.pattern]
-        broadcast_to = node_map[self.broadcast_to][0]
-        cast = node_map[self.cast][0]
-        input_tensor = broadcast_to.args[0]
+#     def callback(self, pre, post, node_map):
+#         act = node_map[self.act][0]
+#         b_c = node_map[self.pattern]
+#         broadcast_to = node_map[self.broadcast_to][0]
+#         cast = node_map[self.cast][0]
+#         input_tensor = broadcast_to.args[0]
 
-        input_shape = input_tensor.checked_type.shape
-        bcst_shape = broadcast_to.checked_type.shape
-        reps = []
-        for i, dim in enumerate(bcst_shape):
-            if dim != input_shape[i]:
-                reps.append(dim // input_shape[i])
-            else:
-                reps.append(1)
-        repeated_data = tvm.relay.op.transform.tile(input_tensor, reps=reps)
-        casted_data = tvm.relay.op.cast(repeated_data, cast.attrs.dtype)
+#         input_shape = input_tensor.checked_type.shape
+#         bcst_shape = broadcast_to.checked_type.shape
+#         reps = []
+#         for i, dim in enumerate(bcst_shape):
+#             if dim != input_shape[i]:
+#                 reps.append(dim // input_shape[i])
+#             else:
+#                 reps.append(1)
+#         repeated_data = tvm.relay.op.transform.tile(input_tensor, reps=reps)
+#         casted_data = tvm.relay.op.cast(repeated_data, cast.attrs.dtype)
 
-        return casted_data
+#         return casted_data
 
 
 def _get_callback_name(callback):
@@ -4795,7 +4795,7 @@ def run_forge_compile_passes(
             DecomposeVariance(),
             ArgmaxAndMaxReconstruct(),
             ConvertArgmaxTakeToReduceMax(),
-            ConvertBcastCastToRepeatCast(),
+            # ConvertBcastCastToRepeatCast(),
             AddSqueezeForArgmax(),
             DecompEinsumWithWTranspose(),
             DecompWTranspose(),

@@ -23,7 +23,7 @@ from .convolution import Conv2d
 from .convolution import Conv2dTranspose
 from .pooling import MaxPool2d
 from .cast import Cast
-
+from .pad import Pad
 op_to_module_map = {
     "add": "eltwise_binary",
     "cast": Cast,
@@ -100,7 +100,7 @@ op_to_module_map = {
     "conv2d_prestride_weights": "tm",
     "pad_tile": "tm",
     "narrow": "tm",
-    "pad": "tm",
+    "pad": Pad,
     "unsqueeze": "tm",
     "squeeze": "tm",
     "pixel_shuffle": "tm",

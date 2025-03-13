@@ -57,6 +57,7 @@ enum class TargetType
     UI32Attr,
     I64Attr,
     I32Attr,
+    F32Attr,
     DenseI64ArrayAttr,
     DenseI32ArrayAttr,
 };
@@ -115,6 +116,8 @@ class AttributeMapper
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UI32Attr));
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
+        add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
+        add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
 
         // Add more default mappings here
     }
@@ -134,7 +137,7 @@ class MLIRGenerator
             mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
-        // Collect all the supported TTIR operations
+        // // Collect all the supported TTIR operations
         std::vector<std::string> supported_ops;
         std::transform(
             lowering_handler_map.begin(),
@@ -190,7 +193,7 @@ class MLIRGenerator
 
         rso.flush();
 
-        log_trace(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
+        log_info(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
 #endif
 
         return graphModule_;
@@ -229,7 +232,7 @@ class MLIRGenerator
             throw std::runtime_error("Variable " + node->name() + " already declared in the current scope.");
         }
 
-        log_trace(LogMLIRCompiler, "Declaring {} in the current scope.", node->name());
+        log_info(LogMLIRCompiler, "Declaring {} in the current scope.", node->name());
 
         symbolTable_[node->name()] = {value, node};
     }
@@ -254,6 +257,11 @@ class MLIRGenerator
                 case TargetType::DenseI32ArrayAttr:
                     return builder_.getDenseI32ArrayAttr(std::vector<int32_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
+                case TargetType::F32Attr:
+                    std::cerr << "Value->" << value << std::endl;
+                    std::cerr << "Current variant index: " << value.index() << std::endl;
+
+                    return builder_.getF32FloatAttr(static_cast<float>(std::get<float>(value)));
                 default:
                     // If type not handled, throw an exception
                     throw std::runtime_error("Unhandled target type conversion");
@@ -313,7 +321,7 @@ class MLIRGenerator
         // Add the graph inputs to the argument list.
         for (auto *input : graph->ordered_module_inputs())
         {
-            log_trace(LogMLIRCompiler, "Adding input {} to the argument list.", input->name());
+            log_info(LogMLIRCompiler, "Adding input {} to the argument list.", input->name());
 
             argument_nodes.push_back(input);
             argument_types.push_back(get_node_type(input));
@@ -322,7 +330,7 @@ class MLIRGenerator
         // Add the graph constants to the argument list.
         for (auto *constant : graph->get_constant_nodes())
         {
-            log_trace(LogMLIRCompiler, "Adding constant {} to the argument list.", constant->name());
+            log_info(LogMLIRCompiler, "Adding constant {} to the argument list.", constant->name());
 
             argument_nodes.push_back(constant);
             argument_types.push_back(get_node_type(constant));
@@ -335,7 +343,7 @@ class MLIRGenerator
         params.insert(params.end(), opt_params.begin(), opt_params.end());
         for (auto *parameter : params)
         {
-            log_trace(LogMLIRCompiler, "Adding parameter {} to the argument list.", parameter->name());
+            log_info(LogMLIRCompiler, "Adding parameter {} to the argument list.", parameter->name());
 
             argument_nodes.push_back(parameter);
             argument_types.push_back(get_node_type(parameter));
@@ -346,7 +354,7 @@ class MLIRGenerator
         auto output_nodes = graph->ordered_module_outputs();
         for (auto *output : output_nodes)
         {
-            log_trace(LogMLIRCompiler, "Adding output {} to the return list.", output->name());
+            log_info(LogMLIRCompiler, "Adding output {} to the return list.", output->name());
             returns.push_back(get_node_type(output));
         }
 
@@ -362,7 +370,7 @@ class MLIRGenerator
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
             func.setArgAttrs(i, named_attributes);
-            log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
+            log_info(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
 
         // Set the return value names.
@@ -372,7 +380,7 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(builder_.getNamedAttr("ttir.name", builder_.getStringAttr(output_node->name())));
             func.setResultAttrs(i, named_attributes);
-            log_trace(LogMLIRCompiler, "Set name {} for return value {}.", output_node->name(), i);
+            log_info(LogMLIRCompiler, "Set name {} for return value {}.", output_node->name(), i);
         }
 
         // Start the body of the function by creating an entry block.
@@ -399,16 +407,16 @@ class MLIRGenerator
             // Skip if the node isn't TTForge operation
             if (node->node_type() != tt::graphlib::NodeType::kPyOp)
             {
-                log_trace(LogMLIRCompiler, "Skipping node {} as it is not a TTForge operation.", node->name());
+                log_info(LogMLIRCompiler, "Skipping node {} as it is not a TTForge operation.", node->name());
                 continue;
             }
-            log_trace(LogMLIRCompiler, "Emitting MLIR for node {}", node->name());
+            log_info(LogMLIRCompiler, "Emitting MLIR for node {}", node->name());
 
             tt::graphlib::OpNode *op_node = node->as<tt::graphlib::OpNode>();
 
             // Emit MLIR for the TTForge operation node
             mlir::Value opValue = emit_mlir_tt_forge_operation(graph, op_node);
-            log_trace(
+            log_info(
                 LogMLIRCompiler,
                 "Generated MLIR for node {} with value {}",
                 node->name(),
@@ -434,7 +442,9 @@ class MLIRGenerator
         }
 
         // Call the handler to lower the TTForge op to MLIR
+        log_info(LogMLIRCompiler, "Before 1");
         mlir::Value opResult = (this->*(handler->second))(graph, op_node);
+        log_info(LogMLIRCompiler, "After 1");
 
         // This is the first time we are visiting this TTForge node during the traversal of the graph using topological
         // sort. Therefore, we need to declare the result of this operation so that we can refer to it later if needed.
@@ -446,6 +456,7 @@ class MLIRGenerator
     template <typename TTIROp>
     mlir::Value emit_mlir_ttforge_op(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
     {
+        log_info(LogMLIRCompiler, "Before 1");
         // Evaluate operation return type
         llvm::SmallVector<mlir::Type> return_types = get_mlir_type_range(op_node);
 
@@ -502,14 +513,14 @@ class MLIRGenerator
     {
         llvm::SmallVector<mlir::Value> operands;
 
-#ifdef DEBUG
+// #ifdef DEBUG
         // Log all values from symbolTable_
         log_trace(LogMLIRCompiler, "Logging all keys from symbolTable_");
         for (const auto &entry : symbolTable_)
         {
             log_trace(LogMLIRCompiler, "Key: {}", entry.first);
         }
-#endif
+// #endif
 
         for (auto operand : graph->data_operands(op_node))
         {
@@ -517,9 +528,11 @@ class MLIRGenerator
                 symbolTable_.find(operand->name()) != symbolTable_.end(),
                 "Operand " + operand->name() + " not found in symbol table.");
             operands.push_back(symbolTable_.at(operand->name()).first);
+            log_info(LogMLIRCompiler, "Pushing operands 1");
         }
 
         operands.push_back(emit_mlir_empty_tensor(graph, op_node));
+        log_info(LogMLIRCompiler, "Pushing operands 2 (emit_mlir_empty_tensor)");
         return operands;
     }
 
@@ -666,6 +679,7 @@ class MLIRGenerator
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
         lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
+        lowering_handler_map["pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
     }
 };
 

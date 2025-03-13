@@ -1448,6 +1448,12 @@ def populate_pad_args(graph, nid, compiler_cfg):
             f"{channel_last}",
         )
     )
+    args.append(
+        (
+            "pad_len",
+            f"{len(pad_width_final)}",
+        )
+    )
 
     return args
 
