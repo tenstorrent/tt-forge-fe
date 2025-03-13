@@ -104,7 +104,7 @@ def test_llama_prefill(
     batch_size = 1  # Batch size is always 1 for text generation.
 
     print("====================================================================")
-    print("| Resnet Benchmark Results:                                        |")
+    print("| Llama Benchmark Results:                                         |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")

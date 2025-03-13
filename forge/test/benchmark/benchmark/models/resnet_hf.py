@@ -108,7 +108,7 @@ def test_resnet_hf(
     num_layers = 50  # Number of layers in the model, in this case 50 layers
 
     print("====================================================================")
-    print("| Resnet Benchmark Results:                                         |")
+    print("| Resnet Benchmark Results:                                        |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")

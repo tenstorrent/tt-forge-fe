@@ -28,6 +28,7 @@ jobs:
         - /etc/udev/rules.d:/etc/udev/rules.d
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
     steps:
 
     - name: Fetch job id
@@ -79,6 +80,11 @@ jobs:
         pip install forge*.whl --force-reinstall
 
     - name: Run Perf Benchmark
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_HOME: /mnt/dockercache/huggingface
+        HF_HUB_DISABLE_PROGRESS_BARS: 1
+        FORGE_DISABLE_REPORTIFY_DUMP: 1
       shell: bash
       run: |
         source env/activate
