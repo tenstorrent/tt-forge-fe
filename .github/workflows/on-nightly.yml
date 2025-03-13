@@ -15,10 +15,23 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test_pass:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly'
+      test_group_cnt: 4
+      test_group_ids: '[1,2,3,4]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
   test_full_model:
     needs:
       - docker-build
       - build
+      - test_pass
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:

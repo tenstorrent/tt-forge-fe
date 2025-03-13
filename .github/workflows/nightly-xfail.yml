@@ -1,0 +1,32 @@
+name: "Nightly XFail"
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+        run_id:
+            description: 'Run id'
+            required: false
+            type: number
+  workflow_run:
+    workflows: # List workflow that we want to collect data for
+      - "On nightly"
+    types:
+      - completed
+
+jobs:
+  docker-build:
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  test_full_model:
+    needs:
+      - docker-build
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly'
+      test_group_cnt: 4
+      test_group_ids: '[1,2,3,4]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || 13823863706 }}

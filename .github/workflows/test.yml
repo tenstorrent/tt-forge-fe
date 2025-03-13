@@ -31,6 +31,10 @@ on:
         description: 'Operators to test (comma separated)'
         required: false
         type: string
+      run-id:
+        description: 'Run id'
+        required: false
+        type: number
 
 permissions:
   packages: write
@@ -103,6 +107,7 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
+        run-id: ${{ inputa.run_id }}
         name: forge-wheel
 
     - name: Install wheel
