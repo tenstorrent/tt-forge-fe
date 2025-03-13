@@ -33,11 +33,11 @@ class ExecutionStage(Enum):
     PASSED = 17
 
     @classmethod
-    def to_json(cls, value):
+    def to_str(cls, value):
         return value.name
 
     @classmethod
-    def from_json(cls, value):
+    def from_str(cls, value):
         return cls[value.upper()]
 
 
@@ -52,12 +52,12 @@ class Config:
 @dataclass
 class Tags:
     model_name: Optional[Union[List[str], str]] = None
-    op_name: str = ""
     bringup_status: str = ""
-    pcc: Optional[List[float]] = None
-    atol: Optional[List[float]] = None
+    pcc: Optional[float] = None
+    atol: Optional[float] = None
     execution_stage: str = ""
-    config: Optional[Config] = None
+    op_name: str = ""
+    op_params: Dict[str, Any] = field(default_factory=lambda: dict())
 
 
 @dataclass_json
@@ -66,6 +66,7 @@ class ForgePropertyStore:
     owner: str = "tt-forge-fe"
     group: str = ""
     tags: Optional[Tags] = None
+    config: Optional[Config] = None
 
 
 class ForgePropertyHandler:
@@ -211,31 +212,31 @@ class ForgePropertyHandler:
         """
         self.add("tags.op_name", op_name)
 
-    def record_pcc(self, pcc: List[float]):
+    def record_pcc(self, pcc: float):
         """
         Records the PCC metric in the tags.
 
         Args:
-            pcc (List[float]): A list of PCC values.
+            pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
         """
         self.add("tags.pcc", pcc)
 
-    def record_atol(self, atol: List[float]):
+    def record_atol(self, atol: float):
         """
         Records the atol (absolute tolerance) values in the tags.
 
         Args:
-            atol (List[float]): A list of atol values.
+            atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
         """
         self.add("tags.atol", atol)
 
-    def record_pcc_and_atol(self, pcc: List[float], atol: List[float]):
+    def record_pcc_and_atol(self, pcc: float, atol: float):
         """
         Records both PCC and atol values in the tags.
 
         Args:
-            pcc (List[float]): A list of PCC values.
-            atol (List[float]): A list of atol values.
+            pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
+            atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
         """
         self.record_pcc(pcc)
         self.record_atol(atol)
@@ -245,31 +246,42 @@ class ForgePropertyHandler:
         Records the execution depth (as bringup_status) in the tags.
 
         Args:
-            execution_depth (ExecutionDepth): The execution depth value, converted to JSON.
+            execution_depth (ExecutionDepth): The execution depth value.
         """
-        self.add("tags.bringup_status", ExecutionDepth.to_json(execution_depth))
+        self.add("tags.bringup_status", ExecutionDepth.to_str(execution_depth))
 
     def record_execution_stage(self, execution_stage: ExecutionStage):
         """
         Records the execution stage in the tags.
 
         Args:
-            execution_stage (ExecutionStage): The execution stage value, converted to JSON.
+            execution_stage (ExecutionStage): The execution stage value.
         """
-        self.add("tags.execution_stage", ExecutionStage.to_json(execution_stage))
+        self.add("tags.execution_stage", ExecutionStage.to_str(execution_stage))
+
+    def record_execution(self, execution_depth: ExecutionDepth, execution_stage: ExecutionStage):
+        """
+        Records the execution depth and stage in the tags.
+
+        Args:
+            execution_depth (ExecutionDepth): The execution depth value.
+            execution_stage (ExecutionStage): The execution stage value.
+        """
+        self.record_execution_depth(execution_depth)
+        self.record_execution_stage(execution_stage)
 
     def record_compiler_config(self, compiler_config: CompilerConfig):
         """
-        Records the compiler configuration under tags.config.compiler.
+        Records the compiler configuration under config.compiler.
 
         Args:
             compiler_config (CompilerConfig): The compiler configuration object.
         """
-        self.add("tags.config.compiler", compiler_config.to_dict())
+        self.add("config.compiler", compiler_config.to_dict())
 
     def record_verify_config(self, verify_config: VerifyConfig):
         """
-        Records the verify configuration under tags.config.verify.
+        Records the verify configuration under config.verify.
 
         Converts the verify configuration to a dictionary, and ensures that the value
         for the 'value_checker' key is also represented as a dictionary.
@@ -279,7 +291,7 @@ class ForgePropertyHandler:
         """
         verify_config = verify_config.to_dict()
         verify_config["value_checker"] = verify_config["value_checker"].__dict__
-        self.add("tags.config.verify", verify_config)
+        self.add("config.verify", verify_config)
 
     def to_dict(self):
         """

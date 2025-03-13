@@ -621,6 +621,7 @@ def compile_paddle_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -783,9 +784,7 @@ def duplicate_dequantize_nodes_in_onnx_graph(onnx_module):
         graph.node.remove(node)
 
 
-def compile_onnx_for_forge(
-    onnx_mod, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None
-):
+def compile_onnx_for_forge(onnx_mod, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None):
     import onnxruntime as ort
 
     # Set default num threads to 2, hangs on some hosts otherwise https://github.com/microsoft/onnxruntime/issues/10166
@@ -848,6 +847,7 @@ def compile_onnx_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     weight_names = [weight.name for weight in onnx_mod.graph.initializer]
@@ -926,6 +926,7 @@ def compile_tflite_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=m.hexdigest())
@@ -1047,6 +1048,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -1152,6 +1154,7 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)

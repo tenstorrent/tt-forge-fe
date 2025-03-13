@@ -239,8 +239,10 @@ def compile_main(
 
     if forge_property_handler is not None:
         forge_property_handler.record_compiler_config(compiler_cfg)
-        forge_property_handler.record_execution_depth(ExecutionDepth.FAILED_FE_COMPILATION)
-        forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.FAILED_FE_COMPILATION,
+            execution_stage=ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION,
+        )
 
     compile_context: CompileContext = CompileContext(
         modules=modules,

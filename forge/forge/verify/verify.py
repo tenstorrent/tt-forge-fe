@@ -354,12 +354,14 @@ def verify(
     fw_out = framework_model(*inputs)
 
     if forge_property_handler is not None:
-        forge_property_handler.record_execution_depth(ExecutionDepth.FAILED_RUNTIME)
-        forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.FAILED_RUNTIME, execution_stage=ExecutionStage.FAILED_TTNN_BINARY_EXECUTION
+        )
     co_out = compiled_model(*inputs)
     if forge_property_handler is not None:
-        forge_property_handler.record_execution_depth(ExecutionDepth.INCORRECT_RESULT)
-        forge_property_handler.record_execution_stage(ExecutionStage.FAILED_VERIFICATION)
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
+        )
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
@@ -396,8 +398,9 @@ def verify(
             verify_cfg.value_checker.check(fw, co)
 
     if forge_property_handler is not None:
-        forge_property_handler.record_execution_depth(ExecutionDepth.PASSED)
-        forge_property_handler.record_execution_stage(ExecutionStage.PASSED)
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.PASSED, execution_stage=ExecutionStage.PASSED
+        )
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

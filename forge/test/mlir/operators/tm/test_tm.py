@@ -22,7 +22,7 @@ from forge.verify.verify import verify
         ((1, 43, 25), [34]),
     ],
 )
-def test_multi_indexing(input_shape, sequence_lengths):
+def test_multi_indexing(forge_property_recorder, input_shape, sequence_lengths):
     class Multi_Indexing(torch.nn.Module):
         def __init__(self, sequence_lengths):
             super().__init__()
@@ -35,8 +35,10 @@ def test_multi_indexing(input_shape, sequence_lengths):
     inputs = [torch.randn(input_shape)]
     framework_model = Multi_Indexing(sequence_lengths)
     framework_model.eval()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    verify(inputs, framework_model, compiled_model)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -59,7 +61,7 @@ def test_multi_indexing(input_shape, sequence_lengths):
     ],
 )
 @pytest.mark.push
-def test_index(shape, dim, index):
+def test_index(forge_property_recorder, shape, dim, index):
     class Index(nn.Module):
         def __init__(self, index):
             super().__init__()
@@ -82,9 +84,11 @@ def test_index(shape, dim, index):
     inputs = [torch.rand(shape)]
 
     framework_model = Index(index)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -103,7 +107,7 @@ def test_index(shape, dim, index):
     ],
 )
 @pytest.mark.push
-def test_flatten(shape):
+def test_flatten(forge_property_recorder, shape):
     class Flatten(nn.Module):
         def __init__(self):
             super().__init__()
@@ -114,14 +118,16 @@ def test_flatten(shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Flatten()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
 @pytest.mark.push
-def test_cast(operand_and_cast_dtype):
+def test_cast(forge_property_recorder, operand_and_cast_dtype):
 
     operand_dtype = operand_and_cast_dtype[0]
     cast_dtype = operand_and_cast_dtype[1]
@@ -149,9 +155,11 @@ def test_cast(operand_and_cast_dtype):
     framework_model = Cast()
     framework_model.eval()
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -161,16 +169,18 @@ def test_cast(operand_and_cast_dtype):
     ],
 )
 @pytest.mark.push
-def test_layernorm(batch_size, num_channels, height, width):
+def test_layernorm(forge_property_recorder, batch_size, num_channels, height, width):
 
     # framework_model = nn.LayerNorm((num_channels, height, width)) # Support only normalization over last one dimension
     framework_model = nn.LayerNorm((width))
 
     inputs = [torch.rand(batch_size, num_channels, height, width)]
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 params = [
@@ -195,7 +205,7 @@ for param in params:
 
 @pytest.mark.parametrize("params, data_format", param_list)
 @pytest.mark.push
-def test_transpose(params, data_format):
+def test_transpose(forge_property_recorder, params, data_format):
     class Transpose(nn.Module):
         def __init__(self, dims):
             super().__init__()
@@ -208,9 +218,11 @@ def test_transpose(params, data_format):
     inputs = [torch.rand(input_shape, dtype=data_format)]  # Use data_format instead of hardcoded dtype
     # Initialize the model with data_formats
     framework_model = Transpose(dims).to(data_format)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -242,7 +254,7 @@ def test_transpose(params, data_format):
     ids=[str(i) for i in range(1, 23)],
 )
 @pytest.mark.push
-def test_reshape(source_and_target_shape):
+def test_reshape(forge_property_recorder, source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
 
     class Reshape(nn.Module):
@@ -255,9 +267,11 @@ def test_reshape(source_and_target_shape):
     inputs = [torch.rand(source_shape)]
 
     framework_model = Reshape()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -278,7 +292,7 @@ def test_reshape(source_and_target_shape):
     ],
 )
 @pytest.mark.push
-def test_squeeze(input_shape_and_dim):
+def test_squeeze(forge_property_recorder, input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
     if input_shape == [1, 12, 3200] or isinstance(dim, list) and len(dim) > 1 and all(d < 0 for d in dim):
@@ -294,9 +308,11 @@ def test_squeeze(input_shape_and_dim):
     inputs = [torch.rand(*input_shape)]
 
     framework_model = Squeeze()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.xfail(
@@ -310,7 +326,7 @@ def test_squeeze(input_shape_and_dim):
         pytest.param((1, 16, 256, 256), (1, 256, 256), "unsqueeze", id="unsqueeze"),
     ],
 )
-def test_operand_commute_clone(attn_weights_shape, attention_mask_shape, module_name):
+def test_operand_commute_clone(forge_property_recorder, attn_weights_shape, attention_mask_shape, module_name):
     """
     Tests commuting broadcast through squeeze and unsqueeze operations
     """
@@ -350,9 +366,11 @@ def test_operand_commute_clone(attn_weights_shape, attention_mask_shape, module_
 
     inputs = [attn_weights, attention_mask]
     framework_model = SqueezeOperandCommuteClone()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -367,7 +385,7 @@ def test_operand_commute_clone(attn_weights_shape, attention_mask_shape, module_
     ],
 )
 @pytest.mark.push
-def test_unsqueeze(input_shape_and_dim):
+def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
     if input_shape == [12, 8640]:
@@ -383,9 +401,11 @@ def test_unsqueeze(input_shape_and_dim):
     inputs = [torch.rand(*input_shape)]
 
     framework_model = Unsqueeze()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("dim", [-1, -2, -3], ids=["-1", "-2", "-3"])
@@ -394,7 +414,7 @@ def test_unsqueeze(input_shape_and_dim):
 @pytest.mark.parametrize("stride", [1, 2, 4, 8], ids=["1", "2", "4", "8"])
 @pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
 @pytest.mark.push
-def test_indexing(dim, start, stop, stride, shape):
+def test_indexing(forge_property_recorder, dim, start, stop, stride, shape):
     if len(shape) == 2 and dim == -3:
         pytest.skip("Skipping since indexing on dim=-3, 2D tensor doesn't make sense")
     if stop > shape[dim]:
@@ -410,9 +430,11 @@ def test_indexing(dim, start, stop, stride, shape):
     inputs = to_forge_tensors([torch.rand(*shape)])
 
     framework_model = ForgeIndexing(dim, start, stop, stride)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -434,7 +456,7 @@ def test_indexing(dim, start, stop, stride, shape):
     ],
 )
 @pytest.mark.push
-def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
+def test_adv_index_embedding_decompostion(forge_property_recorder, indices_shape, input_tensor_shape):
     class ForgeAdvIndex(forge.ForgeModule):
         def __init__(self, name):
             super().__init__(name)
@@ -449,13 +471,15 @@ def test_adv_index_embedding_decompostion(indices_shape, input_tensor_shape):
     pt_indices = torch.randint(input_tensor_shape[0], indices_shape).to(torch.int32)
     inputs = to_forge_tensors([pt_input_tensor, pt_indices])
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_reshape_pytorch():
+def test_reshape_pytorch(forge_property_recorder):
     class ReshapeTest(torch.nn.Module):
         def __init__(self):
             super().__init__()
@@ -470,13 +494,15 @@ def test_reshape_pytorch():
     inputs = [torch.rand(4, 49, 384), torch.rand(4, 49, 384)]
 
     framework_model = ReshapeTest()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_broadcast_pytorch():
+def test_broadcast_pytorch(forge_property_recorder):
     class BroadcastTest(torch.nn.Module):
         def __init__(self):
             super().__init__()
@@ -490,9 +516,11 @@ def test_broadcast_pytorch():
     inputs = [torch.rand(3, 64, 49, 3, 32)]
 
     framework_model = BroadcastTest()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -541,7 +569,7 @@ def test_broadcast_pytorch():
         ),
     ],
 )
-def test_stack(input_shapes, dim):
+def test_stack(forge_property_recorder, input_shapes, dim):
     class Stack(nn.Module):
         def __init__(self, dim):
             super().__init__()
@@ -554,9 +582,14 @@ def test_stack(input_shapes, dim):
 
     framework_model = Stack(dim)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name="stack_sanity")
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name="stack_sanity",
+        forge_property_handler=forge_property_recorder,
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -580,7 +613,7 @@ def test_stack(input_shapes, dim):
     ],
 )
 @pytest.mark.push
-def test_repeat(input_shape, repeats):
+def test_repeat(forge_property_recorder, input_shape, repeats):
     class Repeat(nn.Module):
         def __init__(self, repeats):
             super().__init__()
@@ -592,13 +625,15 @@ def test_repeat(input_shape, repeats):
     inputs = [torch.rand(input_shape)]
 
     framework_model = Repeat(repeats=repeats)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_expand():
+def test_expand(forge_property_recorder):
     class Expand(nn.Module):
         def __init__(self, expand_shape):
             super().__init__()
@@ -610,9 +645,11 @@ def test_expand():
     inputs = [torch.rand(1, 2, 1, 4, 4)]
 
     framework_model = Expand(expand_shape=(1, 2, 4, 4, 4))
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -642,7 +679,7 @@ def test_expand():
     ],
 )
 @pytest.mark.push
-def test_repeat_interleave(shape, dim, repeats):
+def test_repeat_interleave(forge_property_recorder, shape, dim, repeats):
     class RepeatInterleave(nn.Module):
         def __init__(self, dim, repeats):
             super().__init__()
@@ -658,9 +695,11 @@ def test_repeat_interleave(shape, dim, repeats):
     inputs = [torch.rand(shape)]
 
     framework_model = RepeatInterleave(dim=dim, repeats=repeats)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
@@ -668,7 +707,7 @@ def test_repeat_interleave(shape, dim, repeats):
 @pytest.mark.parametrize("begin", [0, 16])
 @pytest.mark.parametrize("length", [4, 16])
 @pytest.mark.parametrize("stride", [16, 32])
-def test_select(shape, dim, begin, length, stride):
+def test_select(forge_property_recorder, shape, dim, begin, length, stride):
     if stride <= begin + length:
         pytest.skip("Skipping since stride <= begin + length")
 
@@ -682,6 +721,8 @@ def test_select(shape, dim, begin, length, stride):
 
     inputs = to_forge_tensors([torch.rand(*shape)])
     framework_model = Select()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

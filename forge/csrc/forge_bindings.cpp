@@ -180,7 +180,7 @@ PYBIND11_MODULE(_C, m)
         .value("PASSED", tt::property::ExecutionDepth::PASSED)
         .export_values()
         .def(
-            "to_json",
+            "to_str",
             [](tt::property::ExecutionDepth execution_depth)
             {
                 std::stringstream ss;
@@ -188,7 +188,7 @@ PYBIND11_MODULE(_C, m)
                 return ss.str();
             })
         .def(
-            "from_json",
+            "from_str",
             [](std::string const &encoded)
             {
                 static std::unordered_map<std::string, tt::property::ExecutionDepth> decode = {
