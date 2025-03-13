@@ -15,7 +15,7 @@ from forge.verify.verify import verify
 @pytest.mark.parametrize("outer_dim_y", [7, 32, 41, 64])
 @pytest.mark.parametrize("inner_dim", [1, 7, 32, 41, 64])
 @pytest.mark.push
-def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
+def test_matmul(forge_property_recorder, batch_size, outer_dim_x, outer_dim_y, inner_dim):
     class Matmul(nn.Module):
         def __init__(self):
             super().__init__()
@@ -29,6 +29,8 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     ]
 
     framework_model = Matmul()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

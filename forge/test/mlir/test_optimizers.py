@@ -64,7 +64,7 @@ def train_and_compare_optimizers(
     ],
 )
 @pytest.mark.push
-def test_sgd(shape):
+def test_sgd(forge_property_recorder, shape):
     torch.manual_seed(0)
     num_epochs = 10
     # Large learning rate to propagate possible errors faster
@@ -80,7 +80,11 @@ def test_sgd(shape):
     golden_optimizer = torch.optim.SGD(golden_model.parameters(), lr=learning_rate)
 
     tt_model = forge.compile(
-        framework_model, sample_inputs=[torch.randn(batch_size, shape[0])], optimizer=tt_optimizer, training=True
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+        forge_property_handler=forge_property_recorder,
     )
 
     loss_fn = nn.MSELoss()
@@ -121,7 +125,7 @@ def test_sgd(shape):
     ],
 )
 @pytest.mark.push
-def test_adam(shape, betas, weight_decay):
+def test_adam(forge_property_recorder, shape, betas, weight_decay):
     torch.manual_seed(0)
     num_epochs = 10
     # Large learning rate to propagate possible errors faster
@@ -147,7 +151,11 @@ def test_adam(shape, betas, weight_decay):
     )
 
     tt_model = forge.compile(
-        framework_model, sample_inputs=[torch.randn(batch_size, shape[0])], optimizer=tt_optimizer, training=True
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+        forge_property_handler=forge_property_recorder,
     )
 
     loss_fn = nn.MSELoss()

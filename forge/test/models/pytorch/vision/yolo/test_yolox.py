@@ -46,7 +46,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_yolox_pytorch(record_forge_property, variant):
+def test_yolox_pytorch(forge_property_recorder, variant):
     if variant != "yolox_nano":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -56,8 +56,8 @@ def test_yolox_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # prepare model
     weight_name = f"{variant}.pth"
@@ -100,10 +100,12 @@ def test_yolox_pytorch(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # remove downloaded weights,image
     os.remove(weight_name)

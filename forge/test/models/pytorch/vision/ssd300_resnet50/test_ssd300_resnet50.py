@@ -17,15 +17,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.xfail(
     reason="RuntimeError: Tensor 0 - stride mismatch: expected [270000, 90000, 300, 1], got [3, 1, 900, 3]"
 )
-def test_pytorch_ssd300_resnet50(record_forge_property):
+def test_pytorch_ssd300_resnet50(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="ssd300_resnet50", source=Source.TORCH_HUB, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2 : prepare model
     framework_model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
@@ -49,7 +49,9 @@ def test_pytorch_ssd300_resnet50(record_forge_property):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -13,7 +13,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["squeezebert/squeezebert-mnli"])
-def test_squeezebert_sequence_classification_pytorch(record_forge_property, variant):
+def test_squeezebert_sequence_classification_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -24,8 +24,8 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property, vari
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -46,7 +46,9 @@ def test_squeezebert_sequence_classification_pytorch(record_forge_property, vari
     inputs = [input_tokens]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

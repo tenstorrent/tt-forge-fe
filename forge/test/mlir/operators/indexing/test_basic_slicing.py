@@ -23,7 +23,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_slicing(input_tensor_slice):
+def test_slicing(forge_property_recorder, input_tensor_slice):
     input_tensor, slicing = input_tensor_slice
 
     class SlicingModule(nn.Module):
@@ -39,10 +39,10 @@ def test_slicing(input_tensor_slice):
     inputs = [input_tensor]
 
     framework_model = SlicingModule(slicing)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -89,7 +89,7 @@ def test_slicing(input_tensor_slice):
     ],
 )
 @pytest.mark.push
-def test_multidimensional_slicing(input_tensor_slicing):
+def test_multidimensional_slicing(forge_property_recorder, input_tensor_slicing):
     input_tensor, slicing = input_tensor_slicing
 
     class SlicingModule(torch.nn.Module):
@@ -104,7 +104,7 @@ def test_multidimensional_slicing(input_tensor_slicing):
     inputs = [input_tensor]
 
     framework_model = SlicingModule(slicing)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

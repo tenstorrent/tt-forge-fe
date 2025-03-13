@@ -34,7 +34,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_masked_select(input_tensor, mask):
+def test_masked_select(forge_property_recorder, input_tensor, mask):
     class MaskedSelectModule(torch.nn.Module):
         def __init__(self, mask):
             super().__init__()
@@ -48,10 +48,10 @@ def test_masked_select(input_tensor, mask):
     inputs = [input_tensor]
 
     framework_model = MaskedSelectModule(mask)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Verify outputs
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -79,7 +79,7 @@ def test_masked_select(input_tensor, mask):
     ],
 )
 @pytest.mark.push
-def test_masked_fill(input_tensor, mask, value):
+def test_masked_fill(forge_property_recorder, input_tensor, mask, value):
     class MaskedFillModule(torch.nn.Module):
         def __init__(self, mask, value):
             super().__init__()
@@ -94,7 +94,7 @@ def test_masked_fill(input_tensor, mask, value):
     inputs = [input_tensor]
 
     framework_model = MaskedFillModule(mask, value)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Verify outputs
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

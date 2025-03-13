@@ -33,7 +33,7 @@ class Wrapper(torch.nn.Module):
         ),
     ],
 )
-def test_speecht5_tts(record_forge_property, variant):
+def test_speecht5_tts(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -45,8 +45,8 @@ def test_speecht5_tts(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and Processer
     processor = download_model(SpeechT5Processor.from_pretrained, variant)
@@ -60,7 +60,9 @@ def test_speecht5_tts(record_forge_property, variant):
     inputs = [model_inputs["input_ids"], model_inputs["attention_mask"], decoder_input_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

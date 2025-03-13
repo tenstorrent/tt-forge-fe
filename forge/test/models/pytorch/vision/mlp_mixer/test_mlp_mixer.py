@@ -48,7 +48,7 @@ varaints = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints)
-def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
+def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
     if variant not in ["mixer_b16_224", "mixer_b16_224.goog_in21k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -62,8 +62,8 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=framework_model)
@@ -82,17 +82,19 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail(
     reason="[Optimzation Graph Passes][Shape Calculation] AssertionError: Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: [1, 512, 1, 1024] vs [1, 1024, 512, 1]"
 )
-def test_mlp_mixer_pytorch(record_forge_property):
+def test_mlp_mixer_pytorch(forge_property_recorder):
 
     # Build Module Name
     module_name = build_module_name(
@@ -103,8 +105,8 @@ def test_mlp_mixer_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     framework_model = MLPMixer(
@@ -120,7 +122,9 @@ def test_mlp_mixer_pytorch(record_forge_property):
     inputs = [torch.randn(1, 3, 256, 256)]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

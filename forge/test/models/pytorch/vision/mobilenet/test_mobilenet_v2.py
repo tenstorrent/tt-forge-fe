@@ -31,7 +31,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.push
-def test_mobilenetv2_basic(record_forge_property):
+def test_mobilenetv2_basic(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -42,17 +42,19 @@ def test_mobilenetv2_basic(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v2")
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)
@@ -76,7 +78,7 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.35_96"])
-def test_mobilenetv2_96(record_forge_property, variant):
+def test_mobilenetv2_96(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Build Module Name
@@ -89,16 +91,18 @@ def test_mobilenetv2_96(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
@@ -116,7 +120,7 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.75_160"])
-def test_mobilenetv2_160(record_forge_property, variant):
+def test_mobilenetv2_160(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Build Module Name
@@ -129,16 +133,18 @@ def test_mobilenetv2_160(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
@@ -158,7 +164,7 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_1.0_224"])
-def test_mobilenetv2_224(record_forge_property, variant):
+def test_mobilenetv2_224(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Build Module Name
@@ -171,16 +177,18 @@ def test_mobilenetv2_224(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
@@ -209,7 +217,7 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["mobilenetv2_100"])
-def test_mobilenetv2_timm(record_forge_property, variant):
+def test_mobilenetv2_timm(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -222,16 +230,18 @@ def test_mobilenetv2_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
@@ -267,7 +277,7 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_mobilenetv2_deeplabv3(record_forge_property, variant):
+def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -280,16 +290,18 @@ def test_mobilenetv2_deeplabv3(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants_with_weights = {
@@ -302,7 +314,7 @@ variants_with_weights = {
     reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
 )
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_mobilenetv2_torchvision(record_forge_property, variant):
+def test_mobilenetv2_torchvision(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -314,15 +326,17 @@ def test_mobilenetv2_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

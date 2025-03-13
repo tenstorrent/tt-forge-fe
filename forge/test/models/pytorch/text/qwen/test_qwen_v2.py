@@ -31,7 +31,7 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_qwen_clm(record_forge_property, variant):
+def test_qwen_clm(forge_property_recorder, variant):
     if variant != "Qwen/Qwen2.5-0.5B":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -41,8 +41,8 @@ def test_qwen_clm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
@@ -61,15 +61,17 @@ def test_qwen_clm(record_forge_property, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen2-7B"])
-def test_qwen2_token_classification(record_forge_property, variant):
+def test_qwen2_token_classification(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Build Module Name
@@ -82,8 +84,8 @@ def test_qwen2_token_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     framework_model = Qwen2ForTokenClassification.from_pretrained(variant)
@@ -97,7 +99,9 @@ def test_qwen2_token_classification(record_forge_property, variant):
     inputs = [model_inputs["input_ids"], model_inputs["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

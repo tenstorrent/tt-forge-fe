@@ -38,7 +38,7 @@ class BartWrapper(torch.nn.Module):
         ),
     ],
 )
-def test_pt_bart_classifier(record_forge_property, variant):
+def test_pt_bart_classifier(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -49,8 +49,8 @@ def test_pt_bart_classifier(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)
@@ -76,7 +76,9 @@ def test_pt_bart_classifier(record_forge_property, variant):
     framework_model = BartWrapper(model.model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

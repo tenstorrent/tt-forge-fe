@@ -16,7 +16,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
+def test_mobilenet_v1_ssd_pytorch_1x1(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -27,8 +27,8 @@ def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"
@@ -45,7 +45,9 @@ def test_mobilenet_v1_ssd_pytorch_1x1(record_forge_property):
     inputs = [torch.rand(input_shape)]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

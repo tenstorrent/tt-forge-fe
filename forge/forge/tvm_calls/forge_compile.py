@@ -622,6 +622,7 @@ def compile_paddle_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -850,6 +851,7 @@ def compile_onnx_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     weight_names = [weight.name for weight in onnx_mod.graph.initializer]
@@ -929,6 +931,7 @@ def compile_tflite_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=m.hexdigest())
@@ -1050,6 +1053,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -1155,6 +1159,7 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
+        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)

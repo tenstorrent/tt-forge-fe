@@ -14,7 +14,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
-def test_regnet(record_forge_property, variant):
+def test_regnet(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -25,8 +25,8 @@ def test_regnet(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load RegNet model
     framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040", return_dict=False)
@@ -36,15 +36,17 @@ def test_regnet(record_forge_property, variant):
     inputs = preprocess_input_data(image_url, variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
-def test_regnet_img_classification(record_forge_property, variant):
+def test_regnet_img_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -57,8 +59,8 @@ def test_regnet_img_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")
@@ -68,10 +70,12 @@ def test_regnet_img_classification(record_forge_property, variant):
     inputs = preprocess_input_data(image_url, variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants_with_weights = {
@@ -118,7 +122,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_regnet_torchvision(record_forge_property, variant):
+def test_regnet_torchvision(forge_property_recorder, variant):
 
     if variant != "regnet_y_400mf":
         pytest.skip("Skipping this variant; only testing the small variant(regnet_y_400mf) for now.")
@@ -133,15 +137,17 @@ def test_regnet_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

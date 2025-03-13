@@ -47,7 +47,7 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_openpose_basic(record_forge_property, variant):
+def test_openpose_basic(forge_property_recorder, variant):
     if variant != "body_basic":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -61,18 +61,20 @@ def test_openpose_basic(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_openpose_posdet_osmr_pytorch(variant):
@@ -96,21 +98,23 @@ variants = [
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_openpose_osmr(record_forge_property, variant):
+def test_openpose_osmr(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,
     )
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
