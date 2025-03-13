@@ -396,8 +396,7 @@ def test_avgpool2d_decompose_to_conv2d(shape, padding):
         pytest.param(
             (1, 2, 1, 2),
             marks=pytest.mark.xfail(
-                reason="TTNN only supports padding height/width attributes. Thus, padding_top "
-                "must equal padding_bottom for the op to execute as expected."
+                reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - Pad"
             ),
         ),
     ],
@@ -413,13 +412,6 @@ def test_conv2d_with_padding(shape, padding):
         def forward(self, x):
             x = nn.functional.pad(x, self.padding, mode="constant", value=0)
             return self.conv(x)
-
-    pad_top, pad_bottom, pad_left, pad_right = padding
-    if pad_top != pad_bottom or pad_left != pad_right:
-        pytest.xfail(
-            "TTNN only supports padding height/width attributes. Thus, padding_top "
-            "must equal padding_bottom for the op to execute as expected."
-        )
 
     inputs = [torch.rand(shape)]
 

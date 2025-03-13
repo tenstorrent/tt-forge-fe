@@ -186,12 +186,11 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         pad_mode = pad.attrs.pad_mode
 
-        if pad_mode == "constant":
-            padding = [top_pad, left_pad, bottom_pad, right_pad]
-
-        if pad_mode == "reflect":
-            act = tvm.relay.op.nn.pad(act, pad_width, pad_mode="reflect")
+        if top_pad != bottom_pad or left_pad != right_pad:
+            act = tvm.relay.op.nn.pad(act, pad_width, pad_mode=pad_mode)
             padding = [0, 0, 0, 0]
+        else:
+            padding = [top_pad, left_pad, bottom_pad, right_pad]
 
         op_attrs = {**conv_pool.attrs}
         op_attrs["padding"] = padding
