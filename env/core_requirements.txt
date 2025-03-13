@@ -51,3 +51,5 @@ openpyxl==3.1.5
 GitPython==3.1.44
 kornia==0.8.0
 mlp-mixer-pytorch==0.2.0
+ase=3.24.0
+hippynn=0.0.3
