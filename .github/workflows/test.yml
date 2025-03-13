@@ -108,7 +108,7 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
-        run-id: ${{ inputa.run_id }}
+        run-id: ${{ inputs.run_id }}
         name: forge-wheel
 
     - name: Install wheel
