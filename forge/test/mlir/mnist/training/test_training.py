@@ -13,6 +13,8 @@ import forge
 from forge.op.loss import CrossEntropyLoss, L1Loss
 from forge.tensor import to_forge_tensors
 from forge.verify import compare_with_golden, verify, VerifyConfig, AutomaticValueChecker
+from forge.verify.config import DepricatedVerifyConfig
+from forge.config import CompileDepth
 from ..utils import *
 from test.mlir.utils import *
 
@@ -564,8 +566,11 @@ def test_e2e_device():
     framework_loss = torch.nn.CrossEntropyLoss()
     tt_optimizer = forge.optimizers.SGD(learning_rate=learning_rate)
 
+    verify_cfg = DepricatedVerifyConfig()
+    verify_cfg.stages_for_intermediate_verification = {CompileDepth.POST_AUTOGRAD_PASS}
+    verify_cfg.enable_op_level_comparision = True
     tt_model = forge.compile(
-        framework_model, sample_inputs=[torch.rand(batch_size, 784)], optimizer=tt_optimizer, training=True
+        framework_model, sample_inputs=[torch.rand(batch_size, 784)], optimizer=tt_optimizer, training=True, verify_cfg=verify_cfg
     )
 
     loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]

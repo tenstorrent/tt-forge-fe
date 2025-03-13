@@ -25,33 +25,24 @@ from forge.verify.compare import compare_tensor_to_golden
 from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
 
 
-def _generate_random_losses(outputs, is_forge):
+def _generate_random_losses(outputs):
     losses = []
     for out in outputs:
         if out.requires_grad:
             shape = list(out.shape.get_pytorch_shape())
-            if is_forge:
-                while len(shape) < 4:
-                    shape.insert(0, 1)
-                while len(shape) > 4:
-                    shape.pop(0)
-
-                shape[-1] = align_up_tile(shape[-1])
-                shape[-2] = align_up_tile(shape[-2])
-
             losses.append(torch.rand(shape, dtype=out.pt_data_format))
     return losses
 
 
-def _run_pytorch_backward(outputs, device, losses):
+def _run_pytorch_backward(outputs, losses):
     retain_graph = True
     for i, o in enumerate(outputs):
         if o.requires_grad:
-            if device.loss_module is None:
-                loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
-                o.value().backward(loss, retain_graph=retain_graph)
-            else:
-                o.value().backward(retain_graph=True)  # this is loss
+            # if device.loss_module is None:
+            loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
+            o.value().backward(loss, retain_graph=retain_graph)
+            # else:
+            #     o.value().backward(retain_graph=True)  # this is loss
 
 
 def get_intermediate_tensors(
@@ -87,6 +78,7 @@ def do_verify(
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
+    optimizer = None
 ):
     """
     Verify graph vs. pytorch golden
@@ -117,11 +109,9 @@ def do_verify(
             ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
-        raise RuntimeError("Verification of training is not supported yet.")
-        if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_forge)
-        elif losses is None:
-            losses = []
+        # raise RuntimeError("Verification of training is not supported yet.")
+        if losses is None:
+            losses = _generate_random_losses(outputs)
 
         # retain intermediate gradients for verification
         for t in intermediate_golden_tensors.values():
@@ -136,20 +126,20 @@ def do_verify(
                 run_backward = True
                 break
         if run_backward:
-            _run_pytorch_backward(outputs, device, losses)
+            _run_pytorch_backward(outputs, losses)
 
         pcc = 0.0 if verify_cfg.pcc is None else verify_cfg.pcc
         trace_outputs, parameter_to_gradients, bwd_gradients, parameter_to_updated_parameter = pygraph.eval(
             graph,
             torch_inputs,
             parameters,
-            tt_device=device,
             relative_atol=verify_cfg.relative_atol,
             pcc=pcc,
             intermediate_golden_tensors=intermediate_golden_tensors,
             losses=losses,
             targets=torch_targets,
             dump_tensors_path=verify_cfg.dump_tensors_path,
+            optimizer=optimizer,
         )
 
         # Verify forward pass results
