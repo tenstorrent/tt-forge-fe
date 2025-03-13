@@ -168,6 +168,9 @@ class Conv2DParams:
     bias: bool = True
     padding_mode: str = "zeros"
 
+    max_kernel_height = 100
+    max_kernel_width = 100
+
     @classmethod
     def get_kernel_param(cls, rng, H_in, W_in, k_min_h = 1, k_min_w = 1, odd: bool = False):
         k_min_h = min(k_min_h, H_in)
@@ -230,14 +233,22 @@ class Conv2DParams:
         else:
             raise ValueError("Invalid mode. Choose from 'standard', 'depthwise', or 'grouped'.")
     
+    @classmethod
+    def find_k_d(cls, k_eff):
+        results = []
+        if k_eff > 100:
+            k_eff = 100
+        for k in range(1, k_eff + 1):  # Trying values from 1 to k_eff
+            for d in range(2, k_eff + 1):
+                if k + (k - 1) * (d - 1) == k_eff:
+                    results.append((k, d))
+        return results
 
 class TestParamsData:
 
     __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
     test_plan: TestPlan = None 
-    max_kernel_height = 100
-    max_kernel_width = 100
 
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
@@ -262,91 +273,64 @@ class TestParamsData:
     def generate_kwargs_no_zero_padding_unit_strides(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
         conv2DParams = Conv2DParams(
             in_channels=C_in,
-            out_channels=out_channels,
+            out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=Conv2DParams.get_kernel_param(rng, H_in, W_in)
         )
         # create kwargs
-        kwargs = conv2DParams.__dict__
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
     
     @classmethod
     def generate_kwargs_zero_padding_unit_strides(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = 1 # default
-        padding = rng.randint(1, 4)
-        dilation = 1 # default
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels=C_in,
+            out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size=Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            padding=rng.randint(1, 4),
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
     
     @classmethod
     def generate_kwargs_same_output_as_input(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # Half (same) padding
         # o = (i - k) + 2p + 1 = i - k + 2p + 1
         # o = i 
         # => -k + 2p + 1 = 0
         # => p = (k - 1) / 2, k <> 1
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in, k_min_h=2, k_min_w=2, odd=True)
+        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in, k_min_h=2, k_min_w=2, odd=True)
         if(kernel_size[0] == 1 or kernel_size[1] == 1):
             return []
-        stride = 1 # default
         padding_h = ((kernel_size[0] - 1) if (kernel_size[0] - 1) > 0 else 1) // 2
         padding_w = ((kernel_size[1] - 1) if (kernel_size[1] - 1) > 0 else 1) // 2
         padding = (padding_h, padding_w)
-        dilation = 1 # default
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = kernel_size,
+            padding = padding
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
     
     @classmethod
     def generate_kwargs_output_bigger_then_input(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # Full padding
         # o = (i - k) + 2p + 1 = i - k + 2p + 1
         # p = k − 1
@@ -354,107 +338,65 @@ class TestParamsData:
         # => o = i + k - 1
         # o > i, k <> 1
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in, k_min_h=2, k_min_w=2)
+        kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in, k_min_h=2, k_min_w=2)
         if(kernel_size[0] == 1 and kernel_size[1] == 1):
             return []
-        stride = 1 # default
         padding_h = kernel_size[0] - 1
         padding_w = kernel_size[1] - 1
         padding = (padding_h, padding_w)
-        dilation = 1 # default
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = kernel_size,
+            padding = padding
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
     @classmethod
     def generate_kwargs_no_zero_padding_no_unit_strides(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = cls.get_non_unit_stride_param(rng, H_in, W_in)
-        padding = 0 # default
-        dilation = 1 # default
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            stride = Conv2DParams.get_non_unit_stride_param(rng, H_in, W_in)
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
     @classmethod
     def generate_kwargs_zero_padding_no_unit_strides(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = cls.get_non_unit_stride_param(rng, H_in, W_in)
-        padding = rng.randint(1, 4)
-        dilation = 1 # default
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            stride = Conv2DParams.get_non_unit_stride_param(rng, H_in, W_in),
+            padding = rng.randint(1, 4)
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
     @classmethod
     def generate_kwargs_all_type_padding_unit_strides(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = 1 # default
         padding_list =[]
         padding_list.append(rng.randint(1, 15))
         padding_list.append("valid")
         padding_list.append("same")
-        dilation = 1 # default
-        groups = 1 # default
-        bias = True #default
         padding_mode_list = [
             "zeros", # already tested in previous cases but we test it again because of valid and same padding
             "reflect",
@@ -462,45 +404,29 @@ class TestParamsData:
             "circular"
         ]
         # create kwargs
+        kwarg_list = []
         for padding in padding_list:
             for padding_mode in padding_mode_list:
-                kwargs = {
-                    "in_channels": C_in,
-                    "out_channels": out_channels,
-                    "kernel_size": kernel_size,
-                    "stride": stride,
-                    "padding": padding,
-                    "dilation": dilation,
-                    "groups": groups,
-                    "bias": bias,
-                    "padding_mode": padding_mode,
-                }
-                kwarg_list.append(kwargs)
+                conv2DParams = Conv2DParams(
+                    in_channels = C_in,
+                    out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+                    kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in),
+                    padding=padding,
+                    padding_mode=padding_mode
+                )
+                kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
-    
-    @classmethod
-    def find_k_d(cls, k_eff):
-        results = []
-        if k_eff > 100:
-            k_eff = 100
-        for k in range(1, k_eff + 1):  # Trying values from 1 to k_eff
-            for d in range(2, k_eff + 1):
-                if k + (k - 1) * (d - 1) == k_eff:
-                    results.append((k, d))
-        return results
     
     @classmethod
     def generate_kwargs_no_zero_padding_unit_strides_dilation(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
         # k_eff = k + (k − 1)(d − 1).
-        out_channels = rng.randint(1, C_in + 10)
         k_eff_h = rng.randint(H_in//2 if H_in//2 > 0 else 1, H_in)
         k_eff_w = rng.randint(W_in//2 if W_in//2 > 0 else 1, W_in)
-        possible_k_d_h = cls.find_k_d(k_eff_h)
-        possible_k_d_w = cls.find_k_d(k_eff_w)
+        possible_k_d_h = Conv2DParams.find_k_d(k_eff_h)
+        possible_k_d_w = Conv2DParams.find_k_d(k_eff_w)
         if not possible_k_d_h or not possible_k_d_w:
             return []
         k_d_h = rng.choice(possible_k_d_h)
@@ -511,38 +437,27 @@ class TestParamsData:
         dilation_h = k_d_h[1]
         dilation_w = k_d_w[1]
         dilation = (dilation_h, dilation_w)
-        stride = 1 # default
-        padding = 0 # default
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = kernel_size,
+            dilation=dilation
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
     
     @classmethod
     def generate_kwargs_zero_padding_unit_strides_dilation(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
         # k_eff = k + (k − 1)(d − 1).
-        out_channels = rng.randint(1, C_in + 10)
         k_eff_h = rng.randint(H_in//2 if H_in//2 > 0 else 1, H_in)
         k_eff_w = rng.randint(W_in//2 if W_in//2 > 0 else 1, W_in)
-        possible_k_d_h = cls.find_k_d(k_eff_h)
-        possible_k_d_w = cls.find_k_d(k_eff_w)
+        possible_k_d_h = Conv2DParams.find_k_d(k_eff_h)
+        possible_k_d_w = Conv2DParams.find_k_d(k_eff_w)
         if not possible_k_d_h or not possible_k_d_w:
             return []
         k_d_h = rng.choice(possible_k_d_h)
@@ -553,38 +468,28 @@ class TestParamsData:
         dilation_h = k_d_h[1]
         dilation_w = k_d_w[1]
         dilation = (dilation_h, dilation_w)
-        stride = 1 # default
-        padding = rng.randint(1, 4)
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = kernel_size,
+            dilation=dilation,
+            padding = rng.randint(1, 4)
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
     
     @classmethod
     def generate_kwargs_zero_padding_no_unit_strides_dilaiton(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
         # k_eff = k + (k − 1)(d − 1).
-        out_channels = rng.randint(1, C_in + 10)
         k_eff_h = rng.randint(H_in//2 if H_in//2 > 0 else 1, H_in)
         k_eff_w = rng.randint(W_in//2 if W_in//2 > 0 else 1, W_in)
-        possible_k_d_h = cls.find_k_d(k_eff_h)
-        possible_k_d_w = cls.find_k_d(k_eff_w)
+        possible_k_d_h = Conv2DParams.find_k_d(k_eff_h)
+        possible_k_d_w = Conv2DParams.find_k_d(k_eff_w)
         if not possible_k_d_h or not possible_k_d_w:
             return []
         k_d_h = rng.choice(possible_k_d_h)
@@ -595,123 +500,74 @@ class TestParamsData:
         dilation_h = k_d_h[1]
         dilation_w = k_d_w[1]
         dilation = (dilation_h, dilation_w)
-        stride = cls.get_non_unit_stride_param(rng, H_in, W_in)
-        padding = rng.randint(1, 4)
-        groups = 1 # default
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = kernel_size,
+            dilation=dilation,
+            stride = cls.get_non_unit_stride_param(rng, H_in, W_in),
+            padding = rng.randint(1, 4)
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
     @classmethod
     def generate_kwargs_no_zero_padding_unit_strides_no_bias(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
         N, C_in, H_in, W_in = test_vector.input_shape
-        kwarg_list = []
         # prepare params
-        out_channels = rng.randint(1, C_in + 10)  # it can be less, equal or greater than in_channels
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = 1 # default
-        padding = 0 # default
-        dilation = 1 # default
-        groups = 1 # default
-        bias = False
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
+            kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            bias=False,
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": out_channels,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
     @classmethod
     def generate_kwargs_groups_depthwise(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
-        N = test_vector.input_shape[0]
-        C_in = test_vector.input_shape[-3]
-        C_out = C_in
-        H_in = test_vector.input_shape[-2]
-        W_in = test_vector.input_shape[-1]
-        kwarg_list = []
+        N, C_in, H_in, W_in = test_vector.input_shape
         # prepare params
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = 1 # default
-        padding = 0 # default
-        dilation = 1 # default
-        groups = cls.get_groups_param(C_in, C_out, mode="depthwise") 
+        groups = Conv2DParams.get_groups_param(C_in, C_in, mode="depthwise") 
         if groups == 1:
             return [] # skip: already tested in previous cases
-        bias = True # default
-        padding_mode = "zeros" # default
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = C_in,
+            kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            groups = groups
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": C_out,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
     @classmethod
     def generate_kwargs_groups_grouped(cls, test_vector: TestVector):
         rng = random.Random(sum(test_vector.input_shape))
-        N = test_vector.input_shape[0]
-        C_in = test_vector.input_shape[-3]
+        N, C_in, H_in, W_in = test_vector.input_shape
+        # prepare params
         C_out = rng.randint(1, C_in + 10)
         while C_out == C_in:
             C_out = rng.randint(1, C_in + 10)
-        H_in = test_vector.input_shape[-2]
-        W_in = test_vector.input_shape[-1]
-        kwarg_list = []
-        # prepare params
-        kernel_size = cls.get_kernel_param(rng, H_in, W_in)
-        stride = 1
-        padding = 0
-        dilation = 1
-        groups = cls.get_groups_param(C_in, C_out, mode="grouped")
+        groups = Conv2DParams.get_groups_param(C_in, C_out, mode="grouped")
         if groups == 1 or groups == C_in:
             return []
-        bias = True
-        padding_mode = "zeros"
+        conv2DParams = Conv2DParams(
+            in_channels = C_in,
+            out_channels = C_out,
+            kernel_size = Conv2DParams.get_kernel_param(rng, H_in, W_in),
+            groups = groups
+        )
         # create kwargs
-        kwargs = {
-            "in_channels": C_in,
-            "out_channels": C_out,
-            "kernel_size": kernel_size,
-            "stride": stride,
-            "padding": padding,
-            "dilation": dilation,
-            "groups": groups,
-            "bias": bias,
-            "padding_mode": padding_mode,
-        }
-        kwarg_list.append(kwargs)
+        kwarg_list = []
+        kwarg_list.append(conv2DParams.__dict__)
         return kwarg_list
 
 class TestCollectionData:
