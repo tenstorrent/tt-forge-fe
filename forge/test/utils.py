@@ -2,11 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 from loguru import logger
+import random
 import requests
 import time
 import os
 import shutil
 import urllib
+
+import numpy as np
+import torch
+import tensorflow as tf
 
 
 def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
@@ -28,3 +33,10 @@ def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
 
     logger.error("Failed to download the model after multiple retries.")
     assert False, "Failed to download the model after multiple retries."
+
+
+def reset_seeds():
+    random.seed(0)
+    np.random.seed(0)
+    torch.manual_seed(0)
+    tf.random.set_seed(0)

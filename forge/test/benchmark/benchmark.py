@@ -6,15 +6,17 @@ import sys
 import os
 import json
 
+import argparse
+import torch
+
 # Get the absolute path of the project root and add it to the path
 # When we run the tests from benchmark directory it can't find test.utils module,
 # so we add the project root to the path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, project_root)
 
-import argparse
-
 from benchmark import models
+from test.utils import reset_seeds
 
 MODELS = {
     "mnist_linear": models.mnist_linear.mnist_linear_benchmark,
@@ -117,6 +119,8 @@ def run_benchmark(config: dict):
     -------
     None
     """
+
+    reset_seeds()
 
     model_func = MODELS[config["model"]]
     result = model_func(config)
