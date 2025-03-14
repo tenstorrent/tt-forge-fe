@@ -23,10 +23,6 @@ import forge
 from forge.verify.compare import compare_with_golden_pcc
 from test.utils import download_model
 
-# Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
-
 # Batch size configurations
 BATCH_SIZE = [
     1,
@@ -178,7 +174,6 @@ def resnet_hf_benchmark(config: dict):
     batch_size = config["batch_size"]
     input_size = INPUT_SIZE[0]
     channel_size = CHANNEL_SIZE[0]
-    output_file = config["output"]
     loop_count = config["loop_count"]
     variant = variants[0]
 
@@ -191,12 +186,5 @@ def resnet_hf_benchmark(config: dict):
         variant=variant,
     )
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
-    if not output_file:
-        output_file = f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
-    result["output"] = REPORTS_DIR + output_file
-
-    # Save the results to a file
-    with open(result["output"], "w") as f:
-        json.dump(result, f)
+    result["output_name"] = f"resnet50_{result['run_type']}"
+    return result
