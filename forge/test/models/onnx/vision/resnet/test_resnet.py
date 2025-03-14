@@ -20,7 +20,8 @@ variants = [
     "microsoft/resnet-50",
 ]
 
-# Opset 7 is the minimum version in Torch, and 17 is the maximum version in Torchscript.
+# Opset 7 is the minimum version in Torch.
+# Opset 17 is the maximum version in Torchscript.
 opset_versions = [7, 17]
 
 
@@ -46,10 +47,6 @@ def test_resnet_onnx(variant, tmp_path, record_forge_property, opset_version):
     input_sample = torch.randn(1, 3, 224, 224)
     onnx_path = f"{tmp_path}/resnet50.onnx"
     torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=opset_version)
-
-    # Load tiny dataset
-    dataset = load_dataset("zh-plus/tiny-imagenet")
-    images = random.sample(dataset["valid"]["image"], 10)
 
     # Load framework model
     onnx_model = onnx.load(onnx_path)
