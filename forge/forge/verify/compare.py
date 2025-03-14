@@ -11,6 +11,7 @@ import tensorflow as tf
 import numpy as np
 from loguru import logger
 from scipy.spatial import distance
+from typing import Union, Tuple, List, Optional
 
 from forge.tensor import narrow_forge_tensor_to_pytorch
 
@@ -299,3 +300,107 @@ def compute_required_tolerances(a, b):
     required_rtol = torch.max(diff / safe_abs_b)
 
     return required_atol.item(), required_rtol.item()
+
+
+def prepare_tensors(golden, calculated):
+    # Convert boolean tensors to float; so ATOL can be calculated.
+    if golden.dtype == torch.bool:
+        golden = golden.to(torch.float)
+
+    # TTNN does not support all the data types. So convert 'ret' tensor type to
+    # match 'golden' tensor type.
+    if golden.dtype != calculated.dtype:
+        calculated = calculated.to(golden.dtype)
+
+    return golden, calculated
+
+
+def calculate_atol(golden, calculated):
+    if torch.equal(golden, calculated):
+        return 0.0
+
+    golden, calculated = prepare_tensors(golden, calculated)
+
+    # Handle NaN and Inf by verifying if NaN and Inf exists at same location in
+    # both tensors.
+    golden_nan_mask = torch.isnan(golden)
+    calculated_nan_mask = torch.isnan(calculated)
+    golden_inf_mask = torch.isinf(golden)
+    calculated_inf_mask = torch.isinf(calculated)
+
+    # Compare NaN values (NaN == NaN is considered True).
+    if not torch.all(golden_nan_mask == calculated_nan_mask):
+        return torch.nan
+
+    # Compare Inf values (Inf == Inf is considered True).
+    if not torch.all(golden_inf_mask == calculated_inf_mask):
+        return torch.inf
+
+    # Verify if respective Inf values in both tensors have same sign.
+    golden_sign = torch.sign(golden)
+    calculated_sign = torch.sign(calculated)
+    sign_comparison = golden_sign == calculated_sign
+    masked_sign_comparison = torch.where(calculated_inf_mask, sign_comparison, torch.tensor(True))
+    if not torch.all(masked_sign_comparison):
+        return torch.inf
+
+    # Replace NaN values with 0 to avoid having NaN as ATOL
+    golden[golden_nan_mask] = 0
+    calculated[calculated_nan_mask] = 0
+
+    # Replace Inf values with 0 to avoid having NaN as ATOL
+    golden[golden_inf_mask] = 0
+    calculated[calculated_inf_mask] = 0
+
+    return torch.max(torch.abs(golden - calculated)).item()
+
+
+def compute_pcc_and_atol(
+    framework_outputs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]], compiled_outputs: List[torch.Tensor]
+) -> Tuple[Optional[float], Optional[float]]:
+    """
+    Compute the Pearson correlation coefficient (PCC) and absolute tolerance (ATOL)
+    between corresponding framework (golden) and compiled outputs.
+
+    Parameters:
+        framework_outputs: Tuple or list of torch.Tensor representing the expected outputs.
+        compiled_outputs: List of torch.Tensor representing the computed outputs.
+
+    Returns:
+        A tuple (calculated_pcc, calculated_atol) where:
+            - calculated_pcc is the average PCC computed over non-scalar tensors.
+              If only scalar outputs are present, this is set to None.
+            - calculated_atol is the average absolute tolerance computed over all outputs.
+        If the number of framework and compiled outputs do not match, returns (None, None).
+    """
+    if len(framework_outputs) != len(compiled_outputs):
+        logger.info(
+            f"Input count mismatch: framework_outputs={len(framework_outputs)}, compiled_outputs={len(compiled_outputs)}"
+        )
+        return None, None
+
+    pcc_values = []
+    atol_values = []
+
+    for idx, (fw_out, co_out) in enumerate(zip(framework_outputs, compiled_outputs), start=1):
+        # For non-scalar tensors, ensure the shapes match
+        if fw_out.numel() != 1 and fw_out.shape != co_out.shape:
+            logger.info(f"Tensor {idx} - Shape mismatch: fw_out shape={fw_out.shape}, co_out shape={co_out.shape}")
+            continue
+
+        # If the output is a scalar, compute only ATOL
+        if fw_out.numel() == 1:
+            logger.info(f"Tensor {idx} - fw_out is scalar")
+            atol = calculate_atol(fw_out, co_out)
+            atol_values.append(atol)
+        else:
+            golden, calculated = prepare_tensors(fw_out, co_out)
+            pcc = calculate_pcc(golden, calculated)
+            pcc_values.append(pcc)
+            atol = calculate_atol(fw_out, co_out)
+            atol_values.append(atol)
+
+    calculated_pcc = None if len(pcc_values) == 0 else sum(pcc_values) / len(pcc_values)
+    calculated_atol = sum(atol_values) / len(atol_values) if atol_values else None
+
+    return calculated_pcc, calculated_atol

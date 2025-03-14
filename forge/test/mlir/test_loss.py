@@ -5,6 +5,9 @@
 import pytest
 import torch
 from torch import nn
+from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AllCloseValueChecker
 
 import forge
 
@@ -34,10 +37,13 @@ def test_l1_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)
-    torch_loss_out = torch_loss(prediction, target)
-
-    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=11e-3)
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=11e-3)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -63,10 +69,14 @@ def test_cross_entropy_loss(forge_property_recorder, prediction_shape):
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)
-    torch_loss_out = torch_loss(prediction, target)
 
-    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=11e-3)
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=11e-3)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -97,9 +107,14 @@ def test_kl_div_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)[0]
-    torch_loss_out = torch_loss(prediction, target)
-    assert torch.allclose(torch_loss_out, forge_loss_out, rtol=5e-2)
+
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=5e-2)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -128,12 +143,15 @@ def test_mse_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)
-    torch_loss_out = torch_loss(prediction, target)
 
-    assert torch.allclose(
-        torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3
-    )  # relative tolerance is 5% and absolute tolerance is 0.005
+    # relative tolerance is 5% and absolute tolerance is 0.005
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=5e-2, atol=5e-3)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -208,10 +226,14 @@ def test_huber_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)
-    torch_loss_out = torch_loss(prediction, target)
 
-    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2)
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=5e-2)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -241,10 +263,14 @@ def test_bce_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)
-    torch_loss_out = torch_loss(prediction, target)
 
-    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3)
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=5e-2, atol=5e-3)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -274,10 +300,14 @@ def test_bce_with_logits_loss(forge_property_recorder, prediction_shape, reducti
     forge_loss = forge.compile(
         forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
     )
-    forge_loss_out = forge_loss(prediction, target)
-    torch_loss_out = torch_loss(prediction, target)
 
-    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2, atol=5e-3)
+    verify(
+        inputs=[prediction, target],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=5e-2, atol=5e-3)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -313,7 +343,11 @@ def test_triplet_margin_loss(forge_property_recorder, prediction_shape, reductio
         sample_inputs=[anchor_forge, positive_forge, negative_forge],
         forge_property_handler=forge_property_recorder,
     )
-    forge_loss_out = forge_loss(anchor_forge, positive_forge, negative_forge)
-    torch_loss_out = torch_loss(anchor, positive, negative)
 
-    assert torch.allclose(torch_loss_out, forge_loss_out[0], rtol=5e-2)
+    verify(
+        inputs=[anchor, positive, negative],
+        framework_model=torch_loss,
+        compiled_model=forge_loss,
+        verify_cfg=VerifyConfig(verify_shape=False, value_checker=AllCloseValueChecker(rtol=5e-2)),
+        forge_property_handler=forge_property_recorder,
+    )
