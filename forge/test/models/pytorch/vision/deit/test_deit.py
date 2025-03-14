@@ -43,7 +43,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
+def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
     if variant != "facebook/deit-base-patch16-224":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -57,14 +57,16 @@ def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -27,15 +27,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
         ),
     ],
 )
-def test_nbeats_with_seasonality_basis(record_forge_property, variant):
+def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -52,15 +52,17 @@ def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     inputs = [x, x_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["generic_basis"])
-def test_nbeats_with_generic_basis(record_forge_property, variant):
+def test_nbeats_with_generic_basis(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -69,8 +71,8 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -80,15 +82,17 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     inputs = [x, x_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["trend_basis"])
-def test_nbeats_with_trend_basis(record_forge_property, variant):
+def test_nbeats_with_trend_basis(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -97,8 +101,8 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -115,7 +119,9 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     inputs = [x, x_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

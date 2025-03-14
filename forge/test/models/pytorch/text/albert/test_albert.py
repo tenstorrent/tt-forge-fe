@@ -37,7 +37,7 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
-def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
+def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
     if size != "base":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -51,8 +51,8 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     model_ckpt = f"albert-{size}-{variant}"
 
@@ -74,10 +74,18 @@ def test_albert_masked_lm_pytorch(record_forge_property, size, variant):
 
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(verify_values=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     output = compiled_model(*inputs)
@@ -110,7 +118,7 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
-def test_albert_token_classification_pytorch(record_forge_property, size, variant):
+def test_albert_token_classification_pytorch(forge_property_recorder, size, variant):
     if size != "base":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -124,8 +132,8 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
@@ -152,10 +160,18 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(verify_values=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     co_out = compiled_model(*inputs)
@@ -171,7 +187,7 @@ def test_albert_token_classification_pytorch(record_forge_property, size, varian
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["twmkn9/albert-base-v2-squad2"])
-def test_albert_question_answering_pytorch(record_forge_property, variant):
+def test_albert_question_answering_pytorch(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -183,8 +199,8 @@ def test_albert_question_answering_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -199,16 +215,18 @@ def test_albert_question_answering_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", ["textattack/albert-base-v2-imdb"])
-def test_albert_sequence_classification_pytorch(record_forge_property, variant):
+def test_albert_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -220,8 +238,8 @@ def test_albert_sequence_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, variant)
@@ -236,10 +254,12 @@ def test_albert_sequence_classification_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     co_out = compiled_model(*inputs)

@@ -28,7 +28,7 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
-def test_monodepth2(record_forge_property, variant):
+def test_monodepth2(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -39,8 +39,8 @@ def test_monodepth2(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # prepare model and input
     download_model(variant)
@@ -50,7 +50,9 @@ def test_monodepth2(record_forge_property, variant):
     inputs = [input_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

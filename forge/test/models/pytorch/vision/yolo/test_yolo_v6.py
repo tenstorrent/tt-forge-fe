@@ -34,7 +34,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_yolo_v6_pytorch(record_forge_property, variant):
+def test_yolo_v6_pytorch(forge_property_recorder, variant):
     if variant != "yolov6n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -48,8 +48,8 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
@@ -78,10 +78,12 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

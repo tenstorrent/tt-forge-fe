@@ -28,7 +28,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
+def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
     if variant != "distilbert-base-uncased":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -38,8 +38,8 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
@@ -64,15 +64,17 @@ def test_distilbert_masked_lm_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
-def test_distilbert_question_answering_pytorch(record_forge_property, variant):
+def test_distilbert_question_answering_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -81,8 +83,8 @@ def test_distilbert_question_answering_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -113,15 +115,17 @@ def test_distilbert_question_answering_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
-def test_distilbert_sequence_classification_pytorch(record_forge_property, variant):
+def test_distilbert_sequence_classification_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -134,8 +138,8 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property, varia
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load DistilBert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -156,15 +160,17 @@ def test_distilbert_sequence_classification_pytorch(record_forge_property, varia
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
-def test_distilbert_token_classification_pytorch(record_forge_property, variant):
+def test_distilbert_token_classification_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -177,8 +183,8 @@ def test_distilbert_token_classification_pytorch(record_forge_property, variant)
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load DistilBERT tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -199,7 +205,9 @@ def test_distilbert_token_classification_pytorch(record_forge_property, variant)
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

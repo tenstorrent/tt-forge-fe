@@ -13,7 +13,7 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.push
-def test_multiple_inputs():
+def test_multiple_inputs(forge_property_recorder):
     class MultipleInputs(nn.Module):
         def __init__(self):
             super().__init__()
@@ -24,9 +24,11 @@ def test_multiple_inputs():
     inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
 
     framework_model = MultipleInputs()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -36,7 +38,7 @@ def test_multiple_inputs():
     ],
 )
 @pytest.mark.push
-def test_input_order(a_shape, b_shape, c_shape):
+def test_input_order(forge_property_recorder, a_shape, b_shape, c_shape):
     class InputOrderWithConstants(nn.Module):
         def __init__(self):
             super().__init__()
@@ -55,15 +57,17 @@ def test_input_order(a_shape, b_shape, c_shape):
     c = torch.rand(*c_shape)
 
     framework_model = InputOrderWithConstants()
-    compiled_model = forge.compile(framework_model, sample_inputs=[a, b, c])
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=[a, b, c], forge_property_handler=forge_property_recorder
+    )
 
-    verify([a, b, c], framework_model, compiled_model)
+    verify([a, b, c], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("batch_size", [1, 4, 16, 32, 64])
 @pytest.mark.parametrize("linear_features", [(784, 10)])
 @pytest.mark.push
-def test_matmul_bias(batch_size, linear_features):
+def test_matmul_bias(forge_property_recorder, batch_size, linear_features):
     input_features, output_dim = linear_features
 
     class Linear(nn.Module):
@@ -77,16 +81,18 @@ def test_matmul_bias(batch_size, linear_features):
     inputs = [torch.rand(batch_size, input_features)]
 
     framework_model = Linear()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
 @pytest.mark.push
-def test_batch_size_inference(batch_size, in_features, out_features):
+def test_batch_size_inference(forge_property_recorder, batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):
             super(SimpleModel, self).__init__()
@@ -99,16 +105,20 @@ def test_batch_size_inference(batch_size, in_features, out_features):
     in_data = [torch.rand(batch_size, in_features)]
 
     framework_model = SimpleModel()
-    compiled_model = forge.compile(framework_model, sample_inputs=[torch.rand(batch_size, in_features)])
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=[torch.rand(batch_size, in_features)],
+        forge_property_handler=forge_property_recorder,
+    )
 
-    verify(in_data, framework_model, compiled_model)
+    verify(in_data, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("batch_size", [1, 2, 16, 64, 512])
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
 @pytest.mark.push
-def test_batch_size_training(batch_size, in_features, out_features):
+def test_batch_size_training(forge_property_recorder, batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):
             super(SimpleModel, self).__init__()
@@ -126,11 +136,18 @@ def test_batch_size_training(batch_size, in_features, out_features):
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
-    tt_model = forge.compile(model, sample_inputs=[torch.rand(batch_size, in_features)], optimizer=optimizer)
+    tt_model = forge.compile(
+        model,
+        sample_inputs=[torch.rand(batch_size, in_features)],
+        optimizer=optimizer,
+        forge_property_handler=forge_property_recorder,
+    )
 
     optimizer.zero_grad()
 
-    fw_out, tt_out = verify(inputs=[in_data], framework_model=model, compiled_model=tt_model)
+    fw_out, tt_out = verify(
+        inputs=[in_data], framework_model=model, compiled_model=tt_model, forge_property_handler=forge_property_recorder
+    )
     golden_pred = fw_out[0]
     pred = tt_out[0]
 

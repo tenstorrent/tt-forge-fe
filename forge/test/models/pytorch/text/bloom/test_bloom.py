@@ -37,7 +37,7 @@ class Wrapper(torch.nn.Module):
         ),
     ],
 )
-def test_bloom(record_forge_property, variant):
+def test_bloom(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -49,8 +49,8 @@ def test_bloom(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")
@@ -71,7 +71,9 @@ def test_bloom(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

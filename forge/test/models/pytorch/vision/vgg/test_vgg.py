@@ -33,7 +33,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_osmr_pytorch(record_forge_property, variant):
+def test_vgg_osmr_pytorch(forge_property_recorder, variant):
     if variant != "vgg11":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -43,8 +43,8 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
@@ -72,14 +72,16 @@ def test_vgg_osmr_pytorch(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
-def test_vgg_19_hf_pytorch(record_forge_property):
+def test_vgg_19_hf_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -88,8 +90,8 @@ def test_vgg_19_hf_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -125,10 +127,12 @@ def test_vgg_19_hf_pytorch(record_forge_property):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def preprocess_timm_model(model_name):
@@ -151,7 +155,7 @@ def preprocess_timm_model(model_name):
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_timm_pytorch(record_forge_property):
+def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     variant = "vgg19_bn"
@@ -162,8 +166,8 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     torch.multiprocessing.set_sharing_strategy("file_system")
     framework_model, image_tensor = download_model(preprocess_timm_model, variant)
@@ -171,14 +175,16 @@ def test_vgg_bn19_timm_pytorch(record_forge_property):
     inputs = [image_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_torchhub_pytorch(record_forge_property):
+def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -191,8 +197,8 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     framework_model.eval()
@@ -220,10 +226,12 @@ def test_vgg_bn19_torchhub_pytorch(record_forge_property):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants_with_weights = {
@@ -256,7 +264,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_torchvision(record_forge_property, variant):
+def test_vgg_torchvision(forge_property_recorder, variant):
 
     if variant != "vgg11":
         pytest.skip("Skipping this variant; only testing the small variant(vgg11) for now.")
@@ -271,15 +279,17 @@ def test_vgg_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

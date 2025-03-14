@@ -30,7 +30,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
-def test_phi2_clm(record_forge_property, variant):
+def test_phi2_clm(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -39,10 +39,10 @@ def test_phi2_clm(record_forge_property, variant):
 
     # Record Forge Property
     if variant in ["microsoft/phi-2"]:
-        record_forge_property("group", "priority")
+        forge_property_recorder.record_group("priority")
     else:
-        record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+        forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -75,15 +75,17 @@ def test_phi2_clm(record_forge_property, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_token_classification(record_forge_property, variant):
+def test_phi2_token_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -96,8 +98,8 @@ def test_phi2_token_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -120,15 +122,17 @@ def test_phi2_token_classification(record_forge_property, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_sequence_classification(record_forge_property, variant):
+def test_phi2_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -141,8 +145,8 @@ def test_phi2_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -166,7 +170,9 @@ def test_phi2_sequence_classification(record_forge_property, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
