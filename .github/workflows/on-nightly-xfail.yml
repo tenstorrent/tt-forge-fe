@@ -29,4 +29,4 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
-      run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id }}
+      run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || 13823863706 }}
