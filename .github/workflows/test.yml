@@ -105,12 +105,19 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
-    - name: Download build artifacts
+    - name: Download from current workflow
+      if: ${{ !inputs.run-id }}
       uses: actions/download-artifact@v4
       with:
-        github-token: ${{ github.token }}
-        run-id: ${{ inputs.run-id }}
         name: forge-wheel
+
+    - name: Download from specified workflow run
+      if: ${{ inputs.run-id }}
+      uses: actions/download-artifact@v4
+      with:
+        name: forge-wheel
+        run-id: ${{ inputs.run-id }}
+        github-token: ${{ github.token }}
 
     - name: Install wheel
       shell: bash
