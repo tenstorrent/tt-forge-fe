@@ -20,7 +20,7 @@ from test.utils import download_model
 @pytest.mark.xfail(
     reason="Statically allocated circular buffers in program 11 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=5)]. L1 buffer allocated at 947328 and static circular buffer region ends at 1191648"
 )
-def test_alexnet_torchhub(record_forge_property):
+def test_alexnet_torchhub(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -31,8 +31,8 @@ def test_alexnet_torchhub(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
@@ -60,14 +60,16 @@ def test_alexnet_torchhub(record_forge_property):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
-def test_alexnet_osmr(record_forge_property):
+def test_alexnet_osmr(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -76,8 +78,8 @@ def test_alexnet_osmr(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
@@ -105,7 +107,9 @@ def test_alexnet_osmr(record_forge_property):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

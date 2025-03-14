@@ -113,7 +113,7 @@ from forge.tensor import to_forge_tensors
     ],
 )
 @pytest.mark.push
-def test_mean_bwd(input_shape, dim):
+def test_mean_bwd(forge_property_recorder, input_shape, dim):
     class MeanBwd(nn.Module):
         def __init__(self, dim: int):
             super(MeanBwd, self).__init__()
@@ -128,9 +128,15 @@ def test_mean_bwd(input_shape, dim):
     framework_model = MeanBwd(dim=dim)
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=0.001)
 
-    compiled_model = forge.compile(framework_model, input_ids, optimizer=framework_optimizer, training=True)
+    compiled_model = forge.compile(
+        framework_model,
+        input_ids,
+        optimizer=framework_optimizer,
+        training=True,
+        forge_property_handler=forge_property_recorder,
+    )
 
-    verify([input_ids], framework_model, compiled_model)
+    verify([input_ids], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -150,7 +156,7 @@ def test_mean_bwd(input_shape, dim):
     ],
 )
 @pytest.mark.push
-def test_matmul_dims(in_features, out_features):
+def test_matmul_dims(forge_property_recorder, in_features, out_features):
     class MatMulDimsCheck(nn.Module):
         def __init__(self, in_features, out_features, bias=True, dtype=torch.float32):
             super(MatMulDimsCheck, self).__init__()
@@ -168,12 +174,23 @@ def test_matmul_dims(in_features, out_features):
 
     framework_model = MatMulDimsCheck(in_features=in_features, out_features=out_features, bias=False)
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=0.001)
-    tt_model = forge.compile(framework_model, sample_inputs=[torch.rand(12, 3200)], training=True)
+    tt_model = forge.compile(
+        framework_model,
+        sample_inputs=[torch.rand(12, 3200)],
+        training=True,
+        forge_property_handler=forge_property_recorder,
+    )
 
     loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
     loss_inputs = [torch.rand(12, 10).requires_grad_(True), torch.rand(12, 10)]
     loss_inputs = to_forge_tensors(loss_inputs)
-    tt_loss = forge.compile(loss_fn, sample_inputs=loss_inputs, attach_to=tt_model, training=True)
+    tt_loss = forge.compile(
+        loss_fn,
+        sample_inputs=loss_inputs,
+        attach_to=tt_model,
+        training=True,
+        forge_property_handler=forge_property_recorder,
+    )
 
     framework_optimizer.zero_grad()
 
@@ -183,7 +200,7 @@ def test_matmul_dims(in_features, out_features):
     # Forward pass (prediction) on device
     input_ids = torch.randn((12, 3200))
     pred = tt_model(input_ids)[0]
-    verify([input_ids], framework_model, tt_model)
+    verify([input_ids], framework_model, tt_model, forge_property_handler=forge_property_recorder)
 
     tt_loss(pred, target)
 

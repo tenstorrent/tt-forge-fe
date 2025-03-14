@@ -58,23 +58,25 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
+def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)
@@ -114,7 +116,7 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
+def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -123,13 +125,15 @@ def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

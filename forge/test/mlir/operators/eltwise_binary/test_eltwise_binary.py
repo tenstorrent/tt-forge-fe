@@ -45,7 +45,7 @@ from forge.verify.config import VerifyConfig
     ],
 )
 @pytest.mark.push
-def test_stack_and_view(shape, dim):
+def test_stack_and_view(forge_property_recorder, shape, dim):
     class stack_and_view(nn.Module):
         def __init__(self, dim):
             super().__init__()
@@ -63,9 +63,11 @@ def test_stack_and_view(shape, dim):
     inputs = [x, y]
 
     framework_model = stack_and_view(dim)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -86,7 +88,7 @@ def test_stack_and_view(shape, dim):
     ],
 )
 @pytest.mark.push
-def test_einsum(einsum_pattern, shape_1, shape_2):
+def test_einsum(forge_property_recorder, einsum_pattern, shape_1, shape_2):
     class EinsumModel(torch.nn.Module):
         def __init__(self, pattern):
             super().__init__()
@@ -102,8 +104,10 @@ def test_einsum(einsum_pattern, shape_1, shape_2):
     framework_model = EinsumModel(einsum_pattern)
     framework_model.eval()
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    verify(inputs, framework_model, compiled_model)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.xfail(
@@ -124,7 +128,7 @@ def test_einsum(einsum_pattern, shape_1, shape_2):
     ],
 )
 @pytest.mark.push
-def test_atan2(shape):
+def test_atan2(forge_property_recorder, shape):
     class Atan2(nn.Module):
         def __init__(self):
             super().__init__()
@@ -134,9 +138,11 @@ def test_atan2(shape):
 
     inputs = [torch.randn(shape), torch.randn(shape)]
     framework_model = Atan2()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -153,7 +159,7 @@ def test_atan2(shape):
     ],
 )
 @pytest.mark.push
-def test_less(shape_x, shape_y):
+def test_less(forge_property_recorder, shape_x, shape_y):
     class Less(nn.Module):
         def __init__(self):
             super().__init__()
@@ -167,9 +173,17 @@ def test_less(shape_x, shape_y):
     inputs = [x, y]
 
     framework_model = Less()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -186,7 +200,7 @@ def test_less(shape_x, shape_y):
     ],
 )
 @pytest.mark.push
-def test_greater(shape_x, shape_y):
+def test_greater(forge_property_recorder, shape_x, shape_y):
     class Greater(nn.Module):
         def __init__(self):
             super().__init__()
@@ -200,9 +214,17 @@ def test_greater(shape_x, shape_y):
     inputs = [x, y]
 
     framework_model = Greater()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -219,7 +241,7 @@ def test_greater(shape_x, shape_y):
     ],
 )
 @pytest.mark.push
-def test_not_equal(shape_x, shape_y):
+def test_not_equal(forge_property_recorder, shape_x, shape_y):
     class NotEqual(nn.Module):
         def __init__(self):
             super().__init__()
@@ -233,9 +255,17 @@ def test_not_equal(shape_x, shape_y):
     inputs = [x, y]
 
     framework_model = NotEqual()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -268,7 +298,7 @@ def test_not_equal(shape_x, shape_y):
     ],
 )
 @pytest.mark.push
-def test_equal(shape):
+def test_equal(forge_property_recorder, shape):
     class Equal(nn.Module):
         def __init__(self):
             super().__init__()
@@ -282,9 +312,17 @@ def test_equal(shape):
     inputs = [x, y]
 
     framework_model = Equal()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -295,7 +333,7 @@ def test_equal(shape):
     ],
 )
 @pytest.mark.push
-def test_add(shape_dtype):
+def test_add(forge_property_recorder, shape_dtype):
     shape, dtype = shape_dtype
 
     class Add(nn.Module):
@@ -312,14 +350,16 @@ def test_add(shape_dtype):
     inputs = [a, b]
 
     framework_model = Add()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("dims", [(1, 32, 64), (6, 33), (4, 16, 17)])
 @pytest.mark.push
-def test_greater_equal(dims):
+def test_greater_equal(forge_property_recorder, dims):
     class GreaterEqual(nn.Module):
         def __init__(self):
             super().__init__()
@@ -330,13 +370,21 @@ def test_greater_equal(dims):
     inputs = [torch.rand(dims), torch.rand(dims)]
 
     framework_model = GreaterEqual()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.push
-def test_subtract():
+def test_subtract(forge_property_recorder):
     class Subtract(nn.Module):
         def __init__(self):
             super().__init__()
@@ -347,9 +395,17 @@ def test_subtract():
     inputs = [torch.rand(1, 32, 32), torch.rand(1, 32, 32)]
 
     framework_model = Subtract()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_dtype=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_dtype=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.parametrize(
@@ -360,7 +416,7 @@ def test_subtract():
     ],
 )
 @pytest.mark.push
-def test_multiply(shape):
+def test_multiply(forge_property_recorder, shape):
     class Multiply(nn.Module):
         def __init__(self):
             super().__init__()
@@ -371,13 +427,15 @@ def test_multiply(shape):
     inputs = [torch.rand(shape), torch.rand(shape)]
 
     framework_model = Multiply()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_remainder():
+def test_remainder(forge_property_recorder):
     class Remainder(nn.Module):
         def __init__(self):
             super().__init__()
@@ -388,6 +446,8 @@ def test_remainder():
     inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
     framework_model = Remainder()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

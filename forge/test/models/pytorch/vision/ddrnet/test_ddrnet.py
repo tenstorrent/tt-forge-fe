@@ -25,7 +25,7 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_ddrnet_pytorch(record_forge_property, variant):
+def test_ddrnet_pytorch(forge_property_recorder, variant):
     if variant != "ddrnet23s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -39,8 +39,8 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
@@ -80,10 +80,12 @@ def test_ddrnet_pytorch(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
@@ -93,7 +95,7 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
+def test_ddrnet_semantic_segmentation_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -104,8 +106,8 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":
@@ -146,7 +148,9 @@ def test_ddrnet_semantic_segmentation_pytorch(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

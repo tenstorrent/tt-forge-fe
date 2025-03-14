@@ -21,7 +21,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_select(input_dim_index):
+def test_select(forge_property_recorder, input_dim_index):
     input_tensor, dim, index = input_dim_index
 
     class SelectModule(nn.Module):
@@ -37,10 +37,10 @@ def test_select(input_dim_index):
     inputs = [input_tensor]
 
     framework_model = SelectModule(dim, index)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -62,7 +62,7 @@ def test_select(input_dim_index):
     ],
 )
 @pytest.mark.push
-def test_split(input_tensor_sizes_dim):
+def test_split(forge_property_recorder, input_tensor_sizes_dim):
     input_tensor, sizes_or_parts, dim = input_tensor_sizes_dim
 
     class SplitModule(nn.Module):
@@ -78,10 +78,10 @@ def test_split(input_tensor_sizes_dim):
     inputs = [input_tensor]
 
     framework_model = SplitModule(sizes_or_parts, dim)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -100,7 +100,7 @@ def test_split(input_tensor_sizes_dim):
     ],
 )
 @pytest.mark.push
-def test_chunk(input_tensor_chunks_dim):
+def test_chunk(forge_property_recorder, input_tensor_chunks_dim):
     input_tensor, chunks, dim = input_tensor_chunks_dim
 
     class ChunkModule(nn.Module):
@@ -117,10 +117,10 @@ def test_chunk(input_tensor_chunks_dim):
     inputs = [input_tensor]
 
     framework_model = ChunkModule(chunks, dim)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -181,7 +181,7 @@ def test_chunk(input_tensor_chunks_dim):
     ],
 )
 @pytest.mark.push
-def test_take(input_tensor_indices):
+def test_take(forge_property_recorder, input_tensor_indices):
     input_tensor, indices = input_tensor_indices
 
     class TakeModule(nn.Module):
@@ -196,10 +196,10 @@ def test_take(input_tensor_indices):
     inputs = [input_tensor]
 
     framework_model = TakeModule(indices)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -244,7 +244,7 @@ def test_take(input_tensor_indices):
     ],
 )
 @pytest.mark.push
-def test_nonzero(input_tensor_as_tuple):
+def test_nonzero(forge_property_recorder, input_tensor_as_tuple):
     input_tensor, as_tuple = input_tensor_as_tuple
 
     class NonZeroModule(nn.Module):
@@ -260,10 +260,10 @@ def test_nonzero(input_tensor_as_tuple):
     inputs = [input_tensor]
 
     framework_model = NonZeroModule(as_tuple=as_tuple)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -312,7 +312,7 @@ def test_nonzero(input_tensor_as_tuple):
     ],
 )
 @pytest.mark.push
-def test_narrow(input_dim_start_length):
+def test_narrow(forge_property_recorder, input_dim_start_length):
     input_tensor, dim, start, length = input_dim_start_length
 
     class NarrowModule(torch.nn.Module):
@@ -329,7 +329,7 @@ def test_narrow(input_dim_start_length):
     inputs = [input_tensor]
 
     framework_model = NarrowModule(dim, start, length)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

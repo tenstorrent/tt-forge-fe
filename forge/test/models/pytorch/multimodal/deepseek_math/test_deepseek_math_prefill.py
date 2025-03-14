@@ -65,12 +65,17 @@ def test_deepseek_prefil_on_device_decode_on_cpu(variant):
     inputs = [input_ids]
 
     # Compile the PyTorch Model
-    compiled_decoder = forge.compile(model_decoder, sample_inputs=inputs)
+    compiled_decoder = forge.compile(
+        model_decoder, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
     # Prefill Phase - Process the initial prompt on device
     # Validate prefill outputs between TT and CPU
     framework_output, compiled_output = verify(
-        inputs=inputs, framework_model=model_decoder, compiled_model=compiled_decoder
+        inputs=inputs,
+        framework_model=model_decoder,
+        compiled_model=compiled_decoder,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Get hidden states for all tokens from the last "transformer layer" on both TT and CPU.

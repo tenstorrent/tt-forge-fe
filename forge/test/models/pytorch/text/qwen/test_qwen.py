@@ -21,15 +21,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
         ),
     ],
 )
-def test_qwen1_5_causal_lm(record_forge_property, variant):
+def test_qwen1_5_causal_lm(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)
@@ -57,15 +57,17 @@ def test_qwen1_5_causal_lm(record_forge_property, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B-Chat"])
-def test_qwen1_5_chat(record_forge_property, variant):
+def test_qwen1_5_chat(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -74,8 +76,8 @@ def test_qwen1_5_chat(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)
@@ -117,7 +119,9 @@ def test_qwen1_5_chat(record_forge_property, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

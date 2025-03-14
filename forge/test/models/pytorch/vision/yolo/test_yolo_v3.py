@@ -36,7 +36,7 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch():
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_yolov3_tiny_holli_pytorch(record_forge_property):
+def test_yolov3_tiny_holli_pytorch(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -47,16 +47,18 @@ def test_yolov3_tiny_holli_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_yoloV3_imgcls_holli_pytorch():
@@ -81,7 +83,7 @@ def generate_model_yoloV3_imgcls_holli_pytorch():
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_yolov3_holli_pytorch(record_forge_property):
+def test_yolov3_holli_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -94,13 +96,15 @@ def test_yolov3_holli_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

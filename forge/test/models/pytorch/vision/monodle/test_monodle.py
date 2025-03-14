@@ -15,15 +15,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
-def test_monodle_pytorch(record_forge_property):
+def test_monodle_pytorch(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="monodle", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -46,7 +46,9 @@ def test_monodle_pytorch(record_forge_property):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

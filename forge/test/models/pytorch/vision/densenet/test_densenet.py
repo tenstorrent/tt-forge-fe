@@ -37,7 +37,7 @@ class densenet_xray_wrapper(nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_densenet_121_pytorch(record_forge_property, variant):
+def test_densenet_121_pytorch(forge_property_recorder, variant):
     if variant == "densenet121":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -51,8 +51,8 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -68,17 +68,25 @@ def test_densenet_121_pytorch(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
     if variant == "densenet121_hf_xray":
-        verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)))
+        verify(
+            inputs,
+            framework_model,
+            compiled_model,
+            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+            forge_property_handler=forge_property_recorder,
+        )
         # Inference
         output = compiled_model(*inputs)
         # post processing
         outputs = op_norm(output[0], model.op_threshs)
     else:
-        verify(inputs, framework_model, compiled_model)
+        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -95,7 +103,7 @@ def test_densenet_121_pytorch(record_forge_property, variant):
         ),
     ],
 )
-def test_densenet_161_pytorch(record_forge_property, variant):
+def test_densenet_161_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -106,8 +114,8 @@ def test_densenet_161_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -117,10 +125,12 @@ def test_densenet_161_pytorch(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -137,7 +147,7 @@ def test_densenet_161_pytorch(record_forge_property, variant):
         ),
     ],
 )
-def test_densenet_169_pytorch(record_forge_property, variant):
+def test_densenet_169_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -148,8 +158,8 @@ def test_densenet_169_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
@@ -160,15 +170,17 @@ def test_densenet_169_pytorch(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
-def test_densenet_201_pytorch(record_forge_property, variant):
+def test_densenet_201_pytorch(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Build Module Name
@@ -181,8 +193,8 @@ def test_densenet_201_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
@@ -193,7 +205,9 @@ def test_densenet_201_pytorch(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

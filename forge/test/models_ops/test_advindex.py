@@ -196,8 +196,8 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, record_forge_property):
-    record_forge_property("tags.op_name", "AdvIndex")
+def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+    forge_property_recorder.record_op_name("AdvIndex")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -205,7 +205,7 @@ def test_module(forge_module_and_shapes_dtypes, record_forge_property):
     max_int = metadata.pop("max_int")
 
     for metadata_name, metadata_value in metadata.items():
-        record_forge_property("tags." + str(metadata_name), metadata_value)
+        forge_property_recorder("tags." + str(metadata_name), metadata_value)
 
     inputs = [
         Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
@@ -227,6 +227,12 @@ def test_module(forge_module_and_shapes_dtypes, record_forge_property):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        forge_property_handler=forge_property_recorder,
+    )
