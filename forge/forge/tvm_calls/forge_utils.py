@@ -27,7 +27,6 @@ def extract_framework_model_outputs(
     model,
     inputs,
     verify_tvm_compile: bool = False,
-    path=None,
     input_dict={},
 ):
     framework_outputs = []
