@@ -157,6 +157,8 @@ class TestCollection:
     failing_reason: Optional[str] = None
     skip_reason: Optional[str] = None
 
+    subcollections: Optional[List["TestCollection"]] = None
+
     def __post_init__(self):
         if self.operators is not None:
             self.operators = PytestParamsUtils.strip_param_sets(self.operators)
@@ -372,6 +374,16 @@ class TestPlan:
                 else:
                     # logger.debug(f"Test should pass: {test_vector.get_id()}")
                     failing_result = None
+
+                if failing_rule.subcollections is not None:
+                    for sub_failing_rule in failing_rule.subcollections:
+                        if test_vector in sub_failing_rule:
+                            if failing_rule.failing_reason is not None or failing_rule.skip_reason is not None:
+                                failing_result = TestResultFailing(
+                                    sub_failing_rule.failing_reason, sub_failing_rule.skip_reason
+                                )
+                            else:
+                                failing_result = None
 
         return failing_result
 
