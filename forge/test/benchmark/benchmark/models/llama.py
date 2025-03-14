@@ -21,10 +21,6 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 
-# Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
-
 # Model path
 MODEL_PATH = ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"]
 
@@ -172,17 +168,8 @@ def llama_prefill_benchmark(config: dict):
     training = config["training"]
     batch_size = config["batch_size"]
     model_path = MODEL_PATH[1]
-    output_file = config["output"]
     loop_count = config["loop_count"]
 
     result = test_llama_prefill(training=training, batch_size=batch_size, model_path=model_path, loop_count=loop_count)
-
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
-    if not output_file:
-        output_file = f"forge-benchmark-e2e-llama_prefill_{result['run_type']}.json"
-    result["output"] = REPORTS_DIR + output_file
-
-    # Save the results to a file
-    with open(result["output"], "w") as f:
-        json.dump(result, f)
+    result["output_name"] = f"llama_prefill_{result['run_type']}"
+    return result
