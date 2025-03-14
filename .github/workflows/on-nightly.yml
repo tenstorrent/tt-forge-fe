@@ -17,13 +17,14 @@ jobs:
     steps:
       - name: Create Docker image artifact
         run: |
-          mkdir -p /tmp/artifacts
-          echo "${{ needs.docker-build.outputs.docker-image }}" > /tmp/artifacts/docker-image.txt
+          mkdir -p artifacts
+          echo "${{ needs.docker-build.outputs.docker-image }}" > artifacts/docker-image.txt
+
       - name: Upload Docker image name
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-image-artifact
-          path: /tmp/artifacts/docker-image.txt
+          path: artifacts/docker-image.txt
           retention-days: 7
 
   build:

@@ -19,15 +19,22 @@ jobs:
     outputs:
       docker-image: ${{ steps.get-image.outputs.docker-image }}
     steps:
-      - name: Download Docker image artifact
-        uses: dawidd6/action-download-artifact@v2
-        id: download
+      - name: Download Docker image artifact (if available)
+        id: download-artifact
+        uses: actions/download-artifact@v4
         with:
-          workflow: "On nightly"
           name: docker-image-artifact
-          run_id: ${{ github.event.workflow_run.id }}
-          path: /tmp/artifacts
-          if_no_artifact_found: ignore
+          path: ./artifacts
+
+      - name: Check if artifact exists
+        id: check-artifact
+        run: |
+          if [ -f "./artifacts/docker-image.txt" ]; then
+            echo "Artifact found"
+          else
+            echo "No artifact found"
+            echo "docker-image=" >> $GITHUB_ENV
+          fi
 
       - name: Get Docker image name
         id: get-image
@@ -35,9 +42,9 @@ jobs:
           if [ -n "${{ github.event.inputs.docker_image }}" ]; then
             # Use manual input if provided (user provided the image name)
             echo "docker-image=${{ github.event.inputs.docker_image }}" >> $GITHUB_OUTPUT
-          elif [ -f "/tmp/artifacts/docker-image.txt" ]; then
+          elif [ -f "./artifacts/docker-image.txt" ]; then
             # Use artifact if available (from nightly build)
-            IMAGE=$(cat /tmp/artifacts/docker-image.txt)
+            IMAGE=$(cat ./artifacts/docker-image.txt)
             echo "docker-image=$IMAGE" >> $GITHUB_OUTPUT
           else
             # No image found (we will build it)
