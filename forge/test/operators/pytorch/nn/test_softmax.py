@@ -164,6 +164,18 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: test_vector.kwargs["dim"] != len(test_vector.input_shape) - 1
             and test_vector.kwargs["dim"] != -1,
             skip_reason=FailingReasons.UNSUPORTED_AXIS,
+            failing_reason=FailingReasons.UNSUPORTED_AXIS,
+            subcollections=[
+                # One test case as check-flag to indicate that the dim value is not supported:
+                TestCollection(
+                    operators=TestParamsData.operators,
+                    input_sources=TestCollectionCommon.single.input_sources,
+                    input_shapes=TestCollectionCommon.single.input_shapes,
+                    kwargs=[{"dim": 0}],
+                    # skip_reason=None,  # No need to explicit 'clear' the skip_reason
+                    failing_reason=FailingReasons.UNSUPORTED_AXIS,
+                ),
+            ],
         ),
         # All-close value checker failed (rtol=1e-2, atol=1e-2):
         TestCollection(
