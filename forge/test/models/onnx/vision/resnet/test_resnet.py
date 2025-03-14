@@ -43,9 +43,9 @@ def test_resnet_onnx(variant, tmp_path, record_forge_property, opset_version):
 
     # Export model to ONNX
     torch_model = ResNetForImageClassification.from_pretrained(variant)
-    dummy_input = torch.randn(1, 3, 224, 224)
+    input_sample = torch.randn(1, 3, 224, 224)
     onnx_path = f"{tmp_path}/resnet50.onnx"
-    torch.onnx.export(torch_model, dummy_input, onnx_path, opset_version=opset_version)
+    torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=opset_version)
 
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
@@ -57,7 +57,7 @@ def test_resnet_onnx(variant, tmp_path, record_forge_property, opset_version):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    input_sample = [dummy_input]
+    input_sample = [input_sample]
     compiled_model = forge.compile(onnx_model, input_sample)
 
     # Verify data on sample input
