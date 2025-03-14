@@ -60,6 +60,15 @@ function print_query_docs {
     popd
 }
 
+function export_tests {
+    file_name=$1
+    format=$2
+
+    pushd ${SCRIPT_DIR}/../../../
+    python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.export(file_name=\"${file_name}\", format=\"${format}\")"
+    popd
+}
+
 
 function reset_query_params {
     unset OPERATORS

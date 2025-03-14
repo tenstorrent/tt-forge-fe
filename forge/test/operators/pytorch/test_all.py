@@ -418,6 +418,47 @@ class InfoUtils:
         cls.print_configuration_examples(max_width)
 
     @classmethod
+    def export(cls, file_name: str, format: str = None):
+        test_vectors = TestQueries.query_filter(TestQueries.query_source()).test_vectors
+        logger.info(f"Exporting test vectors to {file_name}")
+
+        if format is None:
+            if file_name.endswith(".txt"):
+                format = "ids"
+            elif file_name.endswith(".json"):
+                format = "json"
+            else:
+                raise ValueError(f"File format not supported for {file_name}")
+
+        if format in ("ids", "rules"):
+            with open(file_name, "w") as file:
+                for test_vector in test_vectors:
+                    file.write(f"{test_vector.get_id()}")
+                    if format == "rules":
+                        if test_vector.failing_result and test_vector.failing_result.failing_reason:
+                            file.write(f"   XFAIL {test_vector.failing_result.failing_reason}")
+                        if test_vector.failing_result and test_vector.failing_result.skip_reason:
+                            file.write(f"   SKIP {test_vector.failing_result.skip_reason}")
+                    file.write("\n")
+        elif format == "json":
+            test_vectors = [
+                {
+                    "operator": test_vector.operator,
+                    "input_source": test_vector.input_source.name if test_vector.input_source is not None else None,
+                    "input_shape": test_vector.input_shape,
+                    "number_of_operands": test_vector.number_of_operands,
+                    "dev_data_format": TestPlanUtils.dev_data_format_to_str(test_vector.dev_data_format),
+                    "math_fidelity": test_vector.math_fidelity.name if test_vector.math_fidelity is not None else None,
+                    "kwargs": test_vector.kwargs,
+                    "failing_reason": test_vector.failing_result.failing_reason if test_vector.failing_result else None,
+                    "skip_reason": test_vector.failing_result.skip_reason if test_vector.failing_result else None,
+                } for test_vector in test_vectors
+            ]
+            import json
+            with open(file_name, "w") as file:
+                json.dump(test_vectors, file, indent=4)
+
+    @classmethod
     def print_query_values(cls, max_width=80):
 
         operators = [key for key in TestSuiteData.all.indices]
