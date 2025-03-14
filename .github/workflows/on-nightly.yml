@@ -41,7 +41,6 @@ jobs:
     if: always()
     needs:
       - docker-build
-      - save-docker-image
       - build
       - test_full_model_passing
       - perf-benchmark
