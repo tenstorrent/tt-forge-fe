@@ -1,12 +1,13 @@
 name: On nightly xfail
 
 on:
+  push:
   workflow_dispatch:
     inputs:
-      docker_image:
-        description: 'Docker image to use (manual override)'
-        required: false
-        type: string
+        run_id:
+            description: 'Run id'
+            required: true
+            type: number
   workflow_run:
     workflows:
       - "On nightly"
@@ -14,64 +15,18 @@ on:
       - completed
 
 jobs:
-  fetch-docker-image:
-    runs-on: ubuntu-latest
-    outputs:
-      docker-image: ${{ steps.get-image.outputs.docker-image }}
-    steps:
-      - name: Download Docker image artifact (if available)
-        id: download-artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image-artifact
-          path: ./artifacts
-
-      - name: Check if artifact exists
-        id: check-artifact
-        run: |
-          if [ -f "./artifacts/docker-image.txt" ]; then
-            echo "Artifact found"
-          else
-            echo "No artifact found"
-            echo "docker-image=" >> $GITHUB_ENV
-          fi
-
-      - name: Get Docker image name
-        id: get-image
-        run: |
-          if [ -n "${{ github.event.inputs.docker_image }}" ]; then
-            # Use manual input if provided (user provided the image name)
-            echo "docker-image=${{ github.event.inputs.docker_image }}" >> $GITHUB_OUTPUT
-          elif [ -f "./artifacts/docker-image.txt" ]; then
-            # Use artifact if available (from nightly build)
-            IMAGE=$(cat ./artifacts/docker-image.txt)
-            echo "docker-image=$IMAGE" >> $GITHUB_OUTPUT
-          else
-            # No image found (we will build it)
-            echo "docker-image=" >> $GITHUB_OUTPUT
-          fi
-
   docker-build:
-    needs: fetch-docker-image
-    # Only build the image if it was not found in the artifact or provided manually
-    if: needs.fetch-docker-image.outputs.docker-image == ''
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
-
-  test_full_model_xfailing:
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  test_full_model_xpassing:
     needs:
-      - fetch-docker-image
       - docker-build
-
-    # Run the tests only if the image was found or built successfully
-    if: |
-      needs.fetch-docker-image.result == 'success' &&
-      (needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped')
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'nightly and xfail'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
-      docker-image: ${{ needs.fetch-docker-image.outputs.docker-image || needs.docker-build.outputs.docker-image }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
+      run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id }}
