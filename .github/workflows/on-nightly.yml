@@ -9,6 +9,23 @@ jobs:
   docker-build:
       uses: ./.github/workflows/build-image.yml
       secrets: inherit
+
+  # Create and upload the Docker image name artifact
+  save-docker-image:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Create Docker image artifact
+        run: |
+          mkdir -p /tmp/artifacts
+          echo "${{ needs.docker-build.outputs.docker-image }}" > /tmp/artifacts/docker-image.txt
+      - name: Upload Docker image name
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image-artifact
+          path: /tmp/artifacts/docker-image.txt
+          retention-days: 7
+
   build:
     needs: docker-build
     uses: ./.github/workflows/build.yml
@@ -40,6 +57,7 @@ jobs:
     if: always()
     needs:
       - docker-build
+      - save-docker-image
       - build
       - test_full_model_passing
       - perf-benchmark

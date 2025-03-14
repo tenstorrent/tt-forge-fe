@@ -1,0 +1,70 @@
+name: On nightly xfail
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker_image:
+        description: 'Docker image to use (manual override)'
+        required: false
+        type: string
+  workflow_run:
+    workflows:
+      - "On nightly"
+    types:
+      - completed
+
+jobs:
+  fetch-docker-image:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-image: ${{ steps.get-image.outputs.docker-image }}
+    steps:
+      - name: Download Docker image artifact
+        uses: dawidd6/action-download-artifact@v2
+        id: download
+        with:
+          workflow: "On nightly"
+          name: docker-image-artifact
+          run_id: ${{ github.event.workflow_run.id }}
+          path: /tmp/artifacts
+          if_no_artifact_found: ignore
+
+      - name: Get Docker image name
+        id: get-image
+        run: |
+          if [ -n "${{ github.event.inputs.docker_image }}" ]; then
+            # Use manual input if provided (user provided the image name)
+            echo "docker-image=${{ github.event.inputs.docker_image }}" >> $GITHUB_OUTPUT
+          elif [ -f "/tmp/artifacts/docker-image.txt" ]; then
+            # Use artifact if available (from nightly build)
+            IMAGE=$(cat /tmp/artifacts/docker-image.txt)
+            echo "docker-image=$IMAGE" >> $GITHUB_OUTPUT
+          else
+            # No image found (we will build it)
+            echo "docker-image=" >> $GITHUB_OUTPUT
+          fi
+
+  docker-build:
+    needs: fetch-docker-image
+    # Only build the image if it was not found in the artifact or provided manually
+    if: needs.fetch-docker-image.outputs.docker-image == ''
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  test_full_model_xfailing:
+    needs:
+      - fetch-docker-image
+      - docker-build
+
+    # Run the tests only if the image was found or built successfully
+    if: |
+      needs.fetch-docker-image.result == 'success' &&
+      (needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped')
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and xfail'
+      test_group_cnt: 4
+      test_group_ids: '[1,2,3,4]'
+      docker-image: ${{ needs.fetch-docker-image.outputs.docker-image || needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
