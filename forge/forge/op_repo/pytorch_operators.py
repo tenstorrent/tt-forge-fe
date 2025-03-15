@@ -53,6 +53,7 @@ _OPERATORS = [
     OperatorDefinition("gelu", "torch.nn.functional.gelu", 1),
     OperatorDefinition("leaky_relu", "torch.nn.functional.leaky_relu", 1),
     OperatorDefinition("cumsum", "torch.cumsum", 1),
+    OperatorDefinition("softmax", "torch.softmax", 1),
     # Unary operators (not implemented)
     OperatorDefinition("acos", "torch.acos", 1),
     OperatorDefinition("arccos", "torch.acos", 1),
