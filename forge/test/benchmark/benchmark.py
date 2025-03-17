@@ -4,6 +4,10 @@
 
 import sys
 import os
+import json
+
+import argparse
+import torch
 
 # Get the absolute path of the project root and add it to the path
 # When we run the tests from benchmark directory it can't find test.utils module,
@@ -11,15 +15,16 @@ import os
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, project_root)
 
-import argparse
-
 from benchmark import models
+from test.utils import reset_seeds
 
 MODELS = {
     "mnist_linear": models.mnist_linear.mnist_linear_benchmark,
     "resnet50_hf": models.resnet_hf.resnet_hf_benchmark,
     "llama": models.llama.llama_prefill_benchmark,
 }
+
+REPORTS_DIR = "./benchmark_reports/"
 
 
 def read_args():
@@ -115,8 +120,21 @@ def run_benchmark(config: dict):
     None
     """
 
+    reset_seeds()
+
     model_func = MODELS[config["model"]]
-    model_func(config)
+    result = model_func(config)
+
+    output_file = config["output"]
+    if not os.path.exists(REPORTS_DIR):
+        os.makedirs(REPORTS_DIR)
+    if not output_file:
+        output_file = f"forge-benchmark-e2e-{result['output_name']}.json"
+    result["output"] = REPORTS_DIR + output_file
+
+    # Save the results to a file
+    with open(result["output"], "w") as f:
+        json.dump(result, f)
 
 
 def main():

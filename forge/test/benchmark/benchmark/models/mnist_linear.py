@@ -19,10 +19,6 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 
-# Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
-
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
 
@@ -212,12 +208,5 @@ def mnist_linear_benchmark(config: dict):
         loop_count=loop_count,
     )
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
-    if not output_file:
-        output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
-    result["output"] = REPORTS_DIR + output_file
-
-    # Save the results to a file
-    with open(result["output"], "w") as f:
-        json.dump(result, f)
+    result["output_name"] = f"mnist_{batch_size}_{input_size}_{hidden_size}"
+    return result
