@@ -46,7 +46,7 @@ jobs:
       operators: ${{ github.event.inputs.operators }}
 
   test_on_schedule:
-    if: !inputs.runs-on
+    if: ${{ ! inputs.runs-on }}
     needs:
       - docker-build
     #   - build
