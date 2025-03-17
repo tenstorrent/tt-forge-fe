@@ -4,7 +4,6 @@
 
 import sys
 import os
-import json
 
 import argparse
 import torch
@@ -23,8 +22,6 @@ MODELS = {
     "resnet50_hf": models.resnet_hf.resnet_hf_benchmark,
     "llama": models.llama.llama_prefill_benchmark,
 }
-
-REPORTS_DIR = "./benchmark_reports/"
 
 
 def read_args():
@@ -123,18 +120,7 @@ def run_benchmark(config: dict):
     reset_seeds()
 
     model_func = MODELS[config["model"]]
-    result = model_func(config)
-
-    output_file = config["output"]
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
-    if not output_file:
-        output_file = f"forge-benchmark-e2e-{result['output_name']}.json"
-    result["output"] = REPORTS_DIR + output_file
-
-    # Save the results to a file
-    with open(result["output"], "w") as f:
-        json.dump(result, f)
+    model_func(config)
 
 
 def main():
