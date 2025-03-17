@@ -1,6 +1,7 @@
 name: On Nightly Sweeps Tests
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       runs-on:
@@ -22,25 +23,26 @@ env:
   RUNS_ON_DEFAULT: n150
 
 jobs:
-  docker-build:
-      uses: ./.github/workflows/build-image.yml
-      secrets: inherit
-  build:
-    needs: docker-build
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  # docker-build:
+  #     uses: ./.github/workflows/build-image.yml
+  #     secrets: inherit
+  # build:
+  #   needs: docker-build
+  #   uses: ./.github/workflows/build.yml
+  #   secrets: inherit
+  #   with:
+  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
   test:
-    needs:
-      - docker-build
-      - build
+    # needs:
+    #   - docker-build
+    #   - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'nightly_sweeps'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      # docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      docker-image: 'public.ecr.aws/ubuntu/ubuntu:22.04'
       runs-on: '[{"runs-on": "${{ github.event.inputs.runs-on || github.env.RUNS_ON_DEFAULT }}"}]'
       operators: ${{ github.event.inputs.operators }}
