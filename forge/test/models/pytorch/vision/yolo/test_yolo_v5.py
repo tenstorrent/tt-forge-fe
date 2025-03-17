@@ -8,11 +8,14 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.utils import Framework, build_module_name
-from test.utils import download_model
+from test.utils import download_model, fetch_model, remove_model
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
+
+    if name == "yolov5s":
+        fetch_model(name, "yolov5s.pt", "https://github.com/ultralytics/yolov5/releases/download/v7.0/yolov5s.pt")
 
     model = download_model(torch.hub.load, variant, name, pretrained=True)
 
@@ -62,6 +65,9 @@ def test_yolov5_320x320(forge_property_recorder, size):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Remove model weights
+    remove_model(f"yolov5{size}.pt")
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
