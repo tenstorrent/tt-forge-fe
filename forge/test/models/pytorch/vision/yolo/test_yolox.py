@@ -5,7 +5,7 @@
 import subprocess
 
 subprocess.run(
-    ["pip", "install", "yolox==0.3.0", "--no-deps"]
+    ["pip", "install", "yolox==0.3.0", "--no-deps", "--no-cache-dir"]
 )  # Install yolox==0.3.0 without installing its dependencies
 
 """

@@ -35,6 +35,10 @@ on:
         description: 'Run ID for the on-nightly workflow used to generate the WHL installer'
         required: false
         type: string
+      addopts:
+        description: 'Additional options to pass to pytest'
+        required: false
+        type: string
 
 permissions:
   packages: write
@@ -134,6 +138,7 @@ jobs:
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
+                ${{ inputs.addopts }} \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                2>&1 | tee pytest.log
 

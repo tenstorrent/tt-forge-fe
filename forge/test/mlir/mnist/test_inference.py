@@ -10,6 +10,7 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.push
+@pytest.mark.nightly_bh
 def test_mnist_inference(forge_property_recorder):
     inputs = [torch.rand(1, 784)]
 
