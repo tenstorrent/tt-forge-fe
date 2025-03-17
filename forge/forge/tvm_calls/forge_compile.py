@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-from forge.tensor import to_tf_tensors, to_pt_tensor, to_pt_tensors, pt_to_paddle_tensors
+from forge.tensor import to_tf_tensors, to_pt_tensor, to_pt_tensors, to_pd_tensors
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.forge_property_utils import ExecutionStage
 import torch
@@ -558,7 +558,7 @@ def compile_paddle_for_forge(
     paddlemod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[], forge_property_handler=None
 ):
 
-    paddle_inputs = pt_to_paddle_tensors(inputs)
+    paddle_inputs = to_pd_tensors(inputs)
 
     with ConvertEmulatedDtypes(paddlemod, inputs):
         framework_outputs = extract_framework_model_outputs(

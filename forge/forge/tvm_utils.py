@@ -34,6 +34,19 @@ tf_to_pt_type_map = {
     tf.variant: None,  # No torch.uint16
 }
 
+pd_to_pt_type_map = {
+    paddle.bfloat16: torch.bfloat16,
+    paddle.bool: torch.bool,
+    paddle.float16: torch.float16,
+    paddle.float32: torch.float32,
+    paddle.float64: torch.float64,
+    paddle.int8: torch.int8,
+    paddle.int16: torch.int16,
+    paddle.int32: torch.int32,
+    paddle.int64: torch.int64,
+    paddle.uint8: torch.uint8,
+}
+
 
 def map_tf_dtype_to_pt(tf_dtype):
     pt_type = tf_to_pt_type_map[tf_dtype]
@@ -44,9 +57,17 @@ def map_tf_dtype_to_pt(tf_dtype):
 def map_pt_dtype_to_tf(pt_dtype):
     pt_types = list(tf_to_pt_type_map.values())
     assert pt_dtype in pt_types, f"{pt_dtype} Tensorflow equivelant not defined"
-
     return list(tf_to_pt_type_map.keys())[pt_types.index(pt_dtype)]
 
+def map_pd_dtype_to_pt(pd_dtype):
+    pt_type = pd_to_pt_type_map[pd_dtype]
+    assert pt_type is not None, f"Paddle DType {pd_dtype} has no PyTorch equivalent"
+    return pt_type
+
+def map_pt_dtype_to_pd(pt_dtype):
+    pt_types = list(pd_to_pt_type_map.values())
+    assert pt_dtype in pt_types, f"{pt_dtype} Paddle equivelant not defined"
+    return list(pd_to_pt_type_map.keys())[pt_types.index(pt_dtype)]
 
 def flatten_inputs(inputs, names=None, force_float32=False):
     from forge.tensor import Tensor
