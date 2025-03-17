@@ -41,6 +41,7 @@ class Task(StrEnum):
     TEXT_TO_SPEECH = "text_to_speech"
     SENTENCE_EMBEDDING_GENERATION = "sentence_embed_gen"
     MULTIMODAL_TEXT_GENERATION = "multimodal_text_gen"
+    OPTICAL_CHARACTER_RECOGNITION = "optical_char_reg"
 
 
 class Source(StrEnum):
