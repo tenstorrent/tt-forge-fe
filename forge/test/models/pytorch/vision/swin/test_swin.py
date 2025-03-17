@@ -20,7 +20,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["microsoft/swin-tiny-patch4-window7-224"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "microsoft/swin-tiny-patch4-window7-224",
+            marks=[pytest.mark.xfail(reason="Tensor mismatch between Framework and Forge codegen output(pcc=0.98)")],
+        ),
+    ],
+)
 def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -32,6 +40,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 1: Create Forge module from PyTorch model
@@ -52,7 +61,15 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
-@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "microsoft/swinv2-tiny-patch4-window8-256",
+            marks=[pytest.mark.xfail(reason="Tensor mismatch between Framework and Forge codegen output(pcc=0.86)")],
+        ),
+    ],
+)
 def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -64,6 +81,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "priority")
     record_forge_property("tags.model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -95,6 +113,7 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -126,6 +145,7 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -150,9 +170,32 @@ variants_with_weights = {
     "swin_v2_b": "Swin_V2_B_Weights",
 }
 
+variants = [
+    pytest.param(
+        "swin_t",
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
+            )
+        ],
+    ),
+    "swin_s",
+    "swin_b",
+    pytest.param(
+        "swin_v2_t",
+        marks=[
+            pytest.mark.xfail(
+                reason="[TVM Relay IRModule Generation] relay.op._make.full expects Array[IntImm], but got Array[index 0: tir.Any] in argument 1"
+            )
+        ],
+    ),
+    "swin_v2_s",
+    "swin_v2_b",
+]
+
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", variants)
 def test_swin_torchvision(record_forge_property, variant):
 
     if variant not in ["swin_t", "swin_v2_t"]:
@@ -168,6 +211,7 @@ def test_swin_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

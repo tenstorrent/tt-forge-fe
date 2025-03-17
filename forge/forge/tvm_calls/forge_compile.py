@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-from forge.tensor import to_tf_tensors, to_pt_tensors
+from forge.tensor import to_tf_tensors, to_pt_tensor, to_pt_tensors, pt_to_paddle_tensors
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.execution_tracker import ExecutionStage, record_execution_phase_and_stage
 import torch
+import paddle
 
 import numpy as np
 import tvm
@@ -31,7 +32,6 @@ from os.path import exists as file_exists
 import onnxruntime as ort
 import onnx
 import onnx.numpy_helper
-import mxnet as mx
 from tvm.relay.expr import Tuple
 from forge.tvm_calls.relay.op.forge import verify_tvm_compile, flatten_IO, compile_for_forge, partition_for_forge
 from jax.experimental import jax2tf
@@ -43,6 +43,7 @@ from forge.tvm_calls.forge_utils import (
     extract_flatten_inputs,
     construct_tvm_ir,
     extract_function_callnodes,
+    paddle_trace,
     trace_to_origin,
     has_op,
 )
@@ -94,7 +95,7 @@ def load_tvm_graph(inputs, module, compiler_cfg, graph_name, framework, path=Non
         Compiler configurations
 
     path: str
-        Path to onnx file on disk. This is used to verify TVM results vs. framework results.
+        Path to TFLite file on disk. This is used to verify TVM results vs. framework results.
 
     Returns
     -------
@@ -143,7 +144,7 @@ def compile_tvm_graph(
         Compiler configurations
 
     path: str
-        Path to onnx file on disk. This is used to verify TVM results vs. framework results.
+        Path to TFLite file on disk. This is used to verify TVM results vs. framework results.
 
     Returns
     -------
@@ -165,6 +166,16 @@ def compile_tvm_graph(
             verify_cfg=verify_cfg,
             input_names=input_names,
         )
+    elif framework == "paddle":
+        json_graphs, inputs = compile_paddle_for_forge(
+            module,
+            *inputs,
+            graph_name=graph_name,
+            compiler_cfg=compiler_cfg,
+            verify_cfg=verify_cfg,
+            input_names=input_names,
+        )
+
     elif framework == "tensorflow":
         # convert pytorch tensors to tf tensors
         tf_inputs = to_tf_tensors(inputs)
@@ -186,13 +197,7 @@ def compile_tvm_graph(
         assert all([isinstance(x, torch.Tensor) for x in inputs])
         onnx_inputs = [x.detach().numpy() for x in inputs]
         json_graphs, _ = compile_onnx_for_forge(
-            module, path, *onnx_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
-        )
-    elif framework == "mxnet":
-        assert all([isinstance(x, torch.Tensor) for x in inputs])
-        mxnet_inputs = [mx.nd.array(x.detach().numpy()) for x in inputs]
-        json_graphs = compile_mxnet_for_forge(
-            module, *mxnet_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
+            module, *onnx_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
         )
     elif framework == "jax":
         tf_inputs = to_tf_tensors(inputs, force_float32=True)
@@ -501,6 +506,82 @@ def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verif
     return json_graphs, flattened_inputs
 
 
+def compile_paddle_for_forge(paddlemod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[]):
+
+    paddle_inputs = pt_to_paddle_tensors(inputs)
+
+    with ConvertEmulatedDtypes(paddlemod, inputs):
+        framework_outputs = extract_framework_model_outputs(
+            framework="paddle",
+            model=paddlemod,
+            inputs=paddle_inputs,
+            verify_tvm_compile=verify_cfg.verify_tvm_compile,
+        )
+
+    flattened_inputs, input_names, flattened_name_map, input_spec = extract_flatten_inputs(
+        framework="paddle",
+        model=paddlemod,
+        inputs=inputs,
+        input_names=input_names,
+    )
+
+    if isinstance(paddlemod, paddle.jit.TranslatedLayer):
+        traced_model, param_name_lookup = paddlemod, None
+    else:
+        traced_model, param_name_lookup = paddle_trace(paddlemod, input_spec)
+
+    # Input names must match with the ones in the forward method
+    named_inputs = {name: inp.shape for name, inp in zip(input_names, paddle_inputs)}
+
+    # Generate TVM module
+    mod, params = tvm.relay.frontend.from_paddle(traced_model, named_inputs)
+
+    record_execution_phase_and_stage(ExecutionStage.TVM_GENERATE_RELAY_IRMODULE)
+    logger.trace("From Paddle")
+    logger.trace(mod.functions)
+
+    mod = flatten_IO(mod, flattened_name_map)
+    record_execution_phase_and_stage(ExecutionStage.TVM_FLATTEN_IO)
+
+    # Construct TVM IR
+    mod, _ = construct_tvm_ir(
+        framework="paddle",
+        model=paddlemod,
+        tvm_mod=mod,
+        params=params,
+        compiler_cfg=compiler_cfg,
+    )
+
+    # Construct NumPy inputs
+    flattened_inputs_as_float = (act.float() if torch.is_floating_point(act) else act for act in flattened_inputs)
+    np_inputs = {name: inp.detach().numpy() for name, inp in zip(input_names, flattened_inputs_as_float)}
+
+    # Compile TVM for Forge
+    partitioned_mod, forge_params = compile_tvm_for_forge(
+        mod,
+        params,
+        np_inputs,
+        framework_outputs,
+        input_names=input_names,
+        graph_name=graph_name,
+        return_params=True,
+        compiler_cfg=compiler_cfg,
+        verify_cfg=verify_cfg,
+    )
+
+    # Extract Graphs (TT, CPU, ...)
+    json_graphs = extract_graphs(
+        partitioned_mod,
+        forge_params,
+        input_names,
+        paddlemod.state_dict().keys(),
+        param_name_lookup=param_name_lookup,
+        graph_hash="",
+    )
+
+    return json_graphs, flattened_inputs
+
+
 def compile_tvm_for_forge(
     mod,
     params,
@@ -639,17 +720,16 @@ def duplicate_dequantize_nodes_in_onnx_graph(onnx_module):
         graph.node.remove(node)
 
 
-def compile_onnx_for_forge(onnx_mod, path, *inputs, graph_name, compiler_cfg, verify_cfg=None):
+def compile_onnx_for_forge(onnx_mod, *inputs, graph_name, compiler_cfg, verify_cfg=None):
     import onnxruntime as ort
-
-    assert path != None, "Onnx compile needs path to onnx file on disk."
 
     # Set default num threads to 2, hangs on some hosts otherwise https://github.com/microsoft/onnxruntime/issues/10166
     so = ort.SessionOptions()
     so.inter_op_num_threads = 2
     so.intra_op_num_threads = 2
 
-    ort_sess = ort.InferenceSession(path, sess_options=so, providers=["CPUExecutionProvider"])
+    onnx_bytes = onnx_mod.SerializeToString()
+    ort_sess = ort.InferenceSession(onnx_bytes, sess_options=so, providers=["CPUExecutionProvider"])
 
     input_names = []
     for inp in ort_sess.get_inputs():
@@ -669,7 +749,6 @@ def compile_onnx_for_forge(onnx_mod, path, *inputs, graph_name, compiler_cfg, ve
         model=onnx_mod,
         inputs=inputs,
         verify_tvm_compile=verify_cfg.verify_tvm_compile,
-        path=path,
         input_dict=input_dict,
     )
 
@@ -723,7 +802,6 @@ def compile_tflite_for_forge(module, path, *inputs, graph_name, compiler_cfg, ve
         model=module,
         inputs=inputs,
         verify_tvm_compile=verify_cfg.verify_tvm_compile,
-        path=path,
     )
 
     # Get TFLite model from buffer
@@ -1084,77 +1162,6 @@ def compile_tf_graphdef_for_forge(
     return json_graphs
 
 
-def compile_mxnet_for_forge(module, *inputs, graph_name, compiler_cfg, verify_cfg=None):
-    framework_outputs = []
-    if verify_cfg is not None and verify_cfg.verify_tvm_compile:
-        framework_outputs = module(*inputs)
-        if not isinstance(framework_outputs, (list, tuple)):
-            framework_outputs = [framework_outputs]
-
-        framework_outputs = [x.asnumpy() for x in framework_outputs if isinstance(x, mx.ndarray.ndarray.NDArray)]
-
-    input_dict = {"input_" + str(i): inp.shape for i, inp in enumerate(inputs)}
-
-    mod_inputs = []
-    if isinstance(module, mx.gluon.HybridBlock):
-        for name in input_dict:
-            mod_inputs.append(mx.sym.Variable(name))
-        sym = module(*mod_inputs)
-        if isinstance(sym, (list, tuple)):
-            sym = mx.sym.Group(sym)
-    else:
-        sym = module
-    graph_string = sym.tojson().encode("utf-8")
-    m = hashlib.sha256()
-    m.update(graph_string)
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="mxnet")
-    if cached_graphs is not None:
-        return cached_graphs
-
-    input_name_to_tensor = {name: tensor.asnumpy() for name, tensor in zip(input_dict.keys(), inputs)}
-    mod, params = relay.frontend.from_mxnet(module, shape=input_dict)
-
-    if not compiler_cfg.enable_tvm_constant_prop:
-        mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], {}))
-    else:
-        assert (
-            compiler_cfg.convert_framework_params_to_tvm
-        ), "Cannot use constant prop without converting framework params to relay"
-        propped_params = {k: (v, True) for k, v, in params.items()}
-        mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], propped_params))
-
-    _, forge_params = compile_tvm_for_forge(
-        mod,
-        params,
-        input_name_to_tensor,
-        framework_outputs,
-        input_names=list(input_dict.keys()),
-        graph_name=graph_name,
-        return_params=True,
-        compiler_cfg=compiler_cfg,
-        verify_cfg=verify_cfg,
-    )
-
-    dev_json_graph["hash"] = m.hexdigest()
-    dev_json_graph["params"] = {}
-    for function_name in forge_params.keys():
-        dev_json_graph["params"].update(
-            {
-                name: v.numpy()
-                for (k, v), name in zip(
-                    forge_params[function_name].items(), dev_json_graph["param_names"][function_name]
-                )
-            }
-        )
-
-    dev_functions = list(dev_json_graph["functions"].keys())
-    dev_json_graph["graph"] = dev_json_graph["functions"][dev_functions[0]]
-
-    json_graph = []
-    json_graph.append(copy.deepcopy(clean_names(json_graph=dev_json_graph, forge_params=forge_params)))
-    return json_graph
-
-
 def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
     """
     Formats model weights based on specific framework.
@@ -1188,6 +1195,17 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
             key: (value, named_params[key].requires_grad if key in named_params else False)
             for key, value in torch_weights.items()
         }
+
+    elif framework == "paddle":
+        paddle_weights = module.state_dict()
+        named_buffers = dict(module.named_buffers())
+        paddle_weights.update(named_buffers)
+        named_params = dict(module.named_parameters())
+        weights = {
+            value.name: (to_pt_tensor(value), value.trainable if key in named_params else False)
+            for key, value in paddle_weights.items()
+        }
+
     elif framework == "tensorflow":
         weights = {
             weight.name: (
@@ -1214,16 +1232,6 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
 
         if not (len(inputs) > 0 and isinstance(inputs[0], torch.Tensor)):
             inputs = [torch.tensor(onnx.numpy_helper.to_array(x)) for x in inputs if x is not None]
-    elif framework == "mxnet":
-        weights = {
-            name: (
-                torch.Tensor(mx_param.data().asnumpy()),
-                issubclass(mx_param.data().asnumpy().dtype.type, np.floating),
-            )
-            for name, mx_param in module.collect_params().items()
-        }
-        if not (len(inputs) > 0 and isinstance(inputs[0], torch.Tensor)):
-            inputs = [torch.tensor(x.asnumpy()) for x in inputs if x is not None]
     elif framework == "jax":
 
         def flatten_params(params, parent_key="", sep="."):
@@ -1298,21 +1306,23 @@ def get_auto_path(graph_hash, compiler_cfg, is_load):
         if auto_cache == -1 and is_load:
             auto_path = ""
         else:
-            submodules = (
-                subprocess.check_output(["git", "submodule", "status", "--recursive"]).decode("ascii").split("\n")
-            )
-            tvm_short_cache = None
-            for submodule in submodules:
-                split_string = submodule.split(" ")
-                if split_string[0] != "":
-                    split_string.insert(0, "")
-                    split_string[1] = split_string[1][1:]
-                if len(split_string) > 2 and split_string[2] == "third_party/tvm":
-                    tvm_short_cache = split_string[1][:8]
-                    break
-            assert tvm_short_cache is not None, "Couild not find tvm submodule, are you running from forge git repo?"
-
-            auto_path = "generated_modules/tvm_cache/" + tvm_short_cache + "_" + graph_hash
+            tvm_path = os.path.dirname(tvm.__file__)
+            if "site-packages" in tvm_path:
+                # Pip install case.
+                tvm_info = subprocess.check_output(["pip", "show", "tvm"]).decode("utf-8")
+                for line in tvm_info.split("\n"):
+                    if "Version:" in line:
+                        tvm_ver = line.split("Version: ")[-1]
+                        tvm_hash = tvm_ver.split("+")[-1]
+                        break
+            else:
+                # Source build case.
+                tvm_hash = (
+                    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=tvm_path)
+                    .decode("utf-8")
+                    .strip()
+                )
+            auto_path = "generated_modules/tvm_cache/" + tvm_hash + "_" + graph_hash
     else:
         auto_path = compiler_cfg.tvm_graph_load_path if is_load else compiler_cfg.tvm_graph_store_path
 

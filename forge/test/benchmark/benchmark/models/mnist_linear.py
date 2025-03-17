@@ -2,18 +2,26 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Built-in modules
 import pytest
 import time
 import socket
 import subprocess
 import json
+import os
+from datetime import datetime
+
+# Third-party modules
 import torch
 from torch import nn
+
+# Forge modules
 import forge
-from forge.verify.compare import compare_with_golden_pcc
+from forge.verify.verify import verify
 
 # Common constants
 GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
+REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
@@ -89,10 +97,7 @@ def test_mnist_linear(
 ):
 
     if training:
-        pytest.skip("Training not supported")
-
-    if batch_size > 1:
-        pytest.skip("Batch size greater than 1 not supported")
+        pytest.skip("Training is not supported")
 
     inputs = [torch.rand(batch_size, input_size)]
 
@@ -108,15 +113,10 @@ def test_mnist_linear(
         co_out = compiled_model(*inputs)
     end = time.time()
 
-    co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co) for fo, co in zip(fw_out, co_out)]
+    verify(inputs, framework_model, compiled_model)
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
-    date = (
-        subprocess.check_output(["git", "show", "-s", "--format=%cd", "--date=format:%y-%m-%d", "HEAD"])
-        .decode("ascii")
-        .strip()
-    )
+    date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
     total_samples = batch_size * loop_count
@@ -212,11 +212,12 @@ def mnist_linear_benchmark(config: dict):
         loop_count=loop_count,
     )
 
+    if not os.path.exists(REPORTS_DIR):
+        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
-
-    result["output"] = output_file
+    result["output"] = REPORTS_DIR + output_file
 
     # Save the results to a file
-    with open(output_file, "w") as f:
+    with open(result["output"], "w") as f:
         json.dump(result, f)

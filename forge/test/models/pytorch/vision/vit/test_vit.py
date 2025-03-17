@@ -27,11 +27,14 @@ def generate_model_vit_imgcls_hf_pytorch(variant):
     return model, [img_tensor], {}
 
 
-variants = ["google/vit-base-patch16-224", "google/vit-large-patch16-224"]
+variants = [
+    pytest.param("google/vit-base-patch16-224", marks=[pytest.mark.xfail(reason="Tracing issue by torch.jit.trace")]),
+    "google/vit-large-patch16-224",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_vit_classify_224_hf_pytorch(record_forge_property, variant):
     if variant != "google/vit-base-patch16-224":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -46,6 +49,10 @@ def test_vit_classify_224_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    if variant in ["google/vit-base-patch16-224"]:
+        record_forge_property("group", "priority")
+    else:
+        record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(variant)
@@ -65,9 +72,17 @@ variants_with_weights = {
     "vit_h_14": "ViT_H_14_Weights",
 }
 
+variants = [
+    pytest.param("vit_b_16", marks=[pytest.mark.xfail(reason="Tracing issue by torch.jit.trace")]),
+    "vit_b_32",
+    "vit_l_16",
+    "vit_l_32",
+    "vit_h_14",
+]
+
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", variants)
 def test_vit_torchvision(record_forge_property, variant):
 
     if variant != "vit_b_16":
@@ -83,6 +98,7 @@ def test_vit_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

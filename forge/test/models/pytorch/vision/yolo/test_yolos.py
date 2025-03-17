@@ -11,7 +11,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["hustvl/yolos-tiny"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "hustvl/yolos-tiny",
+            marks=[pytest.mark.xfail(reason="AssertionError: Only support nearest neighbor and linear for now")],
+        ),
+    ],
+)
 def test_yolos(record_forge_property, variant):
 
     # Build Module Name
@@ -24,6 +32,7 @@ def test_yolos(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

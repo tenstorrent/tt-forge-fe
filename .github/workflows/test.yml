@@ -27,6 +27,10 @@ on:
         required: false
         type: string
         default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      operators:
+        description: 'Operators to test (comma separated)'
+        required: false
+        type: string
 
 permissions:
   packages: write
@@ -58,13 +62,14 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
+    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
     steps:
 
     - name: Fetch job id
       id: fetch-job-id
       uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
-        job_name: "${{ github.job }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
 
     - name: Set reusable strings
       id: strings
@@ -114,6 +119,7 @@ jobs:
         HF_HOME: /mnt/dockercache/huggingface
         HF_HUB_DISABLE_PROGRESS_BARS: 1
         FORGE_DISABLE_REPORTIFY_DUMP: 1
+        OPERATORS: ${{ inputs.operators }}
       shell: bash
       run: |
         source env/activate
@@ -121,7 +127,7 @@ jobs:
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
-        pytest -m push --splits ${{ inputs.test_group_cnt }} \
+        pytest --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
@@ -139,7 +145,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
+        name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
         path: ${{ steps.strings.outputs.test_report_path }}
 
     - name: Show Test Report

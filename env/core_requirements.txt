@@ -23,8 +23,6 @@ matplotlib==3.5.1
 # They are both requirements of datasets. Multiprocess is however not fixed.
 # TODO: Remove when datasets is upgraded
 multiprocess==0.70.13
-# Newer versions of mxnet cause issue with AnyJSONManager static object destruction (segfault)
-mxnet==1.6.0
 networkx==2.8.5
 numpy==1.23.1
 onnx>=1.15.0
@@ -53,3 +51,4 @@ openpyxl==3.1.5
 GitPython==3.1.44
 kornia==0.8.0
 mlp-mixer-pytorch==0.2.0
+gliner==0.2.16

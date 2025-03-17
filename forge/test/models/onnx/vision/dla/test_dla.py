@@ -65,7 +65,7 @@ def test_dla_onnx(test_device, variant):
     # Load DLA model
     model_name = f"dla_{variant}_onnx"
     onnx_model = onnx.load(onnx_model_path)
-    tt_model = forge.OnnxModule(model_name, onnx_model, onnx_model_path)
+    tt_model = forge.OnnxModule(model_name, onnx_model)
 
     pcc = 0.99
     if test_device.arch == BackendDevice.Wormhole_B0:

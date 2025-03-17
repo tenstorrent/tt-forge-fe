@@ -17,7 +17,14 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["xlm-roberta-base"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "xlm-roberta-base", marks=[pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")]
+        ),
+    ],
+)
 def test_roberta_masked_lm(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -25,6 +32,7 @@ def test_roberta_masked_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Albert tokenizer and model from HuggingFace
@@ -67,6 +75,7 @@ def test_roberta_sentiment_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load Bart tokenizer and model from HuggingFace

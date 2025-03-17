@@ -5,6 +5,7 @@
 from typing import Union, Tuple, List, Optional, Dict, TypeAlias
 from forge.tvm_utils import map_tf_dtype_to_pt
 
+import paddle
 import torch
 import tensorflow as tf
 import numpy as np
@@ -1192,8 +1193,36 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
     elif isinstance(t, Tensor):
         assert t.has_value(), "Expected Forge tensor to have a value"
         return t.value()
+    elif isinstance(t, paddle.Tensor):
+        pt = torch.Tensor(t.numpy())
+        pt.requires_grad = t.stop_gradient == False
+        return pt
+    elif isinstance(t, np.ndarray):
+        return torch.from_numpy(t)
     else:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
+
+
+def pt_to_paddle_tensor(pt: torch.Tensor):
+    if isinstance(pt, paddle.Tensor):
+        return pt
+    elif isinstance(pt, torch.Tensor):
+        return paddle.to_tensor(pt.detach().numpy())
+
+    else:
+        raise RuntimeError(f"Unknown type of tensor: {type(pt)}")
+
+
+def pt_to_paddle_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]):
+    paddle_tensors = []
+
+    if not isinstance(tensors, (list, tuple)):
+        tensors = (tensors,)
+
+    for t in tensors:
+        paddle_tensors.append(pt_to_paddle_tensor(t))
+
+    return tuple(paddle_tensors)
 
 
 def to_jax_tensors(

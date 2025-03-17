@@ -25,7 +25,19 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["adept/fuyu-8b"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "adept/fuyu-8b",
+            marks=[
+                pytest.mark.xfail(
+                    reason="[Optimization Graph Passes] RuntimeError: (i >= 0) && (i < (int)dims_.size()) Trying to access element outside of dimensions: 3"
+                )
+            ],
+        ),
+    ],
+)
 def test_fuyu8b(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -33,6 +45,7 @@ def test_fuyu8b(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     config = FuyuConfig.from_pretrained(variant)

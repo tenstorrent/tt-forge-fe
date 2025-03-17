@@ -28,6 +28,7 @@ jobs:
         - /etc/udev/rules.d:/etc/udev/rules.d
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
     steps:
 
     - name: Fetch job id
@@ -44,7 +45,7 @@ jobs:
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=forge-benchmark-e2e-mnist_$JOB_ID.json" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=./benchmark_reports/" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -79,14 +80,21 @@ jobs:
         pip install forge*.whl --force-reinstall
 
     - name: Run Perf Benchmark
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_HOME: /mnt/dockercache/huggingface
+        HF_HUB_DISABLE_PROGRESS_BARS: 1
+        FORGE_DISABLE_REPORTIFY_DUMP: 1
       shell: bash
       run: |
         source env/activate
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}
+        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 1 -lp 32 -o benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: perf-reports
+        name: perf-reports-${{ steps.fetch-job-id.outputs.job_id }}
         path: ${{ steps.strings.outputs.perf_report_path }}

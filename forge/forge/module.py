@@ -7,6 +7,7 @@ from typing import Optional, Tuple, List, Dict, TypeAlias
 from collections import deque, OrderedDict
 import itertools
 
+import paddle
 import torch
 import tensorflow as tf
 from loguru import logger
@@ -19,12 +20,13 @@ from .tensor import (
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
+    pt_to_paddle_tensors,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
 from .parameter import Parameter
 import onnx
-import onnxruntime
+from onnx import numpy_helper
 import jax.numpy as jnp
 import numpy as np
 
@@ -212,6 +214,44 @@ class PyTorchModule(Module):
         return params
 
 
+class PaddleModule(Module):
+    """
+    A wrapper around a Paddle module.
+    """
+
+    def __init__(self, name: str, module: paddle.nn.Layer):
+        super().__init__(name)
+        self.module = module
+
+    def forward(self, *args, **kwargs):
+        paddle_args = pt_to_paddle_tensors(args)
+        outputs = self.module(*paddle_args, **kwargs)
+        return to_pt_tensors(outputs)
+
+    def call(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def backward(self, *args):
+        raise NotImplementedError
+
+    def set_parameters(self, **kwargs):
+        raise NotImplementedError
+
+    def cpu_eval_forward(self, *args, **kwargs):
+        self.module.eval()
+
+        outputs = self.forward(*args, **kwargs)
+        outputs = flatten_structured_output([outputs])
+        return outputs
+
+    def get_parameters(self) -> List[Parameter]:
+        params = []
+        for param in self.module.parameters():
+            forge_param = Parameter(torch.tensor(param.numpy()), requires_grad=param.stop_gradient, name=param.name)
+            params.append(forge_param)
+        return params
+
+
 class TFModule(Module):
     """
     A wrapper around a TF module. Currently, TF modules can only run on a CPU device.
@@ -321,7 +361,7 @@ class OnnxModule(Module):
     A wrapper around a Onnx module.
     """
 
-    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto, onnx_path: str):
+    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto):
         """
         Create Onnx module wrapper.
 
@@ -329,27 +369,26 @@ class OnnxModule(Module):
         ----------
         module: onnx.onnx_ml_pb2.ModelProto
             onnx module
-        onnx_path: str
-            path of the onnx object
         """
         super().__init__(name)
 
         if not isinstance(module, onnx.onnx_ml_pb2.ModelProto):
             raise RuntimeError("onnx.onnx_ml_pb2.ModelProto module expected, got " + str(type(module)))
         self.module = module
-        self.onnx_path = onnx_path
+
+    def __call__(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
 
     def forward(self, *args, **kwargs):
         import onnxruntime as ort
-
-        assert self.onnx_path != None, "Onnx compile needs path to onnx file on disk."
 
         so = ort.SessionOptions()
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
 
+        module_bytes = self.module.SerializeToString()
         ort_sess = ort.InferenceSession(
-            self.onnx_path,
+            module_bytes,
             sess_options=so,
             use_deterministic_compute=True,
             providers=["CPUExecutionProvider"],
@@ -394,14 +433,18 @@ class OnnxModule(Module):
         return self.forward(*args, **kwargs)
 
     def backward(self, *args):
-
         raise NotImplementedError
 
     def set_parameters(self, **kwargs):
         raise NotImplementedError
 
     def get_parameters(self) -> List[Parameter]:
-        return []  # TODO
+        params = []
+        for param in self.module.graph.initializer:
+            param_data = numpy_helper.to_array(param)
+            forge_param = Parameter(torch.tensor(param_data), requires_grad=False, name=param.name)
+            params.append(forge_param)
+        return params
 
 
 class TFLiteModule(Module):
@@ -450,47 +493,6 @@ class TFLiteModule(Module):
 
     def get_parameters(self) -> List[Parameter]:
         return []  # TODO
-
-
-# class MXNetModule(Module):
-#     """
-#     A wrapper around a MXNet module.
-#     """
-#     def __init__(self, name: str, module: mx.gluon.HybridBlock,):
-#         """
-#         Create MXNet module wrapper.
-
-#         Parameters
-#         ----------
-#         module: mx.gluon.HybridBlock
-#             MXNet module
-#         """
-#         super().__init__(name)
-
-#         if not isinstance(module, mx.gluon.HybridBlock):
-#             raise RuntimeError("mx.gluon.HybridBlock module expected, got " + str(type(module)))
-#         self.module = module
-
-#     def forward(self, *args, **kwargs):
-#         return self.module(*args)
-
-#     def call(self, *args, **kwargs):
-#         raise NotImplementedError
-
-#     def backward(self, *args):
-
-#         raise NotImplementedError
-
-#     def set_parameters(self, **kwargs):
-#         raise NotImplementedError
-
-#     def cpu_eval_forward(self, *args, **kwargs):
-#         mxnet_inputs = [mx.nd.array(x.detach().numpy()) for x in args]
-#         outputs = self.module(*mxnet_inputs, **kwargs)
-#         return to_pt_tensors(outputs)
-
-#     def get_parameters(self) -> List[Parameter]:
-#         return [] # TODO
 
 
 class TFGraphDefModule(Module):
@@ -959,9 +961,13 @@ def wrap_module(module, name: str) -> Module:
         return TFModule(name, module)
     elif isinstance(module, ForgeModule):
         return module
+    elif isinstance(module, paddle.nn.Layer):
+        return PaddleModule(name, module)
+    elif isinstance(module, onnx.onnx_ml_pb2.ModelProto):
+        return OnnxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model
+FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto
 AnyModule: TypeAlias = FrameworkModule | ForgeModule

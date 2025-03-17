@@ -61,6 +61,7 @@ def test_openpose_basic(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
@@ -102,6 +103,7 @@ def test_openpose_osmr(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(

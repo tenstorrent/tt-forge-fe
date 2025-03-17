@@ -12,6 +12,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.xception.utils.utils import post_processing
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -35,13 +36,24 @@ def generate_model_xception_imgcls_timm(variant):
     return framework_model, [img_tensor]
 
 
-variants = ["xception", "xception41", "xception65", "xception71"]
+params = [
+    pytest.param(
+        "xception",
+        marks=[
+            pytest.mark.xfail(reason="Input channels (728) should be padded to nearest TILE_WIDTH (32) or should be 16")
+        ],
+    ),
+    pytest.param("xception41"),
+    pytest.param("xception65"),
+    pytest.param("xception71"),
+    pytest.param("xception71.tf_in1k", marks=[pytest.mark.push]),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", params)
 def test_xception_timm(record_forge_property, variant):
-    if variant != "xception":
+    if variant not in ["xception", "xception71.tf_in1k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -54,6 +66,7 @@ def test_xception_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
@@ -61,5 +74,9 @@ def test_xception_timm(record_forge_property, variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post Processing
+    if variant == "xception71.tf_in1k":
+        post_processing(co_out)

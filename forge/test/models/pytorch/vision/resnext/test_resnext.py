@@ -32,6 +32,7 @@ def test_resnext_50_torchhub_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
@@ -64,6 +65,7 @@ def test_resnext_101_torchhub_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
@@ -97,6 +99,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
@@ -128,6 +131,7 @@ def test_resnext_14_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load the model and prepare input data
@@ -159,6 +163,7 @@ def test_resnext_26_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -190,6 +195,7 @@ def test_resnext_50_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model
@@ -221,6 +227,7 @@ def test_resnext_101_osmr_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2: Create Forge module from PyTorch model

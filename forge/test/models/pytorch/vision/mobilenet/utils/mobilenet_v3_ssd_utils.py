@@ -11,7 +11,8 @@ from torchvision import models, transforms
 
 
 def load_model(variant, weights):
-    model = getattr(models.detection, variant)(weights=weights)
+    weights = getattr(models, weights).DEFAULT
+    model = getattr(models, variant)(weights=weights)
     model.eval()
     return model
 

@@ -67,7 +67,7 @@ def test_yolox_onnx(variant, test_device):
     onnx_model = onnx.load(onnx_model_path)
     onnx.checker.check_model(onnx_model)
     model_name = f"onnx_{variant}"
-    tt_model = forge.OnnxModule(model_name, onnx_model, onnx_model_path)
+    tt_model = forge.OnnxModule(model_name, onnx_model)
 
     # PCC
     if test_device.arch == BackendDevice.Wormhole_B0:

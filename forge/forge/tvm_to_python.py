@@ -555,18 +555,11 @@ def populate_conv2d_args(graph, nid, compiler_cfg):
     )
 
     padding = [int(padding) for padding in node["attrs"]["padding"][0]]
-    # TVM has padding [top, left, bottom, right]
-    # Convert to [left right top bottom]
-    reordered_padding = [
-        padding[1],
-        padding[3],
-        padding[0],
-        padding[2],
-    ]
+    # Retaining the Padding format for Forge Conv2d Pad Format (Top,Left,Bottom,Right)
     args.append(
         (
             "padding",
-            f"{reordered_padding}",
+            f"{padding}",
         )
     )
 
@@ -1902,12 +1895,12 @@ def get_framework(module):
         framework = "tf_graphdef"
     elif isinstance(module, forge.module.OnnxModule):
         framework = "onnx"
-    elif isinstance(module, forge.module.MXNetModule):
-        framework = "mxnet"
     elif isinstance(module, forge.module.JaxModule):
         framework = "jax"
     elif isinstance(module, forge.module.TFLiteModule):
         framework = "tflite"
+    elif isinstance(module, forge.module.PaddleModule):
+        framework = "paddle"
     else:
         assert False, f"Unsupported framework: {type(module)}"
 
@@ -2121,11 +2114,9 @@ def compile_tvm_to_python(
         else:
             framework_mod.module.eval()
 
-    # Path is needed for Onnx model verification against TVM compile.
+    # Path is needed for TFLite model verification against TVM compile.
     path = None
-    if isinstance(framework_mod, OnnxModule):
-        path = framework_mod.onnx_path
-    elif isinstance(framework_mod, TFLiteModule):
+    if isinstance(framework_mod, TFLiteModule):
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded

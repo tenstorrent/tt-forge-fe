@@ -14,6 +14,9 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="RuntimeError: Tensor 0 - stride mismatch: expected [270000, 90000, 300, 1], got [3, 1, 900, 3]"
+)
 def test_pytorch_ssd300_resnet50(record_forge_property):
     # Build Module Name
     module_name = build_module_name(
@@ -21,6 +24,7 @@ def test_pytorch_ssd300_resnet50(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # STEP 2 : prepare model

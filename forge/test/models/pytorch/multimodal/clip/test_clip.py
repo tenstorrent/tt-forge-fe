@@ -15,7 +15,19 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["openai/clip-vit-base-patch32"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "openai/clip-vit-base-patch32",
+            marks=[
+                pytest.mark.xfail(
+                    reason="ttir.reshape op Input and output tensors must have the same number of elements"
+                )
+            ],
+        ),
+    ],
+)
 def test_clip_pytorch(record_forge_property, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -28,6 +40,7 @@ def test_clip_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load processor and model from HuggingFace

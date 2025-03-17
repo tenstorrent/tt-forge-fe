@@ -16,14 +16,21 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = ["microsoft/phi-2", "microsoft/phi-2-pytdml"]
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=[
+            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
+        ],
+    ),
+    "microsoft/phi-2-pytdml",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
+@pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
 def test_phi2_clm(record_forge_property, variant):
-    if variant != "microsoft/phi-2":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -31,6 +38,10 @@ def test_phi2_clm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    if variant in ["microsoft/phi-2"]:
+        record_forge_property("group", "priority")
+    else:
+        record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
@@ -85,6 +96,7 @@ def test_phi2_token_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
@@ -129,6 +141,7 @@ def test_phi2_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.

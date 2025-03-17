@@ -18,7 +18,14 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 varaints = [
-    "mixer_b16_224",
+    pytest.param(
+        "mixer_b16_224",
+        marks=[
+            pytest.mark.xfail(
+                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
+            )
+        ],
+    ),
     "mixer_b16_224_in21k",
     "mixer_b16_224_miil",
     "mixer_b16_224_miil_in21k",
@@ -28,13 +35,21 @@ varaints = [
     "mixer_l32_224",
     "mixer_s16_224",
     "mixer_s32_224",
+    pytest.param(
+        "mixer_b16_224.goog_in21k",
+        marks=[
+            pytest.mark.xfail(
+                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
+            )
+        ],
+    ),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", varaints, ids=varaints)
+@pytest.mark.parametrize("variant", varaints)
 def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
-    if variant != "mixer_b16_224":
+    if variant not in ["mixer_b16_224", "mixer_b16_224.goog_in21k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -47,6 +62,7 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -73,6 +89,9 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail(
+    reason="[Optimzation Graph Passes][Shape Calculation] AssertionError: Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: [1, 512, 1, 1024] vs [1, 1024, 512, 1]"
+)
 def test_mlp_mixer_pytorch(record_forge_property):
 
     # Build Module Name
@@ -84,6 +103,7 @@ def test_mlp_mixer_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

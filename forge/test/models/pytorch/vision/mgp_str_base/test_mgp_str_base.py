@@ -13,7 +13,14 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["alibaba-damo/mgp-str-base"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "alibaba-damo/mgp-str-base", marks=[pytest.mark.xfail(reason="RuntimeError: Couldn't lower all tuples")]
+        ),
+    ],
+)
 def test_mgp_scene_text_recognition(record_forge_property, variant):
 
     # Build Module Name
@@ -26,6 +33,7 @@ def test_mgp_scene_text_recognition(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

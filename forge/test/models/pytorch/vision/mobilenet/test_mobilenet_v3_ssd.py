@@ -35,12 +35,13 @@ def test_mobilenetv3_ssd(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model = load_model(variant, weight_name)
-    inputs = load_input(variant)
+    inputs = load_input()
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)

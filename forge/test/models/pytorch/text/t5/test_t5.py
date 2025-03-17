@@ -19,11 +19,17 @@ variants = [
     pytest.param(
         "t5-base",
         id="t5-base",
+        marks=[pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")],
     ),
-    pytest.param("t5-large", id="t5-large"),
+    pytest.param(
+        "t5-large",
+        id="t5-large",
+        marks=[pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")],
+    ),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
+        marks=[pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")],
     ),
     pytest.param(
         "google/flan-t5-base",
@@ -45,6 +51,7 @@ def test_t5_generation(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace

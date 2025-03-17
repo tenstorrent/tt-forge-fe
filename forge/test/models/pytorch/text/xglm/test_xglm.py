@@ -10,11 +10,21 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
-variants = ["facebook/xglm-564M", "facebook/xglm-1.7B"]
+variants = [
+    pytest.param(
+        "facebook/xglm-564M",
+        marks=[
+            pytest.mark.xfail(
+                reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+            )
+        ],
+    ),
+    "facebook/xglm-1.7B",
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_xglm_causal_lm(record_forge_property, variant):
     if variant != "facebook/xglm-564M":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -25,6 +35,7 @@ def test_xglm_causal_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     config = XGLMConfig.from_pretrained(variant)

@@ -17,11 +17,11 @@ sacrebleu==2.1.0
 sacremoses==0.0.53
 seaborn
 scikit-image==0.20.0 # For DenseNet 121 HF XRay model
-segmentation_models_pytorch==0.3.2
+segmentation_models_pytorch==0.4.0
 sentencepiece==0.2.0
 subword-nmt==0.3.8
 tensorflow-hub==0.12.0
-timm==0.6.12
+timm==1.0.9
 yolov5==7.0.9
 # The CPU versions of torch and torch visions are used due to their size being
 # several GB smaller which made a large impact on the performance of CI
@@ -30,6 +30,7 @@ torch @ https://download.pytorch.org/whl/cpu-cxx11-abi/torch-2.1.0%2Bcpu.cxx11.a
 torch @ https://download.pytorch.org/whl/cpu-cxx11-abi/torch-2.1.0%2Bcpu.cxx11.abi-cp310-cp310-linux_x86_64.whl ; python_version=='3.10'
 torch==2.3.1 ; python_version=='3.11'
 torchxrayvision==0.0.39
+paddlepaddle==2.6.2
 vgg_pytorch==0.3.0
 librosa==0.10.0.post2
 soundfile==0.12.1

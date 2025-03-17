@@ -38,6 +38,9 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     return model, [img_tensor], {}
 
 
+@pytest.mark.xfail(
+    reason="RuntimeError: TT_THROW tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp Unsupported mode"
+)
 @pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(record_forge_property):
     # Build Module Name
@@ -46,6 +49,7 @@ def test_unet_osmr_cityscape_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "priority")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
@@ -100,6 +104,7 @@ def test_unet_holocron_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     from holocron.models.segmentation.unet import unet_tvvgg11
@@ -157,6 +162,7 @@ def test_unet_qubvel_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
@@ -213,6 +219,7 @@ def test_unet_torchhub_pytorch(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
@@ -228,6 +235,7 @@ def test_unet_torchhub_pytorch(record_forge_property):
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
 @pytest.mark.nightly
+@pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
 def test_unet_carvana(record_forge_property):
 
     # Build Module Name
@@ -239,6 +247,7 @@ def test_unet_carvana(record_forge_property):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

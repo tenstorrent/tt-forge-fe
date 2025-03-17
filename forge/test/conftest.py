@@ -2,11 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
+import random
 from typing import Any, List, Optional
 from loguru import logger
 from dataclasses import dataclass
 import subprocess
 
+import numpy as np
 import pytest
 import _pytest.skipping
 import torch.multiprocessing as mp
@@ -31,6 +33,8 @@ from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
 from forge.execution_tracker import fetch_execution_phase_and_stage
+
+import test.utils
 
 collect_ignore = ["legacy_tests"]
 
@@ -174,7 +178,7 @@ def record_forge_property(record_property):
 
     This fixture:
       1. Instantiates a ForgePropertyStore.
-      2. Adds a default property ("tags.frontend": "tt-forge-fe").
+      2. Adds a default property ("owner": "tt-forge-fe").
       3. Yields the store for use in tests.
       4. After the test, fetches execution phase and stage, updates the store,
          and then records each top-level property using the provided record_property function.
@@ -183,7 +187,7 @@ def record_forge_property(record_property):
     forge_property_store = ForgePropertyStore()
 
     # Add a default property.
-    forge_property_store.add("tags.frontend", "tt-forge-fe")
+    forge_property_store.add("owner", "tt-forge-fe")
 
     # Provide the store to the test function.
     yield forge_property_store
@@ -203,32 +207,16 @@ def record_forge_property(record_property):
 
 
 @pytest.fixture(autouse=True)
-def clear_forge():
+def reset_seeds_fixture():
+    test.utils.reset_seeds()
+
+
+@pytest.fixture(autouse=True)
+def reset_device():
     if "FORGE_RESET_DEV_BEFORE_TEST" in os.environ:
         # Reset device between tests
         # For this to work, pytest must be called with --forked
         subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
-
-    import random
-
-    random.seed(0)
-
-    import numpy as np
-
-    np.random.seed(0)
-
-    torch.manual_seed(0)
-
-    import tensorflow as tf
-
-    tf.random.set_seed(0)
-
-    yield
-
-    # clean up after each test
-    forge.forge_reset()
-    torch._dynamo.reset()
-    reset_state()
 
 
 def pytest_addoption(parser):

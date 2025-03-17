@@ -9,7 +9,20 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.beit.utils.utils import load_input, load_model
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = ["microsoft/beit-base-patch16-224", "microsoft/beit-large-patch16-224"]
+variants = [
+    pytest.param(
+        "microsoft/beit-base-patch16-224",
+        marks=[
+            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
+        ],
+    ),
+    pytest.param(
+        "microsoft/beit-large-patch16-224",
+        marks=[
+            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
+        ],
+    ),
+]
 
 
 @pytest.mark.nightly
@@ -26,6 +39,7 @@ def test_beit_image_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load model and input

@@ -3,7 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 from collections import OrderedDict
 from collections.abc import MutableMapping
+import inspect
+import os
 
+import paddle
 import torch
 import numpy as np
 import tensorflow as tf
@@ -15,7 +18,7 @@ import tvm
 from tvm.relay import ExprVisitor
 from forge.config import CompilerConfig
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
-from forge.tensor import to_pt_tensors
+from forge.tensor import to_pt_tensors, pt_to_paddle_tensors
 from forge.tvm_calls.relay.op.forge import extract_function_callnodes, trace_to_origin
 
 
@@ -24,7 +27,6 @@ def extract_framework_model_outputs(
     model,
     inputs,
     verify_tvm_compile: bool = False,
-    path=None,
     input_dict={},
 ):
     framework_outputs = []
@@ -32,7 +34,7 @@ def extract_framework_model_outputs(
     if verify_tvm_compile:
         return framework_outputs
 
-    if framework == "pytorch":
+    if framework == "pytorch" or framework == "paddle":
         assert model.training == False
 
         framework_outputs = model(*inputs)
@@ -40,7 +42,7 @@ def extract_framework_model_outputs(
             framework_outputs = framework_outputs.to_tuple()
 
         if not isinstance(framework_outputs, (list, tuple)):
-            if isinstance(framework_outputs, torch.Tensor):
+            if isinstance(framework_outputs, (torch.Tensor, paddle.Tensor)):
                 framework_outputs = [framework_outputs]
             elif isinstance(framework_outputs, OrderedDict):
                 framework_outputs = tuple(framework_outputs.values())
@@ -112,11 +114,11 @@ def extract_framework_model_outputs(
         for out in model.graph.output:
             output_names.append(out.name)
 
-        assert path != None, "Onnx compile needs path to onnx file on disk."
         so = ort.SessionOptions()
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
-        ort_sess = ort.InferenceSession(path, sess_options=so)
+        onnx_model = model.SerializeToString()
+        ort_sess = ort.InferenceSession(onnx_model, sess_options=so)
         framework_outputs = ort_sess.run(output_names, input_dict)
 
     elif framework == "tflite":
@@ -166,6 +168,17 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
 
         flattened_inputs, flattened_input_names, flattened_name_map = flatten_inputs(inputs, input_names)
 
+    elif framework == "paddle":
+        paddle_inputs = pt_to_paddle_tensors(inputs)
+        input_structure = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in paddle_inputs]
+
+        if hasattr(model, "_input_args_names"):
+            flattened_input_names = model._input_args_names
+        else:
+            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())
+
+        flattened_inputs, _, flattened_name_map = flatten_inputs(inputs, flattened_input_names)
+
     elif framework == "tensorflow":
         # The tensorflow trace automatically flattens inputs
         flattened_inputs, _, _ = flatten_inputs(inputs)
@@ -187,7 +200,7 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
 
 
 def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: CompilerConfig):
-    if framework == "pytorch":
+    if framework == "pytorch" or framework == "paddle":
         param_name_lookup = {}
 
         if not compiler_cfg.enable_tvm_constant_prop:
@@ -326,3 +339,28 @@ def has_op(module, opname, attrs={}):
     visitor = Visitor()
     visitor.visit(module)
     return visitor.has_op
+
+
+def paddle_trace(paddlemod, input_spec):
+    """
+    Converts paddle.nn.Layer to paddle.nn.TranslatedLayer needed for TVM compilation.
+    """
+    traced_model = paddle.jit.to_static(paddlemod, input_spec=input_spec, full_graph=True)
+
+    # Model must be saved and loaded in order to have TranslatedLayer type which is needed for the next step
+    model_save_path = "traced_model"
+    paddle.jit.save(traced_model, model_save_path)
+    loaded_model = paddle.jit.load(model_save_path)
+
+    # Parameter names are not preserved in the loaded model, so we need to map them back to the original model
+    original_param_names = sorted([param.name for param in paddlemod.parameters()])
+    new_param_names = sorted([param.name for param in loaded_model.parameters()])
+    param_name_lookup = {new: old for new, old in zip(new_param_names, original_param_names)}
+
+    # Clean up
+    for ext in [".pdiparams", ".pdiparams.info", ".pdmodel"]:
+        file = f"{model_save_path}{ext}"
+        if os.path.exists(file):
+            os.remove(file)
+
+    return loaded_model, param_name_lookup

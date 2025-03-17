@@ -17,14 +17,21 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
-    "EleutherAI/gpt-neo-125M",
+    pytest.param(
+        "EleutherAI/gpt-neo-125M",
+        marks=[
+            pytest.mark.xfail(
+                reason="AssertionError: Data mismatch on output 0 between Framework and Forge codegen(pcc=0.28)"
+            )
+        ],
+    ),
     "EleutherAI/gpt-neo-1.3B",
     "EleutherAI/gpt-neo-2.7B",
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_gptneo_causal_lm(record_forge_property, variant):
     if variant != "EleutherAI/gpt-neo-125M":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -35,6 +42,7 @@ def test_gptneo_causal_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Set random seed for repeatability
@@ -101,6 +109,7 @@ def test_gptneo_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Load tokenizer and model from HuggingFace

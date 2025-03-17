@@ -12,12 +12,16 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  packages: read
+  packages: write
 
 jobs:
 
-  build:
+  docker-build:
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
 
+  build:
+    needs: docker-build
     strategy:
       fail-fast: false
       matrix:
@@ -28,7 +32,7 @@ jobs:
     runs-on: ${{ matrix.build.runs-on }}
 
     container:
-      image: ghcr.io/${{ github.repository }}/tt-forge-fe-ci-ubuntu-22-04:latest
+      image: ${{ needs.docker-build.outputs.docker-image }}
 
     env:
       MDBOOK_VERSION: 0.4.36
@@ -48,12 +52,6 @@ jobs:
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
-
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        create-symlink: true
-        key: ${{ matrix.build.runs-on }}-runtime-${{ matrix.build.enable_runtime }}-${{ env.SDK_VERSION }}
 
     - name: Install mdBook
       shell: bash

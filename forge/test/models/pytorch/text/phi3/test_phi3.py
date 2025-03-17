@@ -29,6 +29,10 @@ def test_phi3_causal_lm(record_forge_property, variant):
     )
 
     # Record Forge Property
+    if variant in ["microsoft/phi-3-mini-4k-instruct"]:
+        record_forge_property("group", "priority")
+    else:
+        record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
@@ -84,6 +88,7 @@ def test_phi3_token_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
@@ -129,6 +134,7 @@ def test_phi3_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
+    record_forge_property("group", "generality")
     record_forge_property("tags.model_name", module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
