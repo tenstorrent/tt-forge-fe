@@ -44,6 +44,19 @@ jobs:
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test-bh:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_bh'
+      test_group_cnt: 2
+      test_group_ids: '[1,2]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "p150"}]'
+
 
   check-all-green:
     if: always()
