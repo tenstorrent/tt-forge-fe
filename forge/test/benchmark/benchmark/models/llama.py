@@ -134,7 +134,6 @@ def test_llama_prefill(
         "profile_name": "",
         "input_sequence_length": input_sequence_length,
         "output_sequence_length": output_sequence_length,
-        "image_dimension": "",  # Image dimension is not applicable for this model.
         # This parameter can't have a generic value, so we are leaving it empty.
         "perf_analysis": False,
         "training": training,
