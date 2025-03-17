@@ -14,9 +14,8 @@ from forge.forgeglobal import align_up_tile
 import paddle
 import onnx
 import torch
-from torch import nn
 import tensorflow as tf
-from forge.tensor import to_pt_tensors, TensorFromTrace
+from forge.tensor import to_pt_tensors
 
 from ..tensor import (
     Tensor,
@@ -301,7 +300,7 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
     # Check if the compiled dtype matches the equivalent dtype
     if equivalent_pytorch_dtype != co_dtype:
         raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
-    
+
 
 def verify_backward(
     inputs: List[torch.Tensor],
@@ -354,19 +353,21 @@ def verify_backward(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
+    # Zero out gradients
+    [input.grad.zero_() for input in inputs if input.grad is not None]
+    framework_model.zero_grad()
+
     # 1st step: run backward pass for the networks and get gradients
-    # [input.grad.zero_() for input in inputs if input.grad is not None]
-    # framework_model.zero_grad()
     compiled_model.gradient_inputs = [output_grad]
     co_gradient_outputs = compiled_model.backward()
-    co_gradients = {}
+    co_gradients: Dict[str, torch.Tensor] = {}
     for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
         # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
         #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
         co_gradients[name] = grad.clone() if name.startswith("grad_acc_") else grad
 
     # Run backward on framework model
-    # framework_model.zero_grad()
+    framework_model.zero_grad()
     framework_output.backward(gradient=output_grad)
 
     # 2nd step: verify gradients
@@ -381,15 +382,15 @@ def verify_backward(
             name = name.replace("output_grad_", "")
             fw_grad = inputs[compiled_model.fwd_compiled_graph_state.ordered_input_names.index(name)].grad
         else:
-            raise ValueError(f"Unknown gradient name: {name}")
+            raise ValueError(f"Unknown gradient name in compiled model: {name}")
 
         assert co_grad.data_ptr() != fw_grad.data_ptr(), "Gradients are the same object in memory"
 
         co = co_grad.squeeze()
         fw = fw_grad.squeeze()
 
-        if verify_cfg.verify_dtype and fw.dtype != co.dtype:
-            raise TypeError(f"Dtype mismatch: framework_model.dtype={fw.dtype}, compiled_model.dtype={co.dtype}")
+        if verify_cfg.verify_dtype:
+            check_dtypes(fw_dtype=fw.dtype, co_dtype=co.dtype)
 
         if verify_cfg.verify_shape and fw.shape != co.shape:
             raise TypeError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")

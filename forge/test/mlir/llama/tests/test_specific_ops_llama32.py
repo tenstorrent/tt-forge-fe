@@ -169,18 +169,12 @@ def test_matmul(shapes, train):
     framework_model = Matmul()
     framework_model.eval() if not train else framework_model.train()
 
-    # NOTE: We probably need two framework models with the same state_dict to compare the outputs
-    #       But for now it works without that for some reason?
-    # model_for_compile = Matmul()
-    # model_for_compile.eval() if not training else model_for_compile.train()
-    # model_for_compile.load_state_dict(framework_model.state_dict())
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=train)
 
     fw_out, co_out = verify(
         inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
     )
     if train:
-        # Simulate the backward pass of the loss
         output_grad = torch.rand_like(fw_out[0])
 
         verify_backward(
