@@ -124,6 +124,16 @@ jobs:
         pip install tvm*.whl --force-reinstall
         pip install forge*.whl --force-reinstall
 
+    - name: Install rust
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        source $HOME/.cargo/env
+
+    - name: Install tt-smi
+      run: |
+        source env/activate
+        pip install git+https://github.com/tenstorrent/tt-smi.git
+
     - name: Run Test
       env:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -138,6 +148,7 @@ jobs:
         apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
         pip install pytest-split
+        tt-smi -r
         pytest --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
