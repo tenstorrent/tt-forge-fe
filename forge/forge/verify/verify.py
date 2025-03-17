@@ -284,7 +284,7 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
 
 
 def verify(
-    inputs: List[Union[FrameworkTensor, tf.Variable]],
+    inputs: List[FrameworkTensor],
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),

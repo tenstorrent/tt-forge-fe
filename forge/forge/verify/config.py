@@ -266,16 +266,15 @@ class VerifyConfig:
     # --- Supported Types --- #
     @property
     def supported_tensor_types(self) -> Tuple:
-        from forge import Tensor  # Local import to avoid circular dependency
-
-        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor, paddle.Tensor)
+        from forge.tensor import AnyTensor  # Local import to avoid circular dependency
+        return (AnyTensor,)
 
     @property
     def compiled_model_types(self) -> Tuple:
-        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency
-
+        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency 
         return (CompiledModel,)
 
     @property
-    def framework_model_types(self) -> Tuple:
-        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule, paddle.nn.Layer, forge.OnnxModule)
+    def framework_model_types(self) -> Tuple: 
+        from forge.module import AnyModule # Local import to avoid circular dependency
+        return (AnyModule,)

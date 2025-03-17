@@ -70,13 +70,13 @@ def map_pt_dtype_to_pd(pt_dtype):
     return list(pd_to_pt_type_map.keys())[pt_types.index(pt_dtype)]
 
 def flatten_inputs(inputs, names=None, force_float32=False):
-    from forge.tensor import Tensor
+    from forge.tensor import AnyTensor
 
     new_inputs = []
     new_names = []
     flattened_name_map = {}
 
-    if isinstance(inputs, (torch.Tensor, tf.Tensor, Tensor)):
+    if isinstance(inputs, AnyTensor):
         inputs = (inputs,)
 
     if names is None:
@@ -108,7 +108,7 @@ def flatten_inputs(inputs, names=None, force_float32=False):
             new_names += sub_names
             flattened_name_map[name] = sub_names
 
-        elif isinstance(inp, (torch.Tensor, tf.Tensor, Tensor)):
+        elif isinstance(inp, AnyTensor):
             new_inputs.append(inp)
             new_names.append(name)
             flattened_name_map[name] = [name]
@@ -123,7 +123,7 @@ def flatten_inputs(inputs, names=None, force_float32=False):
 
 
 def flatten_structured_output(outputs):
-    from forge.tensor import Tensor
+    from forge.tensor import AnyTensor
 
     new_outputs = []
 
@@ -146,7 +146,7 @@ def flatten_structured_output(outputs):
             )
             new_outputs += sub_output
 
-        elif isinstance(out, (torch.Tensor, tf.Tensor, Tensor, np.ndarray, paddle.Tensor)):
+        elif isinstance(out, (np.ndarray, AnyTensor)):
             new_outputs.append(out)
 
         elif out is None:

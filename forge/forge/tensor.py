@@ -517,7 +517,7 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | paddle.Tensor
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor 
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
