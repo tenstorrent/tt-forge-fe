@@ -271,7 +271,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
 
                 // Create gradient queue to write gradient accumulation to in prologue
                 auto epilogue_q = graph->add_node(
-                    graphlib::create_node<graphlib::QueueNode>(
+                    graphlib::create_node<graphlib::OutputNode>(
                         "grad_acc_" + node->name(), graphlib::QueueNodeType::GradAccumulator),
                     graph->get_subgraph_id_for_node(node->id()));
                 epilogue_q->set_backward();

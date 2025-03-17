@@ -224,7 +224,7 @@ bool requires_lowering_to_ram(Node *node)
         InputNodeType input_type = node->as<graphlib::InputNode>()->input_type();
         return (input_type == InputNodeType::Parameter) or (input_type == InputNodeType::OptimizerParameter);
     }
-    else if (node->node_type() == NodeType::kQueue)
+    else if (node->node_type() == NodeType::kOutput)
     {
         return node->as<graphlib::QueueNode>()->is_grad_accumulator();
     }
