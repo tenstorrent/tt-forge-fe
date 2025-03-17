@@ -1,7 +1,6 @@
 name: On Nightly Sweeps Tests
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       runs-on:
@@ -23,18 +22,18 @@ jobs:
   docker-build:
       uses: ./.github/workflows/build-image.yml
       secrets: inherit
-  # build:
-  #   needs: docker-build
-  #   uses: ./.github/workflows/build.yml
-  #   secrets: inherit
-  #   with:
-  #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  build:
+    needs: docker-build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
 
   test_on_dispatch:
     if: inputs.runs-on
     needs:
       - docker-build
-    #   - build
+      - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
@@ -49,7 +48,7 @@ jobs:
     if: ${{ ! inputs.runs-on }}
     needs:
       - docker-build
-    #   - build
+      - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
