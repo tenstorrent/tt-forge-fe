@@ -31,8 +31,8 @@ on:
         description: 'Operators to test (comma separated)'
         required: false
         type: string
-      run-id:
-        description: 'Run id'
+      on_nightly_run_id:
+        description: 'Run ID for the on-nightly workflow used to generate the WHL installer'
         required: false
         type: number
 
@@ -110,7 +110,7 @@ jobs:
       with:
         name: forge-wheel
         # Prioritize input run ID, if not available use current run (for new builds)
-        run-id: ${{ inputs.run_id || github.run_id }}
+        run-id: ${{ inputs.on_nightly_run_id || github.run_id }}
         github-token: ${{ github.token }}
 
     - name: Install wheel

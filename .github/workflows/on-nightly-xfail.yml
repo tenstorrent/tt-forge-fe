@@ -1,5 +1,10 @@
 name: On nightly xfail
 
+# This workflow runs after the "on-nightly" workflow.
+# It executes tests that are expected to fail (xFail).
+# Note: This workflow shouldn't run build, it only
+# does so if no existing run ID is available.
+
 on:
   workflow_dispatch:
     inputs:
@@ -30,7 +35,6 @@ jobs:
     needs:
       - docker-build
       - build
-    if: ${{ needs.docker-build.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
