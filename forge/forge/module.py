@@ -26,6 +26,7 @@ from .tensor import (
 )
 from .parameter import Parameter
 import onnx
+from onnx import numpy_helper
 import jax.numpy as jnp
 import numpy as np
 
@@ -440,8 +441,7 @@ class OnnxModule(Module):
     def get_parameters(self) -> List[Parameter]:
         params = []
         for param in self.module.graph.initializer:
-            d_type = onnx.mapping.TENSOR_TYPE_TO_NP_TYPE[param.data_type]
-            param_data = np.frombuffer(param.raw_data, dtype=d_type).reshape(param.dims)
+            param_data = numpy_helper.to_array(param)
             forge_param = Parameter(torch.tensor(param_data), requires_grad=False, name=param.name)
             params.append(forge_param)
         return params
