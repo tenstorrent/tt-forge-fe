@@ -24,6 +24,7 @@ class MatmulParam(nn.Module):
 
 
 @pytest.mark.push
+@pytest.mark.nightly_bh
 def test_torch_training(forge_property_recorder):
     model = MatmulParam()
     shape = (1, 1024)

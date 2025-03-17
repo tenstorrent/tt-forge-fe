@@ -14,6 +14,7 @@ import forge.config
 from forge.tensor import to_forge_tensors, to_pt_tensors
 
 
+@pytest.mark.nightly_bh
 def test_torch():
     class Add(nn.Module):
         def __init__(self):
@@ -38,6 +39,7 @@ def test_torch():
         raise ValueError("Output does not match the golden output")
 
 
+@pytest.mark.nightly_bh
 def test_tf():
     class TFAdd(tf.keras.Model):
         def __init__(self):
@@ -64,6 +66,7 @@ def test_tf():
         raise ValueError("Output does not match the golden output")
 
 
+@pytest.mark.nightly_bh
 def test_forge():
     class ForgeAdd(forge.ForgeModule):
         def __init__(self):
@@ -90,6 +93,7 @@ def test_forge():
         raise ValueError("Output does not match the golden output")
 
 
+@pytest.mark.nightly_bh
 def test_export_to_cpp():
     class Add(nn.Module):
         def __init__(self):
