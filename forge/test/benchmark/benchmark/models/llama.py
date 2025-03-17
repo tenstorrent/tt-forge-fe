@@ -100,8 +100,7 @@ def test_llama_prefill(
     model_name = "Llama Prefill"
     model_type = "Text Generation, Random Text Data"
     dataset_name = "Llama, Random Data"
-    num_layers = ""  # Number of layers in the model is not relevant here.
-    # This parameter can't have a generic value, so we are leaving it empty.
+    num_layers = -1  # Number of layers in the model is not relevant here.
     batch_size = 1  # Batch size is always 1 for text generation.
 
     input_sequence_length = len(input_ids[0])
