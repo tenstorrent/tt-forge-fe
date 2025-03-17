@@ -23,6 +23,21 @@ on:
 #   RUNS_ON_DEFAULT: n150
 
 jobs:
+
+  set_defaults:
+    runs-on: ubuntu-latest
+    outputs:
+      runs_on: ${{ steps.defaults.outputs.runs_on }}
+    steps:
+      - name: Set defaults
+        id: defaults
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "runs_on=$(echo '{\"runs-on\": \"n150\"}' | jq -c .)" >> "$GITHUB_OUTPUT"
+          else
+            echo "runs_on=$(echo '{\"runs-on\": \"${{ inputs.runs-on }}\"}' | jq -c .)" >> "$GITHUB_OUTPUT"
+          fi
+
   # docker-build:
   #     uses: ./.github/workflows/build-image.yml
   #     secrets: inherit
@@ -34,7 +49,8 @@ jobs:
   #     docker-image: ${{ needs.docker-build.outputs.docker-image }}
   test:
 
-    # needs:
+    needs:
+      - set_defaults
     #   - docker-build
     #   - build
     uses: ./.github/workflows/test.yml
@@ -45,5 +61,5 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       # docker-image: ${{ needs.docker-build.outputs.docker-image }}
       docker-image: 'public.ecr.aws/ubuntu/ubuntu:22.04'
-      runs-on: '[{"runs-on": "${{ inputs.runs-on || inputs.runs-on.default }}"}]'
-      operators: ${{ github.event.inputs.operators }}
+      runs-on: ${{ needs.set_defaults.outputs.runs_on }}
+      operators: ${{ inputs.operators }}
