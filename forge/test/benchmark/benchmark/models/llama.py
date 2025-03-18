@@ -21,6 +21,10 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 
+# Common constants
+GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
+REPORTS_DIR = "./benchmark_reports/"
+
 # Model path
 MODEL_PATH = ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"]
 
@@ -99,6 +103,10 @@ def test_llama_prefill(
     num_layers = -1  # Number of layers in the model is not relevant here.
     batch_size = 1  # Batch size is always 1 for text generation.
 
+    input_sequence_length = len(input_ids[0])
+    output_sequence_length = -1  # We are not generating any output here.
+    # This will be changed when we add the decoding part of the model.
+
     print("====================================================================")
     print("| Llama Benchmark Results:                                         |")
     print("--------------------------------------------------------------------")
@@ -124,9 +132,9 @@ def test_llama_prefill(
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
-        "input_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "output_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "image_dimension": -1,  # When this value is negative, it means it is not applicable
+        "input_sequence_length": input_sequence_length,
+        "output_sequence_length": output_sequence_length,
+        # This parameter can't have a generic value, so we are leaving it empty.
         "perf_analysis": False,
         "training": training,
         "measurements": [
@@ -168,8 +176,17 @@ def llama_prefill_benchmark(config: dict):
     training = config["training"]
     batch_size = config["batch_size"]
     model_path = MODEL_PATH[1]
+    output_file = config["output"]
     loop_count = config["loop_count"]
 
     result = test_llama_prefill(training=training, batch_size=batch_size, model_path=model_path, loop_count=loop_count)
-    result["output_name"] = f"llama_prefill_{result['run_type']}"
-    return result
+
+    if not os.path.exists(REPORTS_DIR):
+        os.makedirs(REPORTS_DIR)
+    if not output_file:
+        output_file = f"forge-benchmark-e2e-llama_prefill_{result['run_type']}.json"
+    result["output"] = REPORTS_DIR + output_file
+
+    # Save the results to a file
+    with open(result["output"], "w") as f:
+        json.dump(result, f)

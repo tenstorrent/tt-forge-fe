@@ -1,0 +1,47 @@
+name: On nightly xfail
+
+# This workflow runs after the "on-nightly" workflow.
+# It executes tests that are expected to fail (xFail).
+# Note: This workflow shouldn't run build, it only
+# does so if no existing run ID is available.
+
+on:
+  workflow_dispatch:
+    inputs:
+        run_id:
+            description: 'Run id (from a previous On nightly workflow)'
+            required: false
+            type: number
+  workflow_run:
+    workflows:
+      - "On nightly"
+    types:
+      - completed
+
+jobs:
+  docker-build:
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  # Only build if no existing run ID is available
+  build:
+    needs: docker-build
+    # Skip if we have either input run ID or workflow trigger
+    if: ${{ !github.event.inputs.run_id && !github.event.workflow_run.id }}
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  test_full_model_xpassing:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and xfail'
+      test_group_cnt: 4
+      test_group_ids: '[1,2,3,4]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      # Prioritize workflow trigger, then input run ID, then current run (for new builds)
+      run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
