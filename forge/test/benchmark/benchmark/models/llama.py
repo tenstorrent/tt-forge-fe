@@ -103,6 +103,10 @@ def test_llama_prefill(
     num_layers = -1  # Number of layers in the model is not relevant here.
     batch_size = 1  # Batch size is always 1 for text generation.
 
+    input_sequence_length = len(input_ids[0])
+    output_sequence_length = -1  # We are not generating any output here.
+    # This will be changed when we add the decoding part of the model.
+
     print("====================================================================")
     print("| Llama Benchmark Results:                                         |")
     print("--------------------------------------------------------------------")
@@ -128,9 +132,9 @@ def test_llama_prefill(
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
-        "input_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "output_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "image_dimension": -1,  # When this value is negative, it means it is not applicable
+        "input_sequence_length": input_sequence_length,
+        "output_sequence_length": output_sequence_length,
+        # This parameter can't have a generic value, so we are leaving it empty.
         "perf_analysis": False,
         "training": training,
         "measurements": [

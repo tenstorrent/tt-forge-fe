@@ -95,7 +95,7 @@ def load_tvm_graph(inputs, module, compiler_cfg, graph_name, framework, path=Non
         Compiler configurations
 
     path: str
-        Path to onnx file on disk. This is used to verify TVM results vs. framework results.
+        Path to TFLite file on disk. This is used to verify TVM results vs. framework results.
 
     Returns
     -------
@@ -144,7 +144,7 @@ def compile_tvm_graph(
         Compiler configurations
 
     path: str
-        Path to onnx file on disk. This is used to verify TVM results vs. framework results.
+        Path to TFLite file on disk. This is used to verify TVM results vs. framework results.
 
     Returns
     -------
@@ -197,7 +197,7 @@ def compile_tvm_graph(
         assert all([isinstance(x, torch.Tensor) for x in inputs])
         onnx_inputs = [x.detach().numpy() for x in inputs]
         json_graphs, _ = compile_onnx_for_forge(
-            module, path, *onnx_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
+            module, *onnx_inputs, graph_name=graph_name, compiler_cfg=compiler_cfg, verify_cfg=verify_cfg
         )
     elif framework == "jax":
         tf_inputs = to_tf_tensors(inputs, force_float32=True)
@@ -720,7 +720,7 @@ def duplicate_dequantize_nodes_in_onnx_graph(onnx_module):
         graph.node.remove(node)
 
 
-def compile_onnx_for_forge(onnx_mod, path, *inputs, graph_name, compiler_cfg, verify_cfg=None):
+def compile_onnx_for_forge(onnx_mod, *inputs, graph_name, compiler_cfg, verify_cfg=None):
     import onnxruntime as ort
 
     # Set default num threads to 2, hangs on some hosts otherwise https://github.com/microsoft/onnxruntime/issues/10166
@@ -749,7 +749,6 @@ def compile_onnx_for_forge(onnx_mod, path, *inputs, graph_name, compiler_cfg, ve
         model=onnx_mod,
         inputs=inputs,
         verify_tvm_compile=verify_cfg.verify_tvm_compile,
-        path=path,
         input_dict=input_dict,
     )
 
@@ -803,7 +802,6 @@ def compile_tflite_for_forge(module, path, *inputs, graph_name, compiler_cfg, ve
         model=module,
         inputs=inputs,
         verify_tvm_compile=verify_cfg.verify_tvm_compile,
-        path=path,
     )
 
     # Get TFLite model from buffer
