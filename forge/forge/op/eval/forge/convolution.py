@@ -190,7 +190,7 @@ class Conv2dTranspose(PyOp):
         dilation,  # Input format: [dH, dW]
         groups,
         padding,  # Input format: [pT, pL, pB, pR]
-        output_padding,
+        output_padding,  # Input format: [opH, opW]
         channel_last,
     ):
         self = cls("conv2d_transpose")
@@ -264,12 +264,7 @@ class Conv2dTranspose(PyOp):
         w_in = act[-2] if self.channel_last else act[-1]
 
         output_padding = self.output_padding
-        if output_padding != 0:
-            output_padding_height = output_padding[0]
-            output_padding_width = output_padding[1]
-        else:
-            output_padding_height = 0
-            output_padding_width = 0
+        output_padding_height, output_padding_width = output_padding if output_padding else (0, 0)
 
         h_out = (
             (h_in - 1) * stride_height
