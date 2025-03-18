@@ -510,6 +510,15 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         subtract = ac.op("subtract", (heaviside, ac.constant(0.5)))
         stretched = ac.op("multiply", (subtract, ac.constant(2.0)))
         return ac.op("multiply", (stretched, grad))
+    
+    elif type == "sine":
+        cos = ac.op("cosine", (inputs[0],))
+        return ac.op("multiply", (cos, grad))
+    
+    elif type == "cosine":
+        sin = ac.op("sine", (inputs[0],))
+        neg_sin = ac.op("multiply", (sin, ac.constant(-1)))
+        return ac.op("multiply", (neg_sin, grad))
 
     assert False, f"{type} not defined in eltwise unary backward."
 
