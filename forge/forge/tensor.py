@@ -517,7 +517,7 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor 
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
@@ -1202,7 +1202,8 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
     else:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
-def to_pd_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]) -> Tuple[paddle.Tensor, ...]: 
+
+def to_pd_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]) -> Tuple[paddle.Tensor, ...]:
     paddle_tensors = []
 
     if not isinstance(tensors, (list, tuple)):
@@ -1213,6 +1214,7 @@ def to_pd_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTenso
 
     return tuple(paddle_tensors)
 
+
 def to_pd_tensor(pt: torch.Tensor) -> paddle.Tensor:
     if isinstance(pt, paddle.Tensor):
         return pt
@@ -1222,6 +1224,7 @@ def to_pd_tensor(pt: torch.Tensor) -> paddle.Tensor:
         return pd
     else:
         raise RuntimeError(f"Unsupported type of tensor: {type(pt)}")
+
 
 def to_jax_tensors(
     tensors: Union[

@@ -969,5 +969,7 @@ def wrap_module(module, name: str) -> Module:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto
+FrameworkModule: TypeAlias = (
+    torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto | OnnxModule
+)
 AnyModule: TypeAlias = FrameworkModule | ForgeModule
