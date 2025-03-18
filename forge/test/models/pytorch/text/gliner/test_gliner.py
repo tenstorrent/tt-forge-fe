@@ -17,7 +17,7 @@ variants = ["urchade/gliner_multi-v2.1"]
 @pytest.mark.nightly
 @pytest.mark.xfail(reason="IndexError: Dimension out of range (expected to be in range of [-2, 1], but got 2)")
 @pytest.mark.parametrize("variant", variants)
-def test_gliner(variant, record_forge_property):
+def test_gliner(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -29,8 +29,8 @@ def test_gliner(variant, record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model = GLiNER.from_pretrained(variant)
@@ -48,7 +48,9 @@ def test_gliner(variant, record_forge_property):
     inputs = [text_encoded, label_tensor]
 
     # prepare input
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

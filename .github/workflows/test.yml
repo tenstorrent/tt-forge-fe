@@ -31,6 +31,10 @@ on:
         description: 'Operators to test (comma separated)'
         required: false
         type: string
+      on_nightly_run_id:
+        description: 'Run ID for the on-nightly workflow used to generate the WHL installer'
+        required: false
+        type: number
 
 permissions:
   packages: write
@@ -101,10 +105,13 @@ jobs:
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
-    - name: Download build artifacts
+    - name: Download wheel
       uses: actions/download-artifact@v4
       with:
         name: forge-wheel
+        # Prioritize input run ID, if not available use current run (for new builds)
+        run-id: ${{ inputs.on_nightly_run_id || github.run_id }}
+        github-token: ${{ github.token }}
 
     - name: Install wheel
       shell: bash

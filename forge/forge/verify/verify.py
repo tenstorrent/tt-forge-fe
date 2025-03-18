@@ -7,7 +7,7 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any, Union
+from typing import Tuple, Dict, List, Any, Union, Optional
 
 from forge.module import FrameworkModule
 from loguru import logger
@@ -32,7 +32,8 @@ import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden
-from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
+from forge._C import ExecutionDepth
+from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -309,6 +310,7 @@ def verify(
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
+    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -327,6 +329,9 @@ def verify(
         tuple: (framework_outputs, compiled_outputs) - outputs from both models
                Returns (None, None) if verification is disabled
     """
+
+    if forge_property_handler is not None:
+        forge_property_handler.record_verify_config(verify_cfg)
 
     # 0th step: Check if inputs are of the correct type
     if not inputs:
@@ -350,9 +355,15 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.FAILED_RUNTIME, execution_stage=ExecutionStage.FAILED_TTNN_BINARY_EXECUTION
+        )
     co_out = compiled_model(*inputs)
-    record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
+        )
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
@@ -388,7 +399,10 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.PASSED, execution_stage=ExecutionStage.PASSED
+        )
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

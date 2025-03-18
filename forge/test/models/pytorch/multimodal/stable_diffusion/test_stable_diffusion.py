@@ -14,13 +14,13 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["CompVis/stable-diffusion-v1-4"])
-def test_stable_diffusion_pytorch(record_forge_property, variant):
+def test_stable_diffusion_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     batch_size = 1
 
@@ -49,6 +49,7 @@ def test_stable_diffusion_pytorch(record_forge_property, variant):
         prompt_embeds,
         extra_step_kwargs,
         num_inference_steps=num_inference_steps,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Data post-processing

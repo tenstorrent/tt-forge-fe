@@ -20,15 +20,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.xfail(
     reason="Statically allocated circular buffers in program 13 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 1031040 and static circular buffer region ends at 1191648"
 )
-def test_rcnn_pytorch(record_forge_property):
+def test_rcnn_pytorch(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load Alexnet Model
     framework_model = torchvision.models.alexnet(pretrained=True)
@@ -94,8 +94,13 @@ def test_rcnn_pytorch(record_forge_property):
         )
 
         # Forge compile framework model
-        compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+        compiled_model = forge.compile(
+            framework_model,
+            sample_inputs=inputs,
+            module_name=module_name,
+            forge_property_handler=forge_property_recorder,
+        )
 
-        verify(inputs, framework_model, compiled_model)
+        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
         break  # As generated proposals will be around 2000, halt inference after getting result from single proposal.

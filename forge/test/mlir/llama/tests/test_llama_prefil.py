@@ -53,7 +53,7 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.nightly
-def test_llama_prefil_on_device_decode_on_cpu(model_path):
+def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_path):
     """
     This function tests the inference of the Llama models split into two parts:
     - The first part is the prefilling of the model on the device.
@@ -72,11 +72,15 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     framework_model = LlamaPrefillModel(model)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
     # Prefill Phase - Process the initial prompt on device
     # Validate prefill outputs between TT and CPU
-    framework_output, compiled_output = verify(inputs, framework_model, compiled_model)
+    framework_output, compiled_output = verify(
+        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder
+    )
 
     # Get hidden states for all tokens from the last "transformer layer" on both TT and CPU.
     hidden_states_compiled = compiled_output[0]

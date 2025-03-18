@@ -29,7 +29,7 @@ opset_versions = [7, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_resnet_onnx(variant, tmp_path, record_forge_property, opset_version):
+def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     random.seed(0)
 
     # Record model details
@@ -40,7 +40,7 @@ def test_resnet_onnx(variant, tmp_path, record_forge_property, opset_version):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_model_name(module_name)
 
     # Export model to ONNX
     torch_model = ResNetForImageClassification.from_pretrained(variant)
@@ -55,7 +55,13 @@ def test_resnet_onnx(variant, tmp_path, record_forge_property, opset_version):
 
     # Compile model
     input_sample = [input_sample]
-    compiled_model = forge.compile(onnx_model, input_sample)
+    compiled_model = forge.compile(onnx_model, input_sample, forge_property_handler=forge_property_recorder)
 
     # Verify data on sample input
-    verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        forge_property_handler=forge_property_recorder,
+    )
