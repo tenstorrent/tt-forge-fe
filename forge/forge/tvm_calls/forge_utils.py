@@ -175,7 +175,7 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
         if hasattr(model, "_input_args_names"):
             flattened_input_names = model._input_args_names
         else:
-            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())
+            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())[: len(paddle_inputs)]
 
         flattened_inputs, _, flattened_name_map = flatten_inputs(inputs, flattened_input_names)
 

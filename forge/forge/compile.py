@@ -219,7 +219,7 @@ def compile_main(
 
     """
 
-    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, ONNX and Forge modules are supported."
+    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, ONNX, Paddle and Forge modules are supported."
 
     if module_name is None:
         module_name = module.__class__.__name__
