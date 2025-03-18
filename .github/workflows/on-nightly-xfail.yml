@@ -22,19 +22,25 @@ jobs:
   docker-build:
       uses: ./.github/workflows/build-image.yml
       secrets: inherit
-  # Only build if no existing run ID is available
-  build:
+  build-if-neccessary:
+    runs-on: ubuntu-latest
     needs: docker-build
-    # Skip if we have either input run ID or workflow trigger
-    if: ${{ !github.event.inputs.run_id && !github.event.workflow_run.id }}
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+    steps:
+      - name: Check if build is necessary
+        id: check
+        run: |
+          echo "NEED_BUILD=$(-z "${{ github.event.inputs.run_id }}" ] && [ -z "${{ github.event.workflow_run.id }}")" >> $GITHUB_OUTPUT
+      - name: Call build
+        if: ${{ steps.check.outputs.NEED_BUILD == 'true' }}
+        uses: ./.github/workflows/build.yml
+        with:
+          docker-image: ${{ needs.docker-build.outputs.docker-image }}
+
+    # Only build if no existing run ID is available
   test_full_model_xpassing:
     needs:
       - docker-build
-      - build
+      - build-if-neccessary
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
