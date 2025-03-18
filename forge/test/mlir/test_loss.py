@@ -22,7 +22,7 @@ import forge
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
 @pytest.mark.push
-def test_l1_loss(prediction_shape, reduction):
+def test_l1_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.L1Loss("l1_loss", reduction=reduction)
     torch_loss = torch.nn.L1Loss(reduction=reduction)
 
@@ -31,7 +31,9 @@ def test_l1_loss(prediction_shape, reduction):
     target = torch.randn((prediction_shape))
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -48,7 +50,7 @@ def test_l1_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.push
-def test_cross_entropy_loss(prediction_shape):
+def test_cross_entropy_loss(forge_property_recorder, prediction_shape):
     forge_loss = forge.op.loss.CrossEntropyLoss("cross_entropy_loss")
     torch_loss = torch.nn.CrossEntropyLoss()
 
@@ -58,7 +60,9 @@ def test_cross_entropy_loss(prediction_shape):
     target = nn.functional.one_hot(target, num_classes=prediction_shape[-1]).float()
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -79,7 +83,7 @@ def test_cross_entropy_loss(prediction_shape):
     ],
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
-def test_kl_div_loss(prediction_shape, reduction):
+def test_kl_div_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.KLDivLoss("kl_div_loss", reduction=reduction)
     torch_loss = torch.nn.KLDivLoss(reduction=reduction)
 
@@ -90,7 +94,9 @@ def test_kl_div_loss(prediction_shape, reduction):
     target = nn.functional.softmax(target, dim=-1)
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)[0]
     torch_loss_out = torch_loss(prediction, target)
     assert torch.allclose(torch_loss_out, forge_loss_out, rtol=5e-2)
@@ -110,7 +116,7 @@ def test_kl_div_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
-def test_mse_loss(prediction_shape, reduction):
+def test_mse_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.MSELoss("mse_loss", reduction=reduction)
     torch_loss = torch.nn.MSELoss(reduction=reduction)
 
@@ -119,7 +125,9 @@ def test_mse_loss(prediction_shape, reduction):
     target = torch.randn((prediction_shape))
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -142,7 +150,7 @@ def test_mse_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
-def test_nll_loss(prediction_shape, reduction):
+def test_nll_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.NLLLoss("nll_loss", reduction=reduction)
     torch_loss = torch.nn.NLLLoss(reduction=reduction)
 
@@ -165,7 +173,9 @@ def test_nll_loss(prediction_shape, reduction):
 
     target_forge = forge.tensor.Tensor.create_from_torch(target_one_hot)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target_one_hot)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -186,7 +196,7 @@ def test_nll_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
-def test_huber_loss(prediction_shape, reduction):
+def test_huber_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.HuberLoss("huber_loss", delta=1.0, reduction=reduction)
     torch_loss = torch.nn.HuberLoss(reduction=reduction, delta=1.0)
 
@@ -195,7 +205,9 @@ def test_huber_loss(prediction_shape, reduction):
     target = torch.randn(prediction_shape)
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -216,7 +228,7 @@ def test_huber_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.parametrize("reduction", ["sum", "mean"])
-def test_bce_loss(prediction_shape, reduction):
+def test_bce_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.BCELoss("bce_loss", reduction=reduction)
     torch_loss = torch.nn.BCELoss(reduction=reduction)
 
@@ -226,7 +238,9 @@ def test_bce_loss(prediction_shape, reduction):
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -247,7 +261,7 @@ def test_bce_loss(prediction_shape, reduction):
     ],
 )
 @pytest.mark.parametrize("reduction", ["sum", "mean"])
-def test_bce_with_logits_loss(prediction_shape, reduction):
+def test_bce_with_logits_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.BCEWithLogitsLoss("bce_with_logits_loss", reduction=reduction)
     torch_loss = torch.nn.BCEWithLogitsLoss(reduction=reduction)
 
@@ -257,7 +271,9 @@ def test_bce_with_logits_loss(prediction_shape, reduction):
     prediction_forge = forge.tensor.Tensor.create_from_torch(prediction)
     target_forge = forge.tensor.Tensor.create_from_torch(target)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[prediction_forge, target_forge])
+    forge_loss = forge.compile(
+        forge_loss, sample_inputs=[prediction_forge, target_forge], forge_property_handler=forge_property_recorder
+    )
     forge_loss_out = forge_loss(prediction, target)
     torch_loss_out = torch_loss(prediction, target)
 
@@ -279,7 +295,7 @@ def test_bce_with_logits_loss(prediction_shape, reduction):
 @pytest.mark.parametrize("margin", [0.5, 2.0])
 @pytest.mark.parametrize("eps", [1e-6, 1e-2])
 @pytest.mark.parametrize("swap", [True, False])
-def test_triplet_margin_loss(prediction_shape, reduction, margin, eps, swap):
+def test_triplet_margin_loss(forge_property_recorder, prediction_shape, reduction, margin, eps, swap):
     forge_loss = forge.op.loss.TripletMarginLoss(
         "triplet_margin_loss", margin=margin, reduction=reduction, eps=eps, swap=swap
     )
@@ -292,7 +308,11 @@ def test_triplet_margin_loss(prediction_shape, reduction, margin, eps, swap):
     negative = torch.randn(prediction_shape, requires_grad=True)
     negative_forge = forge.tensor.Tensor.create_from_torch(negative)
 
-    forge_loss = forge.compile(forge_loss, sample_inputs=[anchor_forge, positive_forge, negative_forge])
+    forge_loss = forge.compile(
+        forge_loss,
+        sample_inputs=[anchor_forge, positive_forge, negative_forge],
+        forge_property_handler=forge_property_recorder,
+    )
     forge_loss_out = forge_loss(anchor_forge, positive_forge, negative_forge)
     torch_loss_out = torch_loss(anchor, positive, negative)
 
