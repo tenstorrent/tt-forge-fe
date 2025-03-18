@@ -44,4 +44,4 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       # Prioritize workflow trigger, then input run ID, then current run (for new builds)
-      run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
+      on_nightly_run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
