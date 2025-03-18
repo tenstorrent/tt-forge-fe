@@ -41,7 +41,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
         ),
     ],
 )
-def test_stable_diffusion_generation(record_forge_property, variant):
+def test_stable_diffusion_generation(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -52,8 +52,8 @@ def test_stable_diffusion_generation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load the pipeline and set it to use the CPU
     pipe = DiffusionPipeline.from_pretrained(f"stabilityai/{variant}", torch_dtype=torch.float32)  # Use float32 for CPU
@@ -70,7 +70,9 @@ def test_stable_diffusion_generation(record_forge_property, variant):
     inputs = [input_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

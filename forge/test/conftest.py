@@ -32,7 +32,7 @@ import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
-from forge.execution_tracker import fetch_execution_phase_and_stage
+from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore
 
 import test.utils
 
@@ -74,136 +74,16 @@ def pytest_sessionstart(session):
         for key, value in tt_backend_specific_vars.items():
             print(f"{key}={value}")
 
-    if "PYTEST_REPORT_FILE_PATH" not in os.environ:
-        os.environ["PYTEST_REPORT_FILE_PATH"] = "test_report.json"
 
-
-@pytest.fixture(autouse=True)
-def set_environment_variable(request):
-
-    # Get the test file path (relative)
-    test_file_path = os.path.relpath(request.node.fspath)
-
-    # Get the test function
-    test_func = request.node.name
-
-    # Construct in pytest collect format
-    current_test = f"{test_file_path}::{test_func}"
-
-    os.environ["CURRENT_TEST"] = current_test
-
-
-class ForgePropertyStore:
-    """
-    A class to manage properties using dot notation for nested keys.
-
-    Attributes:
-        forge_properties (dict): A dictionary that stores properties.
-    """
-
-    def __init__(self):
-        self.forge_properties = {}
-
-    def __call__(self, key: str, value: Any):
-        return self.add(key, value)
-
-    def add(self, key: str, value: Any):
-        """
-        Adds a key-value pair to the store, supporting nested keys using dot notation.
-
-        If the key contains dots (e.g., "tags.execution_phase"), nested dictionaries
-        will be created as needed.
-
-        Args:
-            key (str): The key to add. Nested keys should be separated by dots.
-            value (Any): The value to store.
-        """
-        parts = key.split(".")
-
-        # If there is no dot, simply store the key-value pair.
-        if len(parts) == 1:
-            self.forge_properties[key] = value
-        else:
-            # Traverse (or create) the nested dictionaries for all parts except the last one.
-            d = self.forge_properties
-            for part in parts[:-1]:
-                if part not in d or not isinstance(d[part], dict):
-                    d[part] = {}
-                d = d[part]
-            # Set the value for the final key part.
-            d[parts[-1]] = value
-
-    def get(self, key: str) -> Any:
-        """
-        Retrieves the value associated with the given key, using dot notation for nested keys.
-
-        Args:
-            key (str): The key to retrieve. Nested keys should be separated by dots.
-
-        Returns:
-            Any: The value stored under the key, or None if the key is not found.
-        """
-        parts = key.split(".")
-
-        # Single-level key lookup.
-        if len(parts) == 1:
-            if key in self.forge_properties:
-                return self.forge_properties[key]
-            else:
-                logger.warning(f"There is no '{key}' in ForgePropertyStore")
-                return None
-
-        # Multi-level (nested) key lookup.
-        d = self.forge_properties
-        for part in parts:
-            if isinstance(d, dict) and part in d:
-                d = d[part]
-            else:
-                logger.warning(f"Key '{key}' not found in ForgePropertyStore")
-                return None
-
-        return d
-
-    def items(self):
-        """
-        Returns an iterable view of the top-level key-value pairs in the store.
-        """
-        return self.forge_properties.items()
-
-
-@pytest.fixture(scope="function", autouse=True)
-def record_forge_property(record_property):
-    """
-    Pytest fixture that manages a ForgePropertyStore during tests.
-
-    This fixture:
-      1. Instantiates a ForgePropertyStore.
-      2. Adds a default property ("owner": "tt-forge-fe").
-      3. Yields the store for use in tests.
-      4. After the test, fetches execution phase and stage, updates the store,
-         and then records each top-level property using the provided record_property function.
-    """
-    # Instantiate the property store.
+@pytest.fixture(scope="function")
+def forge_property_recorder(record_property):
     forge_property_store = ForgePropertyStore()
 
-    # Add a default property.
-    forge_property_store.add("owner", "tt-forge-fe")
+    forge_property_handler = ForgePropertyHandler(forge_property_store)
 
-    # Provide the store to the test function.
-    yield forge_property_store
+    yield forge_property_handler
 
-    # Fetch execution phase and stage.
-    execution_phase, execution_stage = fetch_execution_phase_and_stage()
-
-    # Update the property store if execution phase/stage information is available.
-    if execution_phase is not None:
-        forge_property_store.add("tags.execution_phase", execution_phase)
-    if execution_stage is not None:
-        forge_property_store.add("tags.execution_stage", execution_stage)
-
-    # After the test, record each top-level property.
-    for key, value in forge_property_store.items():
-        record_property(key, value)
+    forge_property_handler.store_property(record_property)
 
 
 @pytest.fixture(autouse=True)
