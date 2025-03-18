@@ -125,11 +125,13 @@ jobs:
         pip install forge*.whl --force-reinstall
 
     - name: Install rust
+      shell: bash
       run: |
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         source $HOME/.cargo/env
 
     - name: Install tt-smi
+      shell: bash
       run: |
         source env/activate
         pip install git+https://github.com/tenstorrent/tt-smi.git
