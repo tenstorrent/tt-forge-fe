@@ -42,7 +42,7 @@ def test_yolov10(forge_property_recorder):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority_1")
+    forge_property_recorder.record_group("priority")
     forge_property_recorder.record_model_name(module_name)
 
     MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt"
