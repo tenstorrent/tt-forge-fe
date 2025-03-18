@@ -257,7 +257,6 @@ class Conv2dTranspose(PyOp):
         padding_right = self.padding[3]
 
         act, weight = tensor_shapes[:2]
-        print(act, weight)
         batch_size = act[0]
         cout = weight[1] * self.groups
 
