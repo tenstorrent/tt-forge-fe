@@ -189,7 +189,7 @@ class MLIRGenerator
 
         rso.flush();
 
-        log_debug(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
+        log_info(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
 
         return graphModule_;
     }
