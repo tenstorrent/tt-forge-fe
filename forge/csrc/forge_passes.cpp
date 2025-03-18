@@ -83,7 +83,7 @@ run_post_initial_graph_passes(
     passes::generate_initial_flops_estimate(graph);
     passes::decompose_nd_reshape_split(graph);
     passes::erase_unnecessary_4d_tm_sequence(graph);
-    passes::fuse_pad_conv2d(graph);
+    // passes::fuse_pad_conv2d(graph);
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
 

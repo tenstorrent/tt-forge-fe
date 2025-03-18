@@ -1206,53 +1206,6 @@ def decompose(type, attr, dc, inputs):
                 dc.fuse(result)
                 return
 
-            elif mode_idx == 0:  # 'constant' mode
-                c_dim_axis = -2 if channel_last else -1
-                r_dim_axis = -3 if channel_last else -2
-
-                # On right or bottom, we can concat all the way to TILE boundary
-                result = activations
-                if left > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[c_dim_axis] = left
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [const_tensor, result], [c_dim_axis])
-
-                if right > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[c_dim_axis] = (
-                        TILE_DIM if pad_shape[c_dim_axis] % TILE_DIM == 0 and right < TILE_DIM else right
-                    )
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [result, const_tensor], [c_dim_axis])
-
-                if top > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[r_dim_axis] = top
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [const_tensor, result], [r_dim_axis])
-
-                if bottom > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[r_dim_axis] = (
-                        TILE_DIM if pad_shape[r_dim_axis] % TILE_DIM == 0 and bottom < TILE_DIM else bottom
-                    )
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [result, const_tensor], [r_dim_axis])
-
-                result = dc.op("narrow", [result], (c_dim_axis, 0, total_padding_c + c, result.shape[c_dim_axis]))
-                if channel_last:
-                    result = dc.op("select", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
-                else:
-                    result = dc.op("narrow", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
-
-                dc.fuse(result)
-                return
-
             elif mode_idx == 2:
                 # Reflect mode
                 result = activations

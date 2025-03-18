@@ -235,9 +235,10 @@ def Select(
 def Pad(
     name: str,
     operandA: Tensor,
-    pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
+    pad: Tuple[int, ...],
+    pad_len: int,
     mode: str = "constant",
-    channel_last: bool = False,
+    value: int = 0,
 ) -> Tensor:
     """
     TM
@@ -258,28 +259,8 @@ def Pad(
     Tensor
         Forge tensor
     """
-    assert (
-        len(pad) == 2 or len(pad) == 4
-    ), "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
-    assert mode in [
-        "constant",
-        "replicate",
-        "reflect",
-    ], "Currently pad op only supports constant/replicate/reflect mode"
-
-    mode_index = {
-        "constant": 0,
-        "replicate": 1,
-        "reflect": 2,
-    }
-
-    attrs = list(pad) + [mode_index[mode], channel_last]
-    return op(
-        "pad",
-        name,
-        operandA,
-        attrs=attrs,
-    ).get_tensor()
+    breakpoint()
+    return op("pad", name, operandA, padding=pad, mode=mode, value=value, pad_len=pad_len).get_tensor()
 
 
 def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:

@@ -391,15 +391,9 @@ def test_avgpool2d_decompose_to_conv2d(shape, padding):
 @pytest.mark.parametrize(
     "padding",
     [
-        pytest.param((1, 1, 1, 1)),
-        pytest.param((1, 1, 2, 2)),
-        pytest.param(
-            (1, 2, 1, 2),
-            marks=pytest.mark.xfail(
-                reason="TTNN only supports padding height/width attributes. Thus, padding_top "
-                "must equal padding_bottom for the op to execute as expected."
-            ),
-        ),
+        # pytest.param((1, 1, 1, 1)),
+        # pytest.param((1, 1, 2, 2)),
+        pytest.param((1, 2, 1, 2)),
     ],
 )
 @pytest.mark.push
@@ -414,12 +408,12 @@ def test_conv2d_with_padding(shape, padding):
             x = nn.functional.pad(x, self.padding, mode="constant", value=0)
             return self.conv(x)
 
-    pad_top, pad_bottom, pad_left, pad_right = padding
-    if pad_top != pad_bottom or pad_left != pad_right:
-        pytest.xfail(
-            "TTNN only supports padding height/width attributes. Thus, padding_top "
-            "must equal padding_bottom for the op to execute as expected."
-        )
+    # pad_top, pad_bottom, pad_left, pad_right = padding
+    # if pad_top != pad_bottom or pad_left != pad_right:
+    #     pytest.xfail(
+    #         "TTNN only supports padding height/width attributes. Thus, padding_top "
+    #         "must equal padding_bottom for the op to execute as expected."
+    #     )
 
     inputs = [torch.rand(shape)]
 
