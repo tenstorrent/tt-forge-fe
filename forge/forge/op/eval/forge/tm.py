@@ -1002,20 +1002,11 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         if dim < 0:
             dim += len(shape)
 
-        # reshape to dimension ..., shape[dim], repeats, ...
-        # TODO: replace with the insert in list
-        new_shape = []
-        for i in range(len(shape)):
-            if i == dim:
-                new_shape.append(repeats)
-            new_shape.append(shape[i])
-        # new_shape = inputs[0].shape.create(new_shape)
-        new_shape = tuple(new_shape)
+        shape.insert(dim, repeats)
 
-        ret = ac.op("reshape", (grad,), new_shape, {"shape": new_shape})
+        ret = ac.op("reshape", (grad,), shape, {"shape": shape})
         ret = ac.op("reduce_sum", (ret,), (dim, False), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
-
         return ret
 
     raise NotImplementedError(f"{type}")
