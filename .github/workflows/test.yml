@@ -34,7 +34,7 @@ on:
       on_nightly_run_id:
         description: 'Run ID for the on-nightly workflow used to generate the WHL installer'
         required: false
-        type: number
+        type: string
 
 permissions:
   packages: write
