@@ -165,7 +165,10 @@ def test_matmul(shapes, train):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=train)
 
     fw_out, co_out = verify(
-        inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95))
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )
     if train:
         output_grad = torch.rand_like(fw_out[0])
@@ -181,6 +184,7 @@ def test_matmul(shapes, train):
         )
 
 
+@pytest.mark.parametrize("train", [False, True])
 @pytest.mark.parametrize(
     "shape, dim, repeats",
     [
@@ -189,7 +193,7 @@ def test_matmul(shapes, train):
     ],
 )
 @pytest.mark.push
-def test_repeat_interleave(shape, dim, repeats):
+def test_repeat_interleave(shape, dim, repeats, train):
     class RepeatInterleave(nn.Module):
         def __init__(self, dim, repeats):
             super().__init__()
@@ -202,12 +206,17 @@ def test_repeat_interleave(shape, dim, repeats):
         ):
             return torch.repeat_interleave(x, repeats=repeats, dim=dim)
 
-    inputs = [torch.rand(shape)]
+    inputs = [torch.rand(shape, requires_grad=train)]
 
     framework_model = RepeatInterleave(dim=dim, repeats=repeats)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    framework_model.eval() if not train else framework_model.train()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=train)
 
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    if train:
+        output_grad = torch.rand_like(fw_out[0])
+        verify_backward(inputs, output_grad, fw_out[0], co_out[0], framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -266,7 +275,12 @@ def test_reduce_avg(shapes):
     framework_model = ReduceAvg()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+    )
 
 
 @pytest.mark.parametrize(
