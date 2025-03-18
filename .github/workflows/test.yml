@@ -128,12 +128,12 @@ jobs:
       shell: bash
       run: |
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        source $HOME/.cargo/env
 
     - name: Install tt-smi
       shell: bash
       run: |
         source env/activate
+        source $HOME/.cargo/env
         pip install git+https://github.com/tenstorrent/tt-smi.git
 
     - name: Run Test
