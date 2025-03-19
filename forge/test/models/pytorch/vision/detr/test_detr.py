@@ -24,7 +24,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
         )
     ],
 )
-def test_detr_detection(record_forge_property, variant):
+def test_detr_detection(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -35,8 +35,8 @@ def test_detr_detection(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
@@ -48,15 +48,17 @@ def test_detr_detection(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
-def test_detr_segmentation(record_forge_property, variant):
+def test_detr_segmentation(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -69,8 +71,8 @@ def test_detr_segmentation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)
@@ -82,7 +84,9 @@ def test_detr_segmentation(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -16,7 +16,7 @@ from test.utils import download_model
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", ["deepmind/language-perceiver"])
-def test_perceiverio_masked_lm_pytorch(record_forge_property, variant):
+def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -28,8 +28,8 @@ def test_perceiverio_masked_lm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     tokenizer = download_model(PerceiverTokenizer.from_pretrained, variant)
@@ -45,10 +45,12 @@ def test_perceiverio_masked_lm_pytorch(record_forge_property, variant):
     inputs = [encoding.input_ids, encoding.attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)

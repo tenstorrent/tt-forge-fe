@@ -15,7 +15,7 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral(record_forge_property, variant):
+def test_mistral(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Build Module Name
@@ -24,8 +24,8 @@ def test_mistral(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -50,7 +50,8 @@ def test_mistral(record_forge_property, variant):
         framework_model,
         inputs,
         module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
