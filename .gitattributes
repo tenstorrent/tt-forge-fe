@@ -1,0 +1,17 @@
+forge/test/models/pytorch/vision/maptr/data/nuscenes/maps/expansion/boston-seaport.json filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/maps/expansion/singapore-hollandvillage.json filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/maps/expansion/singapore-onenorth.json filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/maps/expansion/singapore-queenstown.json filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/nuscenes_infos_temporal_val.pkl filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/CAM_BACK/n008-2018-08-01-15-16-36-0400__CAM_BACK__1533151603537558.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/CAM_BACK_LEFT/n008-2018-08-01-15-16-36-0400__CAM_BACK_LEFT__1533151603547405.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/CAM_BACK_RIGHT/n008-2018-08-01-15-16-36-0400__CAM_BACK_RIGHT__1533151603528113.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151603512404.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/CAM_FRONT_LEFT/n008-2018-08-01-15-16-36-0400__CAM_FRONT_LEFT__1533151603504799.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/CAM_FRONT_RIGHT/n008-2018-08-01-15-16-36-0400__CAM_FRONT_RIGHT__1533151603520482.jpg filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/LIDAR_TOP/n008-2018-08-01-15-16-36-0400__LIDAR_TOP__1533151603547590.pcd.bin filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/RADAR_BACK_LEFT/n008-2018-08-01-15-16-36-0400__RADAR_BACK_LEFT__1533151603522238.pcd filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/RADAR_BACK_RIGHT/n008-2018-08-01-15-16-36-0400__RADAR_BACK_RIGHT__1533151603576423.pcd filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/RADAR_FRONT/n008-2018-08-01-15-16-36-0400__RADAR_FRONT__1533151603555991.pcd filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/RADAR_FRONT_LEFT/n008-2018-08-01-15-16-36-0400__RADAR_FRONT_LEFT__1533151603526348.pcd filter=lfs diff=lfs merge=lfs -text
+forge/test/models/pytorch/vision/maptr/data/nuscenes/samples/RADAR_FRONT_RIGHT/n008-2018-08-01-15-16-36-0400__RADAR_FRONT_RIGHT__1533151603512881.pcd filter=lfs diff=lfs merge=lfs -text
