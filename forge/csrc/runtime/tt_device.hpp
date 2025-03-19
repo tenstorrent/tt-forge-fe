@@ -62,6 +62,7 @@ struct TTSystem
     }
 
     static TTSystem& get_system();
+    static bool is_initialized();
 };
 
 TTSystem detect_available_devices();

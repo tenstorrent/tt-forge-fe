@@ -24,7 +24,10 @@ inline void tt_forge_signal_handler(int sig)
 
     std::cerr << "tt_forge_signal_handler - signal: " << sig << " (" << signal_name << ")" << std::endl;
 
-    tt::TTSystem::get_system().close_devices();
+    if (tt::TTSystem::is_initialized())
+    {
+        tt::TTSystem::get_system().close_devices();
+    }
 
     std::cerr << "stacktrace: " << std::endl;
 
