@@ -105,6 +105,9 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         tt::property::record_execution_depth(forge_property_handler, tt::property::ExecutionDepth::FAILED_RUNTIME);
 
+        std::string binary_json_str = runtime::Binary(binary).asJson();
+        tt::property::record_flatbuffer_details(forge_property_handler, binary_json_str);
+
         return binary;
     }
     else if constexpr (output == MLIROutputKind::Cpp)
