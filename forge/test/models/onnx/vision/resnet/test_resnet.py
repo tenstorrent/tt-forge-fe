@@ -49,6 +49,7 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=opset_version)
 
     # Load framework model
+    # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
     framework_model = forge.OnnxModule(module_name, onnx_model)
