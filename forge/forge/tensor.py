@@ -286,13 +286,17 @@ class Tensor(TensorBase):
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
             torch_tensor = torch.rand(shape, dtype=dtype)
-        elif dtype in [torch.int8, torch.int16, torch.int32, torch.int64]:
+        elif dtype in [torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64]:
             if min_int == max_int:
                 torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
             else:
                 torch_tensor = torch.randint(low=min_int, high=max_int, size=shape, dtype=dtype)
-        else:
+        elif dtype == torch.bool:
+            torch_tensor = torch.randint(low=0, high=2, size=shape, dtype=dtype)  # this will create boolean tensor
+        elif dtype is None:
             torch_tensor = torch.rand(shape, dtype=torch.float32)
+        else:
+            raise RuntimeError(f"[create_torch_tensor] - Unsupported dtype {dtype}")
 
         return torch_tensor
 
@@ -309,6 +313,8 @@ class Tensor(TensorBase):
         torch_tensor = Tensor.create_torch_tensor(
             shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
         )
+
+        print(f"During creation TORCH TENSOR: {torch_tensor.dtype}")
 
         return TensorFromPytorch(
             torch_tensor, dev_data_format=pytorch_dtype_to_forge_dataformat(torch_dtype), constant=constant
