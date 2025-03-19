@@ -21,7 +21,7 @@ opset_versions = [9, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_minilm_sequence_classification(record_forge_property, variant, tmp_path, opset_version):
+def test_minilm_sequence_classification(forge_property_recorder, variant, tmp_path, opset_version):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.ONNX,
@@ -30,10 +30,8 @@ def test_minilm_sequence_classification(record_forge_property, variant, tmp_path
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load MiniLM tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -57,7 +55,7 @@ def test_minilm_sequence_classification(record_forge_property, variant, tmp_path
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(onnx_model, sample_inputs=inputs)
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

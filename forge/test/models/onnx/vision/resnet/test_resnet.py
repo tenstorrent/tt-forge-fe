@@ -40,6 +40,7 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Export model to ONNX
