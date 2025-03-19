@@ -32,7 +32,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_320x320(record_forge_property, size):
+def test_yolov5_320x320(forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -47,8 +47,8 @@ def test_yolov5_320x320(record_forge_property, size):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -56,10 +56,12 @@ def test_yolov5_320x320(record_forge_property, size):
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
@@ -90,7 +92,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_640x640(record_forge_property, size):
+def test_yolov5_640x640(forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -105,8 +107,8 @@ def test_yolov5_640x640(record_forge_property, size):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -114,10 +116,12 @@ def test_yolov5_640x640(record_forge_property, size):
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
@@ -147,7 +151,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_480x480(record_forge_property, size):
+def test_yolov5_480x480(forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -162,8 +166,8 @@ def test_yolov5_480x480(record_forge_property, size):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -171,15 +175,17 @@ def test_yolov5_480x480(record_forge_property, size):
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
-def test_yolov5_1280x1280(record_forge_property, variant):
+def test_yolov5_1280x1280(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -193,8 +199,8 @@ def test_yolov5_1280x1280(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model = download_model(torch.hub.load, "ultralytics/yolov5", variant, pretrained=True)
 
@@ -203,7 +209,9 @@ def test_yolov5_1280x1280(record_forge_property, variant):
     inputs = [input_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

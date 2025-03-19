@@ -38,15 +38,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
         ),
     ],
 )
-def test_fuyu8b(record_forge_property, variant):
+def test_fuyu8b(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -86,9 +86,11 @@ def test_fuyu8b(record_forge_property, variant):
     inputs = [inputs_embeds]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     os.remove("bus.png")

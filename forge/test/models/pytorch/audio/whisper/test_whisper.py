@@ -33,7 +33,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_whisper(record_forge_property, variant):
+def test_whisper(forge_property_recorder, variant):
     if variant != "openai/whisper-tiny":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -47,8 +47,8 @@ def test_whisper(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)
@@ -86,10 +86,12 @@ def test_whisper(record_forge_property, variant):
     framework_model = Wrapper(model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     current_decoder_input_ids = decoder_input_ids
     all_decoded_ids = decoder_input_ids

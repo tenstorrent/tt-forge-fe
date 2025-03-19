@@ -34,6 +34,7 @@ namespace py = pybind11;
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
+#include "shared_utils/forge_property_utils.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
@@ -167,6 +168,35 @@ PYBIND11_MODULE(_C, m)
                     {"HiFi3", tt::MathFidelity::HiFi3},
                     {"HiFi4", tt::MathFidelity::HiFi4},
                     {"Invalid", tt::MathFidelity::Invalid},
+                };
+                return decode.at(encoded);
+            });
+
+    py::enum_<tt::property::ExecutionDepth>(m, "ExecutionDepth")
+        .value("FAILED_FE_COMPILATION", tt::property::ExecutionDepth::FAILED_FE_COMPILATION)
+        .value("FAILED_TTMLIR_COMPILATION", tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION)
+        .value("FAILED_RUNTIME", tt::property::ExecutionDepth::FAILED_RUNTIME)
+        .value("INCORRECT_RESULT", tt::property::ExecutionDepth::INCORRECT_RESULT)
+        .value("PASSED", tt::property::ExecutionDepth::PASSED)
+        .export_values()
+        .def(
+            "to_str",
+            [](tt::property::ExecutionDepth execution_depth)
+            {
+                std::stringstream ss;
+                ss << execution_depth;
+                return ss.str();
+            })
+        .def(
+            "from_str",
+            [](std::string const &encoded)
+            {
+                static std::unordered_map<std::string, tt::property::ExecutionDepth> decode = {
+                    {"FAILED_FE_COMPILATION", tt::property::ExecutionDepth::FAILED_FE_COMPILATION},
+                    {"FAILED_TTMLIR_COMPILATION", tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION},
+                    {"FAILED_RUNTIME", tt::property::ExecutionDepth::FAILED_RUNTIME},
+                    {"INCORRECT_RESULT", tt::property::ExecutionDepth::INCORRECT_RESULT},
+                    {"PASSED", tt::property::ExecutionDepth::PASSED},
                 };
                 return decode.at(encoded);
             });

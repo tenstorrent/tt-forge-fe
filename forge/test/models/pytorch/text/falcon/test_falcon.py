@@ -13,7 +13,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
-def test_falcon(record_forge_property, variant):
+def test_falcon(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
     # Build Module Name
@@ -22,8 +22,8 @@ def test_falcon(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)
@@ -44,10 +44,12 @@ def test_falcon(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants = [
@@ -60,7 +62,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_falcon_3(record_forge_property, variant):
+def test_falcon_3(forge_property_recorder, variant):
 
     if variant == "tiiuae/Falcon3-Mamba-7B-Base" or variant == "tiiuae/Falcon3-7B-Base":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 36 GB)")
@@ -73,8 +75,8 @@ def test_falcon_3(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = AutoModelForCausalLM.from_pretrained(variant)
@@ -85,7 +87,9 @@ def test_falcon_3(record_forge_property, variant):
     input_data = tokenizer.encode(input_text, return_tensors="pt")
 
     # Forge compile framework model
-    compiled_model = forge.compile(model, sample_inputs=input_data, module_name=module_name)
+    compiled_model = forge.compile(
+        model, sample_inputs=input_data, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify([input_data], model, compiled_model)
+    verify([input_data], model, compiled_model, forge_property_handler=forge_property_recorder)

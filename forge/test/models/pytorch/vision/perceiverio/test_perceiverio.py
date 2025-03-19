@@ -47,7 +47,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_perceiverio_for_image_classification_pytorch(record_forge_property, variant):
+def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, variant):
     if variant != "deepmind/vision-perceiver-conv":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -61,8 +61,8 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Sample Image
     pixel_values = get_sample_data(variant)
@@ -85,7 +85,9 @@ def test_perceiverio_for_image_classification_pytorch(record_forge_property, var
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
