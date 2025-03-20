@@ -234,6 +234,8 @@ class CompiledModel:
         """
         self.inputs = [*to_pt_tensors(inputs)]
         # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
+        print(f"len of inputs: {len(self.inputs)}")
+        print(f"input.dtype: {self.inputs[0].dtype}")
         self.inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in self.inputs]
 
         inputs_and_parameters = [

@@ -1357,6 +1357,9 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
     consteval_graph = consteval_trace.get(name, None)
 
     if consteval_graph is None:
+        if inputs[name].dtype == torch.float32:
+            inputs[name] = inputs[name].to(dtype=torch.bfloat16)
+        print(f"output dtype: {inputs[name].dtype}")
         return inputs[name]
 
     def eval_op(op_type, inputs):
@@ -1397,6 +1400,10 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
     assert output is not None, "Expect a valid tensor output out of consteval"
     if is_forge:
         output = pad_pytorch_tensor_to_forge(output, [], tile_r=tile_r, tile_c=tile_c)
+
+    if output.dtype == torch.float32:
+        output = output.to(dtype=torch.bfloat16)
+
     return output
 
 

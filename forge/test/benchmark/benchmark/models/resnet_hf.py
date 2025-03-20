@@ -29,7 +29,7 @@ REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [
-    1,
+    8,
 ]
 
 # Input size configurations
@@ -67,23 +67,30 @@ def test_resnet_hf(
     if training:
         pytest.skip("Training is not supported")
 
-    if batch_size > 1:
-        pytest.skip("Batch size greater than 1 is not supported")
-
     # TODO: This we will need when when we run resnet with real data.
     # Load tiny dataset
     # dataset = load_dataset("zh-plus/tiny-imagenet")
     # images = random.sample(dataset["valid"]["image"], 10)
 
     # Random data
-    input_sample = [torch.rand(batch_size, channel_size, *input_size)]
+    input_sample = [torch.rand(batch_size, channel_size, *input_size, dtype=torch.bfloat16)]
+    print(f"{input_sample}")
 
     # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    framework_model = download_model(
+        ResNetForImageClassification.from_pretrained, variant, return_dict=False, torch_dtype=torch.bfloat16
+    )
+    # for param in framework_model.parameters():
+    #     new_param = param.to(torch.bfloat16)
+    #     param.data = new_param.data
+
+    # framework_model = framework_model.to(dtype=torch.bfloat16)
     fw_out = framework_model(*input_sample)
 
     # Compile model
-    compiled_model = forge.compile(framework_model, *input_sample)
+    compiler_cfg = forge.config.CompilerConfig()
+    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+    compiled_model = forge.compile(framework_model, *input_sample, compiler_cfg=compiler_cfg)
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
     co_out = compiled_model(*input_sample)
