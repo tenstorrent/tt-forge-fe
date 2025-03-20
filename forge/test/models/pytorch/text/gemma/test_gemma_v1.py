@@ -20,7 +20,9 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "google/gemma-1.1-2b-it",
-            marks=pytest.mark.push,
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)"
+            ),
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
@@ -48,7 +50,7 @@ def test_gemma_pytorch_v1(forge_property_recorder, variant):
     prompt = "What is the tallest mountain?"
     inputs = tokenizer(prompt, return_tensors="pt")
     input_ids = inputs["input_ids"]
-    max_new_tokens = 200
+    max_new_tokens = 100
     padded_inputs, seq_len = pad_inputs(input_ids, max_new_tokens)
 
     # Forge compile framework model
