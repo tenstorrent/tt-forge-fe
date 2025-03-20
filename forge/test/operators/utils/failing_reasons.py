@@ -98,6 +98,7 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and f"{ex}" == "Tensor 2 - data type mismatch: expected UInt32, got Float32",
+            lambda ex: isinstance(ex, RuntimeError) and "Unsupported data format" in f"{ex}",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
