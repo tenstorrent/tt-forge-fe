@@ -67,9 +67,6 @@ def test_resnet_hf(
     if training:
         pytest.skip("Training is not supported")
 
-    if batch_size > 1:
-        pytest.skip("Batch size greater than 1 is not supported")
-
     # TODO: This we will need when when we run resnet with real data.
     # Load tiny dataset
     # dataset = load_dataset("zh-plus/tiny-imagenet")
