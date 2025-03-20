@@ -98,7 +98,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Cast0,
@@ -143,11 +142,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     (
         Cast2,
@@ -250,7 +244,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -318,11 +311,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -342,7 +330,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -360,11 +347,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     (
         Cast3,
@@ -394,7 +376,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -406,11 +387,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -422,7 +398,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -434,11 +409,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -565,11 +535,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -593,11 +558,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -616,11 +576,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -639,11 +594,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -655,11 +605,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     pytest.param(
         (
@@ -671,11 +616,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.bool"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8"
-            )
-        ],
     ),
     (
         Cast0,
@@ -707,7 +647,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Cast0,
