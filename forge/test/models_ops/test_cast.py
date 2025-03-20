@@ -98,7 +98,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Cast0,
@@ -119,7 +118,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Cast0,
@@ -189,7 +187,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -221,7 +218,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -263,7 +259,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -315,7 +310,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -343,7 +337,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -371,7 +364,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -406,7 +398,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.float32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -497,7 +488,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dtype": "torch.int32"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Cast3,
