@@ -126,8 +126,8 @@ class ModelConstEvalPass(torch.nn.Module):
         self.kwargs = kwargs
 
         self.constants = tuple()
-        for _ in range(number_of_operands):
-            self.constants += (torch.rand(*self.shape) - 0.5,)
+        for _ in range(len(shape)):
+            self.constants += (torch.rand(*self.shape[0]) - 0.5,)
 
     def forward(self, *x: torch.Tensor):
         v1 = self.operator(self.constants, **self.kwargs)
@@ -177,13 +177,14 @@ class TestVerification:
         )
 
         dim = test_vector.kwargs["dim"]
+        num_operands = len(test_vector.input_shape)
         match test_vector.input_source:
             case InputSource.CONST_EVAL_PASS:
-                input_shape = list(test_vector.input_shape)
-                input_shape[dim] = input_shape[dim] * test_vector.number_of_operands
-                input_shapes = tuple([input_shape for _ in range(test_vector.number_of_operands)])
+                input_shape = list(test_vector.input_shape[0])
+                input_shape[dim] = input_shape[dim] * num_operands
+                input_shapes = tuple([input_shape for _ in range(num_operands)])
             case _:
-                input_shapes = tuple([test_vector.input_shape for _ in range(test_vector.number_of_operands)])
+                input_shapes = test_vector.input_shape
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
@@ -208,20 +209,23 @@ class TestParamsData:
 
     @classmethod
     def generate_kwargs(cls, test_vector: TestVector):
-        shape_with_kwargs = cls.extend_shape_with_dims(test_vector.input_shape)
-        kwarg_list = []
-        for item in shape_with_kwargs:
-            kwargs = {}
-            kwargs["dim"] = item[1]
-            kwarg_list.append(kwargs)
-        return kwarg_list
+        for i in range(len(test_vector.input_shape[0])):
+            yield {"dim": i}
 
     @classmethod
-    def extend_shape_with_dims(cls, shape):
-        shape_with_dims = list()
-        for dim in list(range(0, len(shape), 1)):
-            shape_with_dims.append((shape, dim))
-        return shape_with_dims
+    def generate_input_shapes(cls):
+        shapes = TestCollectionCommon.all.input_shapes
+        number_of_operands = [
+            2,
+            3,
+            7,
+            # 15, # consume too much memory
+        ]
+        extended_shapes = []
+        for shape in shapes:
+            for repeat in number_of_operands:
+                extended_shapes.append((shape,) * repeat)
+        return extended_shapes
 
 
 class TestCollectionData:
@@ -268,8 +272,7 @@ TestParamsData.test_plan = TestPlan(
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.all.input_shapes,
-            numbers_of_operands=TestCollectionData.all.numbers_of_operands,
+            input_shapes=TestParamsData.generate_input_shapes(),
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
         ),
         # Test plan:
@@ -277,8 +280,9 @@ TestParamsData.test_plan = TestPlan(
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            numbers_of_operands=TestCollectionData.single.numbers_of_operands,
+            input_shapes=[
+                ((1, 2, 3, 4), (1, 2, 3, 4)),
+            ],
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=[
                 item
@@ -292,8 +296,9 @@ TestParamsData.test_plan = TestPlan(
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            numbers_of_operands=TestCollectionData.single.numbers_of_operands,
+            input_shapes=[
+                ((1, 2, 3, 4), (1, 2, 3, 4)),
+            ],
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
@@ -302,21 +307,21 @@ TestParamsData.test_plan = TestPlan(
     failing_rules=[
         # Skip all tests with input shapes with 2 dimensions
         TestCollection(
-            criteria=lambda test_vector: len(test_vector.input_shape) == 2,
+            criteria=lambda test_vector: len(test_vector.input_shape[0]) == 2,
             skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
         TestCollection(
             criteria=lambda test_vector: test_vector.input_source != InputSource.CONST_EVAL_PASS
-            and len(test_vector.input_shape) == 3
+            and len(test_vector.input_shape[0]) == 3
             and (test_vector.kwargs["dim"] == 1 or test_vector.kwargs["dim"] == 2)
-            and test_vector.input_shape[test_vector.kwargs["dim"]] % 32 != 0,
+            and test_vector.input_shape[0][test_vector.kwargs["dim"]] % 32 != 0,
             failing_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
         TestCollection(
             criteria=lambda test_vector: test_vector.input_source != InputSource.CONST_EVAL_PASS
-            and len(test_vector.input_shape) == 4
+            and len(test_vector.input_shape[0]) == 4
             and (test_vector.kwargs["dim"] == 2 or test_vector.kwargs["dim"] == 3)
-            and test_vector.input_shape[test_vector.kwargs["dim"]] % 32 != 0,
+            and test_vector.input_shape[0][test_vector.kwargs["dim"]] % 32 != 0,
             failing_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
     ],
