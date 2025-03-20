@@ -20,7 +20,7 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
-from forge.verify.compare import compare_with_golden_pcc
+from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
 # Common constants
@@ -93,7 +93,7 @@ def test_resnet_hf(
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
+    assert [compare_with_golden(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")

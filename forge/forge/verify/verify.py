@@ -29,7 +29,7 @@ from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, 
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
-from forge.verify.compare import compare_tensor_to_golden
+from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge._C import ExecutionDepth
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
@@ -370,6 +370,13 @@ def verify(
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 
     co_out = [co.to("cpu") for co in co_out]
+
+    if forge_property_handler is not None:
+        pcc, atol = determine_consistency_limits(fw_out, co_out)
+        if pcc is not None:
+            forge_property_handler.record_pcc(pcc=pcc)
+        if atol is not None:
+            forge_property_handler.record_atol(atol=atol)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
