@@ -20,6 +20,7 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
+from forge._C.runtime import reconfigure_devices
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
@@ -86,6 +87,10 @@ def test_resnet_hf(
     compiled_model = forge.compile(framework_model, *input_sample)
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
+
+    # Enable program cache
+    reconfigure_devices(True)
+
     co_out = compiled_model(*input_sample)
     start = time.time()
     for _ in range(loop_count):

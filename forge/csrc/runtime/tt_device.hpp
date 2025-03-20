@@ -35,8 +35,10 @@ struct TTDevice
 
     bool is_open() const { return rt_device.has_value(); }
 
-    void open_device();
+    void open_device(std::optional<bool> enable_program_cache = std::nullopt);
     void close_device();
+
+    void reconfigure_device(bool enable_program_cache);
 };
 
 struct TTSystem
@@ -58,6 +60,14 @@ struct TTSystem
             {
                 device->close_device();
             }
+        }
+    }
+
+    void reconfigure_devices(bool enable_program_cache)
+    {
+        for (auto& device : devices)
+        {
+            device->reconfigure_device(enable_program_cache);
         }
     }
 
