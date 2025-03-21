@@ -20,6 +20,7 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
+#include "lower_to_forge/common.hpp"
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/Value.h"
@@ -587,6 +588,7 @@ class MLIRGenerator
             case tt::DataFormat::Float16: return builder_.getF16Type();
             case tt::DataFormat::Int32: return builder_.getI32Type();
             case tt::DataFormat::Int8: return builder_.getI8Type();
+            case tt::DataFormat::RawUInt8: return builder_.getIntegerType(8, false);
             default:
                 log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                 TT_ASSERT(false);
