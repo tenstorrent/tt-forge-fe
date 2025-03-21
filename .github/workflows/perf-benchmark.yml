@@ -77,7 +77,7 @@ jobs:
         workflow_conclusion: success
         workflow: on-push.yml
         commit: ${{ steps.sumbmodules.outputs.ttmlir }}
-        name: ttrt-whl-*
+        name: ttrt-whl-tracy
         repo: tenstorrent/tt-mlir
         check_artifacts: true
 
@@ -93,6 +93,12 @@ jobs:
         pip install tvm*.whl --force-reinstall
         pip install forge*.whl --force-reinstall
         pip install ttrt*.whl --force-reinstall
+
+    - name: Run TTRT
+      shell: bash
+      run: |
+        source env/activate
+        ttrt --version
 
     - name: Run Perf Benchmark
       env:
