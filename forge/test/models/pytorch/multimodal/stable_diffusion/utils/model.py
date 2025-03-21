@@ -230,6 +230,7 @@ def denoising_loop(
     guidance_scale: float = 7.5,
     callback=None,
     callback_steps: int = 1,
+    forge_property_handler=None,
 ):
 
     do_classifier_free_guidance = guidance_scale > 1.0
@@ -251,14 +252,18 @@ def denoising_loop(
 
             inputs = [latent_model_input.detach()[0:1], timestep_.detach()[0:1], prompt_embeds.detach()[0:1]]
             module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"1_{i}")
-            compiled_model = forge.compile(pipeline, sample_inputs=inputs, module_name=module_name)
+            compiled_model = forge.compile(
+                pipeline, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+            )
             noise_pred_0 = compiled_model(*inputs)
 
             # sanity
             # noise_pred_1 = pipeline(latent_model_input.detach()[1:2],timestep_.detach()[1:2],prompt_embeds.detach()[1:2],)
             inputs = [latent_model_input.detach()[1:2], timestep_.detach()[1:2], prompt_embeds.detach()[1:2]]
             module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"2_{i}")
-            compiled_model = forge.compile(pipeline, sample_inputs=inputs, module_name=module_name)
+            compiled_model = forge.compile(
+                pipeline, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+            )
             noise_pred_1 = compiled_model(*inputs)
 
             noise_pred = torch.cat([noise_pred_0[0].value().detach(), noise_pred_1[0].value().detach()], dim=0)

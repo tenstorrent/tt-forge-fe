@@ -42,7 +42,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_mamba(record_forge_property, variant):
+def test_mamba(forge_property_recorder, variant):
     if variant != "state-spaces/mamba-790m-hf":
         pytest.skip("Skipping this variant; only testing the base model (mamba-790m-hf) for now.")
 
@@ -52,8 +52,8 @@ def test_mamba(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -66,7 +66,9 @@ def test_mamba(record_forge_property, variant):
     inputs = [tokenizer(prompt, return_tensors="pt")["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

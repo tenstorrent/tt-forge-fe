@@ -23,7 +23,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_take(tensor_and_indices):
+def test_take(forge_property_recorder, tensor_and_indices):
     tensor, indices = tensor_and_indices
 
     class TorchTakeIndexingModule(nn.Module):
@@ -38,10 +38,10 @@ def test_take(tensor_and_indices):
     inputs = [tensor]
 
     framework_model = TorchTakeIndexingModule(indices)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 # NOTE: from pytorch docs:
@@ -70,7 +70,7 @@ def test_take(tensor_and_indices):
     ],
 )
 @pytest.mark.push
-def test_index_add(input_dim_index_source):
+def test_index_add(forge_property_recorder, input_dim_index_source):
     input_tensor, dim, index, source = input_dim_index_source
 
     class IndexAddModule(nn.Module):
@@ -88,10 +88,10 @@ def test_index_add(input_dim_index_source):
     inputs = [input_tensor]
 
     framework_model = IndexAddModule(dim, index, source)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -112,7 +112,7 @@ def test_index_add(input_dim_index_source):
     ],
 )
 @pytest.mark.push
-def test_index_fill(input_dim_index_value):
+def test_index_fill(forge_property_recorder, input_dim_index_value):
     input_tensor, dim, index, value = input_dim_index_value
 
     class IndexFillModule(nn.Module):
@@ -130,10 +130,10 @@ def test_index_fill(input_dim_index_value):
     inputs = [input_tensor]
 
     framework_model = IndexFillModule(dim, index, value)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 # NOTE: from pytorch docs:
@@ -163,7 +163,7 @@ def test_index_fill(input_dim_index_value):
     ],
 )
 @pytest.mark.push
-def test_index_copy(input_dim_index_source):
+def test_index_copy(forge_property_recorder, input_dim_index_source):
     input_tensor, dim, index, source = input_dim_index_source
 
     class IndexCopyModule(nn.Module):
@@ -181,10 +181,10 @@ def test_index_copy(input_dim_index_source):
     inputs = [input_tensor]
 
     framework_model = IndexCopyModule(dim, index, source)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 # NOTE: from pytorch docs:
@@ -200,7 +200,7 @@ def test_index_copy(input_dim_index_source):
     ],
 )
 @pytest.mark.push
-def test_index_select(input_dim_index):
+def test_index_select(forge_property_recorder, input_dim_index):
     input_tensor, dim, index = input_dim_index
 
     class IndexSelectModule(nn.Module):
@@ -217,10 +217,10 @@ def test_index_select(input_dim_index):
     inputs = [input_tensor]
 
     framework_model = IndexSelectModule(dim, index)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -249,7 +249,7 @@ def test_index_select(input_dim_index):
     ],
 )
 @pytest.mark.push
-def test_index_put(input_indices_values_accumulate):
+def test_index_put(forge_property_recorder, input_indices_values_accumulate):
     input_tensor, indices, values, accumulate = input_indices_values_accumulate
 
     class IndexPutModule(nn.Module):
@@ -267,7 +267,7 @@ def test_index_put(input_indices_values_accumulate):
     inputs = [input_tensor]
 
     framework_model = IndexPutModule(indices, values, accumulate)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
     # Run verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

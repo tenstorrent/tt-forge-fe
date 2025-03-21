@@ -70,7 +70,7 @@ import forge
     ],
 )
 @pytest.mark.push
-def test_reduce_sum(input_shape, dim, keepdim):
+def test_reduce_sum(forge_property_recorder, input_shape, dim, keepdim):
     class ReduceSum(nn.Module):
         def __init__(self):
             super().__init__()
@@ -82,9 +82,11 @@ def test_reduce_sum(input_shape, dim, keepdim):
 
     framework_model = ReduceSum()
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -147,7 +149,7 @@ def test_reduce_sum(input_shape, dim, keepdim):
     ],
 )
 @pytest.mark.push
-def test_reduce_mean(input_shape, dim, keepdim):
+def test_reduce_mean(forge_property_recorder, input_shape, dim, keepdim):
     class ReduceMean(nn.Module):
         def __init__(self):
             super().__init__()
@@ -159,16 +161,18 @@ def test_reduce_mean(input_shape, dim, keepdim):
 
     framework_model = ReduceMean()
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.parametrize("dim", [1, 2])
 @pytest.mark.push
-def test_mean(x_shape, y_shape, dim):
+def test_mean(forge_property_recorder, x_shape, y_shape, dim):
     class Mean(nn.Module):
         def __init__(self):
             super().__init__()
@@ -182,9 +186,11 @@ def test_mean(x_shape, y_shape, dim):
 
     framework_model = Mean()
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
@@ -235,7 +241,7 @@ def test_mean(x_shape, y_shape, dim):
     ],
 )
 @pytest.mark.push
-def test_reduce_max(input_shape, dim, keepdim):
+def test_reduce_max(forge_property_recorder, input_shape, dim, keepdim):
     input = (input_shape, dim, keepdim)
     if input in [((64,), 0, False), ((64,), -1, False)]:
         pytest.xfail(reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion `end > 0' failed.")
@@ -252,6 +258,8 @@ def test_reduce_max(input_shape, dim, keepdim):
     framework_model = ReduceMax()
     framework_model.eval()
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

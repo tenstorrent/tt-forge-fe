@@ -15,7 +15,7 @@ opset_imports = [helper.make_operatorsetid("", ONNX_OPSET_VERSION)]
 
 
 @pytest.mark.push
-def test_add():
+def test_add(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [2, 32, 32])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [2, 32, 32])
     output = helper.make_tensor_value_info("output", TensorProto.FLOAT, [2, 32, 32])
@@ -41,13 +41,13 @@ def test_add():
     inputs = [torch.rand([2, 32, 32]), torch.rand([2, 32, 32])]
 
     onnx_module = forge.OnnxModule("add", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_arithmetic():
+def test_arithmetic(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [2, 32, 32])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [2, 32, 32])
     output = helper.make_tensor_value_info("output", TensorProto.FLOAT, [2, 32, 32])
@@ -83,13 +83,13 @@ def test_arithmetic():
     inputs = [torch.rand([2, 32, 32]), torch.rand([2, 32, 32])]
 
     onnx_module = forge.OnnxModule("arith", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_matmul():
+def test_matmul(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [32, 64])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [64, 32])
     output = helper.make_tensor_value_info("output", TensorProto.FLOAT, [32, 32])
@@ -115,13 +115,13 @@ def test_matmul():
     inputs = [torch.rand([32, 64]), torch.rand([64, 32])]
 
     onnx_module = forge.OnnxModule("matmul", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_squeeze():
+def test_squeeze(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [1, 32, 32])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [1, 32, 32])
     output = helper.make_tensor_value_info("output", TensorProto.FLOAT, [32, 32])
@@ -157,13 +157,13 @@ def test_squeeze():
     inputs = [torch.rand([1, 32, 32]), torch.rand([1, 32, 32])]
 
     onnx_module = forge.OnnxModule("squeeze", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_flatten():
+def test_flatten(forge_property_recorder):
     input = helper.make_tensor_value_info("input", TensorProto.FLOAT, [2, 32, 32])
     output = helper.make_tensor_value_info("output", TensorProto.FLOAT, [2, 1024])
 
@@ -188,13 +188,13 @@ def test_flatten():
     inputs = [torch.rand([2, 32, 32])]
 
     onnx_module = forge.OnnxModule("flatten", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_linear_layer():
+def test_linear_layer(forge_property_recorder):
     input_features, output_dim = (784, 10)
 
     input = helper.make_tensor_value_info("input", TensorProto.FLOAT, [1, input_features])
@@ -226,13 +226,13 @@ def test_linear_layer():
     inputs = [torch.rand([1, input_features])]
 
     onnx_module = forge.OnnxModule("linear", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_multiple_layers():
+def test_multiple_layers(forge_property_recorder):
     num_classes = 10
 
     input = helper.make_tensor_value_info("input", TensorProto.FLOAT, [1, 3, 32, 32])
@@ -294,13 +294,13 @@ def test_multiple_layers():
     inputs = [torch.rand([1, 3, 32, 32])]
 
     onnx_module = forge.OnnxModule("multiple_linears", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_mnist_linear():
+def test_mnist_linear(forge_property_recorder):
     input_size = 784
     hidden_size = 512
     output_size = 10
@@ -352,13 +352,13 @@ def test_mnist_linear():
     inputs = [torch.rand([1, 784])]
 
     onnx_module = forge.OnnxModule("mnist_linear", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_batchnorm():
+def test_batchnorm(forge_property_recorder):
     num_features = 32
     input_shape = [1, 32, 56, 56]
 
@@ -398,13 +398,13 @@ def test_batchnorm():
     inputs = [torch.rand(input_shape)]
 
     onnx_module = forge.OnnxModule("batchnorm", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.push
-def test_convbn():
+def test_convbn(forge_property_recorder):
     in_c = 3
     out_c = 64
     filter_size = 3
@@ -473,6 +473,6 @@ def test_convbn():
     inputs = [torch.rand(input_shape)]
 
     onnx_module = forge.OnnxModule("convbn", onnx_model)
-    compiled_model = forge.compile(onnx_model, inputs)
+    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, onnx_module, compiled_model)
+    verify(inputs, onnx_module, compiled_model, forge_property_handler=forge_property_recorder)

@@ -9,6 +9,7 @@ jobs:
   docker-build:
       uses: ./.github/workflows/build-image.yml
       secrets: inherit
+
   build:
     needs: docker-build
     uses: ./.github/workflows/build.yml

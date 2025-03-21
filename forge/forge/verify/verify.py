@@ -7,7 +7,7 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any, Union
+from typing import Tuple, Dict, List, Any, Union, Optional
 
 from loguru import logger
 from forge.forgeglobal import align_up_tile
@@ -29,8 +29,9 @@ from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, 
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
-from forge.verify.compare import compare_tensor_to_golden
-from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
+from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
+from forge._C import ExecutionDepth
+from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -95,30 +96,12 @@ def do_verify(
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
-    balancer_solution=None,
 ):
     """
     Verify graph vs. pytorch golden
     """
-
-    torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
-    torch_targets: List[torch.Tensor] = [i.value() for i in targets]
-
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(
-                tensor=t,
-                tile_broadcast_dims=graph.get_tile_broadcast_dims_for_input(i),
-                squeeze=False,
-                microbatch=1,
-                tile_r=graph.get_ordered_input_tile_dims()[i][0],
-                tile_c=graph.get_ordered_input_tile_dims()[i][1],
-            )
-            for i, t in enumerate(torch_inputs)
-        ]
-
-    if device.loss_module is not None:
-        assert len(targets) > 0, f"No target provided, but device {device} has a loss module"
+    torch_inputs: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in inputs]
+    torch_targets: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in targets]
 
     logger.info("Verifying stage {}", stage_name)
     if not training:
@@ -128,11 +111,9 @@ def do_verify(
             graph,
             torch_inputs,
             parameters,
-            device,
             verify_cfg.relative_atol,
             pcc,
             intermediate_golden_tensors,
-            balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
             targets=torch_targets,
         )
@@ -142,9 +123,10 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
+        raise RuntimeError("Verification of training is not supported yet.")
         if losses is None and device.loss_module is None:
             losses = _generate_random_losses(outputs, is_forge)
         elif losses is None:
@@ -176,7 +158,6 @@ def do_verify(
             intermediate_golden_tensors=intermediate_golden_tensors,
             losses=losses,
             targets=torch_targets,
-            balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
         )
 
@@ -185,7 +166,7 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
         # Verify bwd gradients
         # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
@@ -195,7 +176,7 @@ def do_verify(
         for bwd_index, golden_input_grad in enumerate(golden_input_grads):
             evaled = bwd_gradients[bwd_index]
             ok &= compare_tensor_to_golden(
-                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, is_forge=is_forge, verify_cfg=verify_cfg
+                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
             )
 
         # Verify parameter gradients:
@@ -215,7 +196,6 @@ def do_verify(
                     f"Gradient for {parameter_name}",
                     golden,
                     evaled,
-                    is_forge=is_forge,
                     verify_cfg=verify_cfg,
                     warning_only=warning_only,
                 )
@@ -239,7 +219,6 @@ def do_verify(
                         f"Parameter Update for {parameter_name}",
                         golden,
                         evaled,
-                        is_forge=is_forge,
                         verify_cfg=verify_cfg,
                         warning_only=warning_only,
                     )
@@ -307,6 +286,7 @@ def verify(
     framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer, onnx.onnx_ml_pb2.ModelProto],
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
+    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -325,6 +305,9 @@ def verify(
         tuple: (framework_outputs, compiled_outputs) - outputs from both models
                Returns (None, None) if verification is disabled
     """
+
+    if forge_property_handler is not None:
+        forge_property_handler.record_verify_config(verify_cfg)
 
     # 0th step: Check if inputs are of the correct type
     if not inputs:
@@ -348,9 +331,15 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.FAILED_RUNTIME, execution_stage=ExecutionStage.FAILED_TTNN_BINARY_EXECUTION
+        )
     co_out = compiled_model(*inputs)
-    record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
+        )
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
@@ -359,6 +348,13 @@ def verify(
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 
     co_out = [co.to("cpu") for co in co_out]
+
+    if forge_property_handler is not None:
+        pcc, atol = determine_consistency_limits(fw_out, co_out)
+        if pcc is not None:
+            forge_property_handler.record_pcc(pcc=pcc)
+        if atol is not None:
+            forge_property_handler.record_atol(atol=atol)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
@@ -386,7 +382,10 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.PASSED, execution_stage=ExecutionStage.PASSED
+        )
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

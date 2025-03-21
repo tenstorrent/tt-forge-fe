@@ -1941,7 +1941,7 @@ def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
     test_pass = True
     for i, (golden, output) in enumerate(zip(frame_outputs, forge_outputs)):
         test_pass &= compare_tensor_to_golden(
-            f"Framework vs. Forge codegen output {i}", golden, output.value(), is_forge=False, verify_cfg=verify_cfg
+            f"Framework vs. Forge codegen output {i}", golden, output.value(), verify_cfg=verify_cfg
         )
 
         assert test_pass, f"Data mismatch on output {i} between framework and Forge codegen"
@@ -2009,7 +2009,14 @@ def load_writers_metadata(module_name, inputs):
 
 
 def generate_forge_module(
-    framework_mod, inputs, compiler_cfg=None, graph_name=None, verify_cfg=None, clean_later=False, input_names=[]
+    framework_mod,
+    inputs,
+    compiler_cfg=None,
+    graph_name=None,
+    verify_cfg=None,
+    clean_later=False,
+    input_names=[],
+    forge_property_handler=None,
 ):
     global counter
 
@@ -2043,6 +2050,7 @@ def generate_forge_module(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
+            forge_property_handler=forge_property_handler,
         )
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
@@ -2098,7 +2106,14 @@ def generate_forge_module(
 
 
 def compile_tvm_to_python(
-    framework_mod, graph_name, inputs, module_name=None, compiler_cfg=None, verify_cfg=None, input_names=[]
+    framework_mod,
+    graph_name,
+    inputs,
+    module_name=None,
+    compiler_cfg=None,
+    verify_cfg=None,
+    input_names=[],
+    forge_property_handler=None,
 ):
     if compiler_cfg is None:
         compiler_cfg = CompilerConfig()
@@ -2131,6 +2146,7 @@ def compile_tvm_to_python(
         path=path,
         verify_cfg=verify_cfg,
         input_names=input_names,
+        forge_property_handler=forge_property_handler,
     )
 
     def _determine_node_dtype(node):
@@ -2607,9 +2623,7 @@ def compile_tvm_to_python(
             current_module_name += f"_{json_graph['device']}_{graph_index}"
 
         if json_graph["device"] == "tt":
-            delete_inputs = not (
-                (verify_cfg is not None and verify_cfg.verify_all) or compiler_cfg.enable_op_level_comparision
-            )
+            delete_inputs = not verify_cfg.enable_op_level_comparision
             if not delete_inputs:
                 logger.warning(
                     "Preserving Intermediate tensor values in ForgeModule forward may causes out-of-memory issues"

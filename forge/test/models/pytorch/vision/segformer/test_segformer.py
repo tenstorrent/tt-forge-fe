@@ -34,7 +34,7 @@ variants_img_classification = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_img_classification)
-def test_segformer_image_classification_pytorch(record_forge_property, variant):
+def test_segformer_image_classification_pytorch(forge_property_recorder, variant):
     if variant != "nvidia/mit-b0":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -49,10 +49,10 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
 
     # Record Forge Property
     if variant in ["nvidia/mit-b0"]:
-        record_forge_property("group", "priority")
+        forge_property_recorder.record_group("priority")
     else:
-        record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+        forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -69,10 +69,12 @@ def test_segformer_image_classification_pytorch(record_forge_property, variant):
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants_semseg = [
@@ -86,7 +88,7 @@ variants_semseg = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_semseg)
-def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant):
+def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -99,8 +101,8 @@ def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant)
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load the model from HuggingFace
     framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)
@@ -111,7 +113,9 @@ def test_segformer_semantic_segmentation_pytorch(record_forge_property, variant)
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
