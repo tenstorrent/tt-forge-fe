@@ -20,7 +20,7 @@ from .tensor import (
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
-    pt_to_paddle_tensors,
+    to_pd_tensors,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
@@ -224,7 +224,7 @@ class PaddleModule(Module):
         self.module = module
 
     def forward(self, *args, **kwargs):
-        paddle_args = pt_to_paddle_tensors(args)
+        paddle_args = to_pd_tensors(args)
         outputs = self.module(*paddle_args, **kwargs)
         return to_pt_tensors(outputs)
 
@@ -969,5 +969,7 @@ def wrap_module(module, name: str) -> Module:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-FrameworkModule: TypeAlias = torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto
+FrameworkModule: TypeAlias = (
+    torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto | OnnxModule
+)
 AnyModule: TypeAlias = FrameworkModule | ForgeModule

@@ -302,3 +302,26 @@ def test_convbn_pp(forge_property_recorder):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize("vocab_size", [32000])
+@pytest.mark.parametrize("token_num", [12])
+@pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
+def test_embedding_pp(forge_property_recorder, vocab_size, token_num, embedding_dim):
+    class Embedding(paddle.nn.Layer):
+        def __init__(self):
+            super().__init__()
+            self.embedding = paddle.nn.Embedding(vocab_size, embedding_dim)
+
+        def forward(self, x):
+            return self.embedding(x)
+
+    inputs = [
+        paddle.randint(0, vocab_size, (1, token_num)),
+    ]
+
+    framework_model = Embedding()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
