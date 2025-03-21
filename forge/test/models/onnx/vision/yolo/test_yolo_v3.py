@@ -9,11 +9,13 @@ import numpy as np
 
 import onnx
 import torch
-import forge
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
+# from forge._C.backend_api import BackendType, BackendDevice
+# from forge.verify.config import TestKind
 
 
 ########
@@ -46,7 +48,7 @@ def preprocess(img):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="While loop in model, not supported yet")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.nightly
 def test_yolov3_tiny_onnx(test_device):
     # STEP 1: Create Forge module from PyTorch model
@@ -76,7 +78,7 @@ def test_yolov3_tiny_onnx(test_device):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="While loop in model, not supported yet")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.nightly
 def test_yolov3_onnx(test_device):
     # STEP 1: Create Forge module from PyTorch model
