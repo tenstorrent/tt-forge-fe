@@ -51,7 +51,7 @@ def generate_and_export_unique_ops_tests(
             logger.info(f"Running the tests : {test}")
             try:
                 result = subprocess.run(
-                    ["pytest", test, "-vss", "--no-skips"],
+                    ["pytest", test, "-vss"],
                     capture_output=True,
                     text=True,
                     check=True,

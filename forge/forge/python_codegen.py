@@ -939,7 +939,7 @@ class ForgeWriter(PythonWriter):
             pytest_metadata_list (Optional[List[Dict[str, Any]]]): A list of dictionaries containing metadata for each pytest parameter.
             use_ids_function(bool): If set, the forge module name and shapes and dtyes will used as id for the pytest parameter.
             include_random_parameter_constant_gen(bool): If set, it will include the code for generating and assigning of random tensor for forge module parameters and constants
-            exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in record_forge_property fixtures(i.e pcc)
+            exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in forge_property_recorder fixtures(i.e pcc)
         """
         self.wl("")
         self.wl("")
@@ -979,17 +979,14 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        if module_metadata is not None or not is_pytest_metadata_list_empty:
-            self.wl("def test_module(forge_module_and_shapes_dtypes, record_forge_property):")
-        else:
-            self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        self.wl("def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
                 if isinstance(metadata_value, str):
-                    self.wl(f'record_forge_property("tags.{metadata_name}", "{metadata_value}")')
+                    self.wl(f'forge_property_recorder("tags.{metadata_name}", "{metadata_value}")')
                 else:
-                    self.wl(f'record_forge_property("tags.{metadata_name}", {metadata_value})')
+                    self.wl(f'forge_property_recorder("tags.{metadata_name}", {metadata_value})')
         self.wl("")
         if is_pytest_metadata_list_empty:
             self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
@@ -1002,7 +999,7 @@ class ForgeWriter(PythonWriter):
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl(f'record_forge_property("tags." + str(metadata_name), metadata_value)')
+            self.wl(f'forge_property_recorder("tags." + str(metadata_name), metadata_value)')
             self.indent -= 1
         self.wl("")
         if is_pytest_metadata_list_empty or (
@@ -1053,10 +1050,12 @@ class ForgeWriter(PythonWriter):
             self.wl("framework_model.set_constant(name, constant_tensor)")
             self.indent -= 1
         self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
+        self.wl(
+            "compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)"
+        )
         self.wl("")
         self.wl(
-            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)), forge_property_handler=forge_property_recorder)"
         )
         self.wl("")
         self.wl("")
