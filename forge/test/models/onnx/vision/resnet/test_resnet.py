@@ -40,6 +40,7 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Export model to ONNX
@@ -49,6 +50,7 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=opset_version)
 
     # Load framework model
+    # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
     framework_model = forge.OnnxModule(module_name, onnx_model)
