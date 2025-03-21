@@ -58,6 +58,9 @@ def test_conv2d_reflect_padding_mode(
         ((1, 16, 32, 16, 16), (8, 1, 1), (3, 3, 3)),
     ],
 )
+@pytest.mark.xfail(
+    reason="permute(sparse_coo): number of dimensions in the tensor input does not match the length of the desired ordering of dimensions i.e. input.dim() = 5 is not equal to len(dims) = 4. Tracking Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1422"
+)
 @pytest.mark.push
 def test_avgpool3d(forge_property_recorder, shape, kernel_size, stride):
     class AvgPool3D(nn.Module):
