@@ -314,8 +314,6 @@ class Tensor(TensorBase):
             shape=tensor_shape, dtype=torch_dtype, min_int=min_int, max_int=max_int
         )
 
-        print(f"During creation TORCH TENSOR: {torch_tensor.dtype}")
-
         return TensorFromPytorch(
             torch_tensor, dev_data_format=pytorch_dtype_to_forge_dataformat(torch_dtype), constant=constant
         )
@@ -674,7 +672,7 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
         return DataFormat.RawUInt8
 
     if dtype == torch.int8:
-        logger.warning("Parameter is int8. Setting to Int32, since int8 is not supported .")
+        logger.warning("Parameter is int8. Setting to Int32, since int8 is not supported.")
         return DataFormat.Int32
 
     # These are kind of arbitrary..
@@ -682,13 +680,14 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
     #     return DataFormat.UInt16
 
     if dtype == torch.bool:
+        logger.warning("Parameter is bool. Setting to uint8, since bool is not supported.")
         return DataFormat.RawUInt8
 
     if dtype == torch.int32:
         return DataFormat.Int32
 
     if dtype == torch.int64:
-        logger.warning("Parameter is int64. Setting to int32, since int64 is not supported .")
+        logger.warning("Parameter is int64. Setting to int32, since int64 is not supported.")
         return DataFormat.Int32
 
     raise RuntimeError("Unsupported torch dtype " + str(dtype))
