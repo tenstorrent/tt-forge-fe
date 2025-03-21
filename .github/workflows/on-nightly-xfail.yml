@@ -34,7 +34,7 @@ jobs:
           docker-image: ${{ needs.docker-build.outputs.docker-image }}
 
     # Only build if no existing run ID is available
-  test_full_model_xpassing:
+  test_full_model_xfailing:
     needs:
       - docker-build
       - build-if-neccessary
