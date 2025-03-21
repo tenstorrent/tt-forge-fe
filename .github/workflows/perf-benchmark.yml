@@ -17,7 +17,7 @@ jobs:
       matrix:
           build: [
             {runs-on: n150},
-            {runs-on: [performance]}
+            {runs-on: performance}
           ]
 
     runs-on:
@@ -40,7 +40,7 @@ jobs:
       id: fetch-job-id
       uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
-        job_name: "${{ github.job }}"
+        job_name: "run-perf-benchmarks(${{ matrix.build.runs-on }})"
 
     - name: Set reusable strings
       id: strings
