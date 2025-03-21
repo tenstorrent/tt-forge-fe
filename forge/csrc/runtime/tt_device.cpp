@@ -13,6 +13,8 @@
 namespace tt
 {
 
+static bool system_is_initialized = false;
+
 TTSystem detect_available_devices()
 {
     auto [system_desc, chip_ids] = runtime::getCurrentSystemDesc();
@@ -44,6 +46,7 @@ TTSystem detect_available_devices()
         ++logical_device_index;
     }
 
+    system_is_initialized = true;
     return TTSystem{system_desc, chip_ids, devices};
 }
 
@@ -52,6 +55,8 @@ TTSystem& TTSystem::get_system()
     static TTSystem system = detect_available_devices();
     return system;
 }
+
+bool TTSystem::is_initialized() { return system_is_initialized; }
 
 void TTDevice::open_device()
 {
