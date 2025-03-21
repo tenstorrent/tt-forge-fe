@@ -92,13 +92,6 @@ jobs:
         source env/activate
         pip install tvm*.whl --force-reinstall
         pip install forge*.whl --force-reinstall
-        pip install ttrt*.whl --force-reinstall
-
-    - name: Run TTRT
-      shell: bash
-      run: |
-        source env/activate
-        ttrt --version
 
     - name: Run Perf Benchmark
       env:
@@ -112,6 +105,14 @@ jobs:
         python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+
+    - name: Install and run TTRT
+      shell: bash
+      run: |
+        cd third_party/tt-mlir
+        source env/activate
+        pip install ../../ttrt*.whl --force-reinstall
+        ttrt --help
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
