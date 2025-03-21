@@ -1,13 +1,9 @@
 name: Perf benchmark
 
 on:
-  workflow_call:
-    inputs:
-      docker-image:
-        description: 'Docker image to use for build'
-        required: true
-        type: string
-
+  workflow_dispatch:
+  push:
+  
 jobs:
 
   run-perf-benchmarks:
@@ -16,8 +12,7 @@ jobs:
       fail-fast: false
     runs-on:
       - in-service
-      - n150
-      - performance
+      - n300
 
     container:
       image: ${{ inputs.docker-image }}
@@ -88,9 +83,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
