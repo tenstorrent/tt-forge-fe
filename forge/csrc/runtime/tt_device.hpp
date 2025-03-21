@@ -18,7 +18,7 @@ struct TTDevice
     bool mmio;
     int index;
 
-    // TODO: These don't seem to belong here
+    // TODO(#1491): These don't seem to belong here
     std::map<int, std::vector<std::string>> input_runtime_transforms;
     std::map<int, std::vector<std::vector<int>>> input_tile_bcast_dims;
     std::map<int, std::vector<std::string>> output_runtime_transforms;
@@ -39,6 +39,8 @@ struct TTDevice
     void close_device();
 };
 
+// Used to store the system description and the list of devices.
+// This is a singleton class that is initialized by calling detect_available_devices().
 struct TTSystem
 {
     runtime::SystemDesc system_desc;
@@ -62,6 +64,9 @@ struct TTSystem
     }
 
     static TTSystem& get_system();
+
+    // Returns wheter the static `TTSystem` singleton instance has been initialized.
+    static bool is_initialized();
 };
 
 TTSystem detect_available_devices();
