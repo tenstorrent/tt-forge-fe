@@ -127,7 +127,7 @@ def Conv2dTranspose(
         dilation=dilation,  # [dH, dW]
         groups=groups,
         padding=padding,  # [pT, pL, pB, pR]
-        output_padding=output_padding,
+        output_padding=output_padding,  # [opH, opW]
         channel_last=channel_last,
     ).get_tensor()
 
