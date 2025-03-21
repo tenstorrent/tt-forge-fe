@@ -37,7 +37,7 @@ variants = ["llava-hf/llava-1.5-7b-hf"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llava(record_forge_property, variant):
+def test_llava(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Build Module Name
@@ -50,8 +50,8 @@ def test_llava(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     framework_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"
@@ -62,7 +62,9 @@ def test_llava(record_forge_property, variant):
     inputs = [input_ids, attn_mask, pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

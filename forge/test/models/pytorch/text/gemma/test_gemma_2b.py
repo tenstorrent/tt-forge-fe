@@ -4,11 +4,20 @@
 
 import pytest
 import torch
-from transformers import AutoTokenizer, GemmaConfig, GemmaForCausalLM
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    GemmaConfig,
+    GemmaForCausalLM,
+)
 
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.text.gemma.utils.model_utils import (
+    generate_no_cache,
+    pad_inputs,
+)
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
@@ -19,7 +28,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b(record_forge_property, variant):
+def test_gemma_2b(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 48 GB)")
 
     # Build Module Name
@@ -32,8 +41,8 @@ def test_gemma_2b(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Random see for reproducibility
     torch.manual_seed(42)
@@ -67,7 +76,64 @@ def test_gemma_2b(record_forge_property, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.nightly
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "google/gemma-2-2b-it",
+            marks=pytest.mark.xfail(reason="RuntimeError: Trying to access element outside of dimensions: 2"),
+        ),
+        pytest.param(
+            "google/gemma-2-9b-it",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
+            ),
+        ),
+    ],
+)
+def test_gemma_pytorch_v2(forge_property_recorder, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH, model="gemma", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("priority_2")
+    forge_property_recorder.record_model_name(module_name)
+
+    # Load model and tokenizer from HuggingFace
+    tokenizer = AutoTokenizer.from_pretrained(variant)
+    framework_model = AutoModelForCausalLM.from_pretrained(variant, return_dict=False, use_cache=False)
+    framework_model.eval()
+    prompt = "What is the tallest mountain?"
+    inputs = tokenizer(prompt, return_tensors="pt")
+    input_ids = inputs["input_ids"]
+    max_new_tokens = 200
+    padded_inputs, seq_len = pad_inputs(input_ids, max_new_tokens)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=[padded_inputs],
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+    )
+
+    # Model Verification
+    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Runtime and Post-Processing
+    generated_text = generate_no_cache(
+        max_new_tokens=max_new_tokens, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
+    )
+    print(generated_text)

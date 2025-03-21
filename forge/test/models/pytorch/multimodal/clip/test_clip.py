@@ -28,7 +28,7 @@ from test.utils import download_model
         ),
     ],
 )
-def test_clip_pytorch(record_forge_property, variant):
+def test_clip_pytorch(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -40,8 +40,8 @@ def test_clip_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load processor and model from HuggingFace
     model = download_model(CLIPModel.from_pretrained, variant, torchscript=True)
@@ -63,7 +63,9 @@ def test_clip_pytorch(record_forge_property, variant):
     inputs = [inputs[0], inputs[2]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
