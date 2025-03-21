@@ -321,7 +321,7 @@ class TestCollectionTorch:
 
     float = TestCollection(
         dev_data_formats=[
-            torch.float16,
+            # torch.float16,  # Not supported (Unsupported ttnn::DataType)
             torch.float32,
             # torch.float64,
             torch.bfloat16,
@@ -348,6 +348,6 @@ class TestCollectionTorch:
 
     single = TestCollection(
         dev_data_formats=[
-            torch.float16,
+            torch.bfloat16,
         ],
     )
