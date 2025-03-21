@@ -9,6 +9,8 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.utils import Framework, Source, Task, build_module_name
+
 from paddlenlp.transformers import ErnieForSequenceClassification, ErnieForMaskedLM, ErnieTokenizer, ErnieConfig
 
 
@@ -115,15 +117,36 @@ def test_ernie_model():
     verify(inputs, model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)))
 
 
-def test_ernie_for_sequence_classification():
-    model_name = "ernie-1.0"
-    model = ErnieForSequenceClassification.from_pretrained(model_name, num_classes=2)
-    tokenizer = ErnieTokenizer.from_pretrained(model_name)
+@pytest.mark.parametrize("variant", ["ernie-1.0"])
+@pytest.mark.nightly
+def test_ernie_for_sequence_classification(forge_property_recorder, variant):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PADDLE,
+        model="ernie",
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.PADDLENLP,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
+
+    # Load Model and Tokenizer
+    framework_model = ErnieForSequenceClassification.from_pretrained(variant, num_classes=2)
+    tokenizer = ErnieTokenizer.from_pretrained(variant)
+
+    # Load sample
     input = ["Hello, my dog is cute"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
 
-    # [input_ids, token_type_ids, position_ids, attention_mask]
-    inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
+    inputs = [
+        paddle.to_tensor(value) for value in encoded_input.values()
+    ]  # [input_ids, token_type_ids, position_ids, attention_mask]
 
-    compiled_model = forge.compile(model, inputs)
-    verify(inputs, model, compiled_model)
+    # Compile Model
+    compiled_model = forge.compile(framework_model, inputs)
+
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
