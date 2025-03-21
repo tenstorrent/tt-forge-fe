@@ -326,6 +326,7 @@ def test_embedding_pp(forge_property_recorder, vocab_size, token_num, embedding_
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
+
 @pytest.mark.parametrize("vocab_size", [32000])
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
