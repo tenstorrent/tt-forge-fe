@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/types.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
@@ -56,9 +57,9 @@ TTSystem& TTSystem::get_system()
 void TTDevice::open_device(std::optional<bool> enable_program_cache)
 {
     TT_ASSERT(!is_open());
-    static constexpr std::uint32_t num_hw_cqs = 1;
-    rt_device =
-        runtime::openDevice({index}, num_hw_cqs, std::nullopt, std::nullopt, std::nullopt, enable_program_cache);
+    runtime::OpenDeviceOptions options;
+    options.enableProgramCache = enable_program_cache.value_or(true);
+    rt_device = runtime::openDevice({index}, options);
 }
 
 void TTDevice::close_device()
