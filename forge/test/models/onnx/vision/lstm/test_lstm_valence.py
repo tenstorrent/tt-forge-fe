@@ -6,15 +6,17 @@ import pytest
 import os
 import onnx
 import tensorflow as tf
-import forge
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
+# from forge._C.backend_api import BackendType, BackendDevice
+# from forge.verify.config import TestKind
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.nightly
 def test_lstm_valence_onnx(test_device):
     # Load model checkpoint from HuggingFace

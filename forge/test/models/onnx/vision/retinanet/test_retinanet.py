@@ -4,12 +4,6 @@
 
 # STEP 0: import Forge library
 import pytest
-
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig, PyTorchModule
-from forge._C.backend_api import BackendType, BackendDevice
-from forge.verify.config import TestKind
-import forge
 import os
 
 import onnx
@@ -21,6 +15,14 @@ import numpy as np
 
 import requests
 from torchvision import transforms
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig, PyTorchModule
+# from forge._C.backend_api import BackendType, BackendDevice
+# from forge.verify.config import TestKind
+
 
 ## https://github.com/onnx/models/tree/main/vision/object_detection_segmentation/retinanet
 
@@ -50,7 +52,7 @@ def img_preprocess(scal_val=1):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.nightly
 def test_retinanet_r101_640x480_onnx(test_device):
     # STEP 1: Set Forge configuration parameters
@@ -107,7 +109,7 @@ variants = [
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_retinanet_onnx(variant, test_device):

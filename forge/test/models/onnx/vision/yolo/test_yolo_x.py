@@ -2,16 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import forge, os
+import os
 import pytest
 import cv2, torch
 import numpy as np
 import onnx
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
 import requests
 
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
+# from forge.verify.config import TestKind
 # from forge._C.backend_api import BackendDevice
 
 
@@ -39,7 +41,7 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_yolox_onnx(variant, test_device):

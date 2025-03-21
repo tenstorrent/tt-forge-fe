@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import onnx
 
 import os
@@ -11,9 +10,11 @@ import pytest
 
 from transformers import AutoImageProcessor
 
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
+# from forge.verify.config import TestKind
 
 
 def get_sample_data(model_name):
@@ -26,7 +27,7 @@ def get_sample_data(model_name):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize(
     "model_name",
     [

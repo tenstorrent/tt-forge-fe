@@ -1,17 +1,18 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-
-import forge
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
-from transformers import AutoImageProcessor
 import os
 import pytest
 import requests
 from PIL import Image
 import onnx
+from transformers import AutoImageProcessor
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
+# from forge.verify.config import TestKind
 
 
 def get_sample_data(model_name):
@@ -34,7 +35,7 @@ variants_img_classification = [
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants_img_classification)
 @pytest.mark.nightly
 def test_segformer_image_classification_onnx(test_device, variant):

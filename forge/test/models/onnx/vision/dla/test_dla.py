@@ -1,18 +1,19 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge
 import onnx
 import os
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
 import requests
 import pytest
-
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
 import torchvision.transforms as transforms
 from PIL import Image
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge import DepricatedVerifyConfig
+# from forge.verify.backend import verify_module
+# from forge.verify.config import TestKind
+# from forge._C.backend_api import BackendDevice
 
 
 variants = [
@@ -30,7 +31,7 @@ variants = [
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_dla_onnx(test_device, variant):

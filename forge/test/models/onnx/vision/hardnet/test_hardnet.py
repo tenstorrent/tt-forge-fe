@@ -1,23 +1,24 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge, os
+import os
 import onnx
+import pytest
 from PIL import Image
 from torchvision import transforms
 import urllib
 
-# from forge.verify.backend import verify_module
-import pytest
-from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
-from forge._C.backend_api import BackendDevice
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge import DepricatedVerifyConfig
+# from forge.verify.config import TestKind
+# from forge._C.backend_api import BackendDevice
 
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_hardnet_onnx(variant, test_device):

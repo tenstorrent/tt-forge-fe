@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import forge, os
+import os
 import requests
 import pytest
 import torch
@@ -11,10 +11,13 @@ import cv2
 import numpy as np
 from yolov5.utils.dataloaders import exif_transpose, letterbox
 import onnx, pytest
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
-from forge.verify.config import TestKind
-from forge._C.backend_api import BackendDevice
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
+# from forge.verify.config import TestKind
+# from forge._C.backend_api import BackendDevice
 
 
 def data_preprocessing(ims: Image.Image, size: tuple) -> tuple:
@@ -59,7 +62,7 @@ variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_yolo_v5_320x320_onnx(test_device, variant):
@@ -100,7 +103,7 @@ variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_yolo_v5_480x480_onnx(test_device, variant):
@@ -142,7 +145,7 @@ variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="CCM is not public yet.")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_yolo_v5_640x640_onnx(test_device, variant):
