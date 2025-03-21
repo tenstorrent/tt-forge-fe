@@ -62,10 +62,24 @@ jobs:
 
     # Clean everything from submodules (needed to avoid issues
     # with cmake generated files leftover from previous builds)
+    # Get tt-mlir commit hash
     - name: Cleanup submodules
+      id: sumbmodules
       run: |
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
+          echo "ttmlir=$(git submodule status third_party/tt-mlir | awk '{gsub(/^-/, \"\"); print $1}')" >> $GITHUB_OUTPUT
+
+    - name: Download ttrt wheel
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow: on-push.yml
+        commit: ${{ steps.sumbmodules.outputs.ttmlir }}
+        name: ttrt-whl-*
+        repo: tenstorrent/tt-mlir
+        check_artifacts: true
 
     - name: Download build artifacts
       uses: actions/download-artifact@v4
@@ -78,6 +92,7 @@ jobs:
         source env/activate
         pip install tvm*.whl --force-reinstall
         pip install forge*.whl --force-reinstall
+        pip install ttrt*.whl --force-reinstall
 
     - name: Run Perf Benchmark
       env:
