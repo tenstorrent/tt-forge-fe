@@ -661,9 +661,7 @@ def compile_tvm_for_forge(
     )
 
     if verify_cfg is not None and verify_cfg.verify_tvm_compile:
-        assert (
-            compiler_cfg.convert_framework_params_to_tvm
-        ), "Cannot verify TVM compile without converting framework params to relay"
+        compiler_cfg.convert_framework_params_to_tvm = True
         # If we have conv2d_transpose ops that are channel-last, tvm cannot execute the module, skip in this case
         skip_verify = has_op(mod["main"], "nn.conv2d_transpose", {"data_layout": "NHWC"})
         if skip_verify:

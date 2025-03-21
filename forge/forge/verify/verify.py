@@ -96,30 +96,12 @@ def do_verify(
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
-    balancer_solution=None,
 ):
     """
     Verify graph vs. pytorch golden
     """
-
-    torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
-    torch_targets: List[torch.Tensor] = [i.value() for i in targets]
-
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(
-                tensor=t,
-                tile_broadcast_dims=graph.get_tile_broadcast_dims_for_input(i),
-                squeeze=False,
-                microbatch=1,
-                tile_r=graph.get_ordered_input_tile_dims()[i][0],
-                tile_c=graph.get_ordered_input_tile_dims()[i][1],
-            )
-            for i, t in enumerate(torch_inputs)
-        ]
-
-    if device.loss_module is not None:
-        assert len(targets) > 0, f"No target provided, but device {device} has a loss module"
+    torch_inputs: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in inputs]
+    torch_targets: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in targets]
 
     logger.info("Verifying stage {}", stage_name)
     if not training:
@@ -129,11 +111,9 @@ def do_verify(
             graph,
             torch_inputs,
             parameters,
-            device,
             verify_cfg.relative_atol,
             pcc,
             intermediate_golden_tensors,
-            balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
             targets=torch_targets,
         )
@@ -143,9 +123,10 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
+        raise RuntimeError("Verification of training is not supported yet.")
         if losses is None and device.loss_module is None:
             losses = _generate_random_losses(outputs, is_forge)
         elif losses is None:
@@ -177,7 +158,6 @@ def do_verify(
             intermediate_golden_tensors=intermediate_golden_tensors,
             losses=losses,
             targets=torch_targets,
-            balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
         )
 
@@ -186,7 +166,7 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
         # Verify bwd gradients
         # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
@@ -196,7 +176,7 @@ def do_verify(
         for bwd_index, golden_input_grad in enumerate(golden_input_grads):
             evaled = bwd_gradients[bwd_index]
             ok &= compare_tensor_to_golden(
-                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, is_forge=is_forge, verify_cfg=verify_cfg
+                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
             )
 
         # Verify parameter gradients:
@@ -216,7 +196,6 @@ def do_verify(
                     f"Gradient for {parameter_name}",
                     golden,
                     evaled,
-                    is_forge=is_forge,
                     verify_cfg=verify_cfg,
                     warning_only=warning_only,
                 )
@@ -240,7 +219,6 @@ def do_verify(
                         f"Parameter Update for {parameter_name}",
                         golden,
                         evaled,
-                        is_forge=is_forge,
                         verify_cfg=verify_cfg,
                         warning_only=warning_only,
                     )
