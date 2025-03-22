@@ -189,7 +189,8 @@ class Conv2dTranspose(PyOp):
         stride,  # Input format: [sH, sW]
         dilation,  # Input format: [dH, dW]
         groups,
-        padding,  # Input format: [pL, pR, pT, pB]
+        padding,  # Input format: [pT, pL, pB, pR]
+        output_padding,  # Input format: [opH, opW]
         channel_last,
     ):
         self = cls("conv2d_transpose")
@@ -197,6 +198,7 @@ class Conv2dTranspose(PyOp):
         self.dilation = dilation
         self.groups = groups
         self.padding = padding
+        self.output_padding = output_padding
         self.channel_last = int(channel_last)
         return self
 
@@ -212,9 +214,9 @@ class Conv2dTranspose(PyOp):
         dilation = self.dilation
         groups = self.groups
         padding = (
-            self.padding[2],
             self.padding[0],
-        )  # [pT, pL] not sure why padding only has two elements (meenakshiramanathan1 PR #826)
+            self.padding[1],
+        )
 
         channel_last = self.channel_last
         if channel_last:
@@ -236,6 +238,7 @@ class Conv2dTranspose(PyOp):
             padding=padding,
             dilation=dilation,
             groups=groups,
+            output_padding=self.output_padding,
         )
 
         if channel_last:
@@ -248,10 +251,10 @@ class Conv2dTranspose(PyOp):
         stride_width = self.stride[1]
         dilation_height = self.dilation[0]
         dilation_width = self.dilation[1]
-        padding_left = self.padding[0]
-        padding_right = self.padding[1]
-        padding_top = self.padding[2]
-        padding_bottom = self.padding[3]
+        padding_top = self.padding[0]
+        padding_left = self.padding[1]
+        padding_bottom = self.padding[2]
+        padding_right = self.padding[3]
 
         act, weight = tensor_shapes[:2]
         batch_size = act[0]
@@ -260,8 +263,8 @@ class Conv2dTranspose(PyOp):
         h_in = act[-3] if self.channel_last else act[-2]
         w_in = act[-2] if self.channel_last else act[-1]
 
-        output_padding_height = 0
-        output_padding_width = 0
+        output_padding = self.output_padding
+        output_padding_height, output_padding_width = output_padding if output_padding else (0, 0)
 
         h_out = (
             (h_in - 1) * stride_height
@@ -319,11 +322,12 @@ class Conv2dTranspose(PyOp):
             new_inputs = [activations, weight] if bias is None else [activations, weight, bias]
             result = dc.op(
                 Conv2dTranspose.create(
-                    self.stride,
-                    self.dilation,
-                    self.groups,
-                    self.padding,
-                    True,  # If the original Conv2dTranspose was channel-last, that will not change.
+                    stride=self.stride,
+                    dilation=self.dilation,
+                    groups=self.groups,
+                    padding=self.padding,
+                    output_padding=self.output_padding,
+                    channel_last=True,  # If the original Conv2dTranspose was channel-last, that will not change.
                     # If it was channel-first, it the input will have been permuted by this point.
                     # So, the Conv2dTranspose op being created here is certainly channel-last.
                 ),
