@@ -19,7 +19,7 @@
 	<tbody>
 		<tr>
 			<td rowspan="1">1</td>
-			<td rowspan="1">[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+			<td rowspan="1">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
 			<td rowspan="1">1</td>
 			<td>1</td>
 			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
