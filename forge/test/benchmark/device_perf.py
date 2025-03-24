@@ -37,7 +37,7 @@ def create_device_perf(device_perf_path, perf_report_path):
     perf_data = parse_device_perf(device_perf_path)
 
     # Test the write_device_perf function
-    write_device_perf(perf_report_path, perf_data, True)
+    write_device_perf(perf_report_path, perf_data, False)
 
 
 def create_ttir(ttir_path):
