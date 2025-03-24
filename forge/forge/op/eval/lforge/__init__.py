@@ -7,7 +7,6 @@ from functools import lru_cache
 from .transpose import TransposeTM
 from .splice import Splice
 from .exp import Exp
-from .cosine import Cosine
 from .ethernet_datacopy import EthernetDatacopy
 from .reciprocal import Reciprocal
 from .abs import Abs
@@ -50,7 +49,7 @@ op_to_module_map = {
     "abs": Abs,
     "tanh": Tanh,
     "dropout": "eltwise_unary",
-    "cosine": Cosine,
+    "cosine": "eltwise_unary",
     "sine": "eltwise_unary",
     "power": "eltwise_unary",
     "tilizer": Tilizer,
