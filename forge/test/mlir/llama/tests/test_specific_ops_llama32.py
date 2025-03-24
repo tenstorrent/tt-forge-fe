@@ -224,7 +224,9 @@ def test_repeat_interleave(forge_property_recorder, shape, dim, repeats, train):
     framework_model = RepeatInterleave(dim=dim, repeats=repeats)
 
     framework_model.eval() if not train else framework_model.train()
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, training=train, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, training=train, forge_property_handler=forge_property_recorder
+    )
 
     fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
