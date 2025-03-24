@@ -9,6 +9,7 @@ Verify by evaluating the forge graph
 import os
 from typing import Tuple, Dict, List, Any, Union, Optional
 
+from forge.module import FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import paddle
@@ -18,6 +19,7 @@ import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
 from ..tensor import (
+    FrameworkTensor,
     Tensor,
     TensorShape,
     pad_pytorch_tensor_to_forge,
@@ -379,8 +381,8 @@ def verify_backward(
 
 
 def verify(
-    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
-    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer, onnx.onnx_ml_pb2.ModelProto],
+    inputs: List[FrameworkTensor],
+    framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
     forge_property_handler: Optional[ForgePropertyHandler] = None,
