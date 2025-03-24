@@ -216,9 +216,9 @@ def read_args():
 
     parser = argparse.ArgumentParser(description="Get device perf for benchmark end-to-end tests.")
 
-    parser.add_argument("-ct", "--create_ttir", help="Create TTIR file from the given path.")
+    parser.add_argument("-ct", "--create-ttir", help="Create TTIR file from the given path.")
 
-    parser.add_argument("-cdp", "--create_device_perf", nargs=2, help="Create device performance data.")
+    parser.add_argument("-cdp", "--create-device-perf", nargs=2, help="Create device performance data.")
 
     args = parser.parse_args()
 
