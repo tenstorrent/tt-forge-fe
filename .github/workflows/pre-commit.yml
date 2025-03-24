@@ -6,23 +6,10 @@ on:
 
 jobs:
   pre-commit:
-
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-      - name: Run pre-commit
-        shell: bash
-        run: |
-          rm -rf ~/.cache/pre-commit
-          pip install pre-commit
-          echo "running pre-commit"
-          pre-commit run --all-files --show-diff-on-failure
-      - name: log
-        if: always()
-        shell: bash
-        run: |
-          echo "pre-commit log"
-          cat /home/runner/.cache/pre-commit/pre-commit.log
+      - uses: actions/setup-python@v5
+      - uses: pre-commit/action@v3.0.1
+
