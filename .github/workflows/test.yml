@@ -96,7 +96,6 @@ jobs:
             pytest.ini
             conftest.py
             .test_durations
-          fetch-depth: 0 # Fetch all history and tags
 
     # Clean everything from submodules (needed to avoid issues
     # with cmake generated files leftover from previous builds)
@@ -104,6 +103,12 @@ jobs:
       run: |
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-cache
 
     - name: Download wheel
       uses: actions/download-artifact@v4
@@ -130,23 +135,13 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        apt-get update
-        apt install -y libgl1 libglx-mesa0
         set -o pipefail # Ensures that the exit code reflects the first command that fails
-        pip install pytest-split
         pytest --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
                --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                2>&1 | tee pytest.log
-
-    - name: Upload Test Log
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-        name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
-        path: pytest.log
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
