@@ -23,4 +23,5 @@ jobs:
         shell: bash
         run: |
           source venv/bin/activate
+          echo "running pre-commit"
           pre-commit run --all-files --show-diff-on-failure
