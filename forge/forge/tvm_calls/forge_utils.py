@@ -18,7 +18,7 @@ import tvm
 from tvm.relay import ExprVisitor
 from forge.config import CompilerConfig
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
-from forge.tensor import to_pt_tensors, pt_to_paddle_tensors
+from forge.tensor import to_pt_tensors, to_pd_tensors
 from forge.tvm_calls.relay.op.forge import extract_function_callnodes, trace_to_origin
 
 
@@ -169,7 +169,7 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
         flattened_inputs, flattened_input_names, flattened_name_map = flatten_inputs(inputs, input_names)
 
     elif framework == "paddle":
-        paddle_inputs = pt_to_paddle_tensors(inputs)
+        paddle_inputs = to_pd_tensors(inputs)
         input_structure = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in paddle_inputs]
 
         if hasattr(model, "_input_args_names"):
