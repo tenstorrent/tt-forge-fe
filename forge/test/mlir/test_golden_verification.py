@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, DepricatedVerifyConfig
 
 
 @pytest.mark.parametrize(

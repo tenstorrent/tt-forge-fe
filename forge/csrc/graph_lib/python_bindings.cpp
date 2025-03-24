@@ -50,7 +50,8 @@ eval_graph(
     float pcc,
     std::string const &dump_tensors_path,
     bool allow_modified_shapes,
-    bool return_intermediates);
+    bool return_intermediates,
+    std::optional<py::object> optimizer = std::nullopt);
 
 py::object get_constant_input_value(graphlib::Node *node, bool is_forge);
 py::object eval_input(
@@ -628,7 +629,8 @@ void GraphModule(py::module &m_graph)
            const std::vector<py::object> &losses,
            const std::vector<py::object> &targets,
            std::string const &dump_tensors_path,
-           bool allow_modified_shapes)
+           bool allow_modified_shapes,
+           std::optional<py::object> optimizer)
         {
             auto ret = eval_graph(
                 graph,
@@ -641,7 +643,8 @@ void GraphModule(py::module &m_graph)
                 pcc,
                 dump_tensors_path,
                 allow_modified_shapes,
-                false);
+                false,
+                optimizer.value_or(py::none()));
             return std::make_tuple(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret), std::get<3>(ret));
         },
         py::arg("graph"),
@@ -653,7 +656,8 @@ void GraphModule(py::module &m_graph)
         py::arg("losses") = std::vector<py::object>(),
         py::arg("targets") = std::vector<py::object>(),
         py::arg("dump_tensors_path") = "",
-        py::arg("allow_modified_shapes") = false);
+        py::arg("allow_modified_shapes") = false,
+        py::arg("optimizer") = py::none());
 
     m_graph.def(
         "remove_node",
@@ -1051,6 +1055,7 @@ py::object eval_input(
     // Check if there is node->name() in inputs.
     if (inputs.find(node->name()) == inputs.end())
     {
+        std::cout<<"debugger wont stop here   "<<node->name()<<std::endl;
         throw std::runtime_error("Error: Node name '" + node->name() + "' not found in inputs.");
     }
 
@@ -1254,6 +1259,7 @@ py::object eval_concatenate(
 std::vector<py::object> eval_runtime_tensor_transform(
     Graph *graph, std::vector<Node *> nodes, std::vector<py::object> input_values, bool flip = false)
 {
+    reportify::dump_graph(graph->name(), "before_eval_runtime_tensor_transform", graph);
     std::vector<py::object> ret;
     TT_ASSERT(nodes.size() == input_values.size());
     for (size_t i = 0; i < nodes.size(); i++)
@@ -1368,7 +1374,7 @@ bool is_gradient_comparison_valid(Graph *graph, const graphlib::Edge &gradient_e
 }
 
 std::unordered_map<std::string, py::object> get_graph_input_mapping(
-    Graph *graph, const std::vector<py::object> &inputs, const std::unordered_map<std::string, py::object> &parameters)
+    Graph *graph, const std::vector<py::object> &inputs, const std::unordered_map<std::string, py::object> &parameters, std::optional<py::object> optimizer)
 {
     std::vector<std::string> ordered_input_names = graph->get_ordered_input_names();
     std::unordered_map<std::string, py::object> graph_inputs = parameters;
@@ -1388,6 +1394,56 @@ std::unordered_map<std::string, py::object> get_graph_input_mapping(
         if (input->is_constant())
         {
             graph_inputs.insert({input->name(), get_constant_input_value(input, is_forge)});
+        }
+        else if (input->is_optimizer_parameter())
+        {
+            // Finds values of optimizer parameters
+            TT_ASSERT(not (!optimizer.has_value() or optimizer->is_none()), "Optimizer is not provided but one of inputs is optimizer parameter");
+
+            std::vector<graphlib::Edge> optimizer_edges = graph->operand_edges(
+                input, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToOptimizer;
+                });
+            TT_ASSERT(optimizer_edges.size() == 1);
+            // optimizer parameter (input_opt_linear_relu_stack.0.weight_0.lr) always has one input edge that comes from parameter it is referring to (linear_relu_stack.0.weight).
+            // That edge is kAutogradFwdToOptimizer type.
+            Node* node_to_train = graph->node_by_id(optimizer_edges[0].producer_node_id);
+            
+
+            std::string param_name = graph->node_by_id(optimizer_edges[0].producer_node_id)->name();
+            py::object optimizer_params = optimizer->attr("get_optimizer_params")();
+            // optimizer_params is a dictionary of optimizer parameters that looks like this:
+            // E.g. for 'l1.weight' trainable parameter, the optimizer parameters could be learning rate and momentum.
+            // If that was the only trainable parameter in our example, the optimizer_params dictionary would look like this:
+            // {
+            // ('l1.weight', 'lr'): 0.01,
+            // ('l1.weight', 'momentum'): 0.9,
+            // }
+            // So key to this dictionary is a tuple of parameter name and optimizer parameter name.
+
+            if (optimizer_params.is_none())
+                continue;
+
+            // Parse out the optimizer-param suffix string to find optimizer parameter name.
+            std::string optimizer_input_name = input->name();
+            std::string::size_type optimizer_param_idx = optimizer_input_name.rfind('.');
+            TT_ASSERT(
+                optimizer_param_idx != std::string::npos,
+                "Expecting optimizer node to have a '.<optimizer-param>' suffix identifier");
+
+            // optimizer_param_key will be string like "lr", "momentum" etc.
+            // second part of the key to index into optimizer_params is name of the node this optimizer parameter is referring to.
+            // we get that from node_to_train->name().
+            std::string optimizer_parameter_name = optimizer_input_name.substr(optimizer_param_idx + 1);
+            std::string parameter_name = node_to_train->name();
+            py::tuple optimizer_param_key = py::make_tuple(parameter_name, optimizer_parameter_name);
+            std::cout<<"optimizer_param_key: "<<std::string(py::str(optimizer_param_key))<<std::endl;
+            std::cout<<"optmizer_params: "<<optimizer_params<<std::endl;
+            py::object opt_tensor = optimizer_params.attr("get")(optimizer_param_key);
+            if (opt_tensor.is_none())
+                log_fatal("optimizer_param key: {} not found for node: {}", std::string(py::str(optimizer_param_key)),
+                optimizer_input_name);
+            std::cout<<"Inserting node: "<<input->name()<<" tensor into graph_inputs"<<std::endl;
+            graph_inputs.insert({input->name(), opt_tensor.attr("value")().cast<py::object>()});
         }
     }
 
@@ -1468,7 +1524,8 @@ eval_graph(
     float pcc,
     std::string const &dump_tensors_path,
     bool allow_modified_shapes,
-    bool return_intermediates)
+    bool return_intermediates,
+    std::optional<py::object> optimizer)
 {
     log_debug(LogEval, "Eval graph: {}", graph->name());
 
@@ -1478,7 +1535,7 @@ eval_graph(
     std::unordered_map<std::string, py::object> updated_parameter_mapping;
     std::unordered_map<std::string, py::object> intermediate_tensors;
 
-    std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, inputs, parameters);
+    std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, inputs, parameters, optimizer);
 
     const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
 
@@ -1504,56 +1561,57 @@ eval_graph(
         }
         else if (input->is_optimizer_parameter())
         {
+            std::cout<<"Populating optimizer parameter: "<<node->name()<<std::endl;
             log_debug(tt::LogTest, "Populating optimizer parameter: {}", node->name());
             node_outputs[node->id()].push_back(eval_input(node, graph_inputs, is_forge));
         }
     }
 
     // Populate loss tensor mapping
-    if (losses.size() > 0)
-    {
-        size_t losses_index = 0;
-        std::vector<std::string> output_gradient_names = graph->get_ordered_output_gradient_names();
-        TT_ASSERT(
-            output_gradient_names.size() == losses.size(),
-            "The number of output gradient ports (" + std::to_string(output_gradient_names.size()) + ") and losses (" +
-                std::to_string(losses.size()) + ") should match.");
+    // if (losses.size() > 0)
+    // {
+    //     size_t losses_index = 0;
+    //     std::vector<std::string> output_gradient_names = graph->get_ordered_output_gradient_names();
+    //     TT_ASSERT(
+    //         output_gradient_names.size() == losses.size(),
+    //         "The number of output gradient ports (" + std::to_string(output_gradient_names.size()) + ") and losses (" +
+    //             std::to_string(losses.size()) + ") should match.");
 
-        std::vector<Node *> nodes;
-        for (auto name : output_gradient_names) nodes.push_back(graph->get_node_by_name(name));
-        std::vector<py::object> loss_tensors = eval_runtime_tensor_transform(graph, nodes, losses);
-        for (std::string loss_name : graph->get_ordered_output_gradient_names())
-        {
-            py::object loss = loss_tensors.at(losses_index);
-            Node *node = graph->get_node_by_name(loss_name);
-            TT_ASSERT(
-                (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_loss(),
-                "Expected that this node is a loss");
-            log_debug(tt::LogTest, "Populating bwd loss: {}", node->name());
-            node_outputs[node->id()].push_back(loss);
-            ++losses_index;
-        }
-    }
+    //     std::vector<Node *> nodes;
+    //     for (auto name : output_gradient_names) nodes.push_back(graph->get_node_by_name(name));
+    //     std::vector<py::object> loss_tensors = eval_runtime_tensor_transform(graph, nodes, losses);
+    //     for (std::string loss_name : graph->get_ordered_output_gradient_names())
+    //     {
+    //         py::object loss = loss_tensors.at(losses_index);
+    //         Node *node = graph->get_node_by_name(loss_name);
+    //         TT_ASSERT(
+    //             (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_loss(),
+    //             "Expected that this node is a loss");
+    //         log_debug(tt::LogTest, "Populating bwd loss: {}", node->name());
+    //         node_outputs[node->id()].push_back(loss);
+    //         ++losses_index;
+    //     }
+    // }
 
     // Populate target tensor mapping
-    if (targets.size() > 0)
-    {
-        size_t targets_index = 0;
-        std::vector<std::string> target_inputs = graph->get_ordered_target_names();
-        TT_ASSERT(
-            target_inputs.size() == targets.size(),
-            "The number of target inputs (" + std::to_string(target_inputs.size()) + ") and targets (" +
-                std::to_string(targets.size()) + ") should match.");
-        for (std::string target : target_inputs)
-        {
-            Node *node = graph->get_node_by_name(target);
-            TT_ASSERT(
-                (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_target(),
-                "Expected that this node is a target input");
-            log_debug(tt::LogTest, "Populating target input: {}", node->name());
-            node_outputs[node->id()].push_back(targets.at(targets_index++));
-        }
-    }
+    // if (targets.size() > 0)
+    // {
+    //     size_t targets_index = 0;
+    //     std::vector<std::string> target_inputs = graph->get_ordered_target_names();
+    //     TT_ASSERT(
+    //         target_inputs.size() == targets.size(),
+    //         "The number of target inputs (" + std::to_string(target_inputs.size()) + ") and targets (" +
+    //             std::to_string(targets.size()) + ") should match.");
+    //     for (std::string target : target_inputs)
+    //     {
+    //         Node *node = graph->get_node_by_name(target);
+    //         TT_ASSERT(
+    //             (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_target(),
+    //             "Expected that this node is a target input");
+    //         log_debug(tt::LogTest, "Populating target input: {}", node->name());
+    //         node_outputs[node->id()].push_back(targets.at(targets_index++));
+    //     }
+    // }
 
     // Populate Forge input tensor mapping
     int input_index = 0;
@@ -1611,6 +1669,7 @@ eval_graph(
 
             auto gradient_edges = graph->operand_edges(
                 node, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToGradient; });
+            std::cout<<"gradient edges for node: "<<node->name()<<"  "<<gradient_edges.size()<<std::endl;
 
             for (Node *user : graph->data_users(node))
             {
@@ -1700,9 +1759,13 @@ eval_graph(
             // Pick out gradient ops
             if (op_node->is_gradient_op())
             {
+                std::cout<<"*** op_node:  "<<op_node->name()<<std::endl;
+                std::cout<<"size of vector gradient_edges:  "<<gradient_edges.size()<<std::endl;
                 for (graphlib::Edge gradient_edge : gradient_edges)
                 {
                     Node *producer = graph->node_by_id(gradient_edge.producer_node_id);
+                    reportify::dump_graph(graph->name(), producer->name(), graph);
+                    std::cout<<"*** producer:  "<<producer->name()<<std::endl;
                     py::object ret = eval_golden_transforms(node, obj);
                     if (producer->node_type() == NodeType::kInput)
                     {
