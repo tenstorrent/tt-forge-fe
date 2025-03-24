@@ -8,7 +8,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.text.mistral.utils.utils import get_current_weather
 from test.models.utils import Framework, Source, Task, build_module_name
+from test.utils import download_model
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 
@@ -51,6 +53,52 @@ def test_mistral(forge_property_recorder, variant):
         inputs,
         module_name,
         forge_property_handler=forge_property_recorder,
+    )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
+
+
+@pytest.mark.nightly
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 60 GB)")
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_v0_3(forge_property_recorder, variant):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model="mistral",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_model_name(module_name)
+
+    # Load tokenizer and model
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
+    framework_model.eval()
+
+    # prepare input
+    conversation = [{"role": "user", "content": "What's the weather like in Paris?"}]
+    input = tokenizer.apply_chat_template(
+        conversation,
+        tools=[get_current_weather],
+        add_generation_prompt=True,
+        return_dict=True,
+        return_tensors="pt",
+    )
+    inputs = [input["input_ids"]]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
     # Model Verification
