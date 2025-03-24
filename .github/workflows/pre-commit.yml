@@ -16,6 +16,7 @@ jobs:
       - name: Run pre-commit
         shell: bash
         run: |
+          rm -rf ~/.cache/pre-commit
           pip install pre-commit
           echo "running pre-commit"
           pre-commit run --all-files --show-diff-on-failure
