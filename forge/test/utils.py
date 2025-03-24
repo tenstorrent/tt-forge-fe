@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+from typing import Any, Callable, Optional
 from loguru import logger
 import random
 import requests
@@ -12,6 +13,7 @@ import urllib
 import numpy as np
 import torch
 import tensorflow as tf
+from forge.module import FrameworkModule
 
 
 def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
@@ -35,40 +37,84 @@ def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
     assert False, "Failed to download the model after multiple retries."
 
 
-def fetch_model(model_name, model_path, url, max_retries=3, timeout=30):
-    for attempt in range(1, max_retries + 1):
-        try:
-            print(f"Downloading {model_name} model, attempt {attempt}/{max_retries}...")
-            response = requests.get(url, timeout=timeout)
-            response.raise_for_status()
-
-            with open(f"{model_path}", "wb") as f:
-                f.write(response.content)
-
-            return True
-
-        except requests.exceptions.RequestException as e:
-            print(f"Attempt {attempt}/{max_retries} failed: {str(e)}")
-
-            if attempt < max_retries:
-                wait_time = 2**attempt  # Exponential backoff
-                print(f"Retrying in {wait_time} seconds...")
-                time.sleep(wait_time)
-            else:
-                print(f"Failed to download {model_name} after {max_retries} attempts")
-                return False
-
-    return False
+def get_cache_dir() -> str:
+    """Get models cache directory from env var or use local default."""
+    cache_dir = os.environ.get("FORGE_MODELS_HUB")
+    if not cache_dir:
+        cache_dir = os.path.join(os.getcwd(), "cached_forge_models")
+        os.makedirs(cache_dir, exist_ok=True)
+    return cache_dir
 
 
-def remove_model(model_path):
+def default_loader(path: str):
+    """Load model with PyTorch."""
     try:
-        if os.path.exists(model_path):
+        return torch.load(path, map_location="cpu")
+    except Exception as e:
+        print(f"PyTorch loading error: {e}")
+        return None
+
+
+def yolov5_loader(path: str, variant: str = "ultralytics/yolov5"):
+    try:
+        model = torch.hub.load(variant, "custom", path=path)
+        return model
+    except Exception as e:
+        print(f"YOLOv5 loading error: {e}")
+        return None
+
+
+def fetch_model(
+    model_name: str,
+    url: str,
+    loader: Optional[Callable] = default_loader,
+    max_retries: int = 3,
+    timeout: int = 30,
+    **kwargs: Any,
+) -> FrameworkModule:
+    """Fetch model from URL, cache it, and load it."""
+
+    model_file = model_name + ".pt"
+
+    model_path = os.path.join(get_cache_dir(), model_file)
+
+    # Download if needed
+    if not os.path.exists(model_path):
+        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+
+        for attempt in range(1, max_retries + 1):
+            try:
+                print(f"Downloading {model_name}, attempt {attempt}/{max_retries}...")
+                response = requests.get(url, timeout=timeout)
+                response.raise_for_status()
+
+                with open(model_path, "wb") as f:
+                    f.write(response.content)
+                break
+
+            except requests.exceptions.RequestException as e:
+                print(f"Attempt {attempt} failed: {e}")
+                if attempt < max_retries:
+                    time.sleep(2**attempt)  # Exponential backoff
+                else:
+                    # raise error if all attempts failed
+                    raise RuntimeError(f"Failed to download {model_name} after {max_retries} attempts.")
+
+    # Load model
+    model = loader(model_path, **kwargs) if loader else None
+    return model
+
+
+def remove_model(model_name: str) -> bool:
+    """Remove a model from cache."""
+    model_path = os.path.join(get_cache_dir(), model_name)
+    if os.path.exists(model_path):
+        try:
             os.remove(model_path)
             return True
-    except Exception as e:
-        print(f"Error removing model file {model_path}: {str(e)}")
-        return False
+        except OSError as e:
+            print(f"Failed to remove {model_name}: {e}")
+    return False
 
 
 def reset_seeds():
