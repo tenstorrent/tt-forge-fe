@@ -105,18 +105,6 @@ def fetch_model(
     return model
 
 
-def remove_model(model_name: str) -> bool:
-    """Remove a model from cache."""
-    model_path = os.path.join(get_cache_dir(), model_name)
-    if os.path.exists(model_path):
-        try:
-            os.remove(model_path)
-            return True
-        except OSError as e:
-            print(f"Failed to remove {model_name}: {e}")
-    return False
-
-
 def reset_seeds():
     random.seed(0)
     np.random.seed(0)
