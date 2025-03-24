@@ -227,6 +227,30 @@ TestParamsData.test_plan = TestPlan(
             failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
             skip_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
+        # Unsupported special cases:
+        TestCollection(
+            operators=TestParamsData.operators,
+            input_sources=[
+                InputSource.FROM_ANOTHER_OP,
+                InputSource.FROM_HOST,
+            ],
+            input_shapes=[
+                ((1, 10000), (1, 10000), (1, 10000)),
+                ((1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000)),
+            ],
+            kwargs=[{"dim": 1}],
+            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        ),
+        # ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8
+        TestCollection(
+            operators=TestParamsData.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=[(TestCollectionCommon.single.input_shapes[0],) * 2],
+            kwargs=[{"dim": 0}],
+            dev_data_formats=[torch.int8],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            failing_reason=FailingReasons.DTYPE_MISMATCH,
+        ),
     ],
 )
 
