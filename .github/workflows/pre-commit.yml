@@ -20,3 +20,9 @@ jobs:
           pip install pre-commit
           echo "running pre-commit"
           pre-commit run --all-files --show-diff-on-failure
+      - name: log
+        if: always()
+        shell: bash
+        run: |
+          echo "pre-commit log"
+          cat /home/runner/.cache/pre-commit/pre-commit.log
