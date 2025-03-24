@@ -37,33 +37,24 @@ from forge._C import ExecutionDepth
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
 
-def _generate_random_losses(outputs, is_forge):
+def _generate_random_losses(outputs):
     losses = []
     for out in outputs:
         if out.requires_grad:
             shape = list(out.shape.get_pytorch_shape())
-            if is_forge:
-                while len(shape) < 4:
-                    shape.insert(0, 1)
-                while len(shape) > 4:
-                    shape.pop(0)
-
-                shape[-1] = align_up_tile(shape[-1])
-                shape[-2] = align_up_tile(shape[-2])
-
             losses.append(torch.rand(shape, dtype=out.pt_data_format))
     return losses
 
 
-def _run_pytorch_backward(outputs, device, losses):
+def _run_pytorch_backward(outputs, losses):
     retain_graph = True
     for i, o in enumerate(outputs):
         if o.requires_grad:
-            if device.loss_module is None:
-                loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
-                o.value().backward(loss, retain_graph=retain_graph)
-            else:
-                o.value().backward(retain_graph=True)  # this is loss
+            # if device.loss_module is None:
+            loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
+            o.value().backward(loss, retain_graph=retain_graph)
+            # else:
+            #     o.value().backward(retain_graph=True)  # this is loss
 
 
 def get_intermediate_tensors(
@@ -99,6 +90,7 @@ def do_verify(
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
+    optimizer = None
 ):
     """
     Verify graph vs. pytorch golden
@@ -129,39 +121,27 @@ def do_verify(
             ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
-        raise RuntimeError("Verification of training is not supported yet.")
-        if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_forge)
-        elif losses is None:
-            losses = []
+        # raise RuntimeError("Verification of training is not supported yet.")
+        if losses is None:
+            losses = _generate_random_losses(outputs)
 
         # retain intermediate gradients for verification
         for t in intermediate_golden_tensors.values():
             if t.requires_grad == True:
                 t.retain_grad()
 
-        # Calculate pytorch gradients
-        run_backward = False
-        for i, o in enumerate(outputs):
-            # Check if we need to run, or if gradients have been calculated already
-            if o.value().grad is None and o.requires_grad:
-                run_backward = True
-                break
-        if run_backward:
-            _run_pytorch_backward(outputs, device, losses)
-
         pcc = 0.0 if verify_cfg.pcc is None else verify_cfg.pcc
         trace_outputs, parameter_to_gradients, bwd_gradients, parameter_to_updated_parameter = pygraph.eval(
             graph,
             torch_inputs,
             parameters,
-            tt_device=device,
             relative_atol=verify_cfg.relative_atol,
             pcc=pcc,
             intermediate_golden_tensors=intermediate_golden_tensors,
             losses=losses,
             targets=torch_targets,
             dump_tensors_path=verify_cfg.dump_tensors_path,
+            optimizer=optimizer,
         )
 
         # Verify forward pass results
@@ -173,6 +153,7 @@ def do_verify(
 
         # Verify bwd gradients
         # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
+        print("VERIFY Gradients of INPUTS")
         assert len(golden_input_grads) == 0 or (
             len(golden_input_grads) == len(bwd_gradients)
         ), f"Golden has {len(golden_input_grads)} input gradients, but graph eval returned {len(bwd_gradients)}"
@@ -181,20 +162,19 @@ def do_verify(
             ok &= compare_tensor_to_golden(
                 f"Bwd gradient {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
             )
-
+        print("VERIFY Gradients of PARAMETERS")
         # Verify parameter gradients:
-        device_parameters = device.get_parameters()
-        for parameter in device_parameters:
-            if parameter.requires_grad:
-                parameter_name = parameter.get_name()
+        for parameter_name, parameter_tensor in parameters.items():
+            if parameter_tensor.requires_grad:
                 if not parameter_name in parameter_to_gradients:
                     logger.warning("Parameter {} not used.", parameter_name)
                     continue
 
-                golden = parameter.value().grad
+                golden = parameter_tensor.grad
                 assert golden is not None
                 evaled = parameter_to_gradients[parameter_name]
                 warning_only = should_waive_gradient(parameter_name, verify_cfg)
+                print("*** comparing gradients for ", parameter_name)
                 ok &= compare_tensor_to_golden(
                     f"Gradient for {parameter_name}",
                     golden,
@@ -202,19 +182,17 @@ def do_verify(
                     verify_cfg=verify_cfg,
                     warning_only=warning_only,
                 )
-
+        print("VERIFY UPDATES of PARAMETERS")
         # Verify parameter updates:
-        optimizer = device.get_optimizer()
         if optimizer:
-            for parameter in device_parameters:
-                if parameter.requires_grad:
-                    parameter_name = parameter.get_name()
+            for parameter_name, parameter_tensor in parameters.items():
+                if parameter_tensor.requires_grad:
                     if not parameter_name in parameter_to_updated_parameter:
                         logger.warning("Parameter {} not used.", parameter_name)
                         continue
 
                     golden = optimizer.torch_parameter_update(
-                        parameter_name=parameter_name, parameter=parameter.value(), gradient=parameter.value().grad
+                        parameter_name=parameter_name, parameter=parameter_tensor, gradient=parameter_tensor.grad
                     )
                     evaled = parameter_to_updated_parameter[parameter_name]
                     warning_only = should_waive_gradient(parameter_name, verify_cfg)
