@@ -40,51 +40,37 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Avgpool3D0,
-            [((1, 1, 100, 54, 54), torch.float32)],
-            {
-                "model_name": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "[5, 1, 1]",
-                    "stride": "[1, 1, 1]",
-                    "padding": "[0, 0, 0, 0, 0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                    "channel_last": "0",
-                },
+    (
+        Avgpool3D0,
+        [((1, 1, 100, 54, 54), torch.float32)],
+        {
+            "model_name": ["pt_alexnet_base_img_cls_osmr"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "[5, 1, 1]",
+                "stride": "[1, 1, 1]",
+                "padding": "[0, 0, 0, 0, 0, 0]",
+                "ceil_mode": "False",
+                "count_include_pad": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.skip(
-                reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion Dim does not participate in AffineMap RHS"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Avgpool3D0,
-            [((1, 1, 260, 27, 27), torch.float32)],
-            {
-                "model_name": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "[5, 1, 1]",
-                    "stride": "[1, 1, 1]",
-                    "padding": "[0, 0, 0, 0, 0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                    "channel_last": "0",
-                },
+    (
+        Avgpool3D0,
+        [((1, 1, 260, 27, 27), torch.float32)],
+        {
+            "model_name": ["pt_alexnet_base_img_cls_osmr"],
+            "pcc": 0.99,
+            "op_params": {
+                "kernel_size": "[5, 1, 1]",
+                "stride": "[1, 1, 1]",
+                "padding": "[0, 0, 0, 0, 0, 0]",
+                "ceil_mode": "False",
+                "count_include_pad": "True",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.skip(
-                reason="[mlir::AffineMap collapsedLinearAffineMap] Assertion Dim does not participate in AffineMap RHS"
-            )
-        ],
+        },
     ),
 ]
 
@@ -92,7 +78,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("AvgPool3d")
+    forge_property_recorder("tags.op_name", "AvgPool3d")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

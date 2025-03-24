@@ -40,26 +40,23 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Stack0,
-            [
-                ((2, 1, 2048), torch.float32),
-                ((2, 1, 2048), torch.float32),
-                ((2, 1, 2048), torch.float32),
-                ((2, 1, 2048), torch.float32),
+    (
+        Stack0,
+        [
+            ((2, 1, 2048), torch.float32),
+            ((2, 1, 2048), torch.float32),
+            ((2, 1, 2048), torch.float32),
+            ((2, 1, 2048), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
-            {
-                "model_name": [
-                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"axis": "-3"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
         Stack1,
@@ -67,8 +64,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
@@ -80,7 +77,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("Stack")
+    forge_property_recorder("tags.op_name", "Stack")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

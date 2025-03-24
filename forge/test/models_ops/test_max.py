@@ -18,10 +18,20 @@ import pytest
 class Max0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("max0_const_1", shape=(1,), dtype=torch.float32)
+        self.add_constant("max0_const_1", shape=(1,), dtype=torch.int32)
 
     def forward(self, max_input_0):
         max_output_1 = forge.op.Max("", max_input_0, self.get_constant("max0_const_1"))
+        return max_output_1
+
+
+class Max1(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("max1_const_1", shape=(1,), dtype=torch.float32)
+
+    def forward(self, max_input_0):
+        max_output_1 = forge.op.Max("", max_input_0, self.get_constant("max1_const_1"))
         return max_output_1
 
 
@@ -32,76 +42,35 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (Max0, [((1, 32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
-            )
-        ],
+    (Max0, [((2441216,), torch.int32)], {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99}),
+    (
+        Max1,
+        [((1, 12, 32, 32), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Max0,
-            [((1, 32, 32, 32), torch.float32)],
-            {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
-            )
-        ],
+    (
+        Max1,
+        [((1, 32, 32, 32), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Max0,
-            [((1, 16, 32, 32), torch.float32)],
-            {"model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
-            )
-        ],
+    (Max1, [((1, 32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
+    (
+        Max1,
+        [((1, 16, 32, 32), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Max0,
-            [((1, 12, 32, 32), torch.float32)],
-            {"model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"], "pcc": 0.99},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
-            )
-        ],
-    ),
-    pytest.param(
-        (Max0, [((1, 12, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
-            )
-        ],
-    ),
-    pytest.param(
-        (
-            Max0,
-            [((1, 16, 256, 256), torch.float32)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_350m_clm_hf",
-                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                    "pt_xglm_facebook_xglm_564m_clm_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp:102: tt::exception info: ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast"
-            )
-        ],
+    (Max1, [((1, 12, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
+    (
+        Max1,
+        [((1, 16, 256, 256), torch.float32)],
+        {
+            "model_name": [
+                "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_xglm_facebook_xglm_564m_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
 ]
 
@@ -109,7 +78,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("Max")
+    forge_property_recorder("tags.op_name", "Max")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

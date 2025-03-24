@@ -15,31 +15,14 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Cumsum0(ForgeModule):
+class Min0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_constant("min0_const_1", shape=(1, 1), dtype=torch.int32)
 
-    def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=0)
-        return cumsum_output_1
-
-
-class Cumsum1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=-1)
-        return cumsum_output_1
-
-
-class Cumsum2(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=1)
-        return cumsum_output_1
+    def forward(self, min_input_0):
+        min_output_1 = forge.op.Min("", min_input_0, self.get_constant("min0_const_1"))
+        return min_output_1
 
 
 def ids_func(param):
@@ -49,64 +32,14 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Cumsum0,
-        [((2441216,), torch.float32)],
-        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "0"}},
-    ),
-    (
-        Cumsum1,
-        [((1, 32), torch.int64)],
-        {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
-    ),
-    (
-        Cumsum2,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
-    ),
-    (
-        Cumsum2,
-        [((1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
-    ),
-    (
-        Cumsum2,
-        [((1, 128), torch.int32)],
-        {
-            "model_name": [
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
-    ),
+    (Min0, [((2441216,), torch.int32)], {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99}),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "CumSum")
+    forge_property_recorder("tags.op_name", "Min")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
