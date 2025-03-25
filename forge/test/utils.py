@@ -40,7 +40,7 @@ def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
 
 def get_cache_dir() -> str:
     """Get models cache directory from env var or use local default."""
-    cache_dir = os.environ.get("FORGE_MODELS_HUB")
+    cache_dir = os.environ.get("FORGE_MODELS_CACHE")
     if not cache_dir:
         cache_dir = os.path.join(os.getcwd(), ".forge_models_cache")
         os.makedirs(cache_dir, exist_ok=True)
