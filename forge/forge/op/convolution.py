@@ -76,6 +76,7 @@ def Conv2dTranspose(
     dilation: int = 1,
     groups: int = 1,
     channel_last: bool = False,
+    output_padding: Union[int, Tuple[int, int]] = 0,
 ) -> Tensor:
     """
     Conv2dTranspose transformation on input activations, with optional bias.
@@ -111,32 +112,22 @@ def Conv2dTranspose(
     if isinstance(padding, tuple):
         padding = list(padding)
 
+    if isinstance(dilation, int):
+        dilation = [dilation] * 2
+
     inputs = [activations, weights]
     if bias is not None:
         inputs.append(bias)
 
-    # Attrs are:
-    # [
-    #     stride_height,
-    #     stride_width,
-    #     dilation,
-    #     groups,
-    #     padding_left,
-    #     padding_right,
-    #     padding_top,
-    #     padding_bottom,
-    #     channel_last,
-    # ]
-    attrs = stride + [dilation, groups] + padding + [channel_last]
     return op(
         "conv2d_transpose",
         name,
         *inputs,
-        attrs=attrs,
         stride=stride,  # [sH, sW]
         dilation=dilation,  # [dH, dW]
         groups=groups,
         padding=padding,  # [pT, pL, pB, pR]
+        output_padding=output_padding,  # [opH, opW]
         channel_last=channel_last,
     ).get_tensor()
 

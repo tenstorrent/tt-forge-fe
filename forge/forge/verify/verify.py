@@ -9,6 +9,7 @@ Verify by evaluating the forge graph
 import os
 from typing import Tuple, Dict, List, Any, Union, Optional
 
+from forge.module import FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import paddle
@@ -18,6 +19,7 @@ import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
 from ..tensor import (
+    FrameworkTensor,
     Tensor,
     TensorShape,
     pad_pytorch_tensor_to_forge,
@@ -281,9 +283,106 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
         raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
 
 
+def verify_backward(
+    inputs: List[torch.Tensor],
+    output_grad: torch.Tensor,
+    framework_output: torch.Tensor,
+    compiled_output: torch.Tensor,
+    framework_model: torch.nn.Module,
+    compiled_model: CompiledModel,
+    verify_cfg: VerifyConfig = VerifyConfig(),
+):
+    """
+    Performs verification of a compiled model by comparing its outputs against a reference framework model.
+
+    Runs backward on both models with the same inputs and performs various validation checks
+    based on the provided verification configuration. Checks can include output size matching,
+    dtype consistency, shape equivalence, and numeric value comparison.
+
+    Parameters:
+        inputs: List of tensor inputs
+        output_grad: Output gradient tensor
+        framework_output: Output tensor from the reference framework model
+        compiled_output: Output tensor from the compiled model
+        framework_model: Reference model
+        compiled_model: compiled model to verify
+        verify_cfg: Configuration object controlling which verification checks to perform
+    """
+
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return
+
+    assert compiled_model.training(), "Compiled model must be in compiled for training for backward verification"
+
+    # Check if inputs are of the correct type
+    if not inputs:
+        raise ValueError("Input tensors must be provided")
+
+    if not isinstance(output_grad, torch.Tensor):
+        raise TypeError(f"Output gradient tensor must be of type {torch.Tensor}, but got {type(output_grad)}")
+
+    if not isinstance(framework_output, torch.Tensor):
+        raise TypeError(f"Framework output tensor must be of type {torch.Tensor}, but got {type(framework_output)}")
+    if not isinstance(compiled_output, torch.Tensor):
+        raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
+
+    if not isinstance(framework_model, torch.nn.Module):
+        raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
+    if not isinstance(compiled_model, verify_cfg.compiled_model_types):
+        raise TypeError(
+            f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
+        )
+
+    # Zero out gradients
+    [input.grad.zero_() for input in inputs if input.grad is not None]
+    framework_model.zero_grad()
+
+    # 1st step: run backward pass for the networks and get gradients
+    compiled_model.gradient_inputs = [output_grad]
+    co_gradient_outputs = compiled_model.backward()
+    co_gradients: Dict[str, torch.Tensor] = {}
+    for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
+        # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
+        #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
+        co_gradients[name] = grad.clone() if name.startswith("grad_acc_") else grad
+
+    # Run backward on framework model
+    framework_model.zero_grad()
+    framework_output.backward(gradient=output_grad)
+
+    # 2nd step: verify gradients
+    for name in co_gradients:
+        co_grad = co_gradients[name]
+
+        if name.startswith("grad_acc_"):
+            name = name.replace("grad_acc_", "")
+            name = name.replace("_grad_accumulator", "")
+            fw_grad = framework_model.get_parameter(name).grad
+        elif name.startswith("output_grad_"):
+            name = name.replace("output_grad_", "")
+            fw_grad = inputs[compiled_model.fwd_compiled_graph_state.ordered_input_names.index(name)].grad
+        else:
+            raise ValueError(f"Unknown gradient name in compiled model: {name}")
+
+        assert co_grad.data_ptr() != fw_grad.data_ptr(), "Gradients are the same object in memory"
+
+        co = co_grad.squeeze()
+        fw = fw_grad.squeeze()
+
+        if verify_cfg.verify_dtype:
+            check_dtypes(fw_dtype=fw.dtype, co_dtype=co.dtype)
+
+        if verify_cfg.verify_shape and fw.shape != co.shape:
+            raise TypeError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
+
+        if verify_cfg.verify_values:
+            verify_cfg.value_checker.check(fw, co)
+
+
 def verify(
-    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
-    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer, onnx.onnx_ml_pb2.ModelProto],
+    inputs: List[FrameworkTensor],
+    framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
     forge_property_handler: Optional[ForgePropertyHandler] = None,

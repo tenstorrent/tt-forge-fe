@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Union, Tuple, List, Optional, Dict, TypeAlias
-from forge.tvm_utils import map_tf_dtype_to_pt
+from forge.tvm_utils import map_pt_dtype_to_pd, map_tf_dtype_to_pt, map_pd_dtype_to_pt
 
 import paddle
 import torch
@@ -517,7 +517,7 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
@@ -1194,7 +1194,7 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
         assert t.has_value(), "Expected Forge tensor to have a value"
         return t.value()
     elif isinstance(t, paddle.Tensor):
-        pt = torch.Tensor(t.numpy())
+        pt = torch.Tensor(t.numpy()).type(map_pd_dtype_to_pt(t.dtype))
         pt.requires_grad = t.stop_gradient == False
         return pt
     elif isinstance(t, np.ndarray):
@@ -1203,26 +1203,27 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
 
-def pt_to_paddle_tensor(pt: torch.Tensor):
-    if isinstance(pt, paddle.Tensor):
-        return pt
-    elif isinstance(pt, torch.Tensor):
-        return paddle.to_tensor(pt.detach().numpy())
-
-    else:
-        raise RuntimeError(f"Unknown type of tensor: {type(pt)}")
-
-
-def pt_to_paddle_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]):
+def to_pd_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]) -> Tuple[paddle.Tensor, ...]:
     paddle_tensors = []
 
     if not isinstance(tensors, (list, tuple)):
         tensors = (tensors,)
 
     for t in tensors:
-        paddle_tensors.append(pt_to_paddle_tensor(t))
+        paddle_tensors.append(to_pd_tensor(t))
 
     return tuple(paddle_tensors)
+
+
+def to_pd_tensor(pt: torch.Tensor) -> paddle.Tensor:
+    if isinstance(pt, paddle.Tensor):
+        return pt
+    elif isinstance(pt, torch.Tensor):
+        pd = paddle.to_tensor(pt.detach().numpy(), dtype=map_pt_dtype_to_pd(pt.dtype))
+        pd.stop_gradient = not pt.requires_grad
+        return pd
+    else:
+        raise RuntimeError(f"Unsupported type of tensor: {type(pt)}")
 
 
 def to_jax_tensors(

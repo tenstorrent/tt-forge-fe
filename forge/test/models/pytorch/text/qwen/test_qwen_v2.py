@@ -41,7 +41,10 @@ def test_qwen_clm(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("generality")
+    if variant in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-7B"]:
+        forge_property_recorder.record_group("priority")
+    else:
+        forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer

@@ -266,9 +266,9 @@ class VerifyConfig:
     # --- Supported Types --- #
     @property
     def supported_tensor_types(self) -> Tuple:
-        from forge import Tensor  # Local import to avoid circular dependency
+        from forge.tensor import AnyTensor  # Local import to avoid circular dependency
 
-        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor, paddle.Tensor)
+        return (AnyTensor,)
 
     @property
     def compiled_model_types(self) -> Tuple:
@@ -278,4 +278,6 @@ class VerifyConfig:
 
     @property
     def framework_model_types(self) -> Tuple:
-        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule, paddle.nn.Layer, forge.OnnxModule)
+        from forge.module import AnyModule  # Local import to avoid circular dependency
+
+        return (AnyModule,)
