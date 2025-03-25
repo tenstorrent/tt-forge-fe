@@ -168,7 +168,11 @@ def calculate_pcc(a, b):
             a_chunk = a[i : i + chunk_of_rows, :]
             b_chunk = b[i : i + chunk_of_rows, :]
 
-            chunk_pcc = np.min(np.corrcoef(a_chunk.detach().numpy(), b_chunk.detach().numpy()))
+            chunk_pcc = np.min(
+                np.ma.corrcoef(
+                    np.ma.masked_invalid(a_chunk.detach()).numpy(), np.ma.masked_invalid(b_chunk.detach()).numpy()
+                )
+            )
 
             if pcc is None:
                 pcc = chunk_pcc
@@ -176,9 +180,9 @@ def calculate_pcc(a, b):
                 pcc = np.min([pcc, chunk_pcc]).item()
     else:
         pcc = np.min(
-            np.corrcoef(
-                np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
-                np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
+            np.ma.corrcoef(
+                torch.squeeze(a).detach().numpy().flatten(),
+                torch.squeeze(b).detach().numpy().flatten(),
             )
         )
 
