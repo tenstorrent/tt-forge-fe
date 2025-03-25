@@ -9,6 +9,7 @@ import os
 import forge
 import textwrap
 import json
+import pytest
 
 from loguru import logger
 from tabulate import tabulate
@@ -25,6 +26,18 @@ from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+from test.operators.utils.dual_output import global_string_buffer
+
+
+# @pytest.fixture(autouse=True)
+@pytest.fixture
+def capture_output(
+    capfd,
+    # capsys
+):
+    return global_string_buffer.capture_output(capfd)
+    # return global_string_buffer.capture_output(capsys)
+    # return global_string_buffer.capture_output()
 
 
 @dataclass
