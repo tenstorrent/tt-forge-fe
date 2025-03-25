@@ -18,46 +18,127 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="4">1</td>
-			<td rowspan="4">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="4">15</td>
+			<td rowspan="20">1</td>
+			<td rowspan="20">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="20">90</td>
 			<td>6</td>
-			<td><ul><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 512, 6, 20), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 512, 12, 40), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 12, 40), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 24, 80), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 24, 80), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 48, 160), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 48, 160), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 96, 96, 320), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 96, 320), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 192, 640), dtype=float32)</td>
 			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 512, 10, 32), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 512, 20, 64), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 40, 128), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 80, 256), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)</td>
+			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 96, 160, 512), dtype=float32)</td>
 			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=float32)</td>
 			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li></ul></td>
+			<td><ul><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=float32)</td>
 			<td>pad : (1, 1, 1, 1)<br>mode : "reflect"<br>channel_last : False</td>
-		</tr>
-		<tr>
-			<td rowspan="2">2</td>
-			<td rowspan="2">[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
-			<td rowspan="2">2</td>
-			<td>1</td>
-			<td><ul><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 1, 96, 54, 54), dtype=float32)</td>
-			<td>pad : (0, 0, 2, 2)<br>mode : "constant"<br>channel_last : True</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 1, 256, 27, 27), dtype=float32)</td>
-			<td>pad : (0, 0, 2, 2)<br>mode : "constant"<br>channel_last : True</td>
 		</tr>
 	</tbody>
 </table>
