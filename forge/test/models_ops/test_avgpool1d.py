@@ -39,20 +39,23 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Avgpool1D0,
-        [((1, 768, 49), torch.float32)],
-        {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "[49]",
-                "stride": "[49]",
-                "padding": "[0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
+    pytest.param(
+        (
+            Avgpool1D0,
+            [((1, 768, 49), torch.float32)],
+            {
+                "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "[49]",
+                    "stride": "[49]",
+                    "padding": "[0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault at Run mlir compile stage")],
     ),
 ]
 

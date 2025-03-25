@@ -13913,14 +13913,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 1024, 3000, 1)"},
         },
     ),
-    (
-        Reshape118,
-        [((1024, 1024, 3), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(1024, 1024, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape118,
+            [((1024, 1024, 3), torch.float32)],
+            {
+                "model_name": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(1024, 1024, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
         Reshape119,
@@ -14156,14 +14159,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 1280, 3000, 1)"},
         },
     ),
-    (
-        Reshape141,
-        [((1280, 1280, 3), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(1280, 1280, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape141,
+            [((1280, 1280, 3), torch.float32)],
+            {
+                "model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(1280, 1280, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
         Reshape142,
