@@ -12,8 +12,13 @@
 # ...
 
 
+import traceback
+
 from loguru import logger
 from typing import Type, Optional
+
+from ..utils.features import TestFeaturesConfiguration
+from ..utils.dual_output import global_string_buffer
 
 
 class FailingReasons:
@@ -232,9 +237,22 @@ class FailingReasonsValidation:
         Returns:
             bool: True if exception message and type match the expected values, False otherwise, None if no check is defined
         """
-        logger.debug(
-            f"Validating xfail reason: '{xfail_reason}' for exception: {type(exception_value)} '{exception_value}'"
-        )
+        with global_string_buffer.capture_output():
+            return cls.validate_exception_body(exception_value, xfail_reason)
+
+    @classmethod
+    def validate_exception_body(cls, exception_value: Exception, xfail_reason: str):
+        if TestFeaturesConfiguration.TRACE_XFAIL_VALIDATION:
+            logger.debug(
+                f"Validating xfail reason: '{xfail_reason}' for exception: {type(exception_value)} '{exception_value}'"
+            )
+
+            exception_stack = getattr(exception_value, "__traceback__", None)
+            if exception_stack:
+                formatted_stack = "".join(traceback.format_tb(exception_stack))
+                logger.debug(f"Exception stack:\n{formatted_stack}")
+            else:
+                logger.debug("No traceback available for the exception.")
 
         if xfail_reason in cls.XFAIL_REASON_CHECKS:
             xfail_reason_checks = cls.XFAIL_REASON_CHECKS[xfail_reason]
