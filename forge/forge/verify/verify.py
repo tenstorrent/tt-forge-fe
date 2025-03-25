@@ -7,8 +7,9 @@ Verify by evaluating the forge graph
 """
 
 import os
-from typing import Tuple, Dict, List, Any, Union
+from typing import Tuple, Dict, List, Any, Union, Optional
 
+from forge.module import FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import paddle
@@ -18,6 +19,7 @@ import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
 from ..tensor import (
+    FrameworkTensor,
     Tensor,
     TensorShape,
     pad_pytorch_tensor_to_forge,
@@ -29,8 +31,9 @@ from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, 
 import forge._C.graph as pygraph
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
-from forge.verify.compare import compare_tensor_to_golden
-from forge.execution_tracker import ExecutionPhase, ExecutionStage, record_execution_phase_and_stage
+from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
+from forge._C import ExecutionDepth
+from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -95,30 +98,12 @@ def do_verify(
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
-    balancer_solution=None,
 ):
     """
     Verify graph vs. pytorch golden
     """
-
-    torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
-    torch_targets: List[torch.Tensor] = [i.value() for i in targets]
-
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(
-                tensor=t,
-                tile_broadcast_dims=graph.get_tile_broadcast_dims_for_input(i),
-                squeeze=False,
-                microbatch=1,
-                tile_r=graph.get_ordered_input_tile_dims()[i][0],
-                tile_c=graph.get_ordered_input_tile_dims()[i][1],
-            )
-            for i, t in enumerate(torch_inputs)
-        ]
-
-    if device.loss_module is not None:
-        assert len(targets) > 0, f"No target provided, but device {device} has a loss module"
+    torch_inputs: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in inputs]
+    torch_targets: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in targets]
 
     logger.info("Verifying stage {}", stage_name)
     if not training:
@@ -128,11 +113,9 @@ def do_verify(
             graph,
             torch_inputs,
             parameters,
-            device,
             verify_cfg.relative_atol,
             pcc,
             intermediate_golden_tensors,
-            balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
             targets=torch_targets,
         )
@@ -142,9 +125,10 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
+        raise RuntimeError("Verification of training is not supported yet.")
         if losses is None and device.loss_module is None:
             losses = _generate_random_losses(outputs, is_forge)
         elif losses is None:
@@ -176,7 +160,6 @@ def do_verify(
             intermediate_golden_tensors=intermediate_golden_tensors,
             losses=losses,
             targets=torch_targets,
-            balancer_solution=balancer_solution,
             dump_tensors_path=verify_cfg.dump_tensors_path,
         )
 
@@ -185,7 +168,7 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, is_forge=is_forge, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
         # Verify bwd gradients
         # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
@@ -195,7 +178,7 @@ def do_verify(
         for bwd_index, golden_input_grad in enumerate(golden_input_grads):
             evaled = bwd_gradients[bwd_index]
             ok &= compare_tensor_to_golden(
-                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, is_forge=is_forge, verify_cfg=verify_cfg
+                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
             )
 
         # Verify parameter gradients:
@@ -215,7 +198,6 @@ def do_verify(
                     f"Gradient for {parameter_name}",
                     golden,
                     evaled,
-                    is_forge=is_forge,
                     verify_cfg=verify_cfg,
                     warning_only=warning_only,
                 )
@@ -239,7 +221,6 @@ def do_verify(
                         f"Parameter Update for {parameter_name}",
                         golden,
                         evaled,
-                        is_forge=is_forge,
                         verify_cfg=verify_cfg,
                         warning_only=warning_only,
                     )
@@ -302,11 +283,109 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
         raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
 
 
-def verify(
-    inputs: List[Union[torch.Tensor, tf.Tensor, tf.Variable, paddle.Tensor]],
-    framework_model: Union[torch.nn.Module, tf.Module, tf.keras.Model, paddle.nn.Layer, onnx.onnx_ml_pb2.ModelProto],
+def verify_backward(
+    inputs: List[torch.Tensor],
+    output_grad: torch.Tensor,
+    framework_output: torch.Tensor,
+    compiled_output: torch.Tensor,
+    framework_model: torch.nn.Module,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
+):
+    """
+    Performs verification of a compiled model by comparing its outputs against a reference framework model.
+
+    Runs backward on both models with the same inputs and performs various validation checks
+    based on the provided verification configuration. Checks can include output size matching,
+    dtype consistency, shape equivalence, and numeric value comparison.
+
+    Parameters:
+        inputs: List of tensor inputs
+        output_grad: Output gradient tensor
+        framework_output: Output tensor from the reference framework model
+        compiled_output: Output tensor from the compiled model
+        framework_model: Reference model
+        compiled_model: compiled model to verify
+        verify_cfg: Configuration object controlling which verification checks to perform
+    """
+
+    if not verify_cfg.enabled:
+        logger.warning("Verification is disabled")
+        return
+
+    assert compiled_model.training(), "Compiled model must be in compiled for training for backward verification"
+
+    # Check if inputs are of the correct type
+    if not inputs:
+        raise ValueError("Input tensors must be provided")
+
+    if not isinstance(output_grad, torch.Tensor):
+        raise TypeError(f"Output gradient tensor must be of type {torch.Tensor}, but got {type(output_grad)}")
+
+    if not isinstance(framework_output, torch.Tensor):
+        raise TypeError(f"Framework output tensor must be of type {torch.Tensor}, but got {type(framework_output)}")
+    if not isinstance(compiled_output, torch.Tensor):
+        raise TypeError(f"Compiled output tensor must be of type {torch.Tensor}, but got {type(compiled_output)}")
+
+    if not isinstance(framework_model, torch.nn.Module):
+        raise TypeError(f"Framework model must be of type {torch.nn.Module}, but got {type(framework_model)}")
+    if not isinstance(compiled_model, verify_cfg.compiled_model_types):
+        raise TypeError(
+            f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
+        )
+
+    # Zero out gradients
+    [input.grad.zero_() for input in inputs if input.grad is not None]
+    framework_model.zero_grad()
+
+    # 1st step: run backward pass for the networks and get gradients
+    compiled_model.gradient_inputs = [output_grad]
+    co_gradient_outputs = compiled_model.backward()
+    co_gradients: Dict[str, torch.Tensor] = {}
+    for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
+        # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
+        #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
+        co_gradients[name] = grad.clone() if name.startswith("grad_acc_") else grad
+
+    # Run backward on framework model
+    framework_model.zero_grad()
+    framework_output.backward(gradient=output_grad)
+
+    # 2nd step: verify gradients
+    for name in co_gradients:
+        co_grad = co_gradients[name]
+
+        if name.startswith("grad_acc_"):
+            name = name.replace("grad_acc_", "")
+            name = name.replace("_grad_accumulator", "")
+            fw_grad = framework_model.get_parameter(name).grad
+        elif name.startswith("output_grad_"):
+            name = name.replace("output_grad_", "")
+            fw_grad = inputs[compiled_model.fwd_compiled_graph_state.ordered_input_names.index(name)].grad
+        else:
+            raise ValueError(f"Unknown gradient name in compiled model: {name}")
+
+        assert co_grad.data_ptr() != fw_grad.data_ptr(), "Gradients are the same object in memory"
+
+        co = co_grad.squeeze()
+        fw = fw_grad.squeeze()
+
+        if verify_cfg.verify_dtype:
+            check_dtypes(fw_dtype=fw.dtype, co_dtype=co.dtype)
+
+        if verify_cfg.verify_shape and fw.shape != co.shape:
+            raise TypeError(f"Shape mismatch: framework_model.shape={fw.shape}, compiled_model.shape={co.shape}")
+
+        if verify_cfg.verify_values:
+            verify_cfg.value_checker.check(fw, co)
+
+
+def verify(
+    inputs: List[FrameworkTensor],
+    framework_model: FrameworkModule,
+    compiled_model: CompiledModel,
+    verify_cfg: VerifyConfig = VerifyConfig(),
+    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -325,6 +404,9 @@ def verify(
         tuple: (framework_outputs, compiled_outputs) - outputs from both models
                Returns (None, None) if verification is disabled
     """
+
+    if forge_property_handler is not None:
+        forge_property_handler.record_verify_config(verify_cfg)
 
     # 0th step: Check if inputs are of the correct type
     if not inputs:
@@ -348,9 +430,15 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    record_execution_phase_and_stage(ExecutionPhase.COMPILE_MLIR)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.FAILED_RUNTIME, execution_stage=ExecutionStage.FAILED_TTNN_BINARY_EXECUTION
+        )
     co_out = compiled_model(*inputs)
-    record_execution_phase_and_stage(ExecutionPhase.EXECUTED_TTNN)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
+        )
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
@@ -359,6 +447,13 @@ def verify(
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 
     co_out = [co.to("cpu") for co in co_out]
+
+    if forge_property_handler is not None:
+        pcc, atol = determine_consistency_limits(fw_out, co_out)
+        if pcc is not None:
+            forge_property_handler.record_pcc(pcc=pcc)
+        if atol is not None:
+            forge_property_handler.record_atol(atol=atol)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
@@ -386,7 +481,10 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    record_execution_phase_and_stage(ExecutionStage.VERIFICATON)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(
+            execution_depth=ExecutionDepth.PASSED, execution_stage=ExecutionStage.PASSED
+        )
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

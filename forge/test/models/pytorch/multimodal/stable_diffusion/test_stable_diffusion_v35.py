@@ -54,7 +54,7 @@ class StableDiffusionWrapper(torch.nn.Module):
         ),
     ],
 )
-def test_stable_diffusion_v35(record_forge_property, variant):
+def test_stable_diffusion_v35(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -65,8 +65,8 @@ def test_stable_diffusion_v35(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load pipeline
     pipe = load_pipe_v35(variant)
@@ -82,7 +82,9 @@ def test_stable_diffusion_v35(record_forge_property, variant):
     latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds = stable_diffusion_preprocessing_v35(pipe, prompt)
     inputs = [latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds]
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

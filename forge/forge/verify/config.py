@@ -16,6 +16,7 @@ from forge._C import DataFormat
 from dataclasses_json import dataclass_json
 from forge.utils import as_json
 from forge.verify.value_checkers import ValueChecker, AutomaticValueChecker
+from forge.config import CompileDepth
 
 
 class TestKind(Enum):
@@ -114,17 +115,15 @@ class DepricatedVerifyConfig:
     verify_forge_codegen_vs_framework: bool = (
         True  # Compare Framework output on CPU vs forge codegen from TVM json graphs
     )
+    # Setting this to true will enable intermediate outputs to remain in graph
+    # If false, all unused outputs will be removed. This needs to be true for intermediate golden verification
+    # if we want to compare all intermediate tensors in graph.
+    enable_op_level_comparision: bool = False
 
-    verify_all: bool = (
-        "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
-    )  # Whether or not to verify after every compile stage
+    _verify_all: bool = False  # Whether or not to verify after every compile stage
     verify_last: bool = True  # Whether or not to verify after the final stage (overriden by disabled())
-    verify_post_autograd_passes: bool = (
-        "FORGE_VERIFY_POST_AUTOGRAD_PASSES" in os.environ and os.environ["FORGE_VERIFY_POST_AUTOGRAD_PASSES"] == "1"
-    )  # Whether or not to force verification at post autograd passes (overridden by disabled())
-    verify_post_placer: bool = (
-        "FORGE_VERIFY_POST_PLACER" in os.environ and os.environ["FORGE_VERIFY_POST_PLACER"] == "1"
-    )  # Whether or not to force verification at post placer (overidden by disabled())
+    # When we want to perform verification after some specific compilation stages.
+    stages_for_intermediate_verification = set()
 
     # names of parameters for which gradient error will not fail the test. Some gradients are so small that
     # atol/rtol/pcc will never be good enough to pass
@@ -156,25 +155,6 @@ class DepricatedVerifyConfig:
     enable_parameter_gradient_checking: bool = True
     _input_gradient_queue: Optional[torch.multiprocessing.Queue] = None
     _parameter_gradient_queue: Optional[torch.multiprocessing.Queue] = None
-
-    if "FORGE_VERIFY_RESULTS_OFF_BY_DEFAULT" in os.environ and not (
-        "FORGE_FORCE_VERIFY_ALL" in os.environ and os.environ["FORGE_FORCE_VERIFY_ALL"] == "1"
-    ):
-        intermediates = False
-        run_golden = False
-        verify_all = False
-        verify_last = False
-        verify_post_placer = False
-        verify_post_autograd_passes = False
-        verify_tvm_compile = False
-        verify_pipeline_result_vs_framework = False
-        verify_forge_codegen_vs_framework = False
-
-    if verify_all:
-        verify_pipeline_result_vs_framework = True
-        verify_forge_codegen_vs_framework = True
-        verify_tvm_compile = True
-        verify_each_forge_pass = True
 
     def __post_init__(self):
         # set defaults if not set explicitly by user. Relax under silicon, focus on pcc more.
@@ -216,12 +196,21 @@ class DepricatedVerifyConfig:
         v.intermediates = False
         v.run_golden = False
         v.scale_loss = 1.0
-        v.verify_post_autograd_passes = False
-        v.verify_post_placer = False
         return v
 
     def total_number_of_inputs(self):
         return self.epochs * self.steps * self.accumulation_steps * self.microbatch_count
+
+    @property
+    def verify_all(self):
+        """Getter for verify_all"""
+        return self._verify_all
+
+    @verify_all.setter
+    def verify_all(self, value: bool):
+        """Setter for verify_all"""
+        print(f"Setting verify_all to {value}")
+        self._verify_all = value
 
 
 def should_waive_gradient(param_name, verify_cfg):
@@ -277,9 +266,9 @@ class VerifyConfig:
     # --- Supported Types --- #
     @property
     def supported_tensor_types(self) -> Tuple:
-        from forge import Tensor  # Local import to avoid circular dependency
+        from forge.tensor import AnyTensor  # Local import to avoid circular dependency
 
-        return (tf.Tensor, tf.Variable, torch.Tensor, Tensor, paddle.Tensor)
+        return (AnyTensor,)
 
     @property
     def compiled_model_types(self) -> Tuple:
@@ -289,4 +278,6 @@ class VerifyConfig:
 
     @property
     def framework_model_types(self) -> Tuple:
-        return (torch.nn.Module, tf.Module, tf.keras.Model, forge.ForgeModule, paddle.nn.Layer, forge.OnnxModule)
+        from forge.module import AnyModule  # Local import to avoid circular dependency
+
+        return (AnyModule,)

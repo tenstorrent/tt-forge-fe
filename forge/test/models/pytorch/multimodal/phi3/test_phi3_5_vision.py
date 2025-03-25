@@ -31,7 +31,7 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
     reason="NotImplementedError: The following operators are not implemented: ['aten::resolve_neg', 'aten::resolve_conj']"
 )
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_5_vision(record_forge_property, variant):
+def test_phi3_5_vision(forge_property_recorder, variant):
 
     # Build Module Name
     module_name = build_module_name(
@@ -43,8 +43,8 @@ def test_phi3_5_vision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model and processor
     model = download_model(
@@ -63,7 +63,9 @@ def test_phi3_5_vision(record_forge_property, variant):
     inputs = load_input(processor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
