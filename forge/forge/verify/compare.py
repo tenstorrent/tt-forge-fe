@@ -75,7 +75,7 @@ def compare_dissimilarity(calculated_dissimilarity: float, dissimilarity_thresho
         return False
 
 
-def calculate_pcc(a, b):
+def calculate_pcc_unoptimized(a, b):
     if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
         logger.warning("Both tensors are 'nan'")
         return 1.0
@@ -112,6 +112,75 @@ def calculate_pcc(a, b):
             np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
         )
     )
+
+    if isinstance(pcc, np.ma.core.MaskedConstant):
+        return 1.0
+
+    return pcc
+
+
+def calculate_pcc(a, b):
+    if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
+        logger.warning("Both tensors are 'nan'")
+        return 1.0
+
+    if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
+        logger.error("One tensor is all nan, the other is not.")
+        return 0.0
+
+    # Test if either is completely zero
+    if torch.any(a.bool()) != torch.any(b.bool()):
+        return 0.0
+
+    # if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
+    #    raise RuntimeError(f"Tensor overflow to infinity: \n{a}\n{b}")
+
+    # if torch.any(torch.isneginf(a)) or torch.any(torch.isneginf(b)):
+    #    raise RuntimeError(f"Tensor overflow to negative infinity: \n{a}\n{b}")
+
+    # For now, mask all infs and nans so that we check the rest... TODO
+    a = a.clone()
+    a[torch.logical_or(torch.isnan(a), torch.logical_or(torch.isinf(a), torch.isneginf(a)))] = 0
+    b = b.clone()
+    b[torch.logical_or(torch.isnan(b), torch.logical_or(torch.isinf(b), torch.isneginf(b)))] = 0
+
+    if torch.equal(a, b):
+        return 1.0
+
+    if a.dtype == torch.bfloat16:
+        a = a.type(torch.float32)
+        b = b.type(torch.float32)
+
+    if a.numel() > 100000000:
+        # For large tensors, split the tensor into smaller chunks to calculate PCC
+        assert len(a.shape) == 2, "PCC calculation only supports 2D tensors"
+        assert a.shape == b.shape, "Tensors must have the same shape"
+
+        if a.shape[0] < a.shape[1]:
+            a = a.transpose(0, 1)
+            b = b.transpose(0, 1)
+
+        CHUNK_SIZE = 1000000
+
+        chunk_of_rows = max(CHUNK_SIZE // a.shape[1], 1)
+        pcc = None
+        for i in range(0, a.shape[0], chunk_of_rows):
+            a_chunk = a[i : i + chunk_of_rows, :]
+            b_chunk = b[i : i + chunk_of_rows, :]
+
+            chunk_pcc = np.min(np.corrcoef(a_chunk.detach().numpy(), b_chunk.detach().numpy()))
+
+            if pcc is None:
+                pcc = chunk_pcc
+            else:
+                pcc = np.min([pcc, chunk_pcc]).item()
+    else:
+        pcc = np.min(
+            np.corrcoef(
+                np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
+                np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
+            )
+        )
 
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
