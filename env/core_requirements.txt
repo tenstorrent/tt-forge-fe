@@ -54,3 +54,4 @@ mlp-mixer-pytorch==0.2.0
 gliner==0.2.16
 ase==3.24.0
 hippynn==0.0.3
+peft==0.15.0
