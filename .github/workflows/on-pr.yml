@@ -1,6 +1,7 @@
 name: On PR
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       mlir_override:
