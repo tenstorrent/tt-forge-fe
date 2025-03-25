@@ -15,3 +15,5 @@ class TestFeaturesConfiguration:
         return os.getenv(env_var, default_value)
 
     SKIP_FORGE_VERIFICATION = get_env_property("SKIP_FORGE_VERIFICATION", "false").lower() == "true"
+    CAPTURE_OUTPUT = get_env_property("CAPTURE_OUTPUT", "false").lower() == "true"
+    TRACE_XFAIL_VALIDATION = get_env_property("TRACE_XFAIL_VALIDATION", "false").lower() == "true"
