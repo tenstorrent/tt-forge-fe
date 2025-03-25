@@ -83,8 +83,8 @@ def forge_property_recorder(record_property):
 
     forge_property_handler = ForgePropertyHandler(forge_property_store)
 
-    # Set FAILED_FE_COMPILATION as default execution depth (even if we fail before FE compilation)
-    forge_property_handler.record_execution_depth(ExecutionDepth.FAILED_FE_COMPILATION)
+    # Set CI_FAILURE as default execution depth
+    forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
 
     yield forge_property_handler
 
