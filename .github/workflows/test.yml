@@ -129,13 +129,11 @@ jobs:
       shell: bash
       run: |
         source env/activate
-        set -o pipefail # Ensures that the exit code reflects the first command that fails
         pytest --splits ${{ inputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-               2>&1 | tee pytest.log
+               --junit-xml=${{ steps.strings.outputs.test_report_path }}
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
