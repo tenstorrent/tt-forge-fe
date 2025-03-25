@@ -476,16 +476,43 @@ void dump_mlir(const std::string& file_name, const std::string& module_name, mli
     if (env_as<bool>("FORGE_DISABLE_REPORTIFY_DUMP"))
         return;
 
+    std::cout << "------------------------------------------- " << std::endl;
+    std::cout << "Dumping MLIR" << std::endl;
+    std::cout << "------------------------------------------- " << std::endl;
+
     std::string path = get_default_reportify_path("");
+
+    std::cout << "------------------------------------------- " << std::endl;
+    std::cout << "Path: " << path << std::endl;
+    std::cout << "------------------------------------------- " << std::endl;
+
     std::string report_path = get_mlir_reports_relative_directory();
+
+    std::cout << "------------------------------------------- " << std::endl;
+    std::cout << "Report Path: " << report_path << std::endl;
+    std::cout << "------------------------------------------- " << std::endl;
+
     std::string full_report_path = build_report_path(path, module_name, report_path);
+
+    std::cout << "------------------------------------------- " << std::endl;
+    std::cout << "Full Report Path: " << full_report_path << std::endl;
+    std::cout << "------------------------------------------- " << std::endl;
 
     JsonNamePairs json_pairs = create_jsons_for_mlir(file_name, module_name, operation);
     json root_json = json_pairs.back().first;
 
     std::string root_json_name = json_pairs.back().second;
+
+    std::cout << "------------------------------------------- " << std::endl;
+    std::cout << "Root JSON Name: " << root_json_name << std::endl;
+    std::cout << "------------------------------------------- " << std::endl;
+
     std::transform(root_json_name.begin(), root_json_name.end(), root_json_name.begin(), ::tolower);
     std::string root_json_path = full_report_path + root_json_name;
+
+    std::cout << "------------------------------------------- " << std::endl;
+    std::cout << "Root JSON Path: " << root_json_path << std::endl;
+    std::cout << "------------------------------------------- " << std::endl;
 
     std::filesystem::create_directories(std::filesystem::path(full_report_path));
     write_json_to_file(root_json_path, root_json);
