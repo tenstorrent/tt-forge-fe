@@ -34,7 +34,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     gh \
     expect \
-    lcov
+    lcov \
+    libgl1 \
+    libglx-mesa0
 
 # Install clang 17
 RUN wget https://apt.llvm.org/llvm.sh && \
