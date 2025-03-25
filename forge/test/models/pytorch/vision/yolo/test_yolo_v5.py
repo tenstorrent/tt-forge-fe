@@ -10,13 +10,13 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, build_module_name
 from test.utils import fetch_model, yolov5_loader
 
+base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
+
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
 
-    model = fetch_model(
-        name, f"https://github.com/ultralytics/yolov5/releases/download/v7.0/{name}.pt", yolov5_loader, variant=variant
-    )
+    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
 
     input_shape = (1, 3, 320, 320)
     input_tensor = torch.rand(input_shape)
@@ -68,9 +68,7 @@ def test_yolov5_320x320(forge_property_recorder, size):
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
-    model = fetch_model(
-        name, f"https://github.com/ultralytics/yolov5/releases/download/v7.0/{name}.pt", yolov5_loader, variant=variant
-    )
+    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
 
     input_shape = (1, 3, 640, 640)
     input_tensor = torch.rand(input_shape)
@@ -130,9 +128,7 @@ def test_yolov5_640x640(forge_property_recorder, size):
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
-    model = fetch_model(
-        name, f"https://github.com/ultralytics/yolov5/releases/download/v7.0/{name}.pt", yolov5_loader, variant=variant
-    )
+    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
     input_shape = (1, 3, 480, 480)
     input_tensor = torch.rand(input_shape)
     return model, [input_tensor], {}
@@ -210,7 +206,7 @@ def test_yolov5_1280x1280(forge_property_recorder, variant):
 
     framework_model = fetch_model(
         variant,
-        f"https://github.com/ultralytics/yolov5/releases/download/v7.0/{variant}.pt",
+        f"{base_url}/{variant}.pt",
         yolov5_loader,
         variant="ultralytics/yolov5",
     )

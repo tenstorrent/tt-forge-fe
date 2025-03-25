@@ -9,6 +9,7 @@ import time
 import os
 import shutil
 import urllib
+from filelock import FileLock
 
 import numpy as np
 import torch
@@ -41,7 +42,7 @@ def get_cache_dir() -> str:
     """Get models cache directory from env var or use local default."""
     cache_dir = os.environ.get("FORGE_MODELS_HUB")
     if not cache_dir:
-        cache_dir = os.path.join(os.getcwd(), "cached_forge_models")
+        cache_dir = os.path.join(os.getcwd(), ".forge_models_cache")
         os.makedirs(cache_dir, exist_ok=True)
     return cache_dir
 
@@ -81,24 +82,45 @@ def fetch_model(
     # Download if needed
     if not os.path.exists(model_path):
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        lock_path = model_path + ".lock"
+        lock = FileLock(lock_path)
 
-        for attempt in range(1, max_retries + 1):
-            try:
-                print(f"Downloading {model_name}, attempt {attempt}/{max_retries}...")
-                response = requests.get(url, timeout=timeout)
-                response.raise_for_status()
+        with lock:
+            # Check again after acquiring the lock to handle concurrent processes
+            if not os.path.exists(model_path):
+                for attempt in range(1, max_retries + 1):
+                    try:
+                        print(f"Downloading {model_name}, attempt {attempt}/{max_retries}...")
+                        response = requests.get(url, timeout=timeout)
+                        response.raise_for_status()
 
-                with open(model_path, "wb") as f:
-                    f.write(response.content)
-                break
+                        # Write to temporary file first
+                        temp_path = model_path + ".tmp"
+                        with open(temp_path, "wb") as f:
+                            f.write(response.content)
 
-            except requests.exceptions.RequestException as e:
-                print(f"Attempt {attempt} failed: {e}")
-                if attempt < max_retries:
-                    time.sleep(2**attempt)  # Exponential backoff
-                else:
-                    # raise error if all attempts failed
-                    raise RuntimeError(f"Failed to download {model_name} after {max_retries} attempts.")
+                        # Atomic rename after successful download
+                        try:
+                            os.rename(temp_path, model_path)
+                        except OSError as e:
+                            print(f"Error during rename: {e}")
+                            # Clean up the temp file
+                            if os.path.exists(temp_path):
+                                os.remove(temp_path)
+                            raise  # Let this be caught by the outer exception handler
+
+                        break  # Successfully downloaded and renamed
+
+                    except (requests.exceptions.RequestException, OSError) as e:
+                        print(f"Attempt {attempt} failed: {e}")
+                        # Clean up temp file if it exists
+                        if os.path.exists(temp_path):
+                            os.remove(temp_path)
+
+                        if attempt < max_retries:
+                            time.sleep(2**attempt)  # Exponential backoff
+                        else:
+                            raise RuntimeError(f"Failed to download {model_name} after {max_retries} attempts.")
 
     # Load model
     model = loader(model_path, **kwargs) if loader else None
