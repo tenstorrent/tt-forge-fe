@@ -177,6 +177,7 @@ jobs:
         shell: bash
         run: |
           source env/activate
+          export CCACHE_SLOPPINESS=file_macro,time_macros # This makes ccache more permissive when determining cache hits
           cmake -G Ninja \
           -B ${{ steps.strings.outputs.build-output-dir }} \
           -DCMAKE_BUILD_TYPE=Debug \
