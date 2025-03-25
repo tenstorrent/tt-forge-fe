@@ -336,7 +336,7 @@ class CompiledModel:
     def forward(self, *inputs: AnyTensor) -> List[torch.Tensor]:
         return self(*inputs)
 
-    def backward(self):
+    def backward(self) -> List[CTensor]:
         assert self.training(), "Model not compiled for training."
         assert self.bwd_compiled_graph_state is not None, "Backward graph should be present for training."
 
@@ -357,9 +357,10 @@ class CompiledModel:
             f"Running backward pass on model {self.framework_module.get_name()} {self.bwd_compiled_graph_state.graph.get_name()} on device..."
         )
 
-        self.runtime_model_state.run_program(
-            ProgramType.Backward, [*self.gradient_inputs, *self.intermediates, *inputs]
-        )
+        bwd_inputs = [*self.gradient_inputs, *self.intermediates, *inputs]
+        assert all([isinstance(t, CTensor) for t in bwd_inputs]), "All inputs should be CTensors by now."
+
+        self.runtime_model_state.run_program(ProgramType.Backward, bwd_inputs)
         grads = self.runtime_model_state.get_outputs(ProgramType.Backward)
 
         if self.optimizer_on_device():
@@ -398,6 +399,8 @@ class CompiledModel:
             assert len(self.attached_module.gradient_inputs) == 1, "Passing gradients not properly implemented yet"
             self.attached_module.gradient_inputs[0] = self.gradient_outputs[0]
             self.attached_module.backward()
+
+        return self.gradient_outputs
 
     def training(self) -> bool:
         return self.fwd_compiled_graph_state.graph.training()

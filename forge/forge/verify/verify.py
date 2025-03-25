@@ -29,6 +29,7 @@ from ..tensor import (
 )
 from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
 import forge._C.graph as pygraph
+from forge._C.runtime import Tensor as CTensor
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
@@ -339,13 +340,13 @@ def verify_backward(
     framework_model.zero_grad()
 
     # 1st step: run backward pass for the networks and get gradients
-    compiled_model.gradient_inputs = [output_grad]
+    compiled_model.gradient_inputs = [CTensor(output_grad)]
     co_gradient_outputs = compiled_model.backward()
     co_gradients: Dict[str, torch.Tensor] = {}
     for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
         # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
         #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
-        co_gradients[name] = grad.clone() if name.startswith("grad_acc_") else grad
+        co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
     # Run backward on framework model
     framework_model.zero_grad()
