@@ -956,7 +956,7 @@ def create_statistics_report_markdown_file(
 
         markdown_writer.close_file()
 
-
+# python scripts/model_analysis/run_analysis_and_generate_md_files.py --test_directory_or_file_path forge/test/models/pytorch/text/albert/test_albert.py --dump_failure_logs &> run_analysis_and_generate_md_files.log
 def main():
     parser = argparse.ArgumentParser(
         description="""Generate unique ops test for the models present in the test_directory_or_file_path
@@ -967,7 +967,7 @@ def main():
     parser.add_argument(
         "--test_directory_or_file_path",
         type=str,
-        default=os.path.join(os.getcwd(), "forge/test/models"),
+        default=os.path.join(os.getcwd(), "forge/test/models/pytorch/"),
         help="Specify the directory or file path containing models test",
     )
     parser.add_argument(
@@ -995,30 +995,30 @@ def main():
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
     )
 
-    unique_ops_config_across_all_models_file_path = os.path.join(
-        args.unique_ops_output_directory_path, "extracted_unique_op_config_across_all_models.log"
-    )
-    unique_operations = extract_unique_op_tests_from_models(
-        model_output_dir_paths=model_output_dir_paths,
-        unique_ops_config_file_path=unique_ops_config_across_all_models_file_path,
-    )
+    # unique_ops_config_across_all_models_file_path = os.path.join(
+    #     args.unique_ops_output_directory_path, "extracted_unique_op_config_across_all_models.log"
+    # )
+    # unique_operations = extract_unique_op_tests_from_models(
+    #     model_output_dir_paths=model_output_dir_paths,
+    #     unique_ops_config_file_path=unique_ops_config_across_all_models_file_path,
+    # )
 
-    model_variant_info_list, failed_ops_details, compiler_component_failure_analysis = run_models_unique_op_tests(
-        unique_operations=unique_operations,
-        unique_ops_output_directory_path=args.unique_ops_output_directory_path,
-        dump_failure_logs=args.dump_failure_logs,
-    )
+    # model_variant_info_list, failed_ops_details, compiler_component_failure_analysis = run_models_unique_op_tests(
+    #     unique_operations=unique_operations,
+    #     unique_ops_output_directory_path=args.unique_ops_output_directory_path,
+    #     dump_failure_logs=args.dump_failure_logs,
+    # )
 
-    create_root_and_sub_markdown_file(
-        model_variant_info_list=model_variant_info_list, markdown_directory_path=args.markdown_directory_path
-    )
+    # create_root_and_sub_markdown_file(
+    #     model_variant_info_list=model_variant_info_list, markdown_directory_path=args.markdown_directory_path
+    # )
 
-    create_statistics_report_markdown_file(
-        model_variant_info_list=model_variant_info_list,
-        failed_ops_details=failed_ops_details,
-        compiler_component_failure_analysis=compiler_component_failure_analysis,
-        markdown_directory_path=args.markdown_directory_path,
-    )
+    # create_statistics_report_markdown_file(
+    #     model_variant_info_list=model_variant_info_list,
+    #     failed_ops_details=failed_ops_details,
+    #     compiler_component_failure_analysis=compiler_component_failure_analysis,
+    #     markdown_directory_path=args.markdown_directory_path,
+    # )
 
 
 if __name__ == "__main__":
