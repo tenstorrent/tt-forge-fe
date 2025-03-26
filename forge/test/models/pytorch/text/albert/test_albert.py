@@ -13,7 +13,6 @@ from transformers import (
 )
 
 import forge
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
@@ -83,7 +82,6 @@ def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(verify_values=False),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -169,7 +167,6 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(verify_values=False),
         forge_property_handler=forge_property_recorder,
     )
 
