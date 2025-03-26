@@ -186,8 +186,8 @@ def calculate_pcc(a, b):
             a = a.transpose(0, 1)
             b = b.transpose(0, 1)
 
-        a = np.ma.masked_invalid(torch.squeeze(a).detach().numpy())
-        b = np.ma.masked_invalid(torch.squeeze(b).detach().numpy())
+        a = np.ma.masked_invalid(torch.squeeze(a).detach().numpy(), copy=False)
+        b = np.ma.masked_invalid(torch.squeeze(b).detach().numpy(), copy=False)
 
         CHUNK_SIZE = 1 * 1000000
 
@@ -398,57 +398,23 @@ def compare_tensor_to_golden(
     return True
 
 
-def prepare_tensors(golden, calculated):
-    # Convert boolean tensors to float; so ATOL can be calculated.
-    if golden.dtype == torch.bool:
-        golden = golden.to(torch.float)
-
-    # TTNN does not support all the data types. So convert 'ret' tensor type to
-    # match 'golden' tensor type.
-    if golden.dtype != calculated.dtype:
-        calculated = calculated.to(golden.dtype)
-
-    return golden, calculated
-
-
 def calculate_atol(golden, calculated):
     if torch.equal(golden, calculated):
         return 0.0
 
-    golden, calculated = prepare_tensors(golden, calculated)
+    logger.info(f"Calculating atol")
+    golden = golden.detach().numpy()
+    calculated = calculated.detach().numpy()
+    masked_golden = np.ma.masked_invalid(golden, copy=False)
+    masked_calculated = np.ma.masked_invalid(calculated, copy=False)
 
-    # Handle NaN and Inf by verifying if NaN and Inf exists at same location in
-    # both tensors.
-    golden_nan_mask = torch.isnan(golden)
-    calculated_nan_mask = torch.isnan(calculated)
-    golden_inf_mask = torch.isinf(golden)
-    calculated_inf_mask = torch.isinf(calculated)
-
-    # Compare NaN values (NaN == NaN is considered True).
-    if not torch.all(golden_nan_mask == calculated_nan_mask):
+    # Assert that all nans/infs are in the same place.
+    if not np.array_equal(masked_golden.mask, masked_calculated.mask):
         return torch.nan
 
-    # Compare Inf values (Inf == Inf is considered True).
-    if not torch.all(golden_inf_mask == calculated_inf_mask):
-        return torch.inf
-
-    # Verify if respective Inf values in both tensors have same sign.
-    golden_sign = torch.sign(golden)
-    calculated_sign = torch.sign(calculated)
-    sign_comparison = golden_sign == calculated_sign
-    masked_sign_comparison = torch.where(calculated_inf_mask, sign_comparison, torch.tensor(True))
-    if not torch.all(masked_sign_comparison):
-        return torch.inf
-
-    # Replace NaN values with 0 to avoid having NaN as ATOL
-    golden[golden_nan_mask] = 0
-    calculated[calculated_nan_mask] = 0
-
-    # Replace Inf values with 0 to avoid having NaN as ATOL
-    golden[golden_inf_mask] = 0
-    calculated[calculated_inf_mask] = 0
-
-    return torch.max(torch.abs(golden - calculated)).item()
+    np_max_abs_diff = np.nanmax(np.abs(golden - calculated))
+    logger.info(f"Calculated atol")
+    return torch.tensor(np_max_abs_diff).item()
 
 
 def calculate_rtol(golden, calculated):
@@ -514,8 +480,7 @@ def determine_consistency_limits(
             atol = calculate_atol(fw_out, co_out)
             atol_values.append(atol)
         else:
-            golden, calculated = prepare_tensors(fw_out, co_out)
-            pcc = calculate_pcc(golden, calculated)
+            pcc = calculate_pcc(fw_out, co_out)
             pcc_values.append(pcc)
             atol = calculate_atol(fw_out, co_out)
             atol_values.append(atol)

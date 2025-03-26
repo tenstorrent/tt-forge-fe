@@ -13,7 +13,7 @@ import forge
 import forge.config
 from forge.tensor import to_forge_tensors, to_pt_tensors
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.compare import calculate_pcc, calculate_pcc_unoptimized
+from forge.verify.compare import calculate_pcc, calculate_pcc_unoptimized, calculate_atol
 
 
 @pytest.mark.xfail(reason="This test is expected to fail")
