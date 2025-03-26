@@ -121,8 +121,14 @@ jobs:
         echo "-----------------------------"
         echo "list main directories"
         echo "-----------------------------"
+        echo "home"
         ls -la ~/
+        echo "current"
         ls -la ./
+        echo "ttrt artifacts"
+        ls -la ./ttrt-artifacts/
+        tree ./ttrt-artifacts/
+        echo "two steps back"
         ls -la ../../
         ls -la third_party/tt-mlir/ttrt-artifacts/
         ls -la ttrt-artifacts/out.ttnn/perf/
