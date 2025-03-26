@@ -146,6 +146,11 @@ def calculate_pcc(a, b):
     if torch.equal(a, b):
         return 1.0
 
+    if a.dtype == torch.bfloat16:
+        # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
+        a = a.type(torch.float32)
+        b = b.type(torch.float32)
+
     if a.numel() > 100000000:
         # For large tensors, split the tensor into smaller chunks to calculate PCC
         assert len(a.shape) == 2, "PCC calculation only supports 2D tensors"
