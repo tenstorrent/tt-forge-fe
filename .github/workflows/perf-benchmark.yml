@@ -102,11 +102,11 @@ jobs:
       run: |
         source env/activate
         python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct testify/ll-sw/MNISTLinear/mlir_reports/ttir.mlir
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir.mlir
         python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir.mlir
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir.mlir
         python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct testify/ll-sw/LlamaModel/mlir_reports/ttir.mlir
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/LlamaModel/mlir_reports/ttir.mlir
 
     - name: Install and run TTRT
       shell: bash
@@ -114,11 +114,15 @@ jobs:
         cd third_party/tt-mlir
         source env/activate
         pip install ../../ttrt*.whl --force-reinstall
-        ttrt perf testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir --save-artifacts
+        echo "save artifacts"
+        ttrt query --save-artifacts
+        echo "run perf"
+        ttrt perf ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir
+        echo "run device perf py"
         python forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ttrt perf testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir --save-artifacts
+        ttrt perf ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir
         python forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ttrt perf testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir --save-artifacts
+        ttrt perf ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir
         python forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
 
     - name: Upload Perf Report
