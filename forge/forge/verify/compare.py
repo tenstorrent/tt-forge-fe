@@ -351,6 +351,11 @@ def calculate_atol(golden, calculated):
         # For bool tensors, return 1.0, since they are not equal (previous check).
         return 1.0
 
+    if golden.dtype == torch.bfloat16:
+        # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
+        golden = golden.type(torch.float32)
+        calculated = calculated.type(torch.float32)
+
     golden = golden.detach().numpy()
     calculated = calculated.detach().numpy()
 
