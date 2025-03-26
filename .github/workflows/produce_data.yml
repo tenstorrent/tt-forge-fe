@@ -9,7 +9,7 @@ on:
       - "On push"
       - "On nightly"
       - "On nightly xfail"
-      - "On nightly_sweeps"
+      - "On Nightly Sweeps Tests"
       - "On Nightly Models Ops"
     types:
       - completed
