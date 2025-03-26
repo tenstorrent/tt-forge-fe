@@ -24,7 +24,7 @@ matplotlib==3.5.1
 # TODO: Remove when datasets is upgraded
 multiprocess==0.70.13
 networkx==2.8.5
-numpy==1.23.1
+numpy==1.26.4
 onnx>=1.15.0
 onnxruntime>=1.16.3
 opencv-python-headless==4.10.0.84
@@ -35,8 +35,8 @@ protobuf==3.20.3
 pybind11==2.6.2
 pyinstrument>=4.1.1
 scipy>=1.8.0
-tensorflow==2.13
-tensorboard==2.13
+tensorflow==2.15
+tensorboard==2.15
 tf2onnx==1.15.1
 transformers==4.47.0
 # To avoid warning during the import
