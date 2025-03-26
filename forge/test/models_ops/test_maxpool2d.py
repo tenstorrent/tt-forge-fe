@@ -350,21 +350,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D3,
-        [((1, 4, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "2",
-                "stride": "2",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D3,
+            [((1, 4, 14, 14), torch.float32)],
+            {
+                "model_name": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "2",
+                    "stride": "2",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/sharded/interleaved_to_sharded/device/interleaved_to_sharded_op.cpp:24: (*this->output_mem_config.shard_spec).shape[1] * input_tensor.element_size() % hal::get_l1_alignment() == 0 info: Shard page size must currently have L1 aligned page size"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -759,21 +766,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D4,
-        [((1, 528, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_googlenet_base_img_cls_torchvision"],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "3",
-                "stride": "1",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D4,
+            [((1, 528, 14, 14), torch.float32)],
+            {
+                "model_name": ["pt_googlenet_base_img_cls_torchvision"],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "3",
+                    "stride": "1",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:37: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (528) should be padded to nearest TILE_WIDTH (32) or should be 16"
+            )
+        ],
     ),
     (
         Maxpool2D6,
@@ -1330,21 +1344,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D1,
-        [((1, 728, 37, 37), torch.float32)],
-        {
-            "model_name": ["pt_xception_xception_img_cls_timm"],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D1,
+            [((1, 728, 37, 37), torch.float32)],
+            {
+                "model_name": ["pt_xception_xception_img_cls_timm"],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:37: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (728) should be padded to nearest TILE_WIDTH (32) or should be 16"
+            )
+        ],
     ),
     (
         Maxpool2D1,

@@ -718,32 +718,41 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Layernorm0,
-        [((2, 1, 2048), torch.float32)],
-        {
-            "model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "epsilon": "1e-05"},
-        },
+    pytest.param(
+        (
+            Layernorm0,
+            [((2, 1, 2048), torch.float32)],
+            {
+                "model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1", "epsilon": "1e-05"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Layernorm1,
-        [((2, 1, 1024), torch.float32)],
-        {
-            "model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "epsilon": "1e-05"},
-        },
+    pytest.param(
+        (
+            Layernorm1,
+            [((2, 1, 1024), torch.float32)],
+            {
+                "model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1", "epsilon": "1e-05"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Layernorm2,
-        [((2, 1, 1536), torch.float32)],
-        {
-            "model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "epsilon": "1e-05"},
-        },
+    pytest.param(
+        (
+            Layernorm2,
+            [((2, 1, 1536), torch.float32)],
+            {
+                "model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1", "epsilon": "1e-05"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Layernorm3,

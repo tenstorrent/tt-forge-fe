@@ -1392,65 +1392,74 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D12,
-        [((1, 384, 35, 35), torch.float32)],
-        {
-            "model_name": [
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "[3, 3]",
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "ceil_mode": "False",
-                "count_include_pad": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D12,
+            [((1, 384, 35, 35), torch.float32)],
+            {
+                "model_name": [
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "[3, 3]",
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - stride mismatch: expected [1225, 1], got [0, 0]")],
     ),
-    (
-        Avgpool2D12,
-        [((1, 1024, 17, 17), torch.float32)],
-        {
-            "model_name": [
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "[3, 3]",
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "ceil_mode": "False",
-                "count_include_pad": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D12,
+            [((1, 1024, 17, 17), torch.float32)],
+            {
+                "model_name": [
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "[3, 3]",
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - stride mismatch: expected [289, 1], got [0, 0]")],
     ),
-    (
-        Avgpool2D12,
-        [((1, 1536, 8, 8), torch.float32)],
-        {
-            "model_name": [
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "op_params": {
-                "kernel_size": "[3, 3]",
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "ceil_mode": "False",
-                "count_include_pad": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D12,
+            [((1, 1536, 8, 8), torch.float32)],
+            {
+                "model_name": [
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "op_params": {
+                    "kernel_size": "[3, 3]",
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - stride mismatch: expected [64, 1], got [0, 0]")],
     ),
     (
         Avgpool2D11,

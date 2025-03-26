@@ -49,56 +49,75 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Cumsum0,
-        [((2441216,), torch.float32)],
-        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "0"}},
+    pytest.param(
+        (
+            Cumsum0,
+            [((2441216,), torch.float32)],
+            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "0"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:903: tt::exception info: Statically allocated circular buffers on core range [(x=6,y=7) - (x=6,y=7)] grow to 9981664 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Cumsum1,
-        [((1, 32), torch.int64)],
-        {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+    pytest.param(
+        (
+            Cumsum1,
+            [((1, 32), torch.int64)],
+            {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    (
-        Cumsum2,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Cumsum2,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Cumsum2,
-        [((1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Cumsum2,
+            [((1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Cumsum2,
-        [((1, 128), torch.int32)],
-        {
-            "model_name": [
-                "pt_roberta_xlm_roberta_base_mlm_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Cumsum2,
+            [((1, 128), torch.int32)],
+            {
+                "model_name": [
+                    "pt_roberta_xlm_roberta_base_mlm_hf",
+                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 

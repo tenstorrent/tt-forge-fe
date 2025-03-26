@@ -12478,18 +12478,21 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Reshape0,
-        [((8, 1), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"shape": "(2, 4, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape0,
+            [((8, 1), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"shape": "(2, 4, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reshape1,
@@ -13141,26 +13144,29 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(2, 6144)"},
         },
     ),
-    (
-        Reshape59,
-        [((1, 1), torch.int64)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
-                "pt_whisper_openai_whisper_small_speech_recognition_hf",
-                "pt_whisper_openai_whisper_medium_speech_recognition_hf",
-                "pt_whisper_openai_whisper_large_speech_recognition_hf",
-                "pt_whisper_openai_whisper_base_speech_recognition_hf",
-                "pt_t5_t5_large_text_gen_hf",
-                "pt_t5_t5_small_text_gen_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"shape": "(1, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape59,
+            [((1, 1), torch.int64)],
+            {
+                "model_name": [
+                    "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
+                    "pt_whisper_openai_whisper_small_speech_recognition_hf",
+                    "pt_whisper_openai_whisper_medium_speech_recognition_hf",
+                    "pt_whisper_openai_whisper_large_speech_recognition_hf",
+                    "pt_whisper_openai_whisper_base_speech_recognition_hf",
+                    "pt_t5_t5_large_text_gen_hf",
+                    "pt_t5_t5_small_text_gen_hf",
+                    "pt_t5_google_flan_t5_large_text_gen_hf",
+                    "pt_t5_t5_base_text_gen_hf",
+                    "pt_t5_google_flan_t5_small_text_gen_hf",
+                    "pt_t5_google_flan_t5_base_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"shape": "(1, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Long did not match Int")],
     ),
     (
         Reshape60,
@@ -14975,14 +14981,21 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 39, 11008)"},
         },
     ),
-    (
-        Reshape216,
-        [((1, 596, 4096), torch.float32)],
-        {
-            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(2441216,)"},
-        },
+    pytest.param(
+        (
+            Reshape216,
+            [((1, 596, 4096), torch.float32)],
+            {
+                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(2441216,)"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:903: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 9899888 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
     (
         Reshape217,
@@ -15056,14 +15069,21 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(577, 1024)"},
         },
     ),
-    (
-        Reshape224,
-        [((1, 576, 4096), torch.float32)],
-        {
-            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(2359296,)"},
-        },
+    pytest.param(
+        (
+            Reshape224,
+            [((1, 576, 4096), torch.float32)],
+            {
+                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(2359296,)"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:903: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 9572208 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
     (
         Reshape216,
@@ -15083,14 +15103,21 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(2441216,)"},
         },
     ),
-    (
-        Reshape225,
-        [((2441216,), torch.float32)],
-        {
-            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(1, 596, 4096)"},
-        },
+    pytest.param(
+        (
+            Reshape225,
+            [((2441216,), torch.float32)],
+            {
+                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(1, 596, 4096)"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:903: tt::exception info: Statically allocated circular buffers on core range [(x=6,y=7) - (x=6,y=7)] grow to 9981664 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
     (
         Reshape226,
@@ -16688,20 +16715,23 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 256, 32, 128)"},
         },
     ),
-    (
-        Reshape344,
-        [((1, 128), torch.bool)],
-        {
-            "model_name": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"shape": "(1, 1, 1, 128)"},
-        },
+    pytest.param(
+        (
+            Reshape344,
+            [((1, 128), torch.bool)],
+            {
+                "model_name": [
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"shape": "(1, 1, 1, 128)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Reshape345,
@@ -16748,14 +16778,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 12, 384, 384)"},
         },
     ),
-    (
-        Reshape350,
-        [((1, 384), torch.bool)],
-        {
-            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(1, 1, 1, 384)"},
-        },
+    pytest.param(
+        (
+            Reshape350,
+            [((1, 384), torch.bool)],
+            {
+                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(1, 1, 1, 384)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Reshape351,
@@ -28376,14 +28409,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 56, 56, 96)"},
         },
     ),
-    (
-        Reshape1301,
-        [((49, 49), torch.int64)],
-        {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"shape": "(2401,)"},
-        },
+    pytest.param(
+        (
+            Reshape1301,
+            [((49, 49), torch.int64)],
+            {
+                "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {"shape": "(2401,)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reshape1243,

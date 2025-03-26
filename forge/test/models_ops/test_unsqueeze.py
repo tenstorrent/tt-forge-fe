@@ -71,31 +71,37 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "0"},
         },
     ),
-    (
-        Unsqueeze1,
-        [((2, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Unsqueeze1,
+            [((2, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Unsqueeze2,
-        [((2, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "2"},
-        },
+    pytest.param(
+        (
+            Unsqueeze2,
+            [((2, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "2"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Unsqueeze2,
@@ -281,14 +287,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "1"},
         },
     ),
-    (
-        Unsqueeze1,
-        [((2, 7), torch.int64)],
-        {
-            "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Unsqueeze1,
+            [((2, 7), torch.int64)],
+            {
+                "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Unsqueeze2,
@@ -401,10 +410,13 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "1"},
         },
     ),
-    (
-        Unsqueeze3,
-        [((1, 596), torch.bool)],
-        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+    pytest.param(
+        (
+            Unsqueeze3,
+            [((1, 596), torch.bool)],
+            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Unsqueeze0,

@@ -351,22 +351,29 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"repeats": "1", "dim": "1"},
         },
     ),
-    (
-        Repeatinterleave4,
-        [((1, 1, 1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"repeats": "256", "dim": "2"},
-        },
+    pytest.param(
+        (
+            Repeatinterleave4,
+            [((1, 1, 1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                    "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                    "pt_xglm_facebook_xglm_564m_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"repeats": "256", "dim": "2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/kernels/kernel.cpp:265: tt::exception info: 1283 unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
+            )
+        ],
     ),
     (
         Repeatinterleave3,
