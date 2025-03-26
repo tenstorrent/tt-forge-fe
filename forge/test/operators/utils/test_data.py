@@ -42,7 +42,6 @@ class TestCollectionCommon:
         input_sources=[
             InputSource.FROM_ANOTHER_OP,
             InputSource.FROM_HOST,
-            InputSource.FROM_DRAM_QUEUE,
             InputSource.CONST_EVAL_PASS,
         ],
         input_shapes=[

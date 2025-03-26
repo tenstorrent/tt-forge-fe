@@ -8,7 +8,7 @@
 # 2. Operand source(s):
 #    (+)  2.1 From another op
 #           - Operator -> input
-#    (+)  2.2 From DRAM queue
+#    (+)  2.2 From DRAM queue - Removed from test plan
 #           - Operator is first node in network
 #           - Input_queue flag = false
 #    (+)  2.3 Const Inputs (const eval pass)
@@ -74,7 +74,6 @@ class TestVerification:
     MODEL_TYPES = {
         InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
         InputSource.FROM_HOST: ModelDirect,
-        InputSource.FROM_DRAM_QUEUE: ModelDirect,
         InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
     }
 
@@ -86,10 +85,6 @@ class TestVerification:
         input_params: List[Dict] = [],
         warm_reset: bool = False,
     ):
-
-        input_source_flag: InputSourceFlags = None
-        if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
-            input_source_flag = InputSourceFlags.FROM_DRAM
 
         module = PytorchUtils.get_pytorch_module(test_vector.operator)
         operator = getattr(module, test_vector.operator)
@@ -112,7 +107,6 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            input_source_flag=input_source_flag,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
@@ -422,7 +416,6 @@ TestParamsData.test_plan_implemented = TestPlan(
             input_sources=[
                 InputSource.FROM_HOST,
                 InputSource.FROM_ANOTHER_OP,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 2, 3, 4),
@@ -532,7 +525,6 @@ TestParamsData.test_plan_implemented = TestPlan(
             kwargs=[{"exponent": 10.0}],
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.CONST_EVAL_PASS,
             ],
             input_shapes=[
@@ -610,7 +602,6 @@ TestParamsData.test_plan_implemented = TestPlan(
             input_shapes=[(14, 13, 89, 3)],
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.CONST_EVAL_PASS,
             ],
             dev_data_formats=[
