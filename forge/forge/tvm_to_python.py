@@ -706,6 +706,9 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
     channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
+    output_padding = [int(opad) for opad in node["attrs"]["output_padding"][0]]
+    args.append(("output_padding", f"{output_padding}"))
+
     return args
 
 
@@ -1941,7 +1944,7 @@ def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
     test_pass = True
     for i, (golden, output) in enumerate(zip(frame_outputs, forge_outputs)):
         test_pass &= compare_tensor_to_golden(
-            f"Framework vs. Forge codegen output {i}", golden, output.value(), is_forge=False, verify_cfg=verify_cfg
+            f"Framework vs. Forge codegen output {i}", golden, output.value(), verify_cfg=verify_cfg
         )
 
         assert test_pass, f"Data mismatch on output {i} between framework and Forge codegen"
@@ -2623,9 +2626,7 @@ def compile_tvm_to_python(
             current_module_name += f"_{json_graph['device']}_{graph_index}"
 
         if json_graph["device"] == "tt":
-            delete_inputs = not (
-                (verify_cfg is not None and verify_cfg.verify_all) or compiler_cfg.enable_op_level_comparision
-            )
+            delete_inputs = not verify_cfg.enable_op_level_comparision
             if not delete_inputs:
                 logger.warning(
                     "Preserving Intermediate tensor values in ForgeModule forward may causes out-of-memory issues"

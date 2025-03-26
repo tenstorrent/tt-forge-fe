@@ -34,7 +34,7 @@ class HippynWrapper(torch.nn.Module):
 
 @pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'tvm.relay.expr.TupleWrapper'>")
 @pytest.mark.nightly
-def test_hippynn(record_forge_property):
+def test_hippynn(forge_property_recorder):
 
     # Build Module Name
     module_name = build_module_name(
@@ -46,8 +46,8 @@ def test_hippynn(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model, output_key = load_model()
@@ -60,6 +60,11 @@ def test_hippynn(record_forge_property):
     sp = torch.as_tensor(atoms.get_atomic_numbers()).unsqueeze(0)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=(sp, pos), module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=(sp, pos),
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+    )
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

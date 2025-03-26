@@ -50,7 +50,7 @@ def test_llava(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_group("priority")
     forge_property_recorder.record_model_name(module_name)
 
     framework_model, processor = load_model(variant)

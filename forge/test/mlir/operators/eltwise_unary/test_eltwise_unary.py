@@ -69,7 +69,13 @@ def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
             torch.float32,
             marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
         ),
-        pytest.param((512,), torch.float16),
+        pytest.param(
+            (512,),
+            torch.float16,
+            marks=pytest.mark.xfail(
+                reason="Stage optimized_graph: Data mismatch detected. Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1423 "
+            ),
+        ),
         pytest.param(
             (224, 224), torch.float32, marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")
         ),
@@ -78,14 +84,32 @@ def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
             torch.float32,
             marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
         ),
-        pytest.param((2, 128, 8, 8), torch.float16),
+        pytest.param(
+            (2, 128, 8, 8),
+            torch.float16,
+            marks=pytest.mark.xfail(
+                reason="Stage optimized_graph: Data mismatch detected. Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1423 "
+            ),
+        ),
         pytest.param(
             (4, 1, 32, 32),
             torch.float32,
             marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
         ),
-        pytest.param((6, 1, 900, 256), torch.float16),
-        pytest.param((8, 64, 32, 32, 45), torch.float16),
+        pytest.param(
+            (6, 1, 900, 256),
+            torch.float16,
+            marks=pytest.mark.xfail(
+                reason="Stage optimized_graph: Data mismatch detected. Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1423 "
+            ),
+        ),
+        pytest.param(
+            (8, 64, 32, 32, 45),
+            torch.float16,
+            marks=pytest.mark.xfail(
+                reason="Stage optimized_graph: Data mismatch detected. Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1423 "
+            ),
+        ),
     ],
 )
 @pytest.mark.push

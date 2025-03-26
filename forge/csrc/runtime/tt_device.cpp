@@ -13,6 +13,8 @@
 namespace tt
 {
 
+static bool system_is_initialized = false;
+
 TTSystem detect_available_devices()
 {
     auto [system_desc, chip_ids] = runtime::getCurrentSystemDesc();
@@ -44,6 +46,7 @@ TTSystem detect_available_devices()
         ++logical_device_index;
     }
 
+    system_is_initialized = true;
     return TTSystem{system_desc, chip_ids, devices};
 }
 
@@ -53,10 +56,14 @@ TTSystem& TTSystem::get_system()
     return system;
 }
 
-void TTDevice::open_device()
+bool TTSystem::is_initialized() { return system_is_initialized; }
+
+void TTDevice::open_device(const DeviceSettings& settings)
 {
     TT_ASSERT(!is_open());
-    rt_device = runtime::openDevice({index});
+    static constexpr std::uint32_t num_hw_cqs = 1;
+    rt_device = runtime::openDevice(
+        {index}, num_hw_cqs, std::nullopt, std::nullopt, std::nullopt, settings.enable_program_cache);
 }
 
 void TTDevice::close_device()
@@ -64,6 +71,16 @@ void TTDevice::close_device()
     TT_ASSERT(is_open());
     runtime::closeDevice(rt_device.value());
     rt_device.reset();
+}
+
+void TTDevice::configure_device(const DeviceSettings& settings)
+{
+    if (is_open())
+    {
+        close_device();
+    }
+
+    open_device(settings);
 }
 
 }  // namespace tt
