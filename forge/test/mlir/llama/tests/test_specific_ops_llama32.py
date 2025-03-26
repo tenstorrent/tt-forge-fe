@@ -481,12 +481,7 @@ def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
         ((32, 64, 11), (-2, -1)),
         ((8192, 2048), (-2, -1)),
         ((2048, 8192), (-2, -1)),
-        pytest.param(
-            ((128256, 2048), (-2, -1)),
-            marks=pytest.mark.skip(
-                reason="Due to large host memory consumption, it causes flakiness in CI. Issue #1502"
-            ),
-        ),
+        ((128256, 2048), (-2, -1)),
     ],
 )
 @pytest.mark.push

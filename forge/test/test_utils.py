@@ -40,3 +40,10 @@ def test_pcc_valid():
     pcc_unoptimized = calculate_pcc_unoptimized(fw_out, co_out)
 
     assert pcc == pcc_unoptimized
+
+
+def test_atol_memory():
+    fw_out = torch.rand(128256, 2048)
+    co_out = torch.rand(128256, 2048)
+
+    pcc = calculate_atol(fw_out, co_out)

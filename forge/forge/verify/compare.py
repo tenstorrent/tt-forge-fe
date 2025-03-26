@@ -5,6 +5,8 @@
 
 from typing import Union
 import os
+from multiprocessing.pool import ThreadPool
+import tracemalloc
 
 import torch
 import tensorflow as tf
@@ -76,6 +78,7 @@ def compare_dissimilarity(calculated_dissimilarity: float, dissimilarity_thresho
 
 
 def calculate_pcc_unoptimized(a, b):
+    tracemalloc.start()
     if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
         logger.warning("Both tensors are 'nan'")
         return 1.0
@@ -113,24 +116,47 @@ def calculate_pcc_unoptimized(a, b):
         )
     )
 
+    snap = tracemalloc.take_snapshot()
+    tracemalloc.stop()
+    print()
+    print("=========================== Memory Usage ===========================")
+    for stat in snap.statistics("traceback"):
+        # if stat.size / 1024 / 1024 > 1:
+        print(f"{stat.count} memory blocks: {stat.size / 1024} KiB")
+        for line in stat.traceback.format():
+            print(line)
+    print("===================================================================")
+
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
 
     return pcc
 
 
+def pcc_over_chunk(a, b, chunk_of_rows, chunk_idx):
+    pcc = None
+    a_chunk = a[chunk_idx : chunk_idx + chunk_of_rows, :].flatten()
+    b_chunk = b[chunk_idx : chunk_idx + chunk_of_rows, :].flatten()
+
+    chunk_pcc = np.min(np.ma.corrcoef(a_chunk, b_chunk))
+
+    return chunk_pcc
+
+
 def calculate_pcc(a, b):
-    if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
-        logger.warning("Both tensors are 'nan'")
-        return 1.0
+    # tracemalloc.start()
 
-    if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
-        logger.error("One tensor is all nan, the other is not.")
-        return 0.0
-
-    # Test if either is completely zero
-    if torch.any(a.bool()) != torch.any(b.bool()):
-        return 0.0
+    # if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
+    #     logger.warning("Both tensors are 'nan'")
+    #     return 1.0
+    #
+    # if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
+    #     logger.error("One tensor is all nan, the other is not.")
+    #     return 0.0
+    #
+    # # Test if either is completely zero
+    # if torch.any(a.bool()) != torch.any(b.bool()):
+    #     return 0.0
 
     # if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
     #    raise RuntimeError(f"Tensor overflow to infinity: \n{a}\n{b}")
@@ -139,10 +165,10 @@ def calculate_pcc(a, b):
     #    raise RuntimeError(f"Tensor overflow to negative infinity: \n{a}\n{b}")
 
     # For now, mask all infs and nans so that we check the rest... TODO
-    a = a.clone()
-    a[torch.logical_or(torch.isnan(a), torch.logical_or(torch.isinf(a), torch.isneginf(a)))] = 0
-    b = b.clone()
-    b[torch.logical_or(torch.isnan(b), torch.logical_or(torch.isinf(b), torch.isneginf(b)))] = 0
+    # a = a.clone()
+    # a[torch.logical_or(torch.isnan(a), torch.logical_or(torch.isinf(a), torch.isneginf(a)))] = 0
+    # b = b.clone()
+    # b[torch.logical_or(torch.isnan(b), torch.logical_or(torch.isinf(b), torch.isneginf(b)))] = 0
 
     if torch.equal(a, b):
         return 1.0
@@ -160,31 +186,63 @@ def calculate_pcc(a, b):
             a = a.transpose(0, 1)
             b = b.transpose(0, 1)
 
-        CHUNK_SIZE = 1000000
+        a = np.ma.masked_invalid(torch.squeeze(a).detach().numpy())
+        b = np.ma.masked_invalid(torch.squeeze(b).detach().numpy())
+
+        CHUNK_SIZE = 1 * 1000000
 
         chunk_of_rows = max(CHUNK_SIZE // a.shape[1], 1)
         pcc = None
+        logger.info(f"calculating pcc")
+
+        pool = ThreadPool(processes=os.cpu_count())
+        results = []
+
         for i in range(0, a.shape[0], chunk_of_rows):
-            a_chunk = a[i : i + chunk_of_rows, :]
-            b_chunk = b[i : i + chunk_of_rows, :]
+            work = pool.apply_async(pcc_over_chunk, args=(a, b, chunk_of_rows, i))
+            results.append(work)
 
-            chunk_pcc = np.min(
-                np.ma.corrcoef(
-                    np.ma.masked_invalid(a_chunk.detach()).numpy(), np.ma.masked_invalid(b_chunk.detach()).numpy()
-                )
-            )
-
+        for work in results:
+            chunk_pcc = work.get()
             if pcc is None:
                 pcc = chunk_pcc
             else:
                 pcc = np.min([pcc, chunk_pcc]).item()
+
+        # for i in range(0, a.shape[0], chunk_of_rows):
+        #     a_chunk = a[i : i + chunk_of_rows, :].flatten()
+        #     b_chunk = b[i : i + chunk_of_rows, :].flatten()
+        #     print(a_chunk.shape, b_chunk.shape)
+        #
+        #     chunk_pcc = np.min(
+        #         np.ma.corrcoef(
+        #             np.ma.masked_invalid(a_chunk.numpy()), np.ma.masked_invalid(b_chunk.numpy())
+        #         )
+        #     )
+        #
+        #     if pcc is None:
+        #         pcc = chunk_pcc
+        #     else:
+        #         pcc = np.min([pcc, chunk_pcc]).item()
+        logger.info(f"calculated pcc")
     else:
+        print(a.shape, b.shape)
         pcc = np.min(
             np.ma.corrcoef(
-                torch.squeeze(a).detach().numpy().flatten(),
-                torch.squeeze(b).detach().numpy().flatten(),
+                np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
+                np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
             )
         )
+
+    # snap = tracemalloc.take_snapshot()
+    # print()
+    # print("=========================== Memory Usage ===========================")
+    # for stat in snap.statistics("traceback"):
+    #     if stat.size / 1024 / 1024 > 1:
+    #         print(f"{stat.count} memory blocks: {stat.size / 1024} KiB")
+    #         for line in stat.traceback.format():
+    #             print(line)
+    # print("===================================================================")
 
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
