@@ -7,7 +7,8 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, DepricatedVerifyConfig
+from forge.config import CompileDepth
 
 
 @pytest.mark.parametrize(
@@ -137,9 +138,16 @@ def test_nan_to_num(forge_property_recorder, shape, dtype):
     inputs[0][mask_posinf] = float("inf")
     inputs[0][mask_neginf] = float("-inf")
 
+    verify_cfg = DepricatedVerifyConfig()
+    verify_cfg.verify_all = True
+    # Use this stages_for_intermediate_verification to specify stage in which you want to verify. 
+    # verify_cfg.stages_for_intermediate_verification = {CompileDepth.OPTIMIZED_GRAPH}
+    verify_cfg.enable_op_level_comparision = True
+
+
     framework_model = nan_to_num()
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
     )
     if dtype == torch.float32:
         verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
