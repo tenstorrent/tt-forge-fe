@@ -18,6 +18,7 @@ from transformers import LlamaTokenizer
 
 # Forge modules
 import forge
+from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 
@@ -69,6 +70,11 @@ def test_llama_prefill(
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()
     compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
+
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
 
     # Prefill Phase - Process the initial prompt on device
     # This what we actually want to benchmark, and measure the time taken.
