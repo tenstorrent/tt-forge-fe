@@ -20,15 +20,6 @@ sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
 sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
 sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
 sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
-sum-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
 sum-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
 sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
 sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
@@ -56,15 +47,6 @@ mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
 mean-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
 mean-FROM_HOST-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
 mean-FROM_HOST-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 160, 96)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 0, 'keepdim': False}-(1, 1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(1, 1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(1, 1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 1, 'keepdim': False}-(8, 1, 10, 1000)-None-None
-mean-FROM_DRAM_QUEUE-{'dim': 2, 'keepdim': False}-(8, 1, 10, 1000)-None-None
 mean-CONST_EVAL_PASS-{'dim': 0, 'keepdim': False}-(1, 10, 1000)-None-None
 mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10, 1000)-None-None
 mean-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 32, 64)-None-None
