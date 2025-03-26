@@ -134,7 +134,6 @@ def calculate_pcc_unoptimized(a, b):
 
 
 def pcc_over_chunk(a, b, chunk_of_rows, chunk_idx):
-    pcc = None
     a_chunk = a[chunk_idx : chunk_idx + chunk_of_rows, :].flatten()
     b_chunk = b[chunk_idx : chunk_idx + chunk_of_rows, :].flatten()
 
@@ -144,38 +143,8 @@ def pcc_over_chunk(a, b, chunk_of_rows, chunk_idx):
 
 
 def calculate_pcc(a, b):
-    # tracemalloc.start()
-
-    # if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
-    #     logger.warning("Both tensors are 'nan'")
-    #     return 1.0
-    #
-    # if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
-    #     logger.error("One tensor is all nan, the other is not.")
-    #     return 0.0
-    #
-    # # Test if either is completely zero
-    # if torch.any(a.bool()) != torch.any(b.bool()):
-    #     return 0.0
-
-    # if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
-    #    raise RuntimeError(f"Tensor overflow to infinity: \n{a}\n{b}")
-
-    # if torch.any(torch.isneginf(a)) or torch.any(torch.isneginf(b)):
-    #    raise RuntimeError(f"Tensor overflow to negative infinity: \n{a}\n{b}")
-
-    # For now, mask all infs and nans so that we check the rest... TODO
-    # a = a.clone()
-    # a[torch.logical_or(torch.isnan(a), torch.logical_or(torch.isinf(a), torch.isneginf(a)))] = 0
-    # b = b.clone()
-    # b[torch.logical_or(torch.isnan(b), torch.logical_or(torch.isinf(b), torch.isneginf(b)))] = 0
-
     if torch.equal(a, b):
         return 1.0
-
-    if a.dtype == torch.bfloat16:
-        a = a.type(torch.float32)
-        b = b.type(torch.float32)
 
     if a.numel() > 100000000:
         # For large tensors, split the tensor into smaller chunks to calculate PCC
@@ -192,57 +161,28 @@ def calculate_pcc(a, b):
         CHUNK_SIZE = 1 * 1000000
 
         chunk_of_rows = max(CHUNK_SIZE // a.shape[1], 1)
-        pcc = None
-        logger.info(f"calculating pcc")
 
-        pool = ThreadPool(processes=os.cpu_count())
+        pool = ThreadPool()
         results = []
 
         for i in range(0, a.shape[0], chunk_of_rows):
             work = pool.apply_async(pcc_over_chunk, args=(a, b, chunk_of_rows, i))
             results.append(work)
 
+        pcc = None
         for work in results:
             chunk_pcc = work.get()
             if pcc is None:
                 pcc = chunk_pcc
             else:
                 pcc = np.min([pcc, chunk_pcc]).item()
-
-        # for i in range(0, a.shape[0], chunk_of_rows):
-        #     a_chunk = a[i : i + chunk_of_rows, :].flatten()
-        #     b_chunk = b[i : i + chunk_of_rows, :].flatten()
-        #     print(a_chunk.shape, b_chunk.shape)
-        #
-        #     chunk_pcc = np.min(
-        #         np.ma.corrcoef(
-        #             np.ma.masked_invalid(a_chunk.numpy()), np.ma.masked_invalid(b_chunk.numpy())
-        #         )
-        #     )
-        #
-        #     if pcc is None:
-        #         pcc = chunk_pcc
-        #     else:
-        #         pcc = np.min([pcc, chunk_pcc]).item()
-        logger.info(f"calculated pcc")
     else:
-        print(a.shape, b.shape)
         pcc = np.min(
             np.ma.corrcoef(
-                np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
-                np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
+                np.ma.masked_invalid(a.detach().numpy(), copy=False).flatten(),
+                np.ma.masked_invalid(b.detach().numpy(), copy=False).flatten(),
             )
         )
-
-    # snap = tracemalloc.take_snapshot()
-    # print()
-    # print("=========================== Memory Usage ===========================")
-    # for stat in snap.statistics("traceback"):
-    #     if stat.size / 1024 / 1024 > 1:
-    #         print(f"{stat.count} memory blocks: {stat.size / 1024} KiB")
-    #         for line in stat.traceback.format():
-    #             print(line)
-    # print("===================================================================")
 
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
@@ -402,18 +342,21 @@ def calculate_atol(golden, calculated):
     if torch.equal(golden, calculated):
         return 0.0
 
-    logger.info(f"Calculating atol")
+    if golden.dtype == torch.bool:
+        # For bool tensors, return 1.0, since they are not equal (previous check).
+        return 1.0
+
     golden = golden.detach().numpy()
     calculated = calculated.detach().numpy()
+
     masked_golden = np.ma.masked_invalid(golden, copy=False)
     masked_calculated = np.ma.masked_invalid(calculated, copy=False)
 
-    # Assert that all nans/infs are in the same place.
-    if not np.array_equal(masked_golden.mask, masked_calculated.mask):
-        return torch.nan
+    # Assert that all nans/infs are matching. If not, return inf.
+    if not np.array_equal(golden[masked_golden.mask], calculated[masked_calculated.mask], equal_nan=True):
+        return torch.inf
 
     np_max_abs_diff = np.nanmax(np.abs(golden - calculated))
-    logger.info(f"Calculated atol")
     return torch.tensor(np_max_abs_diff).item()
 
 

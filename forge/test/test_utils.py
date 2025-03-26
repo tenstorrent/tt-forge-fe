@@ -2,12 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+from math import isinf, isnan
 import os
 import pytest
 import torch
 import torch.nn as nn
 
-import tensorflow as tf
+import numpy as np
 
 import forge
 import forge.config
@@ -32,14 +33,14 @@ def test_pcc_memory():
     pcc = calculate_pcc(fw_out, co_out)
 
 
-def test_pcc_valid():
-    fw_out = torch.rand(128256, 2048)
-    co_out = torch.rand(128256, 2048)
+def test_pcc_calculation():
+    fw_out = torch.rand(1, 10000000)
+    co_out = fw_out.clone()
 
     pcc = calculate_pcc(fw_out, co_out)
-    pcc_unoptimized = calculate_pcc_unoptimized(fw_out, co_out)
+    golden_pcc = np.min(np.corrcoef(fw_out.numpy().flatten(), co_out.numpy().flatten())).item()
 
-    assert pcc == pcc_unoptimized
+    assert torch.allclose(torch.tensor(pcc), torch.tensor(golden_pcc))
 
 
 def test_atol_memory():
@@ -47,3 +48,32 @@ def test_atol_memory():
     co_out = torch.rand(128256, 2048)
 
     pcc = calculate_atol(fw_out, co_out)
+
+
+def test_atol_calculation():
+    expected = torch.tensor([1.0, torch.nan, 3.0])
+    actual = torch.tensor([1.0, 2.0, 3.0])
+
+    assert isinf(calculate_atol(expected, actual))
+
+    actual = torch.tensor([1.0, torch.nan, 3.0])
+    assert calculate_atol(expected, actual) == 0
+
+    actual = torch.tensor([1.0, torch.inf, 3.0])
+    assert isinf(calculate_atol(expected, actual))
+
+    expected = torch.tensor([1.0, torch.inf, 3.0])
+    actual = torch.tensor([1.0, torch.inf, 3.0])
+    assert calculate_atol(expected, actual) == 0
+
+    actual = torch.tensor([1.0, torch.nan, 3.0])
+    assert isinf(calculate_atol(expected, actual))
+
+    actual = torch.tensor([1.0, -torch.inf, 3.0])
+    assert isinf(calculate_atol(expected, actual))
+
+    expected = torch.tensor([True, False, True])
+    actual = torch.tensor([True, False, True])
+
+    actual = torch.tensor([True, False, False])
+    assert calculate_atol(expected, actual) == 1
