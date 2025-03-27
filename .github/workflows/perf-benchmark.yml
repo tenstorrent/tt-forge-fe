@@ -81,6 +81,23 @@ jobs:
         repo: tenstorrent/tt-mlir
         check_artifacts: true
 
+    - name: Download ttrt install
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow: on-push.yml
+        commit: ${{ steps.sumbmodules.outputs.ttmlir }}
+        name: install-artifacts-tracy
+        repo: tenstorrent/tt-mlir
+        path: install
+        check_artifacts: true
+
+    - name: 'Untar install directory'
+      shell: bash
+      working-directory: install
+      run: tar xvf install-artifacts-tracy.tar
+  
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
@@ -113,19 +130,13 @@ jobs:
       run: |
         cd third_party/tt-mlir
         source env/activate
+        cd ../..
         pip install ../../ttrt*.whl --force-reinstall
         echo "save artifacts"
         ttrt query --save-artifacts
-        echo "run perf"
-        ttrt perf --artifact-dir . ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir
-        echo "list"
-        ls -la
-        echo "run device perf py"
-        python ../../forge/test/benchmark/device_perf.py -cdp ops_perf_results.csv benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ttrt perf --artifact-dir . ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir
-        python ../../forge/test/benchmark/device_perf.py -cdp ops_perf_results.csv benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ttrt perf --artifact-dir . ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir
-        python ../../forge/test/benchmark/device_perf.py -cdp ops_perf_results.csv benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
