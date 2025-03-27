@@ -96,7 +96,7 @@ jobs:
     - name: 'Untar install directory'
       shell: bash
       working-directory: install
-      run: tar xvf artifacts.tar
+      run: tar xvf artifact.tar
   
     - name: Download build artifacts
       uses: actions/download-artifact@v4
