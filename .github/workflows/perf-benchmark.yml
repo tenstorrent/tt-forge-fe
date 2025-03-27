@@ -125,6 +125,7 @@ jobs:
         ls -la ~/
         echo "current"
         ls -la ./
+        cat ./perf_results.json
         echo "ttrt artifacts"
         ls -la ./ttrt-artifacts/
         echo "two steps back"
