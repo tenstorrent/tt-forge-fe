@@ -19,11 +19,11 @@
 	<tbody>
 		<tr>
 			<td rowspan="1">1</td>
-			<td rowspan="1">[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
-			<td rowspan="1">3</td>
-			<td>3</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32), dtype=int32)</td>
+			<td rowspan="1">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="1">1</td>
+			<td>1</td>
+			<td><ul><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 7), dtype=int32)</td>
 			<td>dim : -1</td>
 		</tr>
 	</tbody>

@@ -18,18 +18,60 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="6">1</td>
-			<td rowspan="6">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="6">8</td>
-			<td>3</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(32, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1,), dtype=int64)</td>
+			<td rowspan="13">1</td>
+			<td rowspan="13">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="13">13</td>
+			<td>1</td>
+			<td><ul><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li></ul></td>
+			<td>Operand(type=Parameter, shape=(448, 384), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_00, dtype=int64)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2359296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=int32)</td>
+			<td><ul><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(7, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1,), dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_nbeats_seasionality_basis_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1024, 72), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_00, dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_beit_microsoft_beit_base_patch16_224_img_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(732, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_beit_microsoft_beit_large_patch16_224_img_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(732, 16), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_swin_swin_t_img_cls_torchvision</li></ul></td>
+			<td>Operand(type=Parameter, shape=(169, 3), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=features.1.0.attn.relative_position_index, dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_swin_swin_t_img_cls_torchvision</li></ul></td>
+			<td>Operand(type=Parameter, shape=(169, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=features.3.0.attn.relative_position_index, dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_swin_swin_t_img_cls_torchvision</li></ul></td>
+			<td>Operand(type=Parameter, shape=(169, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=features.5.0.attn.relative_position_index, dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_swin_swin_t_img_cls_torchvision</li></ul></td>
+			<td>Operand(type=Parameter, shape=(169, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=features.7.0.attn.relative_position_index, dtype=int64)</td>
 			<td></td>
 		</tr>
 		<tr>
