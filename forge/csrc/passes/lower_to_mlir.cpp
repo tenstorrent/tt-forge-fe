@@ -553,7 +553,7 @@ class MLIRGenerator
             shape_vec.push_back((int64_t)dim);
         }
 
-        return builder_.create<mlir::tensor::EmptyOp>(
+        return builder_.create<mlir::tt::ttir::EmptyOp>(
             get_tt_forge_operation_location(graph, node), shape_vec, get_data_type(node));
     }
 
@@ -587,6 +587,7 @@ class MLIRGenerator
             case tt::DataFormat::Float16: return builder_.getF16Type();
             case tt::DataFormat::Int32: return builder_.getI32Type();
             case tt::DataFormat::Int8: return builder_.getI8Type();
+            case tt::DataFormat::RawUInt8: return builder_.getIntegerType(8, false);
             default:
                 log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                 TT_ASSERT(false);
@@ -644,7 +645,7 @@ class MLIRGenerator
         lowering_handler_map["abs"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AbsOp>;
         lowering_handler_map["add"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AddOp>;
         lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
-        lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampOp>;
+        lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampScalarOp>;
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
         lowering_handler_map["conv2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Conv2dOp>;
         lowering_handler_map["cosine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CosOp>;

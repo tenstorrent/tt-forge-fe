@@ -63,7 +63,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("AvgPool1d")
+    forge_property_recorder("tags.op_name", "AvgPool1d")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
