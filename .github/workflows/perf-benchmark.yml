@@ -117,13 +117,15 @@ jobs:
         echo "save artifacts"
         ttrt query --save-artifacts
         echo "run perf"
-        ttrt perf ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir
+        ttrt perf --artifact-dir . ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir
+        echo "list"
+        ls -la
         echo "run device perf py"
-        python ../../forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/ops_perf_results.csv benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ttrt perf ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir
-        python ../../forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/ops_perf_results.csv benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ttrt perf ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir
-        python ../../forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/ops_perf_results.csv benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python ../../forge/test/benchmark/device_perf.py -cdp ops_perf_results.csv benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ttrt perf --artifact-dir . ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir
+        python ../../forge/test/benchmark/device_perf.py -cdp ops_perf_results.csv benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ttrt perf --artifact-dir . ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir
+        python ../../forge/test/benchmark/device_perf.py -cdp ops_perf_results.csv benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
