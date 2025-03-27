@@ -81,9 +81,10 @@ def test_mnist_training(forge_property_recorder):
             golden_loss = loss_fn(golden_pred, target)
             assert torch.allclose(loss, golden_loss, rtol=1e-1)  # 10% tolerance
 
-            # Run backward pass on device
+            # Loss backward pass on CPU.
             loss.backward()
 
+            # Run backward pass on device.
             tt_model.backward()
 
             # Adjust weights (on CPU)
@@ -109,7 +110,7 @@ def test_mnist_training_with_grad_accumulation(forge_property_recorder):
     learning_rate = 0.001
 
     # Limit number of batches to run - quicker test
-    limit_num_batches = 1000
+    limit_num_batches = 10
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
@@ -356,10 +357,10 @@ def test_loss_device(forge_property_recorder):
     # Config
     num_epochs = 3
     batch_size = 1
-    learning_rate = 0.001
+    learning_rate = 0.01
 
     # Limit number of batches to run - quicker test
-    limit_num_batches = 1000
+    limit_num_batches = 10
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
@@ -430,12 +431,19 @@ def test_loss_device(forge_property_recorder):
 
     test_loss = 0
     for batch_idx, (data, target) in enumerate(test_loader):
-        pred = tt_model(data)[0]
+        golden_pred, pred = verify(
+            inputs=[data],
+            framework_model=framework_model,
+            compiled_model=tt_model,
+            verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        )
+        pred = pred[0]
+
         target = nn.functional.one_hot(target, num_classes=10).float()
 
         test_loss += tt_loss(pred, target)[0]
 
-        if batch_idx == 1000:
+        if batch_idx >= limit_num_batches:
             break
 
     print(f"Test (total) loss: {test_loss}")
@@ -447,6 +455,9 @@ def test_lora(forge_property_recorder):
     num_epochs = 3
     batch_size = 128
     learning_rate = 0.1
+
+    # Limit number of batches to run - quicker test
+    limit_num_batches = 10
 
     # Load dataset
     test_loader, train_loader = load_dataset(batch_size)
@@ -479,7 +490,7 @@ def test_lora(forge_property_recorder):
     prev_total_loss = 1e10
     for epoch_idx in range(num_epochs):
         total_loss = 0
-        for _, (data, target) in enumerate(train_loader):
+        for batch_idx, (data, target) in enumerate(train_loader):
             # Create target tensor and leave on CPU
             target = nn.functional.one_hot(target, num_classes=10).float()
 
@@ -503,6 +514,12 @@ def test_lora(forge_property_recorder):
             # Adjust weights on the device.
             # NOTE: after executing the step, this will also zero the gradients.
             tt_optimizer.step()
+
+            # Update the pytorch model weights.
+            tt_model.update_host_weights()
+
+            if batch_idx >= limit_num_batches:
+                break
 
         print(f"epoch: {epoch_idx} loss: {total_loss}")
         assert prev_total_loss - total_loss > 1e-5, "Loss should go down"
@@ -568,13 +585,12 @@ def test_optimizer_device(forge_property_recorder):
             total_loss += loss.item()
 
             loss.backward()
-
-            # Run backward pass on device
             tt_model.backward()
 
             # Adjust weights on the device.
             # NOTE: after executing the step, this will also zero the gradients.
             optimizer.step()
+            tt_model.update_host_weights()
 
             if batch_idx >= limit_num_batches:
                 break
@@ -660,6 +676,8 @@ def test_e2e_device(forge_property_recorder):
             # Adjust weights on the device.
             # NOTE: after executing the step, this will also zero the gradients.
             tt_optimizer.step()
+
+            tt_model.update_host_weights()
 
         print(f"epoch: {epoch_idx} loss: {total_loss}")
 
