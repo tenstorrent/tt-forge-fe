@@ -173,6 +173,7 @@ PYBIND11_MODULE(_C, m)
             });
 
     py::enum_<tt::property::ExecutionDepth>(m, "ExecutionDepth")
+        .value("CI_FAILURE", tt::property::ExecutionDepth::CI_FAILURE)
         .value("FAILED_FE_COMPILATION", tt::property::ExecutionDepth::FAILED_FE_COMPILATION)
         .value("FAILED_TTMLIR_COMPILATION", tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION)
         .value("FAILED_RUNTIME", tt::property::ExecutionDepth::FAILED_RUNTIME)
@@ -192,6 +193,7 @@ PYBIND11_MODULE(_C, m)
             [](std::string const &encoded)
             {
                 static std::unordered_map<std::string, tt::property::ExecutionDepth> decode = {
+                    {"CI_FAILURE", tt::property::ExecutionDepth::CI_FAILURE},
                     {"FAILED_FE_COMPILATION", tt::property::ExecutionDepth::FAILED_FE_COMPILATION},
                     {"FAILED_TTMLIR_COMPILATION", tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION},
                     {"FAILED_RUNTIME", tt::property::ExecutionDepth::FAILED_RUNTIME},

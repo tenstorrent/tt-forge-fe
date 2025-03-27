@@ -37,8 +37,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((1,), torch.int32)],
         {
             "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
                 "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
                 "pt_opt_facebook_opt_350m_seq_cls_hf",
             ],
             "pcc": 0.99,
@@ -50,7 +52,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("Remainder")
+    forge_property_recorder("tags.op_name", "Remainder")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
