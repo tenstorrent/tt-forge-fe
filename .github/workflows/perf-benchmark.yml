@@ -96,7 +96,7 @@ jobs:
     - name: 'Untar install directory'
       shell: bash
       working-directory: install
-      run: tar xvf install-artifacts-tracy.tar
+      run: tar xvf artifacts.tar
   
     - name: Download build artifacts
       uses: actions/download-artifact@v4
