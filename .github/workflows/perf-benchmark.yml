@@ -53,6 +53,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
           sparse-checkout: |
+            .github/
             env/
             forge/test
             pytest.ini
