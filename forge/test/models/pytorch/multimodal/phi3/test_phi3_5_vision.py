@@ -30,6 +30,7 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 @pytest.mark.xfail(
     reason="NotImplementedError: The following operators are not implemented: ['aten::resolve_neg', 'aten::resolve_conj']"
 )
+@pytest.mark.skip("Test uses large amount of host memory (>30GB).")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_vision(forge_property_recorder, variant):
 
