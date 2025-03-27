@@ -553,7 +553,7 @@ class MLIRGenerator
             shape_vec.push_back((int64_t)dim);
         }
 
-        return builder_.create<mlir::tensor::EmptyOp>(
+        return builder_.create<mlir::tt::ttir::EmptyOp>(
             get_tt_forge_operation_location(graph, node), shape_vec, get_data_type(node));
     }
 
