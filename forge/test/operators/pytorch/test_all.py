@@ -283,6 +283,10 @@ class QueryLambdas:
 
     LOG = lambda query: query.log()
 
+    SAMPLE5 = lambda query: query.sample(5, query_params.random_seed)
+    SAMPLE10 = lambda query: query.sample(10, query_params.random_seed)
+    SAMPLE20 = lambda query: query.sample(20, query_params.random_seed)
+
 
 class VectorLambdas:
     """Helper lambdas for filtering test vectors"""
