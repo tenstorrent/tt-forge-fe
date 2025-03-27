@@ -117,7 +117,10 @@ jobs:
         echo "save artifacts"
         ttrt query --save-artifacts
         echo "run perf"
-        ttrt perf ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir
+        # ttrt perf ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir
+        ./build/bin/ttmlir-opt --tt-register-device="system-desc-path=ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir -o ttnn.mlir
+        ./build/bin/ttmlir-translate --ttnn-to-flatbuffer ttnn.mlir -o out.ttnn
+        ttrt perf out.ttnn
         echo "-----------------------------"
         echo "list main directories"
         echo "-----------------------------"
@@ -130,8 +133,6 @@ jobs:
         ls -la ./ttrt-artifacts/
         echo "two steps back"
         ls -la ../../
-        ls -la third_party/tt-mlir/ttrt-artifacts/
-        ls -la ttrt-artifacts/out.ttnn/perf/
         echo "-----------------------------"
         echo "run device perf py"
         python ../../forge/test/benchmark/device_perf.py -cdp third_party/tt-mlir/ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
